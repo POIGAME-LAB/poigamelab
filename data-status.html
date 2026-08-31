@@ -1,12 +1,39 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>データ収集状況 | POIGAME LAB</title>
-<style>body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:#f5f2ff;color:#241842;margin:0}.wrap{max-width:1050px;margin:auto;padding:32px 18px}.back{color:#6a38d4;font-weight:800;text-decoration:none}.hero{background:linear-gradient(135deg,#3e176f,#6f36c9);color:#fff;border-radius:20px;padding:28px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 28px #4f2b7d18}.card strong{font-size:28px;display:block;margin-top:8px}.ok{color:#238a52}.warn{color:#a36b00}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{padding:12px;border-bottom:1px solid #eee;text-align:left}th{background:#eee7ff}@media(max-width:700px){.grid{grid-template-columns:1fr}table{font-size:12px}}</style></head>
-<body><main class="wrap"><a class="back" href="index.html">← トップへ戻る</a><section class="hero"><small>DATA PIPELINE</small><h1>データ収集状況</h1><p>POIGAME LABは「自動収集 → 候補化 → 確認 → 公開」の順でデータを更新します。自動収集した数字をそのまま公開しない設計です。</p></section>
-<div class="grid"><div class="card">案件候補<strong id="offers">--</strong><span class="warn">要確認</span></div><div class="card">攻略候補<strong id="guides">--</strong><span class="warn">要確認</span></div><div class="card">話題シグナル<strong id="trends">--</strong><span class="warn">要確認</span></div></div>
-<h2>収集元</h2><table><thead><tr><th>サービス</th><th>方式</th><th>状態</th><th>公式URL</th></tr></thead><tbody id="sources"></tbody></table>
-<h2>現在の仕組み</h2><div class="card"><p><b>案件:</b> 各ゲーム名 × ポイントサイトの公開ページを検索し、還元額候補とURLを <code>data/offer_candidates.csv</code> に保存。</p><p><b>話題:</b> 指定したXアカウントを検索インデックス経由で追い、既知ゲームの言及と新規ゲーム発見候補を保存。</p><p><b>攻略:</b> 「ゲーム名 + ポイ活 + 攻略」で候補記事を収集し、<code>data/guide_candidates.csv</code> に保存。</p><p><b>公開:</b> 確認済みだけ <code>offers.csv</code> / <code>games.csv</code> に反映。誤情報の自動公開を防ぎます。</p></div>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:#f5f2ff;color:#241842;margin:0}.wrap{max-width:1050px;margin:auto;padding:32px 18px}.back{color:#6a38d4;font-weight:800;text-decoration:none}.hero{background:linear-gradient(135deg,#3e176f,#6f36c9);color:#fff;border-radius:20px;padding:28px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 28px #4f2b7d18}.card strong{font-size:26px;display:block;margin-top:8px}.ok{color:#238a52}.warn{color:#a36b00}.muted{color:#716781;font-size:12px}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{padding:12px;border-bottom:1px solid #eee;text-align:left}th{background:#eee7ff}.status-pill{display:inline-block;padding:4px 9px;border-radius:999px;background:#e9f7ef;color:#23734c;font-size:11px;font-weight:900}.status-pill.warn{background:#fff2d9;color:#925d00}@media(max-width:700px){.grid{grid-template-columns:1fr}table{font-size:12px}}</style></head>
+<body><main class="wrap"><a class="back" href="index.html">← トップへ戻る</a>
+<section class="hero"><small>VERIFIED DATA PIPELINE</small><h1>データ更新状況</h1><p>POIGAME LABは「公式ページ取得 → AI抽出 → 決定ルール検証 → 公開」の順で更新します。取得に失敗した日は、直前に検証済みのデータを保持します。</p></section>
+<div class="grid"><div class="card">検証済み案件<strong id="published">--</strong><span class="ok">公開中</span></div><div class="card">最終自動更新<strong id="updated">--</strong><span id="overall" class="status-pill">確認中</span></div><div class="card">確認待ち例外<strong id="exceptions">--</strong><span class="warn">自動公開しません</span></div></div>
+<h2>ゲーム別 自動更新</h2><table><thead><tr><th>ゲーム</th><th>掲載件数</th><th>取得状態</th><th>備考</th></tr></thead><tbody id="games"></tbody></table>
+<h2>安全設計</h2><div class="card"><p><b>公開条件:</b> 登録済み公式ドメイン・同一案件URL・報酬額・条件などの決定ルールをすべて通過した案件だけを公開します。</p><p><b>取得失敗時:</b> 一時的な429/通信障害などで全件確認できなかった場合、確認できた新情報だけをマージし、以前の検証済み案件を消しません。</p><p><b>完全取得時:</b> そのゲームの掲載スナップショットを入れ替えるため、終了した案件は次回の完全取得で掲載から外せます。</p><p class="muted">表示中の報酬・条件は変動することがあります。申込み前にリンク先のポイントサイトで最新条件をご確認ください。</p></div>
+<script src="site-data.js"></script>
 <script>
-async function csv(name){const t=await (await fetch(name,{cache:'no-store'})).text();return t.trim().split(/?
-/).slice(1).filter(Boolean).map(x=>x.split(','));}
-(async()=>{try{const st=await (await fetch('data/collection_status.json',{cache:'no-store'})).json();offers.textContent=st.offerCandidates;guides.textContent=st.guideCandidates;trends.textContent=st.trendMentions;const rows=await csv('sources.csv');sources.innerHTML=rows.map(r=>`<tr><td>${r[1]}</td><td>${r[4]}</td><td class="ok">${r[5]==='true'?'有効':'停止'}</td><td><a href="${r[2]}" target="_blank" rel="noopener noreferrer">公式</a></td></tr>`).join('');}catch(e){console.error(e)}})();
+(async()=>{try{
+  const publishedEl=document.getElementById('published');
+  const updatedEl=document.getElementById('updated');
+  const overallEl=document.getElementById('overall');
+  const exceptionsEl=document.getElementById('exceptions');
+  const gamesEl=document.getElementById('games');
+  const [offers,status,exceptionsData] = await Promise.all([
+    POIGAME_DATA.fetchCsv('data/published_offers.csv'),
+    POIGAME_DATA.loadDataHealth(),
+    POIGAME_DATA.fetchJson('data/exception_queue.json').catch(()=>({count:0,exceptions:[]}))
+  ]);
+  const verified=offers.filter(x=>String(x.verified||'').toLowerCase()==='true');
+  publishedEl.textContent=`${verified.length}件`;
+  updatedEl.textContent=POIGAME_DATA.formatHealthUpdatedAt(status);
+  exceptionsEl.textContent=`${Number(exceptionsData.count||0)}件`;
+  const states=Object.values(status.games||{}).map(x=>x.state);
+  if(states.includes('failed')){overallEl.textContent='一部失敗';overallEl.className='status-pill warn';}
+  else if(states.includes('degraded')){overallEl.textContent='一部取得できず';overallEl.className='status-pill warn';}
+  else if(states.includes('stale')){overallEl.textContent='更新待ち';overallEl.className='status-pill warn';}
+  else if(status.available){overallEl.textContent='正常';}
+  const labels={fresh:'正常',degraded:'一部取得できず',failed:'更新失敗',stale:'更新待ち'};
+  gamesEl.innerHTML=Object.entries(status.games||{}).map(([name,h])=>{
+    const klass=h.state==='fresh'?'status-pill':'status-pill warn';
+    const note=h.state==='fresh'?'完全取得':(h.degradedReasons||[]).join(' / ')||'直前の検証済みデータを保持';
+    return `<tr><td>${POIGAME_DATA.escapeHtml(name)}</td><td>${Number(h.publishableCount||0)}件</td><td><span class="${klass}">${POIGAME_DATA.escapeHtml(labels[h.state]||h.state)}</span></td><td>${POIGAME_DATA.escapeHtml(note)}</td></tr>`;
+  }).join('') || '<tr><td colspan="4">自動更新履歴はまだありません。</td></tr>';
+}catch(e){console.error(e);overallEl.textContent='読込エラー';overallEl.className='status-pill warn';}})();
 </script></main></body></html>

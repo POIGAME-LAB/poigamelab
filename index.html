@@ -512,6 +512,17 @@
     color: #8a6d1f;
   }
 
+  .verification-line.warning {
+    color: #a45600;
+  }
+
+  .dashboard-health-note {
+    margin-top: 6px;
+    color: #e8dcff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
   </style>
 </head>
 
@@ -565,6 +576,7 @@
         <div class="dashboard-stat">
           <span>データ最終更新</span>
           <strong id="statUpdated">----</strong>
+          <small id="statHealth" class="dashboard-health-note"></small>
         </div>
       </div>
     </section>
@@ -666,6 +678,8 @@
   const statGameCount = document.getElementById("statGameCount");
   const statMaxReward = document.getElementById("statMaxReward");
   const statUpdated = document.getElementById("statUpdated");
+  const statHealth = document.getElementById("statHealth");
+  let dataHealth = { available: false, generatedAt: "", success: false, games: {} };
 
   let currentSort = "recommended";
   let currentSearch = "";
@@ -694,7 +708,18 @@
 
     statGameCount.textContent = `${games.length} 件`;
     statMaxReward.textContent = maxReward ? `${maxReward.toLocaleString()} 円` : "確認待ち";
-    statUpdated.textContent = verifiedOffers.length ? latest : "確認待ち";
+    statUpdated.textContent = dataHealth.available
+      ? POIGAME_DATA.formatHealthUpdatedAt(dataHealth)
+      : (verifiedOffers.length ? latest : "確認待ち");
+
+    if (statHealth) {
+      const statuses = Object.values(dataHealth.games || {}).map((item) => item.state);
+      if (statuses.includes("failed")) statHealth.textContent = "一部更新失敗・確認済みデータを保持";
+      else if (statuses.includes("degraded")) statHealth.textContent = "一部取得できず・確認済みデータを保持";
+      else if (statuses.includes("stale")) statHealth.textContent = "更新から時間が経過";
+      else if (dataHealth.available) statHealth.textContent = "自動更新 正常";
+      else statHealth.textContent = "";
+    }
   }
 
   function renderGames() {
@@ -807,9 +832,10 @@
 
     ${
       bestOffer
-        ? `<p class="verification-line ${bestOffer.verified ? "verified" : "legacy"}">
-             ${bestOffer.verified ? "✓ 自動検証済み" : "△ 参考データ"}${bestOffer.updatedAt ? ` ・ ${POIGAME_DATA.escapeHtml(bestOffer.updatedAt)}更新` : ""}
-           </p>`
+        ? (() => {
+            const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, dataHealth.games?.[game.name]);
+            return `<p class="verification-line ${healthLabel.state}">${POIGAME_DATA.escapeHtml(healthLabel.text)}</p>`;
+          })()
         : ""
     }
 
@@ -891,8 +917,11 @@
   });
 });
 
-  loadGames()
-  .then(() => loadOffers())
+  Promise.all([loadGames(), POIGAME_DATA.loadDataHealth()])
+  .then(([, health]) => {
+    dataHealth = health;
+    return loadOffers();
+  })
   .then(() => {
     renderGames();
   });

@@ -223,6 +223,22 @@
       font-weight: 800;
     }
 
+    .best-verified.warning,
+    .health-warning {
+      color: #a45600;
+      font-weight: 800;
+    }
+
+    .data-health-box {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f7f4ff;
+      color: #5c5275;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
   </style>
 </head>
 
@@ -255,6 +271,7 @@
           ポイントサイト：調査中
         </p>
         <p id="bestVerified" class="best-verified"></p>
+        <p id="dataHealthBox" class="data-health-box" hidden></p>
       </div>
 
     </section>
@@ -371,8 +388,12 @@
           offers: []
         };
 
-        const offerResult = await POIGAME_DATA.loadOffersWithFallback();
+        const [offerResult, dataHealth] = await Promise.all([
+          POIGAME_DATA.loadOffersWithFallback(),
+          POIGAME_DATA.loadDataHealth()
+        ]);
         game.offers = offerResult.offers.filter((offer) => offer.gameName === game.name);
+        const gameHealth = dataHealth.games?.[game.name];
 
         document.title = `${game.name} | POIGAME LAB`;
         document.getElementById("gameName").textContent = game.name;
@@ -404,10 +425,26 @@
 
             const bestVerified = document.getElementById("bestVerified");
             if (bestVerified) {
-              bestVerified.textContent = bestOffer.verified
-                ? `✓ 自動検証済み${bestOffer.updatedAt ? ` ・ ${bestOffer.updatedAt}更新` : ""}`
-                : "△ 自動検証前の参考データ";
-              bestVerified.className = bestOffer.verified ? "best-verified verified" : "best-verified legacy";
+              const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
+              bestVerified.textContent = healthLabel.text;
+              bestVerified.className = `best-verified ${healthLabel.state}`;
+            }
+          }
+
+          const dataHealthBox = document.getElementById("dataHealthBox");
+          if (dataHealthBox && gameHealth) {
+            dataHealthBox.hidden = false;
+            if (gameHealth.state === "fresh") {
+              dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
+            } else if (gameHealth.state === "degraded") {
+              dataHealthBox.textContent = "自動更新：一部取得できず。直前に検証済みの案件は保持しています。";
+              dataHealthBox.classList.add("health-warning");
+            } else if (gameHealth.state === "failed") {
+              dataHealthBox.textContent = "自動更新：前回失敗。直前に検証済みの案件を表示しています。";
+              dataHealthBox.classList.add("health-warning");
+            } else if (gameHealth.state === "stale") {
+              dataHealthBox.textContent = "自動更新：更新から時間が経過しています。案件ページで最新条件をご確認ください。";
+              dataHealthBox.classList.add("health-warning");
             }
           }
 
@@ -415,9 +452,9 @@
             const row = document.createElement("tr");
             const siteName = pointSites[offer.site] || offer.site;
             const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
-            const verifyLabel = offer.verified
-              ? '<br><small class="verified-label">✓ 自動検証済み</small>'
-              : '<br><small class="legacy-label">△ 参考</small>';
+            const rowHealth = POIGAME_DATA.getOfferHealthLabel(offer, gameHealth);
+            const labelClass = rowHealth.state === "legacy" ? "legacy-label" : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
+            const verifyLabel = `<br><small class="${labelClass}">${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>`;
 
             row.innerHTML = `
               <td>${POIGAME_DATA.escapeHtml(siteName)}</td>

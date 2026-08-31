@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "PHASE2 daily automatic refresh policy after V22 live acceptance.",
+  "description": "PHASE2 daily automatic refresh and publication freshness policy.",
   "defaultRefreshHours": 24,
   "knownOfficialCacheSeconds": 1800,
   "maxFirecrawlConcurrency": 2,
@@ -27,5 +27,6 @@
     "degradedRunMergesOnly": true
   },
   "schedulerReady": true,
-  "scheduleJST": "毎日 06:17 頃（GitHub Actions cron: 21:17 UTC）"
+  "scheduleJST": "毎日 06:17 頃（GitHub Actions cron: 21:17 UTC）",
+  "staleAfterHours": 48
 }

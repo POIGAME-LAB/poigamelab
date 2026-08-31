@@ -1,4 +1,4 @@
-# POIGAME LAB — PHASE 2 Site Bridge V24
+# POIGAME LAB — PHASE 2 Data Health V25
 
 V23でGitHub Actionsの日次自動更新が本番稼働したため、V24ではその**検証済みデータを実サイトへ直結**しました。
 
@@ -37,3 +37,7 @@ Python deterministic verifier → Publisher → `data/published_offers.csv`
 - APIキーをコードやZIPへ保存しない
 
 旧6時間Collector workflowは `docs/history/collect-data.legacy.yml` へ退避済み。
+
+## V25: データ鮮度・異常表示
+
+サイトは `data/refresh_status.json` を参照し、ゲームごとの自動更新状態を `正常 / 一部取得できず / 更新失敗 / 更新待ち` として表示します。部分取得や一時障害では Publisher が以前の検証済み案件を保持し、UI側もその状態を明示します。`config/refresh_policy.json` の `staleAfterHours`（既定48時間）を超えると更新待ち表示になります。

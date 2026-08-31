@@ -61,10 +61,14 @@
 
   async function fetchCsv(path) {
     const response = await fetch(path, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`${path}: HTTP ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
     return rowsToObjects(parseCsv(await response.text()));
+  }
+
+  async function fetchJson(path) {
+    const response = await fetch(path, { cache: "no-store" });
+    if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+    return response.json();
   }
 
   function normalizePlatform(value) {
@@ -122,6 +126,103 @@
     };
   }
 
+  function hoursSince(iso, now = Date.now()) {
+    const parsed = Date.parse(iso || "");
+    if (!Number.isFinite(parsed)) return null;
+    return Math.max(0, (now - parsed) / 3600000);
+  }
+
+  function buildGameHealth(refreshStatus, policy, now = Date.now()) {
+    const staleAfterHours = Number(policy?.staleAfterHours || 48);
+    const results = Array.isArray(refreshStatus?.results) ? refreshStatus.results : [];
+    const finishedAt = refreshStatus?.finishedAt || refreshStatus?.startedAt || "";
+    const ageHours = hoursSince(finishedAt, now);
+    const output = {};
+
+    results.forEach((item) => {
+      const game = String(item?.game || "").trim();
+      if (!game) return;
+      const returncode = Number(item?.returncode ?? 1);
+      const complete = item?.collectionComplete === true;
+      const stale = ageHours !== null && ageHours > staleAfterHours;
+      const failed = returncode !== 0;
+      const degraded = !failed && !complete;
+      let state = "fresh";
+      if (failed) state = "failed";
+      else if (degraded) state = "degraded";
+      else if (stale) state = "stale";
+
+      output[game] = {
+        state,
+        finishedAt,
+        ageHours,
+        staleAfterHours,
+        collectionComplete: complete,
+        publishableCount: Number(item?.publishableCount || 0),
+        degradedReasons: Array.isArray(item?.degradedReasons) ? item.degradedReasons : []
+      };
+    });
+
+    return output;
+  }
+
+  async function loadDataHealth() {
+    try {
+      const [refreshStatus, policy] = await Promise.all([
+        fetchJson("data/refresh_status.json"),
+        fetchJson("config/refresh_policy.json")
+      ]);
+      return {
+        available: true,
+        generatedAt: refreshStatus.finishedAt || refreshStatus.startedAt || "",
+        success: refreshStatus.success === true,
+        games: buildGameHealth(refreshStatus, policy),
+        staleAfterHours: Number(policy?.staleAfterHours || 48)
+      };
+    } catch (error) {
+      console.info("自動更新ステータスはまだ利用できません。", error.message);
+      return { available: false, generatedAt: "", success: false, games: {}, staleAfterHours: 48 };
+    }
+  }
+
+  function getOfferHealthLabel(offer, gameHealth) {
+    if (!offer?.verified) return { state: "legacy", text: "△ 参考データ" };
+    if (!gameHealth) {
+      return {
+        state: "verified",
+        text: `✓ 自動検証済み${offer.updatedAt ? ` ・ ${offer.updatedAt}更新` : ""}`
+      };
+    }
+
+    if (gameHealth.state === "failed") {
+      return { state: "warning", text: "⚠ 前回の自動更新に失敗・直前の確認済みデータを表示中" };
+    }
+    if (gameHealth.state === "degraded") {
+      return { state: "warning", text: "⚠ 一部取得できず・直前の確認済みデータを保持中" };
+    }
+    if (gameHealth.state === "stale") {
+      return { state: "warning", text: "⚠ 更新から時間が経過しています" };
+    }
+    return {
+      state: "verified",
+      text: `✓ 自動検証済み${offer.updatedAt ? ` ・ ${offer.updatedAt}更新` : ""}`
+    };
+  }
+
+  function formatHealthUpdatedAt(health) {
+    if (!health?.generatedAt) return "確認待ち";
+    const date = new Date(health.generatedAt);
+    if (Number.isNaN(date.getTime())) return health.generatedAt;
+    return new Intl.DateTimeFormat("ja-JP", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(date);
+  }
+
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -147,8 +248,14 @@
     parseCsv,
     rowsToObjects,
     fetchCsv,
+    fetchJson,
     normalizePlatform,
     loadOffersWithFallback,
+    hoursSince,
+    buildGameHealth,
+    loadDataHealth,
+    getOfferHealthLabel,
+    formatHealthUpdatedAt,
     escapeHtml,
     safeHttpUrl
   };
