@@ -48,3 +48,10 @@
 - Research runs force `POIGAMELAB_PUBLISH_MODE=quarantine`; verified offers are saved under `data/research_results/` and never written to public offer data.
 - Daily trend workflow researches at most one promoted game per run to cap API cost.
 - Unicode-only game names now receive collision-resistant hashed result slugs.
+
+## V29 — PHASE3 final adoption gate
+- Added API-free `scripts/evaluate_research_adoption.py` to judge quarantined research before any public-data mutation.
+- Adoption readiness requires a complete, non-degraded collection plus at least 2 strict verified offers from at least 2 registered point-site sources.
+- Every accepted offer must retain the V20 exact same-offer identity/reward consistency checks; weaker legacy-style verification cannot pass.
+- Output is candidate-only `data/adoption_candidates.json`; V29 never edits `games.csv`, `game_targets.json`, `offers.csv`, or `published_offers.csv`.
+- Research queue now fingerprints evidence and preserves completed/failed state when evidence is unchanged, preventing repeated daily API research of the same candidate.

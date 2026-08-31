@@ -35,11 +35,13 @@ jobs:
           FIRECRAWL_CALL_LIMIT: "2"
           RESEARCH_MAX_GAMES: "1"
         run: python scripts/research_offer_bridge.py
+      - name: Evaluate quarantined research for adoption (API-free)
+        run: python scripts/evaluate_research_adoption.py
       - name: Commit discovery and quarantined research outputs
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/research_results/
+          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/research_results/ data/adoption_candidates.json
           git diff --cached --quiet || git commit -m "chore: discover trending game candidates"
           git pull --rebase
           git push

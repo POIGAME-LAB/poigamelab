@@ -54,3 +54,6 @@ Strong V26 trend candidates are deterministically promoted to `data/research_que
 
 ## PHASE 3 V28 research collector bridge
 `collector_ready` candidates can be researched automatically with the existing Firecrawl + Gemini + deterministic verifier pipeline. V28 is deliberately quarantined: it does not add the game to `game_targets.json` and does not update `data/published_offers.csv`. At most one promoted game is researched per daily trend run; results are stored in `data/research_results/` for the next publication-decision stage.
+
+### PHASE 3 V29: final adoption gate
+`python scripts/evaluate_research_adoption.py` evaluates quarantined V28 research with zero API calls. A game becomes `adoption_ready` only after complete/non-degraded collection and multiple strict same-identity verified offers across multiple registered point sites. V29 still does not publish or add games automatically. Unchanged already-researched candidates retain their state so the daily trend workflow does not spend API calls researching them again.

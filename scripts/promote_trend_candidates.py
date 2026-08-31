@@ -7,7 +7,7 @@ research queue for the future offer collector bridge. It never edits games.csv,
 game_targets.json, offers.csv, or published_offers.csv.
 """
 from __future__ import annotations
-import csv, json
+import csv, json, hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -30,6 +30,11 @@ def atomic_json(path, obj):
 
 def normalize_key(value):
     return " ".join((value or "").strip().lower().split())
+
+def candidate_fingerprint(candidate):
+    evidence=[(e.get("sourceId",""),e.get("sourceType",""),e.get("url","")) for e in candidate.get("evidence") or []]
+    raw=json.dumps({"game":normalize_key(candidate.get("game")),"aliases":sorted(normalize_key(x) for x in candidate.get("aliases") or []),"evidence":sorted(evidence)},ensure_ascii=False,sort_keys=True)
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
 def known_names(root=ROOT):
@@ -100,11 +105,18 @@ def build_research_queue(trend_result, cfg, previous=None, known=None, now=None)
             rejected.append({"game": candidate.get("game", ""), "reasons": reasons})
             continue
         old = previous_by_key.get(key, {})
+        fingerprint = candidate_fingerprint(candidate)
+        unchanged_researched = old.get("candidateFingerprint") == fingerprint and old.get("status") in {"research_complete", "research_failed"}
+        status = old.get("status") if unchanged_researched else "collector_ready"
+        collector_ready = not unchanged_researched
         items.append({
             "game": candidate["game"],
             "aliases": candidate.get("aliases") or [],
-            "status": "collector_ready",
-            "collectorReady": True,
+            "status": status,
+            "collectorReady": collector_ready,
+            "candidateFingerprint": fingerprint,
+            "lastResearchAt": old.get("lastResearchAt"),
+            "researchSummary": old.get("researchSummary"),
             "firstPromotedAt": old.get("firstPromotedAt") or now,
             "lastConfirmedAt": now,
             "score": int(candidate.get("score") or 0),
@@ -125,7 +137,7 @@ def build_research_queue(trend_result, cfg, previous=None, known=None, now=None)
         "apiCalls": 0,
         "summary": {
             "trendCandidates": len(trend_result.get("candidates", [])),
-            "collectorReady": len(items),
+            "collectorReady": sum(1 for x in items if x.get("collectorReady")),
             "rejected": len(rejected),
         },
         "items": items,
