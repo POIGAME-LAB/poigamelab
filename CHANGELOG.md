@@ -92,3 +92,9 @@
 - Discovery confidence is now derived deterministically from independent evidence sources; Gemini confidence is retained only as diagnostic `modelConfidence`.
 - A single source cannot pass the existing 2-source research gate even if Gemini reports high confidence.
 - Existing V27 research thresholds are unchanged.
+
+## V36 — Direct discovery coverage + conservative game identity
+- Expanded Warau direct discovery with a second stable first-party service listing that currently exposes established game offers missed by the narrow new-game page.
+- Direct listing URLs now retain only allowlisted public selector query parameters, preventing distinct configured listing pages from collapsing during pre-Gemini deduplication while dropping tracking/session-like parameters.
+- Added deterministic conservative game identity normalization for platform/provider decorations and trailing StepUp markers only.
+- Split Gemini rows such as `ロイヤルマッチ（StepUp）` and `ロイヤルマッチ` can now merge only when their deterministic identity matches; V27 score/confidence/source-count thresholds remain unchanged.

@@ -75,3 +75,6 @@ Stable official listing pages are fetched directly first (Warau / COINCOME). Fir
 
 ### V35 discovery safety
 PHASE 3 now has a third direct first-party point-site source (Moppy official poikatsu game editorial) that does not consume Firecrawl credits. Candidate `confidence` is evidence-derived in Python; Gemini's self-reported value is diagnostic only (`modelConfidence`). Research promotion still requires the existing score/confidence/independent-source gates.
+
+### V36 discovery coverage and identity
+Warau discovery now reads two bounded official first-party listing views instead of relying on one narrow page. Direct-listing selector query parameters are preserved only from a fixed allowlist so those pages remain distinct without retaining tracking data. Candidate identity normalization is deliberately conservative: it removes known platform/provider decorations and a trailing StepUp campaign marker, but does not fuzzy-match arbitrary similar titles. Independent-source promotion thresholds are unchanged.

@@ -22,7 +22,8 @@
       ],
       "sourceType": "point_site",
       "directUrls": [
-        "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new",
+        "https://www.warau.jp/contents/point/category?point_group=2"
       ],
       "firecrawlFallback": true,
       "fallbackUrls": [
@@ -84,6 +85,7 @@
     "apiCalls": 0,
     "note": "V30 may add a verified game and its strict offers to production; scheduled refresh stays disabled until a controlled refresh policy is enabled."
   },
-  "retrievalStrategy": "direct first-party HTTP for stable official listing/editorial pages; Firecrawl best-effort fallback only",
-  "confidenceStrategy": "deterministic evidence confidence; Gemini extracts names only and cannot promote a single-source candidate by confidence"
+  "retrievalStrategy": "direct first-party HTTP across bounded stable official listing/editorial pages; query selectors are preserved only from an allowlist; Firecrawl best-effort fallback only",
+  "confidenceStrategy": "deterministic evidence confidence; Gemini extracts names only and cannot promote a single-source candidate by confidence",
+  "identityStrategy": "deterministic conservative campaign-decoration normalization (platform/provider prefixes + trailing StepUp only); thresholds unchanged"
 }

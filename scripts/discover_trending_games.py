@@ -7,11 +7,11 @@ best-effort fallback for sources that cannot be read directly. Gemini only extra
 candidates; Python normalizes, deduplicates, scores, computes evidence confidence, and writes a review queue.
 """
 from __future__ import annotations
-import csv, json, os, re, sys
+import csv, json, os, re, sys, unicodedata
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,6 +44,26 @@ def safe_url(url):
         return ""
 
 
+DIRECT_SELECTOR_PARAMS = {
+    "_category_id", "category_group", "category_id", "display_style", "page", "point_group", "sort"
+}
+
+def safe_direct_url(url):
+    """Keep only stable public listing selectors so multiple configured pages remain distinct."""
+    try:
+        u = urlparse(url or "")
+        if u.scheme not in {"http", "https"} or not u.netloc:
+            return ""
+        pairs=[]
+        for key, value in parse_qsl(u.query, keep_blank_values=False):
+            if key in DIRECT_SELECTOR_PARAMS:
+                pairs.append((key, value))
+        query=urlencode(pairs)
+        return urlunparse((u.scheme.lower(), u.netloc.lower(), u.path, "", query, ""))
+    except Exception:
+        return ""
+
+
 def _host_allowed(url, domains):
     host = (urlparse(url or "").hostname or "").lower().rstrip(".")
     for domain in domains or []:
@@ -54,9 +74,30 @@ def _host_allowed(url, domains):
 
 
 def normalize_name(name):
-    s = re.sub(r"\s+", " ", (name or "").strip())
-    s = re.sub(r"^[『「【\[]|[』」】\]]$", "", s).strip()
+    s = unicodedata.normalize("NFKC", str(name or ""))
+    s = re.sub(r"\s+", " ", s.strip())
+    for left, right in (("『", "』"), ("「", "」"), ("【", "】"), ("[", "]")):
+        if s.startswith(left) and s.endswith(right) and len(s) > 2:
+            s = s[1:-1].strip()
+            break
     return s[:100]
+
+
+_PROVIDER_PREFIX_RE = re.compile(r"^【(?:SKYFLAG|GFRewards|Zucks|SmaAD|myChips|TyrAds|Ayet)】\s*", re.I)
+_PLATFORM_PREFIX_RE = re.compile(r"^(?:Android|iOS)[_\s]+", re.I)
+_STEPUP_SUFFIX_RE = re.compile(r"\s*(?:\(\s*(?:Step\s*Up|ステップアップ)\s*\)|<\s*(?:Step\s*Up|ステップアップ)\s*>|【\s*(?:Step\s*Up|ステップアップ)\s*】)\s*$", re.I)
+
+def canonical_game_name(name):
+    """Conservative deterministic identity cleanup for campaign decorations only."""
+    s=normalize_name(name)
+    s=_PLATFORM_PREFIX_RE.sub("", s)
+    s=_PROVIDER_PREFIX_RE.sub("", s)
+    s=_STEPUP_SUFFIX_RE.sub("", s).strip()
+    return s[:100]
+
+
+def game_identity_key(name):
+    return canonical_game_name(name).casefold()
 
 
 class _HTMLTextExtractor(HTMLParser):
@@ -104,7 +145,7 @@ class _HTMLTextExtractor(HTMLParser):
 
 
 def direct_fetch_seed(item, url, timeout=DIRECT_TIMEOUT_SECONDS, max_bytes=DIRECT_MAX_BYTES):
-    safe = safe_url(url)
+    safe = safe_direct_url(url)
     if not safe:
         raise ValueError("invalid direct URL")
     if not _host_allowed(url, item.get("includeDomains") or []):
@@ -192,19 +233,23 @@ results={json.dumps(compact, ensure_ascii=False)}'''
 
 
 def score_candidates(extracted, items, known):
-    known_l={x.lower():x for x in known}
+    known_keys={game_identity_key(x):x for x in known if game_identity_key(x)}
     merged={}
     for g in extracted:
-        name=normalize_name(g.get("canonical_name"))
+        raw_name=normalize_name(g.get("canonical_name"))
+        name=canonical_game_name(raw_name)
         if len(name) < 2: continue
         idxs=[]
         for i in g.get("evidence_indexes") or []:
             if isinstance(i,int) and 0 <= i < len(items): idxs.append(i)
         if not idxs: continue
-        key=name.lower()
+        key=game_identity_key(name)
+        if not key: continue
         row=merged.setdefault(key, {"game":name,"aliases":set(),"knownGame":False,"evidence":[],"modelConfidence":0})
+        if raw_name and raw_name != name:
+            row["aliases"].add(raw_name)
         row["aliases"].update(normalize_name(a) for a in (g.get("aliases") or []) if normalize_name(a))
-        row["knownGame"] = bool(g.get("known_game")) or key in known_l
+        row["knownGame"] = bool(g.get("known_game")) or key in known_keys
         row["modelConfidence"] = max(row["modelConfidence"], max(0, min(100, int(g.get("confidence") or 0))))
         for i in idxs:
             ev=items[i]
