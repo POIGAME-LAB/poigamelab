@@ -23,6 +23,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse, urljoin
 from urllib.request import Request, urlopen
 from html import unescape
+from html.parser import HTMLParser
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config" / "point_sources.json"
@@ -162,38 +163,202 @@ def html_title(raw_html):
     return html_to_visible_text(m.group(1)) if m else ""
 
 
-def target_adjacent_first_party_links(raw_html, base_url, source, aliases, limit=8):
-    """Extract only first-party anchors whose visible label names the target.
+class _MiniHtmlNode:
+    __slots__ = ("tag", "attrs", "parent", "children", "text")
 
-    Opaque public detail IDs are allowed because the target-name association is
-    established by the anchor label, not by guessing URL shapes.
+    def __init__(self, tag="", attrs=None, parent=None):
+        self.tag = (tag or "").lower()
+        self.attrs = dict(attrs or [])
+        self.parent = parent
+        self.children = []
+        self.text = []
+
+
+class _MiniHtmlTreeParser(HTMLParser):
+    """Small dependency-free tree used only for bounded listing-card context."""
+
+    _VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.root = _MiniHtmlNode("document")
+        self.stack = [self.root]
+
+    def handle_starttag(self, tag, attrs):
+        node = _MiniHtmlNode(tag, attrs, self.stack[-1])
+        self.stack[-1].children.append(node)
+        if tag.lower() not in self._VOID:
+            self.stack.append(node)
+
+    def handle_startendtag(self, tag, attrs):
+        node = _MiniHtmlNode(tag, attrs, self.stack[-1])
+        self.stack[-1].children.append(node)
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        for i in range(len(self.stack) - 1, 0, -1):
+            if self.stack[i].tag == tag:
+                del self.stack[i:]
+                return
+
+    def handle_data(self, data):
+        if self.stack[-1].tag not in {"script", "style", "noscript", "svg"}:
+            self.stack[-1].text.append(data)
+
+
+def _node_visible_text(node, limit=2600):
+    parts = []
+    total = 0
+    stack = [node]
+    while stack and total < limit:
+        cur = stack.pop()
+        for t in cur.text:
+            if t:
+                parts.append(t)
+                total += len(t)
+                if total >= limit:
+                    break
+        if total >= limit:
+            break
+        stack.extend(reversed(cur.children))
+    return re.sub(r"\s+", " ", unescape(" ".join(parts))).strip()[:limit]
+
+
+def _iter_nodes(node):
+    stack = [node]
+    while stack:
+        cur = stack.pop()
+        yield cur
+        stack.extend(reversed(cur.children))
+
+
+def _detail_like_first_party_url(url, source):
+    """Require a first-party URL shape that plausibly selects one offer.
+
+    This is a discovery guard only. The fetched detail page must independently
+    contain the target name, and the existing V20 exact-offer identity gate
+    still decides publication eligibility.
+    """
+    try:
+        u = urlparse(url)
+    except Exception:
+        return False
+    path = (u.path or "").lower()
+    query = (u.query or "").lower()
+    configured = [str(x).lower() for x in (source.get("direct_detail_url_hints") or []) if x]
+    if configured and any(h in (path + "?" + query) for h in configured):
+        return True
+    if re.search(r"(?:^|[?&])(?:point_id|s_id|itemid|campaign_id|campaignid|id)=", query):
+        return True
+    generic_hints = ("pointentrance", "/ad_details/", "/campaigns/details/", "/ad/detail", "/campaign/detail")
+    return any(h in path for h in generic_hints)
+
+
+def _generic_detail_anchor_label(label):
+    x = re.sub(r"\s+", "", (label or "").casefold())
+    if not x:
+        return True
+    generic = {
+        "詳細", "詳細を見る", "詳しく見る", "もっと見る", "こちら", "参加", "申込", "申し込む",
+        "お申し込み", "ポイント獲得", "獲得", "ios", "iphone", "android",
+        "check", "view", "detail", "details", "more",
+    }
+    return x in {re.sub(r"\s+", "", g.casefold()) for g in generic}
+
+
+def target_adjacent_first_party_links(raw_html, base_url, source, aliases, limit=8):
+    """Find target-associated official detail links, including image-only cards.
+
+    V38 only accepted anchors whose *own label* contained the game name. Real
+    point-site cards often make an image or the whole card clickable while the
+    game title is a sibling element. V39 therefore inspects the smallest nearby
+    card/container around each first-party detail-shaped anchor. A candidate is
+    still fetched and must independently confirm the target before it can enter
+    the verifier, so surrounding-card matching cannot create publishable false
+    positives by itself.
     """
     out = []
     seen = set()
+
+    def add_url(href):
+        if not href:
+            return False
+        absolute = urljoin(base_url, unescape(href).strip())
+        if not registered_host(absolute, source, {"offerwall_domains_discovered": []}):
+            return False
+        identity = offer_identity_url(absolute)
+        if identity in seen:
+            return False
+        seen.add(identity)
+        out.append(absolute)
+        return len(out) >= limit
+
+    # Keep the strongest V38 path first: explicit target label on the anchor.
     for m in re.finditer(r"(?is)<a\b[^>]*?href\s*=\s*([\"'])(.*?)\1[^>]*>(.*?)</a>", raw_html or ""):
-        href = unescape(m.group(2)).strip()
         label = html_to_visible_text(m.group(3))
-        if not href or not text_has_target(label, aliases):
+        if text_has_target(label, aliases) and add_url(m.group(2)):
+            return out
+
+    # Card-context path for image-only / whole-card links.
+    try:
+        parser = _MiniHtmlTreeParser()
+        parser.feed(raw_html or "")
+        parser.close()
+    except Exception:
+        return out
+
+    card_tags = {"li", "article", "section", "div", "tr", "td", "dd", "dl"}
+    for node in _iter_nodes(parser.root):
+        if node.tag != "a":
+            continue
+        href = (node.attrs.get("href") or "").strip()
+        if not href:
             continue
         absolute = urljoin(base_url, href)
         if not registered_host(absolute, source, {"offerwall_domains_discovered": []}):
             continue
-        if absolute in seen:
+        if not _detail_like_first_party_url(absolute, source):
             continue
-        seen.add(absolute)
-        out.append(absolute)
-        if len(out) >= limit:
+        anchor_label = _node_visible_text(node, limit=180)
+        if not _generic_detail_anchor_label(anchor_label):
+            # A non-generic label naming something else is strong evidence that
+            # this anchor belongs to a different offer, even if a target is
+            # mentioned elsewhere on the page.
+            continue
+
+        # Walk only a few levels and use the *smallest* target-bearing container.
+        # This prevents a page-level target mention from blessing unrelated links.
+        cur = node.parent
+        depth = 0
+        matched = False
+        while cur is not None and depth < 6:
+            if cur.tag in card_tags:
+                context = _node_visible_text(cur, limit=2200)
+                if len(context) <= 1800 and text_has_target(context, aliases):
+                    matched = True
+                    break
+                # Empty/single-child wrappers around an image/button may be
+                # crossed. Once a container branches into multiple elements
+                # without the target, treat it as this anchor's own non-target
+                # card and never climb to a page/listing-level target mention.
+                if len(cur.children) > 1:
+                    break
+            cur = cur.parent
+            depth += 1
+        if matched and add_url(href):
             break
     return out
 
 
-def direct_first_party_collect(source, aliases, cfg, fetcher=direct_http_get):
+def direct_first_party_collect(source, aliases, cfg, fetcher=None):
     """V38 direct-first research path for stable official listing pages.
 
     Listing pages are discovery evidence only. Publication-capable candidates
     are created only after a target-adjacent first-party detail page is fetched
     and independently confirms the target text.
     """
+    if fetcher is None:
+        fetcher = direct_http_get
     urls = list(source.get("direct_listing_urls") or [])
     if not urls and source.get("start_url"):
         urls = [source["start_url"]]

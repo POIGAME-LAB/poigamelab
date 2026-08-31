@@ -84,3 +84,6 @@ Long official listing pages are split into bounded overlapping text chunks befor
 
 ### V38 direct-first research collector
 The quarantined research collector now mirrors the discovery layer's resilience strategy: registered first-party listing pages are fetched directly first, target-adjacent official detail links are followed within the same registered domain, and only detail pages that independently confirm the target become verifier candidates. Firecrawl is fallback-only for that source. A 402 on another source remains a degraded reason, so V29 still fails closed rather than treating missing coverage as complete. Direct listing/detail counts are bounded per source, and the existing exact same-offer verifier is unchanged.
+
+### V39 card-context direct research
+Official point-site listings often make an image or the entire card clickable while the game title is rendered in a sibling element. V39 adds a dependency-free bounded HTML card-context matcher for those layouts. It only considers registered first-party URLs with known detail-like shapes, refuses to climb past an unrelated branching card/listing boundary, and then re-fetches the candidate detail page to confirm the target name. This improves direct Warau-style extraction without weakening quarantine, exact-offer verification, source independence, or V29 adoption requirements.

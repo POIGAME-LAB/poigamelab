@@ -112,3 +112,9 @@
 - Firecrawl remains best-effort fallback for sources where direct retrieval cannot establish a detail page; degraded sources remain visible to V29 and cannot be silently adopted.
 - `FIRECRAWL_API_KEY` is no longer a hard prerequisite for research when direct first-party evidence is available; Gemini remains required for structured extraction.
 - Existing V20 exact-offer identity/reward gates, V29 two-source adoption gate, quarantine boundary, and Firecrawl concurrency cap are unchanged.
+
+## V39 — Card-context official detail discovery
+- Direct research no longer requires the target game name to be inside the clickable anchor label; image-only and whole-card links can be associated with a sibling game title inside the same bounded offer card.
+- Card-context discovery accepts only registered first-party detail-shaped URLs and stops at unrelated branching card/listing boundaries, preventing a page-level target mention from blessing neighbouring game links.
+- Every discovered detail page is still fetched and must independently confirm the target before becoming verifier evidence; V20 exact-offer identity and V29 multi-source adoption gates are unchanged.
+- Added explicit per-source official detail URL hints for Warau, Moppy, Chobirich, and COINCOME while preserving bounded direct-detail fetch limits and Firecrawl fail-soft fallback.

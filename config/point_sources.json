@@ -23,7 +23,10 @@
         "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1"
       ],
       "direct_listing_limit": 1,
-      "direct_detail_limit": 4
+      "direct_detail_limit": 4,
+      "direct_detail_url_hints": [
+        "ad/detail.php"
+      ]
     },
     {
       "id": "warau",
@@ -46,7 +49,10 @@
         "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
       ],
       "direct_listing_limit": 2,
-      "direct_detail_limit": 4
+      "direct_detail_limit": 4,
+      "direct_detail_url_hints": [
+        "pointEntrance.php"
+      ]
     },
     {
       "id": "chobirich",
@@ -80,7 +86,10 @@
         "https://www.chobirich.com/smartphone?pos=app"
       ],
       "direct_listing_limit": 1,
-      "direct_detail_limit": 4
+      "direct_detail_limit": 4,
+      "direct_detail_url_hints": [
+        "/ad_details/"
+      ]
     },
     {
       "id": "coincome",
@@ -101,7 +110,10 @@
         "https://cimcome.jp/campaigns?_category_id=21"
       ],
       "direct_listing_limit": 1,
-      "direct_detail_limit": 4
+      "direct_detail_limit": 4,
+      "direct_detail_url_hints": [
+        "/campaigns/details/"
+      ]
     }
   ],
   "offerwall_domains_discovered": [
