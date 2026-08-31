@@ -47,5 +47,13 @@
   "researchPromotion": "deterministic/API-free; writes data/research_queue.json only",
   "minimumVerifiedOffersForAdoption": 2,
   "minimumVerifiedSourcesForAdoption": 2,
-  "adoptionGate": "API-free; strict same-offer verifier checks + complete collection; candidate output only"
+  "adoptionGate": "API-free; strict same-offer verifier checks + complete collection; candidate output only",
+  "productionAdoption": {
+    "enabled": true,
+    "requiresV29AdoptionReady": true,
+    "revalidateBeforeWrite": true,
+    "initialRefreshEnabled": false,
+    "apiCalls": 0,
+    "note": "V30 may add a verified game and its strict offers to production; scheduled refresh stays disabled until a controlled refresh policy is enabled."
+  }
 }

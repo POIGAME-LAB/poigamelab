@@ -55,3 +55,10 @@
 - Every accepted offer must retain the V20 exact same-offer identity/reward consistency checks; weaker legacy-style verification cannot pass.
 - Output is candidate-only `data/adoption_candidates.json`; V29 never edits `games.csv`, `game_targets.json`, `offers.csv`, or `published_offers.csv`.
 - Research queue now fingerprints evidence and preserves completed/failed state when evidence is unchanged, preventing repeated daily API research of the same candidate.
+
+## V30 — PHASE 3 Production Adoption
+- V29 `adoption_ready` games can now be promoted into `games.csv`, `config/game_targets.json`, and strict verified offers into `data/published_offers.csv`.
+- Production adoption is API-free and re-runs the V29 deterministic gate immediately before writes.
+- New games enter `refresh_policy.json` with scheduled refresh disabled, preventing an unknown-game API crawl from silently becoming a recurring cost.
+- Adoption is idempotent; game/offer duplicates are not created on reruns.
+- Workflow records `data/adoption_status.json` and commits production changes only after the final gate.

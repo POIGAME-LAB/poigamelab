@@ -37,11 +37,13 @@ jobs:
         run: python scripts/research_offer_bridge.py
       - name: Evaluate quarantined research for adoption (API-free)
         run: python scripts/evaluate_research_adoption.py
-      - name: Commit discovery and quarantined research outputs
+      - name: Adopt V29-approved games into production (API-free)
+        run: python scripts/adopt_verified_games.py
+      - name: Commit discovery, research, and safe adoptions
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/research_results/ data/adoption_candidates.json
+          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/research_results/ data/adoption_candidates.json data/adoption_status.json games.csv config/game_targets.json config/refresh_policy.json data/published_offers.csv
           git diff --cached --quiet || git commit -m "chore: discover trending game candidates"
           git pull --rebase
           git push
