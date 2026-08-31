@@ -1,7 +1,15 @@
-# POIGAME LAB — PHASE 2 Auto Refresh V23
+# POIGAME LAB — PHASE 2 Site Bridge V24
 
-V22のライブ確認（きのこ伝説 23.6秒・6/6掲載・例外0）を受け、
-検証済み案件の**日次自動更新**まで実装しました。
+V23でGitHub Actionsの日次自動更新が本番稼働したため、V24ではその**検証済みデータを実サイトへ直結**しました。
+
+
+## V24: サイト表示への接続
+- トップ/詳細ページは `data/published_offers.csv` を最優先で読む
+- 自動検証済みデータがあるゲームは、旧 `offers.csv` の未確認値を混ぜない
+- まだ自動収集OFFのゲームだけ `offers.csv` を参考データとしてフォールバック
+- 「✓ 自動検証済み / 更新日」と「△ 参考データ」を表示で区別
+- CSVの引用符・カンマを正しく扱う共通パーサー `site-data.js` を追加
+- スクレイピング由来テキストのHTMLエスケープ、リンクの http/https 制限を追加
 
 ## 自動更新フロー
 GitHub Actions → `scripts/auto_refresh.py` → ゲーム別Collector →

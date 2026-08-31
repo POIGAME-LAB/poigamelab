@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## PHASE2 Site Bridge V24
+- `data/published_offers.csv` をトップ/詳細ページの最優先データソースへ接続
+- 検証済みゲームでは旧 `offers.csv` を混在させない merge policy を実装
+- 自動収集OFFゲームのみ旧データを「参考」としてフォールバック
+- 共通 `site-data.js` を追加し、quoted CSV / embedded comma / CRLF を安全に解析
+- 自動検証済みバッジと最終更新日をUIへ表示
+- 外部由来文字列をHTMLエスケープし、案件URLを http/https のみに制限
+- V24フロントエンドテスト追加（CSV、merge、fallback、URL/HTML safety）
+
 ## PHASE2 Auto Refresh V23
 - 日次GitHub Actions自動更新を追加
 - `scripts/auto_refresh.py` を追加

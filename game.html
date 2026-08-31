@@ -205,6 +205,24 @@
   opacity: 0.9;
   transform: translateY(-1px);
 }
+    .best-verified {
+      margin: 8px 0 0;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .best-verified.verified,
+    .verified-label {
+      color: #216e4e;
+      font-weight: 800;
+    }
+
+    .best-verified.legacy,
+    .legacy-label {
+      color: #8a6d1f;
+      font-weight: 800;
+    }
+
   </style>
 </head>
 
@@ -236,6 +254,7 @@
         <p id="bestSite">
           ポイントサイト：調査中
         </p>
+        <p id="bestVerified" class="best-verified"></p>
       </div>
 
     </section>
@@ -318,6 +337,7 @@
   </main>
 
   <script src="games.js"></script>
+  <script src="site-data.js"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -325,50 +345,10 @@
   
     async function loadGameDetail() {
       try {
-        // ゲーム基本情報を読み込む
-        const gamesResponse = await fetch("games.csv", {
-  cache: "no-store"
-});
-        const gamesText = await gamesResponse.text();
-  
-        const gameLines = gamesText.trim().split(/\r?\n/);
-        const gameDataLines = gameLines.slice(1);
-  
-        let game = null;
-  
-        gameDataLines.forEach((line) => {
-          if (!line.trim()) return;
-  
-          const [
-            name,
-            image,
-            condition,
-            days,
-            difficulty,
-            overview,
-            tips,
-            featured,
-            addedDate
-          ] = line.split(",");
-  
-          if (name.trim() === gameName) {
-            game = {
-              name: name.trim(),
-              image: image.trim(),
-              condition: condition.trim() || "指定条件クリア",
-              days: days.trim() || "調査中",
-              difficulty: difficulty.trim() || "調査中",
-              overview: overview.trim(),
-              tips: tips.trim(),
-              featured: featured.trim().toLowerCase() === "true",
-              addedDate: addedDate ? addedDate.trim() : "",
-              offers: []
-            };
-          }
-        });
-  
-        // ゲームが見つからなかった場合
-        if (!game) {
+        const gameRows = await POIGAME_DATA.fetchCsv("games.csv");
+        const sourceGame = gameRows.find((row) => String(row.name || "").trim() === gameName);
+
+        if (!sourceGame) {
           document.body.innerHTML = `
             <main class="detail-page">
               <h1>ゲームが見つかりませんでした。</h1>
@@ -377,172 +357,95 @@
           `;
           return;
         }
-  
-        // 案件情報を読み込む
-        const offersResponse = await fetch("offers.csv", {
-  cache: "no-store"
-});
-        const offersText = await offersResponse.text();
-  
-        const offerLines = offersText.trim().split(/\r?\n/);
-        const offerDataLines = offerLines.slice(1);
-  
-        offerDataLines.forEach((line) => {
-          if (!line.trim()) return;
-  
-          const [
-  offerGameName,
-  site,
-  provider,
-  reward,
-  condition,
-  platform,
-  type,
-  deadline,
-  updatedAt,
-  url,
-  sourceUrl,
-  verified
-] = line.split(",");
 
-          if (offerGameName.trim() !== game.name) return;
-  
-          game.offers.push({
-  site: site.trim(),
-  provider: provider.trim(),
-  reward: Number(reward),
-  condition: condition.trim(),
-  platform: platform
-    ? platform.split("|").map((item) => item.trim())
-    : [],
-  type: type.trim(),
-  deadline: deadline.trim(),
-  updatedAt: updatedAt.trim(),
-  url: url ? url.trim() : "",
-  sourceUrl: sourceUrl ? sourceUrl.trim() : "",
-  verified: verified ? verified.trim().toLowerCase() === "true" : false
-});
+        const game = {
+          name: String(sourceGame.name || "").trim(),
+          image: String(sourceGame.image || "").trim(),
+          condition: String(sourceGame.condition || "").trim() || "指定条件クリア",
+          days: String(sourceGame.days || "").trim() || "調査中",
+          difficulty: String(sourceGame.difficulty || "").trim() || "調査中",
+          overview: String(sourceGame.overview || "").trim(),
+          tips: String(sourceGame.tips || "").trim(),
+          featured: String(sourceGame.featured || "").trim().toLowerCase() === "true",
+          addedDate: String(sourceGame.addedDate || "").trim(),
+          offers: []
+        };
 
-});
-  
-        // ページタイトル
+        const offerResult = await POIGAME_DATA.loadOffersWithFallback();
+        game.offers = offerResult.offers.filter((offer) => offer.gameName === game.name);
+
         document.title = `${game.name} | POIGAME LAB`;
-  
-        // 基本情報
         document.getElementById("gameName").textContent = game.name;
-  
-        document.getElementById("gameCondition").textContent =
-          game.condition;
-  
-          const gameDays =
-  document.getElementById("gameDays");
+        document.getElementById("gameCondition").textContent = game.condition;
 
-if (gameDays) {
-  gameDays.textContent = game.days;
-}
+        const gameDays = document.getElementById("gameDays");
+        if (gameDays) gameDays.textContent = game.days;
 
-const gameDifficulty =
-  document.getElementById("gameDifficulty");
+        const gameDifficulty = document.getElementById("gameDifficulty");
+        if (gameDifficulty) gameDifficulty.textContent = game.difficulty;
 
-if (gameDifficulty) {
-  gameDifficulty.textContent = game.difficulty;
-}
-  
-        // ゲーム概要
-        const overview =
-          document.getElementById("gameOverview");
-  
-        if (overview) {
-          overview.textContent =
-            game.overview || "ゲーム概要は準備中です。";
-        }
-  
-        // 攻略情報
-        const tips =
-          document.querySelector(".section:last-of-type p");
-  
-        if (tips) {
-          tips.textContent =
-            game.tips || "攻略情報は準備中です。";
-        }
-  
-        // 案件比較表
-        const tableBody =
-          document.querySelector("tbody");
-  
+        const overview = document.getElementById("gameOverview");
+        if (overview) overview.textContent = game.overview || "ゲーム概要は準備中です。";
+
+        const tips = document.querySelector(".section:last-of-type p");
+        if (tips) tips.textContent = game.tips || "攻略情報は準備中です。";
+
+        const tableBody = document.querySelector("tbody");
         if (tableBody) {
           tableBody.innerHTML = "";
-  
-          const sortedOffers = [...game.offers].sort(
-            (a, b) => b.reward - a.reward
-          );
+          const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+
           if (sortedOffers.length > 0) {
-  const bestOffer = sortedOffers[0];
+            const bestOffer = sortedOffers[0];
+            document.getElementById("bestReward").textContent =
+              `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
+            document.getElementById("bestSite").textContent =
+              `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
 
-  document.getElementById("bestReward").textContent =
-    `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（未確認）"}`;
+            const bestVerified = document.getElementById("bestVerified");
+            if (bestVerified) {
+              bestVerified.textContent = bestOffer.verified
+                ? `✓ 自動検証済み${bestOffer.updatedAt ? ` ・ ${bestOffer.updatedAt}更新` : ""}`
+                : "△ 自動検証前の参考データ";
+              bestVerified.className = bestOffer.verified ? "best-verified verified" : "best-verified legacy";
+            }
+          }
 
-  document.getElementById("bestSite").textContent =
-    `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
-}
-
-  
           sortedOffers.forEach((offer) => {
-            const row =
-              document.createElement("tr");
-  
-            const siteName =
-              pointSites[offer.site] || offer.site;
-  
-              row.innerHTML = `
-  <td>${siteName}</td>
-  <td>${offer.reward.toLocaleString()}円${offer.verified ? "" : "<br><small>未確認</small>"}</td>
-  <td>${offer.condition}</td>
-  <td>${offer.platform.join(" / ")}</td>
-  <td>${offer.deadline || "未定"}</td>
-  <td>${offer.updatedAt || "-"}</td>
-  <td>
-    ${
-      offer.url
-  ? `<a
-       href="${offer.url}"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="offer-link"
-     >
-       案件を見る
-     </a>`
-  : `準備中`
-    }
-  </td>
-`;
-  
-            tableBody.appendChild(row);
-          });
-  
-          // 案件がない場合
-          if (sortedOffers.length === 0) {
-            const row =
-              document.createElement("tr");
-  
+            const row = document.createElement("tr");
+            const siteName = pointSites[offer.site] || offer.site;
+            const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
+            const verifyLabel = offer.verified
+              ? '<br><small class="verified-label">✓ 自動検証済み</small>'
+              : '<br><small class="legacy-label">△ 参考</small>';
+
             row.innerHTML = `
-              <td colspan="7">
-                現在確認できる案件はありません。
+              <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
+              <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
+              <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
+              <td>${POIGAME_DATA.escapeHtml(offer.platform.join(" / "))}</td>
+              <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
+              <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
+              <td>
+                ${safeUrl
+                  ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
+                  : "準備中"}
               </td>
             `;
-  
+            tableBody.appendChild(row);
+          });
+
+          if (sortedOffers.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = '<td colspan="7">現在確認できる案件はありません。</td>';
             tableBody.appendChild(row);
           }
         }
-  
       } catch (error) {
-        console.error(
-          "ゲーム詳細の読み込みに失敗しました",
-          error
-        );
+        console.error("ゲーム詳細の読み込みに失敗しました", error);
       }
     }
-  
+
     loadGameDetail();
   </script>
 

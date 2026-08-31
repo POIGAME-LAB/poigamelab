@@ -497,6 +497,21 @@
   cursor: default;
   pointer-events: none;
 }
+  .verification-line {
+    margin: 8px 0 0;
+    font-size: 12px;
+    font-weight: 800;
+    color: #5c4a84;
+  }
+
+  .verification-line.verified {
+    color: #216e4e;
+  }
+
+  .verification-line.legacy {
+    color: #8a6d1f;
+  }
+
   </style>
 </head>
 
@@ -583,131 +598,67 @@
 
   </main>
   <script src="games.js"></script>
+  <script src="site-data.js"></script>
 
 <script>
   async function loadGames() {
-  try {
-    const response = await fetch("games.csv", {
-      cache: "no-store"
-    });
-    const text = await response.text();
+    try {
+      const rows = await POIGAME_DATA.fetchCsv("games.csv");
+      games.length = 0;
 
-    const lines = text.trim().split(/\r?\n/);
-    const dataLines = lines.slice(1);
+      rows.forEach((row) => {
+        const name = String(row.name || "").trim();
+        if (!name) return;
 
-    games.length = 0;
-
-    dataLines.forEach((line) => {
-      if (!line.trim()) return;
-
-      const [
-        name,
-        image,
-        condition,
-        days,
-        difficulty,
-        overview,
-        tips,
-        featured,
-        addedDate
-      ] = line.split(",");
-
-      games.push({
-        name: name.trim(),
-        image: image.trim(),
-        condition: condition.trim() || "指定条件クリア",
-        days: days.trim() || "調査中",
-        difficulty: difficulty.trim() || "調査中",
-        overview: overview.trim(),
-        tips: tips.trim(),
-        featured: featured.trim().toLowerCase() === "true",
-        addedDate: addedDate ? addedDate.trim() : "",
-        offers: []
+        games.push({
+          name,
+          image: String(row.image || "").trim(),
+          condition: String(row.condition || "").trim() || "指定条件クリア",
+          days: String(row.days || "").trim() || "調査中",
+          difficulty: String(row.difficulty || "").trim() || "調査中",
+          overview: String(row.overview || "").trim(),
+          tips: String(row.tips || "").trim(),
+          featured: String(row.featured || "").trim().toLowerCase() === "true",
+          addedDate: String(row.addedDate || "").trim(),
+          offers: []
+        });
       });
-    });
-
-  } catch (error) {
-    console.error("ゲームデータの読み込みに失敗しました", error);
+    } catch (error) {
+      console.error("ゲームデータの読み込みに失敗しました", error);
+    }
   }
-}
+
   async function loadOffers() {
-  try {
-    const response = await fetch("offers.csv", {
-  cache: "no-store"
-});
-    const text = await response.text();
-
-    const lines = text.trim().split(/\r?\n/);
-
-    // 1行目の見出しを除外
-    const dataLines = lines.slice(1);
-
-    // いったん全ゲームの案件を空にする
     games.forEach((game) => {
       game.offers = [];
     });
 
-    dataLines.forEach((line) => {
-      if (!line.trim()) return;
+    try {
+      const result = await POIGAME_DATA.loadOffersWithFallback();
 
-      const [
-  gameName,
-  site,
-  provider,
-  reward,
-  condition,
-  platform,
-  type,
-  deadline,
-  updatedAt,
-  url,
-  sourceUrl,
-  verified
-] = line.split(",");
-
-      let game = games.find(
-        (item) => item.name === gameName.trim()
-      );
-
-      if (!game) {
-  game = {
-    name: gameName.trim(),
-    image: "",
-    condition: condition.trim() || "指定条件クリア",
-    days: "調査中",
-    difficulty: "調査中",
-    overview: "",
-    tips: "",
-    featured: true,
-    offers: []
-  };
-
-  games.push(game);
-}
-
-game.offers.push({
-  site: site.trim(),
-  provider: provider.trim(),
-  reward: Number(reward),
-  condition: condition.trim(),
-
-  platform: platform
-    ? platform.split("|").map((item) => item.trim())
-    : [],
-
-  type: type.trim(),
-  deadline: deadline.trim(),
-  updatedAt: updatedAt.trim(),
-  url: url ? url.trim() : "",
-  sourceUrl: sourceUrl ? sourceUrl.trim() : "",
-  verified: verified ? verified.trim().toLowerCase() === "true" : false
-});
-});
-
-  } catch (error) {
-    console.error("案件データの読み込みに失敗しました", error);
+      result.offers.forEach((offer) => {
+        let game = games.find((item) => item.name === offer.gameName);
+        if (!game) {
+          game = {
+            name: offer.gameName,
+            image: "",
+            condition: offer.condition || "指定条件クリア",
+            days: "調査中",
+            difficulty: "調査中",
+            overview: "",
+            tips: "",
+            featured: true,
+            addedDate: "",
+            offers: []
+          };
+          games.push(game);
+        }
+        game.offers.push(offer);
+      });
+    } catch (error) {
+      console.error("案件データの読み込みに失敗しました", error);
+    }
   }
-}
   const gameGrid = document.querySelector(".game-grid");
   const searchInput = document.querySelector('.search-box input');
   const searchButton = document.querySelector('.search-box button');
@@ -830,8 +781,8 @@ game.offers.push({
     ${
       game.image
         ? `<img
-            src="${game.image}"
-            alt="${game.name}"
+            src="${POIGAME_DATA.safeHttpUrl(game.image) || POIGAME_DATA.escapeHtml(game.image)}"
+            alt="${POIGAME_DATA.escapeHtml(game.name)}"
             class="game-thumbnail"
           >`
         : `<div class="image-placeholder">GAME IMAGE</div>`
@@ -839,10 +790,10 @@ game.offers.push({
   </div>
 
   <div class="game-info">
-    <h3>${game.name}</h3>
+    <h3>${POIGAME_DATA.escapeHtml(game.name)}</h3>
 
     <p class="game-condition">
-      ${game.condition}
+      ${POIGAME_DATA.escapeHtml(game.condition)}
     </p>
 
     <div class="reward-box">
@@ -851,12 +802,20 @@ game.offers.push({
     </div>
 
     <p class="point-site">
-      おすすめポイントサイト：${pointSiteText}
+      おすすめポイントサイト：${POIGAME_DATA.escapeHtml(pointSiteText)}
     </p>
 
+    ${
+      bestOffer
+        ? `<p class="verification-line ${bestOffer.verified ? "verified" : "legacy"}">
+             ${bestOffer.verified ? "✓ 自動検証済み" : "△ 参考データ"}${bestOffer.updatedAt ? ` ・ ${POIGAME_DATA.escapeHtml(bestOffer.updatedAt)}更新` : ""}
+           </p>`
+        : ""
+    }
+
     <div class="game-meta">
-      <span>⏱ 達成目安：${game.days}</span>
-      <span>🎮 難易度：${game.difficulty}</span>
+      <span>⏱ 達成目安：${POIGAME_DATA.escapeHtml(game.days)}</span>
+      <span>🎮 難易度：${POIGAME_DATA.escapeHtml(game.difficulty)}</span>
     </div>
 
     <a
@@ -870,7 +829,7 @@ game.offers.push({
       bestOffer && bestOffer.url
         ? `
           <a
-            href="${bestOffer.url}"
+            href="${POIGAME_DATA.safeHttpUrl(bestOffer.url)}"
             class="offer-button"
             target="_blank"
             rel="noopener noreferrer"
