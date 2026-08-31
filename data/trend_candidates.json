@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T15:24:25+00:00",
+  "generatedAt": "2026-08-31T15:45:43+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
-    "searchResults": 2,
-    "candidates": 16,
-    "newReviewCandidates": 15,
+    "searchResults": 3,
+    "candidates": 22,
+    "newReviewCandidates": 21,
     "failedSources": 2
   },
   "diagnostics": [
@@ -43,6 +43,16 @@
       "searchError": "HTTP Error 402: Payment Required"
     },
     {
+      "sourceId": "moppy-official-games",
+      "ok": true,
+      "directAttempted": true,
+      "directResults": 1,
+      "firecrawlAttempted": false,
+      "results": 0,
+      "fallbackAttempted": false,
+      "fallbackResults": 0
+    },
+    {
       "sourceId": "coincome-new",
       "ok": true,
       "directAttempted": true,
@@ -61,7 +71,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -82,7 +93,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -103,7 +115,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -124,7 +137,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -141,11 +155,13 @@
     {
       "game": "Merge Peko",
       "aliases": [
-        "Android_Merge Peko＜StepUp＞"
+        "Android_Merge Peko＜StepUp＞",
+        "Merge Peko＜StepUp＞"
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -160,13 +176,36 @@
       ]
     },
     {
-      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "game": "Merge Sweets",
       "aliases": [
-        "Screw Cat:可愛いネコのスクリューパズルゲーム（Level100クリア）"
+        "マージスイーツ"
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
+      "game": "Screw Cat",
+      "aliases": [
+        "Screw Cat:可愛いネコのスクリューパズルゲーム"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -187,7 +226,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -202,13 +242,58 @@
       ]
     },
     {
+      "game": "Supreme King",
+      "aliases": [
+        "スプリームキング"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
+      "game": "Tap & Earn",
+      "aliases": [
+        "タップアンドアーン"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "Tidy Match 3D-Puzzle Game",
       "aliases": [
         "Tidy Match 3D-Puzzle Game（StepUp）"
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -229,7 +314,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -244,13 +330,34 @@
       ]
     },
     {
+      "game": "プリケツにゃー",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "ポケコロユニバース",
       "aliases": [
         "ポケコロユニバース（StepUp）"
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -271,7 +378,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -292,7 +400,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -307,13 +416,34 @@
       ]
     },
     {
+      "game": "ミストバレー",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "モンスターバスケット",
       "aliases": [
         "モンスターバスケット（StepUp）"
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -334,7 +464,8 @@
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -349,14 +480,34 @@
       ]
     },
     {
-      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム",
+      "game": "ロイヤルマッチ",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
+      "game": "恋するコーデ「ペアリウム",
       "aliases": [
-        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できる",
-        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム（StepUp）"
+        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム"
       ],
       "knownGame": false,
       "score": 45,
-      "confidence": 0,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -377,7 +528,8 @@
       ],
       "knownGame": true,
       "score": 45,
-      "confidence": 1,
+      "confidence": 45,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,

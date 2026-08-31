@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T15:24:33+00:00",
-  "sourceGeneratedAt": "2026-08-31T15:24:25+00:00",
+  "generatedAt": "2026-08-31T15:45:53+00:00",
+  "sourceGeneratedAt": "2026-08-31T15:45:43+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
   "summary": {
-    "trendCandidates": 16,
+    "trendCandidates": 22,
     "collectorReady": 0,
-    "rejected": 16
+    "rejected": 22
   },
   "items": [],
   "rejected": [
@@ -54,7 +54,15 @@
       ]
     },
     {
-      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "game": "Merge Sweets",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Screw Cat",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -63,6 +71,22 @@
     },
     {
       "game": "Spades - Classic Card Games",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Supreme King",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Tap & Earn",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -79,6 +103,14 @@
     },
     {
       "game": "すみっコぐらし 農園つくるんです",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "プリケツにゃー",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -110,6 +142,14 @@
       ]
     },
     {
+      "game": "ミストバレー",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "モンスターバスケット",
       "reasons": [
         "score_below_threshold",
@@ -126,7 +166,15 @@
       ]
     },
     {
-      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム",
+      "game": "ロイヤルマッチ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "恋するコーデ「ペアリウム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
