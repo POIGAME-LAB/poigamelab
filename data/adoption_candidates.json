@@ -1,14 +1,63 @@
 {
   "schemaVersion": 1,
   "phase": "PHASE3_ADOPTION_GATE_V29",
-  "generatedAt": "2026-08-31T16:07:31+00:00",
+  "generatedAt": "2026-08-31T17:07:46+00:00",
   "apiCalls": 0,
   "autoPublish": false,
   "autoAddGame": false,
   "summary": {
-    "researchedGames": 0,
+    "researchedGames": 1,
     "adoptionReady": 0,
-    "held": 0
+    "held": 1
   },
-  "items": []
+  "items": [
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "collection_incomplete",
+        "degraded_collection",
+        "insufficient_verified_sources"
+      ],
+      "strictOfferCount": 2,
+      "verifiedSourceCount": 1,
+      "verifiedSources": [
+        "warau"
+      ],
+      "researchedAt": "2026-08-31T17:07:46+00:00",
+      "sourceQueue": {
+        "game": "ホワイトアウト・サバイバル",
+        "aliases": [
+          "ホワイトアウト・サバイバル",
+          "ホワイトアウト・サバイバル(StepUp)"
+        ],
+        "status": "collector_ready",
+        "collectorReady": true,
+        "candidateFingerprint": "6142cd7b2d4da684",
+        "lastResearchAt": null,
+        "researchSummary": null,
+        "firstPromotedAt": "2026-08-31T17:07:34+00:00",
+        "lastConfirmedAt": "2026-08-31T17:07:34+00:00",
+        "score": 75,
+        "confidence": 80,
+        "sourceCount": 2,
+        "sourceTypeCount": 1,
+        "evidence": [
+          {
+            "sourceId": "warau-new",
+            "sourceType": "point_site",
+            "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+            "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          },
+          {
+            "sourceId": "moppy-official-games",
+            "sourceType": "point_site",
+            "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+            "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+          }
+        ]
+      }
+    }
+  ]
 }

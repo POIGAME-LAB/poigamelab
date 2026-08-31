@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T16:07:12+00:00",
+  "generatedAt": "2026-08-31T17:06:57+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
     "searchResults": 4,
-    "candidates": 39,
-    "newReviewCandidates": 36,
+    "candidates": 56,
+    "newReviewCandidates": 53,
     "failedSources": 2
   },
   "diagnostics": [
@@ -65,6 +65,35 @@
   ],
   "candidates": [
     {
+      "game": "ホワイトアウト・サバイバル",
+      "aliases": [
+        "ホワイトアウト・サバイバル",
+        "ホワイトアウト・サバイバル(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 75,
+      "confidence": 80,
+      "modelConfidence": 0,
+      "mentionCount": 2,
+      "sourceCount": 2,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        },
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "ラストアサイラム:プレイグ",
       "aliases": [
         "ラストアサイラム:プレイグ(StepUp)"
@@ -115,9 +144,54 @@
       ]
     },
     {
+      "game": "8 Ball Pool",
+      "aliases": [
+        "8 Ball Pool(8 ボールプール)",
+        "8 ボールプール"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "Bingo Blitz",
       "aliases": [
         "Bingo Blitz(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "Cat Garden Merge",
+      "aliases": [
+        "Cat Garden Merge(StepUp)"
       ],
       "knownGame": false,
       "score": 45,
@@ -162,6 +236,28 @@
       "game": "Fruit Drop Puzzle",
       "aliases": [
         "Fruit Drop Puzzle(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "Goods Match 3D - Shelf Cleaner",
+      "aliases": [
+        "Goods Match 3D - Shelf Cleaner(StepUp)"
       ],
       "knownGame": false,
       "score": 45,
@@ -249,7 +345,8 @@
     {
       "game": "Merge Sweets",
       "aliases": [
-        "Merge Sweets/マージスイーツ"
+        "Merge Sweets/マージスイーツ",
+        "マージスイーツ"
       ],
       "knownGame": false,
       "score": 45,
@@ -269,8 +366,9 @@
       ]
     },
     {
-      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "game": "Screw Cat",
       "aliases": [
+        "Screw Cat:可愛いネコのスクリューパズルゲーム",
         "Screw Cat:可愛いネコのスクリューパズルゲーム(Level100クリア)"
       ],
       "knownGame": false,
@@ -313,9 +411,54 @@
       ]
     },
     {
+      "game": "Suck it Up",
+      "aliases": [
+        "Suck it Up(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "Super Big Slime",
+      "aliases": [
+        "Super Big Slime(レベル60到達)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
       "game": "Supreme King",
       "aliases": [
-        "Supreme King(スプリームキング)"
+        "Supreme King(スプリームキング)",
+        "スプリームキング"
       ],
       "knownGame": false,
       "score": 45,
@@ -337,7 +480,8 @@
     {
       "game": "Tap & Earn",
       "aliases": [
-        "Tap & Earn(タップアンドアーン)"
+        "Tap & Earn(タップアンドアーン)",
+        "タップアンドアーン"
       ],
       "knownGame": false,
       "score": 45,
@@ -357,9 +501,54 @@
       ]
     },
     {
+      "game": "The Tower",
+      "aliases": [
+        "The Tower(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
       "game": "Tidy Match 3D-Puzzle Game",
       "aliases": [
         "Tidy Match 3D-Puzzle Game(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "Triple Tile",
+      "aliases": [
+        "Triple Tile - トリプルタイル",
+        "Triple Tile - トリプルタイル(StepUp)"
       ],
       "knownGame": false,
       "score": 45,
@@ -423,6 +612,28 @@
       ]
     },
     {
+      "game": "エバーテイル",
+      "aliases": [
+        "エバーテイル"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "キングショット",
       "aliases": [
         "キングショット(StepUp)"
@@ -441,6 +652,28 @@
           "sourceType": "point_site",
           "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
           "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "クラシックソリティア",
+      "aliases": [
+        "クラシックソリティア(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -489,8 +722,55 @@
       ]
     },
     {
-      "game": "ハイローラー ベガス : カジノゲーム",
+      "game": "ターミナルマスター",
       "aliases": [
+        "ターミナルマスター - Terminal Master",
+        "ターミナルマスター - Terminal Master(ステージ4到達)",
+        "ターミナルマスター - Terminal Master(ステージ7 到達(シカゴ空港オープン))"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "デイリー麻雀マッチ",
+      "aliases": [
+        "デイリー麻雀マッチ(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "ハイローラー ベガス",
+      "aliases": [
+        "ハイローラー ベガス : カジノゲーム",
         "ハイローラー ベガス : カジノゲーム(StepUp)"
       ],
       "knownGame": false,
@@ -555,6 +835,50 @@
       ]
     },
     {
+      "game": "ファミリーファームの冒険",
+      "aliases": [
+        "ファミリーファームの冒険"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
+      "game": "フィッシュダム",
+      "aliases": [
+        "フィッシュダム(StepUp)"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
       "game": "ブラウザ三国志天",
       "aliases": [
         "ブラウザ三国志天(StepUp)"
@@ -578,7 +902,9 @@
     },
     {
       "game": "プリケツにゃー",
-      "aliases": [],
+      "aliases": [
+        "プリケツにゃー"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -641,8 +967,9 @@
       ]
     },
     {
-      "game": "マージキャンプ - Merge Camp",
+      "game": "マージキャンプ",
       "aliases": [
+        "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう",
         "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう(StepUp)"
       ],
       "knownGame": false,
@@ -685,8 +1012,9 @@
       ]
     },
     {
-      "game": "ミステリータウン:マージゲーム - Mystery Town",
+      "game": "ミステリータウン",
       "aliases": [
+        "ミステリータウン:マージゲーム - Mystery Town",
         "ミステリータウン:マージゲーム - Mystery Town(StepUp)"
       ],
       "knownGame": false,
@@ -708,7 +1036,9 @@
     },
     {
       "game": "ミストバレー",
-      "aliases": [],
+      "aliases": [
+        "ミストバレー"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -750,7 +1080,9 @@
     },
     {
       "game": "ロイヤルマッチ",
-      "aliases": [],
+      "aliases": [
+        "ロイヤルマッチ"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -769,8 +1101,9 @@
       ]
     },
     {
-      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "game": "ロックンキャッシュカジノ",
       "aliases": [
+        "ロックンキャッシュカジノ-スロットゲーム",
         "ロックンキャッシュカジノ-スロットゲーム(StepUp)"
       ],
       "knownGame": false,
@@ -791,8 +1124,31 @@
       ]
     },
     {
-      "game": "商人放浪記:あきんどの成り上がり道",
+      "game": "三國志 真戦",
       "aliases": [
+        "三國志 真戦"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
+      "game": "商人放浪記",
+      "aliases": [
+        "商人放浪記:あきんどの成り上がり道",
         "商人放浪記:あきんどの成り上がり道(StepUp)"
       ],
       "knownGame": false,
@@ -836,6 +1192,28 @@
       ]
     },
     {
+      "game": "放置少女",
+      "aliases": [
+        "放置少女〜百花繚乱の萌姫たち〜"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
       "game": "杖と剣の伝説",
       "aliases": [
         "杖と剣の伝説(StepUp)"
@@ -854,6 +1232,28 @@
           "sourceType": "point_site",
           "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
           "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "東京ディバンカー",
+      "aliases": [
+        "東京ディバンカー"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
         }
       ]
     },

@@ -1,9 +1,22 @@
 {
-  "phase": "PHASE3_RESEARCH_BRIDGE_V28",
-  "runAt": "2026-08-31T16:07:31+00:00",
+  "phase": "PHASE3_RESEARCH_BRIDGE_V39",
+  "runAt": "2026-08-31T17:07:46+00:00",
   "maxGames": 1,
-  "selected": 0,
-  "results": [],
+  "selected": 1,
+  "results": [
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "returncode": 0,
+      "resultSaved": true,
+      "publishableCount": 2,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "chobirich:search_failed",
+        "coincome:search_failed",
+        "moppy:search_failed"
+      ]
+    }
+  ],
   "publicationTouched": false,
   "success": true
 }

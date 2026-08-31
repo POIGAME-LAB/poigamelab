@@ -1,0 +1,285 @@
+{
+  "game": "ホワイトアウト・サバイバル",
+  "researchedAt": "2026-08-31T17:07:46+00:00",
+  "sourceQueue": {
+    "game": "ホワイトアウト・サバイバル",
+    "aliases": [
+      "ホワイトアウト・サバイバル",
+      "ホワイトアウト・サバイバル(StepUp)"
+    ],
+    "status": "collector_ready",
+    "collectorReady": true,
+    "candidateFingerprint": "6142cd7b2d4da684",
+    "lastResearchAt": null,
+    "researchSummary": null,
+    "firstPromotedAt": "2026-08-31T17:07:34+00:00",
+    "lastConfirmedAt": "2026-08-31T17:07:34+00:00",
+    "score": 75,
+    "confidence": 80,
+    "sourceCount": 2,
+    "sourceTypeCount": 1,
+    "evidence": [
+      {
+        "sourceId": "warau-new",
+        "sourceType": "point_site",
+        "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+        "url": "https://www.warau.jp/contents/point/category?point_group=2"
+      },
+      {
+        "sourceId": "moppy-official-games",
+        "sourceType": "point_site",
+        "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+        "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+      }
+    ]
+  },
+  "collectorResult": {
+    "phase": "PHASE2_AUTO_REFRESH_V23",
+    "runAt": "2026-08-31T17:07:46+00:00",
+    "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
+    "candidateCount": 2,
+    "geminiModel": "gemini-3.5-flash-lite",
+    "verified": {
+      "game": "ホワイトアウト・サバイバル",
+      "offers": [
+        {
+          "site": "ワラウ",
+          "reward_yen": 11500,
+          "condition": "新規アプリインストール後、インストール日から起算して25日以内にStepUpミッション（大溶鉱炉レベル3到達、レベル10到達、800円以上1,600円未満の一括課金、レベル18到達、1,600円以上3,200円未満の一括課金、レベル21到達、レベル23到達、レベル23到達後3,200円以上一括課金、【高難易度】レベル26到達）をクリア",
+          "platform": "iOS",
+          "deadline": "2026年9月25日",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService",
+          "evidence_urls": [
+            "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService"
+          ],
+          "confidence": 5,
+          "publishable": true,
+          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル（StepUp）iOS版の報酬ポイント、達成条件、URLが明確に取得できたため。",
+          "registered_source": "warau",
+          "reward_source": "python_warau_same_identity",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "ワラウ",
+          "reward_yen": 11500,
+          "condition": "新規アプリインストール後、インストール日から起算して25日以内にStepUpミッション（大溶鉱炉レベル3到達、レベル10到達、800円以上1,600円未満の一括課金、レベル18到達、1,600円以上3,200円未満の一括課金、レベル21到達、レベル23到達、レベル23到達後3,200円以上一括課金、レベル26到達）をクリア",
+          "platform": "Android",
+          "deadline": "2026年9月25日",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
+          "evidence_urls": [
+            "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService"
+          ],
+          "confidence": 5,
+          "publishable": true,
+          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル（StepUp）Android版の報酬ポイント、達成条件、URLが明確に取得できたため。",
+          "registered_source": "warau",
+          "reward_source": "python_warau_same_identity",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        }
+      ],
+      "verdict": "ワラウのiOS版およびAndroid版のホワイトアウト・サバイバル（StepUp）案件をそれぞれ正常に抽出しました。",
+      "needs_human_review": false
+    },
+    "diagnostics": [
+      {
+        "source_id": "moppy",
+        "source_name": "モッピー",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 81383,
+              "truncated": false
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 1.4
+      },
+      {
+        "source_id": "warau",
+        "source_name": "ワラウ",
+        "mode": "direct_official_fast_path",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": true,
+              "detailLinks": 2,
+              "bytes": 308951,
+              "truncated": false
+            },
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 315384,
+              "truncated": false
+            }
+          ],
+          "details": [
+            {
+              "identityUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 365324,
+              "truncated": false
+            },
+            {
+              "identityUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 366237,
+              "truncated": false
+            }
+          ],
+          "candidateCount": 2,
+          "allListingsFetched": true
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "direct first-party detail pages succeeded"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 6.4
+      },
+      {
+        "source_id": "chobirich",
+        "source_name": "ちょびリッチ",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": false,
+              "error": "HTTP Error 403: Forbidden"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": false
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 0.9
+      },
+      {
+        "source_id": "coincome",
+        "source_name": "COINCOME",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 73462,
+              "truncated": false
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 6.6
+      }
+    ],
+    "health": {
+      "publishableCount": 2,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "chobirich:search_failed",
+        "coincome:search_failed",
+        "moppy:search_failed"
+      ],
+      "publishableBySource": {
+        "moppy": 0,
+        "warau": 2,
+        "chobirich": 0,
+        "coincome": 0
+      },
+      "exceptionCount": 0
+    },
+    "policy": {
+      "autoPublish": "Python deterministic gate only: same first-party registered source URL/evidence + valid reward + condition",
+      "offerwalls": "親サイトから自動発見。個人識別子付きURLは実行中だけ使用し、保存時はqueryを除去",
+      "publishMode": "quarantine"
+    }
+  },
+  "quarantine": true,
+  "autoPublish": false
+}

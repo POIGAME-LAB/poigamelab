@@ -1,17 +1,61 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T16:07:31+00:00",
-  "sourceGeneratedAt": "2026-08-31T16:07:12+00:00",
+  "generatedAt": "2026-08-31T17:07:34+00:00",
+  "sourceGeneratedAt": "2026-08-31T17:06:57+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
   "summary": {
-    "trendCandidates": 39,
-    "collectorReady": 0,
-    "rejected": 39
+    "trendCandidates": 56,
+    "collectorReady": 1,
+    "rejected": 55
   },
-  "items": [],
+  "items": [
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "aliases": [
+        "ホワイトアウト・サバイバル",
+        "ホワイトアウト・サバイバル(StepUp)"
+      ],
+      "status": "research_complete",
+      "collectorReady": false,
+      "candidateFingerprint": "6142cd7b2d4da684",
+      "lastResearchAt": "2026-08-31T17:07:46+00:00",
+      "researchSummary": {
+        "game": "ホワイトアウト・サバイバル",
+        "returncode": 0,
+        "resultSaved": true,
+        "publishableCount": 2,
+        "collectionComplete": false,
+        "degradedReasons": [
+          "chobirich:search_failed",
+          "coincome:search_failed",
+          "moppy:search_failed"
+        ]
+      },
+      "firstPromotedAt": "2026-08-31T17:07:34+00:00",
+      "lastConfirmedAt": "2026-08-31T17:07:34+00:00",
+      "score": 75,
+      "confidence": 80,
+      "sourceCount": 2,
+      "sourceTypeCount": 1,
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        },
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    }
+  ],
   "rejected": [
     {
       "game": "ラストアサイラム:プレイグ",
@@ -30,7 +74,23 @@
       ]
     },
     {
+      "game": "8 Ball Pool",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "Bingo Blitz",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Cat Garden Merge",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -47,6 +107,14 @@
     },
     {
       "game": "Fruit Drop Puzzle",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Goods Match 3D - Shelf Cleaner",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -86,7 +154,7 @@
       ]
     },
     {
-      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "game": "Screw Cat",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -95,6 +163,22 @@
     },
     {
       "game": "Spades - Classic Card Games",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Suck it Up",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Super Big Slime",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -118,7 +202,23 @@
       ]
     },
     {
+      "game": "The Tower",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "Tidy Match 3D-Puzzle Game",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Triple Tile",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -142,7 +242,23 @@
       ]
     },
     {
+      "game": "エバーテイル",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "キングショット",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "クラシックソリティア",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -166,7 +282,23 @@
       ]
     },
     {
-      "game": "ハイローラー ベガス : カジノゲーム",
+      "game": "ターミナルマスター",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "デイリー麻雀マッチ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ハイローラー ベガス",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -183,6 +315,22 @@
     },
     {
       "game": "パズル&サバイバル",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ファミリーファームの冒険",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "フィッシュダム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -222,7 +370,7 @@
       ]
     },
     {
-      "game": "マージキャンプ - Merge Camp",
+      "game": "マージキャンプ",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -238,7 +386,7 @@
       ]
     },
     {
-      "game": "ミステリータウン:マージゲーム - Mystery Town",
+      "game": "ミステリータウン",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -270,7 +418,7 @@
       ]
     },
     {
-      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "game": "ロックンキャッシュカジノ",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -278,7 +426,15 @@
       ]
     },
     {
-      "game": "商人放浪記:あきんどの成り上がり道",
+      "game": "三國志 真戦",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "商人放浪記",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -294,7 +450,23 @@
       ]
     },
     {
+      "game": "放置少女",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "杖と剣の伝説",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "東京ディバンカー",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
