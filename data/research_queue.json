@@ -1,16 +1,146 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T14:59:37+00:00",
-  "sourceGeneratedAt": "2026-08-31T14:59:35+00:00",
+  "generatedAt": "2026-08-31T15:24:33+00:00",
+  "sourceGeneratedAt": "2026-08-31T15:24:25+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
   "summary": {
-    "trendCandidates": 0,
+    "trendCandidates": 16,
     "collectorReady": 0,
-    "rejected": 0
+    "rejected": 16
   },
   "items": [],
-  "rejected": []
+  "rejected": [
+    {
+      "game": "Color Beads Drop",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Drill & Collect: idle mine dig",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Fruit Drop Puzzle",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "LINE ポコポコ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Merge Peko",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Spades - Classic Card Games",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Tidy Match 3D-Puzzle Game",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "すみっコぐらし 農園つくるんです",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ポケコロユニバース",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "マージメイドカフェ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "モンスターバスケット",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ラストアサイラム：プレイグ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "メメントモリ",
+      "reasons": [
+        "known_game",
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    }
+  ]
 }

@@ -1,18 +1,21 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T14:59:35+00:00",
+  "generatedAt": "2026-08-31T15:24:25+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
-    "searchResults": 0,
-    "candidates": 0,
-    "newReviewCandidates": 0,
-    "failedSources": 4
+    "searchResults": 2,
+    "candidates": 16,
+    "newReviewCandidates": 15,
+    "failedSources": 2
   },
   "diagnostics": [
     {
       "sourceId": "x-poikatsu",
       "ok": false,
+      "directAttempted": false,
+      "directResults": 0,
+      "firecrawlAttempted": true,
       "results": 0,
       "fallbackAttempted": false,
       "fallbackResults": 0,
@@ -20,18 +23,20 @@
     },
     {
       "sourceId": "warau-new",
-      "ok": false,
+      "ok": true,
+      "directAttempted": true,
+      "directResults": 1,
+      "firecrawlAttempted": false,
       "results": 0,
-      "fallbackAttempted": true,
-      "fallbackResults": 0,
-      "searchError": "HTTP Error 402: Payment Required",
-      "fallbackErrors": [
-        "HTTP Error 402: Payment Required"
-      ]
+      "fallbackAttempted": false,
+      "fallbackResults": 0
     },
     {
       "sourceId": "chobirich-new",
       "ok": false,
+      "directAttempted": false,
+      "directResults": 0,
+      "firecrawlAttempted": true,
       "results": 0,
       "fallbackAttempted": false,
       "fallbackResults": 0,
@@ -39,15 +44,352 @@
     },
     {
       "sourceId": "coincome-new",
-      "ok": false,
+      "ok": true,
+      "directAttempted": true,
+      "directResults": 1,
+      "firecrawlAttempted": false,
       "results": 0,
-      "fallbackAttempted": true,
-      "fallbackResults": 0,
-      "searchError": "HTTP Error 402: Payment Required",
-      "fallbackErrors": [
-        "HTTP Error 402: Payment Required"
-      ]
+      "fallbackAttempted": false,
+      "fallbackResults": 0
     }
   ],
-  "candidates": []
+  "candidates": [
+    {
+      "game": "Color Beads Drop",
+      "aliases": [
+        "Color Beads Drop（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "Drill & Collect: idle mine dig",
+      "aliases": [
+        "Drill & Collect: idle mine dig（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "Fruit Drop Puzzle",
+      "aliases": [
+        "Fruit Drop Puzzle（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "LINE ポコポコ",
+      "aliases": [
+        "LINE ポコポコ（ステージ5クリア）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "Merge Peko",
+      "aliases": [
+        "Android_Merge Peko＜StepUp＞"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "coincome-new",
+          "sourceType": "point_site",
+          "title": "COINCOME",
+          "url": "https://cimcome.jp/campaigns"
+        }
+      ]
+    },
+    {
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "aliases": [
+        "Screw Cat:可愛いネコのスクリューパズルゲーム（Level100クリア）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "Spades - Classic Card Games",
+      "aliases": [
+        "Spades - Classic Card Games（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "Tidy Match 3D-Puzzle Game",
+      "aliases": [
+        "Tidy Match 3D-Puzzle Game（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "すみっコぐらし 農園つくるんです",
+      "aliases": [
+        "すみっコぐらし 農園つくるんです（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "ポケコロユニバース",
+      "aliases": [
+        "ポケコロユニバース（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう",
+      "aliases": [
+        "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "マージメイドカフェ",
+      "aliases": [
+        "マージメイドカフェ（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "モンスターバスケット",
+      "aliases": [
+        "モンスターバスケット（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "ラストアサイラム：プレイグ",
+      "aliases": [
+        "ラストアサイラム：プレイグ（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム",
+      "aliases": [
+        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できる",
+        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム（StepUp）"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    },
+    {
+      "game": "メメントモリ",
+      "aliases": [
+        "メメントモリ（StepUp）"
+      ],
+      "knownGame": true,
+      "score": 45,
+      "confidence": 1,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "既知ゲーム",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category"
+        }
+      ]
+    }
+  ]
 }
