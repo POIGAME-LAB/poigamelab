@@ -39,11 +39,14 @@ jobs:
         run: python scripts/evaluate_research_adoption.py
       - name: Adopt V29-approved games into production (API-free)
         run: python scripts/adopt_verified_games.py
+      - name: Audit Phase 3 production handoff (API-free, fail-closed)
+        run: python scripts/audit_phase3_pipeline.py
       - name: Commit discovery, research, and safe adoptions
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/research_results/ data/adoption_candidates.json data/adoption_status.json games.csv config/game_targets.json config/refresh_policy.json data/published_offers.csv
+          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/adoption_candidates.json data/adoption_status.json data/phase3_pipeline_audit.json games.csv config/game_targets.json config/refresh_policy.json data/published_offers.csv
+          if [ -d data/research_results ]; then git add data/research_results/; fi
           git diff --cached --quiet || git commit -m "chore: discover trending game candidates"
           git pull --rebase
           git push

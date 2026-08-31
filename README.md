@@ -60,3 +60,6 @@ Strong V26 trend candidates are deterministically promoted to `data/research_que
 
 ### PHASE 3 V30 production adoption
 `python scripts/adopt_verified_games.py` consumes only V29 `adoption_ready` decisions. It revalidates the quarantined collector result without API calls, adds the game to the catalog/target registry, and merges only strict verified offers into the canonical published CSV. Newly adopted games are intentionally added to the refresh policy with `enabled: false`; recurring unknown-game crawling is a separate controlled policy decision.
+
+### PHASE 3 V31 safety audit
+The trend workflow runs `scripts/audit_phase3_pipeline.py` after V30 adoption and before committing. The audit is API-free and fail-closed: inconsistent production state stops the workflow before Git writes are pushed. `data/research_results/` is staged only when present.

@@ -62,3 +62,9 @@
 - New games enter `refresh_policy.json` with scheduled refresh disabled, preventing an unknown-game API crawl from silently becoming a recurring cost.
 - Adoption is idempotent; game/offer duplicates are not created on reruns.
 - Workflow records `data/adoption_status.json` and commits production changes only after the final gate.
+
+## V31 — PHASE 3 Integration Safety Audit
+- Added an API-free, fail-closed audit after production adoption and before Git commit.
+- Blocks commits on duplicate games/targets/offer keys, orphan published games, invalid URLs, incomplete adoption registry state, enabled refresh for newly adopted games, or offer-count mismatch.
+- Made `data/research_results/` staging conditional so a no-research run cannot fail on a missing directory.
+- Added integration/negative-path tests; no live API calls are used by the audit.
