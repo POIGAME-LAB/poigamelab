@@ -4,7 +4,7 @@
 Safety invariant: this script never edits games.csv, offers.csv, or published_offers.csv.
 Direct first-party HTTP is preferred for stable official listing pages. Firecrawl is only a
 best-effort fallback for sources that cannot be read directly. Gemini only extracts game-name
-candidates; Python normalizes, deduplicates, scores, and writes a review queue.
+candidates; Python normalizes, deduplicates, scores, computes evidence confidence, and writes a review queue.
 """
 from __future__ import annotations
 import csv, json, os, re, sys
@@ -202,10 +202,10 @@ def score_candidates(extracted, items, known):
             if isinstance(i,int) and 0 <= i < len(items): idxs.append(i)
         if not idxs: continue
         key=name.lower()
-        row=merged.setdefault(key, {"game":name,"aliases":set(),"knownGame":False,"evidence":[],"confidence":0})
+        row=merged.setdefault(key, {"game":name,"aliases":set(),"knownGame":False,"evidence":[],"modelConfidence":0})
         row["aliases"].update(normalize_name(a) for a in (g.get("aliases") or []) if normalize_name(a))
         row["knownGame"] = bool(g.get("known_game")) or key in known_l
-        row["confidence"] = max(row["confidence"], int(g.get("confidence") or 0))
+        row["modelConfidence"] = max(row["modelConfidence"], max(0, min(100, int(g.get("confidence") or 0))))
         for i in idxs:
             ev=items[i]
             marker=(ev["sourceId"],ev["url"])
@@ -216,9 +216,17 @@ def score_candidates(extracted, items, known):
         unique_types=len({e["sourceType"] for e in row["evidence"]})
         mentions=len(row["evidence"])
         score=min(100, unique_sources*25 + unique_types*15 + min(mentions,5)*5)
+        # Promotion confidence is evidence-derived, not Gemini self-confidence. This preserves
+        # the architecture rule "Gemini reads, Python judges" and prevents a single source
+        # from becoming research-ready merely because the model reports high confidence.
+        evidence_confidence = 0 if unique_sources == 0 else (45 if unique_sources == 1 else min(100, 80 + (unique_sources - 2) * 10))
+        # Model confidence is never allowed to elevate a single-source candidate. Once Python
+        # has independently established 2+ sources, the model value may refine (not weaken)
+        # the evidence floor; the independent-source gate remains authoritative.
+        promotion_confidence = evidence_confidence if unique_sources < 2 else max(evidence_confidence, row["modelConfidence"])
         status="既知ゲーム" if row["knownGame"] else ("要確認" if score >= 30 else "保留")
         out.append({"game":row["game"],"aliases":sorted(row["aliases"]),"knownGame":row["knownGame"],
-                    "score":score,"confidence":row["confidence"],"mentionCount":mentions,
+                    "score":score,"confidence":promotion_confidence,"modelConfidence":row["modelConfidence"],"mentionCount":mentions,
                     "sourceCount":unique_sources,"sourceTypeCount":unique_types,"status":status,
                     "evidence":[{"sourceId":e["sourceId"],"sourceType":e["sourceType"],"title":e["title"],"url":e["url"]} for e in row["evidence"]]})
     return sorted(out,key=lambda x:(x["knownGame"],-x["score"],-x["confidence"],x["game"].lower()))

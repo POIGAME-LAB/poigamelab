@@ -72,3 +72,6 @@ Trend discovery keeps the strict V27 promotion thresholds. When a point-site sea
 
 ### PHASE 3 discovery resilience (V34)
 Stable official listing pages are fetched directly first (Warau / COINCOME). Firecrawl remains a fallback for sources that need it. A Firecrawl 402 therefore no longer forces all discovery sources to zero. Candidate promotion and production adoption thresholds remain unchanged.
+
+### V35 discovery safety
+PHASE 3 now has a third direct first-party point-site source (Moppy official poikatsu game editorial) that does not consume Firecrawl credits. Candidate `confidence` is evidence-derived in Python; Gemini's self-reported value is diagnostic only (`modelConfidence`). Research promotion still requires the existing score/confidence/independent-source gates.

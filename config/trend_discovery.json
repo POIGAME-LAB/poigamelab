@@ -39,6 +39,18 @@
       "firecrawlFallback": true
     },
     {
+      "id": "moppy-official-games",
+      "query": "ポイ活 ゲーム おすすめ 案件",
+      "includeDomains": [
+        "pc.moppy.jp"
+      ],
+      "sourceType": "point_site",
+      "directUrls": [
+        "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+      ],
+      "firecrawlFallback": false
+    },
+    {
       "id": "coincome-new",
       "query": "ゲーム アプリ 案件",
       "includeDomains": [
@@ -72,5 +84,6 @@
     "apiCalls": 0,
     "note": "V30 may add a verified game and its strict offers to production; scheduled refresh stays disabled until a controlled refresh policy is enabled."
   },
-  "retrievalStrategy": "direct first-party HTTP for stable official listing pages; Firecrawl best-effort fallback only"
+  "retrievalStrategy": "direct first-party HTTP for stable official listing/editorial pages; Firecrawl best-effort fallback only",
+  "confidenceStrategy": "deterministic evidence confidence; Gemini extracts names only and cannot promote a single-source candidate by confidence"
 }

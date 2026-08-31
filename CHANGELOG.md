@@ -86,3 +86,9 @@
 - Firecrawl is now best-effort fallback for discovery instead of a single point of failure.
 - Discovery can continue when Firecrawl is out of credits; strict promotion/adoption gates are unchanged.
 - Diagnostics now distinguish direct HTTP attempts from Firecrawl attempts.
+
+## V35 — Free-source coverage + deterministic discovery confidence
+- Added the official Moppy poikatsu game editorial page as a third direct, no-Firecrawl point-site discovery source.
+- Discovery confidence is now derived deterministically from independent evidence sources; Gemini confidence is retained only as diagnostic `modelConfidence`.
+- A single source cannot pass the existing 2-source research gate even if Gemini reports high confidence.
+- Existing V27 research thresholds are unchanged.
