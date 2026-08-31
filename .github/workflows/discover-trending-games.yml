@@ -26,11 +26,13 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIRECRAWL_CALL_LIMIT: "2"
         run: python scripts/discover_trending_games.py
+      - name: Promote strong candidates to research queue (API-free)
+        run: python scripts/promote_trend_candidates.py
       - name: Commit candidate-only outputs
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/trend_candidates.json data/trend_status.json
+          git add data/trend_candidates.json data/trend_status.json data/research_queue.json
           git diff --cached --quiet || git commit -m "chore: discover trending game candidates"
           git pull --rebase
           git push

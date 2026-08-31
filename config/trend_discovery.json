@@ -5,11 +5,44 @@
   "maxFirecrawlConcurrency": 2,
   "maxResultsPerQuery": 8,
   "queries": [
-    {"id":"x-poikatsu","query":"ポイ活 ゲーム 案件","includeDomains":["x.com"],"sourceType":"social"},
-    {"id":"warau-new","query":"ゲーム アプリ 新着 案件","includeDomains":["warau.jp"],"sourceType":"point_site"},
-    {"id":"chobirich-new","query":"ゲーム アプリ 案件","includeDomains":["chobirich.com"],"sourceType":"point_site"},
-    {"id":"coincome-new","query":"ゲーム アプリ 案件","includeDomains":["cimcome.jp"],"sourceType":"point_site"}
+    {
+      "id": "x-poikatsu",
+      "query": "ポイ活 ゲーム 案件",
+      "includeDomains": [
+        "x.com"
+      ],
+      "sourceType": "social"
+    },
+    {
+      "id": "warau-new",
+      "query": "ゲーム アプリ 新着 案件",
+      "includeDomains": [
+        "warau.jp"
+      ],
+      "sourceType": "point_site"
+    },
+    {
+      "id": "chobirich-new",
+      "query": "ゲーム アプリ 案件",
+      "includeDomains": [
+        "chobirich.com"
+      ],
+      "sourceType": "point_site"
+    },
+    {
+      "id": "coincome-new",
+      "query": "ゲーム アプリ 案件",
+      "includeDomains": [
+        "cimcome.jp"
+      ],
+      "sourceType": "point_site"
+    }
   ],
   "minimumScoreForReview": 30,
-  "scheduleJST": "毎日 07:07 頃（GitHub Actions cron: 22:07 UTC）"
+  "scheduleJST": "毎日 07:07 頃（GitHub Actions cron: 22:07 UTC）",
+  "minimumScoreForResearch": 60,
+  "minimumConfidenceForResearch": 70,
+  "minimumSourcesForResearch": 2,
+  "requirePointSiteEvidenceForResearch": true,
+  "researchPromotion": "deterministic/API-free; writes data/research_queue.json only"
 }

@@ -35,3 +35,10 @@
 - X + 登録ポイントサイト検索を候補ソース化し、Gemini抽出後にPythonで正規化・重複排除・複数ソーススコアリング。
 - 候補は `data/trend_candidates.json` / `data/trend_status.json` のみに保存し、ゲーム/案件の公開データは変更しない安全境界を固定。
 - GitHub Actions `Discover trending games` を毎日07:07頃(JST)に追加。既存Secretsを再利用。
+
+
+## V27 — PHASE3 research promotion
+- Added deterministic, API-free trend candidate promotion into `data/research_queue.json`.
+- Requires independent-source, confidence, score, and point-site-evidence gates.
+- Known games/aliases are blocked from promotion; publication and game target files remain untouched.
+- Trend workflow now commits the research queue alongside candidate-only outputs.

@@ -47,3 +47,7 @@ Python deterministic verifier → Publisher → `data/published_offers.csv`
 `Discover trending games` が毎日07:07頃(JST)に、X検索結果と登録ポイントサイトのゲーム案件検索から新規ゲーム名候補を収集します。Firecrawlは検索結果取得、Geminiはゲーム名候補の抽出だけを担当し、PythonがURL正規化・重複排除・複数ソースのスコアリングを行います。
 
 **安全境界:** V26は候補発見専用です。`games.csv`、`offers.csv`、`data/published_offers.csv` を自動変更しません。出力は `data/trend_candidates.json` と `data/trend_status.json` のみです。既知ゲームは新規候補から区別されます。
+
+
+## PHASE 3 V27 research promotion
+Strong V26 trend candidates are deterministically promoted to `data/research_queue.json` only when score/confidence/source-count thresholds pass and point-site evidence exists. This stage makes zero API calls and never edits publication data or `game_targets.json`.
