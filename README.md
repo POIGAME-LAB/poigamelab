@@ -66,3 +66,6 @@ The trend workflow runs `scripts/audit_phase3_pipeline.py` after V30 adoption an
 
 ### PHASE 3 V32: discovery evidence recovery
 Trend discovery keeps the strict V27 promotion thresholds. When a point-site search fails or returns zero results, V32 may scrape a configured stable first-party listing page once as recovery evidence. Healthy searches do not trigger the fallback, and failed recovery remains visible in diagnostics.
+
+### PHASE 3 V33: discovery failure diagnostics
+`data/trend_status.json` now includes a `diagnostics` array for each configured discovery source. It records search/fallback outcomes and safe bounded error summaries, so a `failedSources` count can be traced to the failing stage without changing discovery thresholds or adding API calls. Secret-like authorization/token/API-key text is redacted before status persistence.

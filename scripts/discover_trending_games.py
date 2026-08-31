@@ -139,6 +139,36 @@ def atomic_json(path, obj):
     tmp.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); tmp.replace(path)
 
 
+def _safe_error_text(value, limit=180):
+    text = re.sub(r"(?i)(bearer\s+)[A-Za-z0-9._~+\-/=]+", r"\1[REDACTED]", str(value or ""))
+    text = re.sub(r"(?i)(api[_-]?key|token|authorization)(\s*[:=]\s*)[^\s,;]+", r"\1\2[REDACTED]", text)
+    text = re.sub(r"[\r\n\t]+", " ", text).strip()
+    return text[:limit]
+
+
+def build_status(result):
+    diagnostics=[]
+    for raw in result.get("diagnostics") or []:
+        d={
+            "sourceId": raw.get("sourceId", ""),
+            "ok": bool(raw.get("ok")),
+            "searchResults": int(raw.get("results") or 0),
+            "fallbackAttempted": bool(raw.get("fallbackAttempted")),
+            "fallbackResults": int(raw.get("fallbackResults") or 0),
+        }
+        if raw.get("searchError"):
+            d["searchError"]=_safe_error_text(raw.get("searchError"))
+        if raw.get("fallbackErrors"):
+            d["fallbackErrors"]=[_safe_error_text(x) for x in raw.get("fallbackErrors") if _safe_error_text(x)]
+        diagnostics.append(d)
+    return {
+        "lastRun":result["generatedAt"],
+        **result["summary"],
+        "ok":result["summary"]["failedSources"]==0,
+        "diagnostics":diagnostics,
+    }
+
+
 def run(fc_key, gemini_key, config=None):
     cfg=config or load_json(CONFIG); items=[]; diagnostics=[]
     for q in cfg.get("queries",[]):
@@ -157,7 +187,8 @@ def run(fc_key, gemini_key, config=None):
 
         recovered = 0
         fallback_errors = []
-        if (search_error or count == 0) and q.get("fallbackUrls"):
+        fallback_attempted = bool((search_error or count == 0) and q.get("fallbackUrls"))
+        if fallback_attempted:
             for fallback_url in q.get("fallbackUrls") or []:
                 try:
                     row = firecrawl_scrape_seed(fc_key, q, fallback_url)
@@ -167,9 +198,9 @@ def run(fc_key, gemini_key, config=None):
                     fallback_errors.append(str(e)[:160])
 
         ok = count > 0 or recovered > 0
-        diag = {"sourceId":q["id"],"ok":ok,"results":count,"fallbackResults":recovered}
-        if search_error: diag["searchError"] = search_error
-        if fallback_errors: diag["fallbackErrors"] = fallback_errors
+        diag = {"sourceId":q["id"],"ok":ok,"results":count,"fallbackAttempted":fallback_attempted,"fallbackResults":recovered}
+        if search_error: diag["searchError"] = _safe_error_text(search_error)
+        if fallback_errors: diag["fallbackErrors"] = [_safe_error_text(x) for x in fallback_errors]
         diagnostics.append(diag)
     # exact result dedupe before Gemini
     uniq={}
@@ -188,7 +219,7 @@ def main():
     fc=os.getenv("FIRECRAWL_API_KEY","").strip(); gem=os.getenv("GEMINI_API_KEY","").strip()
     if not fc or not gem: raise SystemExit("FIRECRAWL_API_KEY and GEMINI_API_KEY are required")
     result=run(fc,gem); atomic_json(DATA/"trend_candidates.json",result)
-    atomic_json(DATA/"trend_status.json",{"lastRun":result["generatedAt"],**result["summary"],"ok":result["summary"]["failedSources"]==0})
+    atomic_json(DATA/"trend_status.json",build_status(result))
     print(json.dumps(result["summary"],ensure_ascii=False))
 
 if __name__ == "__main__": main()

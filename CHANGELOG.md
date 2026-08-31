@@ -74,3 +74,9 @@
 - Fallback runs only when needed, avoiding duplicate Firecrawl spend on healthy searches.
 - Diagnostics distinguish search failure from fallback recovery/failure.
 - Research thresholds are unchanged; V32 improves evidence collection instead of weakening the gate.
+
+## V33 — Discovery failure diagnostics
+- `data/trend_status.json` now retains per-source discovery diagnostics instead of only the aggregate `failedSources` count.
+- Records search result count, whether fallback was attempted, fallback result count, and bounded error summaries for each source.
+- Error text is flattened, length-limited, and redacts authorization/API-key/token-like values before persistence.
+- Discovery, scoring, promotion thresholds, and API call behavior are unchanged; V33 is diagnostic-only.
