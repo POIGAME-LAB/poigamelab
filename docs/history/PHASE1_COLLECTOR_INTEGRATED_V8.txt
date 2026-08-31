@@ -1,0 +1,12 @@
+POIGAME LAB PHASE 1 Collector Integrated V8
+
+今回の統合修正
+- Geminiがreward_yen=nullでも、公式ページ/抽出済み条件からPythonが安全に補完
+- ワラウは「累計xx,xxxpt」「最大xx,xxxpt」を報酬候補として決定論的に復元
+- 円表記が明示された場合のみ汎用補完
+- Geminiのconfidence/publishableは最終掲載判定に不使用
+- Python側で登録ドメイン・証拠URL・報酬・条件を検証
+- 既存のサイト別Gemini抽出、COINCOME OS別案件、詳細追跡を維持
+
+実行
+python3 scripts/firecrawl_township_probe.py

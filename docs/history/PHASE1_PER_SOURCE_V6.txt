@@ -1,0 +1,8 @@
+PHASE 1 V6 — サイト別抽出
+
+- 23候補をGeminiへ一括投入する方式を廃止
+- モッピー / ワラウ / ちょびリッチ / COINCOME ごとに抽出
+- known_official_probe を最優先
+- 同一URL候補をAI投入前に重複除去
+- COINCOME等がプロンプト末尾で切り捨てられる問題を解消
+- Geminiは抽出のみ、掲載判定はV5同様Pythonの決定ルール

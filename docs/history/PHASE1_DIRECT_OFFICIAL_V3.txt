@@ -1,0 +1,7 @@
+PHASE 1-C: 公式案件ページ直接探索 V3
+
+- ワラウ成功ルートを維持
+- COINCOMEの公開公式Townshipページを直接Firecrawlで再取得
+- 登録ドメイン検索をTownship/タウンシップ両表記 + StepUpに強化
+- known_pages診断を追加
+- 金額はURLに固定せず、毎回取得本文からGeminiが抽出

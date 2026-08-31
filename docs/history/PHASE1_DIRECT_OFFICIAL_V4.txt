@@ -1,0 +1,6 @@
+PHASE 1 DIRECT OFFICIAL V4
+- Firecrawl 429/5xx/timeout retry (max 3)
+- Domain searchで見つけたTownship公式URLを再スクレイプして一次情報として検証
+- 再スクレイプが一時失敗しても検索取得済み本文は候補として保持
+- diagnostics.search_verified を追加
+- 既存のワラウ/COINCOME/Offerwall処理は維持

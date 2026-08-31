@@ -1,0 +1,4 @@
+site,name,officialUrl,domain,collectionMode,enabled,note
+moppy,モッピー,https://moppy.jp/,moppy.jp,public-web,true,公開ページを検索して案件候補を収集
+coincome,COINCOME,https://cimcome.jp/,cimcome.jp,public-web,true,公開ページを検索して案件候補を収集
+mercari,メルカリ ポイントミッション,https://help.jp.mercari.com/guide/articles/1888/,mercari.com,app-assisted,true,案件一覧はアプリ内中心のため自動取得候補＋目視確認

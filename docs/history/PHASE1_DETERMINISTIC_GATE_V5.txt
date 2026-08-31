@@ -1,0 +1,5 @@
+PHASE 1 V5
+- Gemini confidence/publishableを自動掲載判定から完全に除外
+- Geminiは案件本文の構造化だけ担当
+- Pythonが登録ドメイン、URL、証拠URL、報酬値、条件を決定論的に検査
+- 同じ入力なら同じ掲載判定になる

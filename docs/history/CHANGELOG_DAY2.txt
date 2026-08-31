@@ -1,0 +1,43 @@
+POIGAME LAB — DAY 2 CHECKPOINT (2026-08-30)
+
+確認済み・実装済み:
+- おすすめ順 / 報酬が高い順 / 簡単な順 / 新着 の4並び替え
+- games.csv の addedDate を読み込み、新着順に使用
+- トップページの最高還元案件リンク
+- 詳細ページの案件リンク
+- URL未登録時は「準備中」表示
+- games.csv / offers.csv のキャッシュ無効化
+- 詳細ページに難易度表示
+- 比較表に更新日・締切・リンク列
+- 締切未登録時は「未定」表示
+- offers.csv の全行を10列(url列含む)に統一
+
+次の開発はこのチェックポイントを基準に進める。
+
+BATCH3 見た目アップデート:
+- トップに紫の「今日のポイゲーム相場」大型ダッシュボード追加
+- 掲載ゲーム数を自動集計
+- 全案件の最高還元額を自動集計
+- データ最終更新日を自動集計
+- 上位3カードに1位/2位/3位バッジ
+- CSSの重複記述を修正
+
+
+[BATCH 3: DATA PIPELINE]
+- 「今日の相場」を「最新データサマリー」に変更
+- sources.csv: 公式サイトURLと取得方式を追加
+- trend_sources.csv: 話題ゲーム収集元を追加
+- scripts/collect_data.py: 案件/攻略/話題候補の自動収集
+- .github/workflows/collect-data.yml: 6時間ごとの自動収集
+- data-status.html: 収集状況ページ追加
+- offers.csv: sourceUrl / verified 追加。既存開発データは未確認扱い
+- DATA_PIPELINE.md: 運用手順追加
+
+[PHASE1 Township experiment]
+- scripts/phase1_township.py added
+- Tavily -> Gemini structured verification -> JSON result
+- Hard auto-publish safety gate added (>=90 + URL/evidence/reward/condition)
+- PHASE1_START_HERE.md added
+- .env remains excluded from Git
+
+2026-08-30 PHASE1 FIX: Gemini呼び出しを新規プロジェクト推奨のInteractions API + gemini-3.7-flashへ更新。

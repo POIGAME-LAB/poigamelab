@@ -1,0 +1,98 @@
+{
+  "target": {
+    "game": "Township",
+    "aliases": [
+      "Township",
+      "タウンシップ"
+    ]
+  },
+  "sources": [
+    {
+      "id": "moppy",
+      "name": "モッピー",
+      "start_url": "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1",
+      "search_domains": [
+        "moppy.jp",
+        "pc.moppy.jp"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "known_target_urls": [],
+      "prefer_known_pages": false
+    },
+    {
+      "id": "warau",
+      "name": "ワラウ",
+      "start_url": "https://www.warau.jp/sp/point/category/1/77/",
+      "search_domains": [
+        "warau.jp",
+        "www.warau.jp"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "known_target_urls": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643"
+      ],
+      "prefer_known_pages": true,
+      "known_pages_sufficient": 2
+    },
+    {
+      "id": "chobirich",
+      "name": "ちょびリッチ",
+      "start_url": "https://www.chobirich.com/smartphone?pos=app",
+      "search_domains": [
+        "chobirich.com",
+        "www.chobirich.com"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "known_target_urls": [
+        "https://www.chobirich.com/ad_details/1894712"
+      ],
+      "prefer_known_pages": true,
+      "provider_hub_labels": [
+        "アプリランド"
+      ],
+      "provider_url_hints": [
+        "appland",
+        "skyflag",
+        "app-land"
+      ],
+      "search_terms": [
+        "Township",
+        "タウンシップ",
+        "アプリランド"
+      ],
+      "known_pages_sufficient": 1
+    },
+    {
+      "id": "coincome",
+      "name": "COINCOME",
+      "start_url": "https://cimcome.jp/",
+      "search_domains": [
+        "cimcome.jp"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "known_target_urls": [
+        "https://cimcome.jp/campaigns/details/9857",
+        "https://cimcome.jp/campaigns/details/9856"
+      ],
+      "prefer_known_pages": true,
+      "known_pages_sufficient": 2
+    }
+  ],
+  "offerwall_domains_discovered": [
+    "ow.skyflag.jp",
+    "appdriver.jp",
+    "ow.z.mobu.jp",
+    "sdk.tyrads.com",
+    "cdn.mychips.io",
+    "ow-gf-rewards.com",
+    "wall.smaad.net",
+    "chobirich.playtimeweb.com",
+    "offerwall.ayet.io"
+  ],
+  "privacy_note": "個人識別子付きURLは保存しない。Offerwallはドメインだけを登録し、個別導線は後続フェーズで安全に自動発見する。"
+}

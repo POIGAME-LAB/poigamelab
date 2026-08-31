@@ -1,0 +1,11 @@
+PHASE 1-B Offerwall自動探索 V2
+
+重要修正:
+- 前版はconfidence修正だけが反映され、Offerwall巡回コードが実ファイルに入っていませんでした。
+- V2では親ページのlinksから既知Offerwallドメインを自動検出してFirecrawl scrapeします。
+- diagnosticsに必ず offerwalls: [] を出します。
+- セッション/個人識別子入りURLはリクエスト時だけ使い、保存時はquery/fragmentを削除します。
+- confidence 0..1 / 0..100 を0..100へ正規化します。
+
+成功確認ポイント:
+result.json の diagnostics 各サイトに offerwalls が存在すること。

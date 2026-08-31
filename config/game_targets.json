@@ -1,0 +1,51 @@
+{
+  "games": [
+    {
+      "game": "Township",
+      "aliases": [
+        "Township",
+        "タウンシップ"
+      ]
+    },
+    {
+      "game": "きのこ伝説",
+      "aliases": [
+        "きのこ伝説",
+        "キノコ伝説"
+      ],
+      "known_urls_by_source": {
+        "chobirich": [
+          "https://www.chobirich.com/ad_details/1883822",
+          "https://www.chobirich.com/ad_details/1896200",
+          "https://www.chobirich.com/ad_details/1896275"
+        ],
+        "coincome": [
+          "https://cimcome.jp/campaigns/details/10037",
+          "https://cimcome.jp/campaigns/details/10038"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816"
+        ]
+      },
+      "partial_fast_path_sources": [
+        "warau",
+        "coincome"
+      ]
+    },
+    {
+      "game": "メメントモリ",
+      "aliases": [
+        "メメントモリ",
+        "MementoMori",
+        "Memento Mori"
+      ]
+    },
+    {
+      "game": "ワーキングヒーロー",
+      "aliases": [
+        "ワーキングヒーロー",
+        "Working Hero"
+      ]
+    }
+  ]
+}

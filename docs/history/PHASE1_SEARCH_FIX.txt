@@ -1,0 +1,15 @@
+PHASE 1 Township Search Fix - 2026-08-30
+
+原因:
+前版のTavily検索は「Township」という検索語を含めても、検索結果本文がTownshipではない一般的なポイ活記事を多く返していた。
+Geminiは正しく「Townshipの根拠がない」と判断したため、0件になった。
+
+修正:
+- Townshipが実際にタイトル/本文/raw_contentに存在する結果だけ残す
+- Tavily raw_contentを取得してAIへ渡す
+- moppy.jp / cimcome.jp / mercari.com を個別ドメイン検索
+- 完全一致寄りのTownship検索を追加
+- Township以外のゲーム金額を混同しないようGemini指示を強化
+
+実行:
+python3 scripts/phase1_township.py

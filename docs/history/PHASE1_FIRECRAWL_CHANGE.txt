@@ -1,0 +1,10 @@
+2026-08-31 PHASE 1 Firecrawl Probe
+
+- Tavily中心のTownship探索をいったん停止。
+- Firecrawl v2 /scrape + /search を使用する独立プローブを追加。
+- /search は登録済みポイントサイトのドメインに限定。
+- モバイル向けページを考慮して mobile=true + JPロケーションで取得。
+- モッピー / ワラウ / ちょびリッチ / COINCOME を初期監視対象に登録。
+- ユーザー固有の user_id / identifier / digest / click_id / suid を含むURLは保存しない。
+- Skyflag / AppDriver / Zucks / TyrAds / myChips / GF Rewards / SmaAd / Playtime Web / ayeT はドメイン名のみ記録。
+- Firecrawl本文が取得できた場合のみGeminiへ渡し、登録ドメイン・金額・条件・証拠URLが揃うまで自動掲載しない。

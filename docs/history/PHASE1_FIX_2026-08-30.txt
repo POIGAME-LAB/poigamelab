@@ -1,0 +1,7 @@
+PHASE 1 Gemini修正（2026-08-30）
+- Gemini候補を現行GAモデルへ更新: 3.5 Flash-Lite -> 3.6 Flash -> 3.7 Flash
+- 各モデル最大2回。429/5xx/timeout時は再試行して次モデルへ切替
+- Gemini HTTP timeoutを180秒へ延長
+- Gemini失敗時もTavily候補JSONを保持
+- JSONコードフェンス除去/抽出の正規表現を修正
+- .envはZIPに含めない

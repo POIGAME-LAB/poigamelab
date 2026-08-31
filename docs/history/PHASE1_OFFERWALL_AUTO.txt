@@ -1,0 +1,5 @@
+POIGAME LAB PHASE 1-B — Offerwall自動探索
+
+親ポイントサイトからOfferwallリンクを自動発見し、Townshipを探索。個人識別子付きURLは保存しません。confidence 0..1/0..100を正規化。
+
+実行: python3 scripts/firecrawl_township_probe.py

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ゲーム詳細 | POIGAME LAB</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      background: #f8f6ff;
+      color: #2d2440;
+    }
+
+    .detail-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 24px 80px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 25px;
+      color: #7047ff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .game-header {
+      padding: 30px;
+      border-radius: 24px;
+      background: #ffffff;
+      box-shadow: 0 10px 35px rgba(73, 40, 145, 0.10);
+    }
+
+    .game-header h1 {
+      margin: 0 0 8px;
+      color: #28125f;
+      font-size: 34px;
+    }
+
+    .game-header p {
+      margin: 0;
+      color: #776e89;
+    }
+
+    .best-offer {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 18px;
+      background: #f4efff;
+    }
+
+    .best-offer span {
+      display: block;
+      margin-bottom: 5px;
+      color: #756a89;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .best-offer strong {
+      color: #7047ff;
+      font-size: 30px;
+    }
+
+    .section {
+      margin-top: 30px;
+      padding: 28px;
+      border-radius: 24px;
+      background: #ffffff;
+      box-shadow: 0 10px 35px rgba(73, 40, 145, 0.08);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #28125f;
+      font-size: 24px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    .section {
+      overflow-x: auto;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #eee9fa;
+      text-align: left;
+    }
+
+    .comparison-table th {
+      color: #675c78;
+      font-size: 13px;
+    }
+
+    .comparison-table td {
+      font-size: 14px;
+    }
+
+    .best-row {
+      background: #fff9dc;
+      font-weight: 700;
+    }
+
+    .empty {
+      color: #aaa3b5;
+    }
+
+    @media (max-width: 700px) {
+      .detail-page {
+        padding: 30px 15px 60px;
+      }
+
+      .game-header,
+      .section {
+        padding: 20px;
+      }
+
+      .comparison-table {
+        font-size: 12px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 10px 7px;
+      }
+    }
+
+    .offer-button {
+  display: inline-block;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: #7047ff;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.offer-button:hover {
+  opacity: 0.9;
+}
+
+.coming-soon {
+  color: #aaa3b5;
+  font-size: 12px;
+}
+
+.best-label {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #ffd83d;
+  color: #321568;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.updated-text {
+  margin-top: 5px;
+  color: #9a93aa;
+  font-size: 10px;
+}
+
+.inactive-row {
+  opacity: 0.6;
+}
+
+.inactive-row td {
+  background: #fbfaff;
+}
+
+.offer-link {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #ffd84d;
+  color: #2b174f;
+  font-weight: bold;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.offer-link:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+  </style>
+</head>
+
+<body>
+
+  <main class="detail-page">
+
+    <a href="index.html" class="back-link">
+      ← ゲーム一覧へ戻る
+    </a>
+
+    <section class="game-header">
+
+      <h1 id="gameName">
+        ゲーム名
+      </h1>
+
+      <p id="gameCondition">
+        条件を読み込み中
+      </p>
+
+      <div class="best-offer">
+        <span>最高還元</span>
+
+        <strong id="bestReward">
+          --- 円
+        </strong>
+
+        <p id="bestSite">
+          ポイントサイト：調査中
+        </p>
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2>
+        📊 ポイントサイト比較
+      </h2>
+
+      <table class="comparison-table">
+
+        <thead>
+            <tr>
+                <th>ポイントサイト</th>
+                <th>還元額</th>
+                <th>条件</th>
+                <th>対応OS</th>
+                <th>締切</th>
+                <th>更新日</th>
+                <th>リンク</th>
+              </tr>
+        </thead>
+
+        <tbody id="offerTableBody">
+        </tbody>
+
+      </table>
+
+    </section>
+
+    <section class="section">
+
+      <h2>
+        🎮 ゲーム概要
+      </h2>
+
+      <p id="gameOverview">
+        準備中
+      </p>
+
+    </section>
+
+    <section class="section">
+
+      <h2>
+        ⏱ 達成目安
+      </h2>
+
+      <p id="gameDays">
+        調査中
+      </p>
+
+    </section>
+
+    <section class="section">
+
+      <h2>
+        ⭐ 難易度
+      </h2>
+    
+      <p id="gameDifficulty">
+        調査中
+      </p>
+    
+    </section>
+
+    <section class="section">
+
+      <h2>
+        💡 攻略・達成のコツ
+      </h2>
+
+      <p>
+        攻略情報は準備中です。
+      </p>
+
+    </section>
+
+  </main>
+
+  <script src="games.js"></script>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const gameName = params.get("game");
+  
+    async function loadGameDetail() {
+      try {
+        // ゲーム基本情報を読み込む
+        const gamesResponse = await fetch("games.csv", {
+  cache: "no-store"
+});
+        const gamesText = await gamesResponse.text();
+  
+        const gameLines = gamesText.trim().split(/\r?\n/);
+        const gameDataLines = gameLines.slice(1);
+  
+        let game = null;
+  
+        gameDataLines.forEach((line) => {
+          if (!line.trim()) return;
+  
+          const [
+            name,
+            image,
+            condition,
+            days,
+            difficulty,
+            overview,
+            tips,
+            featured,
+            addedDate
+          ] = line.split(",");
+  
+          if (name.trim() === gameName) {
+            game = {
+              name: name.trim(),
+              image: image.trim(),
+              condition: condition.trim() || "指定条件クリア",
+              days: days.trim() || "調査中",
+              difficulty: difficulty.trim() || "調査中",
+              overview: overview.trim(),
+              tips: tips.trim(),
+              featured: featured.trim().toLowerCase() === "true",
+              addedDate: addedDate ? addedDate.trim() : "",
+              offers: []
+            };
+          }
+        });
+  
+        // ゲームが見つからなかった場合
+        if (!game) {
+          document.body.innerHTML = `
+            <main class="detail-page">
+              <h1>ゲームが見つかりませんでした。</h1>
+              <a href="index.html">← 一覧へ戻る</a>
+            </main>
+          `;
+          return;
+        }
+  
+        // 案件情報を読み込む
+        const offersResponse = await fetch("offers.csv", {
+  cache: "no-store"
+});
+        const offersText = await offersResponse.text();
+  
+        const offerLines = offersText.trim().split(/\r?\n/);
+        const offerDataLines = offerLines.slice(1);
+  
+        offerDataLines.forEach((line) => {
+          if (!line.trim()) return;
+  
+          const [
+  offerGameName,
+  site,
+  provider,
+  reward,
+  condition,
+  platform,
+  type,
+  deadline,
+  updatedAt,
+  url,
+  sourceUrl,
+  verified
+] = line.split(",");
+
+          if (offerGameName.trim() !== game.name) return;
+  
+          game.offers.push({
+  site: site.trim(),
+  provider: provider.trim(),
+  reward: Number(reward),
+  condition: condition.trim(),
+  platform: platform
+    ? platform.split("|").map((item) => item.trim())
+    : [],
+  type: type.trim(),
+  deadline: deadline.trim(),
+  updatedAt: updatedAt.trim(),
+  url: url ? url.trim() : "",
+  sourceUrl: sourceUrl ? sourceUrl.trim() : "",
+  verified: verified ? verified.trim().toLowerCase() === "true" : false
+});
+
+});
+  
+        // ページタイトル
+        document.title = `${game.name} | POIGAME LAB`;
+  
+        // 基本情報
+        document.getElementById("gameName").textContent = game.name;
+  
+        document.getElementById("gameCondition").textContent =
+          game.condition;
+  
+          const gameDays =
+  document.getElementById("gameDays");
+
+if (gameDays) {
+  gameDays.textContent = game.days;
+}
+
+const gameDifficulty =
+  document.getElementById("gameDifficulty");
+
+if (gameDifficulty) {
+  gameDifficulty.textContent = game.difficulty;
+}
+  
+        // ゲーム概要
+        const overview =
+          document.getElementById("gameOverview");
+  
+        if (overview) {
+          overview.textContent =
+            game.overview || "ゲーム概要は準備中です。";
+        }
+  
+        // 攻略情報
+        const tips =
+          document.querySelector(".section:last-of-type p");
+  
+        if (tips) {
+          tips.textContent =
+            game.tips || "攻略情報は準備中です。";
+        }
+  
+        // 案件比較表
+        const tableBody =
+          document.querySelector("tbody");
+  
+        if (tableBody) {
+          tableBody.innerHTML = "";
+  
+          const sortedOffers = [...game.offers].sort(
+            (a, b) => b.reward - a.reward
+          );
+          if (sortedOffers.length > 0) {
+  const bestOffer = sortedOffers[0];
+
+  document.getElementById("bestReward").textContent =
+    `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（未確認）"}`;
+
+  document.getElementById("bestSite").textContent =
+    `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
+}
+
+  
+          sortedOffers.forEach((offer) => {
+            const row =
+              document.createElement("tr");
+  
+            const siteName =
+              pointSites[offer.site] || offer.site;
+  
+              row.innerHTML = `
+  <td>${siteName}</td>
+  <td>${offer.reward.toLocaleString()}円${offer.verified ? "" : "<br><small>未確認</small>"}</td>
+  <td>${offer.condition}</td>
+  <td>${offer.platform.join(" / ")}</td>
+  <td>${offer.deadline || "未定"}</td>
+  <td>${offer.updatedAt || "-"}</td>
+  <td>
+    ${
+      offer.url
+  ? `<a
+       href="${offer.url}"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="offer-link"
+     >
+       案件を見る
+     </a>`
+  : `準備中`
+    }
+  </td>
+`;
+  
+            tableBody.appendChild(row);
+          });
+  
+          // 案件がない場合
+          if (sortedOffers.length === 0) {
+            const row =
+              document.createElement("tr");
+  
+            row.innerHTML = `
+              <td colspan="7">
+                現在確認できる案件はありません。
+              </td>
+            `;
+  
+            tableBody.appendChild(row);
+          }
+        }
+  
+      } catch (error) {
+        console.error(
+          "ゲーム詳細の読み込みに失敗しました",
+          error
+        );
+      }
+    }
+  
+    loadGameDetail();
+  </script>
+
+</body>
+</html>

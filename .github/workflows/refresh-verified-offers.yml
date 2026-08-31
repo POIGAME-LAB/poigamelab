@@ -1,0 +1,47 @@
+name: Refresh verified offers
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 21 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: poigamelab-verified-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh verified offers
+        id: refresh
+        continue-on-error: true
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/auto_refresh.py
+
+      - name: Commit safe outputs
+        if: always()
+        run: |
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published_offers.csv data/exception_queue.json data/refresh_status.json
+          git diff --cached --quiet || git commit -m "chore: refresh verified offers"
+          git pull --rebase
+          git push
+
+      - name: Surface refresh failure
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo "Automatic refresh failed or was incomplete. Previous verified rows were preserved."
+          exit 1

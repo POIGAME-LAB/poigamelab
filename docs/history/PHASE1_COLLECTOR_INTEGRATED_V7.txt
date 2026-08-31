@@ -1,0 +1,8 @@
+PHASE 1 Collector Integrated V7
+- 4サイトを1回で収集
+- 検索結果から詳細/アプリ/案件リンクを1段自動追跡
+- 既知公式ページ、サイト内検索、再スクレイプ、Offerwall探索を統合
+- OS違い/URL違い/報酬違いを別案件として抽出
+- Geminiは抽出のみ、掲載可否はPython決定論ゲート
+- Firecrawl 429/5xxは既存の自動リトライ
+- 個人識別子付きOfferwall URLは保存しない
