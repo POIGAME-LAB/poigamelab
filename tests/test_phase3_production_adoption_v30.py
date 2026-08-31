@@ -5,7 +5,7 @@ import adopt_verified_games as a
 REQ=['registered_domain','first_party_registered_source','url_present','evidence_present','evidence_domains_registered','evidence_same_offer_identity','exact_identity_candidate_present','reward_valid','reward_consistent','condition_present']
 def offer(site,url,platform='iOS'):
  return {'site':site,'url':url,'evidence_urls':[url],'platform':platform,'reward_yen':1000,'condition':'達成','deadline':'30日','registered_source':site,'auto_publish_ready':True,'deterministic_checks':{k:True for k in REQ}}
-def setup(td):
+def make_fixture(td):
  td=Path(td); (td/'results').mkdir();
  (td/'games.csv').write_text('name,image,condition,days,difficulty,overview,tips,featured,addedDate\nTownship,,指定条件クリア,調査中,調査中,,,true,2026-08-29\n')
  (td/'targets.json').write_text(json.dumps({'games':[{'game':'Township','aliases':['Township']}]}))
@@ -21,7 +21,7 @@ class T(unittest.TestCase):
   return a.run(td/'adopt.json',td/'results',td/'games.csv',td/'targets.json',td/'refresh.json',td/'published.csv',td/'status.json',td/'cfg.json')
  def test_adopts_strict_game_and_offers(self):
   with tempfile.TemporaryDirectory() as x:
-   td=setup(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
+   td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
    out=self.runx(td); self.assertEqual(out['adopted'],1)
    self.assertIn('新作ゲーム',(td/'games.csv').read_text()); self.assertIn('新作ゲーム',(td/'targets.json').read_text())
    rows=list(csv.DictReader((td/'published.csv').open())); self.assertEqual(len(rows),2)
@@ -29,17 +29,17 @@ class T(unittest.TestCase):
    self.assertEqual(json.loads((td/'adopt.json').read_text())['items'][0]['status'],'adopted')
  def test_idempotent_no_duplicate_game_or_offer(self):
   with tempfile.TemporaryDirectory() as x:
-   td=setup(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
+   td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
    self.runx(td); self.runx(td)
    self.assertEqual((td/'games.csv').read_text().count('新作ゲーム'),1); self.assertEqual(len(list(csv.DictReader((td/'published.csv').open()))),2)
  def test_revalidation_blocks_tampered_result(self):
   with tempfile.TemporaryDirectory() as x:
-   td=setup(x); p=payload(); p['collectorResult']['verified']['offers'][0]['deterministic_checks']['reward_consistent']=False
+   td=make_fixture(x); p=payload(); p['collectorResult']['verified']['offers'][0]['deterministic_checks']['reward_consistent']=False
    (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(p))
    out=self.runx(td); self.assertEqual(out['adopted'],0); self.assertNotIn('新作ゲーム',(td/'games.csv').read_text())
  def test_non_ready_never_adopts(self):
   with tempfile.TemporaryDirectory() as x:
-   td=setup(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':False,'status':'hold'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
+   td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':False,'status':'hold'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
    self.assertEqual(self.runx(td)['adopted'],0)
  def test_workflow_orders_gate_before_adoption_and_commits_production(self):
   s=(ROOT/'.github/workflows/discover-trending-games.yml').read_text(); self.assertLess(s.index('evaluate_research_adoption.py'),s.index('adopt_verified_games.py'))
