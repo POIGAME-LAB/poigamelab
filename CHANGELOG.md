@@ -98,3 +98,9 @@
 - Direct listing URLs now retain only allowlisted public selector query parameters, preventing distinct configured listing pages from collapsing during pre-Gemini deduplication while dropping tracking/session-like parameters.
 - Added deterministic conservative game identity normalization for platform/provider decorations and trailing StepUp markers only.
 - Split Gemini rows such as `ロイヤルマッチ（StepUp）` and `ロイヤルマッチ` can now merge only when their deterministic identity matches; V27 score/confidence/source-count thresholds remain unchanged.
+
+## V37 - Long listing extraction coverage
+- Replaced silent 5,000-character extraction truncation with bounded long-page chunking.
+- Preserves source/url identity across chunks, so repeated chunks from one page never count as independent sources.
+- Batches Gemini extraction with hard caps on chunk count and batch count to bound API cost.
+- Keeps V27 research thresholds unchanged and preserves Firecrawl 402 degraded-mode behavior.

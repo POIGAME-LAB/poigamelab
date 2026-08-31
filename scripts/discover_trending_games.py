@@ -20,6 +20,11 @@ CONFIG = ROOT / "config" / "trend_discovery.json"
 NOW = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
 DIRECT_TIMEOUT_SECONDS = 15
 DIRECT_MAX_BYTES = 900_000
+DEFAULT_EXTRACTION_CHUNK_CHARS = 4500
+DEFAULT_EXTRACTION_CHUNK_OVERLAP = 300
+DEFAULT_MAX_CHUNKS_PER_RESULT = 6
+DEFAULT_MAX_EXTRACTION_BATCH_CHARS = 18_000
+DEFAULT_MAX_EXTRACTION_BATCHES = 6
 
 sys.path.insert(0, str(ROOT / "scripts"))
 from firecrawl_township_probe import firecrawl_post, gemini_call  # noqa: E402
@@ -211,12 +216,81 @@ def firecrawl_search(fc_key, item, limit):
     return data.get("web", []) if isinstance(data, dict) else []
 
 
-def extract_names(gemini_key, items, known):
+def _chunk_text(text, chunk_chars=DEFAULT_EXTRACTION_CHUNK_CHARS, overlap=DEFAULT_EXTRACTION_CHUNK_OVERLAP, max_chunks=DEFAULT_MAX_CHUNKS_PER_RESULT):
+    """Split long listing text on readable boundaries without silently discarding the tail."""
+    text = str(text or "").strip()
+    if not text:
+        return []
+    chunk_chars = max(1000, int(chunk_chars or DEFAULT_EXTRACTION_CHUNK_CHARS))
+    overlap = max(0, min(int(overlap or 0), chunk_chars // 3))
+    max_chunks = max(1, int(max_chunks or DEFAULT_MAX_CHUNKS_PER_RESULT))
+    if len(text) <= chunk_chars:
+        return [text]
+    chunks=[]; start=0
+    while start < len(text) and len(chunks) < max_chunks:
+        target=min(len(text), start + chunk_chars)
+        end=target
+        if target < len(text):
+            floor=start + max(1, chunk_chars // 2)
+            candidates=[text.rfind("\n", floor, target), text.rfind("。", floor, target), text.rfind(" ", floor, target)]
+            boundary=max(candidates)
+            if boundary > start:
+                end=boundary + 1
+        piece=text[start:end].strip()
+        if piece:
+            chunks.append(piece)
+        if end >= len(text):
+            break
+        next_start=max(start + 1, end - overlap)
+        if next_start <= start:
+            next_start=end
+        start=next_start
+    return chunks
+
+
+def prepare_extraction_items(items, cfg=None):
+    """Create bounded extraction units while preserving parent source/url identity."""
+    cfg=cfg or {}
+    chunk_chars=int(cfg.get("extractionChunkChars", DEFAULT_EXTRACTION_CHUNK_CHARS))
+    overlap=int(cfg.get("extractionChunkOverlap", DEFAULT_EXTRACTION_CHUNK_OVERLAP))
+    max_chunks=int(cfg.get("maxChunksPerResult", DEFAULT_MAX_CHUNKS_PER_RESULT))
+    units=[]
+    for parent_index, x in enumerate(items):
+        chunks=_chunk_text(x.get("text", ""), chunk_chars, overlap, max_chunks)
+        for chunk_index, text in enumerate(chunks):
+            row=dict(x)
+            row["text"]=text
+            row["parentIndex"]=parent_index
+            row["chunkIndex"]=chunk_index
+            row["chunkCount"]=len(chunks)
+            row["extractionBatchChars"]=int(cfg.get("maxExtractionBatchChars", DEFAULT_MAX_EXTRACTION_BATCH_CHARS))
+            row["extractionBatchLimit"]=int(cfg.get("maxExtractionBatches", DEFAULT_MAX_EXTRACTION_BATCHES))
+            units.append(row)
+    return units
+
+
+def _extraction_batches(items, max_chars=DEFAULT_MAX_EXTRACTION_BATCH_CHARS, max_batches=DEFAULT_MAX_EXTRACTION_BATCHES):
+    max_chars=max(4000, int(max_chars or DEFAULT_MAX_EXTRACTION_BATCH_CHARS))
+    max_batches=max(1, int(max_batches or DEFAULT_MAX_EXTRACTION_BATCHES))
+    batches=[]; current=[]; size=0
+    for item in items:
+        estimated=len(item.get("text", "")) + len(item.get("title", "")) + len(item.get("description", "")) + 300
+        if current and size + estimated > max_chars:
+            batches.append(current); current=[]; size=0
+            if len(batches) >= max_batches:
+                break
+        current.append(item); size += estimated
+    if current and len(batches) < max_batches:
+        batches.append(current)
+    return batches
+
+
+def _extract_names_batch(gemini_key, items, known):
     compact=[]
     for x in items:
         compact.append({"sourceId":x["sourceId"], "sourceType":x["sourceType"],
                         "title":x["title"][:300], "description":x["description"][:500],
-                        "url":x["url"], "text":x["text"][:5000]})
+                        "url":x["url"], "text":x["text"]})
     prompt = f'''あなたはPOIGAME LABの「新規ゲーム候補名抽出器」です。検索結果から、ポイ活のゲーム案件として明確に言及されるゲーム名だけを抽出してください。
 既知ゲーム: {json.dumps(known, ensure_ascii=False)}
 厳守:
@@ -230,6 +304,26 @@ def extract_names(gemini_key, items, known):
 results={json.dumps(compact, ensure_ascii=False)}'''
     out = gemini_call(gemini_key, os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"), prompt)
     return out.get("games", []) if isinstance(out, dict) else []
+
+
+def extract_names(gemini_key, items, known, cfg=None):
+    """Extract from bounded batches and remap batch-local evidence indexes to global units."""
+    cfg=cfg or {}
+    first=items[0] if items else {}
+    batch_chars=cfg.get("maxExtractionBatchChars", first.get("extractionBatchChars", DEFAULT_MAX_EXTRACTION_BATCH_CHARS))
+    batch_limit=cfg.get("maxExtractionBatches", first.get("extractionBatchLimit", DEFAULT_MAX_EXTRACTION_BATCHES))
+    batches=_extraction_batches(items, batch_chars, batch_limit)
+    extracted=[]; offset=0
+    for batch in batches:
+        rows=_extract_names_batch(gemini_key, batch, known)
+        for row in rows:
+            clone=dict(row)
+            clone["evidence_indexes"]=[offset+i for i in (row.get("evidence_indexes") or [])
+                                       if isinstance(i,int) and 0 <= i < len(batch)]
+            if clone["evidence_indexes"]:
+                extracted.append(clone)
+        offset += len(batch)
+    return extracted
 
 
 def score_candidates(extracted, items, known):
@@ -375,8 +469,9 @@ def run(fc_key, gemini_key, config=None):
     uniq={}
     for x in items: uniq[(x["sourceId"], x["url"])]=x
     items=list(uniq.values()); known=known_games()
-    extracted=extract_names(gemini_key,items,known) if items else []
-    candidates=score_candidates(extracted,items,known)
+    extraction_items=prepare_extraction_items(items,cfg)
+    extracted=extract_names(gemini_key,extraction_items,known) if extraction_items else []
+    candidates=score_candidates(extracted,extraction_items,known)
     return {"schemaVersion":1,"generatedAt":NOW,"candidateOnly":True,"autoPublish":False,
             "summary":{"searchResults":len(items),"candidates":len(candidates),
                        "newReviewCandidates":sum(1 for x in candidates if x["status"]=="要確認"),

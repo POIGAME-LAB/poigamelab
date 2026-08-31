@@ -87,5 +87,11 @@
   },
   "retrievalStrategy": "direct first-party HTTP across bounded stable official listing/editorial pages; query selectors are preserved only from an allowlist; Firecrawl best-effort fallback only",
   "confidenceStrategy": "deterministic evidence confidence; Gemini extracts names only and cannot promote a single-source candidate by confidence",
-  "identityStrategy": "deterministic conservative campaign-decoration normalization (platform/provider prefixes + trailing StepUp only); thresholds unchanged"
+  "identityStrategy": "deterministic conservative campaign-decoration normalization (platform/provider prefixes + trailing StepUp only); thresholds unchanged",
+  "extractionChunkChars": 4500,
+  "extractionChunkOverlap": 300,
+  "maxChunksPerResult": 6,
+  "maxExtractionBatchChars": 18000,
+  "maxExtractionBatches": 6,
+  "extractionStrategy": "bounded long-page chunking; no silent 5000-character tail truncation; same page/chunks remain one source identity"
 }

@@ -78,3 +78,6 @@ PHASE 3 now has a third direct first-party point-site source (Moppy official poi
 
 ### V36 discovery coverage and identity
 Warau discovery now reads two bounded official first-party listing views instead of relying on one narrow page. Direct-listing selector query parameters are preserved only from a fixed allowlist so those pages remain distinct without retaining tracking data. Candidate identity normalization is deliberately conservative: it removes known platform/provider decorations and a trailing StepUp campaign marker, but does not fuzzy-match arbitrary similar titles. Independent-source promotion thresholds are unchanged.
+
+### V37 discovery extraction safety
+Long official listing pages are split into bounded overlapping text chunks before Gemini name extraction instead of silently discarding everything after 5,000 characters. Chunk evidence keeps the original page/source identity, so one page can never become multiple independent sources. Chunk and batch caps bound Gemini calls; Python promotion thresholds remain unchanged.
