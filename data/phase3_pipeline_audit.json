@@ -1,0 +1,13 @@
+{
+  "phase": "PHASE3_INTEGRATION_AUDIT_V31",
+  "success": true,
+  "errors": [],
+  "warnings": [],
+  "counts": {
+    "games": 4,
+    "targets": 4,
+    "publishedOffers": 11,
+    "adoptedGames": 0
+  },
+  "apiCalls": 0
+}

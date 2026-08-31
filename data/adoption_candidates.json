@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "phase": "PHASE3_ADOPTION_GATE_V29",
+  "generatedAt": "2026-08-31T14:24:42+00:00",
+  "apiCalls": 0,
+  "autoPublish": false,
+  "autoAddGame": false,
+  "summary": {
+    "researchedGames": 0,
+    "adoptionReady": 0,
+    "held": 0
+  },
+  "items": []
+}

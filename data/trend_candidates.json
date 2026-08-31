@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-31T14:24:22+00:00",
+  "candidateOnly": true,
+  "autoPublish": false,
+  "summary": {
+    "searchResults": 8,
+    "candidates": 15,
+    "newReviewCandidates": 14,
+    "failedSources": 3
+  },
+  "diagnostics": [
+    {
+      "sourceId": "x-poikatsu",
+      "ok": true,
+      "results": 8
+    },
+    {
+      "sourceId": "warau-new",
+      "ok": false,
+      "error": "HTTP Error 402: Payment Required"
+    },
+    {
+      "sourceId": "chobirich-new",
+      "ok": false,
+      "error": "HTTP Error 402: Payment Required"
+    },
+    {
+      "sourceId": "coincome-new",
+      "ok": false,
+      "error": "HTTP Error 402: Payment Required"
+    }
+  ],
+  "candidates": [
+    {
+      "game": "AI Takeover Tycoon",
+      "aliases": [
+        "AI Takeover Tycoon"
+      ],
+      "knownGame": false,
+      "score": 50,
+      "confidence": 0,
+      "mentionCount": 2,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ルナP@ゲームポイ活 (@xfZmwe0T94sdovN) / X",
+          "url": "https://x.com/xfZmwe0T94sdovN"
+        },
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "天音@ポイ活ゲーム on X: \"レベル1150まで上がったけど ...",
+          "url": "https://x.com/amane_poi/status/2089365908615778755"
+        }
+      ]
+    },
+    {
+      "game": "Cube Jump",
+      "aliases": [
+        "Cube Jump"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "天音@ポイ活ゲーム (@amane_poi) / X",
+          "url": "https://x.com/amane_poi"
+        }
+      ]
+    },
+    {
+      "game": "Gardenscapes",
+      "aliases": [
+        "Gardenscapes"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ゆい＠ポイ活ゲーム記録用 on X: \"リアル忙しくRichieでのんびり ...",
+          "url": "https://x.com/yuikirivv/status/1925717912184119514"
+        }
+      ]
+    },
+    {
+      "game": "Marble ZigZag",
+      "aliases": [
+        "Marble ZigZag"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "天音@ポイ活ゲーム (@amane_poi) / X",
+          "url": "https://x.com/amane_poi"
+        }
+      ]
+    },
+    {
+      "game": "Merge Legend-Atlantis Mermaid",
+      "aliases": [
+        "Merge Legend-Atlantis Mermaid"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "そら@ポイ活ゲーム (@pointo_sora) / X",
+          "url": "https://x.com/pointo_sora"
+        }
+      ]
+    },
+    {
+      "game": "Merge Studio",
+      "aliases": [
+        "Merge Studio"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ゆい＠ポイ活ゲーム記録用 on X: \"リアル忙しくRichieでのんびり ...",
+          "url": "https://x.com/yuikirivv/status/1925717912184119514"
+        }
+      ]
+    },
+    {
+      "game": "Princess Rescue: Save Girl",
+      "aliases": [
+        "Princess Rescue: Save Girl"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ゆま@ポイ活攻略 (@yumapoikatu) / X",
+          "url": "https://x.com/yumapoikatu"
+        }
+      ]
+    },
+    {
+      "game": "That's My Seat",
+      "aliases": [
+        "That's My Seat"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "天音@ポイ活ゲーム on X: \"That's My Seat ・Freecash ・レベル1800を ...",
+          "url": "https://x.com/amane_poi/status/2080510896879911230"
+        }
+      ]
+    },
+    {
+      "game": "キングダム乱",
+      "aliases": [
+        "キングダム乱"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "天音@ポイ活ゲーム (@amane_poi) / X",
+          "url": "https://x.com/amane_poi"
+        }
+      ]
+    },
+    {
+      "game": "マージブレイクアウト",
+      "aliases": [
+        "マージブレイクアウト"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ゆま@ポイ活攻略 (@yumapoikatu) / X",
+          "url": "https://x.com/yumapoikatu"
+        }
+      ]
+    },
+    {
+      "game": "メダロットサバイバー",
+      "aliases": [
+        "Medabots Survivors",
+        "メダロットサバイバー"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "そら@ポイ活ゲーム (@pointo_sora) / X",
+          "url": "https://x.com/pointo_sora"
+        }
+      ]
+    },
+    {
+      "game": "千年戦争アイギスA",
+      "aliases": [
+        "千年戦争アイギスA"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ルナP@ゲームポイ活 (@xfZmwe0T94sdovN) / X",
+          "url": "https://x.com/xfZmwe0T94sdovN"
+        }
+      ]
+    },
+    {
+      "game": "杖と剣の伝説",
+      "aliases": [
+        "杖と剣の伝説"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ゆま@ポイ活攻略 (@yumapoikatu) / X",
+          "url": "https://x.com/yumapoikatu"
+        }
+      ]
+    },
+    {
+      "game": "率土之濱-大三国志",
+      "aliases": [
+        "大三国志",
+        "率土之濱-大三国志"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "天音@ポイ活ゲーム (@amane_poi) / X",
+          "url": "https://x.com/amane_poi"
+        }
+      ]
+    },
+    {
+      "game": "ワーキングヒーロー",
+      "aliases": [
+        "ワーキングヒーロー",
+        "ワーキングヒーローズ"
+      ],
+      "knownGame": true,
+      "score": 45,
+      "confidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "既知ゲーム",
+      "evidence": [
+        {
+          "sourceId": "x-poikatsu",
+          "sourceType": "social",
+          "title": "ルナP@ゲームポイ活 (@xfZmwe0T94sdovN) / X",
+          "url": "https://x.com/xfZmwe0T94sdovN"
+        }
+      ]
+    }
+  ]
+}
