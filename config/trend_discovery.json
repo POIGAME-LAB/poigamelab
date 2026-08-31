@@ -11,7 +11,8 @@
       "includeDomains": [
         "x.com"
       ],
-      "sourceType": "social"
+      "sourceType": "social",
+      "firecrawlFallback": true
     },
     {
       "id": "warau-new",
@@ -20,6 +21,10 @@
         "warau.jp"
       ],
       "sourceType": "point_site",
+      "directUrls": [
+        "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+      ],
+      "firecrawlFallback": true,
       "fallbackUrls": [
         "https://www.warau.jp/contents/point/category?category_group=77&display_style=list&page=1&point_group=2&sort=new"
       ]
@@ -30,7 +35,8 @@
       "includeDomains": [
         "chobirich.com"
       ],
-      "sourceType": "point_site"
+      "sourceType": "point_site",
+      "firecrawlFallback": true
     },
     {
       "id": "coincome-new",
@@ -39,6 +45,10 @@
         "cimcome.jp"
       ],
       "sourceType": "point_site",
+      "directUrls": [
+        "https://cimcome.jp/campaigns?_category_id=21"
+      ],
+      "firecrawlFallback": true,
       "fallbackUrls": [
         "https://cimcome.jp/campaigns"
       ]
@@ -61,5 +71,6 @@
     "initialRefreshEnabled": false,
     "apiCalls": 0,
     "note": "V30 may add a verified game and its strict offers to production; scheduled refresh stays disabled until a controlled refresh policy is enabled."
-  }
+  },
+  "retrievalStrategy": "direct first-party HTTP for stable official listing pages; Firecrawl best-effort fallback only"
 }

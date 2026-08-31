@@ -80,3 +80,9 @@
 - Records search result count, whether fallback was attempted, fallback result count, and bounded error summaries for each source.
 - Error text is flattened, length-limited, and redacts authorization/API-key/token-like values before persistence.
 - Discovery, scoring, promotion thresholds, and API call behavior are unchanged; V33 is diagnostic-only.
+
+## V34 — Direct-first discovery resilience
+- Added allowlisted direct HTTP retrieval for stable first-party Warau and COINCOME listing pages.
+- Firecrawl is now best-effort fallback for discovery instead of a single point of failure.
+- Discovery can continue when Firecrawl is out of credits; strict promotion/adoption gates are unchanged.
+- Diagnostics now distinguish direct HTTP attempts from Firecrawl attempts.

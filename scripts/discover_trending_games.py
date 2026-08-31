@@ -2,20 +2,24 @@
 """PHASE 3: discover trending/new point-reward games as review candidates only.
 
 Safety invariant: this script never edits games.csv, offers.csv, or published_offers.csv.
-Firecrawl discovers public search results; Gemini only extracts game-name candidates;
-Python normalizes, deduplicates, scores, and writes a review queue.
+Direct first-party HTTP is preferred for stable official listing pages. Firecrawl is only a
+best-effort fallback for sources that cannot be read directly. Gemini only extracts game-name
+candidates; Python normalizes, deduplicates, scores, and writes a review queue.
 """
 from __future__ import annotations
 import csv, json, os, re, sys
-from collections import defaultdict
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 CONFIG = ROOT / "config" / "trend_discovery.json"
 NOW = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+DIRECT_TIMEOUT_SECONDS = 15
+DIRECT_MAX_BYTES = 900_000
 
 sys.path.insert(0, str(ROOT / "scripts"))
 from firecrawl_township_probe import firecrawl_post, gemini_call  # noqa: E402
@@ -40,10 +44,96 @@ def safe_url(url):
         return ""
 
 
+def _host_allowed(url, domains):
+    host = (urlparse(url or "").hostname or "").lower().rstrip(".")
+    for domain in domains or []:
+        d = str(domain).lower().strip().lstrip(".").rstrip(".")
+        if d and (host == d or host.endswith("." + d)):
+            return True
+    return False
+
+
 def normalize_name(name):
     s = re.sub(r"\s+", " ", (name or "").strip())
     s = re.sub(r"^[『「【\[]|[』」】\]]$", "", s).strip()
     return s[:100]
+
+
+class _HTMLTextExtractor(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts = []
+        self.title_parts = []
+        self._skip_depth = 0
+        self._in_title = False
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        if tag in {"script", "style", "noscript", "svg"}:
+            self._skip_depth += 1
+        if tag == "title":
+            self._in_title = True
+        if tag in {"p", "br", "li", "div", "section", "article", "h1", "h2", "h3", "tr"}:
+            self.parts.append("\n")
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if tag in {"script", "style", "noscript", "svg"} and self._skip_depth:
+            self._skip_depth -= 1
+        if tag == "title":
+            self._in_title = False
+        if tag in {"p", "li", "div", "section", "article", "h1", "h2", "h3", "tr"}:
+            self.parts.append("\n")
+
+    def handle_data(self, data):
+        if self._skip_depth:
+            return
+        text = re.sub(r"\s+", " ", data or " ").strip()
+        if not text:
+            return
+        self.parts.append(text)
+        self.parts.append(" ")
+        if self._in_title:
+            self.title_parts.append(text)
+
+    def result(self):
+        raw = "".join(self.parts)
+        raw = re.sub(r"[ \t]+", " ", raw)
+        raw = re.sub(r"\n\s*\n+", "\n", raw)
+        return " ".join(self.title_parts).strip(), raw.strip()
+
+
+def direct_fetch_seed(item, url, timeout=DIRECT_TIMEOUT_SECONDS, max_bytes=DIRECT_MAX_BYTES):
+    safe = safe_url(url)
+    if not safe:
+        raise ValueError("invalid direct URL")
+    if not _host_allowed(url, item.get("includeDomains") or []):
+        raise ValueError("direct URL domain is not registered for source")
+    req = Request(url, headers={
+        "User-Agent": "Mozilla/5.0 (compatible; POIGAME-LAB/1.0; +https://poigamelab.com/)",
+        "Accept": "text/html,application/xhtml+xml;q=0.9,text/plain;q=0.8,*/*;q=0.1",
+        "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
+        "Cache-Control": "no-cache",
+    })
+    with urlopen(req, timeout=timeout) as response:  # nosec B310: URL is config allowlisted above
+        content_type = (response.headers.get("Content-Type") or "").lower()
+        if content_type and not any(x in content_type for x in ("text/html", "application/xhtml+xml", "text/plain")):
+            raise ValueError("direct response is not text/html")
+        body = response.read(max_bytes + 1)
+        if len(body) > max_bytes:
+            body = body[:max_bytes]
+        charset = response.headers.get_content_charset() or "utf-8"
+    html = body.decode(charset, errors="replace")
+    parser = _HTMLTextExtractor()
+    parser.feed(html)
+    title, text = parser.result()
+    if len(text) < 40:
+        raise ValueError("direct response did not contain enough readable text")
+    return {
+        "sourceId": item["id"], "sourceType": item.get("sourceType", "web"),
+        "title": title, "description": "", "url": safe, "text": text,
+        "retrieval": "direct_http",
+    }
 
 
 def firecrawl_scrape_seed(fc_key, item, url):
@@ -62,7 +152,7 @@ def firecrawl_scrape_seed(fc_key, item, url):
         "sourceId": item["id"], "sourceType": item.get("sourceType", "web"),
         "title": (data.get("metadata") or {}).get("title") or "",
         "description": (data.get("metadata") or {}).get("description") or "",
-        "url": safe, "text": data.get("markdown") or "",
+        "url": safe, "text": data.get("markdown") or "", "retrieval": "firecrawl_scrape",
     }
 
 
@@ -85,7 +175,7 @@ def extract_names(gemini_key, items, known):
     for x in items:
         compact.append({"sourceId":x["sourceId"], "sourceType":x["sourceType"],
                         "title":x["title"][:300], "description":x["description"][:500],
-                        "url":x["url"], "text":x["text"][:2500]})
+                        "url":x["url"], "text":x["text"][:5000]})
     prompt = f'''あなたはPOIGAME LABの「新規ゲーム候補名抽出器」です。検索結果から、ポイ活のゲーム案件として明確に言及されるゲーム名だけを抽出してください。
 既知ゲーム: {json.dumps(known, ensure_ascii=False)}
 厳守:
@@ -152,10 +242,15 @@ def build_status(result):
         d={
             "sourceId": raw.get("sourceId", ""),
             "ok": bool(raw.get("ok")),
+            "directAttempted": bool(raw.get("directAttempted")),
+            "directResults": int(raw.get("directResults") or 0),
+            "firecrawlAttempted": bool(raw.get("firecrawlAttempted")),
             "searchResults": int(raw.get("results") or 0),
             "fallbackAttempted": bool(raw.get("fallbackAttempted")),
             "fallbackResults": int(raw.get("fallbackResults") or 0),
         }
+        if raw.get("directErrors"):
+            d["directErrors"]=[_safe_error_text(x) for x in raw.get("directErrors") if _safe_error_text(x)]
         if raw.get("searchError"):
             d["searchError"]=_safe_error_text(raw.get("searchError"))
         if raw.get("fallbackErrors"):
@@ -172,22 +267,40 @@ def build_status(result):
 def run(fc_key, gemini_key, config=None):
     cfg=config or load_json(CONFIG); items=[]; diagnostics=[]
     for q in cfg.get("queries",[]):
+        direct_count = 0
+        direct_errors = []
+        direct_urls = q.get("directUrls") or []
+        for direct_url in direct_urls:
+            try:
+                row = direct_fetch_seed(q, direct_url)
+                if row and row.get("text"):
+                    items.append(row); direct_count += 1
+            except Exception as e:
+                direct_errors.append(_safe_error_text(e))
+
         search_error = None
         count = 0
-        try:
-            raw=firecrawl_search(fc_key,q,int(cfg.get("maxResultsPerQuery",8)))
-            for x in raw:
-                url=safe_url(x.get("url") or (x.get("metadata") or {}).get("sourceURL"))
-                if not url: continue
-                items.append({"sourceId":q["id"],"sourceType":q.get("sourceType","web"),
-                              "title":x.get("title") or "","description":x.get("description") or "",
-                              "url":url,"text":x.get("markdown") or ""}); count+=1
-        except Exception as e:
-            search_error = str(e)[:200]
+        firecrawl_attempted = False
+        should_try_firecrawl = direct_count == 0 and q.get("firecrawlFallback", True)
+        if should_try_firecrawl:
+            if fc_key:
+                firecrawl_attempted = True
+                try:
+                    raw=firecrawl_search(fc_key,q,int(cfg.get("maxResultsPerQuery",8)))
+                    for x in raw:
+                        url=safe_url(x.get("url") or (x.get("metadata") or {}).get("sourceURL"))
+                        if not url: continue
+                        items.append({"sourceId":q["id"],"sourceType":q.get("sourceType","web"),
+                                      "title":x.get("title") or "","description":x.get("description") or "",
+                                      "url":url,"text":x.get("markdown") or "", "retrieval":"firecrawl_search"}); count+=1
+                except Exception as e:
+                    search_error = _safe_error_text(e)
+            else:
+                search_error = "Firecrawl unavailable: API key not configured"
 
         recovered = 0
         fallback_errors = []
-        fallback_attempted = bool((search_error or count == 0) and q.get("fallbackUrls"))
+        fallback_attempted = bool(not direct_urls and direct_count == 0 and firecrawl_attempted and (search_error or count == 0) and q.get("fallbackUrls"))
         if fallback_attempted:
             for fallback_url in q.get("fallbackUrls") or []:
                 try:
@@ -195,16 +308,19 @@ def run(fc_key, gemini_key, config=None):
                     if row and row.get("text"):
                         items.append(row); recovered += 1
                 except Exception as e:
-                    fallback_errors.append(str(e)[:160])
+                    fallback_errors.append(_safe_error_text(e))
 
-        ok = count > 0 or recovered > 0
-        diag = {"sourceId":q["id"],"ok":ok,"results":count,"fallbackAttempted":fallback_attempted,"fallbackResults":recovered}
-        if search_error: diag["searchError"] = _safe_error_text(search_error)
-        if fallback_errors: diag["fallbackErrors"] = [_safe_error_text(x) for x in fallback_errors]
+        ok = direct_count > 0 or count > 0 or recovered > 0
+        diag = {"sourceId":q["id"],"ok":ok,"directAttempted":bool(direct_urls),"directResults":direct_count,
+                "firecrawlAttempted":firecrawl_attempted,"results":count,
+                "fallbackAttempted":fallback_attempted,"fallbackResults":recovered}
+        if direct_errors: diag["directErrors"] = direct_errors
+        if search_error: diag["searchError"] = search_error
+        if fallback_errors: diag["fallbackErrors"] = fallback_errors
         diagnostics.append(diag)
     # exact result dedupe before Gemini
     uniq={}
-    for x in items: uniq[(x["sourceId"],x["url"])]=x
+    for x in items: uniq[(x["sourceId"], x["url"])]=x
     items=list(uniq.values()); known=known_games()
     extracted=extract_names(gemini_key,items,known) if items else []
     candidates=score_candidates(extracted,items,known)
@@ -217,7 +333,7 @@ def run(fc_key, gemini_key, config=None):
 
 def main():
     fc=os.getenv("FIRECRAWL_API_KEY","").strip(); gem=os.getenv("GEMINI_API_KEY","").strip()
-    if not fc or not gem: raise SystemExit("FIRECRAWL_API_KEY and GEMINI_API_KEY are required")
+    if not gem: raise SystemExit("GEMINI_API_KEY is required")
     result=run(fc,gem); atomic_json(DATA/"trend_candidates.json",result)
     atomic_json(DATA/"trend_status.json",build_status(result))
     print(json.dumps(result["summary"],ensure_ascii=False))

@@ -69,3 +69,6 @@ Trend discovery keeps the strict V27 promotion thresholds. When a point-site sea
 
 ### PHASE 3 V33: discovery failure diagnostics
 `data/trend_status.json` now includes a `diagnostics` array for each configured discovery source. It records search/fallback outcomes and safe bounded error summaries, so a `failedSources` count can be traced to the failing stage without changing discovery thresholds or adding API calls. Secret-like authorization/token/API-key text is redacted before status persistence.
+
+### PHASE 3 discovery resilience (V34)
+Stable official listing pages are fetched directly first (Warau / COINCOME). Firecrawl remains a fallback for sources that need it. A Firecrawl 402 therefore no longer forces all discovery sources to zero. Candidate promotion and production adoption thresholds remain unchanged.
