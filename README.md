@@ -63,3 +63,6 @@ Strong V26 trend candidates are deterministically promoted to `data/research_que
 
 ### PHASE 3 V31 safety audit
 The trend workflow runs `scripts/audit_phase3_pipeline.py` after V30 adoption and before committing. The audit is API-free and fail-closed: inconsistent production state stops the workflow before Git writes are pushed. `data/research_results/` is staged only when present.
+
+### PHASE 3 V32: discovery evidence recovery
+Trend discovery keeps the strict V27 promotion thresholds. When a point-site search fails or returns zero results, V32 may scrape a configured stable first-party listing page once as recovery evidence. Healthy searches do not trigger the fallback, and failed recovery remains visible in diagnostics.

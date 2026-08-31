@@ -19,7 +19,10 @@
       "includeDomains": [
         "warau.jp"
       ],
-      "sourceType": "point_site"
+      "sourceType": "point_site",
+      "fallbackUrls": [
+        "https://www.warau.jp/contents/point/category?category_group=77&display_style=list&page=1&point_group=2&sort=new"
+      ]
     },
     {
       "id": "chobirich-new",
@@ -35,7 +38,10 @@
       "includeDomains": [
         "cimcome.jp"
       ],
-      "sourceType": "point_site"
+      "sourceType": "point_site",
+      "fallbackUrls": [
+        "https://cimcome.jp/campaigns"
+      ]
     }
   ],
   "minimumScoreForReview": 30,

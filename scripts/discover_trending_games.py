@@ -46,6 +46,26 @@ def normalize_name(name):
     return s[:100]
 
 
+def firecrawl_scrape_seed(fc_key, item, url):
+    payload = {
+        "url": url, "formats": ["markdown"], "onlyMainContent": True,
+        "mobile": True, "waitFor": 1500, "timeout": 60000,
+        "location": {"country":"JP", "languages":["ja-JP","ja"]},
+        "blockAds": True, "maxAge": 1800000,
+    }
+    res = firecrawl_post(fc_key, "scrape", payload, attempts=2)
+    data = res.get("data") or {}
+    safe = safe_url(url)
+    if not safe or not isinstance(data, dict):
+        return None
+    return {
+        "sourceId": item["id"], "sourceType": item.get("sourceType", "web"),
+        "title": (data.get("metadata") or {}).get("title") or "",
+        "description": (data.get("metadata") or {}).get("description") or "",
+        "url": safe, "text": data.get("markdown") or "",
+    }
+
+
 def firecrawl_search(fc_key, item, limit):
     payload = {
         "query": item["query"], "limit": limit, "sources": ["web"],
@@ -122,18 +142,35 @@ def atomic_json(path, obj):
 def run(fc_key, gemini_key, config=None):
     cfg=config or load_json(CONFIG); items=[]; diagnostics=[]
     for q in cfg.get("queries",[]):
+        search_error = None
+        count = 0
         try:
             raw=firecrawl_search(fc_key,q,int(cfg.get("maxResultsPerQuery",8)))
-            count=0
             for x in raw:
                 url=safe_url(x.get("url") or (x.get("metadata") or {}).get("sourceURL"))
                 if not url: continue
                 items.append({"sourceId":q["id"],"sourceType":q.get("sourceType","web"),
                               "title":x.get("title") or "","description":x.get("description") or "",
                               "url":url,"text":x.get("markdown") or ""}); count+=1
-            diagnostics.append({"sourceId":q["id"],"ok":True,"results":count})
         except Exception as e:
-            diagnostics.append({"sourceId":q["id"],"ok":False,"error":str(e)[:200]})
+            search_error = str(e)[:200]
+
+        recovered = 0
+        fallback_errors = []
+        if (search_error or count == 0) and q.get("fallbackUrls"):
+            for fallback_url in q.get("fallbackUrls") or []:
+                try:
+                    row = firecrawl_scrape_seed(fc_key, q, fallback_url)
+                    if row and row.get("text"):
+                        items.append(row); recovered += 1
+                except Exception as e:
+                    fallback_errors.append(str(e)[:160])
+
+        ok = count > 0 or recovered > 0
+        diag = {"sourceId":q["id"],"ok":ok,"results":count,"fallbackResults":recovered}
+        if search_error: diag["searchError"] = search_error
+        if fallback_errors: diag["fallbackErrors"] = fallback_errors
+        diagnostics.append(diag)
     # exact result dedupe before Gemini
     uniq={}
     for x in items: uniq[(x["sourceId"],x["url"])]=x

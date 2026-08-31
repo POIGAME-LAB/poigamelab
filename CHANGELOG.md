@@ -68,3 +68,9 @@
 - Blocks commits on duplicate games/targets/offer keys, orphan published games, invalid URLs, incomplete adoption registry state, enabled refresh for newly adopted games, or offer-count mismatch.
 - Made `data/research_results/` staging conditional so a no-research run cannot fail on a missing directory.
 - Added integration/negative-path tests; no live API calls are used by the audit.
+
+## V32 — Discovery Evidence Recovery
+- Point-site search failure/zero-result now falls back to stable first-party listing pages for Warau and COINCOME.
+- Fallback runs only when needed, avoiding duplicate Firecrawl spend on healthy searches.
+- Diagnostics distinguish search failure from fallback recovery/failure.
+- Research thresholds are unchanged; V32 improves evidence collection instead of weakening the gate.
