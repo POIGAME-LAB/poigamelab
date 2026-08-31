@@ -104,3 +104,11 @@
 - Preserves source/url identity across chunks, so repeated chunks from one page never count as independent sources.
 - Batches Gemini extraction with hard caps on chunk count and batch count to bound API cost.
 - Keeps V27 research thresholds unchanged and preserves Firecrawl 402 degraded-mode behavior.
+
+## V38 — Direct-first research collector resilience
+- Added bounded allowlisted first-party HTTP retrieval to the quarantined offer research collector before any Firecrawl call.
+- Stable official listing pages are used only to discover target-adjacent first-party detail links; a detail page must independently contain the target before it can become verifier evidence.
+- A successful direct detail path skips Firecrawl for that source, so Firecrawl 402 cannot erase already-collected first-party evidence.
+- Firecrawl remains best-effort fallback for sources where direct retrieval cannot establish a detail page; degraded sources remain visible to V29 and cannot be silently adopted.
+- `FIRECRAWL_API_KEY` is no longer a hard prerequisite for research when direct first-party evidence is available; Gemini remains required for structured extraction.
+- Existing V20 exact-offer identity/reward gates, V29 two-source adoption gate, quarantine boundary, and Firecrawl concurrency cap are unchanged.

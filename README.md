@@ -81,3 +81,6 @@ Warau discovery now reads two bounded official first-party listing views instead
 
 ### V37 discovery extraction safety
 Long official listing pages are split into bounded overlapping text chunks before Gemini name extraction instead of silently discarding everything after 5,000 characters. Chunk evidence keeps the original page/source identity, so one page can never become multiple independent sources. Chunk and batch caps bound Gemini calls; Python promotion thresholds remain unchanged.
+
+### V38 direct-first research collector
+The quarantined research collector now mirrors the discovery layer's resilience strategy: registered first-party listing pages are fetched directly first, target-adjacent official detail links are followed within the same registered domain, and only detail pages that independently confirm the target become verifier candidates. Firecrawl is fallback-only for that source. A 402 on another source remains a degraded reason, so V29 still fails closed rather than treating missing coverage as complete. Direct listing/detail counts are bounded per source, and the existing exact same-offer verifier is unchanged.

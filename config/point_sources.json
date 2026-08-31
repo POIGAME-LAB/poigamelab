@@ -18,7 +18,12 @@
       "mobile": true,
       "enabled": true,
       "known_target_urls": [],
-      "prefer_known_pages": false
+      "prefer_known_pages": false,
+      "direct_listing_urls": [
+        "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1"
+      ],
+      "direct_listing_limit": 1,
+      "direct_detail_limit": 4
     },
     {
       "id": "warau",
@@ -35,7 +40,13 @@
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643"
       ],
       "prefer_known_pages": true,
-      "known_pages_sufficient": 2
+      "known_pages_sufficient": 2,
+      "direct_listing_urls": [
+        "https://www.warau.jp/contents/point/category?point_group=2",
+        "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+      ],
+      "direct_listing_limit": 2,
+      "direct_detail_limit": 4
     },
     {
       "id": "chobirich",
@@ -64,7 +75,12 @@
         "タウンシップ",
         "アプリランド"
       ],
-      "known_pages_sufficient": 1
+      "known_pages_sufficient": 1,
+      "direct_listing_urls": [
+        "https://www.chobirich.com/smartphone?pos=app"
+      ],
+      "direct_listing_limit": 1,
+      "direct_detail_limit": 4
     },
     {
       "id": "coincome",
@@ -80,7 +96,12 @@
         "https://cimcome.jp/campaigns/details/9856"
       ],
       "prefer_known_pages": true,
-      "known_pages_sufficient": 2
+      "known_pages_sufficient": 2,
+      "direct_listing_urls": [
+        "https://cimcome.jp/campaigns?_category_id=21"
+      ],
+      "direct_listing_limit": 1,
+      "direct_detail_limit": 4
     }
   ],
   "offerwall_domains_discovered": [

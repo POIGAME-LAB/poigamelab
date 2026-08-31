@@ -20,8 +20,9 @@ from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from urllib.request import Request, urlopen
+from html import unescape
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config" / "point_sources.json"
@@ -116,6 +117,125 @@ def post_json(url, payload, headers=None, timeout=90):
     req = Request(url, data=data, headers=h, method="POST")
     with urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode("utf-8"))
+
+
+def direct_http_get(url, source, timeout=15, max_bytes=1200000):
+    """Fetch one allowlisted first-party page without Firecrawl.
+
+    The response is bounded and only registered point-site hosts are accepted.
+    This function never follows or persists offerwall/session URLs.
+    """
+    if not registered_host(url, source, {"offerwall_domains_discovered": []}):
+        raise ValueError("direct URL is outside registered first-party domains")
+    req = Request(url, headers={
+        "User-Agent": "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)",
+        "Accept": "text/html,application/xhtml+xml",
+        "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
+    })
+    with urlopen(req, timeout=timeout) as r:
+        final_url = r.geturl() if hasattr(r, "geturl") else url
+        if not registered_host(final_url, source, {"offerwall_domains_discovered": []}):
+            raise ValueError("direct HTTP redirect left registered first-party domains")
+        data = r.read(max_bytes + 1)
+        if len(data) > max_bytes:
+            data = data[:max_bytes]
+            truncated = True
+        else:
+            truncated = False
+        charset = None
+        try:
+            charset = r.headers.get_content_charset()
+        except Exception:
+            charset = None
+    text = data.decode(charset or "utf-8", errors="replace")
+    return text, {"bytes": len(data), "truncated": truncated}
+
+
+def html_to_visible_text(raw_html):
+    text = re.sub(r"(?is)<(?:script|style|noscript|svg)\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw_html or "")
+    text = re.sub(r"(?s)<[^>]+>", " ", text)
+    return re.sub(r"\s+", " ", unescape(text)).strip()
+
+
+def html_title(raw_html):
+    m = re.search(r"(?is)<title[^>]*>(.*?)</title>", raw_html or "")
+    return html_to_visible_text(m.group(1)) if m else ""
+
+
+def target_adjacent_first_party_links(raw_html, base_url, source, aliases, limit=8):
+    """Extract only first-party anchors whose visible label names the target.
+
+    Opaque public detail IDs are allowed because the target-name association is
+    established by the anchor label, not by guessing URL shapes.
+    """
+    out = []
+    seen = set()
+    for m in re.finditer(r"(?is)<a\b[^>]*?href\s*=\s*([\"'])(.*?)\1[^>]*>(.*?)</a>", raw_html or ""):
+        href = unescape(m.group(2)).strip()
+        label = html_to_visible_text(m.group(3))
+        if not href or not text_has_target(label, aliases):
+            continue
+        absolute = urljoin(base_url, href)
+        if not registered_host(absolute, source, {"offerwall_domains_discovered": []}):
+            continue
+        if absolute in seen:
+            continue
+        seen.add(absolute)
+        out.append(absolute)
+        if len(out) >= limit:
+            break
+    return out
+
+
+def direct_first_party_collect(source, aliases, cfg, fetcher=direct_http_get):
+    """V38 direct-first research path for stable official listing pages.
+
+    Listing pages are discovery evidence only. Publication-capable candidates
+    are created only after a target-adjacent first-party detail page is fetched
+    and independently confirms the target text.
+    """
+    urls = list(source.get("direct_listing_urls") or [])
+    if not urls and source.get("start_url"):
+        urls = [source["start_url"]]
+    urls = urls[:max(1, min(3, int(source.get("direct_listing_limit", 2) or 2)))]
+    detail_limit = max(1, min(6, int(source.get("direct_detail_limit", 4) or 4)))
+    candidates = []
+    diag = {"attempted": bool(urls), "listings": [], "details": [], "candidateCount": 0}
+    detail_urls = []
+    seen_details = set()
+
+    for listing_url in urls:
+        try:
+            raw, meta = fetcher(listing_url, source)
+            visible = html_to_visible_text(raw)
+            hit = text_has_target(visible, aliases)
+            links = target_adjacent_first_party_links(raw, listing_url, source, aliases, limit=detail_limit) if hit else []
+            diag["listings"].append({"ok": True, "targetFound": hit, "detailLinks": len(links), **meta})
+            for u in links:
+                if u not in seen_details and len(detail_urls) < detail_limit:
+                    seen_details.add(u); detail_urls.append(u)
+        except Exception as e:
+            diag["listings"].append({"ok": False, "error": str(e)[:240]})
+
+    for detail_url in detail_urls:
+        try:
+            raw, meta = fetcher(detail_url, source)
+            visible = html_to_visible_text(raw)
+            hit = text_has_target(visible, aliases)
+            diag["details"].append({"identityUrl": offer_identity_url(detail_url), "ok": True, "targetFound": hit, **meta})
+            if not hit:
+                continue
+            candidates.append(compact_candidate(
+                source, "direct_official_detail", detail_url,
+                title=html_title(raw), markdown=visible, links=[],
+                metadata={"targetFound": True, "retrieval": "direct_first_party_http"},
+            ))
+        except Exception as e:
+            diag["details"].append({"identityUrl": offer_identity_url(detail_url), "ok": False, "error": str(e)[:240]})
+
+    diag["candidateCount"] = len(candidates)
+    diag["allListingsFetched"] = bool(urls) and all(x.get("ok") for x in diag["listings"])
+    return candidates, diag
 
 
 def firecrawl_post(key, endpoint, payload, timeout=120, attempts=3):
@@ -650,7 +770,7 @@ def collect_firecrawl(key, cfg):
         local_candidates = []
         diag = {
             "source_id": source["id"], "source_name": source["name"],
-            "mode": "discovery", "direct": None, "offerwalls": [], "provider_hubs": [],
+            "mode": "discovery", "direct": None, "direct_http": None, "offerwalls": [], "provider_hubs": [],
             "known_pages": [], "search": None, "search_verified": [],
             "followed_details": [],
         }
@@ -672,6 +792,28 @@ def collect_firecrawl(key, cfg):
                 "knownExpected": len(source.get("known_target_urls") or []),
                 "partialAccepted": bool(partial_fast and len(known) < min_known),
             }
+            diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
+            return idx, local_candidates, diag
+
+        # V38: stable first-party HTTP before any Firecrawl call. Detail pages
+        # must independently contain the target before becoming candidates.
+        direct_http_candidates, direct_http_diag = direct_first_party_collect(source, aliases, cfg)
+        diag["direct_http"] = direct_http_diag
+        local_candidates.extend(direct_http_candidates)
+        if direct_http_candidates:
+            diag["mode"] = "direct_official_fast_path"
+            diag["search"] = {"skipped": True, "reason": "direct first-party detail pages succeeded"}
+            diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
+            return idx, local_candidates, diag
+        if source.get("direct_listing_authoritative") and direct_http_diag.get("allListingsFetched"):
+            diag["mode"] = "direct_clean_negative"
+            diag["search"] = {"skipped": True, "reason": "authoritative first-party listings fetched cleanly with no target detail"}
+            diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
+            return idx, local_candidates, diag
+
+        if not key:
+            diag["mode"] = "firecrawl_unavailable"
+            diag["search"] = {"ok": False, "error": "FIRECRAWL_API_KEY unavailable after direct-first attempt"}
             diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
             return idx, local_candidates, diag
 
@@ -780,8 +922,10 @@ def collect_firecrawl(key, cfg):
                 }
             results[result_idx] = (local_candidates, diag)
             sec = diag.get("elapsedSeconds")
-            if diag.get("mode") == "known_official_fast_path":
+            if diag.get("mode") in ("known_official_fast_path", "direct_official_fast_path"):
                 print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 公式ページ直行: {len(local_candidates)}件 / {sec}秒")
+            elif diag.get("mode") == "direct_clean_negative":
+                print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 公式一覧確認: 対象なし / {sec}秒")
             else:
                 print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 探索: {sec}秒")
 
@@ -962,15 +1106,16 @@ def host_matches_source(url, config):
 def candidate_priority(c):
     """Put strongest evidence first so official pages are never lost to prompt limits."""
     kind_score = {
-        "known_official_probe": 0,
-        "known_official_cache": 1,
-        "followed_detail": 2,
-        "official_search_verified": 3,
-        "verified_search_hit": 3,
-        "domain_search": 4,
-        "direct": 4,
-        "provider_hub_scrape": 5,
-        "offerwall_scrape": 6,
+        "direct_official_detail": 0,
+        "known_official_probe": 1,
+        "known_official_cache": 2,
+        "followed_detail": 3,
+        "official_search_verified": 4,
+        "verified_search_hit": 4,
+        "domain_search": 5,
+        "direct": 5,
+        "provider_hub_scrape": 6,
+        "offerwall_scrape": 7,
     }
     return (kind_score.get(c.get("kind"), 9), -len(c.get("markdown") or ""))
 
@@ -1140,7 +1285,7 @@ def main():
     load_dotenv()
     fc = os.getenv("FIRECRAWL_API_KEY", "").strip()
     gem = os.getenv("GEMINI_API_KEY", "").strip()
-    missing = [n for n, v in [("FIRECRAWL_API_KEY", fc), ("GEMINI_API_KEY", gem)] if not v]
+    missing = [n for n, v in [("GEMINI_API_KEY", gem)] if not v]
     if missing:
         print("ERROR: .env に " + ", ".join(missing) + " がありません。", file=sys.stderr)
         return 2
@@ -1150,7 +1295,7 @@ def main():
     CURRENT_TARGET = cfg.get("target") or CURRENT_TARGET
     configure_output_paths(cfg)
     target_game = CURRENT_TARGET.get("game") or "対象ゲーム"
-    print(f"[1/4] {target_game}: Firecrawlで登録済みポイントサイトを調査中…")
+    print(f"[1/4] {target_game}: 公式サイト直接取得を優先して登録済みポイントサイトを調査中…")
     candidates, diagnostics = collect_firecrawl(fc, cfg)
 
     RAW_OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -1204,7 +1349,7 @@ def main():
     output = {
         "phase": "PHASE2_AUTO_REFRESH_V23",
         "runAt": now_iso(),
-        "collector": "Phase2 Auto Refresh V23: transactional snapshots + daily automation + failure preservation",
+        "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
         "candidateCount": len(candidates),
         "geminiModel": used_model,
         "verified": verified,
@@ -1244,7 +1389,7 @@ def main():
             return 5
 
     print("[4/4] 完了")
-    print(f"      Firecrawl候補: {len(candidates)}件")
+    print(f"      収集候補: {len(candidates)}件")
     print(f"      AI抽出: {len(verified.get('offers', []))}件")
     cache_hits = sum(
         1 for d in diagnostics for x in (d.get("known_pages") or [])
