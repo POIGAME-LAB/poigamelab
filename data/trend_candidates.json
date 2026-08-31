@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T14:38:10+00:00",
+  "generatedAt": "2026-08-31T14:59:35+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
@@ -14,6 +14,7 @@
       "sourceId": "x-poikatsu",
       "ok": false,
       "results": 0,
+      "fallbackAttempted": false,
       "fallbackResults": 0,
       "searchError": "HTTP Error 402: Payment Required"
     },
@@ -21,6 +22,7 @@
       "sourceId": "warau-new",
       "ok": false,
       "results": 0,
+      "fallbackAttempted": true,
       "fallbackResults": 0,
       "searchError": "HTTP Error 402: Payment Required",
       "fallbackErrors": [
@@ -31,6 +33,7 @@
       "sourceId": "chobirich-new",
       "ok": false,
       "results": 0,
+      "fallbackAttempted": false,
       "fallbackResults": 0,
       "searchError": "HTTP Error 402: Payment Required"
     },
@@ -38,6 +41,7 @@
       "sourceId": "coincome-new",
       "ok": false,
       "results": 0,
+      "fallbackAttempted": true,
       "fallbackResults": 0,
       "searchError": "HTTP Error 402: Payment Required",
       "fallbackErrors": [
