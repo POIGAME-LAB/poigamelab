@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T15:45:53+00:00",
-  "sourceGeneratedAt": "2026-08-31T15:45:43+00:00",
+  "generatedAt": "2026-08-31T16:07:31+00:00",
+  "sourceGeneratedAt": "2026-08-31T16:07:12+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
   "summary": {
-    "trendCandidates": 22,
+    "trendCandidates": 39,
     "collectorReady": 0,
-    "rejected": 22
+    "rejected": 39
   },
   "items": [],
   "rejected": [
     {
-      "game": "Color Beads Drop",
+      "game": "ラストアサイラム:プレイグ",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -22,7 +22,23 @@
       ]
     },
     {
-      "game": "Drill & Collect: idle mine dig",
+      "game": "3D Toys: Shadow Match",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Bingo Blitz",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Color Beads Drop",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -46,6 +62,14 @@
       ]
     },
     {
+      "game": "Marble Sort!",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "Merge Peko",
       "reasons": [
         "score_below_threshold",
@@ -62,7 +86,7 @@
       ]
     },
     {
-      "game": "Screw Cat",
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -102,7 +126,71 @@
       ]
     },
     {
+      "game": "Wild Survival",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "すみっコぐらし 農園つくるんです",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "キングショット",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "グルメ・ジャーニー",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ザ・グランドマフィア",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ハイローラー ベガス : カジノゲーム",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "バブルブロックパズル",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "パズル&サバイバル",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ブラウザ三国志天",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -118,6 +206,14 @@
       ]
     },
     {
+      "game": "ベガス クレイズ カジノ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "ポケコロユニバース",
       "reasons": [
         "score_below_threshold",
@@ -126,7 +222,7 @@
       ]
     },
     {
-      "game": "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう",
+      "game": "マージキャンプ - Merge Camp",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -135,6 +231,14 @@
     },
     {
       "game": "マージメイドカフェ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ミステリータウン:マージゲーム - Mystery Town",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -158,14 +262,6 @@
       ]
     },
     {
-      "game": "ラストアサイラム：プレイグ",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
       "game": "ロイヤルマッチ",
       "reasons": [
         "score_below_threshold",
@@ -174,8 +270,50 @@
       ]
     },
     {
-      "game": "恋するコーデ「ペアリウム",
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
       "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "商人放浪記:あきんどの成り上がり道",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "恋するコーデ「ペアリウム」",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "杖と剣の伝説",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Township",
+      "reasons": [
+        "known_game",
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "きのこ伝説",
+      "reasons": [
+        "known_game",
         "score_below_threshold",
         "confidence_below_threshold",
         "insufficient_independent_sources"

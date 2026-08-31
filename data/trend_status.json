@@ -1,8 +1,8 @@
 {
-  "lastRun": "2026-08-31T15:45:43+00:00",
-  "searchResults": 3,
-  "candidates": 22,
-  "newReviewCandidates": 21,
+  "lastRun": "2026-08-31T16:07:12+00:00",
+  "searchResults": 4,
+  "candidates": 39,
+  "newReviewCandidates": 36,
   "failedSources": 2,
   "ok": false,
   "diagnostics": [
@@ -21,7 +21,7 @@
       "sourceId": "warau-new",
       "ok": true,
       "directAttempted": true,
-      "directResults": 1,
+      "directResults": 2,
       "firecrawlAttempted": false,
       "searchResults": 0,
       "fallbackAttempted": false,
