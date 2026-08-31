@@ -29,3 +29,9 @@
 - `collect_games.py` が子Collector失敗を正しく終了コードへ反映
 - GitHub Actions concurrencyで重複実行を禁止
 - 旧6時間候補Collector workflowを停止・historyへ退避
+
+## PHASE3_TREND_DISCOVERY_V26
+- 話題/新着ゲーム候補を自動発見する `scripts/discover_trending_games.py` を追加。
+- X + 登録ポイントサイト検索を候補ソース化し、Gemini抽出後にPythonで正規化・重複排除・複数ソーススコアリング。
+- 候補は `data/trend_candidates.json` / `data/trend_status.json` のみに保存し、ゲーム/案件の公開データは変更しない安全境界を固定。
+- GitHub Actions `Discover trending games` を毎日07:07頃(JST)に追加。既存Secretsを再利用。
