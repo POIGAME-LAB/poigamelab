@@ -42,3 +42,9 @@
 - Requires independent-source, confidence, score, and point-site-evidence gates.
 - Known games/aliases are blocked from promotion; publication and game target files remain untouched.
 - Trend workflow now commits the research queue alongside candidate-only outputs.
+
+## V28 — PHASE3 quarantined collector bridge
+- Promoted research candidates can now enter the existing strict offer collector/verifier without being added to `game_targets.json`.
+- Research runs force `POIGAMELAB_PUBLISH_MODE=quarantine`; verified offers are saved under `data/research_results/` and never written to public offer data.
+- Daily trend workflow researches at most one promoted game per run to cap API cost.
+- Unicode-only game names now receive collision-resistant hashed result slugs.

@@ -51,3 +51,6 @@ Python deterministic verifier → Publisher → `data/published_offers.csv`
 
 ## PHASE 3 V27 research promotion
 Strong V26 trend candidates are deterministically promoted to `data/research_queue.json` only when score/confidence/source-count thresholds pass and point-site evidence exists. This stage makes zero API calls and never edits publication data or `game_targets.json`.
+
+## PHASE 3 V28 research collector bridge
+`collector_ready` candidates can be researched automatically with the existing Firecrawl + Gemini + deterministic verifier pipeline. V28 is deliberately quarantined: it does not add the game to `game_targets.json` and does not update `data/published_offers.csv`. At most one promoted game is researched per daily trend run; results are stored in `data/research_results/` for the next publication-decision stage.

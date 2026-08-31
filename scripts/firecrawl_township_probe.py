@@ -32,8 +32,13 @@ def slugify_game(name):
     table = {"Township": "township", "きのこ伝説": "kinoko-densetsu", "メメントモリ": "memento-mori", "ワーキングヒーロー": "working-hero"}
     if name in table:
         return table[name]
-    x = re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")
-    return x or "game"
+    raw = name or "game"
+    x = re.sub(r"[^a-z0-9]+", "-", raw.lower()).strip("-")
+    if x and raw.isascii():
+        return x
+    import hashlib
+    digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:10]
+    return f"{x + '-' if x else 'game-'}{digest}"
 
 def configure_output_paths(cfg):
     global RAW_OUT, OUT
@@ -1222,13 +1227,21 @@ def main():
     OUT.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # PHASE 1 Publisher: deterministic gateを通った案件だけサイト用データへ。
-    # offers.csv は安全のため自動上書きしない。
-    try:
-        from publish_verified_offers import publish
-        published_rows, exception_rows = publish(OUT)
-    except Exception as e:
-        print(f"[Publisher] ERROR: {e}", file=sys.stderr)
-        return 5
+    # V28 research bridge uses quarantine mode: verify fully, but never publish.
+    publish_mode = os.getenv("POIGAMELAB_PUBLISH_MODE", "publish").strip().lower()
+    if publish_mode == "quarantine":
+        published_rows = []
+        exception_rows = [o for o in verified.get("offers", []) if not o.get("auto_publish_ready")]
+        output["policy"]["publishMode"] = "quarantine"
+        OUT.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+        print("[Publisher] research quarantine: published_offers.csv は変更しません")
+    else:
+        try:
+            from publish_verified_offers import publish
+            published_rows, exception_rows = publish(OUT)
+        except Exception as e:
+            print(f"[Publisher] ERROR: {e}", file=sys.stderr)
+            return 5
 
     print("[4/4] 完了")
     print(f"      Firecrawl候補: {len(candidates)}件")

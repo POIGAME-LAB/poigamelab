@@ -10,9 +10,17 @@ TARGETS=ROOT/'config/game_targets.json'
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('game', nargs='?', help='ゲーム名。省略時は全登録ゲーム')
+    ap.add_argument('--target-json', help='V28 research bridge用の一時target JSON。game/aliasesのみ許可')
     args=ap.parse_args()
     db=json.loads(TARGETS.read_text(encoding='utf-8'))['games']
-    selected=db if not args.game else [x for x in db if x['game']==args.game]
+    if args.target_json:
+        raw=json.loads(Path(args.target_json).read_text(encoding='utf-8'))
+        target={'game':str(raw.get('game') or '').strip(),'aliases':[str(x).strip() for x in (raw.get('aliases') or []) if str(x).strip()]}
+        if not target['game']:
+            print('target-json: game is required',file=sys.stderr); return 2
+        selected=[target]
+    else:
+        selected=db if not args.game else [x for x in db if x['game']==args.game]
     if not selected:
         print(f'未登録ゲーム: {args.game}',file=sys.stderr); return 2
     original=CFG.read_text(encoding='utf-8')

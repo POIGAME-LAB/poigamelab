@@ -28,11 +28,18 @@ jobs:
         run: python scripts/discover_trending_games.py
       - name: Promote strong candidates to research queue (API-free)
         run: python scripts/promote_trend_candidates.py
-      - name: Commit candidate-only outputs
+      - name: Research one promoted game with strict verifier (quarantine)
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+          RESEARCH_MAX_GAMES: "1"
+        run: python scripts/research_offer_bridge.py
+      - name: Commit discovery and quarantined research outputs
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/trend_candidates.json data/trend_status.json data/research_queue.json
+          git add data/trend_candidates.json data/trend_status.json data/research_queue.json data/research_bridge_status.json data/research_results/
           git diff --cached --quiet || git commit -m "chore: discover trending game candidates"
           git pull --rebase
           git push
