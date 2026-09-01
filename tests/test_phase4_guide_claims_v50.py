@@ -20,6 +20,9 @@ def test_invalid_category_rejected():
 def test_numeric_claim_requires_same_number_in_quote():
  r=m.run(DOC,'k',fetcher=fetch,ai=ai_with([{'sourceId':'s1','category':'timeline','claim':'城レベル20を3日で目指す','evidenceQuote':'3日で目指す'}]))
  assert r['claims']==[] and r['diagnostics'][0]['rejected']['numeric_not_grounded']==1
+def test_numeric_grounding_rejects_substring_number_match():
+ r=m.run(DOC,'k',fetcher=lambda u:('<p>Game Aでは城レベル120を目指す。</p>',{'httpStatus':200}),ai=ai_with([{'sourceId':'s1','category':'timeline','claim':'城レベル20を目指す','evidenceQuote':'城レベル120を目指す'}]))
+ assert r['claims']==[] and r['diagnostics'][0]['rejected']['numeric_not_grounded']==1
 def test_duplicate_claim_same_source_removed():
  c={'sourceId':'s1','category':'tip','claim':'資源箱は温存する','evidenceQuote':'資源箱は温存する'}
  r=m.run(DOC,'k',fetcher=fetch,ai=ai_with([c,c])); assert len(r['claims'])==1 and r['diagnostics'][0]['rejected']['duplicate']==1

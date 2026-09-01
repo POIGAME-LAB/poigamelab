@@ -191,3 +191,10 @@
 - Official-source claims may satisfy support alone, but deterministic same-template numeric conflicts override support and hold every conflicting variant.
 - Paraphrases are intentionally not fuzzy-merged, avoiding false corroboration from merely similar wording.
 - All V51 outputs remain quarantine-only with zero publication eligibility and zero production writes.
+
+## V52 — Guide claim corroboration
+- Added bounded independent-source research for V51 single-source holds.
+- Kept Tavily snippets non-evidentiary and required direct target-confirmed page retrieval.
+- Added literal-quote, exact numeric-token grounding (for example, `20` cannot be satisfied by `120`), and lexical-overlap guards around Gemini support mapping.
+- Quarantined contradictions instead of treating them as supporting evidence.
+- Added a second API-free V51 gate pass over the corroborated claim set; public writes remain zero.

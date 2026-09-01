@@ -8,6 +8,7 @@ numeric variants as conflicts, and keeps every decision in quarantine.
 from __future__ import annotations
 
 import json
+import os
 import re
 import unicodedata
 from datetime import datetime, timezone
@@ -149,7 +150,8 @@ def evaluate(doc):
 
 def main():
     try:
-        result = evaluate(json.loads(IN.read_text(encoding='utf-8')))
+        input_path = Path(os.getenv('GUIDE_CLAIMS_INPUT', str(IN)))
+        result = evaluate(json.loads(input_path.read_text(encoding='utf-8')))
         OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         status = {
             'phase': result['phase'], 'success': True, **result['counts'], 'apiCalls': 0,

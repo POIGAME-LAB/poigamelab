@@ -127,3 +127,6 @@ After V49 discovers and directly verifies guide pages, `scripts/extract_guide_cl
 
 ### PHASE 4 V51 — deterministic guide claim support/conflict gate
 `python scripts/evaluate_guide_claims.py` evaluates only V50 `validated_quarantine` claims with zero API calls. Community claims require matching conservative claim identity across at least two independent source sites; multiple pages/subdomains from the same site count once. A configured `official` claim may pass the support gate alone, but exact-template numeric conflicts are held even when one side is official. V51 deliberately does not fuzzy-merge paraphrases, does not generate guide copy, and keeps every decision quarantined with `publicationEligible: false` and `publicationWrites: 0`.
+
+### PHASE 4 V52 — bounded corroboration
+V52 researches only V51 `held_single_source` claims. Tavily remains URL discovery only; every candidate is directly fetched, target-confirmed, and must come from an independent source site. Gemini may map a literal quote to an existing held claim, but Python verifies quote presence, exact numeric-token grounding (so `20` is not accepted from `120`), and conservative lexical overlap. Search/fetch/API work is bounded and all outputs remain quarantined with `publicationWrites: 0`. A second V51 evaluation runs against the corroborated claim set.

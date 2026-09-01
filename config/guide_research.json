@@ -15,5 +15,8 @@
     "chobirich.com",
     "cimcome.jp"
   ],
-  "officialDomainsByGame": {}
+  "officialDomainsByGame": {},
+  "maxCorroborationClaimsPerRun": 4,
+  "maxCorroborationResultsPerClaim": 4,
+  "maxCorroborationFetchesPerRun": 12
 }

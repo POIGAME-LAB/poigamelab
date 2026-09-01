@@ -6,7 +6,7 @@ known and its evidenceQuote is literally present in the directly re-fetched
 page. Nothing here writes public game/site data.
 """
 from __future__ import annotations
-import json, os, re, sys
+import json, os, re, sys, unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,6 +22,12 @@ ALLOWED={'requirement','timeline','priority','resource','warning','mechanic','ti
 def now_iso(): return datetime.now(timezone.utc).astimezone().isoformat(timespec='seconds')
 def norm(s): return re.sub(r'\s+',' ',str(s or '')).strip()
 def norm_match(s): return re.sub(r'\s+','',str(s or '')).casefold()
+def numeric_tokens(s): return tuple(x.replace(',','') for x in re.findall(r'\d+(?:[.,]\d+)?',unicodedata.normalize('NFKC',str(s or ''))))
+def numeric_grounded(claim, quote):
+    required=list(numeric_tokens(claim)); found=list(numeric_tokens(quote))
+    for value in set(required):
+        if found.count(value) < required.count(value): return False
+    return True
 def safe_error(e): return collector.safe_error(e)
 
 def extract_interaction_text(res):
@@ -69,9 +75,7 @@ def validate_claim(raw, source_by_id):
     if len(claim)<4 or len(quote)<4: return None,'missing_text'
     src=source_by_id[sid]
     if norm_match(quote) not in norm_match(src['text']): return None,'quote_not_in_source'
-    nums=re.findall(r'\d+(?:[.,]\d+)?',claim)
-    qnorm=quote.replace(',','')
-    if any(n.replace(',','') not in qnorm for n in nums): return None,'numeric_not_grounded'
+    if not numeric_grounded(claim,quote): return None,'numeric_not_grounded'
     return {'game':src['game'],'category':cat,'claim':claim,'evidenceQuote':quote,'sourceId':sid,
       'url':src['url'],'sourceType':src['sourceType'],'status':'validated_quarantine'},None
 
