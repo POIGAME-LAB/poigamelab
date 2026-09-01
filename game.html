@@ -239,6 +239,59 @@
       font-weight: 700;
     }
 
+
+    /* PUBLIC_STATUS_UI_V1 */
+    .best-verified.warning,
+    .health-warning,
+    #dataHealthBox,
+    .comparison-table .verified-label,
+    .comparison-table .legacy-label,
+    .comparison-table .health-warning {
+      display: none !important;
+    }
+
+    .comparison-table td:nth-child(2) br {
+      display: none;
+    }
+
+    .legacy-label {
+      color: #756f80;
+    }
+
+    /* POIGAME_LV70_PREVIEW_V1 */
+    .guide-cta {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #e4dcff;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f7f3ff, #fffbea);
+    }
+
+    .guide-cta strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #32156f;
+      font-size: 17px;
+    }
+
+    .guide-cta p {
+      margin: 0 0 12px;
+      color: #716783;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .guide-cta a {
+      display: inline-block;
+      padding: 11px 16px;
+      border-radius: 11px;
+      background: #7047ff;
+      color: white;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
   </style>
 </head>
 
@@ -332,11 +385,11 @@
       <h2>
         ⭐ 難易度
       </h2>
-    
+
       <p id="gameDifficulty">
         調査中
       </p>
-    
+
     </section>
 
     <section class="section">
@@ -349,6 +402,13 @@
         攻略情報は準備中です。
       </p>
 
+      <div id="townshipGuideCta" class="guide-cta">
+        <strong>Township Lv70攻略を公開中</strong>
+        <p>60日以内のLv70到達を目指すための進捗データと、優先したい攻略をまとめました。</p>
+        <a href="township-lv70.html">Lv70攻略を読む →</a>
+      </div>
+
+
     </section>
 
   </main>
@@ -359,7 +419,7 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const gameName = params.get("game");
-  
+
     async function loadGameDetail() {
       try {
         const gameRows = await POIGAME_DATA.fetchCsv("games.csv");
@@ -411,6 +471,12 @@
         const tips = document.querySelector(".section:last-of-type p");
         if (tips) tips.textContent = game.tips || "攻略情報は準備中です。";
 
+        const townshipGuideCta = document.getElementById("townshipGuideCta");
+        if (townshipGuideCta && game.name === "Township") {
+          townshipGuideCta.style.display = "block";
+        }
+
+
         const tableBody = document.querySelector("tbody");
         if (tableBody) {
           tableBody.innerHTML = "";
@@ -437,13 +503,13 @@
             if (gameHealth.state === "fresh") {
               dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
             } else if (gameHealth.state === "degraded") {
-              dataHealthBox.textContent = "自動更新：一部取得できず。直前に検証済みの案件は保持しています。";
+              dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
               dataHealthBox.classList.add("health-warning");
             } else if (gameHealth.state === "failed") {
-              dataHealthBox.textContent = "自動更新：前回失敗。直前に検証済みの案件を表示しています。";
+              dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
               dataHealthBox.classList.add("health-warning");
             } else if (gameHealth.state === "stale") {
-              dataHealthBox.textContent = "自動更新：更新から時間が経過しています。案件ページで最新条件をご確認ください。";
+              dataHealthBox.textContent = "申込み前に案件ページで最新条件をご確認ください。";
               dataHealthBox.classList.add("health-warning");
             }
           }

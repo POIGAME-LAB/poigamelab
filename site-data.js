@@ -186,26 +186,26 @@
   }
 
   function getOfferHealthLabel(offer, gameHealth) {
-    if (!offer?.verified) return { state: "legacy", text: "△ 参考データ" };
+    if (!offer?.verified) return { state: "legacy", text: "参考掲載" };
     if (!gameHealth) {
       return {
         state: "verified",
-        text: `✓ 自動検証済み${offer.updatedAt ? ` ・ ${offer.updatedAt}更新` : ""}`
+        text: `✓ 掲載確認済み${offer.updatedAt ? ` ・ ${offer.updatedAt}更新` : ""}`
       };
     }
 
     if (gameHealth.state === "failed") {
-      return { state: "warning", text: "⚠ 前回の自動更新に失敗・直前の確認済みデータを表示中" };
+      return { state: "warning", text: "掲載情報を確認中" };
     }
     if (gameHealth.state === "degraded") {
-      return { state: "warning", text: "⚠ 一部取得できず・直前の確認済みデータを保持中" };
+      return { state: "warning", text: "掲載情報を確認中" };
     }
     if (gameHealth.state === "stale") {
-      return { state: "warning", text: "⚠ 更新から時間が経過しています" };
+      return { state: "warning", text: "最終確認データを掲載中" };
     }
     return {
       state: "verified",
-      text: `✓ 自動検証済み${offer.updatedAt ? ` ・ ${offer.updatedAt}更新` : ""}`
+      text: `✓ 掲載確認済み${offer.updatedAt ? ` ・ ${offer.updatedAt}更新` : ""}`
     };
   }
 

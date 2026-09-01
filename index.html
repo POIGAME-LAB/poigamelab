@@ -523,7 +523,21 @@
     font-weight: 700;
   }
 
-  </style>
+
+  /* PUBLIC_STATUS_UI_V1 */
+  .verification-line.warning {
+    display: none !important;
+  }
+
+  .verification-line.legacy {
+    color: #756f80 !important;
+  }
+
+  #statHealth {
+    display: none !important;
+  }
+
+</style>
 </head>
 
 <body>
@@ -563,7 +577,6 @@
           <small>LIVE DATA</small>
           <h2>最新データサマリー</h2>
           <p>確認済みの掲載データを自動集計。自動収集した候補は確認後に公開します。</p>
-          <a href="data-status.html" style="display:inline-block;margin-top:8px;color:#ffe45c;font-weight:800;text-decoration:none;">データ収集状況を見る →</a>
         </div>
         <div class="dashboard-stat">
           <span>掲載ゲーム</span>
@@ -589,23 +602,23 @@
               <span class="section-label">PICK UP</span>
               <h2>🔥 いま注目のポイ活ゲーム</h2>
             </div>
-    
+
             <a href="#" class="view-all">すべて見る →</a>
           </div>
-    
+
           <div class="sort-buttons">
             <button class="active">おすすめ順</button>
             <button>報酬が高い順</button>
             <button>簡単な順</button>
             <button>新着</button>
           </div>
-    
+
           <div class="game-grid">
-    
-            
-    
+
+
+
           </div>
-    
+
         </section>
 
   </main>
@@ -714,9 +727,9 @@
 
     if (statHealth) {
       const statuses = Object.values(dataHealth.games || {}).map((item) => item.state);
-      if (statuses.includes("failed")) statHealth.textContent = "一部更新失敗・確認済みデータを保持";
-      else if (statuses.includes("degraded")) statHealth.textContent = "一部取得できず・確認済みデータを保持";
-      else if (statuses.includes("stale")) statHealth.textContent = "更新から時間が経過";
+      if (statuses.includes("failed")) statHealth.textContent = "掲載情報を確認中";
+      else if (statuses.includes("degraded")) statHealth.textContent = "掲載情報を確認中";
+      else if (statuses.includes("stale")) statHealth.textContent = "掲載情報を確認中";
       else if (dataHealth.available) statHealth.textContent = "自動更新 正常";
       else statHealth.textContent = "";
     }
