@@ -1,19 +1,29 @@
 {
   "game": "ホワイトアウト・サバイバル",
-  "researchedAt": "2026-08-31T17:07:46+00:00",
+  "researchedAt": "2026-09-01T01:15:53+00:00",
   "sourceQueue": {
     "game": "ホワイトアウト・サバイバル",
     "aliases": [
-      "ホワイトアウト・サバイバル",
-      "ホワイトアウト・サバイバル(StepUp)"
+      "ホワイトアウト・サバイバル"
     ],
     "status": "collector_ready",
     "collectorReady": true,
-    "candidateFingerprint": "6142cd7b2d4da684",
-    "lastResearchAt": null,
-    "researchSummary": null,
+    "candidateFingerprint": "b979da78e6dc55e0",
+    "lastResearchAt": "2026-08-31T17:07:46+00:00",
+    "researchSummary": {
+      "game": "ホワイトアウト・サバイバル",
+      "returncode": 0,
+      "resultSaved": true,
+      "publishableCount": 2,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "chobirich:search_failed",
+        "coincome:search_failed",
+        "moppy:search_failed"
+      ]
+    },
     "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-    "lastConfirmedAt": "2026-08-31T17:07:34+00:00",
+    "lastConfirmedAt": "2026-09-01T01:15:42+00:00",
     "score": 75,
     "confidence": 80,
     "sourceCount": 2,
@@ -35,7 +45,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-08-31T17:07:46+00:00",
+    "runAt": "2026-09-01T01:15:53+00:00",
     "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
     "candidateCount": 2,
     "geminiModel": "gemini-3.5-flash-lite",
@@ -45,16 +55,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "新規アプリインストール後、インストール日から起算して25日以内にStepUpミッション（大溶鉱炉レベル3到達、レベル10到達、800円以上1,600円未満の一括課金、レベル18到達、1,600円以上3,200円未満の一括課金、レベル21到達、レベル23到達、レベル23到達後3,200円以上一括課金、【高難易度】レベル26到達）をクリア",
+          "condition": "初回アプリインストール後、25日以内にStepUpミッションをクリア（最大11,500pt）",
           "platform": "iOS",
-          "deadline": "2026年9月25日",
+          "deadline": "2026-09-25",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService"
           ],
-          "confidence": 5,
+          "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル（StepUp）iOS版の報酬ポイント、達成条件、URLが明確に取得できたため。",
+          "reason": "ワラウの公式詳細ページより、対象ゲーム、OS、報酬額（11500pt＝11500円相当）、達成条件、URLが明確に確認できたため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -74,16 +84,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "新規アプリインストール後、インストール日から起算して25日以内にStepUpミッション（大溶鉱炉レベル3到達、レベル10到達、800円以上1,600円未満の一括課金、レベル18到達、1,600円以上3,200円未満の一括課金、レベル21到達、レベル23到達、レベル23到達後3,200円以上一括課金、レベル26到達）をクリア",
+          "condition": "初回アプリインストール後、25日以内にStepUpミッションをクリア（最大11,500pt）",
           "platform": "Android",
-          "deadline": "2026年9月25日",
+          "deadline": "2026-09-25",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService"
           ],
-          "confidence": 5,
+          "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル（StepUp）Android版の報酬ポイント、達成条件、URLが明確に取得できたため。",
+          "reason": "ワラウの公式詳細ページより、対象ゲーム、Android版、報酬額（11500pt＝11500円相当）、達成条件、URLが明確に確認できたため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -101,7 +111,7 @@
           "auto_publish_ready": true
         }
       ],
-      "verdict": "ワラウのiOS版およびAndroid版のホワイトアウト・サバイバル（StepUp）案件をそれぞれ正常に抽出しました。",
+      "verdict": "有効なホワイトアウト・サバイバルの案件をiOSおよびAndroid版それぞれ正確に抽出しました。",
       "needs_human_review": false
     },
     "diagnostics": [
@@ -120,8 +130,9 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 81383,
-              "truncated": false
+              "bytes": 81898,
+              "truncated": false,
+              "deviceMode": "mobile"
             }
           ],
           "details": [],
@@ -151,15 +162,17 @@
               "ok": true,
               "targetFound": true,
               "detailLinks": 2,
-              "bytes": 308951,
-              "truncated": false
+              "bytes": 312381,
+              "truncated": false,
+              "deviceMode": "mobile"
             },
             {
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 315384,
-              "truncated": false
+              "bytes": 311122,
+              "truncated": false,
+              "deviceMode": "mobile"
             }
           ],
           "details": [
@@ -167,15 +180,17 @@
               "identityUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872",
               "ok": true,
               "targetFound": true,
-              "bytes": 365324,
-              "truncated": false
+              "bytes": 365914,
+              "truncated": false,
+              "deviceMode": "mobile"
             },
             {
               "identityUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862",
               "ok": true,
               "targetFound": true,
-              "bytes": 366237,
-              "truncated": false
+              "bytes": 366827,
+              "truncated": false,
+              "deviceMode": "mobile"
             }
           ],
           "candidateCount": 2,
@@ -190,7 +205,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.4
+        "elapsedSeconds": 7.9
       },
       {
         "source_id": "chobirich",
@@ -238,8 +253,9 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 73462,
-              "truncated": false
+              "bytes": 110412,
+              "truncated": false,
+              "deviceMode": "mobile"
             }
           ],
           "details": [],
@@ -255,7 +271,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.6
+        "elapsedSeconds": 2.4
       }
     ],
     "health": {

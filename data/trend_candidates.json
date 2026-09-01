@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T17:06:57+00:00",
+  "generatedAt": "2026-09-01T01:15:28+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
     "searchResults": 4,
-    "candidates": 56,
-    "newReviewCandidates": 53,
+    "candidates": 53,
+    "newReviewCandidates": 50,
     "failedSources": 2
   },
   "diagnostics": [
@@ -67,13 +67,12 @@
     {
       "game": "ホワイトアウト・サバイバル",
       "aliases": [
-        "ホワイトアウト・サバイバル",
-        "ホワイトアウト・サバイバル(StepUp)"
+        "ホワイトアウト・サバイバル"
       ],
       "knownGame": false,
       "score": 75,
       "confidence": 80,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 2,
       "sourceCount": 2,
       "sourceTypeCount": 1,
@@ -94,14 +93,40 @@
       ]
     },
     {
-      "game": "ラストアサイラム:プレイグ",
+      "game": "Marble Sort!",
+      "aliases": [],
+      "knownGame": false,
+      "score": 50,
+      "confidence": 45,
+      "modelConfidence": 1,
+      "mentionCount": 2,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        },
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "ミステリータウン:マージゲーム - Mystery Town",
       "aliases": [
-        "ラストアサイラム:プレイグ(StepUp)"
+        "ミステリータウン:マージゲーム"
       ],
       "knownGame": false,
       "score": 50,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 2,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -123,13 +148,11 @@
     },
     {
       "game": "3D Toys: Shadow Match",
-      "aliases": [
-        "3D Toys: Shadow Match(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -168,35 +191,11 @@
     },
     {
       "game": "Bingo Blitz",
-      "aliases": [
-        "Bingo Blitz(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "Cat Garden Merge",
-      "aliases": [
-        "Cat Garden Merge(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -212,13 +211,11 @@
     },
     {
       "game": "Color Beads Drop",
-      "aliases": [
-        "Color Beads Drop(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -234,13 +231,11 @@
     },
     {
       "game": "Fruit Drop Puzzle",
-      "aliases": [
-        "Fruit Drop Puzzle(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -256,13 +251,11 @@
     },
     {
       "game": "Goods Match 3D - Shelf Cleaner",
-      "aliases": [
-        "Goods Match 3D - Shelf Cleaner(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -278,13 +271,11 @@
     },
     {
       "game": "LINE ポコポコ",
-      "aliases": [
-        "LINE ポコポコ(ステージ5クリア)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -295,28 +286,6 @@
           "sourceType": "point_site",
           "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
           "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "Marble Sort!",
-      "aliases": [
-        "Marble Sort!(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
         }
       ]
     },
@@ -366,15 +335,32 @@
       ]
     },
     {
-      "game": "Screw Cat",
-      "aliases": [
-        "Screw Cat:可愛いネコのスクリューパズルゲーム",
-        "Screw Cat:可愛いネコのスクリューパズルゲーム(Level100クリア)"
-      ],
+      "game": "Pococha",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -389,14 +375,32 @@
       ]
     },
     {
-      "game": "Spades - Classic Card Games",
-      "aliases": [
-        "Spades - Classic Card Games(StepUp)"
-      ],
+      "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "Spades - Classic Card Games",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -412,13 +416,11 @@
     },
     {
       "game": "Suck it Up",
-      "aliases": [
-        "Suck it Up(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -434,13 +436,11 @@
     },
     {
       "game": "Super Big Slime",
-      "aliases": [
-        "Super Big Slime(レベル60到達)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -502,13 +502,11 @@
     },
     {
       "game": "The Tower",
-      "aliases": [
-        "The Tower(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -524,13 +522,11 @@
     },
     {
       "game": "Tidy Match 3D-Puzzle Game",
-      "aliases": [
-        "Tidy Match 3D-Puzzle Game(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -545,15 +541,14 @@
       ]
     },
     {
-      "game": "Triple Tile",
+      "game": "Triple Tile - トリプルタイル",
       "aliases": [
-        "Triple Tile - トリプルタイル",
-        "Triple Tile - トリプルタイル(StepUp)"
+        "Triple Tile"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -569,13 +564,11 @@
     },
     {
       "game": "Wild Survival",
-      "aliases": [
-        "Wild Survival(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -586,28 +579,6 @@
           "sourceType": "point_site",
           "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
           "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "すみっコぐらし 農園つくるんです",
-      "aliases": [
-        "すみっコぐらし 農園つくるんです(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -635,13 +606,11 @@
     },
     {
       "game": "キングショット",
-      "aliases": [
-        "キングショット(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -657,13 +626,11 @@
     },
     {
       "game": "クラシックソリティア",
-      "aliases": [
-        "クラシックソリティア(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -679,13 +646,11 @@
     },
     {
       "game": "グルメ・ジャーニー",
-      "aliases": [
-        "グルメ・ジャーニー(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -701,13 +666,11 @@
     },
     {
       "game": "ザ・グランドマフィア",
-      "aliases": [
-        "ザ・グランドマフィア(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -722,16 +685,14 @@
       ]
     },
     {
-      "game": "ターミナルマスター",
+      "game": "ターミナルマスター - Terminal Master",
       "aliases": [
-        "ターミナルマスター - Terminal Master",
-        "ターミナルマスター - Terminal Master(ステージ4到達)",
-        "ターミナルマスター - Terminal Master(ステージ7 到達(シカゴ空港オープン))"
+        "ターミナルマスター"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -747,13 +708,11 @@
     },
     {
       "game": "デイリー麻雀マッチ",
-      "aliases": [
-        "デイリー麻雀マッチ(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -768,15 +727,12 @@
       ]
     },
     {
-      "game": "ハイローラー ベガス",
-      "aliases": [
-        "ハイローラー ベガス : カジノゲーム",
-        "ハイローラー ベガス : カジノゲーム(StepUp)"
-      ],
+      "game": "ハイローラー ベガス : カジノゲーム",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -792,13 +748,11 @@
     },
     {
       "game": "バブルブロックパズル",
-      "aliases": [
-        "バブルブロックパズル(クラシックモードで4,500点を達成)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -814,13 +768,11 @@
     },
     {
       "game": "パズル&サバイバル",
-      "aliases": [
-        "パズル&サバイバル(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -858,13 +810,11 @@
     },
     {
       "game": "フィッシュダム",
-      "aliases": [
-        "フィッシュダム(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -880,13 +830,11 @@
     },
     {
       "game": "ブラウザ三国志天",
-      "aliases": [
-        "ブラウザ三国志天(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -924,103 +872,11 @@
     },
     {
       "game": "ベガス クレイズ カジノ",
-      "aliases": [
-        "ベガス クレイズ カジノ(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "ポケコロユニバース",
-      "aliases": [
-        "ポケコロユニバース(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "マージキャンプ",
-      "aliases": [
-        "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう",
-        "マージキャンプ - Merge Camp 動物の癒しの島を飾ろう(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "マージメイドカフェ",
-      "aliases": [
-        "マージメイドカフェ(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "ミステリータウン",
-      "aliases": [
-        "ミステリータウン:マージゲーム - Mystery Town",
-        "ミステリータウン:マージゲーム - Mystery Town(StepUp)"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1058,13 +914,31 @@
     },
     {
       "game": "モンスターバスケット",
-      "aliases": [
-        "モンスターバスケット(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "ラストアサイラム:プレイグ",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1101,15 +975,12 @@
       ]
     },
     {
-      "game": "ロックンキャッシュカジノ",
-      "aliases": [
-        "ロックンキャッシュカジノ-スロットゲーム",
-        "ロックンキャッシュカジノ-スロットゲーム(StepUp)"
-      ],
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1146,15 +1017,12 @@
       ]
     },
     {
-      "game": "商人放浪記",
-      "aliases": [
-        "商人放浪記:あきんどの成り上がり道",
-        "商人放浪記:あきんどの成り上がり道(StepUp)"
-      ],
+      "game": "商人放浪記:あきんどの成り上がり道",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1171,13 +1039,12 @@
     {
       "game": "恋するコーデ「ペアリウム」",
       "aliases": [
-        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム",
-        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム(StepUp)"
+        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1215,13 +1082,11 @@
     },
     {
       "game": "杖と剣の伝説",
-      "aliases": [
-        "杖と剣の伝説(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 0,
+      "modelConfidence": 1,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1260,8 +1125,7 @@
     {
       "game": "Township",
       "aliases": [
-        "タウンシップ",
-        "タウンシップ(StepUp)"
+        "タウンシップ"
       ],
       "knownGame": true,
       "score": 45,
@@ -1281,10 +1145,9 @@
       ]
     },
     {
-      "game": "きのこ伝説",
+      "game": "キノコ伝説:勇者と魔法のランプ",
       "aliases": [
-        "キノコ伝説:勇者と魔法のランプ",
-        "キノコ伝説:勇者と魔法のランプ(StepUp)"
+        "きのこ伝説"
       ],
       "knownGame": true,
       "score": 45,
@@ -1305,9 +1168,7 @@
     },
     {
       "game": "メメントモリ",
-      "aliases": [
-        "メメントモリ(StepUp)"
-      ],
+      "aliases": [],
       "knownGame": true,
       "score": 45,
       "confidence": 45,

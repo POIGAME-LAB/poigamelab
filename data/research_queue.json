@@ -1,27 +1,26 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-31T17:07:34+00:00",
-  "sourceGeneratedAt": "2026-08-31T17:06:57+00:00",
+  "generatedAt": "2026-09-01T01:15:42+00:00",
+  "sourceGeneratedAt": "2026-09-01T01:15:28+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
   "summary": {
-    "trendCandidates": 56,
+    "trendCandidates": 53,
     "collectorReady": 1,
-    "rejected": 55
+    "rejected": 52
   },
   "items": [
     {
       "game": "ホワイトアウト・サバイバル",
       "aliases": [
-        "ホワイトアウト・サバイバル",
-        "ホワイトアウト・サバイバル(StepUp)"
+        "ホワイトアウト・サバイバル"
       ],
       "status": "research_complete",
       "collectorReady": false,
-      "candidateFingerprint": "6142cd7b2d4da684",
-      "lastResearchAt": "2026-08-31T17:07:46+00:00",
+      "candidateFingerprint": "b979da78e6dc55e0",
+      "lastResearchAt": "2026-09-01T01:15:53+00:00",
       "researchSummary": {
         "game": "ホワイトアウト・サバイバル",
         "returncode": 0,
@@ -35,7 +34,7 @@
         ]
       },
       "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-      "lastConfirmedAt": "2026-08-31T17:07:34+00:00",
+      "lastConfirmedAt": "2026-09-01T01:15:42+00:00",
       "score": 75,
       "confidence": 80,
       "sourceCount": 2,
@@ -58,7 +57,15 @@
   ],
   "rejected": [
     {
-      "game": "ラストアサイラム:プレイグ",
+      "game": "Marble Sort!",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ミステリータウン:マージゲーム - Mystery Town",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -83,14 +90,6 @@
     },
     {
       "game": "Bingo Blitz",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "Cat Garden Merge",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -130,14 +129,6 @@
       ]
     },
     {
-      "game": "Marble Sort!",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
       "game": "Merge Peko",
       "reasons": [
         "score_below_threshold",
@@ -154,7 +145,23 @@
       ]
     },
     {
-      "game": "Screw Cat",
+      "game": "Pococha",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -218,7 +225,7 @@
       ]
     },
     {
-      "game": "Triple Tile",
+      "game": "Triple Tile - トリプルタイル",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -227,14 +234,6 @@
     },
     {
       "game": "Wild Survival",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "すみっコぐらし 農園つくるんです",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -282,7 +281,7 @@
       ]
     },
     {
-      "game": "ターミナルマスター",
+      "game": "ターミナルマスター - Terminal Master",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -298,7 +297,7 @@
       ]
     },
     {
-      "game": "ハイローラー ベガス",
+      "game": "ハイローラー ベガス : カジノゲーム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -362,38 +361,6 @@
       ]
     },
     {
-      "game": "ポケコロユニバース",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "マージキャンプ",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "マージメイドカフェ",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "ミステリータウン",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
       "game": "ミストバレー",
       "reasons": [
         "score_below_threshold",
@@ -410,6 +377,14 @@
       ]
     },
     {
+      "game": "ラストアサイラム:プレイグ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "ロイヤルマッチ",
       "reasons": [
         "score_below_threshold",
@@ -418,7 +393,7 @@
       ]
     },
     {
-      "game": "ロックンキャッシュカジノ",
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -434,7 +409,7 @@
       ]
     },
     {
-      "game": "商人放浪記",
+      "game": "商人放浪記:あきんどの成り上がり道",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -483,7 +458,7 @@
       ]
     },
     {
-      "game": "きのこ伝説",
+      "game": "キノコ伝説:勇者と魔法のランプ",
       "reasons": [
         "known_game",
         "score_below_threshold",

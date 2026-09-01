@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "PHASE3_ADOPTION_GATE_V29",
-  "generatedAt": "2026-08-31T17:07:46+00:00",
+  "generatedAt": "2026-09-01T01:15:53+00:00",
   "apiCalls": 0,
   "autoPublish": false,
   "autoAddGame": false,
@@ -25,20 +25,30 @@
       "verifiedSources": [
         "warau"
       ],
-      "researchedAt": "2026-08-31T17:07:46+00:00",
+      "researchedAt": "2026-09-01T01:15:53+00:00",
       "sourceQueue": {
         "game": "ホワイトアウト・サバイバル",
         "aliases": [
-          "ホワイトアウト・サバイバル",
-          "ホワイトアウト・サバイバル(StepUp)"
+          "ホワイトアウト・サバイバル"
         ],
         "status": "collector_ready",
         "collectorReady": true,
-        "candidateFingerprint": "6142cd7b2d4da684",
-        "lastResearchAt": null,
-        "researchSummary": null,
+        "candidateFingerprint": "b979da78e6dc55e0",
+        "lastResearchAt": "2026-08-31T17:07:46+00:00",
+        "researchSummary": {
+          "game": "ホワイトアウト・サバイバル",
+          "returncode": 0,
+          "resultSaved": true,
+          "publishableCount": 2,
+          "collectionComplete": false,
+          "degradedReasons": [
+            "chobirich:search_failed",
+            "coincome:search_failed",
+            "moppy:search_failed"
+          ]
+        },
         "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-        "lastConfirmedAt": "2026-08-31T17:07:34+00:00",
+        "lastConfirmedAt": "2026-09-01T01:15:42+00:00",
         "score": 75,
         "confidence": 80,
         "sourceCount": 2,
