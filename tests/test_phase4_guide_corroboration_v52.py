@@ -12,7 +12,7 @@ def search(url='https://b.example/guide'):
  return lambda q,k,n:{'results':[{'url':url,'title':'ignored','content':'ignored snippet'}]}
 def fetch(text='Game A 攻略では資源箱は温存するのがおすすめです'):
  return lambda u:(f'<html><body>{text}</body></html>',{'httpStatus':200})
-def ai_support(key,model,prompt): return {'matches':[{'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'資源箱は温存する'}]}
+def ai_support(key,model,prompt): return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
 
 def test_independent_direct_quote_adds_corroboration():
  c,d=docs(); merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
@@ -31,27 +31,28 @@ def test_target_missing_skips_ai():
  assert r['apiCalls']==0 and r['supportingClaimsAdded']==0
 
 def test_quote_must_exist_in_direct_page():
- c,d=docs(); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'存在しない引用'}]}
+ c,d=docs(); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:invented','relation':'support'}]}
  _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=bad)
- assert r['supportingClaimsAdded']==0 and r['rejected']['quote_not_in_source']==1
+ assert r['supportingClaimsAdded']==0 and r['rejected']['unknown_span']==1
 
 def test_numeric_claim_requires_same_number_in_quote():
- c,d=docs('城レベル20を目指す'); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'城レベル10を目指す'}]}
+ c,d=docs('城レベル20を目指す'); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
  _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 城レベル10を目指す'),ai=bad)
  assert r['supportingClaimsAdded']==0 and r['rejected']['numeric_not_grounded']==1
 
 def test_numeric_grounding_uses_exact_tokens_not_substrings():
- c,d=docs('城レベル20を目指す'); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'城レベル120を目指す'}]}
+ c,d=docs('城レベル20を目指す'); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
  _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 城レベル120を目指す'),ai=bad)
  assert r['supportingClaimsAdded']==0 and r['rejected']['numeric_not_grounded']==1
 
 def test_semantically_unrelated_quote_rejected_by_overlap_guard():
- c,d=docs(); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'毎日ログインすると報酬がもらえる'}]}
+ c,d=docs(); bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
  _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 毎日ログインすると報酬がもらえる'),ai=bad)
- assert r['supportingClaimsAdded']==0 and r['rejected']['insufficient_lexical_overlap']==1
+ assert r['supportingClaimsAdded']==0 and r['apiCalls']==0
+ assert r['diagnosticCounts']['sourceClaimPairsNoLexicalSpan']==1
 
 def test_contradiction_is_quarantined_not_appended():
- c,d=docs('城レベル20を目指す'); a=lambda *x:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'contradict','evidenceQuote':'城レベル10を目指す'}]}
+ c,d=docs('城レベル20を目指す'); a=lambda *x:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'contradict'}]}
  merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 城レベル10を目指す'),ai=a)
  assert r['contradictionsFound']==1 and len(merged['claims'])==1
 
@@ -121,9 +122,9 @@ def test_live_shape_seven_base_claims_three_supports_upgrade_three_groups():
   return (f'<body>Game A 攻略項目{labels[i]}を優先する</body>',{})
  def ai(key,model,prompt):
   return {'matches':[
-   {'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'攻略項目甲を優先する'},
-   {'claimId':'c2','sourceId':'u2','relation':'support','evidenceQuote':'攻略項目乙を優先する'},
-   {'claimId':'c3','sourceId':'u3','relation':'support','evidenceQuote':'攻略項目丙を優先する'},
+   {'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'},
+   {'claimId':'c2','sourceId':'u2','spanId':'u2:c2:s1','relation':'support'},
+   {'claimId':'c3','sourceId':'u3','spanId':'u3:c3:s1','relation':'support'},
   ]}
  merged,r=m.run({'claims':cs},{'decisions':ds},cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
  assert r['inputClaims']==7 and r['supportingClaimsAdded']==3 and r['outputClaims']==10
@@ -178,11 +179,11 @@ def test_diagnostics_show_when_ai_returns_no_proposals_for_candidate_pages():
 
 def test_diagnostics_surface_ai_validation_rejection_reason():
  c,d=docs()
- bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'存在しない引用'}]}
+ bad=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:invented','relation':'support'}]}
  _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=bad)
  assert r['diagnosticCounts']['aiProposedMatches']==1
  assert r['diagnosticCounts']['aiRejectedMatches']==1
- assert r['rejected']['quote_not_in_source']==1
+ assert r['rejected']['unknown_span']==1
 
 
 def test_cross_claim_mapping_cannot_bypass_independent_source_guard():
@@ -199,19 +200,19 @@ def test_cross_claim_mapping_cannot_bypass_independent_source_guard():
   if state['n']==1: return {'results':[{'url':'https://c.example/own-candidate'}]}
   return {'results':[{'url':'https://a.example/from-other-claim'}]}
  def fe(url): return ('<body>Game A 資源箱は温存する 建設枠を優先する</body>',{})
- def ai(*a): return {'matches':[{'claimId':'c1','sourceId':'u2','relation':'support','evidenceQuote':'資源箱は温存する'}]}
+ def ai(*a): return {'matches':[{'claimId':'c1','sourceId':'u2','spanId':'u2:c1:s1','relation':'support'}]}
  merged,r=m.run(claims,decisions,cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
  assert len(merged['claims'])==2
  assert r['supportingClaimsAdded']==0
- assert r['rejected']['not_independent_for_claim']==1
+ assert r['rejected']['unknown_span']==1
 
 
 def test_contradiction_requires_same_claim_context():
  c,d=docs('資源箱は温存する')
- unrelated=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','relation':'contradict','evidenceQuote':'毎日ログインすると報酬がもらえる'}]}
+ unrelated=lambda *a:{'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'contradict'}]}
  _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 毎日ログインすると報酬がもらえる'),ai=unrelated)
- assert r['contradictionsFound']==0
- assert r['rejected']['contradiction_context_mismatch']==1
+ assert r['contradictionsFound']==0 and r['apiCalls']==0
+ assert r['diagnosticCounts']['sourceClaimPairsNoLexicalSpan']==1
 
 
 def test_report_always_exposes_diagnostic_counts_without_publication():
@@ -221,9 +222,9 @@ def test_report_always_exposes_diagnostic_counts_without_publication():
  assert r['publicationWrites']==0
 
 
-def test_v523_logic_version_is_reported_for_live_audit():
+def test_v524_logic_version_is_reported_for_live_audit():
  c,d=docs(); _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
- assert r['logicVersion']=='V52.3'
+ assert r['logicVersion']=='V52.4'
 
 
 def test_orphan_held_decision_is_not_researched_or_resurrected():
@@ -252,3 +253,172 @@ def test_malformed_ai_response_is_diagnostic_not_support():
  assert r['supportingClaimsAdded']==0 and r['apiCalls']==1
  assert r['diagnosticCounts']['aiMalformedResponses']==1
  assert r['diagnosticCounts']['candidatePagesUnreferencedByAI']==1
+
+
+def test_v524_prompt_uses_python_span_ids_not_ai_written_quotes():
+ held=[{'claimId':'c1','category':'tip','claim':'資源箱は温存する','existingSites':['a.example']}]
+ spans=[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','text':'Game A 攻略では資源箱は温存する'}]
+ p=m.build_prompt('Game A',held,spans)
+ assert 'spanId' in p and 'evidenceSpans' in p
+ assert 'evidenceQuote' not in p
+
+
+def test_claim_windows_are_exact_bounded_source_substrings():
+ text='Game A '+('前置きです。'*80)+'攻略では資源箱は温存する。'+('後半です。'*80)
+ spans=m.claim_windows('c1','u1','資源箱は温存する',text)
+ assert spans and len(spans)<=4
+ assert all(x['text'] in m.norm(text) for x in spans)
+ assert all(len(x['text'])<=240 for x in spans)
+ assert any('資源箱は温存する' in x['text'] for x in spans)
+
+
+def test_ai_cannot_invent_evidence_text_when_selecting_valid_span():
+ c,d=docs()
+ def ai(*a):
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support','evidenceQuote':'AIが勝手に作った文章'}]}
+ merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai)
+ assert r['supportingClaimsAdded']==1
+ added=[x for x in merged['claims'] if x['url']=='https://b.example/guide'][0]
+ assert 'AIが勝手に作った文章' not in added['evidenceQuote']
+ assert added['evidenceQuote'] in m.norm('Game A 攻略では資源箱は温存するのがおすすめです')
+
+
+def test_unknown_span_id_fails_closed_without_quote_fallback():
+ c,d=docs()
+ def ai(*a): return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:not-real','relation':'support','evidenceQuote':'資源箱は温存する'}]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['rejected']['unknown_span']==1
+
+
+def test_span_pair_mismatch_is_rejected_even_when_ids_exist():
+ claims={'c1':{'claimId':'c1','claim':'資源箱は温存する','category':'tip','existingSites':[]},'c2':{'claimId':'c2','claim':'建設枠を優先する','category':'tip','existingSites':[]}}
+ sources={'u1':{'sourceId':'u1','site':'b.example','text':'Game A 資源箱は温存する 建設枠を優先する'}}
+ spans={
+  'u1:c1:s1':{'spanId':'u1:c1:s1','claimId':'c1','sourceId':'u1','text':'資源箱は温存する'},
+  'u1:c2:s1':{'spanId':'u1:c2:s1','claimId':'c2','sourceId':'u1','text':'建設枠を優先する'},
+ }
+ raw={'claimId':'c1','sourceId':'u1','spanId':'u1:c2:s1','relation':'support'}
+ match,reason=m.validate_match(raw,claims,sources,spans)
+ assert match is None and reason=='span_pair_mismatch'
+
+
+def test_independence_is_applied_before_spans_are_exposed_to_ai():
+ held={
+  'c1':{'claimId':'c1','claim':'資源箱は温存する','category':'tip','existingSites':['a.example']},
+  'c2':{'claimId':'c2','claim':'建設枠を優先する','category':'tip','existingSites':['b.example']},
+ }
+ sources=[
+  {'sourceId':'u1','site':'a.example','text':'Game A 資源箱は温存する 建設枠を優先する'},
+  {'sourceId':'u2','site':'c.example','text':'Game A 資源箱は温存する 建設枠を優先する'},
+ ]
+ spans,considered,with_spans,no_lexical=m.build_evidence_spans(held,sources)
+ ids={x['spanId'] for x in spans}
+ assert not any(x.startswith('u1:c1:') for x in ids)
+ assert any(x.startswith('u1:c2:') for x in ids)
+ assert any(x.startswith('u2:c1:') for x in ids)
+ assert any(x.startswith('u2:c2:') for x in ids)
+ assert considered==3 and with_spans==3 and no_lexical==0
+
+
+def test_source_found_for_one_claim_can_corroborate_another_independent_held_claim():
+ c1=claim('資源箱は温存する','https://a.example/original')
+ c2=claim('建設枠を優先する','https://b.example/original')
+ claims={'claims':[c1,c2]}
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['a.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['b.example']},
+ ]}
+ state={'n':0}
+ def se(q,k,n):
+  state['n']+=1
+  if state['n']==1: return {'results':[{'url':'https://c.example/shared-guide'}]}
+  return {'results':[]}
+ def fe(url): return ('<body>Game A 建設枠を優先する</body>',{})
+ def ai(*a): return {'matches':[{'claimId':'c2','sourceId':'u1','spanId':'u1:c2:s1','relation':'support'}]}
+ merged,r=m.run(claims,decisions,cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ assert r['supportingClaimsAdded']==1
+ gated=m.gate.evaluate(merged)
+ statuses={d['claim']:d['status'] for d in gated['decisions']}
+ assert statuses['建設枠を優先する']=='supported_quarantine'
+ assert statuses['資源箱は温存する']=='held_single_source'
+
+
+def test_no_lexical_span_skips_ai_instead_of_sending_unusable_evidence():
+ c,d=docs('資源箱は温存する')
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 毎日ログインすると報酬がもらえる'),ai=lambda *a:(_ for _ in ()).throw(AssertionError()))
+ f=r['diagnosticCounts']
+ assert r['apiCalls']==0 and r['supportingClaimsAdded']==0
+ assert f['sourceClaimPairsConsidered']==1
+ assert f['sourceClaimPairs']==0
+ assert f['sourceClaimPairsNoLexicalSpan']==1
+ assert f['evidenceSpans']==0
+
+
+def test_duplicate_ai_matches_from_same_claim_source_count_once():
+ c,d=docs()
+ def ai(*a):
+  return {'matches':[
+   {'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'},
+   {'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'},
+  ]}
+ merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai)
+ assert r['supportingClaimsAdded']==1
+ assert r['validatedMatches']==1
+ assert r['rejected']['duplicate_ai_match']==1
+ assert len(merged['claims'])==2
+
+
+def test_conflicting_ai_relations_for_same_claim_source_fail_closed():
+ c,d=docs('城レベル20を目指す')
+ def ai(*a):
+  return {'matches':[
+   {'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'},
+   {'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'contradict'},
+  ]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 城レベル20を目指す'),ai=ai)
+ assert r['supportingClaimsAdded']==0 and r['contradictionsFound']==0
+ assert r['validatedMatches']==0
+ assert r['rejected']['ambiguous_pair_relations']==2
+
+
+def test_ai_proposal_count_is_bounded_and_overflow_diagnosed():
+ c,d=docs()
+ def ai(*a):
+  one={'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}
+  return {'matches':[dict(one) for _ in range(100)]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai)
+ f=r['diagnosticCounts']
+ assert f['aiProposedMatches']==80
+ assert f['aiProposalsDropped']==20
+ assert r['supportingClaimsAdded']==1
+ assert r['rejected']['duplicate_ai_match']==79
+
+
+def test_unreferenced_candidate_count_excludes_sources_never_exposed_as_spans():
+ c,d=docs()
+ custom=cfg(); custom['maxCorroborationResultsPerClaim']=2
+ def se(q,k,n): return {'results':[{'url':'https://b.example/related'},{'url':'https://c.example/other'}]}
+ def fe(url):
+  if 'related' in url: return ('<body>Game A 資源箱は温存する</body>',{})
+  return ('<body>Game A 毎日ログインすると報酬がもらえる</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ f=r['diagnosticCounts']
+ assert r['candidatePages']==2
+ assert f['sourcesWithoutEligibleSpans']==1
+ assert f['candidatePagesUnreferencedByAI']==1
+
+
+def test_span_scanning_keeps_previous_18000_character_page_bound():
+ text='Game A '+('あ'*17990)+' 資源箱は温存する'
+ spans=m.claim_windows('c1','u1','資源箱は温存する',text)
+ assert not any('資源箱は温存する' in x['text'] for x in spans)
+
+
+def test_max_live_shape_span_payload_is_bounded():
+ held={f'c{i}':{'claimId':f'c{i}','claim':f'攻略項目{i}を優先する','category':'tip','existingSites':[]} for i in range(1,5)}
+ sources=[{'sourceId':f'u{j}','site':f's{j}.example','text':'Game A '+' '.join(f'攻略項目{i}を優先する' for i in range(1,5))} for j in range(1,13)]
+ spans,considered,with_spans,no_lexical=m.build_evidence_spans(held,sources)
+ assert considered==48 and with_spans==48 and no_lexical==0
+ assert len(spans)<=48*4
+ assert sum(len(x['text']) for x in spans)<=48*4*240

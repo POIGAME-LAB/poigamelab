@@ -210,3 +210,9 @@
 - Added a per-claim independence guard at match validation time so a page discovered for one held claim cannot be remapped by Gemini to another claim when that page belongs to the second claim's existing source site.
 - Contradiction candidates now require conservative lexical context overlap before being recorded, preventing unrelated quotes from becoming false conflict evidence.
 - Publication behavior remains unchanged: all V52.3 outputs are quarantine-only with zero production writes.
+
+### V52.4 — deterministic evidence-span selection
+- Replaced Gemini-authored corroboration quotes with bounded Python-created evidence spans. Gemini can now only select an existing `claimId` / `sourceId` / `spanId` tuple; Python supplies the exact stored evidence text after selection, eliminating free-form quote drift while keeping direct-page grounding.
+- Independent-source eligibility is applied before spans are exposed to Gemini. A source page can still corroborate another held claim from the same game when it is genuinely independent, but same-site claim/source pairs are never offered as selectable evidence and the post-selection independence guard remains in place.
+- Added deterministic lexical prefiltering that only exposes spans capable of passing the existing 0.35 overlap guard. Unusable source/claim pairs skip Gemini rather than consuming an API call; numeric claims still require exact token grounding (`20` cannot be satisfied by `120`).
+- Candidate pages found for one held claim may be reused for another independent held claim from the same game, improving evidence efficiency without additional fetches. Evidence excerpts remain bounded to 240 characters, all outputs stay quarantined, and publication writes remain zero.
