@@ -19,5 +19,7 @@
   "maxCorroborationClaimsPerRun": 4,
   "maxCorroborationResultsPerClaim": 4,
   "maxCorroborationFetchesPerRun": 12,
-  "maxCorroborationAiCallsPerRun": 8
+  "maxCorroborationAiCallsPerRun": 8,
+  "maxCorroborationSearchesPerClaim": 2,
+  "maxCorroborationSearchCallsPerRun": 8
 }

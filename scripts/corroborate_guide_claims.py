@@ -4,10 +4,12 @@
 Only V51 held_single_source claims are searched. Tavily discovers URLs; every
 candidate is fetched directly, target-confirmed, and source-site independent.
 Python creates bounded exact-source evidence spans; Gemini may only select those
-spans. V52.5 separates span retrieval from semantic acceptance: a conservative
-lexical anchor gets a span into review, then support/contradict proposals require
-a second bounded Gemini confirmation before Python can append quarantine-only
-corroboration. Numeric grounding and all provenance checks remain deterministic.
+spans. V52.7 improves discovery without weakening acceptance: each held claim can
+use up to two bounded claim-targeted Tavily queries, search metadata ranks URLs
+for direct fetch only, and a round-robin selector prevents one claim from using
+the entire fetch budget. Metadata/snippets never become evidence. The strict and
+anchored-paraphrase acceptance gates, numeric grounding, and provenance checks
+remain deterministic/fail-closed.
 """
 from __future__ import annotations
 import json, os, re, sys, unicodedata
@@ -26,7 +28,7 @@ CONFIG=ROOT/'config'/'guide_research.json'
 OUT=ROOT/'data'/'guide_claims_corroborated.json'
 REPORT=ROOT/'data'/'guide_corroboration.json'
 STATUS=ROOT/'data'/'guide_corroboration_status.json'
-LOGIC_VERSION='V52.6'
+LOGIC_VERSION='V52.7'
 GENERIC_BIGRAMS={
     '攻略','達成','優先','必要','場合','条件','報酬','日数','効率','序盤','方法','目指','可能',
     'レベ','ベル','ゲー','ーム','する','した','して','ます','でき','ポイ','イン','ント',
@@ -200,6 +202,96 @@ def validate_match(raw,claim_by_id,source_by_id,span_by_id):
     },None
 
 
+def distinctive_query_terms(claim):
+    """Return deterministic non-generic terms used only for discovery queries/ranking."""
+    raw=unicodedata.normalize('NFKC',str(claim or '')).casefold()
+    raw=re.sub(r'[^0-9a-zA-Z\u3040-\u30ff\u3400-\u9fff]+',' ',raw)
+    parts=[]
+    for block in raw.split():
+        parts.extend(x for x in PARTICLE_SPLIT.split(block) if x)
+    out=[]; seen=set()
+    for part in parts:
+        term=compact(part)
+        if not term or term.isdigit(): continue
+        changed=True
+        while changed and term:
+            changed=False
+            for suffix in VERB_SUFFIXES:
+                if term.endswith(suffix) and len(term)>len(suffix):
+                    term=term[:-len(suffix)]; changed=True; break
+        if len(term)<2 or term in GENERIC_TERMS or term in seen: continue
+        seen.add(term); out.append(term)
+    out.sort(key=lambda x:(-len(x),x))
+    return out
+
+
+def corroboration_queries(game, claim, max_queries=2):
+    """Bounded claim-targeted discovery queries. Search metadata is never evidence."""
+    max_queries=max(1,min(2,int(max_queries)))
+    queries=[f'"{game}" {claim}']
+    terms=distinctive_query_terms(claim)
+    number_terms=list(dict.fromkeys(nums(claim)))
+    focused=[f'"{game}"']
+    focused.extend(number_terms[:2])
+    for term in terms[:3]:
+        focused.append(f'"{term}"' if len(term)>=3 else term)
+    if len(focused)>1:
+        focused.append('攻略')
+        q=' '.join(focused)
+        if compact(q)!=compact(queries[0]): queries.append(q)
+    return queries[:max_queries]
+
+
+def discovery_relevance(game, claim, item, rank=0):
+    """Rank URL discovery only; title/snippet never becomes factual evidence."""
+    if not isinstance(item,dict): return 0,0
+    meta=norm(str(item.get('title') or '')+' '+str(item.get('content') or '')+' '+str(item.get('url') or ''))
+    cm=compact(meta); score=max(0,3-int(rank)); signals=0
+    gm=compact(game)
+    if gm and gm in cm: score+=5
+    claim_compact=compact(re.sub(r'\d+(?:[.,]\d+)?','',claim))
+    if len(claim_compact)>=4 and claim_compact in cm:
+        score+=10; signals+=3
+    meta_nums=nums(meta)
+    for n in set(nums(claim)):
+        if n in meta_nums: score+=4; signals+=1
+    for term in distinctive_query_terms(claim)[:4]:
+        if term in cm: score+=3; signals+=1
+    return score,signals
+
+
+def select_discovery_pool(pool, held_info, max_fetches, per_claim_limit=4):
+    """Round-robin ranked discovery so one claim cannot consume the fetch budget."""
+    max_fetches=max(1,int(max_fetches)); per_claim_limit=max(1,int(per_claim_limit))
+    selected=[]; selected_keys=set(); covered=set(); selected_by_claim={cid:0 for cid,_ in held_info}
+    per_claim={}
+    for cid,d in held_info:
+        rows=[]
+        oldsites=set(d.get('independentSources') or [])
+        for key,row in pool.items():
+            if row['game']!=d['game'] or row['site'] in oldsites: continue
+            score=(row.get('scores') or {}).get(cid)
+            if score is None: continue
+            rows.append((score,row['url'],key))
+        rows.sort(key=lambda x:(-x[0],x[1]))
+        per_claim[cid]=rows
+    offsets={cid:0 for cid,_ in held_info}
+    while len(selected)<max_fetches:
+        advanced=False
+        for cid,_ in held_info:
+            if selected_by_claim[cid]>=per_claim_limit: continue
+            rows=per_claim.get(cid) or []; idx=offsets[cid]
+            while idx<len(rows) and rows[idx][2] in selected_keys: idx+=1
+            offsets[cid]=idx
+            if idx>=len(rows): continue
+            key=rows[idx][2]; offsets[cid]=idx+1
+            if key in selected_keys: continue
+            selected.append(pool[key]); selected_keys.add(key); covered.add(cid); selected_by_claim[cid]+=1; advanced=True
+            if len(selected)>=max_fetches: break
+        if not advanced: break
+    return selected,covered
+
+
 def apply_semantic_review(response, candidates):
     expected={(x['claimId'],x['sourceId'],x['spanId'],x['relation']):x for x in candidates}
     if not isinstance(response,dict) or not isinstance(response.get('reviews'),list):
@@ -244,11 +336,15 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
     max_claims=max(1,min(6,int(cfg.get('maxCorroborationClaimsPerRun',4))))
     max_results=max(1,min(6,int(cfg.get('maxCorroborationResultsPerClaim',4))))
     max_fetches=max(1,min(16,int(cfg.get('maxCorroborationFetchesPerRun',12))))
-    held=held[:max_claims]; search_calls=fetch_calls=api_calls=0; candidates=[]; seen_urls=set(); diagnostics=[]
+    held=held[:max_claims]; search_calls=fetch_calls=api_calls=0; candidates=[]; diagnostics=[]
+    max_queries_per_claim=max(1,min(2,int(cfg.get('maxCorroborationSearchesPerClaim',1))))
+    max_search_calls=max(1,min(8,int(cfg.get('maxCorroborationSearchCallsPerRun',max_claims*max_queries_per_claim))))
     funnel={
         'orphanHeldDecisions':orphan_held,'searchErrors':0,'malformedSearchResponses':0,'malformedSearchItems':0,
         'searchResults':0,'invalidOrUnsupportedUrls':0,'duplicateUrls':0,
-        'sameSourceSiteUrls':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,
+        'sameSourceSiteUrls':0,'sameSourceRetainedForOtherClaim':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,
+        'searchQueriesPlanned':0,'searchQueriesExecuted':0,'searchQueryVariantsUsed':0,
+        'discoveryUrlsUnique':0,'discoverySelectedForFetch':0,'discoveryBalancedClaimsCovered':0,
         'fetchErrors':0,'targetMissing':0,'candidatePages':0,'aiErrors':0,'aiMalformedResponses':0,
         'aiProposedMatches':0,'aiProposalsDropped':0,'aiRejectedMatches':0,'aiValidatedSupport':0,
         'aiValidatedContradict':0,'aiValidatedUnclear':0,'candidatePagesUnreferencedByAI':0,
@@ -260,41 +356,92 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
         'pairTasksMissing':0,'pairTasksDuplicateRows':0,'aiCallBudget':max(2,min(8,int(cfg.get('maxCorroborationAiCallsPerRun',8)))),
         'aiBudgetExhaustedPairs':0,
     }
+    held_info=[(f'c{i}',d) for i,d in enumerate(held,1)]
     existing_sites_by_claim={(d['game'],d['category'],gate.text_key(d['claim'])):set(d.get('independentSources') or []) for d in held}
-    for i,d in enumerate(held,1):
-        diag={'claimId':f'c{i}','game':d['game'],'searchResults':0,'invalidOrUnsupportedUrls':0,'duplicateUrls':0,'sameSourceSiteUrls':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,'directFetches':0,'fetchErrors':0,'targetMissing':0,'candidatePages':0}
-        query=f'"{d["game"]}" {d["claim"]}'
-        search_calls+=1
-        try: res=searcher(query,tavily_key,max_results)
-        except Exception as e:
-            diag['searchError']=collector.safe_error(e); funnel['searchErrors']+=1; diagnostics.append(diag); continue
-        if not isinstance(res,dict) or not isinstance(res.get('results') or [],list):
-            diag['searchMalformed']=True; funnel['malformedSearchResponses']+=1; diagnostics.append(diag); continue
-        items=(res.get('results') or [])[:max_results]; diag['searchResults']=len(items); funnel['searchResults']+=len(items)
-        oldsites=existing_sites_by_claim[(d['game'],d['category'],gate.text_key(d['claim']))]
-        for item in items:
-            if fetch_calls>=max_fetches: break
-            if not isinstance(item,dict):
-                funnel['malformedSearchItems']+=1; continue
-            url=collector.canonical_url(str((item or {}).get('url') or ''))
-            site=gate.source_site(url)
-            if not url or not site:
-                diag['invalidOrUnsupportedUrls']+=1; funnel['invalidOrUnsupportedUrls']+=1; continue
-            if url in seen_urls:
-                diag['duplicateUrls']+=1; funnel['duplicateUrls']+=1; continue
-            if site in oldsites:
-                diag['sameSourceSiteUrls']+=1; funnel['sameSourceSiteUrls']+=1; continue
-            if collector.blocked_url(url,cfg.get('blockedDomains') or []):
-                diag['blockedOrUnsafeUrls']+=1; funnel['blockedOrUnsafeUrls']+=1; continue
-            seen_urls.add(url); diag['eligibleIndependentUrls']+=1; funnel['eligibleIndependentUrls']+=1; fetch_calls+=1; diag['directFetches']+=1
-            try: raw,_=fetcher(url); text=collector.visible_text(raw)
-            except Exception:
-                diag['fetchErrors']+=1; funnel['fetchErrors']+=1; continue
-            if not collector.target_in_text(text,[d['game']]):
-                diag['targetMissing']+=1; funnel['targetMissing']+=1; continue
-            candidates.append({'claimId':f'c{i}','game':d['game'],'category':d['category'],'claim':d['claim'],'sourceId':f'u{len(candidates)+1}','url':url,'site':site,'sourceType':collector.source_type(url,d['game'],cfg),'text':text})
-            diag['candidatePages']+=1; funnel['candidatePages']+=1
-        diagnostics.append(diag)
+    diag_by_claim={cid:{'claimId':cid,'game':d['game'],'searchQueries':0,'searchResults':0,'invalidOrUnsupportedUrls':0,'duplicateUrls':0,'sameSourceSiteUrls':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,'directFetches':0,'fetchErrors':0,'targetMissing':0,'candidatePages':0} for cid,d in held_info}
+    discovery_pool={}
+    query_plan={cid:corroboration_queries(d['game'],d['claim'],max_queries_per_claim) for cid,d in held_info}
+    funnel['searchQueriesPlanned']=sum(len(v) for v in query_plan.values())
+    for qidx in range(max_queries_per_claim):
+        if search_calls>=max_search_calls: break
+        for cid,d in held_info:
+            queries=query_plan.get(cid) or []
+            if qidx>=len(queries): continue
+            if search_calls>=max_search_calls: break
+            query=queries[qidx]
+            search_calls+=1; funnel['searchQueriesExecuted']+=1; diag_by_claim[cid]['searchQueries']+=1
+            if qidx>0: funnel['searchQueryVariantsUsed']+=1
+            try: res=searcher(query,tavily_key,max_results)
+            except Exception as e:
+                diag_by_claim[cid].setdefault('searchErrors',[]).append(collector.safe_error(e)); funnel['searchErrors']+=1; continue
+            if not isinstance(res,dict) or not isinstance(res.get('results') or [],list):
+                diag_by_claim[cid]['searchMalformed']=True; funnel['malformedSearchResponses']+=1; continue
+            items=(res.get('results') or [])[:max_results]; diag_by_claim[cid]['searchResults']+=len(items); funnel['searchResults']+=len(items)
+            for rank,item in enumerate(items):
+                if not isinstance(item,dict):
+                    funnel['malformedSearchItems']+=1; continue
+                url=collector.canonical_url(str(item.get('url') or '')); site=gate.source_site(url)
+                if not url or not site:
+                    diag_by_claim[cid]['invalidOrUnsupportedUrls']+=1; funnel['invalidOrUnsupportedUrls']+=1; continue
+                if collector.blocked_url(url,cfg.get('blockedDomains') or []):
+                    diag_by_claim[cid]['blockedOrUnsafeUrls']+=1; funnel['blockedOrUnsafeUrls']+=1; continue
+                key=(d['game'],url)
+                row=discovery_pool.get(key)
+                if row is None:
+                    row={'game':d['game'],'url':url,'site':site,'scores':{},'signals':{},'originClaims':set()}
+                    discovery_pool[key]=row
+                else:
+                    funnel['duplicateUrls']+=1; diag_by_claim[cid]['duplicateUrls']+=1
+                row['originClaims'].add(cid)
+                # Rank metadata is discovery-only. Cross-claim ranking requires at least
+                # one claim-specific signal so broad snippets cannot redirect evidence.
+                for other_cid,other in held_info:
+                    if other['game']!=d['game']: continue
+                    score,signals=discovery_relevance(other['game'],other['claim'],item,rank)
+                    if other_cid==cid or signals>0:
+                        row['scores'][other_cid]=max(score,row['scores'].get(other_cid,-1))
+                        row['signals'][other_cid]=max(signals,row['signals'].get(other_cid,0))
+                oldsites=existing_sites_by_claim[(d['game'],d['category'],gate.text_key(d['claim']))]
+                if site in oldsites:
+                    diag_by_claim[cid]['sameSourceSiteUrls']+=1; funnel['sameSourceSiteUrls']+=1
+    # Remove URLs that cannot be independent for any held claim of the same game.
+    for key,row in list(discovery_pool.items()):
+        independent_for=[]
+        for cid,d in held_info:
+            if d['game']!=row['game']: continue
+            oldsites=existing_sites_by_claim[(d['game'],d['category'],gate.text_key(d['claim']))]
+            if row['site'] not in oldsites: independent_for.append(cid)
+        if not independent_for:
+            discovery_pool.pop(key,None); continue
+        if any(cid not in independent_for for cid in row['originClaims']):
+            funnel['sameSourceRetainedForOtherClaim']+=1
+        for cid in independent_for:
+            if cid in row['scores']: diag_by_claim[cid]['eligibleIndependentUrls']+=1
+    funnel['eligibleIndependentUrls']=len(discovery_pool)
+    funnel['discoveryUrlsUnique']=len(discovery_pool)
+    selected,covered=select_discovery_pool(discovery_pool,held_info,max_fetches,max_results)
+    funnel['discoverySelectedForFetch']=len(selected); funnel['discoveryBalancedClaimsCovered']=len(covered)
+    for row in selected:
+        if fetch_calls>=max_fetches: break
+        fetch_calls+=1
+        for cid in row.get('originClaims') or []:
+            if cid in diag_by_claim: diag_by_claim[cid]['directFetches']+=1
+        try: raw,_=fetcher(row['url']); text=collector.visible_text(raw)
+        except Exception:
+            funnel['fetchErrors']+=1
+            for cid in row.get('originClaims') or []:
+                if cid in diag_by_claim: diag_by_claim[cid]['fetchErrors']+=1
+            continue
+        if not collector.target_in_text(text,[row['game']]):
+            funnel['targetMissing']+=1
+            for cid in row.get('originClaims') or []:
+                if cid in diag_by_claim: diag_by_claim[cid]['targetMissing']+=1
+            continue
+        candidates.append({'game':row['game'],'sourceId':f'u{len(candidates)+1}','url':row['url'],'site':row['site'],'sourceType':collector.source_type(row['url'],row['game'],cfg),'text':text})
+        funnel['candidatePages']+=1
+        for cid in row.get('originClaims') or []:
+            if cid in diag_by_claim: diag_by_claim[cid]['candidatePages']+=1
+    diagnostics.extend(diag_by_claim[cid] for cid,_ in held_info)
     matches=[]; rejected={}; appended=[]; contradictions=[]
     by_game={}
     for c in candidates: by_game.setdefault(c['game'],[]).append(c)

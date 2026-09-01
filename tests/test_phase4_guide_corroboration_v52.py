@@ -223,9 +223,9 @@ def test_report_always_exposes_diagnostic_counts_without_publication():
  assert r['publicationWrites']==0
 
 
-def test_v526_logic_version_is_reported_for_live_audit():
+def test_v527_logic_version_is_reported_for_live_audit():
  c,d=docs(); _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
- assert r['logicVersion']=='V52.6'
+ assert r['logicVersion']=='V52.7'
 
 
 def test_orphan_held_decision_is_not_researched_or_resurrected():
@@ -680,3 +680,200 @@ def test_v526_live_shape_pair_coverage_replaces_sparse_four_of_twenty_six_behavi
  assert f['candidatePagesUnreferencedByAI']==0
  assert f['classificationCalls']==4 and r['apiCalls']==4
  assert r['supportingClaimsAdded']==0 and f['aiValidatedUnclear']==f['pairTasksExpected']
+
+
+
+def test_v527_focused_query_diversity_preserves_numbers_and_distinctive_terms():
+ qs=m.corroboration_queries('Game A','城レベル20を目指す',2)
+ assert len(qs)==2 and qs[0]!=qs[1]
+ assert '20' in qs[1] and '"Game A"' in qs[1]
+ assert '攻略' in qs[1]
+
+
+def test_v527_two_query_variants_dedupe_same_url_and_fetch_once():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=2
+ calls={'s':0,'f':0}
+ def se(q,k,n):
+  calls['s']+=1
+  return {'results':[{'url':'https://b.example/guide','title':'Game A 資源箱 温存','content':'攻略'}]}
+ def fe(u):
+  calls['f']+=1
+  return ('<body>Game A 資源箱は温存する</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=ai_support)
+ f=r['diagnosticCounts']
+ assert calls['s']==2 and r['searchCalls']==2
+ assert calls['f']==1 and r['directFetches']==1
+ assert f['duplicateUrls']==1 and f['discoveryUrlsUnique']==1
+ assert f['searchQueryVariantsUsed']==1
+
+
+def test_v527_search_rounds_cover_each_claim_before_second_query_when_globally_capped():
+ claims=[]; decisions=[]
+ for i in range(6):
+  text=f'特殊語{i}を優先する'; row=claim(text,f'https://old{i}.example/a'); claims.append(row)
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom['maxCorroborationClaimsPerRun']=6; custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=8
+ seen=[]
+ def se(q,k,n):
+  label=next(str(i) for i in range(6) if f'特殊語{i}' in q)
+  seen.append(label)
+  return {'results':[]}
+ _,r=m.run({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=lambda *a:(_ for _ in ()).throw(AssertionError()),ai=lambda *a:(_ for _ in ()).throw(AssertionError()))
+ assert seen[:6]==['0','1','2','3','4','5']
+ assert len(seen)==8 and seen[6:]==['0','1']
+ assert r['diagnosticCounts']['searchQueriesExecuted']==8
+
+
+def test_v527_per_claim_fetch_bound_survives_two_query_variants():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=2; custom['maxCorroborationResultsPerClaim']=4; custom['maxCorroborationFetchesPerRun']=12
+ state={'s':0,'f':0}
+ def se(q,k,n):
+  base=state['s']; state['s']+=1
+  return {'results':[{'url':f'https://q{base}-{i}.example/guide'} for i in range(10)]}
+ def fe(u): state['f']+=1; return ('<body>Game A unrelated</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ assert r['searchCalls']==2
+ assert state['f']<=4 and r['directFetches']<=4
+ assert r['diagnosticCounts']['discoverySelectedForFetch']<=4
+
+
+def test_v527_balanced_fetch_selection_prevents_first_claim_monopoly():
+ claims=[]; decisions=[]
+ for i in range(4):
+  text=f'固有項目{i}を優先する'; row=claim(text,f'https://old{i}.example/a'); claims.append(row)
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom['maxCorroborationFetchesPerRun']=4; custom['maxCorroborationResultsPerClaim']=4
+ state={'s':0}; fetched=[]
+ def se(q,k,n):
+  i=state['s']; state['s']+=1
+  return {'results':[{'url':f'https://c{i}-{j}.example/guide'} for j in range(4)]}
+ def fe(u): fetched.append(u); return ('<body>Game A unrelated</body>',{})
+ _,r=m.run({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ assert len(fetched)==4
+ assert {u.split('//c',1)[1].split('-',1)[0] for u in fetched}=={'0','1','2','3'}
+ assert r['diagnosticCounts']['discoveryBalancedClaimsCovered']==4
+
+
+def test_v527_same_site_for_origin_claim_can_be_retained_for_another_independent_claim():
+ c1=claim('資源箱は温存する','https://a.example/original')
+ c2=claim('建設枠を優先する','https://b.example/original')
+ claims={'claims':[c1,c2]}
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['a.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['b.example']},
+ ]}
+ state={'s':0}
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1:
+   return {'results':[{'url':'https://a.example/shared','title':'Game A 建設枠を優先する','content':'建設枠を優先する攻略'}]}
+  return {'results':[]}
+ def fe(u): return ('<body>Game A 建設枠を優先する</body>',{})
+ def ai(key,model,prompt):
+  if '"claimId": "c2"' in prompt:
+   return {'matches':[{'claimId':'c2','sourceId':'u1','spanId':'u1:c2:s1','relation':'support'}]}
+  return {'matches':[]}
+ merged,r=m.run(claims,decisions,cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ assert r['supportingClaimsAdded']==1
+ assert r['diagnosticCounts']['sameSourceSiteUrls']==1
+ assert r['diagnosticCounts']['sameSourceRetainedForOtherClaim']==1
+ gated=m.gate.evaluate(merged)
+ statuses={x['claim']:x['status'] for x in gated['decisions']}
+ assert statuses['建設枠を優先する']=='supported_quarantine'
+ assert statuses['資源箱は温存する']=='held_single_source'
+
+
+def test_v527_search_metadata_only_prioritizes_fetch_and_never_becomes_evidence():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=2; custom['maxCorroborationResultsPerClaim']=2
+ state={'s':0}
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1:
+   return {'results':[{'url':'https://bad.example/guide','title':'Game A 資源箱は温存する','content':'資源箱は温存する'}]}
+  return {'results':[{'url':'https://good.example/guide','title':'Game A guide','content':'攻略'}]}
+ def fe(url):
+  if 'bad.example' in url: return ('<body>Game A 毎日ログインすると報酬がもらえる</body>',{})
+  return ('<body>Game A 資源箱は温存する</body>',{})
+ def ai(key,model,prompt):
+  # Only the direct-source span from good.example can exist.
+  import re
+  ids=sorted(set(re.findall(r'"sourceId": "(u\d+)"',prompt)))
+  assert len(ids)==1
+  sid=ids[0]
+  return {'matches':[{'claimId':'c1','sourceId':sid,'spanId':f'{sid}:c1:s1','relation':'support'}]}
+ merged,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=ai)
+ added=[x for x in merged['claims'] if x['url']=='https://good.example/guide']
+ assert len(added)==1 and added[0]['evidenceQuote'] in m.norm('Game A 資源箱は温存する')
+ assert all(x['url']!='https://bad.example/guide' for x in merged['claims'][1:])
+ assert r['supportingClaimsAdded']==1
+
+
+def test_v527_second_query_can_recover_after_first_query_failure_without_relaxing_gate():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=2
+ state={'s':0}
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1: raise RuntimeError('first discovery failed')
+  return {'results':[{'url':'https://b.example/guide'}]}
+ merged,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fetch(),ai=ai_support)
+ assert r['searchCalls']==2 and r['diagnosticCounts']['searchErrors']==1
+ assert r['supportingClaimsAdded']==1 and len(merged['claims'])==2
+
+
+
+def test_v527_discovery_metadata_ranking_can_prioritize_better_url_within_fetch_cap():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationFetchesPerRun']=1; custom['maxCorroborationResultsPerClaim']=2
+ def se(q,k,n):
+  return {'results':[
+   {'url':'https://weak.example/guide','title':'Game A guide','content':'攻略'},
+   {'url':'https://strong.example/guide','title':'Game A 資源箱は温存する','content':'資源箱 温存 攻略'},
+  ]}
+ fetched=[]
+ def fe(url): fetched.append(url); return ('<body>Game A 資源箱は温存する</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=ai_support)
+ assert fetched==['https://strong.example/guide']
+ assert r['supportingClaimsAdded']==1
+
+
+def test_v527_observed_six_held_four_input_shape_uses_balanced_two_query_discovery():
+ labels=['甲','乙','丙','丁','戊','己']; claims=[]; decisions=[]
+ for i,label in enumerate(labels,1):
+  text=f'攻略対象{label}を優先する'
+  row=claim(text,f'https://old{i}.example/original'); claims.append(row)
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=8; custom['maxCorroborationFetchesPerRun']=12
+ state={'s':0}
+ def se(q,k,n):
+  call=state['s']; state['s']+=1
+  claim_index=call % 4 if call<4 else (call-4) % 4
+  label=labels[claim_index]
+  return {'results':[{'url':f'https://q{call}-{j}.example/guide','title':f'Game A 攻略対象{label}を優先する','content':f'攻略対象{label}'} for j in range(4)]}
+ def fe(url):
+  return ('<body>Game A '+ ' '.join(f'攻略対象{x}を優先する' for x in labels[:4]) +'</body>',{})
+ def ai(key,model,prompt):
+  import re
+  cid=next(x for x in ('c1','c2','c3','c4') if f'"claimId": "{x}"' in prompt)
+  pairs=sorted(set(re.findall(r'"sourceId": "(u\d+)"',prompt)))
+  return {'matches':[{'claimId':cid,'sourceId':sid,'spanId':f'{sid}:{cid}:s1','relation':'unclear'} for sid in pairs]}
+ _,r=m.run({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=ai)
+ f=r['diagnosticCounts']
+ assert r['totalHeldClaims']==6 and r['eligibleHeldClaims']==6 and r['inputHeldClaims']==4
+ assert r['searchCalls']==8 and r['directFetches']==12
+ assert f['searchQueryVariantsUsed']==4 and f['discoveryBalancedClaimsCovered']==4
+ assert f['classificationCalls']==4 and f['pairTasksExpected']==f['pairTasksReturned'] and f['pairTasksMissing']==0
+ assert r['supportingClaimsAdded']==0
+
+
+
+def test_v527_second_query_can_displace_broad_first_query_result_under_one_fetch_cap():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=2; custom['maxCorroborationResultsPerClaim']=1; custom['maxCorroborationFetchesPerRun']=1
+ state={'s':0}; fetched=[]
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1:
+   return {'results':[{'url':'https://broad.example/guide','title':'Game A 攻略まとめ','content':'初心者向け攻略'}]}
+  return {'results':[{'url':'https://precise.example/guide','title':'Game A 資源箱は温存する','content':'資源箱を温存する攻略'}]}
+ def fe(url): fetched.append(url); return ('<body>Game A 資源箱は温存する</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=ai_support)
+ assert fetched==['https://precise.example/guide']
+ assert r['searchCalls']==2 and r['directFetches']==1 and r['supportingClaimsAdded']==1

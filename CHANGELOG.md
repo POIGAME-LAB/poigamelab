@@ -235,3 +235,10 @@
 - Python records expected/returned/missing pair coverage and rejects any claim/source tuple that was not requested by the current classification prompt, removing another cross-claim remapping path without weakening support rules.
 - Missing rows, malformed responses, API failures, or AI-call-budget exhaustion remain fail-closed; they never become support. The existing strict lexical path, anchored paraphrase second review, exact numeric grounding, source independence, and quarantine-only publication boundary are unchanged.
 - Added a hard bounded corroboration AI-call budget (default 8) and diagnostics for classification calls, pair coverage, duplicate rows, and budget-exhausted pairs.
+### V52.7 — balanced claim-targeted corroboration discovery
+- Added a bounded second Tavily discovery query per held claim using the game name plus deterministic non-generic claim terms and exact numeric tokens. Search metadata remains discovery-only and cannot become evidence or bypass direct-page verification.
+- Canonicalizes and deduplicates search results across query variants before direct retrieval, then ranks URLs only to allocate the bounded fetch budget. Duplicate query hits are fetched once.
+- Replaced sequential fetch consumption with round-robin per-claim selection, preserving the existing per-claim result bound while preventing early claims from monopolizing the global direct-fetch cap.
+- Search scheduling now executes every held claim's first query before any second-query round, so a global search-call cap cannot starve later claims.
+- A result from an existing source site for one claim can be retained for another claim only when that site is independent for the latter; the existing per-claim span and match independence guards remain authoritative.
+- V52.6 pair-complete classification, strict lexical acceptance, anchored paraphrase second review, exact numeric grounding, AI-call budget, quarantine boundary, and `publicationWrites: 0` are unchanged.
