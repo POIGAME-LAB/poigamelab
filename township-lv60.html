@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Township（タウンシップ）のポイ活Lv60攻略。60日以内のLv60到達を目指すために、POIGAME LABの収集データから実際の進捗例と攻略の優先ポイントを整理。">
+<title>Township Lv60攻略｜60日以内を目指す進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.30),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel,.source-note{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:150px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.route{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.route-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.route-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{display:grid;gap:10px}.source-row{padding:12px 14px;border-radius:12px;background:#faf8ff}.source-row a{font-weight:800;text-decoration:none;word-break:break-all}.source-note{font-size:12px;color:#766d87}.source-note strong{color:#4b3c69}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel,.source-note{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.shot{min-height:130px;padding:20px 12px}.route{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}}
+
+/* COMPACT_SOURCE_V2 */
+
+#sources.source-section,
+#sources.section,
+.source-section {
+  margin-top: 24px !important;
+  padding: 10px 2px 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-top: 1px solid #e6dff1 !important;
+  color: #8b8495 !important;
+  font-size: 10px !important;
+  line-height: 1.55 !important;
+}
+
+#sources h2,
+.source-section h2 {
+  margin: 0 0 6px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  color: #746c80 !important;
+  font-weight: 800 !important;
+}
+
+#sources .sources,
+.source-section .sources {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 3px 14px !important;
+}
+
+#sources .source-row,
+.source-section .source-row {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-size: 10px !important;
+  line-height: 1.55 !important;
+}
+
+#sources .source-row strong,
+#sources .source-row a {
+  font-size: 10px !important;
+}
+
+.source-note {
+  margin-top: 7px !important;
+  padding: 0 2px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #9991a2 !important;
+  font-size: 9.5px !important;
+  line-height: 1.55 !important;
+}
+
+.source-note strong {
+  color: #81788e !important;
+  font-size: 9.5px !important;
+}
+
+/* END_COMPACT_SOURCE_V2 */
+
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html">POIGAME <b>LAB</b></a><a class="back" href="game.html?game=Township">← Township詳細へ</a></header>
+<main class="page">
+<section class="hero"><div class="eyebrow">POIGAME LAB 攻略データ</div><h1>Township ポイ活 Lv60攻略</h1><p class="lead">60日以内のLv60到達を目指す人向けに、POIGAME LABの収集システムで確認できた進捗例・体験談・現行案件条件を整理しました。</p><div class="stats"><div class="stat"><span>現行StepUpの期限例</span><strong>60日</strong></div><div class="stat"><span>実例 10日目</span><strong>Lv22</strong></div><div class="stat"><span>無課金例 23日目</span><strong>Lv35</strong></div></div><p class="hero-note">今回の記事は、POIGAME LABの自動収集データをChatGPTが記事化したテスト版です。個人の進捗例と現在の案件条件を分けて扱い、未確認の平均達成日数は作っていません。</p></section>
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol><li><a href="#condition">現在のLv60案件</a></li><li><a href="#pace">実際の進捗例</a></li><li><a href="#difficulty">Lv60はどれくらい大変？</a></li><li><a href="#xp">XPを止めない</a></li><li><a href="#barn">納屋</a></li><li><a href="#market">市場・商人</a></li><li><a href="#factory">工場</a></li><li><a href="#plane">飛行機イベント</a></li><li><a href="#route">毎日の回し方</a></li><li><a href="#check">途中で確認すること</a></li><li><a href="#summary">まとめ</a></li><li><a href="#sources">調査ソース</a></li></ol></nav>
+<section class="section" id="condition"><h2>現在のTownship Lv60案件</h2><p>POIGAME LABが現在確認しているStepUp案件では、Lv5・Lv11・Lv20・Lv35・Lv45・Lv51・<strong>Lv60</strong>・Lv70などが段階条件に含まれ、インストールから60日以内を期限とする案件が確認されています。</p><div class="warning">ポイントサイト・OS・開始時期で報酬額や条件は変わります。この記事では総額を固定せず、申込み前にTownship詳細ページの最新比較を確認する前提で案内します。</div><div class="key">Lv60だけを狙う場合も、Lv70まであるStepUp案件の途中報酬として回収できるケースがあります。</div></section>
+<section class="data-panel" id="pace"><h2>収集できた実際の進捗例</h2><p>今回の自動収集では、別々の公開ソースから次の進捗が確認できました。</p><div class="table-wrap"><table><thead><tr><th>経過日数</th><th>到達Lv</th><th>補足</th></tr></thead><tbody><tr><td>1日目</td><td>Lv11</td><td>Lv60案件への挑戦例</td></tr><tr><td>10日目</td><td>Lv22</td><td>別案件・別プレイヤーの進捗例</td></tr><tr><td>23日目</td><td>Lv35</td><td>無課金の公開体験例</td></tr></tbody></table></div><div class="progress" aria-label="Lv60に対する進捗"><div class="progress-row"><span>1日目</span><div class="bar"><i style="width:18.3%"></i></div><strong>Lv11</strong></div><div class="progress-row"><span>10日目</span><div class="bar"><i style="width:36.7%"></i></div><strong>Lv22</strong></div><div class="progress-row"><span>23日目</span><div class="bar"><i style="width:58.3%"></i></div><strong>Lv35</strong></div></div><p><small>※別々のプレイヤー・案件を並べた体験例です。同一人物の成長曲線や平均値ではありません。</small></p></section>
+<section class="section" id="difficulty"><h2>Lv60はどれくらい大変？</h2><p>今回の収集データだけでは「平均○日でLv60」と断定できるだけのLv60完走サンプルはまだありません。一方、23日目でLv35の無課金例や、レベルが上がるにつれて1レベルにかかる時間が伸びたという体験が確認されています。</p><div class="key">序盤のペースをそのままLv60まで延長して考えないこと。後半ほど必要XPが増える前提で、待ち時間を減らす準備が重要です。</div></section>
+<section class="section" id="xp"><h2>Lv60攻略はXPを止めない</h2><p>公開されたLv60挑戦者の体験では、注文だけでなく、作物の収穫、生産品の回収、列車、建物完成、土地拡張、パズル報酬など複数の場面で経験値を得ていることが確認できます。</p><p>ポイ活では町づくりの完成度より、期限内にレベルを上げることが目的です。ひとつの作業待ちで全体が止まらないよう、複数の進行を並行して回します。</p><div class="key">「ひとつの高効率行動」より、XPが入る行動を切らさない状態を作る。</div></section>
+<section class="section" id="barn"><h2>納屋を詰まらせない</h2><p>Lv60挑戦者の公開投稿では、序盤から納屋が圧迫しやすく、列車報酬でもらえるアイテムを使って納屋を拡張している例が確認できました。</p><p>納屋が満杯になると、収穫・生産品回収・注文処理が連鎖的に止まりやすくなります。Lv60を目指すなら、納屋は単なる快適要素ではなく進行速度に関わる基盤として扱うのがよさそうです。</p><div class="shot">実プレイ画像を追加予定<br><small>納屋容量または拡張画面</small></div></section>
+<section class="section" id="market"><h2>市場と商人で待ち時間を減らす</h2><p>収集した攻略体験では、<strong>市場を早めに建てる</strong>という方法や、納屋がある程度広がった後に商人を10日間雇い、定期的に商品を購入して素材を確保した例が確認されています。</p><p>これは単独ソースの攻略体験なので「必須」とは断定しません。ただ、工場ですべて自作する以外の入手経路を増やすほど、注文や列車を止めにくくなる考え方はLv60攻略と相性があります。</p><div class="key">市場・商人は「足りない商品を待たずに補うための時短ルート」として使う。</div></section>
+<section class="section" id="factory"><h2>工場は増やしすぎず、必要な枠を確保</h2><p>公開攻略例では、中盤まで工場を建てすぎず島も急いで解放しない進め方がありました。一方、別ソースでは砂糖・乳製品・飼料など、よく使う工場の生産枠を増やしておく方法が紹介されています。</p><p>この2つは矛盾しているように見えますが、共通しているのは<strong>「何でも増やすのではなく、よく使う生産ラインを優先する」</strong>ことです。</p><div class="key">工場の数を増やすことより、よく使う工場が詰まらない状態を優先。</div></section>
+<section class="section" id="plane"><h2>重すぎる飛行機イベントは無理をしない</h2><p>無課金の公開体験では、期限付きで要求アイテムが重い飛行機イベントを途中から無視した例がありました。</p><p>ポイ活では、ひとつのイベントを完全達成することよりLv60へ近づくことが目的です。要求が重く、生産ラインや納屋を長時間占有する場合は、他のXP獲得行動を優先する判断も候補になります。</p></section>
+<section class="section" id="route"><h2>毎日の回し方</h2><div class="route"><div class="route-card"><strong>ログイン時</strong>列車・生産品・作物を回収し、納屋の空きを確認。</div><div class="route-card"><strong>生産設定</strong>よく使う基礎商品を切らさないよう予約。</div><div class="route-card"><strong>注文処理</strong>手持ちで処理できる注文を進めてXPを回収。</div><div class="route-card"><strong>不足品</strong>市場・商人など、自作以外の入手経路も利用。</div><div class="route-card"><strong>待ち時間</strong>列車・建築・収穫など別のXP源を進める。</div><div class="route-card"><strong>終了前</strong>長時間生産や次回回収できる作業をセット。</div></div><p><small>※これは収集した複数の体験情報をLv60向けに整理した運用例です。ゲーム内の唯一の正解を示すものではありません。</small></p></section>
+<section class="section" id="check"><h2>途中で確認したいこと</h2><p>Lv60案件では、単純に「60日あるから大丈夫」と考えるより、定期的に残り日数と残りレベルを確認する方が安全です。</p><ul class="lab-list"><li>直近数日でレベル上昇速度が落ちていないか</li><li>納屋不足で生産・収穫が止まっていないか</li><li>工場で作る商品が増えすぎて待ち時間が伸びていないか</li><li>市場・商人などの時短手段を活用できているか</li><li>Lv70まで進む場合、Lv60到達時点で十分な日数が残るか</li></ul><div class="warning">今回の自動収集データには、Lv60完走者の十分な独立サンプルがまだありません。安全ラインを「○日目ならLv○」と断定する段階ではないため、今後の収集で更新します。</div></section>
+<section class="section" id="summary"><h2>まとめ｜Lv60は「待ち時間を減らしてXPを止めない」</h2><p>今回の収集データから、Township Lv60を狙うときに特に意識したいのは次のポイントです。</p><ul class="lab-list"><li>XPが入る行動を複数並行して回す</li><li>納屋を詰まらせない</li><li>市場・商人で不足品の待ち時間を減らす</li><li>工場は必要な生産ラインを優先する</li><li>重すぎるイベントに時間と資源を使いすぎない</li><li>残り日数とレベルを途中で確認する</li></ul><p>Lv60完走データが増えたら、到達日数・課金有無・中間レベル・プレイ頻度を追加し、より具体的なペース表へ更新します。</p></section>
+<section class="section" id="sources"><h2>今回の調査ソース</h2><div class="sources"><div class="source-row"><strong>現行案件条件：</strong> POIGAME LABで検証済みのちょびリッチ・COINCOME・ワラウ掲載データ（2026-08-31〜2026-09-01確認）</div><div class="source-row"><strong>進捗・納屋：</strong> <a href="https://x.com/amane_poi/status/1930612017179799693" target="_blank" rel="noopener noreferrer">X 公開投稿</a></div><div class="source-row"><strong>10日目Lv22：</strong> <a href="https://x.com/onozaki_lala/status/1974019328598065282" target="_blank" rel="noopener noreferrer">X 公開投稿</a></div><div class="source-row"><strong>無課金23日目Lv35・飛行機：</strong> <a href="https://ameblo.jp/gohobi-tabi/entry-12967056925.html" target="_blank" rel="noopener noreferrer">Ameblo 公開記事</a></div><div class="source-row"><strong>工場・商人：</strong> <a href="https://seirei.hatenablog.com/entry/20250122/1737508887" target="_blank" rel="noopener noreferrer">Hatena Blog 公開記事</a></div><div class="source-row"><strong>市場・生産枠：</strong> <a href="https://shipo-play.com/township" target="_blank" rel="noopener noreferrer">shipo-play 公開記事</a></div></div></section>
+<section class="source-note"><strong>調査情報について：</strong> POIGAME LABでは、現在の案件条件とプレイヤー個人の体験談を区別して整理しています。個人の進捗や攻略法は再現を保証するものではありません。案件条件は開始前に利用先で最新情報をご確認ください。</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+</body>
+</html>
