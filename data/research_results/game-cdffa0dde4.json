@@ -1,6 +1,6 @@
 {
   "game": "ホワイトアウト・サバイバル",
-  "researchedAt": "2026-09-01T02:03:19+00:00",
+  "researchedAt": "2026-09-01T02:09:46+00:00",
   "sourceQueue": {
     "game": "ホワイトアウト・サバイバル",
     "aliases": [
@@ -9,10 +9,10 @@
     "status": "collector_ready",
     "collectorReady": true,
     "candidateFingerprint": "b979da78e6dc55e0",
-    "researchLogicVersion": "V45-clean-public-discovery",
-    "lastResearchLogicVersion": "V44-indexed-official",
+    "researchLogicVersion": "V46-terminal-completeness",
+    "lastResearchLogicVersion": "V45-clean-public-discovery",
     "recheckReason": "research_logic_changed",
-    "lastResearchAt": "2026-09-01T01:54:44+00:00",
+    "lastResearchAt": "2026-09-01T02:03:19+00:00",
     "researchSummary": {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
@@ -25,7 +25,7 @@
       ]
     },
     "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-    "lastConfirmedAt": "2026-09-01T02:02:50+00:00",
+    "lastConfirmedAt": "2026-09-01T02:08:35+00:00",
     "score": 75,
     "confidence": 80,
     "sourceCount": 2,
@@ -47,7 +47,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-01T02:03:19+00:00",
+    "runAt": "2026-09-01T02:09:46+00:00",
     "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
     "candidateCount": 3,
     "geminiModel": "gemini-3.5-flash-lite",
@@ -59,14 +59,14 @@
           "reward_yen": 6119,
           "condition": "新規アプリインストール後、45日以内に各成果地点クリア",
           "platform": "Android",
-          "deadline": "インストール後45日以内",
+          "deadline": "45日以内",
           "url": "https://pc.moppy.jp/ad/detail.php?site_id=160375",
           "evidence_urls": [
             "https://pc.moppy.jp/ad/detail.php?site_id=160375"
           ],
-          "confidence": 1,
+          "confidence": 1.0,
           "publishable": true,
-          "reason": "モッピーの公式詳細ページより、対象ゲーム、報酬額（6,119P＝6,119円）、達成条件、Android限定であることが明確に確認できたため。",
+          "reason": "モッピーの詳細ページから、ゲーム名、報酬額（6,119P＝6,119円）、達成条件、OS（Android）、案件URLが明確に確認できたため。",
           "registered_source": "moppy",
           "reward_source": "python_same_identity_explicit_yen",
           "deterministic_checks": {
@@ -86,16 +86,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "新規アプリインストール後、25日以内にStepUpミッションをクリア（大溶鉱炉レベル3/10/18/21/23/26到達、各種一括課金）",
+          "condition": "初回アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
           "platform": "iOS",
           "deadline": "インストール日から起算して25日以内",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService"
           ],
-          "confidence": 1.0,
+          "confidence": 1,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル iOS版のStepUp案件情報（条件、獲得pt、URL）が明確に確認できたため。",
+          "reason": "ワラウの公式詳細ページより、対象ゲーム名、iOS、最大11,500pt（1pt=1円換算で11,500円）、達成条件、URLが明確に確認できるため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -115,16 +115,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "新規アプリインストール後、25日以内にStepUpミッションをクリア（大溶鉱炉レベル3/10/18/21/23/26到達、各種一括課金）",
+          "condition": "初回アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
           "platform": "Android",
           "deadline": "インストール日から起算して25日以内",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService"
           ],
-          "confidence": 1.0,
+          "confidence": 1,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル Android版のStepUp案件情報（条件、獲得pt、URL）が明確に確認できたため。",
+          "reason": "ワラウの公式詳細ページより、対象ゲーム名、Android、最大11,500pt（1pt=1円換算で11,500円）、達成条件、URLが明確に確認できるため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -142,7 +142,7 @@
           "auto_publish_ready": true
         }
       ],
-      "verdict": "正常に1件の案件を抽出しました。 / ワラウのiOS版およびAndroid版のホワイトアウト・サバイバル案件情報を正常に抽出しました。",
+      "verdict": "正常に1件の案件を抽出しました。 / ワラウのiOS・Androidそれぞれの公式詳細ページから正確な報酬額・条件・URLを取得し正常に抽出しました。",
       "needs_human_review": false
     },
     "diagnostics": [
@@ -195,7 +195,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.0
+        "elapsedSeconds": 3.0
       },
       {
         "source_id": "warau",
@@ -253,7 +253,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.1
+        "elapsedSeconds": 6.2
       },
       {
         "source_id": "chobirich",
@@ -315,7 +315,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 21.2
+        "elapsedSeconds": 2.9
       },
       {
         "source_id": "coincome",
@@ -371,7 +371,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 19.0
+        "elapsedSeconds": 6.1
       }
     ],
     "health": {

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "PHASE3_ADOPTION_GATE_V29",
-  "generatedAt": "2026-09-01T02:03:19+00:00",
+  "generatedAt": "2026-09-01T02:09:46+00:00",
   "apiCalls": 0,
   "autoPublish": false,
   "autoAddGame": false,
@@ -25,7 +25,7 @@
         "moppy",
         "warau"
       ],
-      "researchedAt": "2026-09-01T02:03:19+00:00",
+      "researchedAt": "2026-09-01T02:09:46+00:00",
       "sourceQueue": {
         "game": "ホワイトアウト・サバイバル",
         "aliases": [
@@ -34,10 +34,10 @@
         "status": "collector_ready",
         "collectorReady": true,
         "candidateFingerprint": "b979da78e6dc55e0",
-        "researchLogicVersion": "V45-clean-public-discovery",
-        "lastResearchLogicVersion": "V44-indexed-official",
+        "researchLogicVersion": "V46-terminal-completeness",
+        "lastResearchLogicVersion": "V45-clean-public-discovery",
         "recheckReason": "research_logic_changed",
-        "lastResearchAt": "2026-09-01T01:54:44+00:00",
+        "lastResearchAt": "2026-09-01T02:03:19+00:00",
         "researchSummary": {
           "game": "ホワイトアウト・サバイバル",
           "returncode": 0,
@@ -50,7 +50,7 @@
           ]
         },
         "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-        "lastConfirmedAt": "2026-09-01T02:02:50+00:00",
+        "lastConfirmedAt": "2026-09-01T02:08:35+00:00",
         "score": 75,
         "confidence": 80,
         "sourceCount": 2,

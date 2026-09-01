@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T02:02:35+00:00",
+  "generatedAt": "2026-09-01T02:07:57+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
     "searchResults": 4,
-    "candidates": 52,
-    "newReviewCandidates": 49,
+    "candidates": 53,
+    "newReviewCandidates": 50,
     "failedSources": 2
   },
   "diagnostics": [
@@ -93,6 +93,32 @@
       ]
     },
     {
+      "game": "Marble Sort!",
+      "aliases": [],
+      "knownGame": false,
+      "score": 50,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 2,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        },
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
       "game": "ザ・グランドマフィア",
       "aliases": [],
       "knownGame": false,
@@ -149,7 +175,9 @@
     },
     {
       "game": "3D Toys: Shadow Match",
-      "aliases": [],
+      "aliases": [
+        "3D Toys"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -252,7 +280,9 @@
     },
     {
       "game": "Goods Match 3D - Shelf Cleaner",
-      "aliases": [],
+      "aliases": [
+        "Goods Match 3D"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -293,30 +323,9 @@
       ]
     },
     {
-      "game": "Marble Sort!",
-      "aliases": [],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
       "game": "Merge Peko",
       "aliases": [
-        "Android_Merge Peko<StepUp>",
-        "Merge Peko"
+        "Android_Merge Peko<StepUp>"
       ],
       "knownGame": false,
       "score": 45,
@@ -359,27 +368,7 @@
       ]
     },
     {
-      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
-      "aliases": [],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
+      "game": "Pococha",
       "aliases": [],
       "knownGame": false,
       "score": 45,
@@ -399,8 +388,55 @@
       ]
     },
     {
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
+      "aliases": [
+        "Screw Cat"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
+      "aliases": [
+        "Slot Mate",
+        "スロットメイト"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
       "game": "Spades - Classic Card Games",
-      "aliases": [],
+      "aliases": [
+        "Spades"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -526,7 +562,9 @@
     },
     {
       "game": "Tidy Match 3D-Puzzle Game",
-      "aliases": [],
+      "aliases": [
+        "Tidy Match 3D-Puzzle"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -714,7 +752,9 @@
     },
     {
       "game": "ハイローラー ベガス : カジノゲーム",
-      "aliases": [],
+      "aliases": [
+        "ハイローラー ベガス"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -920,7 +960,9 @@
     },
     {
       "game": "ラストアサイラム:プレイグ",
-      "aliases": [],
+      "aliases": [
+        "ラストアサイラム"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -962,7 +1004,9 @@
     },
     {
       "game": "ロックンキャッシュカジノ-スロットゲーム",
-      "aliases": [],
+      "aliases": [
+        "ロックンキャッシュカジノ"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -1004,7 +1048,9 @@
     },
     {
       "game": "商人放浪記:あきんどの成り上がり道",
-      "aliases": [],
+      "aliases": [
+        "商人放浪記"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -1045,9 +1091,9 @@
       ]
     },
     {
-      "game": "放置少女",
+      "game": "放置少女〜百花繚乱の萌姫たち〜",
       "aliases": [
-        "放置少女〜百花繚乱の萌姫たち〜"
+        "放置少女"
       ],
       "knownGame": false,
       "score": 45,
@@ -1109,9 +1155,9 @@
       ]
     },
     {
-      "game": "Township",
+      "game": "キノコ伝説:勇者と魔法のランプ",
       "aliases": [
-        "タウンシップ"
+        "キノコ伝説"
       ],
       "knownGame": true,
       "score": 45,
@@ -1131,9 +1177,9 @@
       ]
     },
     {
-      "game": "きのこ伝説",
+      "game": "タウンシップ",
       "aliases": [
-        "キノコ伝説:勇者と魔法のランプ"
+        "Township"
       ],
       "knownGame": true,
       "score": 45,
