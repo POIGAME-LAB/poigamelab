@@ -149,3 +149,9 @@
 - Every discovered URL must be registered first-party, match an official detail shape, be fetched directly, and independently confirm the target game before entering Gemini or the strict verifier.
 - Wired `TAVILY_API_KEY` into the trend/research workflow as an optional secret and bumped the research-logic version so held games are rechecked once after this capability change.
 - Existing V20 exact-offer identity, V29 two-independent-source adoption gate, quarantine boundary, and Firecrawl fail-soft behavior remain unchanged.
+
+## V45 — clean public discovery completion
+- Treat a successful Tavily indexed-official discovery pass with no verified target as a clean technical completion, while explicitly keeping absence non-authoritative.
+- Do not invoke failing Firecrawl fallback after a clean public discovery pass; direct-detail verification failures still remain degraded/fail-closed.
+- Preserve V20 strict identity and V29 independent-source adoption requirements unchanged.
+- Bump research logic version so held games are rechecked once with the corrected completion semantics.

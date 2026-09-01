@@ -375,7 +375,7 @@ def tavily_official_detail_discovery(source, aliases, api_key=None, fetcher=None
     api_key = api_key if api_key is not None else os.getenv("TAVILY_API_KEY", "")
     if fetcher is None:
         fetcher = direct_http_get
-    diag = {"attempted": bool(api_key), "resultUrls": 0, "eligibleUrls": 0, "confirmed": 0, "details": []}
+    diag = {"attempted": bool(api_key), "searchCompleted": False, "resultUrls": 0, "eligibleUrls": 0, "confirmed": 0, "details": [], "absenceAuthoritative": False, "coverage": "indexed_public_official_details"}
     if not api_key:
         diag["skipped"] = "TAVILY_API_KEY unavailable"
         return [], diag
@@ -390,6 +390,7 @@ def tavily_official_detail_discovery(source, aliases, api_key=None, fetcher=None
         else:
             response = searcher(query)
         results = response.get("results") or []
+        diag["searchCompleted"] = True
     except Exception as e:
         diag["error"] = str(e)[:240]
         return [], diag
@@ -1050,6 +1051,24 @@ def collect_firecrawl(key, cfg):
             diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
             return idx, local_candidates, diag
 
+        # V45: a successful indexed-official discovery pass with no verified
+        # target is a clean *technical* completion, not proof that the source
+        # has no offer. This avoids turning an exhausted optional Firecrawl
+        # fallback into a global degraded run after our public first-party
+        # discovery strategy itself completed successfully. Adoption still
+        # requires independent strict verified sources; no negative evidence is
+        # created and absenceAuthoritative remains false. If any eligible detail
+        # page failed direct verification, keep falling back/fail-degraded.
+        indexed_detail_failed = any(x.get("ok") is False for x in (indexed_diag.get("details") or []))
+        if indexed_diag.get("searchCompleted") and not indexed_detail_failed:
+            diag["mode"] = "indexed_official_no_match"
+            diag["search"] = {
+                "skipped": True,
+                "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative",
+            }
+            diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
+            return idx, local_candidates, diag
+
         if source.get("direct_listing_authoritative") and direct_http_diag.get("allListingsFetched"):
             diag["mode"] = "direct_clean_negative"
             diag["search"] = {"skipped": True, "reason": "authoritative first-party listings fetched cleanly with no target detail"}
@@ -1171,6 +1190,8 @@ def collect_firecrawl(key, cfg):
                 print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 公式ページ直行: {len(local_candidates)}件 / {sec}秒")
             elif diag.get("mode") == "direct_clean_negative":
                 print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 公式一覧確認: 対象なし / {sec}秒")
+            elif diag.get("mode") == "indexed_official_no_match":
+                print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 公開公式詳細探索: 確認案件なし（不在断定なし） / {sec}秒")
             else:
                 print(f"      [{result_idx+1}/{len(sources)}] {source['name']} 探索: {sec}秒")
 

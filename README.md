@@ -107,3 +107,6 @@ PHASE 3 records `researchLogicVersion` in `config/trend_discovery.json`. A promo
 
 ### V44 indexed official-detail fallback
 When a registered point site's public listing is login/JavaScript gated, research may optionally use Tavily to discover indexed official detail URLs. Search snippets are never evidence: the collector directly fetches the registered first-party detail page and re-confirms the target before Gemini/verifier processing. Configure `TAVILY_API_KEY` as a GitHub repository secret to enable this fallback.
+
+### V45 collection completeness semantics
+A source can finish cleanly after its public indexed-official discovery strategy completes even when it finds no verified target. This means only that the configured public discovery attempt completed without a technical error; it does **not** prove that the point site has no matching offer. No negative offer evidence is published. Adoption still requires strict verified offers from at least two independent registered sources, and any failure while directly verifying an eligible official detail URL remains degraded/fail-closed.
