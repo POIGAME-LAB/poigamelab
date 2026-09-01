@@ -1,25 +1,11 @@
 {
   "phase": "PHASE2_AUTO_REFRESH_V23",
-  "startedAt": "2026-09-01T00:37:24+00:00",
+  "startedAt": "2026-09-01T23:18:46+00:00",
   "enabledGames": [
-    "Township",
-    "きのこ伝説"
+    "きのこ伝説",
+    "Township"
   ],
   "results": [
-    {
-      "game": "Township",
-      "returncode": 0,
-      "publishableCount": 2,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "chobirich:known_page_miss",
-        "chobirich:search_failed",
-        "coincome:known_page_miss",
-        "coincome:search_failed",
-        "moppy:search_failed",
-        "warau:known_page_miss"
-      ]
-    },
     {
       "game": "きのこ伝説",
       "returncode": 0,
@@ -30,11 +16,23 @@
         "chobirich:search_failed",
         "coincome:known_page_miss",
         "coincome:search_failed",
-        "moppy:search_failed",
-        "warau:known_page_miss"
+        "moppy:search_failed"
+      ]
+    },
+    {
+      "game": "Township",
+      "returncode": 0,
+      "publishableCount": 2,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "chobirich:known_page_miss",
+        "chobirich:search_failed",
+        "coincome:known_page_miss",
+        "coincome:search_failed",
+        "moppy:search_failed"
       ]
     }
   ],
   "success": true,
-  "finishedAt": "2026-09-01T00:40:49+00:00"
+  "finishedAt": "2026-09-01T23:19:36+00:00"
 }
