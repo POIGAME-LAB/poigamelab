@@ -1,3 +1,10 @@
+## V42 — Serialized production writers
+
+- GitHub Actions workflows that can push repository data now share one concurrency group.
+- Trend discovery/research and verified-offer refresh can no longer commit generated JSON/CSV at the same time.
+- This prevents the rebase conflicts observed when both workflows advanced `main` with overlapping generated data.
+- `cancel-in-progress: false` preserves queued work instead of discarding it.
+
 ## V41 — Mobile-aware direct research retrieval
 
 - `mobile: true` sources now use a smartphone Safari identity for direct first-party HTTP retrieval.

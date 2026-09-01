@@ -51,7 +51,7 @@ def test_auto_refresh_only_uses_policy_enabled_games():
 def test_workflow_has_secrets_concurrency_and_daily_schedule():
     text=(ROOT/'.github/workflows/refresh-verified-offers.yml').read_text()
     assert 'cron: "17 21 * * *"' in text
-    assert 'poigamelab-verified-refresh' in text
+    assert 'poigamelab-production-writer' in text
     assert 'secrets.FIRECRAWL_API_KEY' in text
     assert 'secrets.GEMINI_API_KEY' in text
     assert 'python scripts/auto_refresh.py' in text

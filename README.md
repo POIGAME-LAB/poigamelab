@@ -95,3 +95,8 @@ Official point-site listings often make an image or the entire card clickable wh
 
 ### V40 Moppy identity hardening and adoption diagnostics
 Moppy currently uses a public `site_id` query selector on ad detail pages. V40 treats that selector as stable offer identity while continuing to remove tracking/session parameters, so separate platform offers cannot collapse before exact-offer verification or publishing. No current game-specific Moppy ID is embedded in production logic. The V29 adoption step also emits concise HOLD/READY reason lines with strict-offer and independent-source counts; thresholds remain unchanged.
+
+
+### GitHub Actions writer safety (V42)
+
+Both repository-writing workflows use the shared `poigamelab-production-writer` concurrency group with `cancel-in-progress: false`. This serializes generated-data commits from trend/research and verified-offer refresh jobs and avoids bot-vs-bot rebase conflicts on overlapping `data/` outputs.
