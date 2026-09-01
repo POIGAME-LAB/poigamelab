@@ -115,3 +115,6 @@ A source can finish cleanly after its public indexed-official discovery strategy
 
 ### PHASE 3 V47 — optional Firecrawl failure isolation
 For quarantined trend research only, V29 may treat Firecrawl `402 Payment Required` as an optional retrieval-layer warning after public first-party discovery has produced complete diagnostics. This never asserts that an inaccessible source has no offer, never changes Phase 2 production snapshot completeness, and never bypasses the strict-offer / independent-source thresholds. Any fatal, partial, non-402, unknown, or evidence-insufficient state still fails closed.
+
+### V48 Moppy indexed discovery resilience
+Moppy indexed discovery uses at most three sequential Tavily query variants when the first exact-title query misses. It stops immediately after a Moppy official detail page is directly fetched and target-confirmed, keeping the usual API cost to one search. Search snippets are never evidence, external domains are rejected, stable identities are deduplicated, and unsuccessful/partial searches cannot create authoritative absence evidence.

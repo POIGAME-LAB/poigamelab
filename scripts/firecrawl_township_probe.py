@@ -371,51 +371,96 @@ def tavily_official_detail_discovery(source, aliases, api_key=None, fetcher=None
     Search results are discovery hints only: titles/snippets never become evidence.
     Every URL must be registered first-party, detail-shaped, and its official page
     must independently contain the target before a candidate is returned.
+
+    V48 adds bounded query diversity for Moppy because a single indexed query can
+    intermittently omit a live official detail page. Queries run sequentially and
+    stop as soon as a directly verified target page is found, so the common case
+    still costs one Tavily call. Other sources keep the single-query behavior.
     """
     api_key = api_key if api_key is not None else os.getenv("TAVILY_API_KEY", "")
     if fetcher is None:
         fetcher = direct_http_get
-    diag = {"attempted": bool(api_key), "searchCompleted": False, "resultUrls": 0, "eligibleUrls": 0, "confirmed": 0, "details": [], "absenceAuthoritative": False, "coverage": "indexed_public_official_details"}
+    diag = {
+        "attempted": bool(api_key), "searchCompleted": False, "resultUrls": 0,
+        "eligibleUrls": 0, "confirmed": 0, "details": [],
+        "absenceAuthoritative": False, "coverage": "indexed_public_official_details",
+        "queryAttempts": 0, "queryErrors": [],
+    }
     if not api_key:
         diag["skipped"] = "TAVILY_API_KEY unavailable"
         return [], diag
     target = CURRENT_TARGET.get("game") or (aliases[0] if aliases else "")
     domains = [d for d in (source.get("search_domains") or []) if d]
     site = domains[-1] if domains else (urlparse(source.get("start_url") or "").hostname or "")
-    query = f'"{target}" site:{site} ad detail'
-    try:
-        if searcher is None:
-            payload = {"api_key": api_key, "query": query, "search_depth": "basic", "max_results": 8, "include_answer": False, "include_raw_content": False}
-            response = post_json("https://api.tavily.com/search", payload, timeout=45)
-        else:
-            response = searcher(query)
-        results = response.get("results") or []
-        diag["searchCompleted"] = True
-    except Exception as e:
-        diag["error"] = str(e)[:240]
-        return [], diag
-    diag["resultUrls"] = len(results)
-    candidates=[]; seen=set()
-    for item in results:
-        url=str((item or {}).get("url") or "").strip()
-        if not url or not registered_host(url, source, {"offerwall_domains_discovered": []}) or not _detail_like_first_party_url(url, source):
-            continue
-        identity=offer_identity_url(url)
-        if identity in seen:
-            continue
-        seen.add(identity); diag["eligibleUrls"] += 1
-        if len(seen) > max(1, min(6, int(limit or 4))):
-            break
+    queries = [f'"{target}" site:{site} ad detail']
+    if source.get("id") == "moppy":
+        queries.extend([
+            f'"{target}" site:{site} "ad/detail.php" Android',
+            f'"{target}" site:{site} "ad/detail.php" iOS',
+        ])
+    # Keep query text unique without broadening beyond the exact target + first party.
+    queries = list(dict.fromkeys(queries))[:3]
+
+    candidates = []
+    seen = set()
+    successful_searches = 0
+    max_details = max(1, min(6, int(limit or 4)))
+    for query in queries:
+        diag["queryAttempts"] += 1
         try:
-            raw, meta = fetcher(url, source)
-            visible=html_to_visible_text(raw); hit=text_has_target(visible, aliases)
-            diag["details"].append({"identityUrl": identity, "ok": True, "targetFound": hit, **meta})
-            if not hit:
-                continue
-            candidates.append(compact_candidate(source, "indexed_official_detail", url, title=html_title(raw), markdown=visible, links=[], metadata={"targetFound": True, "retrieval": "tavily_discovery_direct_verify"}))
-            diag["confirmed"] += 1
+            if searcher is None:
+                payload = {
+                    "api_key": api_key, "query": query, "search_depth": "basic",
+                    "max_results": 8, "include_answer": False, "include_raw_content": False,
+                }
+                response = post_json("https://api.tavily.com/search", payload, timeout=45)
+            else:
+                response = searcher(query)
+            results = response.get("results") or []
+            successful_searches += 1
         except Exception as e:
-            diag["details"].append({"identityUrl": identity, "ok": False, "error": str(e)[:240]})
+            err = str(e)[:240]
+            diag["queryErrors"].append(err)
+            diag["error"] = err  # backward-compatible summary for V45 diagnostics
+            continue
+        diag["resultUrls"] += len(results)
+        for item in results:
+            url = str((item or {}).get("url") or "").strip()
+            if not url or not registered_host(url, source, {"offerwall_domains_discovered": []}) or not _detail_like_first_party_url(url, source):
+                continue
+            identity = offer_identity_url(url)
+            if identity in seen:
+                continue
+            if len(seen) >= max_details:
+                break
+            seen.add(identity)
+            diag["eligibleUrls"] += 1
+            try:
+                raw, meta = fetcher(url, source)
+                visible = html_to_visible_text(raw)
+                hit = text_has_target(visible, aliases)
+                diag["details"].append({"identityUrl": identity, "ok": True, "targetFound": hit, **meta})
+                if not hit:
+                    continue
+                candidates.append(compact_candidate(
+                    source, "indexed_official_detail", url, title=html_title(raw),
+                    markdown=visible, links=[],
+                    metadata={"targetFound": True, "retrieval": "tavily_discovery_direct_verify"},
+                ))
+                diag["confirmed"] += 1
+            except Exception as e:
+                diag["details"].append({"identityUrl": identity, "ok": False, "error": str(e)[:240]})
+        # One independently verified official Moppy detail is enough to restore
+        # the independent-source gate. Stop to avoid unnecessary Tavily/API calls.
+        if candidates and source.get("id") == "moppy":
+            break
+        if len(seen) >= max_details:
+            break
+    diag["searchCompleted"] = successful_searches == len(queries[:diag["queryAttempts"]]) and not diag["queryErrors"]
+    # If we stopped early because a verified candidate was found, the discovery
+    # task is complete for positive evidence even though later variants were skipped.
+    if candidates:
+        diag["searchCompleted"] = True
     return candidates, diag
 
 

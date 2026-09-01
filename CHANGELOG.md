@@ -163,3 +163,11 @@
 - The exception is fail-closed: every degraded reason must be a matching `search_failed` 402 with completed public-discovery diagnostics, and adoption still requires the configured minimum strict offers and independent verified sources.
 - Production refresh `collectionComplete` semantics and snapshot-preservation behavior are unchanged.
 - Fatal, partial, non-402, unknown, or insufficient-evidence cases remain HOLD.
+
+## V48 — Moppy indexed query diversity
+- Added bounded Moppy-only Tavily query diversity for intermittent indexed-detail misses.
+- Common success path remains one Tavily call; up to three exact-target/first-party variants are tried only when earlier variants do not yield a directly verified official detail page.
+- Search snippets/titles remain discovery hints only. Every candidate must still be a registered Moppy detail URL and the fetched official page itself must contain the target.
+- Deduplicates stable offer identities across query variants and rejects external domains.
+- Stale/404 detail results can be bypassed by a later query variant; all-query/partial query failures remain fail-closed.
+- Bumped researchLogicVersion to V48 for one controlled recheck.
