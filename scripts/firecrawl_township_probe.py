@@ -128,8 +128,23 @@ def direct_http_get(url, source, timeout=15, max_bytes=1200000):
     """
     if not registered_host(url, source, {"offerwall_domains_discovered": []}):
         raise ValueError("direct URL is outside registered first-party domains")
+    # V41: app-offer listings can be device-gated. Moppy explicitly serves
+    # app-install ads through its smartphone-browser experience, so honor the
+    # source registry's mobile flag instead of always identifying as a bot/PC.
+    # This remains a plain first-party GET; no login, cookie, or session token
+    # is supplied or persisted.
+    if source.get("mobile"):
+        user_agent = (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+            "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
+            "Mobile/15E148 Safari/604.1"
+        )
+        device_mode = "mobile"
+    else:
+        user_agent = "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)"
+        device_mode = "desktop"
     req = Request(url, headers={
-        "User-Agent": "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)",
+        "User-Agent": user_agent,
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
     })
@@ -149,7 +164,7 @@ def direct_http_get(url, source, timeout=15, max_bytes=1200000):
         except Exception:
             charset = None
     text = data.decode(charset or "utf-8", errors="replace")
-    return text, {"bytes": len(data), "truncated": truncated}
+    return text, {"bytes": len(data), "truncated": truncated, "deviceMode": device_mode}
 
 
 def html_to_visible_text(raw_html):

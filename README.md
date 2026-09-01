@@ -3,6 +3,11 @@
 V23でGitHub Actionsの日次自動更新が本番稼働したため、V24ではその**検証済みデータを実サイトへ直結**しました。
 
 
+
+### V41 mobile-aware direct retrieval
+
+Research direct HTTP honors each source registry entry's `mobile` flag. Mobile app-offer sources are fetched with a smartphone Safari user-agent, while the same registered-domain, detail-shape, target-confirmation, and exact-offer identity gates remain unchanged. No login/session state is introduced.
+
 ## V24: サイト表示への接続
 - トップ/詳細ページは `data/published_offers.csv` を最優先で読む
 - 自動検証済みデータがあるゲームは、旧 `offers.csv` の未確認値を混ぜない

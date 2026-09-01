@@ -1,3 +1,10 @@
+## V41 — Mobile-aware direct research retrieval
+
+- `mobile: true` sources now use a smartphone Safari identity for direct first-party HTTP retrieval.
+- This targets device-gated app-offer listings without adding login/session state or weakening first-party/detail-page verification.
+- Direct diagnostics now record `deviceMode` (`mobile` / `desktop`).
+- Added regression coverage for Moppy `site_id` discovery from a mobile-rendered listing and cross-game rejection.
+
 # PHASE2_DATA_HEALTH_V25
 
 - 自動更新の成功・一部取得・失敗・古さをサイト表示に反映。
