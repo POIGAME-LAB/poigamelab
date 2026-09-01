@@ -155,3 +155,5 @@
 - Do not invoke failing Firecrawl fallback after a clean public discovery pass; direct-detail verification failures still remain degraded/fail-closed.
 - Preserve V20 strict identity and V29 independent-source adoption requirements unchanged.
 - Bump research logic version so held games are rechecked once with the corrected completion semantics.
+
+- V46: collection completeness now treats earlier stale known-page misses as superseded only after a clean terminal first-party/indexed discovery state; real terminal failures and partial known fast paths remain fail-closed.

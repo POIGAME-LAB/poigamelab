@@ -110,3 +110,5 @@ When a registered point site's public listing is login/JavaScript gated, researc
 
 ### V45 collection completeness semantics
 A source can finish cleanly after its public indexed-official discovery strategy completes even when it finds no verified target. This means only that the configured public discovery attempt completed without a technical error; it does **not** prove that the point site has no matching offer. No negative offer evidence is published. Adoption still requires strict verified offers from at least two independent registered sources, and any failure while directly verifying an eligible official detail URL remains degraded/fail-closed.
+
+- V46: collection completeness now treats earlier stale known-page misses as superseded only after a clean terminal first-party/indexed discovery state; real terminal failures and partial known fast paths remain fail-closed.

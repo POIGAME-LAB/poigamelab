@@ -1232,9 +1232,24 @@ def assess_collection_completeness(diagnostics):
             reasons.append(f"{sid}:search_failed")
         if isinstance(search, dict) and search.get("partialAccepted") is True:
             reasons.append(f"{sid}:partial_known_fast_path")
-        for kp in d.get("known_pages") or []:
-            if kp.get("ok") is False:
-                reasons.append(f"{sid}:known_page_{kp.get('cache') or 'failed'}")
+        # V46: an early known-page miss is superseded when the source later
+        # reaches a clean terminal public-discovery state. The old URL may be
+        # stale while a directly verified/indexed official detail succeeds, or
+        # indexed discovery may cleanly complete with no verified target. Do
+        # not let that obsolete probe mark the whole collection degraded.
+        # Partial known fast paths remain degraded above, and any terminal
+        # search/fatal failure still fails closed.
+        clean_terminal_modes = {
+            "known_official_fast_path",
+            "direct_official_fast_path",
+            "indexed_official_fast_path",
+            "indexed_official_no_match",
+            "direct_clean_negative",
+        }
+        if d.get("mode") not in clean_terminal_modes:
+            for kp in d.get("known_pages") or []:
+                if kp.get("ok") is False:
+                    reasons.append(f"{sid}:known_page_{kp.get('cache') or 'failed'}")
     return (len(reasons) == 0), sorted(set(reasons))
 
 
