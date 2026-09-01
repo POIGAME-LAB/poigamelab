@@ -1,6 +1,6 @@
 {
   "game": "ホワイトアウト・サバイバル",
-  "researchedAt": "2026-09-01T02:09:46+00:00",
+  "researchedAt": "2026-09-01T02:23:08+00:00",
   "sourceQueue": {
     "game": "ホワイトアウト・サバイバル",
     "aliases": [
@@ -9,10 +9,10 @@
     "status": "collector_ready",
     "collectorReady": true,
     "candidateFingerprint": "b979da78e6dc55e0",
-    "researchLogicVersion": "V46-terminal-completeness",
-    "lastResearchLogicVersion": "V45-clean-public-discovery",
+    "researchLogicVersion": "V47-optional-firecrawl-coverage",
+    "lastResearchLogicVersion": "V46-terminal-completeness",
     "recheckReason": "research_logic_changed",
-    "lastResearchAt": "2026-09-01T02:03:19+00:00",
+    "lastResearchAt": "2026-09-01T02:09:46+00:00",
     "researchSummary": {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
@@ -25,7 +25,7 @@
       ]
     },
     "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-    "lastConfirmedAt": "2026-09-01T02:08:35+00:00",
+    "lastConfirmedAt": "2026-09-01T02:22:51+00:00",
     "score": 75,
     "confidence": 80,
     "sourceCount": 2,
@@ -47,55 +47,26 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-01T02:09:46+00:00",
+    "runAt": "2026-09-01T02:23:08+00:00",
     "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
-    "candidateCount": 3,
+    "candidateCount": 2,
     "geminiModel": "gemini-3.5-flash-lite",
     "verified": {
       "game": "ホワイトアウト・サバイバル",
       "offers": [
         {
-          "site": "モッピー",
-          "reward_yen": 6119,
-          "condition": "新規アプリインストール後、45日以内に各成果地点クリア",
-          "platform": "Android",
-          "deadline": "45日以内",
-          "url": "https://pc.moppy.jp/ad/detail.php?site_id=160375",
-          "evidence_urls": [
-            "https://pc.moppy.jp/ad/detail.php?site_id=160375"
-          ],
-          "confidence": 1.0,
-          "publishable": true,
-          "reason": "モッピーの詳細ページから、ゲーム名、報酬額（6,119P＝6,119円）、達成条件、OS（Android）、案件URLが明確に確認できたため。",
-          "registered_source": "moppy",
-          "reward_source": "python_same_identity_explicit_yen",
-          "deterministic_checks": {
-            "registered_domain": true,
-            "first_party_registered_source": true,
-            "url_present": true,
-            "evidence_present": true,
-            "evidence_domains_registered": true,
-            "evidence_same_offer_identity": true,
-            "exact_identity_candidate_present": true,
-            "reward_valid": true,
-            "reward_consistent": true,
-            "condition_present": true
-          },
-          "auto_publish_ready": true
-        },
-        {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "初回アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
+          "condition": "新規アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
           "platform": "iOS",
           "deadline": "インストール日から起算して25日以内",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService"
           ],
-          "confidence": 1,
+          "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、対象ゲーム名、iOS、最大11,500pt（1pt=1円換算で11,500円）、達成条件、URLが明確に確認できるため。",
+          "reason": "ワラウの公式詳細ページより、対象ゲーム、OS(iOS)、報酬pt(最大11,500pt、円換算は明記なしのためnull)、達成条件が明確に確認できるため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -115,16 +86,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "初回アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
+          "condition": "新規アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
           "platform": "Android",
           "deadline": "インストール日から起算して25日以内",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService"
           ],
-          "confidence": 1,
+          "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、対象ゲーム名、Android、最大11,500pt（1pt=1円換算で11,500円）、達成条件、URLが明確に確認できるため。",
+          "reason": "ワラウの公式詳細ページより、対象ゲーム、OS(Android)、報酬pt(最大11,500pt、円換算は明記なしのためnull)、達成条件が明確に確認できるため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -142,14 +113,14 @@
           "auto_publish_ready": true
         }
       ],
-      "verdict": "正常に1件の案件を抽出しました。 / ワラウのiOS・Androidそれぞれの公式詳細ページから正確な報酬額・条件・URLを取得し正常に抽出しました。",
+      "verdict": "ワラウのiOS版およびAndroid版のホワイトアウト・サバイバル（StepUp）案件をそれぞれ正常に抽出しました。ポイント数がpt表記で日本円換算額が直接書かれていないためreward_yenはnullとしていますが、案件データとしては完全に成立しています。",
       "needs_human_review": false
     },
     "diagnostics": [
       {
         "source_id": "moppy",
         "source_name": "モッピー",
-        "mode": "indexed_official_fast_path",
+        "mode": "indexed_official_no_match",
         "direct": null,
         "direct_http": {
           "attempted": true,
@@ -170,15 +141,39 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 1,
-          "eligibleUrls": 1,
-          "confirmed": 1,
+          "resultUrls": 8,
+          "eligibleUrls": 5,
+          "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160375",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160924",
               "ok": true,
-              "targetFound": true,
-              "bytes": 130399,
+              "targetFound": false,
+              "bytes": 129465,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=146059",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 126735,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=155462",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 137896,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161354",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 151357,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -191,11 +186,11 @@
         "known_pages": [],
         "search": {
           "skipped": true,
-          "reason": "indexed official detail pages directly verified"
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.0
+        "elapsedSeconds": 8.0
       },
       {
         "source_id": "warau",
@@ -253,7 +248,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.2
+        "elapsedSeconds": 6.9
       },
       {
         "source_id": "chobirich",
@@ -315,7 +310,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.9
+        "elapsedSeconds": 3.1
       },
       {
         "source_id": "coincome",
@@ -371,18 +366,18 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.1
+        "elapsedSeconds": 6.7
       }
     ],
     "health": {
-      "publishableCount": 3,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "chobirich:search_failed",
         "coincome:search_failed"
       ],
       "publishableBySource": {
-        "moppy": 1,
+        "moppy": 0,
         "warau": 2,
         "chobirich": 0,
         "coincome": 0
