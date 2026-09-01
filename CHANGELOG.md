@@ -242,3 +242,10 @@
 - Search scheduling now executes every held claim's first query before any second-query round, so a global search-call cap cannot starve later claims.
 - A result from an existing source site for one claim can be retained for another claim only when that site is independent for the latter; the existing per-claim span and match independence guards remain authoritative.
 - V52.6 pair-complete classification, strict lexical acceptance, anchored paraphrase second review, exact numeric grounding, AI-call budget, quarantine boundary, and `publicationWrites: 0` are unchanged.
+
+### V52.8 — adaptive direct-text backfill within the fixed fetch budget
+- Kept V52.7 search/query, direct-fetch, AI, acceptance, and publication limits unchanged while changing only how the existing direct-fetch budget is allocated after discovery.
+- Every held claim receives one fair initial fetch opportunity. Remaining fetches are then prioritized toward claims that still lack a strict directly-fetched text match; search titles/snippets are never used to decide that quality state.
+- Backfill quality is computed only from target-confirmed directly fetched page text using the existing deterministic span/overlap logic and per-claim source-independence checks. A page from an existing source site cannot make that claim look corroborated during allocation.
+- If all held claims already have a strict page, the remaining bounded fetch budget is still used as balanced exploration so contradiction coverage and prior source breadth are not reduced.
+- Added diagnostics for initial vs backfill fetches, backfill-targeted claims, strict/anchor gains, and final direct-text claim coverage. No support threshold, numeric grounding rule, AI budget, or `publicationWrites: 0` boundary was relaxed.

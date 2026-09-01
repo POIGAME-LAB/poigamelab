@@ -223,9 +223,9 @@ def test_report_always_exposes_diagnostic_counts_without_publication():
  assert r['publicationWrites']==0
 
 
-def test_v527_logic_version_is_reported_for_live_audit():
+def test_v528_logic_version_is_reported_for_live_audit():
  c,d=docs(); _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
- assert r['logicVersion']=='V52.7'
+ assert r['logicVersion']=='V52.8'
 
 
 def test_orphan_held_decision_is_not_researched_or_resurrected():
@@ -877,3 +877,169 @@ def test_v527_second_query_can_displace_broad_first_query_result_under_one_fetch
  _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=ai_support)
  assert fetched==['https://precise.example/guide']
  assert r['searchCalls']==2 and r['directFetches']==1 and r['supportingClaimsAdded']==1
+
+
+
+def test_v528_adaptive_backfill_prioritizes_claims_without_strict_direct_text():
+ claims=[]; decisions=[]
+ phrases=['資源箱は温存する','建設枠を優先する','列車注文を先に進める']
+ hosts=['res','build','train']
+ for i,text in enumerate(phrases,1):
+  claims.append(claim(text,f'https://old{i}.example/original'))
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom['maxCorroborationFetchesPerRun']=5; custom['maxCorroborationResultsPerClaim']=4
+ state={'s':0}; fetched=[]
+ def se(q,k,n):
+  call=state['s']; state['s']+=1; host=hosts[call]
+  return {'results':[{'url':f'https://{host}{j}.example/guide','title':f'Game A {phrases[call]}'} for j in range(4)]}
+ def fe(url):
+  fetched.append(url)
+  # First claim gets a strict page immediately. Other claims need backfill.
+  if 'res0.example' in url: return ('<body>Game A 資源箱は温存する</body>',{})
+  return ('<body>Game A 初心者向けの一般攻略情報</body>',{})
+ _,r=m.run({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ f=r['diagnosticCounts']
+ assert r['directFetches']==5
+ assert sum('res' in x for x in fetched)==1
+ assert sum('build' in x for x in fetched)==2 and sum('train' in x for x in fetched)==2
+ assert f['discoveryInitialFetches']==3 and f['discoveryBackfillFetches']==2
+ assert f['backfillClaimsTargeted']==2 and f['directTextStrictClaimHits']==1
+
+
+def test_v528_direct_page_text_not_search_metadata_controls_backfill_priority():
+ c1=claim('資源箱は温存する','https://old1.example/original')
+ c2=claim('建設枠を優先する','https://old2.example/original')
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['old1.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['old2.example']},
+ ]}
+ custom=cfg(); custom['maxCorroborationFetchesPerRun']=3; custom['maxCorroborationResultsPerClaim']=3
+ state={'s':0}; fetched=[]
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1:
+   return {'results':[
+    {'url':'https://fake-strong.example/one','title':'Game A 資源箱は温存する','content':'資源箱 温存'},
+    {'url':'https://real.example/two','title':'Game A guide','content':'攻略'},
+   ]}
+  return {'results':[{'url':'https://build.example/one','title':'Game A 建設枠を優先する','content':'建設枠'}]}
+ def fe(url):
+  fetched.append(url)
+  if 'fake-strong' in url: return ('<body>Game A 毎日ログインする</body>',{})
+  if 'real.example' in url: return ('<body>Game A 資源箱は温存する</body>',{})
+  return ('<body>Game A 建設枠を優先する</body>',{})
+ _,r=m.run({'claims':[c1,c2]},decisions,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ assert fetched[0]=='https://fake-strong.example/one'
+ assert 'https://real.example/two' in fetched
+ f=r['diagnosticCounts']
+ assert f['directTextStrictClaimHits']==2 and f['backfillStrictGains']>=1
+
+
+def test_v528_target_missing_initial_page_keeps_claim_weak_and_triggers_backfill():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationFetchesPerRun']=2; custom['maxCorroborationResultsPerClaim']=2
+ def se(q,k,n): return {'results':[{'url':'https://miss.example/one'},{'url':'https://good.example/two'}]}
+ fetched=[]
+ def fe(url):
+  fetched.append(url)
+  if 'miss' in url: return ('<body>Different Game 資源箱は温存する</body>',{})
+  return ('<body>Game A 資源箱は温存する</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=ai_support)
+ f=r['diagnosticCounts']
+ assert fetched==['https://miss.example/one','https://good.example/two']
+ assert f['targetMissing']==1 and f['discoveryBackfillFetches']==1
+ assert f['directTextStrictClaimHits']==1 and r['supportingClaimsAdded']==1
+
+
+def test_v528_all_strict_initial_pages_keep_bounded_exploration_for_conflict_coverage():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationFetchesPerRun']=3; custom['maxCorroborationResultsPerClaim']=3
+ def se(q,k,n): return {'results':[{'url':f'https://s{i}.example/g'} for i in range(3)]}
+ fetched=[]
+ def fe(url): fetched.append(url); return ('<body>Game A 資源箱は温存する</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ f=r['diagnosticCounts']
+ assert len(fetched)==3 and r['directFetches']==3
+ assert f['discoveryAllStrictReachedBeforeBudget']==1
+ assert f['discoveryInitialFetches']==1 and f['discoveryBackfillFetches']==2
+
+
+def test_v528_adaptive_probe_respects_existing_source_site_independence():
+ c1=claim('資源箱は温存する','https://same.example/original')
+ c2=claim('建設枠を優先する','https://other.example/original')
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['same.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['other.example']},
+ ]}
+ custom=cfg(); custom['maxCorroborationFetchesPerRun']=2
+ state={'s':0}
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1: return {'results':[{'url':'https://same.example/shared'}]}
+  return {'results':[{'url':'https://new.example/build'}]}
+ def fe(url):
+  if 'same.example' in url: return ('<body>Game A 資源箱は温存する</body>',{})
+  return ('<body>Game A 建設枠を優先する</body>',{})
+ _,r=m.run({'claims':[c1,c2]},decisions,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ # same.example cannot make c1 strict, though its text contains c1 exactly.
+ assert r['diagnosticCounts']['directTextStrictClaimHits']==1
+
+
+def test_v528_backfill_never_exceeds_global_or_per_claim_fetch_caps():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationFetchesPerRun']=3; custom['maxCorroborationResultsPerClaim']=2
+ def se(q,k,n): return {'results':[{'url':f'https://u{i}.example/g'} for i in range(6)]}
+ calls={'f':0}
+ def fe(url): calls['f']+=1; return ('<body>Game A general information only</body>',{})
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ assert calls['f']==2 and r['directFetches']==2
+ assert r['diagnosticCounts']['discoverySelectedForFetch']==2
+
+
+def test_v528_observed_v527_shape_adapts_fixed_twelve_fetch_budget_without_gate_relaxation():
+ phrases=['資源箱は温存する','建設枠を優先する','列車注文を先に進める','畑の拡張を後回しにする']; claims=[]; decisions=[]
+ for i,text in enumerate(phrases,1):
+  claims.append(claim(text,f'https://old{i}.example/original'))
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom['maxCorroborationSearchesPerClaim']=2; custom['maxCorroborationSearchCallsPerRun']=8; custom['maxCorroborationFetchesPerRun']=12
+ state={'s':0}; fetched=[]
+ def se(q,k,n):
+  call=state['s']; state['s']+=1; ci=call%4
+  return {'results':[{'url':f'https://q{call}-{j}.example/g','title':f'Game A {phrases[ci]}'} for j in range(4)]}
+ def fe(url):
+  fetched.append(url)
+  # Only the first claim has a strict page early; other claims stay weak.
+  if url.startswith('https://q0-'): return ('<body>Game A 資源箱は温存する</body>',{})
+  return ('<body>Game A 一般的な序盤攻略の説明</body>',{})
+ _,r=m.run({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ f=r['diagnosticCounts']
+ assert r['searchCalls']==8 and r['directFetches']==12
+ assert f['discoveryBalancedClaimsCovered']==4 and f['directTextStrictClaimHits']==1
+ assert f['discoveryInitialFetches']==4 and f['discoveryBackfillFetches']==8
+ assert f['backfillClaimsTargeted']>=3
+ assert r['supportingClaimsAdded']==0 and r['publicationWrites']==0
+
+
+def test_v528_adaptive_backfill_can_recover_second_claim_with_same_three_fetch_budget():
+ c1=claim('資源箱は温存する','https://old1.example/original')
+ c2=claim('建設枠を優先する','https://old2.example/original')
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['old1.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['old2.example']},
+ ]}
+ custom=cfg(); custom['maxCorroborationFetchesPerRun']=3; custom['maxCorroborationResultsPerClaim']=3
+ state={'s':0}; fetched=[]
+ def se(q,k,n):
+  state['s']+=1
+  if state['s']==1:
+   return {'results':[{'url':'https://r1.example/g'},{'url':'https://r2.example/g'}]}
+  return {'results':[{'url':'https://b1.example/g'},{'url':'https://b2.example/g'}]}
+ def fe(url):
+  fetched.append(url)
+  if 'r1' in url: return ('<body>Game A 資源箱は温存する</body>',{})
+  if 'b2' in url: return ('<body>Game A 建設枠を優先する</body>',{})
+  return ('<body>Game A 一般的な攻略説明</body>',{})
+ _,r=m.run({'claims':[c1,c2]},decisions,custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ # Initial fair round fetches r1 and b1. The only remaining slot must go to
+ # weak c2, not already-strict c1, so b2 is recovered within the same cap.
+ assert fetched==['https://r1.example/g','https://b1.example/g','https://b2.example/g']
+ f=r['diagnosticCounts']
+ assert f['directTextStrictClaimHits']==2 and f['backfillStrictGains']==1
+ assert r['directFetches']==3 and r['publicationWrites']==0

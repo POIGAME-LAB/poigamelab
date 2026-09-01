@@ -4,12 +4,12 @@
 Only V51 held_single_source claims are searched. Tavily discovers URLs; every
 candidate is fetched directly, target-confirmed, and source-site independent.
 Python creates bounded exact-source evidence spans; Gemini may only select those
-spans. V52.7 improves discovery without weakening acceptance: each held claim can
-use up to two bounded claim-targeted Tavily queries, search metadata ranks URLs
-for direct fetch only, and a round-robin selector prevents one claim from using
-the entire fetch budget. Metadata/snippets never become evidence. The strict and
-anchored-paraphrase acceptance gates, numeric grounding, and provenance checks
-remain deterministic/fail-closed.
+spans. V52.8 keeps V52.7's bounded two-query discovery but allocates the fixed direct-fetch
+budget adaptively: every held claim gets an initial fair fetch opportunity, then
+remaining fetches backfill claims that still lack a strict direct-text match. Search
+metadata only orders URLs; backfill decisions use directly fetched page text. Search
+snippets never become evidence, and all existing strict/anchored-paraphrase, numeric,
+provenance, AI-budget, and publication gates remain deterministic/fail-closed.
 """
 from __future__ import annotations
 import json, os, re, sys, unicodedata
@@ -28,7 +28,7 @@ CONFIG=ROOT/'config'/'guide_research.json'
 OUT=ROOT/'data'/'guide_claims_corroborated.json'
 REPORT=ROOT/'data'/'guide_corroboration.json'
 STATUS=ROOT/'data'/'guide_corroboration_status.json'
-LOGIC_VERSION='V52.7'
+LOGIC_VERSION='V52.8'
 GENERIC_BIGRAMS={
     '攻略','達成','優先','必要','場合','条件','報酬','日数','効率','序盤','方法','目指','可能',
     'レベ','ベル','ゲー','ーム','する','した','して','ます','でき','ポイ','イン','ント',
@@ -260,6 +260,30 @@ def discovery_relevance(game, claim, item, rank=0):
     return score,signals
 
 
+
+def ranked_discovery_by_claim(pool, held_info):
+    """Return deterministic per-claim discovery queues; metadata is ranking-only."""
+    per_claim={}
+    for cid,d in held_info:
+        oldsites=set(d.get('independentSources') or [])
+        rows=[]
+        for key,row in pool.items():
+            if row['game']!=d['game'] or row['site'] in oldsites: continue
+            score=(row.get('scores') or {}).get(cid)
+            if score is None: continue
+            rows.append((score,row['url'],key))
+        rows.sort(key=lambda x:(-x[0],x[1]))
+        per_claim[cid]=rows
+    return per_claim
+
+
+def direct_text_match_kind(claim, text):
+    """Probe fetched text only. Returns strict, anchor, or none without using search metadata."""
+    spans=claim_windows('probe','probe',claim,text,max_spans=4)
+    if not spans: return 'none'
+    if any(overlap_ok(claim,x['text']) for x in spans): return 'strict'
+    return 'anchor'
+
 def select_discovery_pool(pool, held_info, max_fetches, per_claim_limit=4):
     """Round-robin ranked discovery so one claim cannot consume the fetch budget."""
     max_fetches=max(1,int(max_fetches)); per_claim_limit=max(1,int(per_claim_limit))
@@ -345,6 +369,9 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
         'sameSourceSiteUrls':0,'sameSourceRetainedForOtherClaim':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,
         'searchQueriesPlanned':0,'searchQueriesExecuted':0,'searchQueryVariantsUsed':0,
         'discoveryUrlsUnique':0,'discoverySelectedForFetch':0,'discoveryBalancedClaimsCovered':0,
+        'discoveryInitialFetches':0,'discoveryBackfillFetches':0,'backfillClaimsTargeted':0,
+        'backfillStrictGains':0,'backfillAnchorGains':0,'directTextStrictClaimHits':0,
+        'directTextAnchorOnlyClaimHits':0,'directTextNoSpanClaimHits':0,'discoveryAllStrictReachedBeforeBudget':0,
         'fetchErrors':0,'targetMissing':0,'candidatePages':0,'aiErrors':0,'aiMalformedResponses':0,
         'aiProposedMatches':0,'aiProposalsDropped':0,'aiRejectedMatches':0,'aiValidatedSupport':0,
         'aiValidatedContradict':0,'aiValidatedUnclear':0,'candidatePagesUnreferencedByAI':0,
@@ -419,28 +446,88 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
             if cid in row['scores']: diag_by_claim[cid]['eligibleIndependentUrls']+=1
     funnel['eligibleIndependentUrls']=len(discovery_pool)
     funnel['discoveryUrlsUnique']=len(discovery_pool)
-    selected,covered=select_discovery_pool(discovery_pool,held_info,max_fetches,max_results)
-    funnel['discoverySelectedForFetch']=len(selected); funnel['discoveryBalancedClaimsCovered']=len(covered)
-    for row in selected:
-        if fetch_calls>=max_fetches: break
-        fetch_calls+=1
-        for cid in row.get('originClaims') or []:
-            if cid in diag_by_claim: diag_by_claim[cid]['directFetches']+=1
+
+    # V52.8: spend the same fixed fetch budget in two stages. First give each
+    # held claim one fair opportunity. Then use directly fetched page text—not
+    # search snippets—to backfill only claims that still lack a strict match.
+    per_claim=ranked_discovery_by_claim(discovery_pool,held_info)
+    offsets={cid:0 for cid,_ in held_info}; selected_by_claim={cid:0 for cid,_ in held_info}
+    fetched_keys=set(); covered=set(); backfill_targeted=set()
+    quality={cid:{'candidate':0,'anchor':0,'strict':0} for cid,_ in held_info}
+
+    def next_row_for_claim(cid):
+        rows=per_claim.get(cid) or []; idx=offsets[cid]
+        while idx<len(rows):
+            _,_,key=rows[idx]; idx+=1; offsets[cid]=idx
+            if key in fetched_keys: continue
+            if selected_by_claim[cid]>=max_results: return None,None
+            return key,discovery_pool[key]
+        offsets[cid]=idx
+        return None,None
+
+    def fetch_discovery_row(cid,key,row,stage):
+        nonlocal fetch_calls
+        if fetch_calls>=max_fetches or key in fetched_keys: return False
+        before={k:(v['anchor'],v['strict']) for k,v in quality.items()}
+        fetched_keys.add(key); selected_by_claim[cid]+=1; covered.add(cid); fetch_calls+=1
+        funnel['discoverySelectedForFetch']+=1
+        if stage=='initial': funnel['discoveryInitialFetches']+=1
+        else:
+            funnel['discoveryBackfillFetches']+=1; backfill_targeted.add(cid)
+        diag_by_claim[cid]['directFetches']+=1
         try: raw,_=fetcher(row['url']); text=collector.visible_text(raw)
         except Exception:
-            funnel['fetchErrors']+=1
-            for cid in row.get('originClaims') or []:
-                if cid in diag_by_claim: diag_by_claim[cid]['fetchErrors']+=1
-            continue
+            funnel['fetchErrors']+=1; diag_by_claim[cid]['fetchErrors']+=1; return True
         if not collector.target_in_text(text,[row['game']]):
-            funnel['targetMissing']+=1
-            for cid in row.get('originClaims') or []:
-                if cid in diag_by_claim: diag_by_claim[cid]['targetMissing']+=1
-            continue
+            funnel['targetMissing']+=1; diag_by_claim[cid]['targetMissing']+=1; return True
         candidates.append({'game':row['game'],'sourceId':f'u{len(candidates)+1}','url':row['url'],'site':row['site'],'sourceType':collector.source_type(row['url'],row['game'],cfg),'text':text})
-        funnel['candidatePages']+=1
-        for cid in row.get('originClaims') or []:
-            if cid in diag_by_claim: diag_by_claim[cid]['candidatePages']+=1
+        funnel['candidatePages']+=1; diag_by_claim[cid]['candidatePages']+=1
+        for other_cid,other in held_info:
+            if other['game']!=row['game']: continue
+            oldsites=existing_sites_by_claim[(other['game'],other['category'],gate.text_key(other['claim']))]
+            if row['site'] in oldsites: continue
+            quality[other_cid]['candidate']=1
+            kind=direct_text_match_kind(other['claim'],text)
+            if kind!='none': quality[other_cid]['anchor']=1
+            if kind=='strict': quality[other_cid]['strict']=1
+        if stage=='backfill':
+            funnel['backfillStrictGains']+=sum(1 for k,v in quality.items() if not before[k][1] and v['strict'])
+            funnel['backfillAnchorGains']+=sum(1 for k,v in quality.items() if not before[k][0] and v['anchor'])
+        return True
+
+    # Initial fair round: at most one direct fetch owned by each held claim.
+    for cid,_ in held_info:
+        if fetch_calls>=max_fetches: break
+        key,row=next_row_for_claim(cid)
+        if row is not None: fetch_discovery_row(cid,key,row,'initial')
+
+    # Adaptive backfill: choose one claim at a time and recompute after every
+    # directly fetched page. This lets a newly found strict page immediately free
+    # the next slot for a weaker claim instead of waiting for a full round.
+    exhausted=set(); order_index={cid:i for i,(cid,_) in enumerate(held_info)}
+    while fetch_calls<max_fetches:
+        available=[cid for cid,_ in held_info if cid not in exhausted and selected_by_claim[cid]<max_results]
+        if not available: break
+        pending=[cid for cid in available if not quality[cid]['strict']]
+        if pending:
+            def weakness_key(cid):
+                q=quality[cid]
+                tier=0 if not q['candidate'] else (1 if not q['anchor'] else 2)
+                return (tier,selected_by_claim[cid],order_index[cid])
+            cid=min(pending,key=weakness_key)
+        else:
+            funnel['discoveryAllStrictReachedBeforeBudget']=1
+            cid=min(available,key=lambda x:(selected_by_claim[x],order_index[x]))
+        key,row=next_row_for_claim(cid)
+        if row is None:
+            exhausted.add(cid); continue
+        fetch_discovery_row(cid,key,row,'backfill')
+
+    funnel['discoveryBalancedClaimsCovered']=len(covered)
+    funnel['backfillClaimsTargeted']=len(backfill_targeted)
+    funnel['directTextStrictClaimHits']=sum(1 for v in quality.values() if v['strict'])
+    funnel['directTextAnchorOnlyClaimHits']=sum(1 for v in quality.values() if v['anchor'] and not v['strict'])
+    funnel['directTextNoSpanClaimHits']=sum(1 for v in quality.values() if not v['anchor'])
     diagnostics.extend(diag_by_claim[cid] for cid,_ in held_info)
     matches=[]; rejected={}; appended=[]; contradictions=[]
     by_game={}
