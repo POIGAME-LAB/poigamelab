@@ -17,6 +17,11 @@
     },
     "ワーキングヒーロー": {
       "enabled": false
+    },
+    "ホワイトアウト・サバイバル": {
+      "enabled": false,
+      "adoptedBy": "V30",
+      "reason": "new-game refresh remains disabled until controlled refresh policy is enabled"
     }
   },
   "publication": {

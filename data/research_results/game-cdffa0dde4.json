@@ -1,23 +1,21 @@
 {
   "game": "ホワイトアウト・サバイバル",
-  "researchedAt": "2026-09-01T02:23:08+00:00",
+  "researchedAt": "2026-09-01T02:36:27+00:00",
   "sourceQueue": {
     "game": "ホワイトアウト・サバイバル",
-    "aliases": [
-      "ホワイトアウト・サバイバル"
-    ],
+    "aliases": [],
     "status": "collector_ready",
     "collectorReady": true,
-    "candidateFingerprint": "b979da78e6dc55e0",
-    "researchLogicVersion": "V47-optional-firecrawl-coverage",
-    "lastResearchLogicVersion": "V46-terminal-completeness",
-    "recheckReason": "research_logic_changed",
-    "lastResearchAt": "2026-09-01T02:09:46+00:00",
+    "candidateFingerprint": "1e645f2735838241",
+    "researchLogicVersion": "V48-moppy-indexed-query-diversity",
+    "lastResearchLogicVersion": "V47-optional-firecrawl-coverage",
+    "recheckReason": null,
+    "lastResearchAt": "2026-09-01T02:23:08+00:00",
     "researchSummary": {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
       "resultSaved": true,
-      "publishableCount": 3,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "chobirich:search_failed",
@@ -25,7 +23,7 @@
       ]
     },
     "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-    "lastConfirmedAt": "2026-09-01T02:22:51+00:00",
+    "lastConfirmedAt": "2026-09-01T02:36:07+00:00",
     "score": 75,
     "confidence": 80,
     "sourceCount": 2,
@@ -47,26 +45,55 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-01T02:23:08+00:00",
+    "runAt": "2026-09-01T02:36:27+00:00",
     "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
-    "candidateCount": 2,
+    "candidateCount": 3,
     "geminiModel": "gemini-3.5-flash-lite",
     "verified": {
       "game": "ホワイトアウト・サバイバル",
       "offers": [
         {
+          "site": "モッピー",
+          "reward_yen": 6119,
+          "condition": "新規アプリインストール後、45日以内に各成果地点到達",
+          "platform": "Android",
+          "deadline": "45日以内",
+          "url": "https://pc.moppy.jp/ad/detail.php?site_id=160375",
+          "evidence_urls": [
+            "https://pc.moppy.jp/ad/detail.php?site_id=160375"
+          ],
+          "confidence": 1.0,
+          "publishable": true,
+          "reason": "モッピーの公式サイト詳細ページより、対象ゲーム・報酬額（6,119P＝6,119円）・達成条件（新規アプリインストール後45日以内）・プラットフォーム（Android）が明確に確認できたため。",
+          "registered_source": "moppy",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "新規アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
+          "condition": "新規アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達、各種課金ミッション）をクリア",
           "platform": "iOS",
-          "deadline": "インストール日から起算して25日以内",
+          "deadline": "2026年9月25日",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService"
           ],
           "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、対象ゲーム、OS(iOS)、報酬pt(最大11,500pt、円換算は明記なしのためnull)、達成条件が明確に確認できるため。",
+          "reason": "ワラウのホワイトアウト・サバイバル（StepUp）iOS版の正式な案件ページであり、獲得ポイント数、達成条件、OS、URLが明確に記載されているため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -86,16 +113,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "新規アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達および各種課金ミッション）をクリア",
+          "condition": "新規アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達、各種課金ミッション）をクリア",
           "platform": "Android",
-          "deadline": "インストール日から起算して25日以内",
+          "deadline": "2026年9月25日",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService"
           ],
           "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページより、対象ゲーム、OS(Android)、報酬pt(最大11,500pt、円換算は明記なしのためnull)、達成条件が明確に確認できるため。",
+          "reason": "ワラウのホワイトアウト・サバイバル（StepUp）Android版の正式な案件ページであり、獲得ポイント数、達成条件、OS、URLが明確に記載されているため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -113,14 +140,14 @@
           "auto_publish_ready": true
         }
       ],
-      "verdict": "ワラウのiOS版およびAndroid版のホワイトアウト・サバイバル（StepUp）案件をそれぞれ正常に抽出しました。ポイント数がpt表記で日本円換算額が直接書かれていないためreward_yenはnullとしていますが、案件データとしては完全に成立しています。",
+      "verdict": "valid / 正常にiOS版とAndroid版のホワイトアウト・サバイバル案件を抽出しました。",
       "needs_human_review": false
     },
     "diagnostics": [
       {
         "source_id": "moppy",
         "source_name": "モッピー",
-        "mode": "indexed_official_no_match",
+        "mode": "indexed_official_fast_path",
         "direct": null,
         "direct_http": {
           "attempted": true,
@@ -142,9 +169,17 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 5,
-          "confirmed": 0,
+          "eligibleUrls": 4,
+          "confirmed": 1,
           "details": [
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160375",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 130399,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
             {
               "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160924",
               "ok": true,
@@ -168,29 +203,23 @@
               "bytes": 137896,
               "truncated": false,
               "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161354",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 151357,
-              "truncated": false,
-              "deviceMode": "mobile"
             }
           ],
           "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details"
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
         },
         "offerwalls": [],
         "provider_hubs": [],
         "known_pages": [],
         "search": {
           "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+          "reason": "indexed official detail pages directly verified"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 8.0
+        "elapsedSeconds": 6.3
       },
       {
         "source_id": "warau",
@@ -248,7 +277,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.9
+        "elapsedSeconds": 8.0
       },
       {
         "source_id": "chobirich",
@@ -274,32 +303,34 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 5,
+          "eligibleUrls": 4,
           "confirmed": 0,
           "details": [
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1809382",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
             {
               "identityUrl": "https://www.chobirich.com/ad_details/1666385",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             },
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1711164",
+              "identityUrl": "https://www.chobirich.com/ad_details/41250",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             },
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1662072",
+              "identityUrl": "https://www.chobirich.com/ad_details/1828424",
+              "ok": false,
+              "error": "HTTP Error 403: Forbidden"
+            },
+            {
+              "identityUrl": "https://www.chobirich.com/ad_details/1810572",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             }
           ],
           "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details"
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
         },
         "offerwalls": [],
         "provider_hubs": [],
@@ -310,7 +341,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.1
+        "elapsedSeconds": 4.4
       },
       {
         "source_id": "coincome",
@@ -355,7 +386,9 @@
             }
           ],
           "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details"
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
         },
         "offerwalls": [],
         "provider_hubs": [],
@@ -366,18 +399,18 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.7
+        "elapsedSeconds": 7.0
       }
     ],
     "health": {
-      "publishableCount": 2,
+      "publishableCount": 3,
       "collectionComplete": false,
       "degradedReasons": [
         "chobirich:search_failed",
         "coincome:search_failed"
       ],
       "publishableBySource": {
-        "moppy": 0,
+        "moppy": 1,
         "warau": 2,
         "chobirich": 0,
         "coincome": 0

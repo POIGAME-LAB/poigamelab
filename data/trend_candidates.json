@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T02:22:37+00:00",
+  "generatedAt": "2026-09-01T02:35:50+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
     "searchResults": 4,
-    "candidates": 53,
-    "newReviewCandidates": 50,
+    "candidates": 52,
+    "newReviewCandidates": 49,
     "failedSources": 2
   },
   "diagnostics": [
@@ -66,13 +66,11 @@
   "candidates": [
     {
       "game": "ホワイトアウト・サバイバル",
-      "aliases": [
-        "ホワイトアウト・サバイバル"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 75,
       "confidence": 80,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 2,
       "sourceCount": 2,
       "sourceTypeCount": 1,
@@ -98,7 +96,7 @@
       "knownGame": false,
       "score": 50,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 2,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -120,14 +118,11 @@
     },
     {
       "game": "ミステリータウン:マージゲーム - Mystery Town",
-      "aliases": [
-        "Mystery Town",
-        "ミステリータウン"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 50,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 2,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -153,7 +148,7 @@
       "knownGame": false,
       "score": 50,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 2,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -179,7 +174,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -196,13 +191,12 @@
     {
       "game": "8 Ball Pool",
       "aliases": [
-        "8 Ball Pool",
         "8 ボールプール"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -222,7 +216,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -242,7 +236,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -262,7 +256,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -282,7 +276,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -298,13 +292,11 @@
     },
     {
       "game": "LINE ポコポコ",
-      "aliases": [
-        "ポコポコ"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -321,8 +313,7 @@
     {
       "game": "Merge Peko",
       "aliases": [
-        "Android_Merge Peko<StepUp>",
-        "Merge Peko"
+        "Android_Merge Peko"
       ],
       "knownGame": false,
       "score": 45,
@@ -344,13 +335,12 @@
     {
       "game": "Merge Sweets",
       "aliases": [
-        "Merge Sweets",
         "マージスイーツ"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -365,34 +355,12 @@
       ]
     },
     {
-      "game": "Pococha",
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
       "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
-      "aliases": [
-        "Screw Cat"
-      ],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -408,14 +376,11 @@
     },
     {
       "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
-      "aliases": [
-        "Slot Mate",
-        "スロットメイト"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -435,7 +400,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -455,7 +420,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -475,7 +440,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -492,13 +457,12 @@
     {
       "game": "Supreme King",
       "aliases": [
-        "Supreme King",
         "スプリームキング"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -515,13 +479,12 @@
     {
       "game": "Tap & Earn",
       "aliases": [
-        "Tap & Earn",
         "タップアンドアーン"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -541,7 +504,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -561,7 +524,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -577,14 +540,11 @@
     },
     {
       "game": "Triple Tile - トリプルタイル",
-      "aliases": [
-        "Triple Tile",
-        "トリプルタイル"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -604,7 +564,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -620,13 +580,11 @@
     },
     {
       "game": "エバーテイル",
-      "aliases": [
-        "エバーテイル"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -646,7 +604,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -666,7 +624,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -686,7 +644,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -706,7 +664,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -721,15 +679,14 @@
       ]
     },
     {
-      "game": "ターミナルマスター - Terminal Master",
+      "game": "ターミナルマスター",
       "aliases": [
-        "Terminal Master",
-        "ターミナルマスター"
+        "Terminal Master"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -749,7 +706,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -765,13 +722,11 @@
     },
     {
       "game": "ハイローラー ベガス : カジノゲーム",
-      "aliases": [
-        "ハイローラー ベガス"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -791,7 +746,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -811,7 +766,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -827,13 +782,11 @@
     },
     {
       "game": "ファミリーファームの冒険",
-      "aliases": [
-        "ファミリーファームの冒険"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -853,7 +806,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -873,7 +826,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -889,13 +842,11 @@
     },
     {
       "game": "プリケツにゃー",
-      "aliases": [
-        "プリケツにゃー"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -915,7 +866,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -931,13 +882,11 @@
     },
     {
       "game": "ミストバレー",
-      "aliases": [
-        "ミストバレー"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -957,7 +906,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -973,13 +922,11 @@
     },
     {
       "game": "ロイヤルマッチ",
-      "aliases": [
-        "ロイヤルマッチ"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -995,13 +942,11 @@
     },
     {
       "game": "ロックンキャッシュカジノ-スロットゲーム",
-      "aliases": [
-        "ロックンキャッシュカジノ"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1017,13 +962,11 @@
     },
     {
       "game": "三國志 真戦",
-      "aliases": [
-        "三國志 真戦"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1039,13 +982,11 @@
     },
     {
       "game": "商人放浪記:あきんどの成り上がり道",
-      "aliases": [
-        "商人放浪記"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1067,7 +1008,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1084,13 +1025,12 @@
     {
       "game": "放置少女〜百花繚乱の萌姫たち〜",
       "aliases": [
-        "放置少女",
-        "放置少女〜百花繚乱の萌姫たち〜"
+        "放置少女"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1110,7 +1050,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1126,13 +1066,11 @@
     },
     {
       "game": "東京ディバンカー",
-      "aliases": [
-        "東京ディバンカー"
-      ],
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1147,9 +1085,9 @@
       ]
     },
     {
-      "game": "キノコ伝説:勇者と魔法のランプ",
+      "game": "Township",
       "aliases": [
-        "きのこ伝説"
+        "タウンシップ"
       ],
       "knownGame": true,
       "score": 45,
@@ -1169,9 +1107,9 @@
       ]
     },
     {
-      "game": "タウンシップ",
+      "game": "キノコ伝説:勇者と魔法のランプ",
       "aliases": [
-        "Township"
+        "きのこ伝説"
       ],
       "knownGame": true,
       "score": 45,

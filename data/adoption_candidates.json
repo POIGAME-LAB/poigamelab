@@ -1,50 +1,48 @@
 {
   "schemaVersion": 1,
   "phase": "PHASE3_ADOPTION_GATE_V29",
-  "generatedAt": "2026-09-01T02:23:08+00:00",
+  "generatedAt": "2026-09-01T02:36:27+00:00",
   "apiCalls": 0,
   "autoPublish": false,
   "autoAddGame": false,
   "summary": {
     "researchedGames": 1,
-    "adoptionReady": 0,
-    "held": 1
+    "adoptionReady": 1,
+    "held": 0
   },
   "items": [
     {
       "game": "ホワイトアウト・サバイバル",
-      "eligible": false,
-      "status": "hold",
-      "reasons": [
-        "collection_incomplete",
-        "degraded_collection",
-        "insufficient_verified_sources"
-      ],
-      "strictOfferCount": 2,
-      "verifiedSourceCount": 1,
+      "eligible": true,
+      "status": "adopted",
+      "reasons": [],
+      "strictOfferCount": 3,
+      "verifiedSourceCount": 2,
       "verifiedSources": [
+        "moppy",
         "warau"
       ],
-      "coverageOverrideApplied": false,
-      "coverageWarnings": [],
-      "researchedAt": "2026-09-01T02:23:08+00:00",
+      "coverageOverrideApplied": true,
+      "coverageWarnings": [
+        "chobirich:optional_firecrawl_402",
+        "coincome:optional_firecrawl_402"
+      ],
+      "researchedAt": "2026-09-01T02:36:27+00:00",
       "sourceQueue": {
         "game": "ホワイトアウト・サバイバル",
-        "aliases": [
-          "ホワイトアウト・サバイバル"
-        ],
+        "aliases": [],
         "status": "collector_ready",
         "collectorReady": true,
-        "candidateFingerprint": "b979da78e6dc55e0",
-        "researchLogicVersion": "V47-optional-firecrawl-coverage",
-        "lastResearchLogicVersion": "V46-terminal-completeness",
-        "recheckReason": "research_logic_changed",
-        "lastResearchAt": "2026-09-01T02:09:46+00:00",
+        "candidateFingerprint": "1e645f2735838241",
+        "researchLogicVersion": "V48-moppy-indexed-query-diversity",
+        "lastResearchLogicVersion": "V47-optional-firecrawl-coverage",
+        "recheckReason": null,
+        "lastResearchAt": "2026-09-01T02:23:08+00:00",
         "researchSummary": {
           "game": "ホワイトアウト・サバイバル",
           "returncode": 0,
           "resultSaved": true,
-          "publishableCount": 3,
+          "publishableCount": 2,
           "collectionComplete": false,
           "degradedReasons": [
             "chobirich:search_failed",
@@ -52,7 +50,7 @@
           ]
         },
         "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-        "lastConfirmedAt": "2026-09-01T02:22:51+00:00",
+        "lastConfirmedAt": "2026-09-01T02:36:07+00:00",
         "score": 75,
         "confidence": 80,
         "sourceCount": 2,
@@ -71,7 +69,9 @@
             "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
           }
         ]
-      }
+      },
+      "adoptedAt": "2026-09-01T02:36:27+00:00",
+      "publishedOfferCount": 3
     }
   ]
 }

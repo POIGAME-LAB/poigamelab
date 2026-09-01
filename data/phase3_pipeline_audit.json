@@ -4,10 +4,10 @@
   "errors": [],
   "warnings": [],
   "counts": {
-    "games": 4,
-    "targets": 4,
-    "publishedOffers": 12,
-    "adoptedGames": 0
+    "games": 5,
+    "targets": 5,
+    "publishedOffers": 15,
+    "adoptedGames": 1
   },
   "apiCalls": 0
 }

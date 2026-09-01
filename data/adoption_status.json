@@ -1,10 +1,17 @@
 {
   "phase": "PHASE3_PRODUCTION_ADOPTION_V30",
-  "runAt": "2026-09-01T02:23:08+00:00",
+  "runAt": "2026-09-01T02:36:27+00:00",
   "apiCalls": 0,
   "idempotent": true,
-  "adopted": 0,
+  "adopted": 1,
   "held": 0,
   "newGamesRefreshEnabled": false,
-  "results": []
+  "results": [
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "adopted": true,
+      "publishedOfferCount": 3,
+      "refreshEnabled": false
+    }
+  ]
 }

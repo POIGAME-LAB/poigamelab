@@ -1,35 +1,33 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T02:22:51+00:00",
-  "sourceGeneratedAt": "2026-09-01T02:22:37+00:00",
+  "generatedAt": "2026-09-01T02:36:07+00:00",
+  "sourceGeneratedAt": "2026-09-01T02:35:50+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
-  "researchLogicVersion": "V47-optional-firecrawl-coverage",
+  "researchLogicVersion": "V48-moppy-indexed-query-diversity",
   "summary": {
-    "trendCandidates": 53,
+    "trendCandidates": 52,
     "collectorReady": 1,
-    "rejected": 52
+    "rejected": 51
   },
   "items": [
     {
       "game": "ホワイトアウト・サバイバル",
-      "aliases": [
-        "ホワイトアウト・サバイバル"
-      ],
+      "aliases": [],
       "status": "research_complete",
       "collectorReady": false,
-      "candidateFingerprint": "b979da78e6dc55e0",
-      "researchLogicVersion": "V47-optional-firecrawl-coverage",
-      "lastResearchLogicVersion": "V47-optional-firecrawl-coverage",
+      "candidateFingerprint": "1e645f2735838241",
+      "researchLogicVersion": "V48-moppy-indexed-query-diversity",
+      "lastResearchLogicVersion": "V48-moppy-indexed-query-diversity",
       "recheckReason": null,
-      "lastResearchAt": "2026-09-01T02:23:08+00:00",
+      "lastResearchAt": "2026-09-01T02:36:27+00:00",
       "researchSummary": {
         "game": "ホワイトアウト・サバイバル",
         "returncode": 0,
         "resultSaved": true,
-        "publishableCount": 2,
+        "publishableCount": 3,
         "collectionComplete": false,
         "degradedReasons": [
           "chobirich:search_failed",
@@ -37,7 +35,7 @@
         ]
       },
       "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-      "lastConfirmedAt": "2026-09-01T02:22:51+00:00",
+      "lastConfirmedAt": "2026-09-01T02:36:07+00:00",
       "score": 75,
       "confidence": 80,
       "sourceCount": 2,
@@ -149,14 +147,6 @@
     },
     {
       "game": "Merge Sweets",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "Pococha",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -292,7 +282,7 @@
       ]
     },
     {
-      "game": "ターミナルマスター - Terminal Master",
+      "game": "ターミナルマスター",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -452,7 +442,7 @@
       ]
     },
     {
-      "game": "キノコ伝説:勇者と魔法のランプ",
+      "game": "Township",
       "reasons": [
         "known_game",
         "score_below_threshold",
@@ -461,7 +451,7 @@
       ]
     },
     {
-      "game": "タウンシップ",
+      "game": "キノコ伝説:勇者と魔法のランプ",
       "reasons": [
         "known_game",
         "score_below_threshold",
