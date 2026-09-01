@@ -203,3 +203,10 @@
 - Re-evaluation now passes the corroborated claims file explicitly with `--input` and verifies its phase marker before V51 gating.
 - V52 status now reports input/output claim counts so live runs can prove corroborated claims actually reached the second gate.
 - Added a 7-base/3-support integration regression matching the production-shaped V52 run.
+
+### V52.3 — corroboration rejection diagnostics + independence hardening
+- Added a bounded diagnostic funnel that explains why corroboration candidates are discarded before or after Gemini mapping without weakening any support threshold. It also reports stale/orphan held decisions and malformed search/AI payloads instead of crashing or silently accepting them.
+- Status/report output now separates invalid/unsupported URLs, duplicates, same-source sites, blocked/unsafe URLs, fetch errors, target-missing pages, AI proposal/rejection counts, validated support/contradiction/unclear counts, and candidate pages never referenced by AI.
+- Added a per-claim independence guard at match validation time so a page discovered for one held claim cannot be remapped by Gemini to another claim when that page belongs to the second claim's existing source site.
+- Contradiction candidates now require conservative lexical context overlap before being recorded, preventing unrelated quotes from becoming false conflict evidence.
+- Publication behavior remains unchanged: all V52.3 outputs are quarantine-only with zero production writes.

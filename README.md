@@ -133,3 +133,6 @@ V52 researches only V51 `held_single_source` claims. Tavily remains URL discover
 
 #### Phase 4 V52.2 re-evaluation guard
 The post-corroboration V51 pass is invoked with an explicit `--input data/guide_claims_corroborated.json` plus an expected phase marker. The run fails closed if the wrong quarantine dataset is supplied. V52 reports both input and output claim counts for auditability.
+
+#### Phase 4 V52.3 corroboration diagnostics
+V52.3 keeps the V52 support gate unchanged but makes a zero-match run diagnosable from one workflow log. `diagnosticCounts` reports the bounded search/fetch/AI funnel, including stale/orphan held decisions, malformed search/AI payloads, invalid or unsupported URLs, duplicate URLs, same-source-site exclusions, blocked/unsafe URLs, fetch failures, target-missing pages, AI proposal/rejection counts, validated relation counts, and candidate pages that Gemini never referenced. Match validation also re-checks source independence for the specific mapped claim, so cross-claim remapping cannot turn an existing source site into fake corroboration. Contradiction evidence must share conservative lexical context with the held claim. All results remain quarantine-only with `publicationWrites: 0`.

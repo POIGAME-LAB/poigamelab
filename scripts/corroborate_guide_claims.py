@@ -25,6 +25,7 @@ CONFIG=ROOT/'config'/'guide_research.json'
 OUT=ROOT/'data'/'guide_claims_corroborated.json'
 REPORT=ROOT/'data'/'guide_corroboration.json'
 STATUS=ROOT/'data'/'guide_corroboration_status.json'
+LOGIC_VERSION='V52.3'
 
 def now_iso(): return datetime.now(timezone.utc).astimezone().isoformat(timespec='seconds')
 def norm(s): return re.sub(r'\s+',' ',str(s or '')).strip()
@@ -58,9 +59,12 @@ def validate_match(raw,claim_by_id,source_by_id):
     if rel not in {'support','contradict','unclear'}: return None,'invalid_relation'
     if len(quote)<4 or extractor.norm_match(quote) not in extractor.norm_match(source_by_id[sid]['text']): return None,'quote_not_in_source'
     claim=claim_by_id[cid]
+    if source_by_id[sid]['site'] in set(claim.get('existingSites') or []): return None,'not_independent_for_claim'
     if rel=='support':
         if not numeric_grounded(claim['claim'],quote): return None,'numeric_not_grounded'
         if not overlap_ok(claim['claim'],quote): return None,'insufficient_lexical_overlap'
+    elif rel=='contradict' and not overlap_ok(claim['claim'],quote):
+        return None,'contradiction_context_mismatch'
     return {'claimId':cid,'sourceId':sid,'relation':rel,'evidenceQuote':quote},None
 
 def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=None,searcher=collector.tavily_search,fetcher=collector.direct_fetch,ai=extractor.live_gemini):
@@ -72,60 +76,97 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
     if not tavily_key: raise RuntimeError('TAVILY_API_KEY unavailable')
     if not gemini_key: raise RuntimeError('GEMINI_API_KEY unavailable')
     base=[x for x in (claims_doc.get('claims') or []) if gate.valid_claim(x)]
-    held=[d for d in (decisions_doc.get('decisions') or []) if d.get('status')=='held_single_source']
+    all_held=[d for d in (decisions_doc.get('decisions') or []) if isinstance(d,dict) and d.get('status')=='held_single_source']
+    base_keys={(x['game'],x['category'],gate.text_key(x['claim'])) for x in base}
+    held=[d for d in all_held if (d.get('game'),d.get('category'),gate.text_key(d.get('claim'))) in base_keys]
+    orphan_held=len(all_held)-len(held); total_held=len(all_held); eligible_held=len(held)
     max_claims=max(1,min(6,int(cfg.get('maxCorroborationClaimsPerRun',4))))
     max_results=max(1,min(6,int(cfg.get('maxCorroborationResultsPerClaim',4))))
     max_fetches=max(1,min(16,int(cfg.get('maxCorroborationFetchesPerRun',12))))
     held=held[:max_claims]; search_calls=fetch_calls=api_calls=0; candidates=[]; seen_urls=set(); diagnostics=[]
+    funnel={
+        'orphanHeldDecisions':orphan_held,'searchErrors':0,'malformedSearchResponses':0,'malformedSearchItems':0,
+        'searchResults':0,'invalidOrUnsupportedUrls':0,'duplicateUrls':0,
+        'sameSourceSiteUrls':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,
+        'fetchErrors':0,'targetMissing':0,'candidatePages':0,'aiErrors':0,'aiMalformedResponses':0,
+        'aiProposedMatches':0,'aiRejectedMatches':0,'aiValidatedSupport':0,
+        'aiValidatedContradict':0,'aiValidatedUnclear':0,'candidatePagesUnreferencedByAI':0,
+    }
     existing_sites_by_claim={(d['game'],d['category'],gate.text_key(d['claim'])):set(d.get('independentSources') or []) for d in held}
     for i,d in enumerate(held,1):
-        diag={'claimId':f'c{i}','game':d['game'],'searchResults':0,'eligibleIndependentUrls':0,'directFetches':0}
+        diag={'claimId':f'c{i}','game':d['game'],'searchResults':0,'invalidOrUnsupportedUrls':0,'duplicateUrls':0,'sameSourceSiteUrls':0,'blockedOrUnsafeUrls':0,'eligibleIndependentUrls':0,'directFetches':0,'fetchErrors':0,'targetMissing':0,'candidatePages':0}
         query=f'"{d["game"]}" {d["claim"]}'
         search_calls+=1
         try: res=searcher(query,tavily_key,max_results)
         except Exception as e:
-            diag['searchError']=collector.safe_error(e); diagnostics.append(diag); continue
-        items=(res.get('results') or [])[:max_results]; diag['searchResults']=len(items)
+            diag['searchError']=collector.safe_error(e); funnel['searchErrors']+=1; diagnostics.append(diag); continue
+        if not isinstance(res,dict) or not isinstance(res.get('results') or [],list):
+            diag['searchMalformed']=True; funnel['malformedSearchResponses']+=1; diagnostics.append(diag); continue
+        items=(res.get('results') or [])[:max_results]; diag['searchResults']=len(items); funnel['searchResults']+=len(items)
         oldsites=existing_sites_by_claim[(d['game'],d['category'],gate.text_key(d['claim']))]
         for item in items:
             if fetch_calls>=max_fetches: break
+            if not isinstance(item,dict):
+                funnel['malformedSearchItems']+=1; continue
             url=collector.canonical_url(str((item or {}).get('url') or ''))
             site=gate.source_site(url)
-            if not url or url in seen_urls or not site or site in oldsites or collector.blocked_url(url,cfg.get('blockedDomains') or []): continue
-            seen_urls.add(url); diag['eligibleIndependentUrls']+=1; fetch_calls+=1; diag['directFetches']+=1
+            if not url or not site:
+                diag['invalidOrUnsupportedUrls']+=1; funnel['invalidOrUnsupportedUrls']+=1; continue
+            if url in seen_urls:
+                diag['duplicateUrls']+=1; funnel['duplicateUrls']+=1; continue
+            if site in oldsites:
+                diag['sameSourceSiteUrls']+=1; funnel['sameSourceSiteUrls']+=1; continue
+            if collector.blocked_url(url,cfg.get('blockedDomains') or []):
+                diag['blockedOrUnsafeUrls']+=1; funnel['blockedOrUnsafeUrls']+=1; continue
+            seen_urls.add(url); diag['eligibleIndependentUrls']+=1; funnel['eligibleIndependentUrls']+=1; fetch_calls+=1; diag['directFetches']+=1
             try: raw,_=fetcher(url); text=collector.visible_text(raw)
-            except Exception: continue
-            if not collector.target_in_text(text,[d['game']]): continue
+            except Exception:
+                diag['fetchErrors']+=1; funnel['fetchErrors']+=1; continue
+            if not collector.target_in_text(text,[d['game']]):
+                diag['targetMissing']+=1; funnel['targetMissing']+=1; continue
             candidates.append({'claimId':f'c{i}','game':d['game'],'category':d['category'],'claim':d['claim'],'sourceId':f'u{len(candidates)+1}','url':url,'site':site,'sourceType':collector.source_type(url,d['game'],cfg),'text':text})
+            diag['candidatePages']+=1; funnel['candidatePages']+=1
         diagnostics.append(diag)
     matches=[]; rejected={}; appended=[]; contradictions=[]
     by_game={}
     for c in candidates: by_game.setdefault(c['game'],[]).append(c)
     for game,rows in sorted(by_game.items()):
-        held_map={c['claimId']:{'claimId':c['claimId'],'category':c['category'],'claim':c['claim']} for c in rows}
+        held_map={c['claimId']:{'claimId':c['claimId'],'category':c['category'],'claim':c['claim'],'existingSites':sorted(existing_sites_by_claim.get((c['game'],c['category'],gate.text_key(c['claim'])),set()))} for c in rows}
         sources={c['sourceId']:c for c in rows}; claim_by_id={k:v for k,v in held_map.items()}
         try:
             api_calls+=1; response=ai(gemini_key,os.getenv('GEMINI_MODEL','gemini-3.5-flash-lite'),build_prompt(game,list(held_map.values()),list(sources.values())))
         except Exception as e:
-            diagnostics.append({'game':game,'aiError':collector.safe_error(e)}); continue
-        proposed=response.get('matches') if isinstance(response,dict) else []
-        for raw in proposed if isinstance(proposed,list) else []:
+            funnel['aiErrors']+=1; diagnostics.append({'game':game,'aiError':collector.safe_error(e)}); continue
+        if not isinstance(response,dict) or not isinstance(response.get('matches'),list):
+            funnel['aiMalformedResponses']+=1; proposed=[]
+        else:
+            proposed=response.get('matches') or []
+        funnel['aiProposedMatches']+=len(proposed)
+        referenced_sources=set()
+        for raw in proposed:
+            if isinstance(raw,dict) and norm(raw.get('sourceId')) in sources: referenced_sources.add(norm(raw.get('sourceId')))
             match,reason=validate_match(raw,claim_by_id,sources)
-            if reason: rejected[reason]=rejected.get(reason,0)+1; continue
+            if reason:
+                rejected[reason]=rejected.get(reason,0)+1; funnel['aiRejectedMatches']+=1; continue
             matches.append(match); src=sources[match['sourceId']]; claim=claim_by_id[match['claimId']]
             if match['relation']=='support':
+                funnel['aiValidatedSupport']+=1
                 appended.append({'game':game,'category':claim['category'],'claim':claim['claim'],'evidenceQuote':match['evidenceQuote'],'sourceId':'v52:'+match['sourceId'],'url':src['url'],'sourceType':src['sourceType'],'status':'validated_quarantine'})
             elif match['relation']=='contradict':
+                funnel['aiValidatedContradict']+=1
                 contradictions.append({'game':game,'category':claim['category'],'claim':claim['claim'],'url':src['url'],'evidenceQuote':match['evidenceQuote'],'status':'quarantined_contradiction'})
+            else:
+                funnel['aiValidatedUnclear']+=1
+        funnel['candidatePagesUnreferencedByAI']+=max(0,len(sources)-len(referenced_sources))
     unique={(x['game'],x['category'],gate.text_key(x['claim']),x['url']):x for x in base+appended}
     merged=[unique[k] for k in sorted(unique)]
-    report={'phase':'PHASE4_GUIDE_CORROBORATION_V52','generatedAt':now_iso(),'inputHeldClaims':len(held),'inputClaims':len(base),'outputClaims':len(merged),'searchCalls':search_calls,'directFetches':fetch_calls,'apiCalls':api_calls,'candidatePages':len(candidates),'validatedMatches':len(matches),'supportingClaimsAdded':len(appended),'contradictionsFound':len(contradictions),'rejected':rejected,'publicationWrites':0,'diagnostics':diagnostics,'contradictions':contradictions}
+    report={'phase':'PHASE4_GUIDE_CORROBORATION_V52','logicVersion':LOGIC_VERSION,'generatedAt':now_iso(),'totalHeldClaims':total_held,'eligibleHeldClaims':eligible_held,'inputHeldClaims':len(held),'inputClaims':len(base),'outputClaims':len(merged),'searchCalls':search_calls,'directFetches':fetch_calls,'apiCalls':api_calls,'candidatePages':len(candidates),'validatedMatches':len(matches),'supportingClaimsAdded':len(appended),'contradictionsFound':len(contradictions),'rejected':rejected,'diagnosticCounts':funnel,'publicationWrites':0,'diagnostics':diagnostics,'contradictions':contradictions}
     return {'phase':'PHASE4_GUIDE_CLAIMS_CORROBORATED_V52','generatedAt':report['generatedAt'],'publicationWrites':0,'claims':merged},report
 
 def main():
     try:
         merged,report=run(); OUT.write_text(json.dumps(merged,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-        status={k:report[k] for k in ['phase','inputHeldClaims','inputClaims','outputClaims','searchCalls','directFetches','apiCalls','candidatePages','validatedMatches','supportingClaimsAdded','contradictionsFound','publicationWrites']}; status.update({'success':True,'lastRun':report['generatedAt']}); STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False))
+        status={k:report[k] for k in ['phase','logicVersion','totalHeldClaims','eligibleHeldClaims','inputHeldClaims','inputClaims','outputClaims','searchCalls','directFetches','apiCalls','candidatePages','validatedMatches','supportingClaimsAdded','contradictionsFound','publicationWrites']}; status['diagnosticCounts']=report['diagnosticCounts']; status['rejected']=report['rejected']; status.update({'success':True,'lastRun':report['generatedAt']}); STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False))
     except Exception as e:
         status={'phase':'PHASE4_GUIDE_CORROBORATION_V52','success':False,'error':collector.safe_error(e),'publicationWrites':0,'lastRun':now_iso()}; STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False)); raise
 if __name__=='__main__': main()
