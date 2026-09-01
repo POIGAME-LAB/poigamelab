@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T01:54:28+00:00",
-  "sourceGeneratedAt": "2026-09-01T01:54:12+00:00",
+  "generatedAt": "2026-09-01T02:02:50+00:00",
+  "sourceGeneratedAt": "2026-09-01T02:02:35+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
-  "researchLogicVersion": "V44-indexed-official",
+  "researchLogicVersion": "V45-clean-public-discovery",
   "summary": {
-    "trendCandidates": 53,
+    "trendCandidates": 52,
     "collectorReady": 1,
-    "rejected": 52
+    "rejected": 51
   },
   "items": [
     {
@@ -21,10 +21,10 @@
       "status": "research_complete",
       "collectorReady": false,
       "candidateFingerprint": "b979da78e6dc55e0",
-      "researchLogicVersion": "V44-indexed-official",
-      "lastResearchLogicVersion": "V44-indexed-official",
+      "researchLogicVersion": "V45-clean-public-discovery",
+      "lastResearchLogicVersion": "V45-clean-public-discovery",
       "recheckReason": null,
-      "lastResearchAt": "2026-09-01T01:54:44+00:00",
+      "lastResearchAt": "2026-09-01T02:03:19+00:00",
       "researchSummary": {
         "game": "ホワイトアウト・サバイバル",
         "returncode": 0,
@@ -37,7 +37,7 @@
         ]
       },
       "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-      "lastConfirmedAt": "2026-09-01T01:54:28+00:00",
+      "lastConfirmedAt": "2026-09-01T02:02:50+00:00",
       "score": 75,
       "confidence": 80,
       "sourceCount": 2,
@@ -60,7 +60,7 @@
   ],
   "rejected": [
     {
-      "game": "Marble Sort!",
+      "game": "ザ・グランドマフィア",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -68,15 +68,7 @@
       ]
     },
     {
-      "game": "ミステリータウン:マージゲーム",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "ラストアサイラム:プレイグ",
+      "game": "ミステリータウン:マージゲーム - Mystery Town",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -140,6 +132,14 @@
       ]
     },
     {
+      "game": "Marble Sort!",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "Merge Peko",
       "reasons": [
         "score_below_threshold",
@@ -156,15 +156,7 @@
       ]
     },
     {
-      "game": "Pococha",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "Screw Cat",
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -284,15 +276,7 @@
       ]
     },
     {
-      "game": "ザ・グランドマフィア",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
-      "game": "ターミナルマスター",
+      "game": "ターミナルマスター - Terminal Master",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -388,6 +372,14 @@
       ]
     },
     {
+      "game": "ラストアサイラム:プレイグ",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "ロイヤルマッチ",
       "reasons": [
         "score_below_threshold",
@@ -461,7 +453,7 @@
       ]
     },
     {
-      "game": "キノコ伝説:勇者と魔法のランプ",
+      "game": "きのこ伝説",
       "reasons": [
         "known_game",
         "score_below_threshold",

@@ -1,6 +1,6 @@
 {
   "game": "ホワイトアウト・サバイバル",
-  "researchedAt": "2026-09-01T01:54:44+00:00",
+  "researchedAt": "2026-09-01T02:03:19+00:00",
   "sourceQueue": {
     "game": "ホワイトアウト・サバイバル",
     "aliases": [
@@ -9,24 +9,23 @@
     "status": "collector_ready",
     "collectorReady": true,
     "candidateFingerprint": "b979da78e6dc55e0",
-    "researchLogicVersion": "V44-indexed-official",
-    "lastResearchLogicVersion": "V41-mobile-direct",
+    "researchLogicVersion": "V45-clean-public-discovery",
+    "lastResearchLogicVersion": "V44-indexed-official",
     "recheckReason": "research_logic_changed",
-    "lastResearchAt": "2026-09-01T01:34:38+00:00",
+    "lastResearchAt": "2026-09-01T01:54:44+00:00",
     "researchSummary": {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
       "resultSaved": true,
-      "publishableCount": 2,
+      "publishableCount": 3,
       "collectionComplete": false,
       "degradedReasons": [
         "chobirich:search_failed",
-        "coincome:search_failed",
-        "moppy:search_failed"
+        "coincome:search_failed"
       ]
     },
     "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-    "lastConfirmedAt": "2026-09-01T01:54:28+00:00",
+    "lastConfirmedAt": "2026-09-01T02:02:50+00:00",
     "score": 75,
     "confidence": 80,
     "sourceCount": 2,
@@ -48,7 +47,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-01T01:54:44+00:00",
+    "runAt": "2026-09-01T02:03:19+00:00",
     "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
     "candidateCount": 3,
     "geminiModel": "gemini-3.5-flash-lite",
@@ -58,16 +57,16 @@
         {
           "site": "モッピー",
           "reward_yen": 6119,
-          "condition": "新規アプリインストール後、45日以内に各成果地点到達",
+          "condition": "新規アプリインストール後、45日以内に各成果地点クリア",
           "platform": "Android",
-          "deadline": "45日以内",
+          "deadline": "インストール後45日以内",
           "url": "https://pc.moppy.jp/ad/detail.php?site_id=160375",
           "evidence_urls": [
             "https://pc.moppy.jp/ad/detail.php?site_id=160375"
           ],
-          "confidence": 1.0,
+          "confidence": 1,
           "publishable": true,
-          "reason": "モッピーの公式詳細ページより、Android版ホワイトアウト・サバイバル（StepUp）の報酬6,119P（6,119円相当）、達成条件（45日以内）が明確に確認できたため。",
+          "reason": "モッピーの公式詳細ページより、対象ゲーム、報酬額（6,119P＝6,119円）、達成条件、Android限定であることが明確に確認できたため。",
           "registered_source": "moppy",
           "reward_source": "python_same_identity_explicit_yen",
           "deterministic_checks": {
@@ -87,16 +86,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "初回アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達、各種一括課金）をクリア",
+          "condition": "新規アプリインストール後、25日以内にStepUpミッションをクリア（大溶鉱炉レベル3/10/18/21/23/26到達、各種一括課金）",
           "platform": "iOS",
-          "deadline": "2026-09-25",
+          "deadline": "インストール日から起算して25日以内",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862&pl=pc_categoryService"
           ],
           "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページからiOS版ホワイトアウト・サバイバル（StepUp）の報酬額（最大11,500pt＝11,500円相当）、条件、プラットフォーム、URLが正確に取得できたため。",
+          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル iOS版のStepUp案件情報（条件、獲得pt、URL）が明確に確認できたため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -116,16 +115,16 @@
         {
           "site": "ワラウ",
           "reward_yen": 11500,
-          "condition": "初回アプリインストール後、25日以内にStepUpミッション（大溶鉱炉レベル3/10/18/21/23/26到達、各種一括課金）をクリア",
+          "condition": "新規アプリインストール後、25日以内にStepUpミッションをクリア（大溶鉱炉レベル3/10/18/21/23/26到達、各種一括課金）",
           "platform": "Android",
-          "deadline": "2026-09-25",
+          "deadline": "インストール日から起算して25日以内",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
           "evidence_urls": [
             "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService"
           ],
           "confidence": 1.0,
           "publishable": true,
-          "reason": "ワラウの公式詳細ページからAndroid版ホワイトアウト・サバイバル（StepUp）の報酬額（最大11,500pt＝11,500円相当）、条件、プラットフォーム、URLが正確に取得できたため。",
+          "reason": "ワラウの公式詳細ページより、ホワイトアウト・サバイバル Android版のStepUp案件情報（条件、獲得pt、URL）が明確に確認できたため。",
           "registered_source": "warau",
           "reward_source": "python_warau_same_identity",
           "deterministic_checks": {
@@ -143,7 +142,7 @@
           "auto_publish_ready": true
         }
       ],
-      "verdict": "正常に1件の案件情報を抽出しました。 / ワラウからiOS版およびAndroid版の「ホワイトアウト・サバイバル（StepUp）」の有効な案件情報をそれぞれ正常に抽出しました。",
+      "verdict": "正常に1件の案件を抽出しました。 / ワラウのiOS版およびAndroid版のホワイトアウト・サバイバル案件情報を正常に抽出しました。",
       "needs_human_review": false
     },
     "diagnostics": [
@@ -170,6 +169,7 @@
         },
         "indexed_official": {
           "attempted": true,
+          "searchCompleted": true,
           "resultUrls": 1,
           "eligibleUrls": 1,
           "confirmed": 1,
@@ -182,7 +182,9 @@
               "truncated": false,
               "deviceMode": "mobile"
             }
-          ]
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details"
         },
         "offerwalls": [],
         "provider_hubs": [],
@@ -193,7 +195,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.5
+        "elapsedSeconds": 4.0
       },
       {
         "source_id": "warau",
@@ -275,6 +277,7 @@
         },
         "indexed_official": {
           "attempted": true,
+          "searchCompleted": true,
           "resultUrls": 8,
           "eligibleUrls": 5,
           "confirmed": 0,
@@ -299,7 +302,9 @@
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             }
-          ]
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details"
         },
         "offerwalls": [],
         "provider_hubs": [],
@@ -310,7 +315,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.5
+        "elapsedSeconds": 21.2
       },
       {
         "source_id": "coincome",
@@ -338,6 +343,7 @@
         },
         "indexed_official": {
           "attempted": true,
+          "searchCompleted": true,
           "resultUrls": 2,
           "eligibleUrls": 2,
           "confirmed": 0,
@@ -352,7 +358,9 @@
               "ok": false,
               "error": "HTTP Error 404: Not Found"
             }
-          ]
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details"
         },
         "offerwalls": [],
         "provider_hubs": [],
@@ -363,7 +371,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.1
+        "elapsedSeconds": 19.0
       }
     ],
     "health": {

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T01:54:12+00:00",
+  "generatedAt": "2026-09-01T02:02:35+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
     "searchResults": 4,
-    "candidates": 53,
-    "newReviewCandidates": 50,
+    "candidates": 52,
+    "newReviewCandidates": 49,
     "failedSources": 2
   },
   "diagnostics": [
@@ -93,7 +93,7 @@
       ]
     },
     {
-      "game": "Marble Sort!",
+      "game": "ザ・グランドマフィア",
       "aliases": [],
       "knownGame": false,
       "score": 50,
@@ -119,36 +119,11 @@
       ]
     },
     {
-      "game": "ミステリータウン:マージゲーム",
+      "game": "ミステリータウン:マージゲーム - Mystery Town",
       "aliases": [
-        "ミステリータウン:マージゲーム - Mystery Town"
+        "Mystery Town",
+        "ミステリータウン"
       ],
-      "knownGame": false,
-      "score": 50,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 2,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        },
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "ラストアサイラム:プレイグ",
-      "aliases": [],
       "knownGame": false,
       "score": 50,
       "confidence": 45,
@@ -195,7 +170,7 @@
     {
       "game": "8 Ball Pool",
       "aliases": [
-        "8 Ball Pool",
+        "8 Ball Pool(8 ボールプール)",
         "8 ボールプール"
       ],
       "knownGame": false,
@@ -230,8 +205,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -297,6 +272,28 @@
     },
     {
       "game": "LINE ポコポコ",
+      "aliases": [
+        "ポコポコ"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "Marble Sort!",
       "aliases": [],
       "knownGame": false,
       "score": 45,
@@ -341,7 +338,7 @@
     {
       "game": "Merge Sweets",
       "aliases": [
-        "Merge Sweets",
+        "Merge Sweets/マージスイーツ",
         "マージスイーツ"
       ],
       "knownGame": false,
@@ -362,30 +359,8 @@
       ]
     },
     {
-      "game": "Pococha",
+      "game": "Screw Cat:可愛いネコのスクリューパズルゲーム",
       "aliases": [],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "Screw Cat",
-      "aliases": [
-        "Screw Cat:可愛いネコのスクリューパズルゲーム"
-      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -486,7 +461,7 @@
     {
       "game": "Supreme King",
       "aliases": [
-        "Supreme King",
+        "Supreme King(スプリームキング)",
         "スプリームキング"
       ],
       "knownGame": false,
@@ -509,7 +484,7 @@
     {
       "game": "Tap & Earn",
       "aliases": [
-        "Tap & Earn",
+        "Tap & Earn(タップアンドアーン)",
         "タップアンドアーン"
       ],
       "knownGame": false,
@@ -571,7 +546,10 @@
     },
     {
       "game": "Triple Tile - トリプルタイル",
-      "aliases": [],
+      "aliases": [
+        "Triple Tile",
+        "トリプルタイル"
+      ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
@@ -604,8 +582,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -646,8 +624,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -686,35 +664,16 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
     {
-      "game": "ザ・グランドマフィア",
-      "aliases": [],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 0,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
-        }
-      ]
-    },
-    {
-      "game": "ターミナルマスター",
+      "game": "ターミナルマスター - Terminal Master",
       "aliases": [
-        "ターミナルマスター - Terminal Master"
+        "Terminal Master",
+        "ターミナルマスター"
       ],
       "knownGame": false,
       "score": 45,
@@ -768,8 +727,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -808,8 +767,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -912,8 +871,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -941,6 +900,26 @@
     },
     {
       "game": "モンスターバスケット",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        }
+      ]
+    },
+    {
+      "game": "ラストアサイラム:プレイグ",
       "aliases": [],
       "knownGame": false,
       "score": 45,
@@ -996,8 +975,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -1046,7 +1025,7 @@
     {
       "game": "恋するコーデ「ペアリウム」",
       "aliases": [
-        "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム"
+        "ペアリウム"
       ],
       "knownGame": false,
       "score": 45,
@@ -1068,7 +1047,6 @@
     {
       "game": "放置少女",
       "aliases": [
-        "放置少女",
         "放置少女〜百花繚乱の萌姫たち〜"
       ],
       "knownGame": false,
@@ -1103,8 +1081,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
@@ -1147,14 +1125,16 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
     {
-      "game": "キノコ伝説:勇者と魔法のランプ",
-      "aliases": [],
+      "game": "きのこ伝説",
+      "aliases": [
+        "キノコ伝説:勇者と魔法のランプ"
+      ],
       "knownGame": true,
       "score": 45,
       "confidence": 45,
@@ -1167,8 +1147,8 @@
         {
           "sourceId": "warau-new",
           "sourceType": "point_site",
-          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
         }
       ]
     },
