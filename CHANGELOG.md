@@ -229,3 +229,9 @@
 - Diagnostic output is count-only and intentionally excludes page text, evidence quotes, URLs, and raw AI error text.
 - Added explicit target-missing and malformed-claims counters plus regression tests for every zero-claim classification.
 - Publication behavior remains unchanged: `publicationWrites: 0`.
+
+### V52.6 — pair-complete claim-scoped corroboration classification
+- Split the first corroboration classification step by held claim instead of asking one large cross-claim prompt to sparsely choose from every source/claim pair. Each claim-scoped prompt now lists explicit `pairTasks` and requires one `support|contradict|unclear` row per eligible independent source pair.
+- Python records expected/returned/missing pair coverage and rejects any claim/source tuple that was not requested by the current classification prompt, removing another cross-claim remapping path without weakening support rules.
+- Missing rows, malformed responses, API failures, or AI-call-budget exhaustion remain fail-closed; they never become support. The existing strict lexical path, anchored paraphrase second review, exact numeric grounding, source independence, and quarantine-only publication boundary are unchanged.
+- Added a hard bounded corroboration AI-call budget (default 8) and diagnostics for classification calls, pair coverage, duplicate rows, and budget-exhausted pairs.

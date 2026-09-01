@@ -204,7 +204,8 @@ def test_cross_claim_mapping_cannot_bypass_independent_source_guard():
  merged,r=m.run(claims,decisions,cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
  assert len(merged['claims'])==2
  assert r['supportingClaimsAdded']==0
- assert r['rejected']['unknown_span']==1
+ assert r['rejected']['classification_pair_not_requested']==2
+ assert r['diagnosticCounts']['pairTasksMissing']==3
 
 
 def test_contradiction_requires_same_claim_context():
@@ -222,9 +223,9 @@ def test_report_always_exposes_diagnostic_counts_without_publication():
  assert r['publicationWrites']==0
 
 
-def test_v525_logic_version_is_reported_for_live_audit():
+def test_v526_logic_version_is_reported_for_live_audit():
  c,d=docs(); _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
- assert r['logicVersion']=='V52.5'
+ assert r['logicVersion']=='V52.6'
 
 
 def test_orphan_held_decision_is_not_researched_or_resurrected():
@@ -552,5 +553,130 @@ def test_v525_semantic_review_is_batched_to_one_extra_call_per_game():
   ]}
  _,r=m.run({'claims':claims},{'decisions':decisions},cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
  assert r['supportingClaimsAdded']==4
- assert r['apiCalls']==2 and state['ai']==2
+ assert r['apiCalls']==5 and state['ai']==5
+ assert r['diagnosticCounts']['classificationCalls']==4
  assert r['diagnosticCounts']['semanticReviewCalls']==1
+
+
+
+def test_v526_prompt_requires_one_decision_per_source_claim_pair():
+ held=[{'claimId':'c1','category':'tip','claim':'資源箱は温存する','existingSites':['a.example']}]
+ spans=[
+  {'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','text':'Game A 資源箱は温存する'},
+  {'claimId':'c1','sourceId':'u2','spanId':'u2:c1:s1','text':'Game A 資源箱は温存する'},
+ ]
+ p=m.build_prompt('Game A',held,spans)
+ assert 'pairTasks' in p and '必ず1行ずつ判定を返す' in p
+ assert '"sourceId": "u1"' in p and '"sourceId": "u2"' in p
+
+
+def test_v526_classifies_each_claim_in_its_own_bounded_call():
+ c1=claim('資源箱は温存する','https://a.example/original')
+ c2=claim('建設枠を優先する','https://b.example/original')
+ claims={'claims':[c1,c2]}
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['a.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['b.example']},
+ ]}
+ state={'s':0,'prompts':[]}
+ def se(q,k,n):
+  state['s']+=1
+  return {'results':[{'url':f'https://new{state["s"]}.example/guide'}]}
+ def fe(url): return ('<body>Game A 資源箱は温存する 建設枠を優先する</body>',{})
+ def ai(key,model,prompt):
+  state['prompts'].append(prompt)
+  if '"claimId": "c1"' in prompt and '"claimId": "c2"' not in prompt:
+   return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'},{'claimId':'c1','sourceId':'u2','spanId':'u2:c1:s1','relation':'support'}]}
+  if '"claimId": "c2"' in prompt and '"claimId": "c1"' not in prompt:
+   return {'matches':[{'claimId':'c2','sourceId':'u1','spanId':'u1:c2:s1','relation':'support'},{'claimId':'c2','sourceId':'u2','spanId':'u2:c2:s1','relation':'support'}]}
+  raise AssertionError('claims were mixed in one classification prompt')
+ merged,r=m.run(claims,decisions,cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ f=r['diagnosticCounts']
+ assert f['classificationCalls']==2 and f['classificationClaims']==2
+ assert f['pairTasksExpected']==4 and f['pairTasksReturned']==4 and f['pairTasksMissing']==0
+ assert r['supportingClaimsAdded']==4
+ assert len(state['prompts'])==2
+
+
+def test_v526_missing_pair_rows_fail_closed_and_are_diagnosed():
+ c,d=docs(); custom=cfg(); custom['maxCorroborationResultsPerClaim']=2
+ def se(q,k,n): return {'results':[{'url':'https://b.example/one'},{'url':'https://c.example/two'}]}
+ def ai(key,model,prompt):
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'unclear'}]}
+ _,r=m.run(c,d,custom,'t','g',searcher=se,fetcher=fetch(),ai=ai)
+ f=r['diagnosticCounts']
+ assert f['pairTasksExpected']==2 and f['pairTasksReturned']==1 and f['pairTasksMissing']==1
+ assert r['supportingClaimsAdded']==0
+
+
+def test_v526_unrequested_cross_claim_tuple_is_rejected_before_span_validation():
+ c1=claim('資源箱は温存する','https://a.example/original')
+ c2=claim('建設枠を優先する','https://b.example/original')
+ claims={'claims':[c1,c2]}
+ decisions={'decisions':[
+  {'game':'Game A','category':'tip','claim':c1['claim'],'status':'held_single_source','independentSources':['a.example']},
+  {'game':'Game A','category':'tip','claim':c2['claim'],'status':'held_single_source','independentSources':['b.example']},
+ ]}
+ state={'s':0}
+ def se(q,k,n):
+  state['s']+=1
+  return {'results':[{'url':f'https://new{state["s"]}.example/guide'}]}
+ def fe(url): return ('<body>Game A 資源箱は温存する 建設枠を優先する</body>',{})
+ def ai(key,model,prompt):
+  if '"claimId": "c1"' in prompt and '"claimId": "c2"' not in prompt:
+   return {'matches':[{'claimId':'c2','sourceId':'u1','spanId':'u1:c2:s1','relation':'support'}]}
+  return {'matches':[]}
+ _,r=m.run(claims,decisions,cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['rejected']['classification_pair_not_requested']==1
+
+
+def test_v526_ai_call_budget_is_hard_bounded_and_exhaustion_fails_closed():
+ claims=[]; decisions=[]
+ for i,text in enumerate(['資源箱は温存する','建設枠を優先する','兵士枠は温存する','研究枠を優先する'],1):
+  row=claim(text,f'https://old{i}.example/original'); claims.append(row)
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom['maxCorroborationAiCallsPerRun']=2
+ state={'s':0,'ai':0}
+ def se(q,k,n):
+  state['s']+=1
+  return {'results':[{'url':f'https://new{state["s"]}.example/guide'}]}
+ def fe(url): return ('<body>Game A 資源箱は温存する 建設枠を優先する 兵士枠は温存する 研究枠を優先する</body>',{})
+ def ai(key,model,prompt): state['ai']+=1; return {'matches':[]}
+ _,r=m.run({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=ai)
+ f=r['diagnosticCounts']
+ assert r['apiCalls']==2 and state['ai']==2
+ assert f['aiCallBudget']==2 and f['classificationCalls']==2
+ assert f['aiBudgetExhaustedPairs']>0 and f['pairTasksMissing']>=f['aiBudgetExhaustedPairs']
+ assert r['supportingClaimsAdded']==0
+
+
+def test_v526_live_shape_pair_coverage_replaces_sparse_four_of_twenty_six_behavior():
+ labels=['甲','乙','丙','丁']; claims=[]; decisions=[]
+ for i,label in enumerate(labels,1):
+  text=f'攻略項目{label}を優先する'
+  row=claim(text,f'https://old{i}.example/original'); claims.append(row)
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ state={'s':0}
+ def se(q,k,n):
+  i=state['s']; state['s']+=1
+  # 7 unique candidate pages over four searches, close to the observed live run.
+  counts=[2,2,2,1]
+  return {'results':[{'url':f'https://new{i}-{j}.example/guide'} for j in range(counts[i])]}
+ def fe(url):
+  return ('<body>Game A '+ ' '.join(f'攻略項目{x}を優先する' for x in labels) +'</body>',{})
+ def ai(key,model,prompt):
+  # V52.6 receives only one claim per classification prompt and returns every pair.
+  cid=next(x for x in ('c1','c2','c3','c4') if f'"claimId": "{x}"' in prompt)
+  import re
+  source_ids=sorted(set(re.findall(r'"sourceId": "(u\d+)"',prompt)))
+  return {'matches':[{'claimId':cid,'sourceId':sid,'spanId':f'{sid}:{cid}:s1','relation':'unclear'} for sid in source_ids]}
+ _,r=m.run({'claims':claims},{'decisions':decisions},cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ f=r['diagnosticCounts']
+ assert r['candidatePages']==7
+ assert f['sourceClaimPairs']>=20
+ assert f['pairTasksExpected']==f['pairTasksReturned']
+ assert f['pairTasksMissing']==0
+ assert f['candidatePagesUnreferencedByAI']==0
+ assert f['classificationCalls']==4 and r['apiCalls']==4
+ assert r['supportingClaimsAdded']==0 and f['aiValidatedUnclear']==f['pairTasksExpected']

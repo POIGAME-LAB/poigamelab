@@ -26,7 +26,7 @@ CONFIG=ROOT/'config'/'guide_research.json'
 OUT=ROOT/'data'/'guide_claims_corroborated.json'
 REPORT=ROOT/'data'/'guide_corroboration.json'
 STATUS=ROOT/'data'/'guide_corroboration_status.json'
-LOGIC_VERSION='V52.5'
+LOGIC_VERSION='V52.6'
 GENERIC_BIGRAMS={
     '攻略','達成','優先','必要','場合','条件','報酬','日数','効率','序盤','方法','目指','可能',
     'レベ','ベル','ゲー','ーム','する','した','して','ます','でき','ポイ','イン','ント',
@@ -134,20 +134,32 @@ def build_evidence_spans(held_map, sources):
     return spans,considered,with_spans,no_anchor,strict_pairs,anchor_only_pairs
 
 
+def pair_tasks_from_spans(spans):
+    grouped={}
+    for row in spans:
+        key=(row['claimId'],row['sourceId'])
+        grouped.setdefault(key,[]).append(row['spanId'])
+    return [
+        {'claimId':cid,'sourceId':sid,'allowedSpanIds':sorted(ids)}
+        for (cid,sid),ids in sorted(grouped.items())
+    ]
+
+
 def build_prompt(game,held,spans):
+    pair_tasks=pair_tasks_from_spans(spans)
     header=f"""POIGAME LAB 裏取り判定。対象ゲーム: {game}
 
 既存claimを、Pythonが直接取得本文から切り出した evidenceSpans だけで裏取りする。一般知識・検索スニペット・推測は禁止。
 
 support は span がclaimと同じ実用上の攻略内容を明確に述べる場合だけ。同じ単語・同じ話題があるだけならunclear。contradict は同じ対象・条件について異なる数字や明確に反対の場合だけ。その他はunclear。
 
-証拠文を自分で書き写したり言い換えたりせず、必ず与えられた spanId を1つ選ぶ。claimId/sourceId/spanId の組み合わせを変更・創作しない。JSON以外禁止。
+重要: pairTasks に列挙した claimId/sourceId の各組について、必ず1行ずつ判定を返す。省略しない。各組では allowedSpanIds の中から最も判断材料になる spanId を1つだけ選ぶ。証拠文を自分で書き写したり言い換えたりせず、claimId/sourceId/spanId の組み合わせを変更・創作しない。JSON以外禁止。
 
 形式: {{"matches":[{{"claimId":"c1","sourceId":"u1","spanId":"u1:c1:s1","relation":"support|contradict|unclear"}}]}}
 heldClaims:
 """
     compact_rows=[{'claimId':x['claimId'],'sourceId':x['sourceId'],'spanId':x['spanId'],'text':x['text']} for x in spans]
-    return header+json.dumps(held,ensure_ascii=False)+'\nevidenceSpans:\n'+json.dumps(compact_rows,ensure_ascii=False)
+    return header+json.dumps(held,ensure_ascii=False)+'\npairTasks:\n'+json.dumps(pair_tasks,ensure_ascii=False)+'\nevidenceSpans:\n'+json.dumps(compact_rows,ensure_ascii=False)
 
 
 def build_review_prompt(game, claim_by_id, source_by_id, span_by_id, candidates):
@@ -244,6 +256,9 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
         'sourceClaimPairsStrictLexical':0,'sourceClaimPairsAnchorOnly':0,'evidenceSpans':0,'sourcesWithoutEligibleSpans':0,
         'semanticReviewCalls':0,'semanticReviewErrors':0,'semanticReviewMalformedResponses':0,
         'semanticReviewCandidates':0,'semanticReviewConfirmed':0,'semanticReviewRejected':0,
+        'classificationCalls':0,'classificationClaims':0,'pairTasksExpected':0,'pairTasksReturned':0,
+        'pairTasksMissing':0,'pairTasksDuplicateRows':0,'aiCallBudget':max(2,min(8,int(cfg.get('maxCorroborationAiCallsPerRun',8)))),
+        'aiBudgetExhaustedPairs':0,
     }
     existing_sites_by_claim={(d['game'],d['category'],gate.text_key(d['claim'])):set(d.get('independentSources') or []) for d in held}
     for i,d in enumerate(held,1):
@@ -298,24 +313,53 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
         funnel['sourcesWithoutEligibleSpans']+=max(0,len(sources)-len(eligible_source_ids))
         if not evidence_spans:
             continue
-        try:
-            api_calls+=1; response=ai(gemini_key,os.getenv('GEMINI_MODEL','gemini-3.5-flash-lite'),build_prompt(game,list(held_map.values()),evidence_spans))
-        except Exception as e:
-            funnel['aiErrors']+=1; diagnostics.append({'game':game,'aiError':collector.safe_error(e)}); continue
-        if not isinstance(response,dict) or not isinstance(response.get('matches'),list):
-            funnel['aiMalformedResponses']+=1; proposed=[]
-        else:
-            all_proposed=response.get('matches') or []
-            proposed=all_proposed[:80]
-            funnel['aiProposalsDropped']+=max(0,len(all_proposed)-len(proposed))
-        funnel['aiProposedMatches']+=len(proposed)
         referenced_sources=set(); validated_candidates=[]
-        for raw in proposed:
-            if isinstance(raw,dict) and norm(raw.get('sourceId')) in sources: referenced_sources.add(norm(raw.get('sourceId')))
-            match,reason=validate_match(raw,claim_by_id,sources,span_by_id)
-            if reason:
-                rejected[reason]=rejected.get(reason,0)+1; funnel['aiRejectedMatches']+=1; continue
-            validated_candidates.append(match)
+        spans_by_claim={}
+        for span in evidence_spans:
+            spans_by_claim.setdefault(span['claimId'],[]).append(span)
+        ai_call_budget=funnel['aiCallBudget']
+        for cid in sorted(claim_by_id):
+            claim_spans=spans_by_claim.get(cid) or []
+            if not claim_spans:
+                continue
+            expected_pairs={(cid,x['sourceId']) for x in claim_spans}
+            funnel['classificationClaims']+=1
+            funnel['pairTasksExpected']+=len(expected_pairs)
+            if api_calls>=ai_call_budget:
+                funnel['pairTasksMissing']+=len(expected_pairs)
+                funnel['aiBudgetExhaustedPairs']+=len(expected_pairs)
+                continue
+            try:
+                api_calls+=1; funnel['classificationCalls']+=1
+                response=ai(gemini_key,os.getenv('GEMINI_MODEL','gemini-3.5-flash-lite'),build_prompt(game,[claim_by_id[cid]],claim_spans))
+            except Exception as e:
+                funnel['aiErrors']+=1; funnel['pairTasksMissing']+=len(expected_pairs)
+                diagnostics.append({'game':game,'claimId':cid,'aiError':collector.safe_error(e)}); continue
+            if not isinstance(response,dict) or not isinstance(response.get('matches'),list):
+                funnel['aiMalformedResponses']+=1; proposed=[]
+            else:
+                all_proposed=response.get('matches') or []
+                proposed=all_proposed[:80]
+                funnel['aiProposalsDropped']+=max(0,len(all_proposed)-len(proposed))
+            funnel['aiProposedMatches']+=len(proposed)
+            returned_pairs=set(); raw_pair_counts={}
+            for raw in proposed:
+                if isinstance(raw,dict):
+                    raw_cid=norm(raw.get('claimId')); raw_sid=norm(raw.get('sourceId'))
+                    pair=(raw_cid,raw_sid)
+                    if pair in expected_pairs:
+                        referenced_sources.add(raw_sid)
+                        returned_pairs.add(pair); raw_pair_counts[pair]=raw_pair_counts.get(pair,0)+1
+                    else:
+                        rejected['classification_pair_not_requested']=rejected.get('classification_pair_not_requested',0)+1
+                        funnel['aiRejectedMatches']+=1; continue
+                match,reason=validate_match(raw,claim_by_id,sources,span_by_id)
+                if reason:
+                    rejected[reason]=rejected.get(reason,0)+1; funnel['aiRejectedMatches']+=1; continue
+                validated_candidates.append(match)
+            funnel['pairTasksReturned']+=len(returned_pairs)
+            funnel['pairTasksMissing']+=len(expected_pairs-returned_pairs)
+            funnel['pairTasksDuplicateRows']+=sum(max(0,n-1) for n in raw_pair_counts.values())
         grouped={}
         for match in validated_candidates:
             grouped.setdefault((match['claimId'],match['sourceId']),[]).append(match)
@@ -333,26 +377,30 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
             preliminary.append(match)
         actionable=[x for x in preliminary if x['relation'] in {'support','contradict'}]
         unclear=[x for x in preliminary if x['relation']=='unclear']
-        # V52.5 does not weaken the old strict lexical path. Only newly admitted
-        # anchor-only paraphrase candidates need an independent second semantic
-        # confirmation; strict >=35% matches retain V52.4 behavior and cost.
+        # V52.6 keeps V52.5 acceptance rules unchanged. Classification is now
+        # claim-scoped and pair-complete, preventing one large prompt from silently
+        # leaving most independent source/claim pairs unassessed.
         confirmed=[x for x in actionable if x.get('strictLexical')]
         review_candidates=[x for x in actionable if not x.get('strictLexical')]
         if review_candidates:
             funnel['semanticReviewCandidates']+=len(review_candidates)
-            try:
-                api_calls+=1; funnel['semanticReviewCalls']+=1
-                review_response=ai(gemini_key,os.getenv('GEMINI_MODEL','gemini-3.5-flash-lite'),build_review_prompt(game,claim_by_id,sources,span_by_id,review_candidates))
-                reviewed,review_rejected=apply_semantic_review(review_response,review_candidates)
-                if 'semantic_review_malformed' in review_rejected:
-                    funnel['semanticReviewMalformedResponses']+=1
-                confirmed.extend(reviewed); funnel['semanticReviewConfirmed']+=len(reviewed)
-                rejected_count=sum(review_rejected.values()); funnel['semanticReviewRejected']+=rejected_count
-                for reason,count in review_rejected.items(): rejected[reason]=rejected.get(reason,0)+count
-            except Exception as e:
-                funnel['semanticReviewErrors']+=1; funnel['semanticReviewRejected']+=len(review_candidates)
-                rejected['semantic_review_error']=rejected.get('semantic_review_error',0)+len(review_candidates)
-                diagnostics.append({'game':game,'semanticReviewError':collector.safe_error(e)})
+            if api_calls>=ai_call_budget:
+                funnel['semanticReviewRejected']+=len(review_candidates)
+                rejected['semantic_review_budget_exhausted']=rejected.get('semantic_review_budget_exhausted',0)+len(review_candidates)
+            else:
+                try:
+                    api_calls+=1; funnel['semanticReviewCalls']+=1
+                    review_response=ai(gemini_key,os.getenv('GEMINI_MODEL','gemini-3.5-flash-lite'),build_review_prompt(game,claim_by_id,sources,span_by_id,review_candidates))
+                    reviewed,review_rejected=apply_semantic_review(review_response,review_candidates)
+                    if 'semantic_review_malformed' in review_rejected:
+                        funnel['semanticReviewMalformedResponses']+=1
+                    confirmed.extend(reviewed); funnel['semanticReviewConfirmed']+=len(reviewed)
+                    rejected_count=sum(review_rejected.values()); funnel['semanticReviewRejected']+=rejected_count
+                    for reason,count in review_rejected.items(): rejected[reason]=rejected.get(reason,0)+count
+                except Exception as e:
+                    funnel['semanticReviewErrors']+=1; funnel['semanticReviewRejected']+=len(review_candidates)
+                    rejected['semantic_review_error']=rejected.get('semantic_review_error',0)+len(review_candidates)
+                    diagnostics.append({'game':game,'semanticReviewError':collector.safe_error(e)})
         final_matches=confirmed+unclear
         for match in final_matches:
             matches.append(match); src=sources[match['sourceId']]; claim=claim_by_id[match['claimId']]

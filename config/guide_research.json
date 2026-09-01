@@ -18,5 +18,6 @@
   "officialDomainsByGame": {},
   "maxCorroborationClaimsPerRun": 4,
   "maxCorroborationResultsPerClaim": 4,
-  "maxCorroborationFetchesPerRun": 12
+  "maxCorroborationFetchesPerRun": 12,
+  "maxCorroborationAiCallsPerRun": 8
 }
