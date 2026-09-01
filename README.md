@@ -100,3 +100,7 @@ Moppy currently uses a public `site_id` query selector on ad detail pages. V40 t
 ### GitHub Actions writer safety (V42)
 
 Both repository-writing workflows use the shared `poigamelab-production-writer` concurrency group with `cancel-in-progress: false`. This serializes generated-data commits from trend/research and verified-offer refresh jobs and avoids bot-vs-bot rebase conflicts on overlapping `data/` outputs.
+
+
+### V43 research recheck policy
+PHASE 3 records `researchLogicVersion` in `config/trend_discovery.json`. A promoted game already researched under an older collector logic version is queued exactly once for re-research; after completion, `lastResearchLogicVersion` prevents repeated runs until either candidate evidence or the declared research logic changes again.

@@ -66,15 +66,17 @@ def run(queue_path=QUEUE,max_games=None,runner=subprocess.run,env=None):
         if r:
             item['status']='research_complete' if r['returncode']==0 and r['resultSaved'] else 'research_failed'
             item['collectorReady']=False; item['lastResearchAt']=now_iso(); item['researchSummary']=r
+            item['lastResearchLogicVersion']=item.get('researchLogicVersion') or item.get('lastResearchLogicVersion') or 'legacy'
+            item['recheckReason']=None
     if Path(queue_path)==QUEUE: atomic_json(QUEUE,queue)
-    status={'phase':'PHASE3_RESEARCH_BRIDGE_V39','runAt':now_iso(),'maxGames':limit,'selected':len(chosen),
+    status={'phase':'PHASE3_RESEARCH_BRIDGE_V43','runAt':now_iso(),'maxGames':limit,'selected':len(chosen),
             'results':results,'publicationTouched':False,'success':all(x['returncode']==0 and x['resultSaved'] for x in results)}
     atomic_json(STATUS,status); return status
 
 def main():
     missing=[k for k in ('GEMINI_API_KEY',) if not os.getenv(k,'').strip()]
     if missing:
-        atomic_json(STATUS,{'phase':'PHASE3_RESEARCH_BRIDGE_V39','runAt':now_iso(),'success':False,'error':'missing_required_secrets','missingSecretNames':missing,'publicationTouched':False})
+        atomic_json(STATUS,{'phase':'PHASE3_RESEARCH_BRIDGE_V43','runAt':now_iso(),'success':False,'error':'missing_required_secrets','missingSecretNames':missing,'publicationTouched':False})
         return 2
     out=run(); print(json.dumps({'selected':out['selected'],'success':out['success']},ensure_ascii=False)); return 0 if out['success'] else 1
 if __name__=='__main__': raise SystemExit(main())

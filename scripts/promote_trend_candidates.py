@@ -91,6 +91,7 @@ def build_research_queue(trend_result, cfg, previous=None, known=None, now=None)
         normalize_key(x.get("game")): x
         for x in previous.get("items", []) if x.get("game")
     }
+    research_logic_version = str(cfg.get("researchLogicVersion") or "").strip()
     items = []
     rejected = []
     seen = set()
@@ -106,15 +107,24 @@ def build_research_queue(trend_result, cfg, previous=None, known=None, now=None)
             continue
         old = previous_by_key.get(key, {})
         fingerprint = candidate_fingerprint(candidate)
-        unchanged_researched = old.get("candidateFingerprint") == fingerprint and old.get("status") in {"research_complete", "research_failed"}
+        same_candidate = old.get("candidateFingerprint") == fingerprint
+        researched = old.get("status") in {"research_complete", "research_failed"}
+        same_research_logic = (not research_logic_version) or old.get("lastResearchLogicVersion") == research_logic_version
+        unchanged_researched = same_candidate and researched and same_research_logic
         status = old.get("status") if unchanged_researched else "collector_ready"
         collector_ready = not unchanged_researched
+        recheck_reason = None
+        if same_candidate and researched and not same_research_logic:
+            recheck_reason = "research_logic_changed"
         items.append({
             "game": candidate["game"],
             "aliases": candidate.get("aliases") or [],
             "status": status,
             "collectorReady": collector_ready,
             "candidateFingerprint": fingerprint,
+            "researchLogicVersion": research_logic_version,
+            "lastResearchLogicVersion": old.get("lastResearchLogicVersion"),
+            "recheckReason": recheck_reason,
             "lastResearchAt": old.get("lastResearchAt"),
             "researchSummary": old.get("researchSummary"),
             "firstPromotedAt": old.get("firstPromotedAt") or now,
@@ -135,6 +145,7 @@ def build_research_queue(trend_result, cfg, previous=None, known=None, now=None)
         "autoPublish": False,
         "autoAddToGameTargets": False,
         "apiCalls": 0,
+        "researchLogicVersion": research_logic_version,
         "summary": {
             "trendCandidates": len(trend_result.get("candidates", [])),
             "collectorReady": sum(1 for x in items if x.get("collectorReady")),

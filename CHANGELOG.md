@@ -138,3 +138,8 @@
 - Distinct Moppy iOS/Android detail IDs can no longer collapse to the same path-only identity, preserving the V20 exact same-offer invariant for a future second-source adoption.
 - Moppy `site_id` is recognized as a detail-selector shape without hardcoding any current game-specific offer ID or reward.
 - V29 adoption logs now print bounded API-free HOLD/READY diagnostics with exact reasons, strict-offer count, and verified source names, so a safe hold can be diagnosed from one workflow run without exposing offer URLs.
+
+## V43 — Versioned research recheck
+- Added an explicit research-logic version to the PHASE 3 queue so already-researched promoted games are requeued once when collector capability changes.
+- A completed research run records the logic version it used; subsequent unchanged discovery runs stay cached and do not repeatedly spend Gemini/retrieval calls.
+- Candidate-evidence changes still trigger research independently, while V27 promotion thresholds, V20 strict verification, V29 adoption thresholds, and quarantine publication boundaries remain unchanged.
