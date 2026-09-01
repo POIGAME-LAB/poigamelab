@@ -283,3 +283,10 @@
 - Selection protects rare requirement/timeline/priority/warning/resource categories before filling remaining slots by deterministic poikatsu relevance. Low-value puzzle-only mechanics are deprioritized unless they are tied to progression or rewards.
 - The cap is applied to unique propositions, not evidence rows: all independent source rows for a selected proposition are retained so existing V51 support can never be lost just because of the selection bound.
 - Status diagnostics now expose pre-selection validation count, candidate/selected/dropped claim-group counts, and selected category mix. Existing quote grounding, numeric grounding, atomicity, retry/fail-visible behavior, corroboration thresholds, API bounds, and `publicationWrites: 0` remain unchanged.
+
+
+### V54 — independent anecdotal pace/tactic synthesis
+- Added an API-free post-V53 research stage that reuses directly verified X posts and evidence-grounded V51 single-source claims as explicitly anecdotal article material; none can become a verified factual claim.
+- Added deterministic extraction of observed day/level progress and offer-deadline examples, with separate `MAX level` target handling so target levels cannot be cross-paired with current progress (for example, `MAX Lv50 / day 4 Lv16` cannot become a false `day 4 Lv50`).
+- Requires at least two independent experience identities before the timeline lane is considered usable, deduplicating repeated pages/posts from one site or X account. Single-source tactic/bottleneck notes remain labeled as experiences only.
+- Current offer conditions are never inferred from historical anecdotes. V54 reports article-research readiness separately while keeping `publicationEligible: false`, `apiCalls: 0`, and `publicationWrites: 0`.

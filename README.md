@@ -177,3 +177,9 @@ V53 also performs bounded `site:x.com` searches for public player experiences. S
 
 ### V50.4 poikatsu-first claim budget
 V50 claim extraction is now explicitly optimized for point-reward offer completion rather than general game walkthrough coverage. After the existing quote/numeric/atomic validation, Python deterministically keeps at most 12 unique proposition groups per game, preserving all independent evidence rows for any selected proposition. Rare offer-condition, timeline, priority, warning, and resource groups receive a coverage pass before remaining slots are filled by poikatsu relevance. This matches V52.9's default 4 × 3 in-run corroboration capacity without increasing Tavily/Gemini ceilings or allowing ordinary puzzle mechanics to consume the entire corroboration budget. All output remains quarantine-only.
+
+
+### PHASE 4 V54 — anecdotal progress/tactic synthesis for poikatsu articles
+V54 runs after V53 and makes **no API calls**. It reuses directly fetched X experiences plus V51 `held_single_source` community claims that are still present in the corroborated artifact. These rows never become verified facts; they remain `anecdotal_quarantine` with `usableAsFactualClaim: false`.
+
+V54 deterministically separates offer targets from observed progress (for example, `MAXレベル50 / 4日目 レベル16` becomes target Lv50 plus the real progress example day 4 → Lv16, never day 4 → Lv50). It can build an anecdotal pace section only when at least two independent experience sources are available, and it deduplicates source identity so repeated posts/pages from one account/site do not inflate coverage. Current offer conditions are explicitly not inferred from old X/blog posts; a later publishing stage must use current verified offer data. Outputs are `data/poi_guide_experience_summary.json` and `data/poi_guide_experience_status.json`; publication remains disabled (`publicationWrites: 0`).
