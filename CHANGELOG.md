@@ -177,3 +177,10 @@
 - Tavily is discovery-only; every retained page is fetched directly and must confirm the target game in page content.
 - Added deterministic URL canonicalization, point-site exclusion, source typing, content hashes, dedupe, and bounded search/fetch calls.
 - No generated攻略 text or production site data is modified in V49.
+
+## V50 — Phase 4 evidence-bound guide claims
+- Added quarantined Gemini claim extraction after V49 direct evidence collection.
+- Python requires each AI claim to cite a known source and an exact quote present in the re-fetched page; unsupported or numerically ungrounded claims are rejected.
+- AI usage is bounded to one call per game (up to eight directly re-fetched evidence pages), with fail-closed behavior on fetch/API failures.
+- Claim output remains quarantined and cannot write public game/site data.
+- Phase 4 workflow now tests both V49 collection and V50 claim contracts and uploads claim artifacts for inspection.
