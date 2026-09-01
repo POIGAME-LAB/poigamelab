@@ -22,5 +22,12 @@
   "maxCorroborationAiCallsPerRun": 8,
   "maxCorroborationSearchesPerClaim": 2,
   "maxCorroborationSearchCallsPerRun": 8,
-  "maxCorroborationBatchesPerRun": 3
+  "maxCorroborationBatchesPerRun": 3,
+  "maxPoiXSearchesPerGame": 2,
+  "maxPoiXResultsPerSearch": 5,
+  "maxPoiXDirectFetchesPerGame": 4,
+  "xQueryTemplates": [
+    "site:x.com \"{game}\" ゲーム ポイ活",
+    "site:x.com \"{alias}\" ポイ活 達成 日数"
+  ]
 }

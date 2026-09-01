@@ -269,3 +269,10 @@
 - Added deterministic fail-closed guards for obvious fact+advice compounds, bundled multi-action advice, and overlong claims.
 - Allowed multiple atomic claims to share the same literal evidence quote when each is directly supported by it; quote presence and exact numeric grounding remain mandatory.
 - V50.2 bounded retry/fail-visible behavior, V51/V52 support thresholds, API bounds, and `publicationWrites: 0` remain unchanged.
+
+### V53 — poikatsu-first guide draft research + X experience lane
+- Added a deterministic post-corroboration draft stage that uses only V51 `supported_quarantine` claims as factual article material and frames the output specifically for point-reward offer completion rather than general gameplay.
+- Added explicit coverage gaps for offer conditions, completion timeline, priority/efficiency, and bottleneck/resource guidance; incomplete research stays visibly incomplete instead of being filled with AI guesses.
+- Added bounded `site:x.com` / X (Twitter) discovery (default two Tavily searches and four direct status-page fetches per game). Search snippets are never evidence; a retained post must be directly fetched and target/poikatsu-confirmed from page text.
+- X posts are stored separately as `single_public_post_anecdote` with `usableAsFactualClaim: false`. One account is capped to one retained experience per run so a prolific account cannot dominate the experience lane.
+- Added fail-closed guards for wrong corroborated input phase, missing API key, malformed search payloads, off-domain/non-status URLs, target-missing pages, and search/fetch failures. All V53 outputs remain quarantine-only with `publicationWrites: 0`.
