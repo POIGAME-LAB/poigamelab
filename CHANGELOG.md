@@ -276,3 +276,10 @@
 - Added bounded `site:x.com` / X (Twitter) discovery (default two Tavily searches and four direct status-page fetches per game). Search snippets are never evidence; a retained post must be directly fetched and target/poikatsu-confirmed from page text.
 - X posts are stored separately as `single_public_post_anecdote` with `usableAsFactualClaim: false`. One account is capped to one retained experience per run so a prolific account cannot dominate the experience lane.
 - Added fail-closed guards for wrong corroborated input phase, missing API key, malformed search payloads, off-domain/non-status URLs, target-missing pages, and search/fetch failures. All V53 outputs remain quarantine-only with `publicationWrites: 0`.
+
+### V50.4 — poikatsu-first bounded claim selection
+- Retargeted V50 extraction toward point-reward offer completion: conditions, completion timelines, progression efficiency, priority actions, bottlenecks/resources, and time-saving tactics are preferred over ordinary gameplay or puzzle-only tips.
+- Added a deterministic maximum of 12 unique claim groups per game so the existing V52.9 default of three 4-claim batches can attempt every selected held claim in one manual workflow run.
+- Selection protects rare requirement/timeline/priority/warning/resource categories before filling remaining slots by deterministic poikatsu relevance. Low-value puzzle-only mechanics are deprioritized unless they are tied to progression or rewards.
+- The cap is applied to unique propositions, not evidence rows: all independent source rows for a selected proposition are retained so existing V51 support can never be lost just because of the selection bound.
+- Status diagnostics now expose pre-selection validation count, candidate/selected/dropped claim-group counts, and selected category mix. Existing quote grounding, numeric grounding, atomicity, retry/fail-visible behavior, corroboration thresholds, API bounds, and `publicationWrites: 0` remain unchanged.

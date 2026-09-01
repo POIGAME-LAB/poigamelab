@@ -9,10 +9,13 @@ V50.2 adds one bounded retry for transient/format-level Gemini failures and
 marks unrecovered extraction failures as workflow failures instead of silently
 continuing with an empty claim set. V50.3 adds an atomic-claim contract so one
 claim carries one independently corroboratable proposition; obvious mixed
-fact+advice or bundled-advice claims fail closed before V51/V52.
+fact+advice or bundled-advice claims fail closed before V51/V52. V50.4 makes
+selection explicitly poikatsu-first and caps unique claim groups per game so the
+bounded V52.9 three-batch corroborator can attempt every selected group.
 """
 from __future__ import annotations
 import json, os, re, socket, sys, time, unicodedata
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -26,7 +29,8 @@ EVIDENCE=ROOT/'data'/'guide_evidence.json'
 OUT=ROOT/'data'/'guide_claims.json'
 STATUS=ROOT/'data'/'guide_claim_status.json'
 ALLOWED={'requirement','timeline','priority','resource','warning','mechanic','tip'}
-LOGIC_VERSION='V50.3'
+LOGIC_VERSION='V50.4'
+MAX_POI_CLAIM_GROUPS_PER_GAME=12
 MAX_AI_ATTEMPTS_PER_GAME=2
 AI_RETRY_DELAY_SECONDS=1.0
 RETRYABLE_HTTP={408,425,429,500,502,503,504}
@@ -50,6 +54,72 @@ def safe_error(e): return collector.safe_error(e)
 
 ATOMIC_ADVICE_MARKERS=('おすすめ','推奨','活用','優先','べき','方が良い','ほうが良い')
 ATOMIC_FACT_MARKERS=('でき','可能','買える','購入できる','入手できる','獲得できる','拡張できる','解放できる')
+
+POI_CATEGORY_WEIGHT={
+    'requirement':700,'timeline':680,'priority':660,'warning':640,
+    'resource':620,'tip':560,'mechanic':500,
+}
+POI_COVERAGE_ORDER=('requirement','timeline','priority','warning','resource','tip','mechanic')
+POI_RELEVANCE_TERMS=(
+    'ポイ活','案件','期限','日以内','日目','レベル','lv','無課金','課金','経験値','報酬','ポイント',
+    '達成','優先','効率','時短','資源','素材','コイン','キャッシュ','納屋','市場','注文','列車','ヘリ',
+    '工場','建築','ブースター','ログイン','時間','序盤','中盤','終盤','不足','温存',
+)
+POI_LOW_VALUE_GAMEPLAY_TERMS=('パズル','マッチ3','マッチ３','プロペラ','レインボーボール','盤面')
+POI_PROGRESS_TERMS=('経験値','レベル','lv','達成','報酬','ポイント','資源','素材','コイン','キャッシュ','時間','期限')
+
+def poi_relevance_score(row):
+    """Deterministically prefer claims useful for point-reward completion."""
+    if not isinstance(row,dict): return -10_000
+    cat=str(row.get('category') or '')
+    text=unicodedata.normalize('NFKC',norm(row.get('claim'))).casefold()
+    score=POI_CATEGORY_WEIGHT.get(cat,0)
+    score+=sum(12 for term in POI_RELEVANCE_TERMS if term.casefold() in text)
+    if numeric_tokens(text) and cat in {'requirement','timeline','priority','warning','resource','tip'}:
+        score+=18
+    if row.get('sourceType')=='official': score+=8
+    if cat=='mechanic' and any(x.casefold() in text for x in POI_LOW_VALUE_GAMEPLAY_TERMS):
+        if not any(x.casefold() in text for x in POI_PROGRESS_TERMS): score-=160
+    return score
+
+def poi_claim_group_key(row):
+    return (str(row.get('game') or '').strip(),str(row.get('category') or ''),norm_match(row.get('claim')))
+
+def select_poikatsu_claims(rows,max_groups=MAX_POI_CLAIM_GROUPS_PER_GAME):
+    """Select bounded unique propositions while retaining every evidence row for selected propositions.
+
+    One deterministic coverage pass protects rare timeline/requirement/resource/warning
+    groups from being crowded out by many generic tips/mechanics. Remaining slots are
+    filled by poikatsu relevance score. Duplicate independent evidence for a selected
+    proposition is never discarded merely to satisfy the group cap.
+    """
+    rows=[x for x in rows if isinstance(x,dict)]
+    groups={}; first_index={}
+    for idx,row in enumerate(rows):
+        key=poi_claim_group_key(row)
+        groups.setdefault(key,[]).append(row); first_index.setdefault(key,idx)
+    limit=max(1,min(MAX_POI_CLAIM_GROUPS_PER_GAME,int(max_groups)))
+    if len(groups)<=limit:
+        return list(rows),{'candidateGroups':len(groups),'selectedGroups':len(groups),'droppedGroups':0,'selectedByCategory':dict(sorted(Counter(k[1] for k in groups).items()))}
+    def rank_key(key):
+        exemplar=groups[key][0]
+        return (-poi_relevance_score(exemplar),norm_match(exemplar.get('claim')),str(exemplar.get('url') or ''),first_index[key])
+    buckets={}
+    for key in groups: buckets.setdefault(key[1],[]).append(key)
+    for cat in buckets: buckets[cat].sort(key=rank_key)
+    selected=[]
+    for cat in POI_COVERAGE_ORDER:
+        if buckets.get(cat): selected.append(buckets[cat].pop(0))
+        if len(selected)>=limit: break
+    remaining=[key for vals in buckets.values() for key in vals]
+    remaining.sort(key=rank_key)
+    for key in remaining:
+        if len(selected)>=limit: break
+        selected.append(key)
+    chosen=set(selected)
+    out=[row for row in rows if poi_claim_group_key(row) in chosen]
+    counts=Counter(k[1] for k in selected)
+    return out,{'candidateGroups':len(groups),'selectedGroups':len(selected),'droppedGroups':len(groups)-len(selected),'selectedByCategory':dict(sorted(counts.items()))}
 
 def atomicity_reason(claim, category):
     """Reject obvious multi-proposition claims without trying to semantically rewrite them."""
@@ -120,7 +190,9 @@ def live_gemini(key, model, prompt):
 def build_prompt(game,sources):
     compact=[{'sourceId':s['sourceId'],'sourceType':s['sourceType'],'text':s['text'][:24000]} for s in sources]
     return f'''POIGAME LABの攻略情報抽出。対象ゲーム: {game}\n
-与えた本文だけから攻略上の主張を抽出する。推測・一般知識・検索スニペットは禁止。\n
+与えた本文だけから、ポイ活案件の条件達成を期限内に進めるために役立つ主張を抽出する。推測・一般知識・検索スニペットは禁止。\n
+一般的なゲーム紹介や、案件達成速度・レベル上げ・資源管理・時短に結びつかない通常プレイ/パズル技巧は優先しない。案件条件、達成日数、進捗、無課金/課金判断、経験値効率、優先行動、詰まりやすい資源、時短策を優先する。\n
+最大18件まで、ポイ活への有用性が高い順に提案する。Python側でさらに最大12種類のclaimへ安全に絞るため、同じ意味の言い換えで件数を水増ししない。\n
 各claimは sourceId と、そのページ本文に実在する短い evidenceQuote（原文）を必須にする。\n
 1 claim = 1つの独立して裏取りできる主張にする。事実・仕様と、おすすめ/優先/活用などの助言を1文に混ぜない。\n
 例: 「市場では商品をコインで買えるので不足時に活用がおすすめ」は、必要なら「市場では商品をコインで買える」(mechanic/resource) と「不足時に市場を活用するのがおすすめ」(tip) に分ける。同じevidenceQuoteを複数claimで使ってよい。\n
@@ -198,7 +270,7 @@ def run(evidence_doc=None, api_key=None, fetcher=collector.direct_fetch, ai=live
         if response is None:
             diagnostics.append(diag); continue
         proposed=response.get('claims') or []
-        diag['proposed']=len(proposed); source_by_id={s['sourceId']:s for s in sources}; seen=set()
+        diag['proposed']=len(proposed); source_by_id={s['sourceId']:s for s in sources}; seen=set(); valid_candidates=[]
         for raw in proposed[:80]:
             claim,reason=validate_claim(raw,source_by_id)
             if reason:
@@ -206,7 +278,14 @@ def run(evidence_doc=None, api_key=None, fetcher=collector.direct_fetch, ai=live
             key=(claim['game'],claim['category'],norm_match(claim['claim']),claim['url'])
             if key in seen:
                 diag['rejected']['duplicate']=diag['rejected'].get('duplicate',0)+1; continue
-            seen.add(key); all_claims.append(claim); diag['validated']+=1
+            seen.add(key); valid_candidates.append(claim)
+        selected,selection=select_poikatsu_claims(valid_candidates)
+        diag['validatedPreSelection']=len(valid_candidates)
+        diag['candidateClaimGroups']=selection['candidateGroups']
+        diag['selectedClaimGroups']=selection['selectedGroups']
+        diag['poiSelectionDroppedGroups']=selection['droppedGroups']
+        diag['selectedByCategory']=selection['selectedByCategory']
+        diag['validated']=len(selected); all_claims.extend(selected)
         diagnostics.append(diag)
     return {'phase':'PHASE4_GUIDE_CLAIMS_V50','generatedAt':now_iso(),'publicationWrites':0,'apiCalls':api_calls,
       'claims':all_claims,'diagnostics':diagnostics}
@@ -218,17 +297,19 @@ def summarize_result(result):
     totals={
       'games':len(diagnostics),'inputEvidence':0,'refetchedSources':0,'fetchErrors':0,'targetMissing':0,
       'aiCalls':0,'aiAttempts':0,'aiRetries':0,'aiTransientFailures':0,'aiRecoveredAfterRetry':0,'aiErrors':0,
-      'malformedClaimsPayloads':0,'proposed':0,'validated':0
+      'malformedClaimsPayloads':0,'proposed':0,'validatedPreSelection':0,'candidateClaimGroups':0,
+      'selectedClaimGroups':0,'poiSelectionDroppedGroups':0,'validated':0
     }
     games=[]
     for d in diagnostics:
-        for key in ('inputEvidence','refetchedSources','fetchErrors','targetMissing','aiCalls','aiAttempts','aiRetries','aiTransientFailures','aiRecoveredAfterRetry','malformedClaimsPayload','proposed','validated'):
+        for key in ('inputEvidence','refetchedSources','fetchErrors','targetMissing','aiCalls','aiAttempts','aiRetries','aiTransientFailures','aiRecoveredAfterRetry','malformedClaimsPayload','proposed','validatedPreSelection','candidateClaimGroups','selectedClaimGroups','poiSelectionDroppedGroups','validated'):
             target='malformedClaimsPayloads' if key=='malformedClaimsPayload' else key
             totals[target]+=int(d.get(key) or 0)
         totals['aiErrors']+=1 if d.get('aiError') else 0
         for reason,count in (d.get('rejected') or {}).items(): rejected[reason]=rejected.get(reason,0)+int(count or 0)
         for kind,count in (d.get('retryKinds') or {}).items(): retry_kinds[kind]=retry_kinds.get(kind,0)+int(count or 0)
-        games.append({k:d.get(k) for k in ('game','inputEvidence','refetchedSources','fetchErrors','targetMissing','aiCalls','aiAttempts','aiRetries','aiTransientFailures','aiRecoveredAfterRetry','proposed','validated','malformedClaimsPayload')})
+        games.append({k:d.get(k) for k in ('game','inputEvidence','refetchedSources','fetchErrors','targetMissing','aiCalls','aiAttempts','aiRetries','aiTransientFailures','aiRecoveredAfterRetry','proposed','validatedPreSelection','candidateClaimGroups','selectedClaimGroups','poiSelectionDroppedGroups','validated','malformedClaimsPayload')})
+        if d.get('selectedByCategory') is not None: games[-1]['selectedByCategory']=d.get('selectedByCategory')
         if d.get('aiError'):
             games[-1]['aiError']=True
             games[-1]['aiErrorKind']=d.get('aiErrorKind','unknown_error')

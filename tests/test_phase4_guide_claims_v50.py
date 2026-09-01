@@ -210,7 +210,7 @@ def test_v502_main_writes_failure_status_and_exits_nonzero_on_unrecovered_ai(mon
  with pytest.raises(SystemExit) as ex: m.main()
  assert ex.value.code==2
  status=json.loads((tmp_path/'status.json').read_text())
- assert status['logicVersion']=='V50.3' and status['success'] is False
+ assert status['logicVersion']=='V50.4' and status['success'] is False
  assert status['diagnosticSummary']['zeroClaimReason']=='ai_error'
  assert (tmp_path/'claims.json').exists()
 
@@ -303,3 +303,65 @@ def test_v503_rejects_bundled_negative_actions_as_one_tip():
  r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with([raw]))
  assert r['claims']==[]
  assert r['diagnostics'][0]['rejected']['non_atomic_bundled_advice']==1
+
+
+
+def _v504_row(claim, category, url='https://guide.example/a', source_type='community_guide'):
+ return {'game':'Game A','category':category,'claim':claim,'evidenceQuote':claim,'sourceId':'s1','url':url,'sourceType':source_type,'status':'validated_quarantine'}
+
+
+def test_v504_prompt_is_poikatsu_first_and_bounded_before_corroboration():
+ p=m.build_prompt('Game A',[{'sourceId':'s1','sourceType':'community_guide','text':'Game A','url':'x','game':'Game A'}])
+ assert 'ポイ活案件の条件達成' in p
+ assert '一般的なゲーム紹介' in p
+ assert '最大18件' in p and '最大12種類' in p
+
+
+def test_v504_selection_caps_unique_groups_but_keeps_independent_evidence_rows():
+ rows=[]
+ # Same timeline proposition from two independent sites must survive together.
+ rows.append(_v504_row('レベル20を10日で達成した','timeline','https://a.example/guide'))
+ rows.append(_v504_row('レベル20を10日で達成した','timeline','https://b.example/guide'))
+ for i in range(20):
+  rows.append(_v504_row(f'通常プレイの小技{i}','mechanic',f'https://m{i}.example/guide'))
+ selected,stats=m.select_poikatsu_claims(rows)
+ groups={m.poi_claim_group_key(x) for x in selected}
+ assert stats['selectedGroups']==m.MAX_POI_CLAIM_GROUPS_PER_GAME==12
+ assert len(groups)==12 and stats['droppedGroups']==9
+ same=[x for x in selected if x['claim']=='レベル20を10日で達成した']
+ assert len(same)==2
+
+
+def test_v504_selection_protects_rare_poikatsu_coverage_categories_from_many_mechanics():
+ rows=[
+  _v504_row('レベル30到達が案件条件','requirement'),
+  _v504_row('15日目にレベル30へ到達した','timeline'),
+  _v504_row('経験値が多い注文を優先する','priority'),
+  _v504_row('コイン不足に注意する','warning'),
+  _v504_row('キャッシュは時短用に温存する','resource'),
+  _v504_row('ログイン時は注文を確認する','tip'),
+ ]
+ rows += [_v504_row(f'パズル盤面の通常仕様{i}','mechanic') for i in range(30)]
+ selected,stats=m.select_poikatsu_claims(rows)
+ cats={x['category'] for x in selected}
+ assert {'requirement','timeline','priority','warning','resource','tip','mechanic'} <= cats
+ assert stats['selectedGroups']==12
+
+
+def test_v504_progress_mechanic_outranks_puzzle_only_mechanic():
+ progress=_v504_row('注文達成で経験値を獲得できる','mechanic')
+ puzzle=_v504_row('マッチ3でプロペラを作れる','mechanic')
+ assert m.poi_relevance_score(progress) > m.poi_relevance_score(puzzle)
+
+
+def test_v504_run_reports_preselection_and_dropped_group_counts():
+ text='Game A ' + ' '.join([f'攻略情報{i}' for i in range(20)])
+ proposed=[]
+ for i in range(20):
+  proposed.append({'sourceId':'s1','category':'tip','claim':f'攻略情報{i}','evidenceQuote':f'攻略情報{i}'})
+ r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with(proposed))
+ d=r['diagnostics'][0]; s=m.summarize_result(r)
+ assert d['validatedPreSelection']==20
+ assert d['candidateClaimGroups']==20 and d['selectedClaimGroups']==12 and d['poiSelectionDroppedGroups']==8
+ assert len(r['claims'])==12 and d['validated']==12
+ assert s['totals']['validatedPreSelection']==20 and s['totals']['selectedClaimGroups']==12
