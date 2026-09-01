@@ -32,9 +32,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/corroborate_guide_claims.py
       - name: Re-evaluate corroborated guide claims (quarantine only)
-        env:
-          GUIDE_CLAIMS_INPUT: data/guide_claims_corroborated.json
-        run: python scripts/evaluate_guide_claims.py
+        run: python scripts/evaluate_guide_claims.py --input data/guide_claims_corroborated.json --expect-phase PHASE4_GUIDE_CLAIMS_CORROBORATED_V52
       - name: Verify Phase 4 quarantine contracts
         run: python -m pytest -q tests/test_phase4_guide_evidence_v49.py tests/test_phase4_guide_claims_v50.py tests/test_phase4_guide_claim_gate_v51.py tests/test_phase4_guide_corroboration_v52.py
       - name: Upload quarantined evidence artifact

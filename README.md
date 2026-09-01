@@ -130,3 +130,6 @@ After V49 discovers and directly verifies guide pages, `scripts/extract_guide_cl
 
 ### PHASE 4 V52 — bounded corroboration
 V52 researches only V51 `held_single_source` claims. Tavily remains URL discovery only; every candidate is directly fetched, target-confirmed, and must come from an independent source site. Gemini may map a literal quote to an existing held claim, but Python verifies quote presence, exact numeric-token grounding (so `20` is not accepted from `120`), and conservative lexical overlap. Search/fetch/API work is bounded and all outputs remain quarantined with `publicationWrites: 0`. A second V51 evaluation runs against the corroborated claim set.
+
+#### Phase 4 V52.2 re-evaluation guard
+The post-corroboration V51 pass is invoked with an explicit `--input data/guide_claims_corroborated.json` plus an expected phase marker. The run fails closed if the wrong quarantine dataset is supplied. V52 reports both input and output claim counts for auditability.

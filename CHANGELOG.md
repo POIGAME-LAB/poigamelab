@@ -198,3 +198,8 @@
 - Added literal-quote, exact numeric-token grounding (for example, `20` cannot be satisfied by `120`), and lexical-overlap guards around Gemini support mapping.
 - Quarantined contradictions instead of treating them as supporting evidence.
 - Added a second API-free V51 gate pass over the corroborated claim set; public writes remain zero.
+
+### V52.2 — explicit corroborated re-evaluation input guard
+- Re-evaluation now passes the corroborated claims file explicitly with `--input` and verifies its phase marker before V51 gating.
+- V52 status now reports input/output claim counts so live runs can prove corroborated claims actually reached the second gate.
+- Added a 7-base/3-support integration regression matching the production-shaped V52 run.

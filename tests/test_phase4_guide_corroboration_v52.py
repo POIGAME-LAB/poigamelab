@@ -105,3 +105,34 @@ def test_corroborated_output_can_upgrade_v51_without_publication():
  gated=m.gate.evaluate(merged); decision=gated['decisions'][0]
  assert decision['status']=='supported_quarantine' and decision['independentSourceCount']==2
  assert gated['publicationWrites']==0 and gated['publicationEligibleClaims']==0
+
+def test_live_shape_seven_base_claims_three_supports_upgrade_three_groups():
+ labels=['甲','乙','丙','丁','戊','己','庚']; cs=[]; ds=[]
+ for i,label in enumerate(labels):
+  text=f'攻略項目{label}を優先する'
+  row=claim(text,f'https://old{i}.example/a'); cs.append(row)
+  ds.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ state={'search':0}
+ def se(q,k,n):
+  i=state['search']; state['search']+=1
+  return {'results':[{'url':f'https://new{i}.example/guide'}]}
+ def fe(url):
+  i=int(url.split('new',1)[1].split('.',1)[0])
+  return (f'<body>Game A 攻略項目{labels[i]}を優先する</body>',{})
+ def ai(key,model,prompt):
+  return {'matches':[
+   {'claimId':'c1','sourceId':'u1','relation':'support','evidenceQuote':'攻略項目甲を優先する'},
+   {'claimId':'c2','sourceId':'u2','relation':'support','evidenceQuote':'攻略項目乙を優先する'},
+   {'claimId':'c3','sourceId':'u3','relation':'support','evidenceQuote':'攻略項目丙を優先する'},
+  ]}
+ merged,r=m.run({'claims':cs},{'decisions':ds},cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ assert r['inputClaims']==7 and r['supportingClaimsAdded']==3 and r['outputClaims']==10
+ gated=m.gate.evaluate(merged)
+ assert gated['counts']['decisionGroups']==7
+ assert gated['counts']['supportedQuarantine']==3
+ assert gated['counts']['heldSingleSource']==4
+
+def test_workflow_re_evaluation_uses_explicit_corroborated_input_and_phase_guard():
+ text=(ROOT/'.github'/'workflows'/'collect-guide-evidence.yml').read_text(encoding='utf-8')
+ line='python scripts/evaluate_guide_claims.py --input data/guide_claims_corroborated.json --expect-phase PHASE4_GUIDE_CLAIMS_CORROBORATED_V52'
+ assert line in text

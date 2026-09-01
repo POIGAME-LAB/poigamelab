@@ -71,3 +71,18 @@ def test_game_boundary_prevents_cross_game_corroboration():
 
 def test_output_is_api_free_and_never_publication_eligible():
  r=ev([c(source='official')]); assert r['apiCalls']==0 and r['publicationWrites']==0 and r['publicationEligibleClaims']==0
+
+def test_explicit_cli_input_overrides_env_and_checks_phase(tmp_path, monkeypatch):
+ good=tmp_path/'corroborated.json'; bad=tmp_path/'original.json'
+ good.write_text('{"phase":"PHASE4_GUIDE_CLAIMS_CORROBORATED_V52","claims":[]}',encoding='utf-8')
+ bad.write_text('{"phase":"PHASE4_GUIDE_CLAIMS_V50","claims":[]}',encoding='utf-8')
+ monkeypatch.setenv('GUIDE_CLAIMS_INPUT',str(bad))
+ path,doc=m.load_input(['--input',str(good),'--expect-phase','PHASE4_GUIDE_CLAIMS_CORROBORATED_V52'])
+ assert path==good and doc['phase']=='PHASE4_GUIDE_CLAIMS_CORROBORATED_V52'
+
+def test_expected_phase_mismatch_fails_closed(tmp_path):
+ p=tmp_path/'wrong.json'; p.write_text('{"phase":"PHASE4_GUIDE_CLAIMS_V50","claims":[]}',encoding='utf-8')
+ try:
+  m.load_input(['--input',str(p),'--expect-phase','PHASE4_GUIDE_CLAIMS_CORROBORATED_V52']); assert False
+ except RuntimeError as e:
+  assert 'input phase mismatch' in str(e)

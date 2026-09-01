@@ -7,6 +7,7 @@ numeric variants as conflicts, and keeps every decision in quarantine.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
@@ -148,14 +149,37 @@ def evaluate(doc):
     }
 
 
-def main():
+def resolve_input(argv=None):
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--input', dest='input_path')
+    parser.add_argument('--expect-phase', dest='expected_phase')
+    args, _ = parser.parse_known_args(argv)
+    # Explicit CLI input wins. The environment variable remains only as a
+    # backwards-compatible fallback; production workflow uses --input so the
+    # re-evaluation source is visible and unambiguous in Actions logs.
+    path = Path(args.input_path or os.getenv('GUIDE_CLAIMS_INPUT') or str(IN))
+    return path, args.expected_phase
+
+
+def load_input(argv=None):
+    path, expected_phase = resolve_input(argv)
+    doc = json.loads(path.read_text(encoding='utf-8'))
+    actual_phase = doc.get('phase') if isinstance(doc, dict) else None
+    if expected_phase and actual_phase != expected_phase:
+        raise RuntimeError(f'input phase mismatch: expected {expected_phase}, got {actual_phase}')
+    return path, doc
+
+
+def main(argv=None):
     try:
-        input_path = Path(os.getenv('GUIDE_CLAIMS_INPUT', str(IN)))
-        result = evaluate(json.loads(input_path.read_text(encoding='utf-8')))
+        input_path, input_doc = load_input(argv)
+        result = evaluate(input_doc)
         OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         status = {
             'phase': result['phase'], 'success': True, **result['counts'], 'apiCalls': 0,
-            'publicationWrites': 0, 'publicationEligibleClaims': 0, 'lastRun': result['generatedAt'],
+            'publicationWrites': 0, 'publicationEligibleClaims': 0,
+            'inputFile': input_path.name, 'inputPhase': input_doc.get('phase') if isinstance(input_doc, dict) else None,
+            'lastRun': result['generatedAt'],
         }
         STATUS.write_text(json.dumps(status, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         print(json.dumps(status, ensure_ascii=False))
