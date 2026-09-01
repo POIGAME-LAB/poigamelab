@@ -216,3 +216,10 @@
 - Independent-source eligibility is applied before spans are exposed to Gemini. A source page can still corroborate another held claim from the same game when it is genuinely independent, but same-site claim/source pairs are never offered as selectable evidence and the post-selection independence guard remains in place.
 - Added deterministic lexical prefiltering that only exposes spans capable of passing the existing 0.35 overlap guard. Unusable source/claim pairs skip Gemini rather than consuming an API call; numeric claims still require exact token grounding (`20` cannot be satisfied by `120`).
 - Candidate pages found for one held claim may be reused for another independent held claim from the same game, improving evidence efficiency without additional fetches. Evidence excerpts remain bounded to 240 characters, all outputs stay quarantined, and publication writes remain zero.
+
+### V52.5 — anchored paraphrase review without weakening strict matches
+- Kept the V52.4 >=35% lexical corroboration path unchanged while adding a separate bounded path for paraphrased evidence that still shares a deterministic non-generic claim anchor.
+- Generic guide terms by themselves no longer qualify as semantic anchors; Python derives content anchors from the held claim and only exposes exact directly-fetched spans containing those anchors.
+- Any support/contradict proposal admitted only through the weaker anchor path requires a second Gemini confirmation using the fixed claim/source/span tuple. Missing, malformed, changed, rejected, or failed review responses fail closed.
+- Exact numeric grounding, independent-source checks, direct target confirmation, span identity checks, API/result bounds, and quarantine-only publication behavior remain unchanged.
+- Added diagnostics for strict-vs-anchor-only source/claim pairs and second-review calls/candidates/confirmations/rejections.

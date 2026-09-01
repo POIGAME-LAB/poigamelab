@@ -222,9 +222,9 @@ def test_report_always_exposes_diagnostic_counts_without_publication():
  assert r['publicationWrites']==0
 
 
-def test_v524_logic_version_is_reported_for_live_audit():
+def test_v525_logic_version_is_reported_for_live_audit():
  c,d=docs(); _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
- assert r['logicVersion']=='V52.4'
+ assert r['logicVersion']=='V52.5'
 
 
 def test_orphan_held_decision_is_not_researched_or_resurrected():
@@ -312,7 +312,7 @@ def test_independence_is_applied_before_spans_are_exposed_to_ai():
   {'sourceId':'u1','site':'a.example','text':'Game A 資源箱は温存する 建設枠を優先する'},
   {'sourceId':'u2','site':'c.example','text':'Game A 資源箱は温存する 建設枠を優先する'},
  ]
- spans,considered,with_spans,no_lexical=m.build_evidence_spans(held,sources)
+ spans,considered,with_spans,no_lexical,strict_pairs,anchor_only_pairs=m.build_evidence_spans(held,sources)
  ids={x['spanId'] for x in spans}
  assert not any(x.startswith('u1:c1:') for x in ids)
  assert any(x.startswith('u1:c2:') for x in ids)
@@ -418,7 +418,139 @@ def test_span_scanning_keeps_previous_18000_character_page_bound():
 def test_max_live_shape_span_payload_is_bounded():
  held={f'c{i}':{'claimId':f'c{i}','claim':f'攻略項目{i}を優先する','category':'tip','existingSites':[]} for i in range(1,5)}
  sources=[{'sourceId':f'u{j}','site':f's{j}.example','text':'Game A '+' '.join(f'攻略項目{i}を優先する' for i in range(1,5))} for j in range(1,13)]
- spans,considered,with_spans,no_lexical=m.build_evidence_spans(held,sources)
+ spans,considered,with_spans,no_lexical,strict_pairs,anchor_only_pairs=m.build_evidence_spans(held,sources)
  assert considered==48 and with_spans==48 and no_lexical==0
  assert len(spans)<=48*4
  assert sum(len(x['text']) for x in spans)<=48*4*240
+
+
+def test_v525_anchor_only_paraphrase_requires_second_review_and_can_support():
+ c,d=docs('資源箱は温存する')
+ calls=[]
+ def ai(key,model,prompt):
+  calls.append(prompt)
+  if '独立再確認' in prompt:
+   return {'reviews':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support','verdict':'confirm'}]}
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱を残しておくと後半で使いやすい'),ai=ai)
+ f=r['diagnosticCounts']
+ assert r['supportingClaimsAdded']==1 and len(merged['claims'])==2
+ assert r['apiCalls']==2 and f['semanticReviewCalls']==1 and f['semanticReviewConfirmed']==1
+ assert f['sourceClaimPairsAnchorOnly']==1 and f['sourceClaimPairsStrictLexical']==0
+
+
+def test_v525_anchor_only_support_fails_closed_when_second_review_rejects():
+ c,d=docs('資源箱は温存する')
+ def ai(key,model,prompt):
+  if '独立再確認' in prompt:
+   return {'reviews':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support','verdict':'reject'}]}
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱を残しておくと後半で使いやすい'),ai=ai)
+ assert r['supportingClaimsAdded']==0 and len(merged['claims'])==1
+ assert r['rejected']['semantic_review_rejected_or_missing']==1
+ assert r['diagnosticCounts']['semanticReviewRejected']==1
+
+
+def test_v525_anchor_only_support_fails_closed_when_review_is_malformed():
+ c,d=docs('資源箱は温存する')
+ def ai(key,model,prompt):
+  if '独立再確認' in prompt: return {'reviews':'bad'}
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱を残しておくと後半で使いやすい'),ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['diagnosticCounts']['semanticReviewMalformedResponses']==1
+ assert r['rejected']['semantic_review_malformed']==1
+
+
+def test_v525_anchor_only_support_fails_closed_when_review_call_errors():
+ c,d=docs('資源箱は温存する')
+ def ai(key,model,prompt):
+  if '独立再確認' in prompt: raise RuntimeError('review down')
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱を残しておくと後半で使いやすい'),ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['diagnosticCounts']['semanticReviewErrors']==1
+ assert r['rejected']['semantic_review_error']==1
+
+
+def test_v525_generic_words_alone_do_not_create_evidence_span_or_ai_call():
+ c,d=docs('達成条件を優先する')
+ text='Game A 攻略の達成条件と報酬について説明します'
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(text),ai=lambda *a:(_ for _ in ()).throw(AssertionError()))
+ f=r['diagnosticCounts']
+ assert r['apiCalls']==0 and r['supportingClaimsAdded']==0
+ assert f['sourceClaimPairsNoLexicalSpan']==1 and f['evidenceSpans']==0
+
+
+def test_v525_numeric_anchor_only_support_still_requires_exact_number_before_review():
+ c,d=docs('城レベル20を目指す')
+ calls={'n':0}
+ def ai(key,model,prompt):
+  calls['n']+=1
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 城レベル120まで上げると次に進める'),ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['rejected']['numeric_not_grounded']==1
+ assert r['diagnosticCounts']['semanticReviewCalls']==0
+ assert calls['n']==1
+
+
+def test_v525_review_cannot_confirm_unknown_or_changed_tuple():
+ c,d=docs('資源箱は温存する')
+ def ai(key,model,prompt):
+  if '独立再確認' in prompt:
+   return {'reviews':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:fake','relation':'support','verdict':'confirm'}]}
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱を残しておくと後半で使いやすい'),ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['rejected']['semantic_review_unknown_reference']==1
+ assert r['rejected']['semantic_review_rejected_or_missing']==1
+
+
+def test_v525_strict_lexical_match_does_not_add_review_api_cost():
+ c,d=docs('資源箱は温存する')
+ merged,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱は温存する'),ai=ai_support)
+ assert r['supportingClaimsAdded']==1 and len(merged['claims'])==2
+ assert r['apiCalls']==1 and r['diagnosticCounts']['semanticReviewCalls']==0
+ assert r['diagnosticCounts']['sourceClaimPairsStrictLexical']==1
+
+
+def test_v525_duplicate_semantic_review_for_same_tuple_fails_closed():
+ c,d=docs('資源箱は温存する')
+ def ai(key,model,prompt):
+  if '独立再確認' in prompt:
+   row={'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}
+   return {'reviews':[{**row,'verdict':'confirm'},{**row,'verdict':'reject'}]}
+  return {'matches':[{'claimId':'c1','sourceId':'u1','spanId':'u1:c1:s1','relation':'support'}]}
+ _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch('Game A 資源箱を残しておくと後半で使いやすい'),ai=ai)
+ assert r['supportingClaimsAdded']==0
+ assert r['rejected']['semantic_review_duplicate']==1
+ assert r['rejected']['semantic_review_rejected_or_missing']==1
+
+
+def test_v525_semantic_review_is_batched_to_one_extra_call_per_game():
+ claims=[]; decisions=[]
+ for i,text in enumerate(['資源箱は温存する','建設枠を優先する','兵士枠は温存する','研究枠を優先する'],1):
+  row=claim(text,f'https://old{i}.example/original'); claims.append(row)
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ state={'s':0,'ai':0}
+ pages=['資源箱を残しておく','建設枠を先に使う','兵士枠を残しておく','研究枠を先に使う']
+ def se(q,k,n):
+  i=state['s']; state['s']+=1
+  return {'results':[{'url':f'https://new{i}.example/guide'}]}
+ def fe(url):
+  i=int(url.split('new',1)[1].split('.',1)[0])
+  return (f'<body>Game A {pages[i]}</body>',{})
+ def ai(key,model,prompt):
+  state['ai']+=1
+  if '独立再確認' in prompt:
+   return {'reviews':[
+    {'claimId':f'c{i}','sourceId':f'u{i}','spanId':f'u{i}:c{i}:s1','relation':'support','verdict':'confirm'} for i in range(1,5)
+   ]}
+  return {'matches':[
+   {'claimId':f'c{i}','sourceId':f'u{i}','spanId':f'u{i}:c{i}:s1','relation':'support'} for i in range(1,5)
+  ]}
+ _,r=m.run({'claims':claims},{'decisions':decisions},cfg(),'t','g',searcher=se,fetcher=fe,ai=ai)
+ assert r['supportingClaimsAdded']==4
+ assert r['apiCalls']==2 and state['ai']==2
+ assert r['diagnosticCounts']['semanticReviewCalls']==1
