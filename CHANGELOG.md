@@ -262,3 +262,10 @@
 - Production defaults allow up to three batches per workflow. Existing per-batch limits remain intact, giving hard workflow ceilings of 24 corroboration searches, 48 direct fetch attempts, and 24 Gemini calls; with the current default 12-fetch batch cap the normal direct-fetch ceiling is 36.
 - Status now reports batch count, batch size, total unique held claims attempted, and any held claims left unattempted after the bounded batch cap. All corroboration remains quarantine-only with `publicationWrites: 0`.
 - Added regressions for a 10-claim 4/4/2 completion, unresolved-claim no-retry behavior, and the hard three-batch stop.
+
+
+### V50.3 — atomic claim extraction for corroboration
+- Tightened Gemini extraction to one independently corroboratable proposition per claim, separating facts/mechanics from recommendations instead of combining them in one sentence.
+- Added deterministic fail-closed guards for obvious fact+advice compounds, bundled multi-action advice, and overlong claims.
+- Allowed multiple atomic claims to share the same literal evidence quote when each is directly supported by it; quote presence and exact numeric grounding remain mandatory.
+- V50.2 bounded retry/fail-visible behavior, V51/V52 support thresholds, API bounds, and `publicationWrites: 0` remain unchanged.

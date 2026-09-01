@@ -210,7 +210,7 @@ def test_v502_main_writes_failure_status_and_exits_nonzero_on_unrecovered_ai(mon
  with pytest.raises(SystemExit) as ex: m.main()
  assert ex.value.code==2
  status=json.loads((tmp_path/'status.json').read_text())
- assert status['logicVersion']=='V50.2' and status['success'] is False
+ assert status['logicVersion']=='V50.3' and status['success'] is False
  assert status['diagnosticSummary']['zeroClaimReason']=='ai_error'
  assert (tmp_path/'claims.json').exists()
 
@@ -252,3 +252,54 @@ def test_v502_malformed_top_level_interaction_response_is_retryable(monkeypatch)
  with pytest.raises(m.GeminiCallError) as ex:
   m.live_gemini('k','model','prompt')
  assert ex.value.kind=='response_format' and ex.value.retryable is True
+
+
+def test_v503_prompt_requires_atomic_independently_corroboratable_claims():
+ p=m.build_prompt('Game A',[{'sourceId':'s1','sourceType':'community_guide','text':'Game A','url':'x','game':'Game A'}])
+ assert '1 claim = 1つ' in p
+ assert '事実・仕様' in p and '助言' in p
+ assert '無理に分割・一般化せず' in p
+
+
+def test_v503_rejects_fact_plus_advice_compound_claim():
+ text='Game A 市場ではランダムな商品をコインで買うことができ、材料不足の時に活用するのがおすすめです。'
+ raw={'sourceId':'s1','category':'tip','claim':'市場では商品をコインで買うことができ材料不足の時に活用するのがおすすめ','evidenceQuote':'市場ではランダムな商品をコインで買うことができ、材料不足の時に活用するのがおすすめです。'}
+ r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with([raw]))
+ assert r['claims']==[]
+ assert r['diagnostics'][0]['rejected']['non_atomic_fact_plus_advice']==1
+
+
+def test_v503_rejects_bundled_multi_action_advice():
+ text='Game A ヘリコプター注文と列車を回すのが攻略の中心でした。'
+ raw={'sourceId':'s1','category':'tip','claim':'ヘリコプター注文と列車を回すのが攻略の中心','evidenceQuote':'ヘリコプター注文と列車を回すのが攻略の中心でした。'}
+ r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with([raw]))
+ assert r['claims']==[]
+ assert r['diagnostics'][0]['rejected']['non_atomic_bundled_advice']==1
+
+
+def test_v503_allows_atomic_fact_and_atomic_advice_separately_from_same_quote():
+ text='Game A 市場では商品をコインで買えます。不足時は市場を活用するのがおすすめです。'
+ rows=[
+  {'sourceId':'s1','category':'mechanic','claim':'市場では商品をコインで買える','evidenceQuote':'市場では商品をコインで買えます。'},
+  {'sourceId':'s1','category':'tip','claim':'不足時は市場を活用するのがおすすめ','evidenceQuote':'不足時は市場を活用するのがおすすめです。'},
+ ]
+ r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with(rows))
+ assert len(r['claims'])==2
+ assert {x['category'] for x in r['claims']}=={'mechanic','tip'}
+
+
+def test_v503_rejects_overlong_claim_as_non_atomic():
+ long_claim='資源を温存する。'*40
+ text='Game A '+long_claim
+ raw={'sourceId':'s1','category':'tip','claim':long_claim,'evidenceQuote':long_claim}
+ r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with([raw]))
+ assert r['claims']==[]
+ assert r['diagnostics'][0]['rejected']['non_atomic_too_long']==1
+
+
+def test_v503_rejects_bundled_negative_actions_as_one_tip():
+ text='Game A 中盤まで工場は建てすぎず島も解放しない方が良い。'
+ raw={'sourceId':'s1','category':'tip','claim':'中盤まで工場は建てすぎず島も解放しない方が良い','evidenceQuote':'中盤まで工場は建てすぎず島も解放しない方が良い。'}
+ r=m.run(DOC,'k',fetcher=lambda u:(text,{'httpStatus':200}),ai=ai_with([raw]))
+ assert r['claims']==[]
+ assert r['diagnostics'][0]['rejected']['non_atomic_bundled_advice']==1

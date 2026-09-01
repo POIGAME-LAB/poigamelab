@@ -7,7 +7,9 @@ page. Nothing here writes public game/site data.
 
 V50.2 adds one bounded retry for transient/format-level Gemini failures and
 marks unrecovered extraction failures as workflow failures instead of silently
-continuing with an empty claim set.
+continuing with an empty claim set. V50.3 adds an atomic-claim contract so one
+claim carries one independently corroboratable proposition; obvious mixed
+fact+advice or bundled-advice claims fail closed before V51/V52.
 """
 from __future__ import annotations
 import json, os, re, socket, sys, time, unicodedata
@@ -24,6 +26,7 @@ EVIDENCE=ROOT/'data'/'guide_evidence.json'
 OUT=ROOT/'data'/'guide_claims.json'
 STATUS=ROOT/'data'/'guide_claim_status.json'
 ALLOWED={'requirement','timeline','priority','resource','warning','mechanic','tip'}
+LOGIC_VERSION='V50.3'
 MAX_AI_ATTEMPTS_PER_GAME=2
 AI_RETRY_DELAY_SECONDS=1.0
 RETRYABLE_HTTP={408,425,429,500,502,503,504}
@@ -44,6 +47,26 @@ def numeric_grounded(claim, quote):
         if found.count(value) < required.count(value): return False
     return True
 def safe_error(e): return collector.safe_error(e)
+
+ATOMIC_ADVICE_MARKERS=('おすすめ','推奨','活用','優先','べき','方が良い','ほうが良い')
+ATOMIC_FACT_MARKERS=('でき','可能','買える','購入できる','入手できる','獲得できる','拡張できる','解放できる')
+
+def atomicity_reason(claim, category):
+    """Reject obvious multi-proposition claims without trying to semantically rewrite them."""
+    s=unicodedata.normalize('NFKC',norm(claim))
+    if len(s)>120: return 'non_atomic_too_long'
+    if category in {'tip','priority'}:
+        fact_pos=min((s.find(x) for x in ATOMIC_FACT_MARKERS if x in s),default=-1)
+        advice_pos=min((s.find(x) for x in ATOMIC_ADVICE_MARKERS if x in s),default=-1)
+        if fact_pos>=0 and advice_pos>fact_pos:
+            return 'non_atomic_fact_plus_advice'
+        if re.search(r'(?:＆|\+|＋)',s) and any(x in s for x in ATOMIC_ADVICE_MARKERS):
+            return 'non_atomic_bundled_advice'
+        if re.search(r'.{2,24}(?:と|や).{2,24}(?:を|が).{0,24}(?:中心|おすすめ|推奨|優先)',s):
+            return 'non_atomic_bundled_advice'
+        if re.search(r'.{2,30}(?:ず|ない).{1,30}(?:も|かつ).{2,30}(?:ない|ず).{0,24}(?:方が良い|ほうが良い|おすすめ|推奨)',s):
+            return 'non_atomic_bundled_advice'
+    return None
 
 def extract_interaction_text(res):
     out=[]
@@ -99,6 +122,9 @@ def build_prompt(game,sources):
     return f'''POIGAME LABの攻略情報抽出。対象ゲーム: {game}\n
 与えた本文だけから攻略上の主張を抽出する。推測・一般知識・検索スニペットは禁止。\n
 各claimは sourceId と、そのページ本文に実在する短い evidenceQuote（原文）を必須にする。\n
+1 claim = 1つの独立して裏取りできる主張にする。事実・仕様と、おすすめ/優先/活用などの助言を1文に混ぜない。\n
+例: 「市場では商品をコインで買えるので不足時に活用がおすすめ」は、必要なら「市場では商品をコインで買える」(mechanic/resource) と「不足時に市場を活用するのがおすすめ」(tip) に分ける。同じevidenceQuoteを複数claimで使ってよい。\n
+複数の行動を「AとBが攻略の中心」のように束ねた主張は避け、本文が個別に根拠を述べている場合だけ個別claimを作る。本文が個別には言っていないなら無理に分割・一般化せず、その主張を出さない。\n
 categoryは requirement,timeline,priority,resource,warning,mechanic,tip のいずれか。\n
 数字・日数・レベル・金額をclaimに含める場合、その数字をevidenceQuoteにも必ず含める。\n
 別ゲームの情報は出さない。JSON以外禁止。\n
@@ -114,6 +140,8 @@ def validate_claim(raw, source_by_id):
     src=source_by_id[sid]
     if norm_match(quote) not in norm_match(src['text']): return None,'quote_not_in_source'
     if not numeric_grounded(claim,quote): return None,'numeric_not_grounded'
+    atomic_reason=atomicity_reason(claim,cat)
+    if atomic_reason: return None,atomic_reason
     return {'game':src['game'],'category':cat,'claim':claim,'evidenceQuote':quote,'sourceId':sid,
       'url':src['url'],'sourceType':src['sourceType'],'status':'validated_quarantine'},None
 
@@ -231,11 +259,11 @@ def main():
     try:
         result=run()
     except Exception as e:
-        status={'phase':'PHASE4_GUIDE_CLAIMS_V50','logicVersion':'V50.2','success':False,'error':safe_error(e),'publicationWrites':0,'lastRun':now_iso()}
+        status={'phase':'PHASE4_GUIDE_CLAIMS_V50','logicVersion':LOGIC_VERSION,'success':False,'error':safe_error(e),'publicationWrites':0,'lastRun':now_iso()}
         STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False)); raise
     OUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     summary=summarize_result(result); complete=extraction_complete(summary)
-    status={'phase':result['phase'],'logicVersion':'V50.2','success':complete,'claimCount':len(result['claims']),'apiCalls':result['apiCalls'],'publicationWrites':0,'diagnosticSummary':summary,'lastRun':result['generatedAt']}
+    status={'phase':result['phase'],'logicVersion':LOGIC_VERSION,'success':complete,'claimCount':len(result['claims']),'apiCalls':result['apiCalls'],'publicationWrites':0,'diagnosticSummary':summary,'lastRun':result['generatedAt']}
     STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False))
     if not complete:
         raise SystemExit(2)
