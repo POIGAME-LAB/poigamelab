@@ -118,3 +118,6 @@ For quarantined trend research only, V29 may treat Firecrawl `402 Payment Requir
 
 ### V48 Moppy indexed discovery resilience
 Moppy indexed discovery uses at most three sequential Tavily query variants when the first exact-title query misses. It stops immediately after a Moppy official detail page is directly fetched and target-confirmed, keeping the usual API cost to one search. Search snippets are never evidence, external domains are rejected, stable identities are deduplicated, and unsuccessful/partial searches cannot create authoritative absence evidence.
+
+### PHASE 4 V49 — guide evidence quarantine foundation
+攻略情報は公開文面を直接生成する前に、独立した隔離パイプラインで根拠URLを収集します。Tavily検索結果はURL発見専用で、検索タイトル/スニペットを攻略事実として採用しません。候補ページを直接取得し、対象ゲーム名をページ本文で再確認したものだけを `data/guide_evidence.json` に保存します。ポイントサイト案件ページは攻略根拠から除外し、追跡パラメータを落として重複排除します。V49は本文・tips・公開CSVを一切更新しない candidate-only / quarantine-only 段階です。GitHub Actions workflow は安全のため `workflow_dispatch` の手動実行のみです。

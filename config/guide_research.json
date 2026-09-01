@@ -1,0 +1,19 @@
+{
+  "version": "V49",
+  "maxGamesPerRun": 1,
+  "maxSearchesPerGame": 3,
+  "maxResultsPerSearch": 6,
+  "maxDirectFetchesPerGame": 8,
+  "queryTemplates": [
+    "\"{game}\" ポイ活 攻略",
+    "\"{game}\" 達成 日数 ポイ活",
+    "\"{game}\" 条件 達成 攻略"
+  ],
+  "blockedDomains": [
+    "moppy.jp",
+    "warau.jp",
+    "chobirich.com",
+    "cimcome.jp"
+  ],
+  "officialDomainsByGame": {}
+}

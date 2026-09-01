@@ -171,3 +171,9 @@
 - Deduplicates stable offer identities across query variants and rejects external domains.
 - Stale/404 detail results can be bypassed by a later query variant; all-query/partial query failures remain fail-closed.
 - Bumped researchLogicVersion to V48 for one controlled recheck.
+
+## V49 — PHASE 4 guide evidence quarantine
+- Added a manual-only Phase 4 workflow for guide-source discovery.
+- Tavily is discovery-only; every retained page is fetched directly and must confirm the target game in page content.
+- Added deterministic URL canonicalization, point-site exclusion, source typing, content hashes, dedupe, and bounded search/fetch calls.
+- No generated攻略 text or production site data is modified in V49.
