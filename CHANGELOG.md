@@ -157,3 +157,9 @@
 - Bump research logic version so held games are rechecked once with the corrected completion semantics.
 
 - V46: collection completeness now treats earlier stale known-page misses as superseded only after a clean terminal first-party/indexed discovery state; real terminal failures and partial known fast paths remain fail-closed.
+
+## V47 — Optional Firecrawl coverage isolation
+- V29 now distinguishes Firecrawl HTTP 402 billing exhaustion from evidence failure only for quarantined research.
+- The exception is fail-closed: every degraded reason must be a matching `search_failed` 402 with completed public-discovery diagnostics, and adoption still requires the configured minimum strict offers and independent verified sources.
+- Production refresh `collectionComplete` semantics and snapshot-preservation behavior are unchanged.
+- Fatal, partial, non-402, unknown, or insufficient-evidence cases remain HOLD.

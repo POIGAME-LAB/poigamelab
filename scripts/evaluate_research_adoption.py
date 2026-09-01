@@ -29,6 +29,47 @@ def offer_is_strict(offer):
     checks=offer.get('deterministic_checks') or {}
     return offer.get('auto_publish_ready') is True and all(checks.get(k) is True for k in REQUIRED_CHECKS)
 
+def _is_firecrawl_payment_required(error):
+    text=str(error or '').lower()
+    return '402' in text and 'payment required' in text
+
+def optional_firecrawl_only_degradation(result, health):
+    """Allow V29 to distinguish optional Firecrawl billing exhaustion from evidence failure.
+
+    This is deliberately narrow and research-only: every persisted degraded reason
+    must be a source ``search_failed`` whose final Firecrawl search ended with HTTP
+    402, while a public first-party discovery strategy was actually attempted and
+    completed far enough to provide deterministic diagnostics.  It does *not*
+    claim the unavailable source has no offer.  Fatal/partial collector states,
+    non-402 errors, unknown reasons, or missing diagnostics fail closed.
+    """
+    degraded=list(health.get('degradedReasons') or [])
+    if not degraded:
+        return False, []
+    diagnostics=result.get('diagnostics') or []
+    by_source={d.get('source_id'):d for d in diagnostics if isinstance(d,dict) and d.get('source_id')}
+    warnings=[]
+    for reason in degraded:
+        if not isinstance(reason,str) or not reason.endswith(':search_failed'):
+            return False, []
+        sid=reason.rsplit(':',1)[0]
+        d=by_source.get(sid)
+        if not d or d.get('fatalError'):
+            return False, []
+        search=d.get('search')
+        if not isinstance(search,dict) or search.get('ok') is not False or not _is_firecrawl_payment_required(search.get('error')):
+            return False, []
+        if search.get('partialAccepted') is True:
+            return False, []
+        direct_http=d.get('direct_http') or {}
+        indexed=d.get('indexed_official') or {}
+        public_attempted=direct_http.get('attempted') is True or indexed.get('attempted') is True
+        public_completed=(direct_http.get('allListingsFetched') is True or indexed.get('searchCompleted') is True)
+        if not (public_attempted and public_completed):
+            return False, []
+        warnings.append(f'{sid}:optional_firecrawl_402')
+    return True, sorted(set(warnings))
+
 def evaluate(payload,cfg):
     reasons=[]
     result=payload.get('collectorResult') or {}
@@ -38,11 +79,14 @@ def evaluate(payload,cfg):
     sources={o.get('registered_source') for o in strict if o.get('registered_source')}
     min_offers=int(cfg.get('minimumVerifiedOffersForAdoption',2))
     min_sources=int(cfg.get('minimumVerifiedSourcesForAdoption',2))
+    optional_only, coverage_warnings=optional_firecrawl_only_degradation(result,health)
+    evidence_sufficient=len(strict) >= min_offers and len(sources) >= min_sources
+    coverage_override=optional_only and evidence_sufficient
     if payload.get('quarantine') is not True or payload.get('autoPublish') is not False:
         reasons.append('not_quarantined')
-    if health.get('collectionComplete') is not True:
+    if health.get('collectionComplete') is not True and not coverage_override:
         reasons.append('collection_incomplete')
-    if health.get('degradedReasons'):
+    if health.get('degradedReasons') and not coverage_override:
         reasons.append('degraded_collection')
     if len(strict) < min_offers:
         reasons.append('insufficient_strict_offers')
@@ -58,6 +102,8 @@ def evaluate(payload,cfg):
         'strictOfferCount':len(strict),
         'verifiedSourceCount':len(sources),
         'verifiedSources':sorted(sources),
+        'coverageOverrideApplied':coverage_override,
+        'coverageWarnings':coverage_warnings if coverage_override else [],
         'researchedAt':payload.get('researchedAt'),
         'sourceQueue':payload.get('sourceQueue') or {},
     }

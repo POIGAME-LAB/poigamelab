@@ -94,6 +94,6 @@
   "maxExtractionBatchChars": 18000,
   "maxExtractionBatches": 6,
   "extractionStrategy": "bounded long-page chunking; no silent 5000-character tail truncation; same page/chunks remain one source identity",
-  "researchLogicVersion": "V46-terminal-completeness",
+  "researchLogicVersion": "V47-optional-firecrawl-coverage",
   "researchRecheckStrategy": "requeue previously researched promoted games once when researchLogicVersion changes; unchanged logic stays cached"
 }

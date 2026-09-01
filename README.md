@@ -112,3 +112,6 @@ When a registered point site's public listing is login/JavaScript gated, researc
 A source can finish cleanly after its public indexed-official discovery strategy completes even when it finds no verified target. This means only that the configured public discovery attempt completed without a technical error; it does **not** prove that the point site has no matching offer. No negative offer evidence is published. Adoption still requires strict verified offers from at least two independent registered sources, and any failure while directly verifying an eligible official detail URL remains degraded/fail-closed.
 
 - V46: collection completeness now treats earlier stale known-page misses as superseded only after a clean terminal first-party/indexed discovery state; real terminal failures and partial known fast paths remain fail-closed.
+
+### PHASE 3 V47 — optional Firecrawl failure isolation
+For quarantined trend research only, V29 may treat Firecrawl `402 Payment Required` as an optional retrieval-layer warning after public first-party discovery has produced complete diagnostics. This never asserts that an inaccessible source has no offer, never changes Phase 2 production snapshot completeness, and never bypasses the strict-offer / independent-source thresholds. Any fatal, partial, non-402, unknown, or evidence-insufficient state still fails closed.
