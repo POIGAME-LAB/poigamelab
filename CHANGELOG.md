@@ -249,3 +249,9 @@
 - Backfill quality is computed only from target-confirmed directly fetched page text using the existing deterministic span/overlap logic and per-claim source-independence checks. A page from an existing source site cannot make that claim look corroborated during allocation.
 - If all held claims already have a strict page, the remaining bounded fetch budget is still used as balanced exploration so contradiction coverage and prior source breadth are not reduced.
 - Added diagnostics for initial vs backfill fetches, backfill-targeted claims, strict/anchor gains, and final direct-text claim coverage. No support threshold, numeric grounding rule, AI budget, or `publicationWrites: 0` boundary was relaxed.
+
+### V50.2 — bounded Gemini retry + fail-visible extraction
+- Added one bounded retry per game for transient Gemini failures (network/timeouts, 429, retryable 5xx/408, response-format failures, and malformed `claims` payloads). Non-retryable auth/request failures are never retried.
+- V50 status now reports actual AI attempts, retries, transient failure categories, and whether extraction recovered after retry. `apiCalls` counts real attempts so retry cost remains visible.
+- If the final Gemini attempt still fails, V50 writes quarantine/status diagnostics and exits non-zero instead of allowing V51/V52 to treat an AI outage as a legitimate zero-claim run.
+- The Phase 4 workflow uploads quarantine artifacts with `if: always()` so failed extraction diagnostics are still available for inspection. Publication remains disabled (`publicationWrites: 0`).
