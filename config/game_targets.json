@@ -1,13 +1,6 @@
 {
   "games": [
     {
-      "game": "Township",
-      "aliases": [
-        "Township",
-        "タウンシップ"
-      ]
-    },
-    {
       "game": "きのこ伝説",
       "aliases": [
         "きのこ伝説",
@@ -30,6 +23,13 @@
       "partial_fast_path_sources": [
         "warau",
         "coincome"
+      ]
+    },
+    {
+      "game": "Township",
+      "aliases": [
+        "Township",
+        "タウンシップ"
       ]
     },
     {
