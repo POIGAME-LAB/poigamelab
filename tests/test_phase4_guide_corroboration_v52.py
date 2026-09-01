@@ -1,4 +1,5 @@
 import importlib.util
+import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('cor',ROOT/'scripts'/'corroborate_guide_claims.py'); m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
@@ -223,9 +224,9 @@ def test_report_always_exposes_diagnostic_counts_without_publication():
  assert r['publicationWrites']==0
 
 
-def test_v528_logic_version_is_reported_for_live_audit():
+def test_v529_logic_version_is_reported_for_live_audit():
  c,d=docs(); _,r=m.run(c,d,cfg(),'t','g',searcher=search(),fetcher=fetch(),ai=ai_support)
- assert r['logicVersion']=='V52.8'
+ assert r['logicVersion']=='V52.9'
 
 
 def test_orphan_held_decision_is_not_researched_or_resurrected():
@@ -1043,3 +1044,72 @@ def test_v528_adaptive_backfill_can_recover_second_claim_with_same_three_fetch_b
  f=r['diagnosticCounts']
  assert f['directTextStrictClaimHits']==2 and f['backfillStrictGains']==1
  assert r['directFetches']==3 and r['publicationWrites']==0
+
+
+
+def _batch_ai_from_exact_spans(key,model,prompt):
+ held=json.loads(prompt.split('heldClaims:\n',1)[1].split('\npairTasks:\n',1)[0])
+ tasks=json.loads(prompt.split('pairTasks:\n',1)[1].split('\nevidenceSpans:\n',1)[0])
+ spans=json.loads(prompt.split('evidenceSpans:\n',1)[1])
+ claim_text=held[0]['claim']; span_by_id={x['spanId']:x for x in spans}; matches=[]
+ for task in tasks:
+  span_id=next((sid for sid in task['allowedSpanIds'] if claim_text in span_by_id[sid]['text']),task['allowedSpanIds'][0])
+  relation='support' if claim_text in span_by_id[span_id]['text'] else 'unclear'
+  matches.append({'claimId':task['claimId'],'sourceId':task['sourceId'],'spanId':span_id,'relation':relation})
+ return {'matches':matches}
+
+
+def test_v529_run_all_batches_covers_ten_held_claims_as_four_four_two_and_merges_results():
+ phrases=['資源箱は温存する','建設枠を優先する','列車注文を先に進める','畑拡張は後回しにする','ヘリ注文は控える','鉱山道具を貯める','市場枠を増やす','工場棚を増やす','動物園は後回しにする','納屋拡張を優先する']
+ claims=[]; decisions=[]
+ for i,text in enumerate(phrases):
+  claims.append(claim(text,f'https://old{i}.example/original'))
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom.update({'maxCorroborationBatchesPerRun':3,'maxCorroborationSearchesPerClaim':1,'maxCorroborationSearchCallsPerRun':4,'maxCorroborationFetchesPerRun':4,'maxCorroborationAiCallsPerRun':4,'maxCorroborationResultsPerClaim':1})
+ def se(q,k,n):
+  i=next(i for i,text in enumerate(phrases) if text in q)
+  return {'results':[{'url':f'https://new{i}.example/guide','title':f'Game A {phrases[i]}'}]}
+ def fe(url):
+  i=int(url.split('new',1)[1].split('.',1)[0]); return (f'<body>Game A {phrases[i]}</body>',{})
+ merged,r=m.run_all_batches({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=_batch_ai_from_exact_spans)
+ assert r['logicVersion']=='V52.9' and r['batchesExecuted']==3
+ assert [x['inputHeldClaims'] for x in r['batchSummaries']]==[4,4,2]
+ assert r['inputHeldClaims']==10 and r['remainingHeldClaimsUnattempted']==0
+ assert r['searchCalls']==10 and r['directFetches']==10 and r['apiCalls']==10
+ assert r['supportingClaimsAdded']==10 and len(merged['claims'])==20
+ gated=m.gate.evaluate(merged)
+ assert gated['counts']['supportedQuarantine']==10 and gated['counts']['heldSingleSource']==0
+ assert r['publicationWrites']==0 and merged['publicationWrites']==0
+
+
+def test_v529_unresolved_claims_are_not_retried_in_later_batches():
+ phrases=['資源箱は温存する','建設枠を優先する','列車注文を先に進める','畑拡張は後回しにする','ヘリ注文は控える','鉱山道具を貯める']
+ claims=[]; decisions=[]; searched=[]
+ for i,text in enumerate(phrases):
+  claims.append(claim(text,f'https://old{i}.example/original'))
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom.update({'maxCorroborationClaimsPerRun':2,'maxCorroborationBatchesPerRun':3,'maxCorroborationSearchesPerClaim':1,'maxCorroborationSearchCallsPerRun':2,'maxCorroborationFetchesPerRun':2,'maxCorroborationAiCallsPerRun':2,'maxCorroborationResultsPerClaim':1})
+ def se(q,k,n):
+  i=next(i for i,text in enumerate(phrases) if text in q); searched.append(i)
+  return {'results':[{'url':f'https://new{i}.example/guide','title':f'Game A {phrases[i]}'}]}
+ def fe(url): return ('<body>Game A 一般的な初心者向け情報だけです</body>',{})
+ merged,r=m.run_all_batches({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ assert r['batchesExecuted']==3 and [x['inputHeldClaims'] for x in r['batchSummaries']]==[2,2,2]
+ assert len(searched)==6 and len(set(searched))==6 and sorted(searched)==list(range(6))
+ assert r['inputHeldClaims']==6 and r['remainingHeldClaimsUnattempted']==0
+ assert len(merged['claims'])==6 and r['supportingClaimsAdded']==0
+
+
+def test_v529_batch_coordinator_stops_at_hard_three_batch_cap_and_reports_remaining():
+ labels=list('甲乙丙丁戊己庚辛壬癸子丑寅卯'); phrases=[f'固有攻略項目{x}を実行する' for x in labels]; claims=[]; decisions=[]
+ for i,text in enumerate(phrases):
+  claims.append(claim(text,f'https://old{i}.example/original'))
+  decisions.append({'game':'Game A','category':'tip','claim':text,'status':'held_single_source','independentSources':[f'old{i}.example']})
+ custom=cfg(); custom.update({'maxCorroborationClaimsPerRun':4,'maxCorroborationBatchesPerRun':99,'maxCorroborationSearchesPerClaim':1,'maxCorroborationSearchCallsPerRun':4,'maxCorroborationFetchesPerRun':4,'maxCorroborationAiCallsPerRun':4,'maxCorroborationResultsPerClaim':1})
+ def se(q,k,n):
+  i=next(i for i,text in enumerate(phrases) if text in q); return {'results':[{'url':f'https://new{i}.example/guide','title':f'Game A {phrases[i]}'}]}
+ def fe(url): return ('<body>Game A 一般的な情報</body>',{})
+ _,r=m.run_all_batches({'claims':claims},{'decisions':decisions},custom,'t','g',searcher=se,fetcher=fe,ai=lambda *a:{'matches':[]})
+ assert r['maxBatches']==3 and r['batchesExecuted']==3
+ assert r['inputHeldClaims']==12 and r['remainingHeldClaimsUnattempted']==2
+ assert r['searchCalls']==12 and r['directFetches']==12 and r['apiCalls']==0

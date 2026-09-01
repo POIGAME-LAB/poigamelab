@@ -21,5 +21,6 @@
   "maxCorroborationFetchesPerRun": 12,
   "maxCorroborationAiCallsPerRun": 8,
   "maxCorroborationSearchesPerClaim": 2,
-  "maxCorroborationSearchCallsPerRun": 8
+  "maxCorroborationSearchCallsPerRun": 8,
+  "maxCorroborationBatchesPerRun": 3
 }

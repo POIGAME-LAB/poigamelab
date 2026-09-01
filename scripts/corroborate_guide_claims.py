@@ -4,12 +4,13 @@
 Only V51 held_single_source claims are searched. Tavily discovers URLs; every
 candidate is fetched directly, target-confirmed, and source-site independent.
 Python creates bounded exact-source evidence spans; Gemini may only select those
-spans. V52.8 keeps V52.7's bounded two-query discovery but allocates the fixed direct-fetch
-budget adaptively: every held claim gets an initial fair fetch opportunity, then
-remaining fetches backfill claims that still lack a strict direct-text match. Search
-metadata only orders URLs; backfill decisions use directly fetched page text. Search
-snippets never become evidence, and all existing strict/anchored-paraphrase, numeric,
-provenance, AI-budget, and publication gates remain deterministic/fail-closed.
+spans. V52.9 keeps V52.8's adaptive direct-text allocation for each bounded batch
+and adds an in-run batch coordinator. A held claim is attempted at most once per
+workflow execution, so a 4-claim batch limit can safely cover later claims without
+restarting from the first four. Batch results are re-gated and merged before the next
+batch. Search snippets never become evidence, and all existing strict/anchored-
+paraphrase, numeric, provenance, per-batch AI-budget, and publication gates remain
+deterministic/fail-closed.
 """
 from __future__ import annotations
 import json, os, re, sys, unicodedata
@@ -28,7 +29,7 @@ CONFIG=ROOT/'config'/'guide_research.json'
 OUT=ROOT/'data'/'guide_claims_corroborated.json'
 REPORT=ROOT/'data'/'guide_corroboration.json'
 STATUS=ROOT/'data'/'guide_corroboration_status.json'
-LOGIC_VERSION='V52.8'
+LOGIC_VERSION='V52.9'
 GENERIC_BIGRAMS={
     '攻略','達成','優先','必要','場合','条件','報酬','日数','効率','序盤','方法','目指','可能',
     'レベ','ベル','ゲー','ーム','する','した','して','ます','でき','ポイ','イン','ント',
@@ -91,6 +92,12 @@ def anchor_ok(claim,quote):
     # Generic guide vocabulary alone is not enough. At least one deterministic
     # claim-derived content anchor must literally occur in the exact source span.
     return bool(anchor_matches(claim,quote))
+
+
+def claim_identity(row):
+    """Stable in-run identity for one V51 decision/claim group."""
+    if not isinstance(row,dict): return ('','','')
+    return (str(row.get('game') or '').strip(),str(row.get('category') or ''),gate.text_key(row.get('claim')))
 
 
 def claim_windows(claim_id, source_id, claim, text, window_chars=240, step_chars=120, max_spans=4):
@@ -344,7 +351,7 @@ def apply_semantic_review(response, candidates):
     return confirmed,rejected
 
 
-def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=None,searcher=collector.tavily_search,fetcher=collector.direct_fetch,ai=extractor.live_gemini):
+def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=None,searcher=collector.tavily_search,fetcher=collector.direct_fetch,ai=extractor.live_gemini,skip_claim_keys=None):
     claims_doc=claims_doc or json.loads(CLAIMS.read_text(encoding='utf-8'))
     decisions_doc=decisions_doc or json.loads(DECISIONS.read_text(encoding='utf-8'))
     cfg=cfg or json.loads(CONFIG.read_text(encoding='utf-8'))
@@ -355,8 +362,11 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
     base=[x for x in (claims_doc.get('claims') or []) if gate.valid_claim(x)]
     all_held=[d for d in (decisions_doc.get('decisions') or []) if isinstance(d,dict) and d.get('status')=='held_single_source']
     base_keys={(x['game'],x['category'],gate.text_key(x['claim'])) for x in base}
-    held=[d for d in all_held if (d.get('game'),d.get('category'),gate.text_key(d.get('claim'))) in base_keys]
-    orphan_held=len(all_held)-len(held); total_held=len(all_held); eligible_held=len(held)
+    eligible=[d for d in all_held if claim_identity(d) in base_keys]
+    orphan_held=len(all_held)-len(eligible); total_held=len(all_held); eligible_held=len(eligible)
+    skipped=set(skip_claim_keys or ())
+    held=[d for d in eligible if claim_identity(d) not in skipped]
+    skipped_held=eligible_held-len(held)
     max_claims=max(1,min(6,int(cfg.get('maxCorroborationClaimsPerRun',4))))
     max_results=max(1,min(6,int(cfg.get('maxCorroborationResultsPerClaim',4))))
     max_fetches=max(1,min(16,int(cfg.get('maxCorroborationFetchesPerRun',12))))
@@ -649,14 +659,80 @@ def run(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=N
         funnel['candidatePagesUnreferencedByAI']+=max(0,len(eligible_source_ids)-(len(referenced_sources & eligible_source_ids)))
     unique={(x['game'],x['category'],gate.text_key(x['claim']),x['url']):x for x in base+appended}
     merged=[unique[k] for k in sorted(unique)]
-    report={'phase':'PHASE4_GUIDE_CORROBORATION_V52','logicVersion':LOGIC_VERSION,'generatedAt':now_iso(),'totalHeldClaims':total_held,'eligibleHeldClaims':eligible_held,'inputHeldClaims':len(held),'inputClaims':len(base),'outputClaims':len(merged),'searchCalls':search_calls,'directFetches':fetch_calls,'apiCalls':api_calls,'candidatePages':len(candidates),'validatedMatches':len(matches),'supportingClaimsAdded':len(appended),'contradictionsFound':len(contradictions),'rejected':rejected,'diagnosticCounts':funnel,'publicationWrites':0,'diagnostics':diagnostics,'contradictions':contradictions}
+    report={'phase':'PHASE4_GUIDE_CORROBORATION_V52','logicVersion':LOGIC_VERSION,'generatedAt':now_iso(),'totalHeldClaims':total_held,'eligibleHeldClaims':eligible_held,'skippedHeldClaims':skipped_held,'inputHeldClaims':len(held),'inputClaims':len(base),'outputClaims':len(merged),'searchCalls':search_calls,'directFetches':fetch_calls,'apiCalls':api_calls,'candidatePages':len(candidates),'validatedMatches':len(matches),'supportingClaimsAdded':len(appended),'contradictionsFound':len(contradictions),'rejected':rejected,'diagnosticCounts':funnel,'publicationWrites':0,'diagnostics':diagnostics,'contradictions':contradictions}
     return {'phase':'PHASE4_GUIDE_CLAIMS_CORROBORATED_V52','generatedAt':report['generatedAt'],'publicationWrites':0,'claims':merged},report
+
+
+def run_all_batches(claims_doc=None,decisions_doc=None,cfg=None,tavily_key=None,gemini_key=None,searcher=collector.tavily_search,fetcher=collector.direct_fetch,ai=extractor.live_gemini):
+    """Attempt successive held-claim batches once each and merge them in one run."""
+    claims_doc=claims_doc or json.loads(CLAIMS.read_text(encoding='utf-8'))
+    decisions_doc=decisions_doc or json.loads(DECISIONS.read_text(encoding='utf-8'))
+    cfg=cfg or json.loads(CONFIG.read_text(encoding='utf-8'))
+    tavily_key=tavily_key if tavily_key is not None else os.getenv('TAVILY_API_KEY','')
+    gemini_key=gemini_key if gemini_key is not None else os.getenv('GEMINI_API_KEY','')
+    if not tavily_key: raise RuntimeError('TAVILY_API_KEY unavailable')
+    if not gemini_key: raise RuntimeError('GEMINI_API_KEY unavailable')
+
+    initial_base=[x for x in (claims_doc.get('claims') or []) if gate.valid_claim(x)]
+    initial_all_held=[d for d in (decisions_doc.get('decisions') or []) if isinstance(d,dict) and d.get('status')=='held_single_source']
+    initial_base_keys={(x['game'],x['category'],gate.text_key(x['claim'])) for x in initial_base}
+    initial_eligible=[d for d in initial_all_held if claim_identity(d) in initial_base_keys]
+    orphan_held=len(initial_all_held)-len(initial_eligible)
+    batch_size=max(1,min(6,int(cfg.get('maxCorroborationClaimsPerRun',4))))
+    max_batches=max(1,min(3,int(cfg.get('maxCorroborationBatchesPerRun',3))))
+
+    current_claims={'phase':claims_doc.get('phase'),'generatedAt':claims_doc.get('generatedAt'),'publicationWrites':0,'claims':list(initial_base)}
+    current_decisions=decisions_doc
+    attempted=set(); batch_summaries=[]; aggregate_rejected={}; aggregate_funnel={}; diagnostics=[]; contradictions=[]
+    totals={'searchCalls':0,'directFetches':0,'apiCalls':0,'candidatePages':0,'validatedMatches':0,'supportingClaimsAdded':0,'contradictionsFound':0}
+
+    for batch_index in range(1,max_batches+1):
+        live_held=[d for d in (current_decisions.get('decisions') or []) if isinstance(d,dict) and d.get('status')=='held_single_source']
+        current_keys={(x['game'],x['category'],gate.text_key(x['claim'])) for x in (current_claims.get('claims') or []) if gate.valid_claim(x)}
+        remaining=[d for d in live_held if claim_identity(d) in current_keys and claim_identity(d) not in attempted]
+        selected=remaining[:batch_size]
+        if not selected: break
+        selected_keys={claim_identity(d) for d in selected}
+        before_count=len(current_claims.get('claims') or [])
+        merged,batch_report=run(current_claims,current_decisions,cfg,tavily_key,gemini_key,searcher=searcher,fetcher=fetcher,ai=ai,skip_claim_keys=attempted)
+        attempted.update(selected_keys)
+        current_claims=merged
+        current_decisions=gate.evaluate(current_claims)
+        batch_summaries.append({
+            'batch':batch_index,'inputHeldClaims':batch_report['inputHeldClaims'],'inputClaims':before_count,
+            'outputClaims':len(current_claims.get('claims') or []),'searchCalls':batch_report['searchCalls'],
+            'directFetches':batch_report['directFetches'],'apiCalls':batch_report['apiCalls'],
+            'supportingClaimsAdded':batch_report['supportingClaimsAdded'],'contradictionsFound':batch_report['contradictionsFound'],
+        })
+        for key in totals: totals[key]+=int(batch_report.get(key,0) or 0)
+        for key,value in (batch_report.get('diagnosticCounts') or {}).items():
+            if isinstance(value,(int,float)): aggregate_funnel[key]=aggregate_funnel.get(key,0)+value
+        for key,value in (batch_report.get('rejected') or {}).items(): aggregate_rejected[key]=aggregate_rejected.get(key,0)+value
+        for row in batch_report.get('diagnostics') or []:
+            if isinstance(row,dict): diagnostics.append({'batch':batch_index,**row})
+        for row in batch_report.get('contradictions') or []:
+            if isinstance(row,dict): contradictions.append({'batch':batch_index,**row})
+
+    final_held=[d for d in (current_decisions.get('decisions') or []) if isinstance(d,dict) and d.get('status')=='held_single_source']
+    final_keys={(x['game'],x['category'],gate.text_key(x['claim'])) for x in (current_claims.get('claims') or []) if gate.valid_claim(x)}
+    remaining_unattempted=sum(1 for d in final_held if claim_identity(d) in final_keys and claim_identity(d) not in attempted)
+    report={
+        'phase':'PHASE4_GUIDE_CORROBORATION_V52','logicVersion':LOGIC_VERSION,'generatedAt':now_iso(),
+        'totalHeldClaims':len(initial_all_held),'eligibleHeldClaims':len(initial_eligible),'inputHeldClaims':len(attempted),
+        'inputClaims':len(initial_base),'outputClaims':len(current_claims.get('claims') or []),**totals,
+        'batchesExecuted':len(batch_summaries),'maxBatches':max_batches,'batchSize':batch_size,
+        'remainingHeldClaimsUnattempted':remaining_unattempted,'orphanHeldClaims':orphan_held,
+        'rejected':aggregate_rejected,'diagnosticCounts':aggregate_funnel,'publicationWrites':0,
+        'diagnostics':diagnostics,'contradictions':contradictions,'batchSummaries':batch_summaries,
+    }
+    current_claims.update({'phase':'PHASE4_GUIDE_CLAIMS_CORROBORATED_V52','generatedAt':report['generatedAt'],'publicationWrites':0})
+    return current_claims,report
 
 
 def main():
     try:
-        merged,report=run(); OUT.write_text(json.dumps(merged,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-        status={k:report[k] for k in ['phase','logicVersion','totalHeldClaims','eligibleHeldClaims','inputHeldClaims','inputClaims','outputClaims','searchCalls','directFetches','apiCalls','candidatePages','validatedMatches','supportingClaimsAdded','contradictionsFound','publicationWrites']}; status['diagnosticCounts']=report['diagnosticCounts']; status['rejected']=report['rejected']; status.update({'success':True,'lastRun':report['generatedAt']}); STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False))
+        merged,report=run_all_batches(); OUT.write_text(json.dumps(merged,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        status={k:report[k] for k in ['phase','logicVersion','totalHeldClaims','eligibleHeldClaims','inputHeldClaims','inputClaims','outputClaims','searchCalls','directFetches','apiCalls','candidatePages','validatedMatches','supportingClaimsAdded','contradictionsFound','batchesExecuted','maxBatches','batchSize','remainingHeldClaimsUnattempted','publicationWrites']}; status['diagnosticCounts']=report['diagnosticCounts']; status['rejected']=report['rejected']; status.update({'success':True,'lastRun':report['generatedAt']}); STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False))
     except Exception as e:
         status={'phase':'PHASE4_GUIDE_CORROBORATION_V52','success':False,'error':collector.safe_error(e),'publicationWrites':0,'lastRun':now_iso()}; STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False)); raise
 if __name__=='__main__': main()

@@ -255,3 +255,10 @@
 - V50 status now reports actual AI attempts, retries, transient failure categories, and whether extraction recovered after retry. `apiCalls` counts real attempts so retry cost remains visible.
 - If the final Gemini attempt still fails, V50 writes quarantine/status diagnostics and exits non-zero instead of allowing V51/V52 to treat an AI outage as a legitimate zero-claim run.
 - The Phase 4 workflow uploads quarantine artifacts with `if: always()` so failed extraction diagnostics are still available for inspection. Publication remains disabled (`publicationWrites: 0`).
+
+### V52.9 — in-run held-claim batch completion
+- Added a bounded coordinator above the unchanged V52.8 single-batch engine so one manual Phase 4 workflow can process later held claims instead of restarting from the first batch on every run.
+- Each held claim identity is attempted at most once per workflow execution. After every batch, the merged quarantine claims are deterministically re-evaluated by the V51 gate before the next unattempted held batch is selected.
+- Production defaults allow up to three batches per workflow. Existing per-batch limits remain intact, giving hard workflow ceilings of 24 corroboration searches, 48 direct fetch attempts, and 24 Gemini calls; with the current default 12-fetch batch cap the normal direct-fetch ceiling is 36.
+- Status now reports batch count, batch size, total unique held claims attempted, and any held claims left unattempted after the bounded batch cap. All corroboration remains quarantine-only with `publicationWrites: 0`.
+- Added regressions for a 10-claim 4/4/2 completion, unresolved-claim no-retry behavior, and the hard three-batch stop.
