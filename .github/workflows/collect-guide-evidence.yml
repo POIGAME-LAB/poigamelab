@@ -24,8 +24,10 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/extract_guide_claims.py
+      - name: Evaluate guide claim support and conflicts (quarantine only)
+        run: python scripts/evaluate_guide_claims.py
       - name: Verify Phase 4 quarantine contracts
-        run: python -m pytest -q tests/test_phase4_guide_evidence_v49.py tests/test_phase4_guide_claims_v50.py
+        run: python -m pytest -q tests/test_phase4_guide_evidence_v49.py tests/test_phase4_guide_claims_v50.py tests/test_phase4_guide_claim_gate_v51.py
       - name: Upload quarantined evidence artifact
         uses: actions/upload-artifact@v4
         with:
@@ -35,4 +37,6 @@ jobs:
             data/guide_research_status.json
             data/guide_claims.json
             data/guide_claim_status.json
+            data/guide_claim_decisions.json
+            data/guide_claim_decision_status.json
           retention-days: 7

@@ -184,3 +184,10 @@
 - AI usage is bounded to one call per game (up to eight directly re-fetched evidence pages), with fail-closed behavior on fetch/API failures.
 - Claim output remains quarantined and cannot write public game/site data.
 - Phase 4 workflow now tests both V49 collection and V50 claim contracts and uploads claim artifacts for inspection.
+
+## V51 — Deterministic guide claim support/conflict gate
+- Added an API-free gate after V50 that separates evidence-bound claims into supported quarantine, single-source hold, or numeric-conflict hold.
+- Community claims need corroboration from at least two independent source sites; duplicate pages and subdomains of the same site do not inflate support.
+- Official-source claims may satisfy support alone, but deterministic same-template numeric conflicts override support and hold every conflicting variant.
+- Paraphrases are intentionally not fuzzy-merged, avoiding false corroboration from merely similar wording.
+- All V51 outputs remain quarantine-only with zero publication eligibility and zero production writes.
