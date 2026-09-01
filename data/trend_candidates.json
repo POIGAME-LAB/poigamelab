@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T01:34:12+00:00",
+  "generatedAt": "2026-09-01T01:54:12+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "summary": {
     "searchResults": 4,
-    "candidates": 51,
-    "newReviewCandidates": 48,
+    "candidates": 53,
+    "newReviewCandidates": 50,
     "failedSources": 2
   },
   "diagnostics": [
@@ -72,7 +72,7 @@
       "knownGame": false,
       "score": 75,
       "confidence": 80,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 2,
       "sourceCount": 2,
       "sourceTypeCount": 1,
@@ -93,6 +93,32 @@
       ]
     },
     {
+      "game": "Marble Sort!",
+      "aliases": [],
+      "knownGame": false,
+      "score": 50,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 2,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        },
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
       "game": "ミステリータウン:マージゲーム",
       "aliases": [
         "ミステリータウン:マージゲーム - Mystery Town"
@@ -100,7 +126,33 @@
       "knownGame": false,
       "score": 50,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
+      "mentionCount": 2,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
+        },
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
+      "game": "ラストアサイラム:プレイグ",
+      "aliases": [],
+      "knownGame": false,
+      "score": 50,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 2,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -126,7 +178,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -149,7 +201,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -169,7 +221,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -189,7 +241,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -209,7 +261,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -229,7 +281,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -249,27 +301,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "Marble Sort!",
-      "aliases": [],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -286,7 +318,8 @@
     {
       "game": "Merge Peko",
       "aliases": [
-        "Android_Merge Peko<StepUp>"
+        "Android_Merge Peko<StepUp>",
+        "Merge Peko"
       ],
       "knownGame": false,
       "score": 45,
@@ -309,13 +342,12 @@
       "game": "Merge Sweets",
       "aliases": [
         "Merge Sweets",
-        "Merge Sweets/マージスイーツ",
         "マージスイーツ"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -330,6 +362,26 @@
       ]
     },
     {
+      "game": "Pococha",
+      "aliases": [],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "warau-new",
+          "sourceType": "point_site",
+          "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+          "url": "https://www.warau.jp/contents/point/category?point_group=2"
+        }
+      ]
+    },
+    {
       "game": "Screw Cat",
       "aliases": [
         "Screw Cat:可愛いネコのスクリューパズルゲーム"
@@ -337,7 +389,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -352,14 +404,12 @@
       ]
     },
     {
-      "game": "Slot Mate",
-      "aliases": [
-        "Slot Mate(スロットメイト)- ベガススロットカジノ"
-      ],
+      "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -379,7 +429,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -399,7 +449,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -419,7 +469,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -437,12 +487,35 @@
       "game": "Supreme King",
       "aliases": [
         "Supreme King",
-        "Supreme King(スプリームキング)"
+        "スプリームキング"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
+      "mentionCount": 1,
+      "sourceCount": 1,
+      "sourceTypeCount": 1,
+      "status": "要確認",
+      "evidence": [
+        {
+          "sourceId": "moppy-official-games",
+          "sourceType": "point_site",
+          "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
+          "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+        }
+      ]
+    },
+    {
+      "game": "Tap & Earn",
+      "aliases": [
+        "Tap & Earn",
+        "タップアンドアーン"
+      ],
+      "knownGame": false,
+      "score": 45,
+      "confidence": 45,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -462,7 +535,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -482,7 +555,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -497,14 +570,12 @@
       ]
     },
     {
-      "game": "Triple Tile",
-      "aliases": [
-        "Triple Tile - トリプルタイル"
-      ],
+      "game": "Triple Tile - トリプルタイル",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -524,7 +595,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -546,7 +617,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -566,7 +637,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -586,7 +657,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -606,7 +677,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -626,7 +697,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -648,7 +719,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -668,7 +739,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -688,7 +759,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -708,7 +779,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -728,7 +799,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -750,7 +821,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -770,7 +841,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -790,7 +861,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -812,7 +883,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -832,7 +903,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -854,7 +925,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -874,27 +945,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
-      "mentionCount": 1,
-      "sourceCount": 1,
-      "sourceTypeCount": 1,
-      "status": "要確認",
-      "evidence": [
-        {
-          "sourceId": "warau-new",
-          "sourceType": "point_site",
-          "title": "アプリゲーム一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-          "url": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new"
-        }
-      ]
-    },
-    {
-      "game": "ラストアサイラム:プレイグ",
-      "aliases": [],
-      "knownGame": false,
-      "score": 45,
-      "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -916,7 +967,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -931,14 +982,12 @@
       ]
     },
     {
-      "game": "ロックンキャッシュカジノ",
-      "aliases": [
-        "ロックンキャッシュカジノ-スロットゲーム"
-      ],
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "aliases": [],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -960,7 +1009,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -980,7 +1029,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1002,7 +1051,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1017,15 +1066,15 @@
       ]
     },
     {
-      "game": "放置少女〜百花繚乱の萌姫たち〜",
+      "game": "放置少女",
       "aliases": [
         "放置少女",
-        "放置少女 〜百花繚乱の萌姫たち〜"
+        "放置少女〜百花繚乱の萌姫たち〜"
       ],
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1045,7 +1094,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1067,7 +1116,7 @@
       "knownGame": false,
       "score": 45,
       "confidence": 45,
-      "modelConfidence": 1,
+      "modelConfidence": 0,
       "mentionCount": 1,
       "sourceCount": 1,
       "sourceTypeCount": 1,
@@ -1105,9 +1154,7 @@
     },
     {
       "game": "キノコ伝説:勇者と魔法のランプ",
-      "aliases": [
-        "きのこ伝説"
-      ],
+      "aliases": [],
       "knownGame": true,
       "score": 45,
       "confidence": 45,

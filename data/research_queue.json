@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-01T01:34:28+00:00",
-  "sourceGeneratedAt": "2026-09-01T01:34:12+00:00",
+  "generatedAt": "2026-09-01T01:54:28+00:00",
+  "sourceGeneratedAt": "2026-09-01T01:54:12+00:00",
   "candidateOnly": true,
   "autoPublish": false,
   "autoAddToGameTargets": false,
   "apiCalls": 0,
-  "researchLogicVersion": "V41-mobile-direct",
+  "researchLogicVersion": "V44-indexed-official",
   "summary": {
-    "trendCandidates": 51,
+    "trendCandidates": 53,
     "collectorReady": 1,
-    "rejected": 50
+    "rejected": 52
   },
   "items": [
     {
@@ -21,24 +21,23 @@
       "status": "research_complete",
       "collectorReady": false,
       "candidateFingerprint": "b979da78e6dc55e0",
-      "researchLogicVersion": "V41-mobile-direct",
-      "lastResearchLogicVersion": "V41-mobile-direct",
+      "researchLogicVersion": "V44-indexed-official",
+      "lastResearchLogicVersion": "V44-indexed-official",
       "recheckReason": null,
-      "lastResearchAt": "2026-09-01T01:34:38+00:00",
+      "lastResearchAt": "2026-09-01T01:54:44+00:00",
       "researchSummary": {
         "game": "ホワイトアウト・サバイバル",
         "returncode": 0,
         "resultSaved": true,
-        "publishableCount": 2,
+        "publishableCount": 3,
         "collectionComplete": false,
         "degradedReasons": [
           "chobirich:search_failed",
-          "coincome:search_failed",
-          "moppy:search_failed"
+          "coincome:search_failed"
         ]
       },
       "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-      "lastConfirmedAt": "2026-09-01T01:34:28+00:00",
+      "lastConfirmedAt": "2026-09-01T01:54:28+00:00",
       "score": 75,
       "confidence": 80,
       "sourceCount": 2,
@@ -61,7 +60,23 @@
   ],
   "rejected": [
     {
+      "game": "Marble Sort!",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "ミステリータウン:マージゲーム",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "game": "ラストアサイラム:プレイグ",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -125,14 +140,6 @@
       ]
     },
     {
-      "game": "Marble Sort!",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
       "game": "Merge Peko",
       "reasons": [
         "score_below_threshold",
@@ -149,6 +156,14 @@
       ]
     },
     {
+      "game": "Pococha",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "Screw Cat",
       "reasons": [
         "score_below_threshold",
@@ -157,7 +172,7 @@
       ]
     },
     {
-      "game": "Slot Mate",
+      "game": "Slot Mate(スロットメイト)- ベガススロットカジノ",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -197,6 +212,14 @@
       ]
     },
     {
+      "game": "Tap & Earn",
+      "reasons": [
+        "score_below_threshold",
+        "confidence_below_threshold",
+        "insufficient_independent_sources"
+      ]
+    },
+    {
       "game": "The Tower",
       "reasons": [
         "score_below_threshold",
@@ -213,7 +236,7 @@
       ]
     },
     {
-      "game": "Triple Tile",
+      "game": "Triple Tile - トリプルタイル",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -365,14 +388,6 @@
       ]
     },
     {
-      "game": "ラストアサイラム:プレイグ",
-      "reasons": [
-        "score_below_threshold",
-        "confidence_below_threshold",
-        "insufficient_independent_sources"
-      ]
-    },
-    {
       "game": "ロイヤルマッチ",
       "reasons": [
         "score_below_threshold",
@@ -381,7 +396,7 @@
       ]
     },
     {
-      "game": "ロックンキャッシュカジノ",
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
@@ -413,7 +428,7 @@
       ]
     },
     {
-      "game": "放置少女〜百花繚乱の萌姫たち〜",
+      "game": "放置少女",
       "reasons": [
         "score_below_threshold",
         "confidence_below_threshold",
