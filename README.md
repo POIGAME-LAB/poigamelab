@@ -87,3 +87,6 @@ The quarantined research collector now mirrors the discovery layer's resilience 
 
 ### V39 card-context direct research
 Official point-site listings often make an image or the entire card clickable while the game title is rendered in a sibling element. V39 adds a dependency-free bounded HTML card-context matcher for those layouts. It only considers registered first-party URLs with known detail-like shapes, refuses to climb past an unrelated branching card/listing boundary, and then re-fetches the candidate detail page to confirm the target name. This improves direct Warau-style extraction without weakening quarantine, exact-offer verification, source independence, or V29 adoption requirements.
+
+### V40 Moppy identity hardening and adoption diagnostics
+Moppy currently uses a public `site_id` query selector on ad detail pages. V40 treats that selector as stable offer identity while continuing to remove tracking/session parameters, so separate platform offers cannot collapse before exact-offer verification or publishing. No current game-specific Moppy ID is embedded in production logic. The V29 adoption step also emits concise HOLD/READY reason lines with strict-offer and independent-source counts; thresholds remain unchanged.

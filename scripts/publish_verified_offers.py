@@ -22,7 +22,7 @@ FIELDS=[
     'offerKey','game','site','provider','reward','condition','platform','type',
     'deadline','updatedAt','url','sourceUrl','verified'
 ]
-KEEP_ID_PARAMS={'point_id','s_id','itemid','campaign_id','campaignid','id'}
+KEEP_ID_PARAMS={'point_id','site_id','s_id','itemid','campaign_id','campaignid','id'}
 
 def safe_identity_url(url:str)->str:
     """Stable public identity, dropping tracking/session parameters."""

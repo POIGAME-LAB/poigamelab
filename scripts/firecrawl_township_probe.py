@@ -248,7 +248,7 @@ def _detail_like_first_party_url(url, source):
     configured = [str(x).lower() for x in (source.get("direct_detail_url_hints") or []) if x]
     if configured and any(h in (path + "?" + query) for h in configured):
         return True
-    if re.search(r"(?:^|[?&])(?:point_id|s_id|itemid|campaign_id|campaignid|id)=", query):
+    if re.search(r"(?:^|[?&])(?:point_id|site_id|s_id|itemid|campaign_id|campaignid|id)=", query):
         return True
     generic_hints = ("pointentrance", "/ad_details/", "/campaigns/details/", "/ad/detail", "/campaign/detail")
     return any(h in path for h in generic_hints)
@@ -689,7 +689,7 @@ def offer_identity_url(url):
     try:
         from urllib.parse import parse_qsl, urlencode, urlunparse
         u = urlparse(url)
-        keep = {"point_id", "s_id", "itemid", "campaign_id", "campaignid", "id"}
+        keep = {"point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "id"}
         params = [(k, v) for k, v in parse_qsl(u.query, keep_blank_values=True) if k.lower() in keep]
         query = urlencode(sorted(params))
         return urlunparse((u.scheme.lower(), u.netloc.lower(), u.path, "", query, ""))

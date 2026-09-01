@@ -76,5 +76,14 @@ def run(results_dir=RESULTS,output=OUT,config=CONFIG):
     atomic_json(Path(output),out); return out
 
 def main():
-    out=run(); print(json.dumps(out['summary'],ensure_ascii=False)); return 0
+    out=run()
+    print(json.dumps(out['summary'],ensure_ascii=False))
+    for item in out.get('items',[]):
+        if item.get('eligible'):
+            print(f"[adoption] {item.get('game')}: READY strict={item.get('strictOfferCount',0)} sources={item.get('verifiedSourceCount',0)}")
+        else:
+            reasons=','.join(item.get('reasons') or []) or 'unknown'
+            sources=','.join(item.get('verifiedSources') or []) or '-'
+            print(f"[adoption] {item.get('game')}: HOLD reasons={reasons} strict={item.get('strictOfferCount',0)} sources={item.get('verifiedSourceCount',0)} [{sources}]")
+    return 0
 if __name__=='__main__': raise SystemExit(main())

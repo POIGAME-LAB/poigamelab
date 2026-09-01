@@ -118,3 +118,9 @@
 - Card-context discovery accepts only registered first-party detail-shaped URLs and stops at unrelated branching card/listing boundaries, preventing a page-level target mention from blessing neighbouring game links.
 - Every discovered detail page is still fetched and must independently confirm the target before becoming verifier evidence; V20 exact-offer identity and V29 multi-source adoption gates are unchanged.
 - Added explicit per-source official detail URL hints for Warau, Moppy, Chobirich, and COINCOME while preserving bounded direct-detail fetch limits and Firecrawl fail-soft fallback.
+
+## V40 — Moppy stable identity + adoption hold diagnostics
+- Added Moppy's current public `site_id` selector to the stable offer-identity allowlist used by both research verification and publishing; tracking parameters remain stripped.
+- Distinct Moppy iOS/Android detail IDs can no longer collapse to the same path-only identity, preserving the V20 exact same-offer invariant for a future second-source adoption.
+- Moppy `site_id` is recognized as a detail-selector shape without hardcoding any current game-specific offer ID or reward.
+- V29 adoption logs now print bounded API-free HOLD/READY diagnostics with exact reasons, strict-offer count, and verified source names, so a safe hold can be diagnosed from one workflow run without exposing offer URLs.
