@@ -365,6 +365,59 @@ def target_adjacent_first_party_links(raw_html, base_url, source, aliases, limit
     return out
 
 
+def tavily_official_detail_discovery(source, aliases, api_key=None, fetcher=None, searcher=None, limit=4):
+    """Discover indexed first-party offer detail URLs, then verify them directly.
+
+    Search results are discovery hints only: titles/snippets never become evidence.
+    Every URL must be registered first-party, detail-shaped, and its official page
+    must independently contain the target before a candidate is returned.
+    """
+    api_key = api_key if api_key is not None else os.getenv("TAVILY_API_KEY", "")
+    if fetcher is None:
+        fetcher = direct_http_get
+    diag = {"attempted": bool(api_key), "resultUrls": 0, "eligibleUrls": 0, "confirmed": 0, "details": []}
+    if not api_key:
+        diag["skipped"] = "TAVILY_API_KEY unavailable"
+        return [], diag
+    target = CURRENT_TARGET.get("game") or (aliases[0] if aliases else "")
+    domains = [d for d in (source.get("search_domains") or []) if d]
+    site = domains[-1] if domains else (urlparse(source.get("start_url") or "").hostname or "")
+    query = f'"{target}" site:{site} ad detail'
+    try:
+        if searcher is None:
+            payload = {"api_key": api_key, "query": query, "search_depth": "basic", "max_results": 8, "include_answer": False, "include_raw_content": False}
+            response = post_json("https://api.tavily.com/search", payload, timeout=45)
+        else:
+            response = searcher(query)
+        results = response.get("results") or []
+    except Exception as e:
+        diag["error"] = str(e)[:240]
+        return [], diag
+    diag["resultUrls"] = len(results)
+    candidates=[]; seen=set()
+    for item in results:
+        url=str((item or {}).get("url") or "").strip()
+        if not url or not registered_host(url, source, {"offerwall_domains_discovered": []}) or not _detail_like_first_party_url(url, source):
+            continue
+        identity=offer_identity_url(url)
+        if identity in seen:
+            continue
+        seen.add(identity); diag["eligibleUrls"] += 1
+        if len(seen) > max(1, min(6, int(limit or 4))):
+            break
+        try:
+            raw, meta = fetcher(url, source)
+            visible=html_to_visible_text(raw); hit=text_has_target(visible, aliases)
+            diag["details"].append({"identityUrl": identity, "ok": True, "targetFound": hit, **meta})
+            if not hit:
+                continue
+            candidates.append(compact_candidate(source, "indexed_official_detail", url, title=html_title(raw), markdown=visible, links=[], metadata={"targetFound": True, "retrieval": "tavily_discovery_direct_verify"}))
+            diag["confirmed"] += 1
+        except Exception as e:
+            diag["details"].append({"identityUrl": identity, "ok": False, "error": str(e)[:240]})
+    return candidates, diag
+
+
 def direct_first_party_collect(source, aliases, cfg, fetcher=None):
     """V38 direct-first research path for stable official listing pages.
 
@@ -950,7 +1003,7 @@ def collect_firecrawl(key, cfg):
         local_candidates = []
         diag = {
             "source_id": source["id"], "source_name": source["name"],
-            "mode": "discovery", "direct": None, "direct_http": None, "offerwalls": [], "provider_hubs": [],
+            "mode": "discovery", "direct": None, "direct_http": None, "indexed_official": None, "offerwalls": [], "provider_hubs": [],
             "known_pages": [], "search": None, "search_verified": [],
             "followed_details": [],
         }
@@ -985,6 +1038,18 @@ def collect_firecrawl(key, cfg):
             diag["search"] = {"skipped": True, "reason": "direct first-party detail pages succeeded"}
             diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
             return idx, local_candidates, diag
+        # V44: when a public listing is login/JS gated (not authoritative), use
+        # Tavily only to discover indexed official detail URLs. Search snippets
+        # are never evidence; each official page is fetched and target-verified.
+        indexed_candidates, indexed_diag = tavily_official_detail_discovery(source, aliases)
+        diag["indexed_official"] = indexed_diag
+        local_candidates.extend(indexed_candidates)
+        if indexed_candidates:
+            diag["mode"] = "indexed_official_fast_path"
+            diag["search"] = {"skipped": True, "reason": "indexed official detail pages directly verified"}
+            diag["elapsedSeconds"] = round(time.monotonic() - source_started, 1)
+            return idx, local_candidates, diag
+
         if source.get("direct_listing_authoritative") and direct_http_diag.get("allListingsFetched"):
             diag["mode"] = "direct_clean_negative"
             diag["search"] = {"skipped": True, "reason": "authoritative first-party listings fetched cleanly with no target detail"}

@@ -104,3 +104,6 @@ Both repository-writing workflows use the shared `poigamelab-production-writer` 
 
 ### V43 research recheck policy
 PHASE 3 records `researchLogicVersion` in `config/trend_discovery.json`. A promoted game already researched under an older collector logic version is queued exactly once for re-research; after completion, `lastResearchLogicVersion` prevents repeated runs until either candidate evidence or the declared research logic changes again.
+
+### V44 indexed official-detail fallback
+When a registered point site's public listing is login/JavaScript gated, research may optionally use Tavily to discover indexed official detail URLs. Search snippets are never evidence: the collector directly fetches the registered first-party detail page and re-confirms the target before Gemini/verifier processing. Configure `TAVILY_API_KEY` as a GitHub repository secret to enable this fallback.

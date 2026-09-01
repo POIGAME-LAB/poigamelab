@@ -24,6 +24,7 @@ jobs:
         env:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           FIRECRAWL_CALL_LIMIT: "2"
         run: python scripts/discover_trending_games.py
       - name: Promote strong candidates to research queue (API-free)
@@ -32,6 +33,7 @@ jobs:
         env:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           FIRECRAWL_CALL_LIMIT: "2"
           RESEARCH_MAX_GAMES: "1"
         run: python scripts/research_offer_bridge.py

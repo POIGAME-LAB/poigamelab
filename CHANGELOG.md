@@ -143,3 +143,9 @@
 - Added an explicit research-logic version to the PHASE 3 queue so already-researched promoted games are requeued once when collector capability changes.
 - A completed research run records the logic version it used; subsequent unchanged discovery runs stay cached and do not repeatedly spend Gemini/retrieval calls.
 - Candidate-evidence changes still trigger research independently, while V27 promotion thresholds, V20 strict verification, V29 adoption thresholds, and quarantine publication boundaries remain unchanged.
+
+## V44 — Indexed official-detail discovery fallback
+- Added optional Tavily discovery for registered point sites whose public listing is login/JS gated; search results are URL hints only and never verifier evidence.
+- Every discovered URL must be registered first-party, match an official detail shape, be fetched directly, and independently confirm the target game before entering Gemini or the strict verifier.
+- Wired `TAVILY_API_KEY` into the trend/research workflow as an optional secret and bumped the research-logic version so held games are rechecked once after this capability change.
+- Existing V20 exact-offer identity, V29 two-independent-source adoption gate, quarantine boundary, and Firecrawl fail-soft behavior remain unchanged.
