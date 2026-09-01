@@ -223,3 +223,9 @@
 - Any support/contradict proposal admitted only through the weaker anchor path requires a second Gemini confirmation using the fixed claim/source/span tuple. Missing, malformed, changed, rejected, or failed review responses fail closed.
 - Exact numeric grounding, independent-source checks, direct target confirmation, span identity checks, API/result bounds, and quarantine-only publication behavior remain unchanged.
 - Added diagnostics for strict-vs-anchor-only source/claim pairs and second-review calls/candidates/confirmations/rejections.
+### V50.1 — zero-claim extraction diagnostics
+- Added aggregate V50 diagnostics to the status JSON / Actions stdout without changing extraction acceptance rules or API limits.
+- Zero-claim runs now identify whether the stop occurred at source re-fetch, Gemini execution, malformed Gemini payload, zero AI proposals, or Python rejection of all proposals.
+- Diagnostic output is count-only and intentionally excludes page text, evidence quotes, URLs, and raw AI error text.
+- Added explicit target-missing and malformed-claims counters plus regression tests for every zero-claim classification.
+- Publication behavior remains unchanged: `publicationWrites: 0`.

@@ -90,15 +90,17 @@ def run(evidence_doc=None, api_key=None, fetcher=collector.direct_fetch, ai=live
         by_game.setdefault(row.get('game',''),[]).append(row)
     all_claims=[]; diagnostics=[]; api_calls=0
     for game in sorted(k for k in by_game if k):
-        sources=[]; fetch_errors=0
+        sources=[]; fetch_errors=0; target_missing=0
         for i,row in enumerate(by_game[game][:8],1):
             try:
                 raw,_=fetcher(row['url']); text=collector.visible_text(raw)
             except Exception:
                 fetch_errors+=1; continue
-            if not collector.target_in_text(text,[game]): continue
+            if not collector.target_in_text(text,[game]):
+                target_missing+=1
+                continue
             sources.append({'sourceId':f's{i}','game':game,'url':row['url'],'sourceType':row.get('sourceType','community_guide'),'text':text})
-        diag={'game':game,'inputEvidence':len(by_game[game]),'refetchedSources':len(sources),'fetchErrors':fetch_errors,'aiCalls':0,'proposed':0,'validated':0,'rejected':{}}
+        diag={'game':game,'inputEvidence':len(by_game[game]),'refetchedSources':len(sources),'fetchErrors':fetch_errors,'targetMissing':target_missing,'aiCalls':0,'proposed':0,'validated':0,'rejected':{},'malformedClaimsPayload':0}
         if not sources: diagnostics.append(diag); continue
         try:
             api_calls+=1; diag['aiCalls']=1
@@ -106,7 +108,9 @@ def run(evidence_doc=None, api_key=None, fetcher=collector.direct_fetch, ai=live
         except Exception as e:
             diag['aiError']=safe_error(e); diagnostics.append(diag); continue
         proposed=response.get('claims') if isinstance(response,dict) else []
-        if not isinstance(proposed,list): proposed=[]
+        if not isinstance(proposed,list):
+            diag['malformedClaimsPayload']=1
+            proposed=[]
         diag['proposed']=len(proposed); source_by_id={s['sourceId']:s for s in sources}; seen=set()
         for raw in proposed[:80]:
             claim,reason=validate_claim(raw,source_by_id)
@@ -120,10 +124,50 @@ def run(evidence_doc=None, api_key=None, fetcher=collector.direct_fetch, ai=live
     return {'phase':'PHASE4_GUIDE_CLAIMS_V50','generatedAt':now_iso(),'publicationWrites':0,'apiCalls':api_calls,
       'claims':all_claims,'diagnostics':diagnostics}
 
+
+def summarize_result(result):
+    diagnostics=result.get('diagnostics') or []
+    rejected={}
+    totals={
+      'games':len(diagnostics),'inputEvidence':0,'refetchedSources':0,'fetchErrors':0,'targetMissing':0,
+      'aiCalls':0,'aiErrors':0,'malformedClaimsPayloads':0,'proposed':0,'validated':0
+    }
+    games=[]
+    for d in diagnostics:
+        totals['inputEvidence']+=int(d.get('inputEvidence') or 0)
+        totals['refetchedSources']+=int(d.get('refetchedSources') or 0)
+        totals['fetchErrors']+=int(d.get('fetchErrors') or 0)
+        totals['targetMissing']+=int(d.get('targetMissing') or 0)
+        totals['aiCalls']+=int(d.get('aiCalls') or 0)
+        totals['aiErrors']+=1 if d.get('aiError') else 0
+        totals['malformedClaimsPayloads']+=int(d.get('malformedClaimsPayload') or 0)
+        totals['proposed']+=int(d.get('proposed') or 0)
+        totals['validated']+=int(d.get('validated') or 0)
+        for reason,count in (d.get('rejected') or {}).items(): rejected[reason]=rejected.get(reason,0)+int(count or 0)
+        games.append({k:d.get(k) for k in ('game','inputEvidence','refetchedSources','fetchErrors','targetMissing','aiCalls','proposed','validated','malformedClaimsPayload')})
+        if d.get('aiError'): games[-1]['aiError']=True
+    claim_count=len(result.get('claims') or [])
+    if claim_count:
+        zero_reason=None
+    elif totals['refetchedSources']==0:
+        zero_reason='no_refetched_sources'
+    elif totals['aiErrors']:
+        zero_reason='ai_error'
+    elif totals['malformedClaimsPayloads']:
+        zero_reason='ai_malformed_claims_payload'
+    elif totals['proposed']==0:
+        zero_reason='ai_no_proposals'
+    elif totals['validated']==0:
+        zero_reason='all_proposals_rejected'
+    else:
+        zero_reason='unknown_zero_claim_state'
+    return {'totals':totals,'rejected':rejected,'zeroClaimReason':zero_reason,'games':games}
+
 def main():
     try:
         result=run(); OUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-        status={'phase':result['phase'],'success':True,'claimCount':len(result['claims']),'apiCalls':result['apiCalls'],'publicationWrites':0,'lastRun':result['generatedAt']}
+        summary=summarize_result(result)
+        status={'phase':result['phase'],'logicVersion':'V50.1','success':True,'claimCount':len(result['claims']),'apiCalls':result['apiCalls'],'publicationWrites':0,'diagnosticSummary':summary,'lastRun':result['generatedAt']}
         STATUS.write_text(json.dumps(status,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print(json.dumps(status,ensure_ascii=False))
     except Exception as e:
         status={'phase':'PHASE4_GUIDE_CLAIMS_V50','success':False,'error':safe_error(e),'publicationWrites':0,'lastRun':now_iso()}

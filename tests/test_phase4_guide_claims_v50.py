@@ -56,3 +56,61 @@ def test_prompt_forbids_inference_and_requires_quote():
  assert '推測' in p and 'evidenceQuote' in p and '数字' in p
 def test_safe_error_redacts_keys():
  assert 'SECRET' not in m.safe_error(RuntimeError('api_key=SECRET'))
+
+def test_v501_summary_identifies_ai_no_proposals_without_changing_gate():
+ r=m.run(DOC,'k',fetcher=fetch,ai=ai_with([]))
+ s=m.summarize_result(r)
+ assert s['zeroClaimReason']=='ai_no_proposals'
+ assert s['totals']['refetchedSources']==1
+ assert s['totals']['proposed']==0
+ assert s['totals']['validated']==0
+ assert s['rejected']=={}
+
+def test_v501_summary_identifies_all_proposals_rejected():
+ r=m.run(DOC,'k',fetcher=fetch,ai=ai_with([{'sourceId':'s1','category':'tip','claim':'課金必須','evidenceQuote':'課金必須'}]))
+ s=m.summarize_result(r)
+ assert s['zeroClaimReason']=='all_proposals_rejected'
+ assert s['totals']['proposed']==1
+ assert s['totals']['validated']==0
+ assert s['rejected']=={'quote_not_in_source':1}
+
+def test_v501_summary_identifies_ai_error_without_leaking_error_text():
+ def bad(*a): raise RuntimeError('authorization api_key=SECRET')
+ r=m.run(DOC,'k',fetcher=fetch,ai=bad)
+ s=m.summarize_result(r)
+ assert s['zeroClaimReason']=='ai_error'
+ assert s['totals']['aiErrors']==1
+ assert s['games'][0]['aiError'] is True
+ assert 'SECRET' not in str(s)
+
+def test_v501_summary_identifies_malformed_claims_payload():
+ r=m.run(DOC,'k',fetcher=fetch,ai=lambda *a:{'claims':'not-a-list'})
+ s=m.summarize_result(r)
+ assert s['zeroClaimReason']=='ai_malformed_claims_payload'
+ assert s['totals']['malformedClaimsPayloads']==1
+
+def test_v501_summary_identifies_no_refetched_sources_and_target_missing():
+ r=m.run(DOC,'k',fetcher=lambda u:('Different Game only',{'httpStatus':200}),ai=lambda *a:(_ for _ in ()).throw(AssertionError()))
+ s=m.summarize_result(r)
+ assert s['zeroClaimReason']=='no_refetched_sources'
+ assert s['totals']['targetMissing']==1
+ assert s['totals']['aiCalls']==0
+
+def test_v501_summary_success_has_no_zero_claim_reason():
+ r=m.run(DOC,'k',fetcher=fetch,ai=ai_with([{'sourceId':'s1','category':'tip','claim':'資源箱は温存する','evidenceQuote':'資源箱は温存する'}]))
+ s=m.summarize_result(r)
+ assert s['zeroClaimReason'] is None
+ assert s['totals']['validated']==1
+
+def test_v501_summary_aggregates_multiple_game_diagnostics_safely():
+ doc={'evidence':[dict(DOC['evidence'][0]),{'game':'Game B','url':'https://other.example/b','sourceType':'community_guide','targetConfirmed':True,'status':'quarantined'}]}
+ def f(url):
+  if 'other.example' in url: return '<p>Game Bでは素材を温存する。</p>',{'httpStatus':200}
+  return fetch(url)
+ r=m.run(doc,'k',fetcher=f,ai=ai_with([]))
+ s=m.summarize_result(r)
+ assert s['totals']['games']==2
+ assert s['totals']['inputEvidence']==2
+ assert s['totals']['refetchedSources']==2
+ assert s['totals']['aiCalls']==2
+ assert len(s['games'])==2
