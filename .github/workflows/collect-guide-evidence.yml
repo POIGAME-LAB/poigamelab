@@ -39,8 +39,11 @@ jobs:
         run: python scripts/build_poi_guide_draft.py
       - name: Build anecdotal poikatsu experience summary (API-free, quarantine only)
         run: python scripts/build_poi_experience_summary.py
+
+      - name: Build dynamic guide experience update candidates (review only)
+        run: python scripts/update_guide_experiences_from_v54.py
       - name: Verify Phase 4 quarantine contracts
-        run: python -m pytest -q tests/test_phase4_guide_evidence_v49.py tests/test_phase4_guide_claims_v50.py tests/test_phase4_guide_claim_gate_v51.py tests/test_phase4_guide_corroboration_v52.py tests/test_phase4_poi_guide_draft_v53.py tests/test_phase4_poi_experience_v54.py
+        run: python -m pytest -q tests/test_phase4_guide_evidence_v49.py tests/test_phase4_guide_claims_v50.py tests/test_phase4_guide_claim_gate_v51.py tests/test_phase4_guide_corroboration_v52.py tests/test_phase4_poi_guide_draft_v53.py tests/test_phase4_poi_experience_v54.py tests/test_update_guide_experiences_from_v54.py
       - name: Upload quarantined evidence artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -60,4 +63,6 @@ jobs:
             data/poi_guide_draft_status.json
             data/poi_guide_experience_summary.json
             data/poi_guide_experience_status.json
+            data/guide-experience-candidates/
+            data/guide_experience_update_status.json
           retention-days: 7
