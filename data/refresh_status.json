@@ -1,6 +1,6 @@
 {
   "phase": "PHASE2_AUTO_REFRESH_V23",
-  "startedAt": "2026-09-01T23:18:46+00:00",
+  "startedAt": "2026-09-02T23:19:35+00:00",
   "enabledGames": [
     "きのこ伝説",
     "Township"
@@ -34,5 +34,5 @@
     }
   ],
   "success": true,
-  "finishedAt": "2026-09-01T23:19:36+00:00"
+  "finishedAt": "2026-09-02T23:20:33+00:00"
 }
