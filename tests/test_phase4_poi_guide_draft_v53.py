@@ -237,3 +237,71 @@ def test_status_summary_counts_real_search_calls_and_zero_publication():
     assert s['logicVersion']=='V53'
     assert s['xSearchCalls']==2 and s['apiCalls']==2
     assert s['publicationWrites']==0
+
+
+def test_direct_x_meta_description_fallback_is_accepted():
+    def searcher(*_):
+        return {'results':[{'url':'https://x.com/metauser/status/900'}]}
+
+    raw = (
+        '<html><head>'
+        '<meta property="og:description" '
+        'content="Township \u30dd\u30a4\u6d3b 4\u65e5\u76ee Lv16 \u6848\u4ef6\u6311\u6226\u4e2d">'
+        '</head><body>X shell only</body></html>'
+    )
+
+    rows, diag = v53.collect_x_experiences(
+        'Township',
+        ['Township', '\u30bf\u30a6\u30f3\u30b7\u30c3\u30d7'],
+        cfg(maxPoiXSearchesPerGame=1),
+        'k',
+        searcher,
+        lambda _:(raw, {'httpStatus':200}),
+    )
+
+    assert len(rows) == 1
+    assert rows[0]['sourceIdentity'] == 'x:metauser'
+    assert '4\u65e5\u76ee' in rows[0]['excerpt']
+    assert 'Lv16' in rows[0]['excerpt']
+    assert diag['xMetaDescriptionFallbacks'] == 1
+    assert diag['xTargetMissing'] == 0
+    assert diag['xPoiContextMissing'] == 0
+
+
+def test_x_metadata_does_not_combine_partial_signals_across_lanes():
+    def searcher(*_):
+        return {'results':[{'url':'https://x.com/split/status/901'}]}
+
+    raw = (
+        '<html><head>'
+        '<meta name="twitter:description" '
+        'content="\u30dd\u30a4\u6d3b 4\u65e5\u76ee Lv16 \u6848\u4ef6\u6311\u6226\u4e2d">'
+        '</head><body>Township only</body></html>'
+    )
+
+    rows, diag = v53.collect_x_experiences(
+        'Township',
+        ['Township'],
+        cfg(maxPoiXSearchesPerGame=1),
+        'k',
+        searcher,
+        lambda _:(raw, {'httpStatus':200}),
+    )
+
+    assert rows == []
+    assert diag['xMetaDescriptionFallbacks'] == 0
+    assert diag['xPoiContextMissing'] == 1
+
+
+def test_x_meta_parser_accepts_attribute_order_and_decodes_entities():
+    raw = (
+        '<html><head>'
+        '<meta content="Township &amp; \u30dd\u30a4\u6d3b 2\u65e5\u76ee Lv57" '
+        'name="twitter:description">'
+        '</head></html>'
+    )
+    text, source = v53.x_direct_post_text(raw, ['Township'])
+    assert source == 'meta'
+    assert 'Township & \u30dd\u30a4\u6d3b' in text
+    assert '2\u65e5\u76ee' in text
+    assert 'Lv57' in text

@@ -18,6 +18,7 @@ import os
 import re
 import sys
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -88,6 +89,60 @@ def x_source_identity(url):
 def experience_relevant(text):
     low = str(text or '').casefold()
     return any(marker.casefold() in low for marker in POI_MARKERS)
+
+
+class _XMetaDescriptionParser(HTMLParser):
+    # Collect only post-description metadata from a directly fetched X page.
+    ALLOWED_KEYS = {'og:description', 'twitter:description'}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.descriptions = []
+
+    def handle_starttag(self, tag, attrs):
+        if str(tag or '').casefold() != 'meta':
+            return
+        values = {
+            str(key or '').casefold(): str(value or '')
+            for key, value in attrs
+            if key
+        }
+        marker = (values.get('property') or values.get('name') or '').casefold()
+        if marker not in self.ALLOWED_KEYS:
+            return
+        content = re.sub(r'\s+', ' ', values.get('content', '')).strip()
+        if content and content not in self.descriptions:
+            self.descriptions.append(content)
+
+
+def x_meta_descriptions(raw):
+    parser = _XMetaDescriptionParser()
+    try:
+        parser.feed(str(raw or ''))
+        parser.close()
+    except Exception:
+        return []
+    return parser.descriptions
+
+
+def x_direct_post_text(raw, aliases):
+    # One directly fetched lane must independently pass both safety checks.
+    visible = collector.visible_text(raw)
+    if collector.target_in_text(visible, aliases) and experience_relevant(visible):
+        return visible, 'visible'
+
+    meta_rows = x_meta_descriptions(raw)
+    for meta_text in meta_rows:
+        if collector.target_in_text(meta_text, aliases) and experience_relevant(meta_text):
+            return meta_text, 'meta'
+
+    # Preserve existing diagnostics while failing closed.
+    if collector.target_in_text(visible, aliases):
+        return visible, 'none'
+    for meta_text in meta_rows:
+        if collector.target_in_text(meta_text, aliases):
+            return meta_text, 'none'
+    return visible or (meta_rows[0] if meta_rows else ''), 'none'
 
 
 def bounded_excerpt(text, aliases, limit=420):
@@ -196,6 +251,7 @@ def collect_x_experiences(game, aliases, cfg, api_key, searcher=collector.tavily
         'xResultUrls': 0, 'xEligibleStatusUrls': 0, 'xDirectFetches': 0, 'xFetchErrors': 0,
         'xTargetMissing': 0, 'xPoiContextMissing': 0, 'xDuplicateUrls': 0,
         'xDuplicateAccounts': 0, 'xExperienceCandidates': 0,
+        'xMetaDescriptionFallbacks': 0,
     }
     queries = x_queries(game, aliases, cfg)
     buckets = [[] for _ in queries]
@@ -245,10 +301,12 @@ def collect_x_experiences(game, aliases, cfg, api_key, searcher=collector.tavily
         diag['xDirectFetches'] += 1
         try:
             raw, _meta = fetcher(url)
-            text = collector.visible_text(raw)
+            text, text_source = x_direct_post_text(raw, aliases)
         except Exception:
             diag['xFetchErrors'] += 1
             continue
+        if text_source == 'meta':
+            diag['xMetaDescriptionFallbacks'] += 1
         if not collector.target_in_text(text, aliases):
             diag['xTargetMissing'] += 1
             continue
@@ -394,6 +452,7 @@ def summarize(result):
         'xSearchCalls': sum(int(d.get('xSearchCalls') or 0) for d in diagnostics),
         'xDirectFetches': sum(int(d.get('xDirectFetches') or 0) for d in diagnostics),
         'xExperienceCandidates': len(result.get('xExperiences') or []),
+        'xMetaDescriptionFallbacks': sum(int(d.get('xMetaDescriptionFallbacks') or 0) for d in diagnostics),
         'xSearchErrors': sum(int(d.get('xSearchErrors') or 0) for d in diagnostics),
         'xFetchErrors': sum(int(d.get('xFetchErrors') or 0) for d in diagnostics),
         'draftReadyGames': sum(bool(d.get('draftReady')) for d in (result.get('drafts') or [])),
