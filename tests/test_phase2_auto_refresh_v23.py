@@ -41,12 +41,18 @@ def test_collector_emits_completeness_signal():
     assert '"collectionComplete": collection_complete' in text
     assert '"degradedReasons": degraded_reasons' in text
 
-def test_auto_refresh_only_uses_policy_enabled_games():
+def test_auto_refresh_enables_all_five_games_with_bounded_sources():
     policy=json.loads((ROOT/'config/refresh_policy.json').read_text())
-    assert policy['games']['Township']['enabled'] is True
-    assert policy['games']['きのこ伝説']['enabled'] is True
-    assert policy['games']['メメントモリ']['enabled'] is False
-    assert policy['games']['ワーキングヒーロー']['enabled'] is False
+    expected={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル'}
+    assert expected == {g for g,cfg in policy['games'].items() if cfg['enabled'] is True}
+    assert policy['games']['メメントモリ']['refreshSources']==['warau']
+    assert policy['games']['ワーキングヒーロー']['refreshSources']==['hapitas']
+    assert policy['games']['ホワイトアウト・サバイバル']['refreshSources']==['moppy','warau']
+
+def test_auto_refresh_passes_source_allowlist_and_uses_probe_compatible_slug():
+    text=(ROOT/'scripts/auto_refresh.py').read_text()
+    assert "cmd.extend(['--sources',','.join(refresh_sources)])" in text
+    assert "hashlib.sha256(raw.encode('utf-8')).hexdigest()[:10]" in text
 
 def test_workflow_has_secrets_concurrency_and_daily_schedule():
     text=(ROOT/'.github/workflows/refresh-verified-offers.yml').read_text()
