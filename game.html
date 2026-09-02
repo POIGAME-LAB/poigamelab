@@ -418,6 +418,15 @@
       </div>
 
 
+
+      <div id="kinokoGuideCta" class="guide-cta">
+        <strong>きのこ伝説 ポイ活攻略</strong>
+        <p>Lv100・120・125系案件の到達ペースと、実際のプレイヤー進捗をまとめました。</p>
+        <div class="guide-links">
+          <a href="kinoko-guide.html">攻略を読む →</a>
+        </div>
+      </div>
+
     </section>
 
   </main>
@@ -483,6 +492,11 @@
         const townshipGuideCta = document.getElementById("townshipGuideCta");
         if (townshipGuideCta && game.name === "Township") {
           townshipGuideCta.style.display = "block";
+        }
+
+        const kinokoGuideCta = document.getElementById("kinokoGuideCta");
+        if (kinokoGuideCta && game.name === "きのこ伝説") {
+          kinokoGuideCta.style.display = "block";
         }
 
 

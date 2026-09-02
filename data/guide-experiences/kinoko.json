@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "game": "きのこ伝説",
+  "updatedAt": "2026-09-02",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されている攻略記事・Xの進捗記録を、同じプレイヤーの投稿は1人分としてまとめています。全員同じ案件条件ではないため、平均ではなく実例として見てください。",
+  "notice": "※Lv100→120は序盤より伸びがかなり遅くなる実例があります。Lv125は今回の調査だけでは完走ペースを確定できません。",
+  "footnote": "到達日数はプレイ時間・課金・開始時期・イベント・サーバー状況などで変わります。新しい公開記録が確認できた場合は、このデータに同一人物の進捗を統合し、新規プレイヤーを追加できます。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "Lv120を29日で達成",
+      "milestones": [
+        {"day": 1, "level": 47, "label": "Lv47"},
+        {"day": 6, "level": 91, "label": "Lv91", "detail": "終末IV 10-10達成"},
+        {"day": 9, "level": 100, "label": "Lv100"},
+        {"day": 15, "level": 110, "label": "Lv110"},
+        {"day": 29, "level": 120, "label": "Lv120達成"}
+      ],
+      "note": "Lv100までは9日。その後20日かけてLv120へ到達しており、Lv100以降で伸びが鈍化した実例。",
+      "sources": ["https://note.com/creadle18/n/n7b62068987dd"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "21日目にLv110到達",
+      "milestones": [
+        {"day": 1, "label": "普通5-10 / 困難1-10"},
+        {"day": 7, "label": "終末IV 10-10"},
+        {"day": 21, "level": 110, "label": "Lv110達成"}
+      ],
+      "note": "Lv120は最初から狙わずLv110をゴールに設定。日課だけの日でも起動時間2〜3時間程度という記録。",
+      "sources": ["https://www.pokopoi.com/entry/kinoko-densetsu"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "retired",
+      "summary": "19日目にLv110到達・Lv120は撤退",
+      "milestones": [
+        {"day": 1, "label": "普通5-10 / 困難1-10"},
+        {"day": 6, "label": "終末IV 10-10"},
+        {"day": 19, "level": 110, "label": "Lv110達成"}
+      ],
+      "note": "無課金でLv110まで達成し、Lv120はリタイアした実例。",
+      "sources": ["https://gmogra.com/entry/2026/02/22/124935"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "ongoing",
+      "summary": "37日目でLv119 / 120",
+      "milestones": [
+        {"day": 2, "level": 57, "label": "Lv57"},
+        {"day": 35, "level": 119, "label": "Lv119"},
+        {"day": 37, "level": 119, "label": "Lv119", "detail": "Lv120目前"}
+      ],
+      "note": "Lv100以降の終盤で1レベルに複数日かかっている挑戦中の例。",
+      "sources": [
+        "https://x.com/nyanreimama/status/2060720911096184885",
+        "https://x.com/nyanreimama/status/2072687516499751092",
+        "https://x.com/nyanreimama/status/2073399904773550248"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "ongoing",
+      "summary": "12日目でLv105",
+      "milestones": [
+        {"day": 11, "level": 102, "label": "Lv102"},
+        {"day": 12, "level": 105, "label": "Lv105"}
+      ],
+      "note": "11日目Lv102→12日目Lv105。ここから先の1日あたりの伸びを警戒している挑戦中の例。",
+      "sources": [
+        "https://x.com/monsthuntp/status/2072697297528570214",
+        "https://x.com/monsthuntp/status/2073057807436542312"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "ongoing",
+      "summary": "11日目でLv78 / 100",
+      "milestones": [
+        {"day": 9, "level": 67, "label": "Lv67"},
+        {"day": 11, "level": 78, "label": "Lv78"}
+      ],
+      "note": "30日以内Lv100を目標に挑戦中。序盤〜中盤の比較用データとして掲載。",
+      "sources": [
+        "https://x.com/pogemaru_777/status/2072672787840561313",
+        "https://x.com/pogemaru_777/status/2073390909782360508"
+      ]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "ongoing",
+      "summary": "13日目でLv93 / 120",
+      "milestones": [
+        {"day": 13, "level": 93, "label": "Lv93"}
+      ],
+      "note": "45日以内Lv120案件への挑戦中記録。日々やることが固定化してきた段階。",
+      "sources": ["https://x.com/gameokozukai/status/2072894307846201772"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "ongoing",
+      "summary": "20日目でLv111",
+      "milestones": [
+        {"day": 20, "level": 111, "label": "Lv111"}
+      ],
+      "note": "20日目でLv111。Lv120到達までの後半ペースを見るための挑戦中データ。",
+      "sources": ["https://x.com/tarou_v/status/2072754642942042305"]
+    }
+  ]
+}
