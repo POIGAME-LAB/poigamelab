@@ -1,0 +1,40 @@
+name: OpenCode Read-Only Test
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  opencode:
+    if: |
+      github.event.issue.pull_request == null &&
+      (contains(github.event.comment.body, '/oc') ||
+       contains(github.event.comment.body, '/opencode'))
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Run OpenCode - Read Only
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+          OPENCODE_CONFIG_CONTENT: >-
+            {"permission":{"edit":"deny","bash":"deny","external_directory":"deny"}}
+
+        with:
+          model: openrouter/openrouter/free
+          use_github_token: true
+          share: false
