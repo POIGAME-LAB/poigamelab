@@ -11,6 +11,7 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('game', nargs='?', help='ゲーム名。省略時は全登録ゲーム')
     ap.add_argument('--target-json', help='V28 research bridge用の一時target JSON。game/aliasesのみ許可')
+    ap.add_argument('--sources', help='使用する登録ソースIDをカンマ区切りで限定')
     args=ap.parse_args()
     db=json.loads(TARGETS.read_text(encoding='utf-8'))['games']
     if args.target_json:
@@ -23,13 +24,27 @@ def main():
         selected=db if not args.game else [x for x in db if x['game']==args.game]
     if not selected:
         print(f'未登録ゲーム: {args.game}',file=sys.stderr); return 2
+
+    requested_sources=[]
+    if args.sources:
+        requested_sources=list(dict.fromkeys(
+            x.strip() for x in args.sources.split(',') if x.strip()
+        ))
+
     original=CFG.read_text(encoding='utf-8')
     base=json.loads(original)
+    registered={str(x.get('id') or '').strip() for x in base.get('sources',[]) if str(x.get('id') or '').strip()}
+    unknown=[x for x in requested_sources if x not in registered]
+    if unknown:
+        print('未登録ソース: '+', '.join(unknown),file=sys.stderr); return 2
+
     failures=[]
     try:
         for target in selected:
             cfg=json.loads(original)
             cfg['target']=target
+            if requested_sources:
+                cfg['sources']=[s for s in cfg.get('sources',[]) if s.get('id') in requested_sources]
             # Apply only URLs verified for THIS game; never leak one game's offer IDs to another.
             if target['game']!='Township':
                 known=target.get('known_urls_by_source') or {}
