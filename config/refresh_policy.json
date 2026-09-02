@@ -7,21 +7,40 @@
   "maxKnownPageConcurrency": 2,
   "games": {
     "Township": {
-      "enabled": true
+      "enabled": true,
+      "refreshSources": [
+        "warau",
+        "chobirich",
+        "coincome"
+      ]
     },
     "きのこ伝説": {
-      "enabled": true
+      "enabled": true,
+      "refreshSources": [
+        "warau",
+        "chobirich",
+        "coincome"
+      ]
     },
     "メメントモリ": {
-      "enabled": false
+      "enabled": true,
+      "refreshSources": [
+        "warau"
+      ]
     },
     "ワーキングヒーロー": {
-      "enabled": false
+      "enabled": true,
+      "refreshSources": [
+        "hapitas"
+      ]
     },
     "ホワイトアウト・サバイバル": {
-      "enabled": false,
-      "adoptedBy": "V30",
-      "reason": "new-game refresh remains disabled until controlled refresh policy is enabled"
+      "enabled": true,
+      "refreshSources": [
+        "moppy",
+        "warau"
+      ],
+      "adoptedBy": "V30"
     }
   },
   "publication": {
