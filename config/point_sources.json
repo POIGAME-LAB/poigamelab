@@ -114,6 +114,25 @@
       "direct_detail_url_hints": [
         "/campaigns/details/"
       ]
+    },
+    {
+      "id": "hapitas",
+      "name": "ハピタス",
+      "start_url": "https://hapitas.jp/",
+      "search_domains": [
+        "hapitas.jp",
+        "www.hapitas.jp"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "known_target_urls": [],
+      "prefer_known_pages": false,
+      "direct_listing_urls": [],
+      "direct_listing_limit": 1,
+      "direct_detail_limit": 2,
+      "direct_detail_url_hints": [
+        "/item/detail/itemid/"
+      ]
     }
   ],
   "offerwall_domains_discovered": [
