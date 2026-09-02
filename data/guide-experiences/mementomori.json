@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "game": "メメントモリ",
+  "updatedAt": "2026-09-02",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されている攻略記事・ポイントサイトの口コミを、同じプレイヤーごとに1人分として整理しています。課金・主力キャラ・クエスト進行で差が大きいため、平均ではなく実例として見てください。",
+  "notice": "※ランク110は22〜38日など幅があります。ランク140以上は課金・VIP・クエスト進行の影響がさらに大きく、45日案件では終盤の余裕が小さくなる可能性があります。",
+  "footnote": "到達日数は開始時期・課金・VIP・主力キャラ・ガチャ運・クエスト進行などで変わります。個人の体験であり、同じ日数での到達を保証するものではありません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "22日目にランク110突破・39日目にランク150",
+      "milestones": [
+        {
+          "day": 1,
+          "level": 24,
+          "label": "ランク24"
+        },
+        {
+          "day": 5,
+          "level": 60,
+          "label": "ランク60"
+        },
+        {
+          "day": 10,
+          "level": 79,
+          "label": "ランク79"
+        },
+        {
+          "day": 18,
+          "level": 101,
+          "label": "ランク101"
+        },
+        {
+          "day": 22,
+          "level": 112,
+          "label": "ランク110突破"
+        },
+        {
+          "day": 34,
+          "level": 140,
+          "label": "ランク140"
+        },
+        {
+          "day": 39,
+          "level": 150,
+          "label": "ランク150達成"
+        }
+      ],
+      "note": "課金あり・VIP4の実例。ランク110後も継続し、34日目に140、39日目に150まで到達。",
+      "sources": [
+        "https://point-kasegu.net/mementomori/"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "28日でランク110達成",
+      "milestones": [
+        {
+          "day": 28,
+          "level": 110,
+          "label": "ランク110達成"
+        }
+      ],
+      "note": "序盤はアムレート、その後フローレンスを主力に変更。少額の初期課金を使った例。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "33日でランク110達成",
+      "milestones": [
+        {
+          "day": 33,
+          "level": 110,
+          "label": "ランク110達成"
+        }
+      ],
+      "note": "開始時に少額課金して経験値系のVIP恩恵を利用。ギルドや試練をほぼ使わず33日という記録。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "35日でランク110達成・無課金",
+      "milestones": [
+        {
+          "day": 35,
+          "level": 110,
+          "label": "ランク110達成"
+        }
+      ],
+      "note": "無課金で35日。放置報酬を活用しつつ、後半は育成とクエスト進行の詰まりを解消して到達。",
+      "sources": [
+        "https://okanega-naiyo.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%A1%E3%83%A1%E3%83%B3%E3%83%88%E3%83%A2%E3%83%AA-%E7%84%A1%E8%AA%B2%E9%87%91%E3%83%A9%E3%83%B3%E3%82%AF110%E5%BE%B9%E5%BA%95%E8%A7%A3%E8%AA%AC/"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "37日でランク110達成",
+      "milestones": [
+        {
+          "day": 37,
+          "level": 110,
+          "label": "ランク110達成"
+        }
+      ],
+      "note": "序盤のStepは速かった一方、終盤で伸びが鈍化。毎日の継続で37日目に到達した例。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "38日でランク110達成",
+      "milestones": [
+        {
+          "day": 30,
+          "level": 73,
+          "label": "ランク73前後"
+        },
+        {
+          "day": 38,
+          "level": 110,
+          "label": "ランク110達成"
+        }
+      ],
+      "note": "30日時点でランク73前後。強力な主力キャラを引いてクエストが進み、終盤に追い上げた例。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
+      ]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "ongoing",
+      "summary": "23日目でランク101 / 110",
+      "milestones": [
+        {
+          "day": 23,
+          "level": 101,
+          "label": "ランク101"
+        }
+      ],
+      "note": "フローレンスを早期に入手した挑戦中の記録。110到達前の中盤比較用データ。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
+      ]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "29日でランク110達成",
+      "milestones": [
+        {
+          "day": 29,
+          "level": 110,
+          "label": "ランク110達成"
+        }
+      ],
+      "note": "1日あたりの作業は少なめで、放置報酬・高速バトル・掃討を軸に進めた実例。",
+      "sources": [
+        "https://sepodi.com/mememori/"
+      ]
+    }
+  ]
+}

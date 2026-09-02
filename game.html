@@ -427,6 +427,15 @@
         </div>
       </div>
 
+
+      <div id="mementomoriGuideCta" class="guide-cta">
+        <strong>メメントモリ ポイ活攻略</strong>
+        <p>ランク110・140系案件の到達ペースと、実際のプレイヤー進捗をまとめました。</p>
+        <div class="guide-links">
+          <a href="mementomori-guide.html">攻略を読む →</a>
+        </div>
+      </div>
+
     </section>
 
   </main>
@@ -497,6 +506,12 @@
         const kinokoGuideCta = document.getElementById("kinokoGuideCta");
         if (kinokoGuideCta && game.name === "きのこ伝説") {
           kinokoGuideCta.style.display = "block";
+        }
+
+
+        const mementomoriGuideCta = document.getElementById("mementomoriGuideCta");
+        if (mementomoriGuideCta && game.name === "メメントモリ") {
+          mementomoriGuideCta.style.display = "block";
         }
 
 
