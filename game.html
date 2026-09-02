@@ -444,6 +444,14 @@
         </div>
       </div>
 
+      <div id="whiteoutGuideCta" class="guide-cta">
+        <strong>ホワイトアウト・サバイバル ポイ活攻略</strong>
+        <p>大溶鉱炉Lv23・26の到達ペースと、25日案件の続行判断を実プレイヤー進捗からまとめました。</p>
+        <div class="guide-links">
+          <a href="whiteout-survival-guide.html">攻略を読む →</a>
+        </div>
+      </div>
+
     </section>
 
   </main>
@@ -525,6 +533,11 @@
         const workingHeroesGuideCta = document.getElementById("workingHeroesGuideCta");
         if (workingHeroesGuideCta && game.name === "ワーキングヒーロー") {
           workingHeroesGuideCta.style.display = "block";
+        }
+
+        const whiteoutGuideCta = document.getElementById("whiteoutGuideCta");
+        if (whiteoutGuideCta && game.name === "ホワイトアウト・サバイバル") {
+          whiteoutGuideCta.style.display = "block";
         }
 
 

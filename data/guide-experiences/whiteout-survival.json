@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "game": "ホワイトアウト・サバイバル",
+  "updatedAt": "2026-09-02",
+  "title": "実例：プレイヤーの大溶鉱炉進捗",
+  "intro": "2026年の公開プレイ記録を中心に、大溶鉱炉Lv23・26までの進み方を同じプレイヤーごとに整理しています。案件期限・課金Step・ポイント付与タイミングは掲載先で違うため、日数は平均ではなく実例として見てください。",
+  "notice": "※Lv26は25日期限の現行系StepUpではかなり余裕が小さい条件です。また「建設開始で判定」と「建設完了で判定」の報告が混在しているため、POIGAME LABでは期限内に完成できる前提で安全側に判断します。",
+  "initialVisible": 4,
+  "footnote": "同盟・サーバー・イベント報酬・課金・建設バフで進行速度が大きく変わります。各プレイヤーの到達日数は再現を保証するものではありません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "20日目に大溶鉱炉Lv26",
+      "milestones": [
+        {
+          "day": 1,
+          "level": 10,
+          "label": "Lv10",
+          "detail": "Lv3も同日"
+        },
+        {
+          "day": 5,
+          "level": 18,
+          "label": "Lv18"
+        },
+        {
+          "day": 9,
+          "level": 21,
+          "label": "Lv21"
+        },
+        {
+          "day": 12,
+          "level": 23,
+          "label": "Lv23"
+        },
+        {
+          "day": 20,
+          "level": 26,
+          "label": "Lv26達成"
+        }
+      ],
+      "note": "6/2開始→6/21にLv26。課金Stepも実施。イベントでまとまった建設加速を得られた実例で、Lv23までは11〜13日程度が目安だったと記録。",
+      "sources": [
+        "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205390"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "21日で大溶鉱炉Lv26",
+      "milestones": [
+        {
+          "day": 21,
+          "level": 26,
+          "label": "Lv26着工"
+        }
+      ],
+      "note": "6/11〜7/1の21日間。800円・1600円・3200円の課金Stepを利用し、研究・同盟・領主司令を合わせて建設短縮を積み上げた例。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?page=3&point_id=205389&sort=relation"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "22日で大溶鉱炉Lv26",
+      "milestones": [
+        {
+          "day": 22,
+          "level": 26,
+          "label": "Lv26達成"
+        }
+      ],
+      "note": "25日期限を課金Step＋加速アイテムの総動員で22日完走。Lv26は期限がかなり厳しいという評価。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?page=3&point_id=205389&sort=relation"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "期限2日前にLv26・無課金",
+      "milestones": [
+        {
+          "day": 23,
+          "level": 26,
+          "label": "Lv26達成",
+          "detail": "25日期限の2日前"
+        }
+      ],
+      "note": "無課金でLv26まで到達した例。同盟研究やイベント参加が活発な同盟を重視し、ダイヤを第2建設・建設短縮・不足資源へ使用。",
+      "sources": [
+        "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntranceSimilar&point_id=205390"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "25日目に大溶鉱炉Lv26",
+      "milestones": [
+        {
+          "day": 25,
+          "level": 26,
+          "label": "Lv26着工"
+        }
+      ],
+      "note": "3200円の基金を利用し、ダイヤと加速を使い切る形で期限ぎりぎりに完走した例。Lv26は城ゲー経験者でも余裕が小さいと評価。",
+      "sources": [
+        "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntranceSimilar&point_id=205390"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "11日で大溶鉱炉Lv23",
+      "milestones": [
+        {
+          "day": 1,
+          "level": 10,
+          "label": "Lv10"
+        },
+        {
+          "day": 6,
+          "level": 18,
+          "label": "Lv18"
+        },
+        {
+          "day": 8,
+          "level": 21,
+          "label": "Lv21"
+        },
+        {
+          "day": 11,
+          "level": 23,
+          "label": "Lv23達成"
+        }
+      ],
+      "note": "上位同盟に加入できた高速例。800円Stepは利用し、熊イベント・灯台・領主司令の建造加速を活用。",
+      "sources": [
+        "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205389"
+      ]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "12日で大溶鉱炉Lv23・無課金",
+      "milestones": [
+        {
+          "day": 1,
+          "level": 9,
+          "label": "Lv9"
+        },
+        {
+          "day": 5,
+          "level": 17,
+          "label": "Lv17"
+        },
+        {
+          "day": 10,
+          "level": 22,
+          "label": "Lv22"
+        },
+        {
+          "day": 12,
+          "level": 23,
+          "label": "Lv23着工"
+        }
+      ],
+      "note": "少し前の日本語サーバー＋アクティブ同盟＋熊の罠イベントを利用。第2建設枠をダイヤで維持し、ダイヤの多くを建設短縮へ使用。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?pl=entrancesimilar&point_id=202305"
+      ]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "18日で大溶鉱炉Lv23・無課金",
+      "milestones": [
+        {
+          "day": 3,
+          "level": 13,
+          "label": "Lv12〜13"
+        },
+        {
+          "day": 18,
+          "level": 23,
+          "label": "Lv23着工"
+        }
+      ],
+      "note": "初日〜3日目は稼働多め、その後は通勤・休憩・就寝前中心。2枠建設、経済研究、領主司令、採集を組み合わせた例。",
+      "sources": [
+        "https://note.com/yukidrm_grbr/n/nfcd211786e32"
+      ]
+    }
+  ]
+}
