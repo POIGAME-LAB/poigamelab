@@ -436,6 +436,14 @@
         </div>
       </div>
 
+      <div id="workingHeroesGuideCta" class="guide-cta">
+        <strong>ワーキングヒーローズ ポイ活攻略</strong>
+        <p>現行StepUpと仕様変更をまたいだ実プレイヤー進捗を分けてまとめました。</p>
+        <div class="guide-links">
+          <a href="working-heroes-guide.html">攻略を読む →</a>
+        </div>
+      </div>
+
     </section>
 
   </main>
@@ -512,6 +520,11 @@
         const mementomoriGuideCta = document.getElementById("mementomoriGuideCta");
         if (mementomoriGuideCta && game.name === "メメントモリ") {
           mementomoriGuideCta.style.display = "block";
+        }
+
+        const workingHeroesGuideCta = document.getElementById("workingHeroesGuideCta");
+        if (workingHeroesGuideCta && game.name === "ワーキングヒーロー") {
+          workingHeroesGuideCta.style.display = "block";
         }
 
 
