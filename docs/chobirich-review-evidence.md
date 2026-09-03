@@ -116,3 +116,27 @@ the eight saved-evidence Warau replay scenarios passed. Published data, the four
 actual approvals, schedules and frontend files were unchanged. No live publication
 run or production AI/collector API call was made; PC/mobile visual QA remains
 incomplete.
+
+
+## Unattended-fetch fail-closed change, 2026-09-03
+
+Current public help continues to describe Chobirich use as browser-based and
+Cookie-dependent, and separately warns that some access environments such as
+proxy/VPN use can produce access errors. These statements do not establish the
+cause of the observed direct-fetch 404/403 responses, so this project does not
+attempt to bypass them with proxying, credentialed sessions, User-Agent rotation
+or alternate unregistered hosts.
+
+Until a stable permitted retrieval path is established,
+`config/point_sources.json` sets `scheduled_fetch_enabled: false` for
+Chobirich. The scheduled comparison runner therefore performs zero Chobirich
+listing/detail requests, preserves existing published rows byte-for-byte, and
+records `scheduled_source_fetch_disabled` in the review queue. The structured
+Chobirich parser remains available for offline/manual evidence review and is
+still publication-disabled.
+
+The flag is generic and defaults to enabled when absent, so the other comparison
+sources are unchanged. Re-enabling Chobirich requires a separate reviewed change
+after a reliable retrieval method is demonstrated. This is intentionally safer
+than turning repeated HTTP failures into availability conclusions or trying to
+work around site access controls.
