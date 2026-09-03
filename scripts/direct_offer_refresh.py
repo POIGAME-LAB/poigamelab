@@ -1026,7 +1026,9 @@ def main():
     ]
     offerwall_presence_cfg = source_cfg.get("offerwall_presence_detection") or {}
     try:
-        offerwall_provider_registry = load_offerwall_provider_registry()
+        offerwall_provider_registry = load_offerwall_provider_registry(
+            SOURCES.with_name("offerwall_providers.json")
+        )
     except (OSError, ValueError, TypeError):
         # Provider enrichment is review-only metadata. If its registry is
         # malformed, omit enrichment rather than affecting publication logic.
