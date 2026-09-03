@@ -1282,3 +1282,18 @@ def test_moppy_is_review_only_even_when_shell_matches_published_row(
         assert item['sourceEvidence']['displayedRewardPoints'] == 600
         assert item['sourceEvidence']['downstreamTermsRequired'] is True
         assert item['platformMatches'] is True
+
+
+def test_repository_whiteout_moppy_review_targets_include_current_android_and_ios():
+    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
+    whiteout = next(item for item in targets if item['game'] == 'ホワイトアウト・サバイバル')
+    urls = whiteout['known_urls_by_source']['moppy']
+    by_id = {direct.moppy_offer_id(url): url for url in urls}
+    assert set(by_id) >= {'160375', '160371'}
+
+    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
+    published_moppy = [row for row in rows
+        if row['game'] == 'ホワイトアウト・サバイバル' and row['site'] == 'moppy']
+    assert len(published_moppy) == 1
+    assert direct.moppy_offer_id(published_moppy[0]['url']) == '160375'
+    assert all(direct.moppy_offer_id(row['url']) != '160371' for row in published_moppy)
