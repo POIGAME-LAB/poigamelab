@@ -75,7 +75,7 @@ def _copy_tree(source: Path, destination: Path) -> None:
 
 def build_public_site(output: Path) -> list[str]:
     output = output.resolve()
-    if output == ROOT or ROOT in output.parents is False:
+    if output == ROOT or ROOT not in output.parents:
         # The builder is intended to write only into a disposable directory
         # beneath the repository working tree.
         raise ValueError("unsafe_output_directory")
