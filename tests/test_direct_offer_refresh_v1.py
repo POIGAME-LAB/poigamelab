@@ -1379,3 +1379,115 @@ def test_repository_whiteout_moppy_review_targets_include_current_android_and_io
     assert len(published_moppy) == 1
     assert direct.moppy_offer_id(published_moppy[0]['url']) == '160375'
     assert all(direct.moppy_offer_id(row['url']) != '160371' for row in published_moppy)
+
+
+def test_listing_only_source_skips_stale_known_details_and_preserves_rows(monkeypatch):
+    listing = 'https://example.test/list'
+    stale = 'https://example.test/detail?id=999'
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['testsite'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'Game A': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'Game A',
+        'known_urls_by_source': {'testsite': [stale]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'testsite',
+        'search_domains': ['example.test'],
+        'direct_listing_urls': [listing],
+        'direct_listing_limit': 1,
+        'direct_detail_limit': 4,
+        'direct_detail_url_hints': ['/detail'],
+        'scheduled_known_detail_fetch_enabled': False,
+    }]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(
+        offerKey='existing',
+        game='Game A',
+        site='testsite',
+        reward='100',
+        condition='existing',
+        platform='iOS',
+        updatedAt='2026-09-01',
+        url=stale,
+        sourceUrl=stale,
+        verified='true',
+    )
+    direct.write_published([row])
+    before = direct.PUBLISHED.read_bytes()
+    requested = []
+
+    def fetch(url, source):
+        requested.append(url)
+        if url == listing:
+            return '<body>No matching game today</body>', url
+        pytest.fail('stale known detail URL must not be fetched')
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 0
+    assert requested == [listing]
+    assert direct.PUBLISHED.read_bytes() == before
+
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert len(items) == 1
+    assert items[0]['reason'] == 'discovery_required'
+    assert items[0]['knownDetailFetchEnabled'] is False
+
+
+def test_listing_only_source_fetches_only_newly_discovered_detail(monkeypatch):
+    listing = 'https://example.test/list'
+    stale = 'https://example.test/detail?id=999'
+    current = 'https://example.test/detail?id=123'
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['testsite'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'Game A': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'Game A',
+        'known_urls_by_source': {'testsite': [stale]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'testsite',
+        'search_domains': ['example.test'],
+        'direct_listing_urls': [listing],
+        'direct_listing_limit': 1,
+        'direct_detail_limit': 4,
+        'direct_detail_url_hints': ['/detail'],
+        'scheduled_known_detail_fetch_enabled': False,
+    }]}))
+    direct.write_published([])
+    requested = []
+
+    def fetch(url, source):
+        requested.append(url)
+        if url == listing:
+            return (
+                '<body>Game A <a href="/detail?id=123">Game A offer</a></body>',
+                listing,
+            )
+        if url == current:
+            return '<body>Game A 累計 100 pt</body>', current
+        pytest.fail('unexpected URL')
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 0
+    assert requested == [listing, current]
+    assert stale not in requested
+    assert direct.read_published() == []
+
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert any(item['reason'] == 'unpublished_offer_found' and item['url'] == current for item in items)
+
+
+def test_repository_coincome_uses_listing_only_scheduled_discovery(monkeypatch):
+    monkeypatch.setattr(direct, 'SOURCES', ROOT/'config/point_sources.json')
+    payload = json.loads((ROOT/'config/point_sources.json').read_text())
+    by_id = {source['id']: source for source in payload['sources']}
+    coincome = by_id['coincome']
+    assert coincome['scheduled_fetch_enabled'] if 'scheduled_fetch_enabled' in coincome else True
+    assert coincome['scheduled_known_detail_fetch_enabled'] is False
+    assert 'listing' in coincome['scheduled_known_detail_fetch_reason'].lower()
+    assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
