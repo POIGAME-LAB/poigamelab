@@ -939,6 +939,14 @@ def main():
         str(x).lower().strip() for x in (source_cfg.get("offerwall_domains_discovered") or [])
         if str(x).strip()
     ]
+    offerwall_presence_cfg = source_cfg.get("offerwall_presence_detection") or {}
+    offerwall_presence_enabled = (
+        isinstance(offerwall_presence_cfg, dict)
+        and offerwall_presence_cfg.get("enabled") is True
+        and offerwall_presence_cfg.get("follow_external_links") is False
+        and offerwall_presence_cfg.get("persist") == "provider_domain_only"
+        and offerwall_presence_cfg.get("require_target_context") is True
+    )
     comparison_sources = [
         str(x).strip() for x in (policy.get("comparisonSources") or []) if str(x).strip()
     ]
@@ -1052,9 +1060,10 @@ def main():
                     raw, final_url = fetch_once(listing_url, source)
                     if target_present(visible_text(raw), aliases):
                         discovered.extend(discover_detail_links(raw, final_url, source, aliases, limit=6))
-                        offerwall_presence.extend(
-                            discover_offerwall_presence(raw, final_url, aliases, offerwall_domains, limit=6)
-                        )
+                        if offerwall_presence_enabled:
+                            offerwall_presence.extend(
+                                discover_offerwall_presence(raw, final_url, aliases, offerwall_domains, limit=6)
+                            )
                 except Exception as e:
                     listing_errors.append({"url": listing_url, "error": summarize_fetch_error(e)})
             urls.extend(discovered)
