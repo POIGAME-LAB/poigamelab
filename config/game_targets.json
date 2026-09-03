@@ -8,9 +8,14 @@
         "Memento Mori"
       ],
       "known_urls_by_source": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=160688",
+          "https://pc.moppy.jp/ad/detail.php?site_id=160690"
+        ],
         "warau": [
           "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975",
-          "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206035"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035",
+          "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
         ]
       }
     },
@@ -31,20 +36,30 @@
           "https://cimcome.jp/campaigns/details/10038"
         ],
         "warau": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817"
         ]
-      },
-      "partial_fast_path_sources": [
-        "warau",
-        "coincome"
-      ]
+      }
     },
     {
       "game": "Township",
       "aliases": [
         "Township",
         "タウンシップ"
-      ]
+      ],
+      "known_urls_by_source": {
+        "chobirich": [
+          "https://www.chobirich.com/ad_details/1894712"
+        ],
+        "coincome": [
+          "https://cimcome.jp/campaigns/details/9857",
+          "https://cimcome.jp/campaigns/details/9856"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643"
+        ]
+      }
     },
     {
       "game": "ワーキングヒーロー",
@@ -73,7 +88,8 @@
         ],
         "warau": [
           "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872",
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862",
+          "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205390"
         ]
       }
     }
