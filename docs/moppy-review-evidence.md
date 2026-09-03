@@ -81,3 +81,27 @@ to refresh publication because the Moppy shell still requires authoritative
 `POINT GET` destination terms.
 
 This is target discovery, not publication approval.
+
+
+## Downstream provider identity from first-party shell text
+
+Current official Moppy shell pages for the reviewed AppDriver-backed game offers
+explicitly direct point-missing inquiries to the "アプリドライブ" site. This is
+first-party Moppy evidence and does not require opening a POINT GET destination.
+
+The reviewed AppDriver provider contract therefore includes the first-party
+labels `アプリドライブ` and `AppDriver`. During structured Moppy review, when
+a parsed shell both requires downstream terms and contains a reviewed provider
+label, the review evidence may add `downstreamProviderCandidates`.
+
+This enrichment is identity-only:
+
+- the provider remains `presence_only`;
+- no AppDriver URL is requested;
+- no downstream reward or milestone is inferred;
+- no source is confirmed;
+- no publication field is changed;
+- the Moppy shell's existing downstream-terms gate remains in force.
+
+The provider label is already part of the bounded Moppy terms text and therefore
+covered by the existing shell evidence fingerprint.
