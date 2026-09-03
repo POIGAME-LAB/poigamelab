@@ -536,7 +536,7 @@ def test_expired_absolute_deadline_cannot_be_refreshed(approved_case):
 
 def test_real_baseline_candidates_are_unapproved_and_bound_to_revised_rows():
     payload = json.loads((ROOT/'data/warau_baseline_candidates.json').read_text())
-    assert payload['status'] == 'pending_explicit_approval'
+    assert payload['status'] == 'reviewed_registry_added'
     assert len(payload['candidates']) == 4
     rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
     by_key = {row['offerKey']: row for row in rows}
@@ -568,3 +568,46 @@ def test_real_baseline_candidates_are_unapproved_and_bound_to_revised_rows():
                 '45日以内：プレイヤーレベル125到達'):
                 assert condition in row['condition']
     assert seen == set(expected)
+
+
+def test_reviewed_registry_is_exactly_four_rows_for_seven_days(monkeypatch):
+    from datetime import datetime, timedelta
+    monkeypatch.setattr(direct, 'POLICY', ROOT/'config/refresh_policy.json')
+    approvals = direct.load_refresh_approvals()
+    candidates = json.loads((ROOT/'data/warau_baseline_candidates.json').read_text())['candidates']
+    assert len(approvals) == 4
+    assert set(approvals) == {candidate['offerKey'] for candidate in candidates}
+    for candidate in candidates:
+        approval = approvals[candidate['offerKey']]
+        assert approval['approved'] is True
+        assert approval['reviewedBy'] == 'Codex evidence review; maintainer authorized seven-day PR enrollment in ChatGPT on 2026-09-03'
+        for field in ('game', 'source', 'sourceUrl', 'parserVersion', 'evidenceFingerprint',
+                      'publishedRowFingerprint', 'unitConversion'):
+            assert approval[field] == candidate[field]
+        assert approval['reviewedAt'] == '2026-09-03T09:48:47+00:00'
+        assert approval['expiresAt'] == '2026-09-10T09:48:47+00:00'
+        assert datetime.fromisoformat(approval['expiresAt']) - datetime.fromisoformat(approval['reviewedAt']) == timedelta(days=7)
+
+
+@pytest.mark.parametrize('offer_id', ['204645', '204643', '205817', '205816'])
+def test_enrolled_rows_gate_time_boundaries_and_changed_evidence(offer_id):
+    from datetime import datetime, timedelta
+    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
+    row = next(r for r in rows if r['site'] == 'warau' and direct.warau_offer_id(r['url']) == offer_id)
+    approvals = json.loads((ROOT/'config/approved_offer_baselines.json').read_text())['approvals']
+    approval = next(a for a in approvals if a['offerKey'] == row['offerKey'])
+    # Gate-only fixture. Parsing real saved HTML is checked separately offline.
+    evidence = {'state':'parsed', 'offerId':offer_id, 'platform':row['platform'],
+        'parserVersion':approval['parserVersion'], 'evidenceFingerprint':approval['evidenceFingerprint'],
+        'rewardUnit':'pt', 'rewardPoints':int(row['reward'])}
+    start = datetime.fromisoformat(approval['reviewedAt'])
+    end = datetime.fromisoformat(approval['expiresAt'])
+    assert direct.approved_refresh_reason(row, evidence, approval, start.isoformat()) is None
+    assert direct.approved_refresh_reason(row, evidence, approval, (end-timedelta(seconds=1)).isoformat()) is None
+    for instant in (start-timedelta(seconds=1), end, end+timedelta(seconds=1)):
+        assert direct.approved_refresh_reason(row, evidence, approval, instant.isoformat()) == 'approval_expired_or_invalid_time'
+    assert direct.approved_refresh_reason(dict(row, updatedAt='2026-09-04'), evidence, approval, start.isoformat()) is None
+    assert direct.approved_refresh_reason(dict(row, condition='changed'), evidence, approval, start.isoformat()) == 'published_row_changed_since_approval'
+    assert direct.approved_refresh_reason(row, dict(evidence, evidenceFingerprint='changed'), approval, start.isoformat()) == 'source_terms_changed_since_approval'
+    assert direct.approved_refresh_reason(row, dict(evidence, platform='other'), approval, start.isoformat()) == 'approved_platform_changed'
+    assert direct.approved_refresh_reason(row, dict(evidence, rewardPoints=int(row['reward'])+1), approval, start.isoformat()) == 'approved_reward_changed'
