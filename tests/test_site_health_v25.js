@@ -58,10 +58,10 @@ function makeContext(fetchImpl) {
   );
 
   assert.strictEqual(api.getOfferHealthLabel({ verified: false }, health['Township']).state, 'legacy');
-  assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-31' }, health['Township']).state, 'verified');
-  assert.strictEqual(api.getOfferHealthLabel({ verified: true }, health['きのこ伝説']).state, 'warning');
-  assert.strictEqual(api.getOfferHealthLabel({ verified: true }, health['きのこ伝説']).text, '掲載情報を確認中');
-  assert.strictEqual(api.getOfferHealthLabel({ verified: true }, health['失敗ゲーム']).state, 'warning');
+  assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-31' }, health['Township'], now).state, 'verified');
+  assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-31' }, health['きのこ伝説'], now).state, 'warning');
+  assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-31' }, health['きのこ伝説'], now).text, '掲載情報を確認中');
+  assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-31' }, health['失敗ゲーム'], now).state, 'warning');
 
   // A successful discovery run is not a verified offer refresh.
   const discovery = api.buildGameHealth({
