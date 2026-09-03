@@ -41,7 +41,8 @@
     "exceptionQueue": true,
     "completeRunReplacesGameSnapshot": false,
     "degradedRunMergesOnly": true,
-    "directRefreshNeverCreatesNewPublishedRows": true
+    "directRefreshNeverCreatesNewPublishedRows": true,
+    "allowLegacyFallback": false
   },
   "schedulerReady": true,
   "scheduledMode": "direct-http-api-free",

@@ -40,7 +40,8 @@ function makeContext(fetchImpl) {
     games: {
       Township: { enabled: true },
       'メメントモリ': { enabled: true }
-    }
+    },
+    publication: { allowLegacyFallback: true }
   };
 
   const apiMerge = makeContext(async (path) => {
@@ -71,6 +72,27 @@ function makeContext(fetchImpl) {
   assert.strictEqual(fallback.offers.length, 1);
   assert.strictEqual(fallback.offers[0].gameName, '未管理ゲーム');
 
+  const launchPolicy = {
+    games: policy.games,
+    publication: { allowLegacyFallback: false }
+  };
+  const launchRequests = [];
+  const apiLaunch = makeContext(async (path) => {
+    launchRequests.push(path);
+    if (path.includes('refresh_policy')) {
+      return { ok: true, status: 200, json: async () => launchPolicy };
+    }
+    if (path.includes('published')) {
+      return { ok: true, status: 200, text: async () => published };
+    }
+    throw new Error(`launch must not request legacy offers: ${path}`);
+  });
+  const launch = await apiLaunch.loadOffersWithFallback();
+  assert.strictEqual(launch.publishedCount, 1);
+  assert.strictEqual(launch.legacyCount, 0);
+  assert.strictEqual(launch.offers.length, 1);
+  assert.strictEqual(launchRequests.some(path => path === 'offers.csv'), false);
+
   const apiPolicyFailClosed = makeContext(async (path) => {
     if (path.includes('refresh_policy')) {
       return { ok: false, status: 500, json: async () => ({}) };
@@ -86,6 +108,9 @@ function makeContext(fetchImpl) {
   assert.strictEqual(api.safeHttpUrl('javascript:alert(1)'), '');
   assert.ok(api.safeHttpUrl('https://example.com/path').startsWith('https://example.com/path'));
   assert.strictEqual(api.escapeHtml('<script>'), '&lt;script&gt;');
+
+  const actualPolicy = JSON.parse(fs.readFileSync('config/refresh_policy.json', 'utf8'));
+  assert.strictEqual(actualPolicy.publication.allowLegacyFallback, false);
 
   // The real revised CSV must survive the same reader used by game.html.
   const actualCsv = fs.readFileSync('data/published_offers.csv', 'utf8');
