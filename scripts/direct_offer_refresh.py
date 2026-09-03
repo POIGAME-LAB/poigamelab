@@ -615,7 +615,7 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
 
         header_tail = text[start:start + 1800]
         header_end_candidates = [
-            header_tail.find(marker) for marker in ("ストア概要", "概要", "適用端末")
+            header_tail.find(marker) for marker in ("ストア概要", "概要")
             if header_tail.find(marker) >= 0
         ]
         if not header_end_candidates:
