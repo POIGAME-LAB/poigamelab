@@ -1817,3 +1817,33 @@ def test_repository_gf_rewards_provider_contract_is_presence_only():
     assert gf['persist'] == 'provider_domain_only'
     assert gf['requiresUserTrackingContext'] is True
     assert gf['privacyEvidenceUrl'] == 'https://info.gf-rewards.com/privacy.html'
+
+
+def test_repository_appdriver_provider_contract_is_presence_only():
+    path = ROOT/'config/offerwall_providers.json'
+    payload = json.loads(path.read_text())
+    appdriver = next(item for item in payload['providers'] if item['id'] == 'appdriver')
+    assert appdriver['presenceDomains'] == ['appdriver.jp']
+    assert appdriver['informationDomains'] == ['appdriver.jp']
+    assert appdriver['retrievalMode'] == 'presence_only'
+    assert appdriver['followExternalLinks'] is False
+    assert appdriver['persist'] == 'provider_domain_only'
+    assert appdriver['requiresUserTrackingContext'] is True
+    assert appdriver['termsEvidenceUrl'] == 'https://appdriver.jp/public/info/terms'
+    assert appdriver['integrationEvidenceUrl'].endswith('Reward_for_publisher_ver1.4_English.pdf')
+
+    registry = direct.load_offerwall_provider_registry(path)
+    assert registry['appdriver.jp'] == {
+        'providerId': 'appdriver',
+        'providerName': 'AppDriver',
+        'domain': 'appdriver.jp',
+        'retrievalMode': 'presence_only',
+    }
+    assert direct.offerwall_provider_candidates(
+        ['appdriver.jp', 'unknown.example'], registry
+    ) == [{
+        'providerId': 'appdriver',
+        'providerName': 'AppDriver',
+        'domain': 'appdriver.jp',
+        'retrievalMode': 'presence_only',
+    }]

@@ -19,6 +19,26 @@
       "serviceEvidenceUrl": "https://info.gf-rewards.com/",
       "reviewedAt": "2026-09-03",
       "reviewNote": "Official GF Rewards privacy information states that CookieID is automatically acquired to identify users who satisfy reward conditions. POIGAME LAB therefore records only first-party-observed provider presence and does not fetch provider offerwall URLs."
+    },
+    {
+      "id": "appdriver",
+      "name": "AppDriver",
+      "operator": "株式会社ADWAYS DEEE",
+      "presenceDomains": [
+        "appdriver.jp"
+      ],
+      "informationDomains": [
+        "appdriver.jp"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "serviceEvidenceUrl": "https://appdriver.jp/",
+      "termsEvidenceUrl": "https://appdriver.jp/public/info/terms",
+      "integrationEvidenceUrl": "https://appdriver.jp/static/file/Reward_for_publisher_ver1.4_English.pdf",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "The publicly accessible AppDriver web offerwall integration guide shows request URLs carrying identifier (UserID), media_id and digest. Because the production offerwall is therefore not treated as an anonymous catalog, POIGAME LAB records passive provider presence only and does not request offerwall URLs."
     }
   ]
 }
