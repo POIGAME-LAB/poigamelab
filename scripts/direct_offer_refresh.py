@@ -17,6 +17,7 @@ TARGETS = ROOT / "config" / "game_targets.json"
 SOURCES = ROOT / "config" / "point_sources.json"
 PUBLISHED = ROOT / "data" / "published_offers.csv"
 STATUS = ROOT / "data" / "comparison_refresh_status.json"
+LEGACY_STATUS = ROOT / "data" / "refresh_status.json"
 REVIEW = ROOT / "data" / "comparison_review_queue.json"
 
 FIELDS = [
@@ -182,10 +183,6 @@ def choose_existing_reward(text, old_reward):
         if ratio < 0.40 or ratio > 2.50:
             return None, "reward_change_outside_safety_band", strong, weak, generic
     return candidate, method, strong, weak, generic
-
-def reward_visible(text, reward):
-    compact = re.sub(r"[,，]", "", normalized_text(text))
-    return str(int(reward)) in compact
 
 def platform_hint(text):
     low = str(text or "").casefold()
@@ -391,17 +388,6 @@ def main():
                         "checkedAt": checked_at
                     })
                     source_result["reviewRequired"] += 1
-                elif (
-                    old_reward > 0
-                    and reward_method == "no_unambiguous_reward_marker"
-                    and not strong
-                    and not weak
-                    and reward_visible(detail.get("_text") or "", old_reward)
-                ):
-                    existing["updatedAt"] = today
-                    existing["verified"] = "true"
-                    touched.add(existing.get("offerKey") or exact_url_key(url))
-                    source_result["updatedRows"] += 1
                 else:
                     review.append({
                         "game": game, "source": source_id, "url": detail["url"],
@@ -415,7 +401,7 @@ def main():
                     })
                     source_result["reviewRequired"] += 1
 
-            if source_result["confirmedOffers"] > 0:
+            if source_result["updatedRows"] > 0:
                 source_result["state"] = "confirmed"
                 if is_standard:
                     game_result["standardConfirmed"] += 1
@@ -449,6 +435,36 @@ def main():
     tmp = STATUS.with_suffix(".json.tmp")
     tmp.write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp.replace(STATUS)
+
+    compatibility_results = []
+    for game_result in results:
+        ready = bool(game_result.get("comparisonReady"))
+        refreshed = sum(
+            int(x.get("updatedRows") or 0)
+            for x in (game_result.get("sources") or [])
+            if x.get("standard") is True
+        )
+        compatibility_results.append({
+            "game": game_result.get("game"),
+            "returncode": 0,
+            "publishableCount": refreshed,
+            "collectionComplete": ready,
+            "degradedReasons": [] if ready else ["comparison_sources_below_minimum"],
+            "standardConfirmed": game_result.get("standardConfirmed", 0),
+            "standardTotal": game_result.get("standardTotal", 0),
+        })
+
+    compatibility = {
+        "phase": "DIRECT_COMPARISON_REFRESH_V1",
+        "startedAt": checked_at,
+        "finishedAt": checked_at,
+        "enabledGames": [x.get("game") for x in results],
+        "results": compatibility_results,
+        "success": True,
+    }
+    tmp_legacy = LEGACY_STATUS.with_suffix(".json.tmp")
+    tmp_legacy.write_text(json.dumps(compatibility, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp_legacy.replace(LEGACY_STATUS)
 
     review_payload = {
         "phase": "DIRECT_COMPARISON_REVIEW_V1",
