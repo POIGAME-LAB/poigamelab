@@ -57,7 +57,7 @@ def test_reward_change_is_review_only_not_auto_publish(tmp_path, monkeypatch):
     assert status['apiCalls']==0
     assert status['publishedRewardChanges']==0
 
-def test_same_reward_refreshes_freshness(tmp_path, monkeypatch):
+def test_same_reward_requires_full_offer_verification(tmp_path, monkeypatch):
     (tmp_path/'config').mkdir()
     (tmp_path/'data').mkdir()
 
@@ -103,10 +103,12 @@ def test_same_reward_refreshes_freshness(tmp_path, monkeypatch):
     assert direct.main()==0
     rows=list(csv.DictReader(direct.PUBLISHED.open(encoding='utf-8')))
     assert rows[0]['reward']=='12050'
-    assert rows[0]['updatedAt'] != '2026-09-01'
+    assert rows[0]['updatedAt'] == '2026-09-01'
     status=json.loads(direct.STATUS.read_text(encoding='utf-8'))
     assert status['apiCalls']==0
-    assert status['refreshedRows']==1
+    assert status['refreshedRows']==0
+    review=json.loads(direct.REVIEW.read_text())['items']
+    assert [x['reason'] for x in review] == ['offer_terms_review_required']
 
 def test_offer_identity_ignores_warau_host_and_navigation_params():
     a=direct.offer_identity_key(
@@ -225,3 +227,54 @@ def test_request_limits_and_cross_game_cache(refresh_case, monkeypatch, failed):
     assert all(not game['comparisonReady'] for game in status['games'])
     if failed:
         assert sum(x['reason'] == 'fetch_failed' for x in review) == 4
+
+
+@pytest.mark.parametrize('page', [
+    'Game A iOS 累計 100 pt Original condition',
+    'Game A Android 累計 100 pt Original condition',
+    'Game A iOS Android 累計 100 pt Original condition',
+    'Game A 累計 100 pt Original condition',
+    'Game A iOS 累計 100 ポイント 2ポイント＝1円 Original condition',
+    'Game A iOS 累計 100 円 Changed condition',
+    'Game A iOS 累計 100 円 Original condition 期限変更：10日以内',
+    'Game A iOS 累計 100 円 Original condition 掲載終了',
+    'Game A iOS 累計 100 円 Original condition',
+    '<h1>Game B iOS 累計 100 円</h1><aside>おすすめ Game A</aside>',
+])
+@pytest.mark.parametrize('verified', ['true', 'false'])
+def test_page_wide_match_never_refreshes_or_promotes(refresh_case, monkeypatch, page, verified):
+    rows = direct.read_published()
+    rows[0]['verified'] = verified
+    direct.write_published(rows)
+    before = direct.PUBLISHED.read_bytes()
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (page, url))
+    def unexpected_write(rows):
+        pytest.fail('Discovery-only run must not attempt a publication write')
+    monkeypatch.setattr(direct, 'write_published', unexpected_write)
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    status = json.loads(direct.STATUS.read_text())
+    assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
+    for game in status['games']:
+        assert game['standardConfirmed'] == 0
+        assert game['comparisonReady'] is False
+        assert all(source['confirmedOffers'] == source['updatedRows'] == 0 for source in game['sources'])
+    legacy = json.loads(direct.LEGACY_STATUS.read_text())
+    assert all(result['publishableCount'] == 0 and result['collectionComplete'] is False
+               for result in legacy['results'])
+    reviews = json.loads(direct.REVIEW.read_text())['items']
+    matching = [item for item in reviews if item['reason'] == 'offer_terms_review_required']
+    assert len(matching) == 1
+    assert matching[0]['game'] == 'Game A'
+    assert set(matching[0]['requiredChecks']) == {
+        'offer_identity', 'reward_unit', 'platform', 'achievement_conditions', 'deadline', 'availability'}
+
+
+def test_missing_target_does_not_refresh_or_create_offer(refresh_case, monkeypatch):
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (
+        '<h1>Unrelated game iOS 累計 100 円</h1>', url))
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == refresh_case
+    reviews = json.loads(direct.REVIEW.read_text())['items']
+    assert sum(item['reason'] == 'target_not_confirmed' for item in reviews) == 4
+    assert not any(item['reason'] == 'unpublished_offer_found' for item in reviews)

@@ -311,11 +311,9 @@ def main():
         if r.get("url") and offer_identity_key(r.get("url"), str(r.get("site") or ""))
     }
     changed = 0  # kept for status compatibility; scheduled mode never changes reward values
-    touched = set()
     review = []
     results = []
     checked_at = now_iso()
-    today = today_jst()
     fetch_cache = {}
 
     def fetch_once(url, source):
@@ -432,7 +430,6 @@ def main():
                     source_result["reviewRequired"] += 1
                     continue
 
-                source_result["confirmedOffers"] += 1
                 key = (game, source_id, offer_identity_key(url, source_id))
                 existing = row_by_identity.get(key)
                 if existing is None:
@@ -456,13 +453,25 @@ def main():
                 )
 
                 if detected is not None and detected == old_reward:
-                    # Scheduled direct checks NEVER change monetary values.
-                    # Point programs use different point-to-yen units, so a changed
-                    # number is review material, not an automatic publication.
-                    existing["updatedAt"] = today
-                    existing["verified"] = "true"
-                    touched.add(existing.get("offerKey") or exact_url_key(url))
-                    source_result["updatedRows"] += 1
+                    # A page-wide numeric match is discovery evidence only.
+                    # It does not bind the amount/unit, OS and complete terms to
+                    # this offer. Keep all published fields unchanged until a
+                    # source-specific verifier can establish that binding.
+                    review.append({
+                        "game": game, "source": source_id, "url": detail["url"],
+                        "reason": "offer_terms_review_required",
+                        "storedReward": old_reward,
+                        "detectedReward": detected,
+                        "rewardMethod": reward_method,
+                        "storedPlatform": existing.get("platform") or "",
+                        "platformHint": detail.get("platform") or "",
+                        "requiredChecks": [
+                            "offer_identity", "reward_unit", "platform",
+                            "achievement_conditions", "deadline", "availability",
+                        ],
+                        "checkedAt": checked_at,
+                    })
+                    source_result["reviewRequired"] += 1
                 elif detected is not None and detected != old_reward:
                     review.append({
                         "game": game, "source": source_id, "url": detail["url"],
@@ -502,9 +511,6 @@ def main():
         )
         results.append(game_result)
 
-    if touched:
-        write_published(rows)
-
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     status = {
         "phase": "DIRECT_COMPARISON_REFRESH_V1",
@@ -512,7 +518,7 @@ def main():
         "comparisonSources": comparison_sources,
         "apiCalls": 0,
         "publishedRewardChanges": changed,
-        "refreshedRows": len(touched),
+        "refreshedRows": 0,
         "reviewCount": len(review),
         "games": results,
         "success": True,
