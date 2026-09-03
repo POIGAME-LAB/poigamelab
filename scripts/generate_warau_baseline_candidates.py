@@ -34,7 +34,9 @@ def build_candidate(row, evidence, checked_on):
     if row.get("site") != "warau" or row.get("verified") != "true":
         raise ValueError("published_row_not_verified_warau")
     if evidence.get("state") != "parsed" or evidence.get("parserVersion") != "warau-stepup-v1":
-        raise ValueError("source_evidence_not_supported")
+        state = str(evidence.get("state") or "unknown")[:40]
+        reason = str(evidence.get("reason") or "unspecified")[:80]
+        raise ValueError(f"source_evidence_not_supported:{state}:{reason}")
     if not row.get("offerKey") or row.get("game") == "":
         raise ValueError("missing_published_identity")
     try:
