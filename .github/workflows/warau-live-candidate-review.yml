@@ -1,0 +1,48 @@
+name: Read-only Warau baseline candidate review
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-review:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'review/warau-live-candidates-20260903'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Record protected-file hashes
+        run: |
+          sha256sum \
+            data/published_offers.csv \
+            config/approved_offer_baselines.json \
+            data/warau_baseline_candidates.json \
+            > /tmp/protected-before.sha
+          cat /tmp/protected-before.sha
+
+      - name: Generate live unapproved candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/generate_warau_baseline_candidates.py | tee /tmp/warau-candidates.json
+
+      - name: Prove repository remained unchanged
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum \
+            data/published_offers.csv \
+            config/approved_offer_baselines.json \
+            data/warau_baseline_candidates.json \
+            > /tmp/protected-after.sha
+          diff -u /tmp/protected-before.sha /tmp/protected-after.sha
+          git diff --exit-code
