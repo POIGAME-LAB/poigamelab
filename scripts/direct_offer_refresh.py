@@ -425,10 +425,113 @@ def inspect_warau_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def chobirich_offer_id(url):
+    p = urlparse(url)
+    if (p.scheme != "https" or p.hostname not in {"www.chobirich.com", "chobirich.com"}
+            or p.username is not None or p.password is not None or p.port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/ad_details/([0-9]+)/?", p.path)
+    if not match:
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def evidence_lines(node):
+    """Keep explicit line breaks for numbered conditions; ignore script content."""
+    if node.tag == "br":
+        return "\n"
+    if node.tag in {"script", "style", "noscript", "svg"}:
+        return ""
+    return "".join(evidence_lines(c) if isinstance(c, EvidenceNode) else c for c in node.children)
+
+
+def inspect_chobirich_offer(raw, requested_url, final_url, aliases):
+    """Review-only parser for the observed numbered StepUp DOM variant.
+
+    This does not authorize browser-backed collection or publication. Raw HTTP
+    lacking the rendered yen summary or full terms must remain held for review.
+    """
+    try:
+        offer_id = chobirich_offer_id(requested_url)
+        if chobirich_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+        doc = EvidenceHTML(raw).root
+        canonical = one([n for n in doc.find(tag="link")
+                         if "canonical" in n.attrs.get("rel", "").split()])
+        if chobirich_offer_id(urljoin(final_url, canonical.attrs.get("href", ""))) != offer_id:
+            raise ValueError("canonical_offer_mismatch")
+        root = one(doc.find(tag="main"))
+        name = evidence_text(one(root.find(tag="h1")))
+        if not target_present(name, aliases):
+            raise ValueError("offer_title_mismatch")
+        yen_node = one(root.find(ident="item_yen"))
+        yen_match = re.fullmatch(r"\(最大([0-9,]+)円相当\)", evidence_text(yen_node).replace(" ", ""))
+        if not yen_match:
+            raise ValueError("missing_explicit_yen_total")
+        total_yen = exact_points(EvidenceHTML(yen_match.group(1)).root)
+        point_node = one([n for n in yen_node.parent.children
+                          if isinstance(n, EvidenceNode) and n.tag == "p" and n is not yen_node])
+        point_match = re.fullmatch(r"最大([0-9,]+)ポイント", evidence_text(point_node))
+        if not point_match:
+            raise ValueError("missing_explicit_point_total")
+        total_points = exact_points(EvidenceHTML(point_match.group(1)).root)
+        if total_points != total_yen:
+            raise ValueError("source_reward_conversion_mismatch")
+        os_labels = []
+        for button in root.find(tag="button"):
+            label = evidence_text(button)
+            if label.startswith("QRコードを表示してスマホで利用する"):
+                match = re.fullmatch(r"QRコードを表示してスマホで利用する\((Android|iOS)用\)", label)
+                if not match:
+                    raise ValueError("ambiguous_offer_platform")
+                os_labels.append(match.group(1))
+        if len(set(os_labels)) != 1:
+            raise ValueError("ambiguous_offer_platform")
+        requirement = one(root.find(cls="ad-requirement"))
+        heading = evidence_text(one(requirement.find(tag="h2")))
+        if not heading.startswith("獲得方法：") or "各ステップクリア" not in heading:
+            raise ValueError("unsupported_achievement_method")
+        paragraph = one(requirement.find(tag="p"))
+        lines = [re.sub(r"\s+", " ", line).strip() for line in evidence_lines(paragraph).splitlines()]
+        lines = [line for line in lines if line]
+        steps, rest = [], []
+        for line in lines:
+            numbered = re.match(r"[0-9]+\.", line)
+            if numbered:
+                match = re.fullmatch(r"([1-9][0-9]*)\.\s*(.+)で([0-9,]+)pt", line)
+                if not match or rest or int(match.group(1)) != len(steps) + 1:
+                    raise ValueError("incomplete_numbered_steps")
+                condition = match.group(2)
+                if len(condition) < 4:
+                    raise ValueError("missing_step_condition")
+                steps.append({"condition": condition,
+                              "rewardPoints": exact_points(EvidenceHTML(match.group(3)).root)})
+            else:
+                rest.append(line)
+        if len(steps) < 2 or len({s["condition"] for s in steps}) != len(steps):
+            raise ValueError("missing_or_duplicate_steps")
+        if sum(s["rewardPoints"] for s in steps) != total_points:
+            raise ValueError("step_total_mismatch")
+        terms = "\n".join(lines)
+        if not all(marker in "\n".join(rest) for marker in (
+                "成果受付期限", "成果調査受付期限", "条件達成に関する注意事項", "却下条件")):
+            raise ValueError("incomplete_offer_terms")
+        payload = {"offerId": offer_id, "name": name, "platform": os_labels[0],
+                   "rewardPoints": total_points, "rewardUnit": "pt", "observedRewardYen": total_yen,
+                   "steps": steps, "termsText": terms}
+        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "chobirich-numbered-stepup-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def inspect_detail(url, source, aliases, fetcher=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
-    if source.get("id") == "warau":
-        evidence = inspect_warau_offer(raw, url, final_url, aliases)
+    structured_parsers = {"warau": inspect_warau_offer, "chobirich": inspect_chobirich_offer}
+    if source.get("id") in structured_parsers:
+        evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
         return {"url": final_url, "sourceEvidence": evidence,
                 "targetPresent": evidence["state"] == "parsed",
                 "platform": evidence.get("platform", "")}
@@ -684,8 +787,9 @@ def main():
                         if evidence["state"] == "parsed":
                             item["platformMatches"] = evidence["platform"] == existing.get("platform")
                             item["requiredChecks"] = ["reward_unit_conversion", "complete_terms_vs_published_row"]
-                            reason = approved_refresh_reason(existing, evidence,
+                            reason = (approved_refresh_reason(existing, evidence,
                                 approvals.get(existing.get("offerKey")), checked_at)
+                                if source_id == "warau" else "source_refresh_not_enabled")
                             identity_rows = [r for r in current_rows
                                 if offer_identity_key(r.get("url"), source_id) == offer_identity_key(url, source_id)]
                             if len(identity_rows) != 1 or sum(r.get("offerKey") == existing.get("offerKey") for r in rows) != 1:

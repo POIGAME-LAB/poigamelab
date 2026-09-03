@@ -611,3 +611,137 @@ def test_enrolled_rows_gate_time_boundaries_and_changed_evidence(offer_id):
     assert direct.approved_refresh_reason(row, dict(evidence, evidenceFingerprint='changed'), approval, start.isoformat()) == 'source_terms_changed_since_approval'
     assert direct.approved_refresh_reason(row, dict(evidence, platform='other'), approval, start.isoformat()) == 'approved_platform_changed'
     assert direct.approved_refresh_reason(row, dict(evidence, rewardPoints=int(row['reward'])+1), approval, start.isoformat()) == 'approved_reward_changed'
+
+
+CHOBI_URL = 'https://www.chobirich.com/ad_details/1234567'
+
+
+@pytest.fixture
+def chobi_markup():
+    # Synthetic text with the structure inspected in the rendered official page.
+    return f'''<html><head><link rel="canonical" href="{CHOBI_URL}"></head><body>
+<main><h1>テストゲーム</h1><div><p>最大600ポイント</p>
+<p id="item_yen">(最大<span>600</span>円相当)</p></div>
+<p>iPhone・iOS向けの一般的な注意事項</p>
+<button>QRコードを表示してスマホで利用する(Android用)</button>
+<div class="ad-requirement"><h2>獲得方法：新規利用後、各ステップクリア</h2><p>
+1. 広告クリックから30日以内にレベル10到達で100pt<br>
+2. 広告クリックから40日以内にレベル100到達後に一括3200円課金で200pt<br>
+3. 広告クリックから45日以内にレベル125到達で300pt<br>
+成果受付期限：各ステップの広告クリック日からの日数<br>
+成果調査受付期限：広告クリックから57日<br>
+条件達成に関する注意事項：新規利用のみ<br>
+却下条件：重複利用</p></div>
+<button>QRコードを表示してスマホで利用する(Android用)</button>
+<aside>おすすめ別ゲーム iOS 最大999999ポイント</aside></main></body></html>'''
+
+
+def parse_chobi(raw, requested=CHOBI_URL, final=CHOBI_URL):
+    return direct.inspect_chobirich_offer(raw, requested, final, ['テストゲーム'])
+
+
+def test_chobirich_binds_numbered_steps_yen_os_and_deadline_origin(chobi_markup):
+    evidence = parse_chobi(chobi_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['platform'] == 'Android'  # not the generic Apple disclaimer
+    assert evidence['rewardPoints'] == evidence['observedRewardYen'] == 600
+    assert evidence['rewardUnit'] == 'pt'
+    assert [x['rewardPoints'] for x in evidence['steps']] == [100, 200, 300]
+    assert all('広告クリックから' in x['condition'] for x in evidence['steps'])
+    assert 'レベル100到達後に一括3200円課金' in evidence['steps'][1]['condition']
+    assert len(evidence['evidenceFingerprint']) == 64
+    assert parse_chobi(chobi_markup.replace('999999', '888888'))['evidenceFingerprint'] == evidence['evidenceFingerprint']
+
+
+@pytest.mark.parametrize('old,new,reason', [
+    ('<span>600</span>', '<span>300</span>', 'source_reward_conversion_mismatch'),
+    ('最大600ポイント', '最大1200ポイント', 'source_reward_conversion_mismatch'),
+    ('最大600ポイント', '最大600円', 'missing_explicit_point_total'),
+    ('円相当)', '円)', 'missing_explicit_yen_total'),
+    ('で200pt', 'で201pt', 'step_total_mismatch'),
+    ('で200pt', 'で200円', 'incomplete_numbered_steps'),
+    ('で200pt', 'で2,00pt', 'invalid_points'),
+    ('で200pt', 'で0.5pt', 'incomplete_numbered_steps'),
+    ('2. 広告', '4. 広告', 'incomplete_numbered_steps'),
+    ('3. 広告', '2. 広告', 'incomplete_numbered_steps'),
+    ('3. 広告クリックから45日以内にレベル125到達で300pt<br>', '', 'step_total_mismatch'),
+    ('class="ad-requirement"', 'class="other"', 'missing_or_ambiguous_offer_structure'),
+    ('id="item_yen"', 'id="other"', 'missing_or_ambiguous_offer_structure'),
+    ('成果受付期限', '受付期間', 'incomplete_offer_terms'),
+    ('却下条件', '対象外', 'incomplete_offer_terms'),
+    ('<h1>テストゲーム</h1>', '<h1>別ゲーム</h1>', 'offer_title_mismatch'),
+    ('(Android用)', '(Android/iOS用)', 'ambiguous_offer_platform'),
+    ('QRコードを表示してスマホで利用する(Android用)', '登録して利用する', 'ambiguous_offer_platform'),
+    ('各ステップクリア', '商品の購入', 'unsupported_achievement_method'),
+    ('<main>', '<main><p id="item_yen">(最大600円相当)</p>', 'missing_or_ambiguous_offer_structure'),
+    ('/ad_details/1234567', '/ad_details/7654321', 'canonical_offer_mismatch'),
+])
+def test_chobirich_rejects_incomplete_or_conflicting_evidence(chobi_markup, old, new, reason):
+    evidence = parse_chobi(chobi_markup.replace(old, new))
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == reason
+
+
+def test_chobirich_conflicting_platform_buttons_and_redirect_are_held(chobi_markup):
+    conflicting = chobi_markup.replace('</main>', '<button>QRコードを表示してスマホで利用する(iOS用)</button></main>')
+    assert parse_chobi(conflicting)['reason'] == 'ambiguous_offer_platform'
+    assert parse_chobi(chobi_markup, final=CHOBI_URL.replace('1234567','7654321'))['reason'] == 'redirected_to_different_offer'
+
+
+@pytest.mark.parametrize('url', [
+    'http://www.chobirich.com/ad_details/1234567',
+    'https://outside.invalid/ad_details/1234567',
+    'https://www.chobirich.com.evil.invalid/ad_details/1234567',
+    'https://user@www.chobirich.com/ad_details/1234567',
+    'https://www.chobirich.com:444/ad_details/1234567',
+    'https://www.chobirich.com/ad_details/redirect/1234567',
+    'https://www.chobirich.com/ad_details/1234567/extra',
+])
+def test_chobirich_rejects_unsupported_identity_urls(chobi_markup, url):
+    assert parse_chobi(chobi_markup, requested=url)['state'] == 'review_required'
+
+
+@pytest.mark.parametrize('old,new', [
+    ('広告クリックから', 'インストールから'),
+    ('レベル100到達後に', 'レベル90到達後に'),
+    ('却下条件：重複利用', '却下条件：重複利用と再インストール'),
+])
+def test_chobirich_full_terms_changes_invalidate_snapshot(chobi_markup, old, new):
+    assert parse_chobi(chobi_markup)['evidenceFingerprint'] != parse_chobi(chobi_markup.replace(old,new))['evidenceFingerprint']
+
+
+@pytest.mark.parametrize('fetch_fails', [False, True])
+def test_chobirich_is_review_only_even_with_an_approval_record(chobi_markup, monkeypatch, fetch_fails):
+    direct.POLICY.write_text(json.dumps({'comparisonSources':['chobirich'],
+        'minimumConfirmedSourcesForComparison':2, 'games':{'テストゲーム':{'enabled':True}}}))
+    direct.TARGETS.write_text(json.dumps({'games':[{'game':'テストゲーム'}]}))
+    direct.SOURCES.write_text(json.dumps({'sources':[{'id':'chobirich',
+        'search_domains':['chobirich.com'], 'direct_listing_urls':[]}]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(offerKey='chobi-test', game='テストゲーム', site='chobirich', platform='不明',
+        reward='600', condition='以前の要約', updatedAt='2026-08-31', url=CHOBI_URL, sourceUrl=CHOBI_URL, verified='true')
+    direct.write_published([row])
+    direct.POLICY.with_name('approved_offer_baselines.json').write_text(json.dumps(
+        {'schemaVersion':1,'approvals':[{'offerKey':row['offerKey'],'approved':True,'source':'chobirich'}]}))
+    calls = []
+    def fetch(url, source):
+        calls.append(url)
+        if fetch_fails:
+            from urllib.error import HTTPError
+            raise HTTPError(url, 404, 'Not Found', {}, None)
+        return chobi_markup, url
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    before = direct.PUBLISHED.read_bytes()
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert calls == [CHOBI_URL]
+    status = json.loads(direct.STATUS.read_text())
+    assert status['refreshedRows'] == status['publishedRewardChanges'] == status['apiCalls'] == 0
+    assert status['games'][0]['comparisonReady'] is False
+    item = json.loads(direct.REVIEW.read_text())['items'][0]
+    if fetch_fails:
+        assert item['reason'] == 'fetch_failed'
+    else:
+        assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
+        assert item['sourceEvidence']['platform'] == 'Android'
+        assert item['platformMatches'] is False
