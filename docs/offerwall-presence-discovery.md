@@ -54,3 +54,16 @@ provider-specific retrieval or publication logic.
 
 Any future offerwall integration requires a separately reviewed provider-specific
 design and explicit authorization. This change does not provide one.
+
+
+## Same-card binding hardening
+
+Presence is not inferred from raw character proximity across the whole listing.
+The detector parses the first-party HTML tree and accepts an offerwall link only
+when the target alias is present in the anchor label or within a bounded ancestor
+container for that link. Traversal stops after four ancestor levels and rejects
+containers larger than 1,400 visible characters.
+
+This prevents a dense listing from attaching Game A to an offerwall link that
+actually belongs to the adjacent Game B card. Regression tests cover adjacent
+cards, nested links within the same card, and oversized page-wide containers.
