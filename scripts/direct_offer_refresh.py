@@ -1010,6 +1010,49 @@ def offerwall_provider_candidates(domains, registry):
     return candidates
 
 
+def load_offerwall_provider_label_registry(path, domain_registry):
+    """Build reviewed first-party text labels -> provider metadata.
+
+    Labels are optional review hints. They never authorize a provider request.
+    """
+    if not path.exists():
+        return {}
+    value = load_json(path)
+    providers = value.get("providers") if isinstance(value, dict) else None
+    if not isinstance(providers, list):
+        raise ValueError("invalid_offerwall_provider_registry")
+    labels = {}
+    for item in providers:
+        raw_labels = item.get("firstPartyLabels") or []
+        if not raw_labels:
+            continue
+        if not isinstance(raw_labels, list):
+            raise ValueError("invalid_offerwall_provider_labels")
+        domains = item.get("presenceDomains") or []
+        metadata = next((domain_registry.get(str(d).lower().strip()) for d in domains
+                         if domain_registry.get(str(d).lower().strip()) is not None), None)
+        if metadata is None:
+            raise ValueError("provider_label_without_reviewed_domain")
+        for raw_label in raw_labels:
+            label = normalized_text(raw_label)
+            if len(label) < 4 or label in labels:
+                raise ValueError("invalid_or_duplicate_offerwall_provider_label")
+            labels[label] = dict(metadata)
+    return labels
+
+
+def offerwall_provider_candidates_from_text(text, label_registry):
+    hay = normalized_text(text)
+    candidates = []
+    seen = set()
+    for label, metadata in label_registry.items():
+        provider_id = metadata.get("providerId")
+        if label in hay and provider_id not in seen:
+            seen.add(provider_id)
+            candidates.append(dict(metadata))
+    return candidates
+
+
 def main():
     try:
         approvals = load_refresh_approvals()
@@ -1026,13 +1069,18 @@ def main():
     ]
     offerwall_presence_cfg = source_cfg.get("offerwall_presence_detection") or {}
     try:
+        offerwall_provider_registry_path = SOURCES.with_name("offerwall_providers.json")
         offerwall_provider_registry = load_offerwall_provider_registry(
-            SOURCES.with_name("offerwall_providers.json")
+            offerwall_provider_registry_path
+        )
+        offerwall_provider_label_registry = load_offerwall_provider_label_registry(
+            offerwall_provider_registry_path, offerwall_provider_registry
         )
     except (OSError, ValueError, TypeError):
         # Provider enrichment is review-only metadata. If its registry is
         # malformed, omit enrichment rather than affecting publication logic.
         offerwall_provider_registry = {}
+        offerwall_provider_label_registry = {}
     offerwall_presence_enabled = (
         isinstance(offerwall_presence_cfg, dict)
         and offerwall_presence_cfg.get("enabled") is True
@@ -1250,6 +1298,13 @@ def main():
 
                 evidence = detail.get("sourceEvidence")
                 if evidence is not None:
+                    if evidence.get("state") == "parsed" and evidence.get("downstreamTermsRequired") is True:
+                        provider_candidates = offerwall_provider_candidates_from_text(
+                            evidence.get("termsText", ""), offerwall_provider_label_registry
+                        )
+                        if provider_candidates:
+                            evidence = dict(evidence)
+                            evidence["downstreamProviderCandidates"] = provider_candidates
                     existing = row_by_identity.get((game, source_id, offer_identity_key(url, source_id)))
                     item = {"game": game, "source": source_id, "url": detail["url"],
                             "reason": "structured_offer_review_required" if evidence["state"] == "parsed"
