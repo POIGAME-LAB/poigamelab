@@ -215,6 +215,18 @@ def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
             if target_present(context, aliases):
                 matched = True
                 break
+
+            marker = " ".join([
+                node.tag,
+                node.attrs.get("id", ""),
+                node.attrs.get("class", ""),
+            ]).casefold()
+            is_card_boundary = (
+                node.tag in {"article", "li", "tr"}
+                or any(token in marker for token in ("card", "offer", "campaign", "service-item"))
+            )
+            if is_card_boundary:
+                break
             node = node.parent
             depth += 1
         if not matched:
