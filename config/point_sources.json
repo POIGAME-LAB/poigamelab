@@ -166,7 +166,9 @@
       "direct_detail_limit": 4,
       "direct_detail_url_hints": [
         "/item/detail/itemid/"
-      ]
+      ],
+      "scheduled_fetch_enabled": false,
+      "scheduled_fetch_reason": "Unattended first-party detail/listing retrieval has not been demonstrated as reliable for this project; keep current Hapitas identities review-only until a stable permitted direct retrieval path is validated."
     }
   ],
   "offerwall_domains_discovered": [
