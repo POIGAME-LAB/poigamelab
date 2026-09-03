@@ -1,23 +1,36 @@
 {
-  "phase": "PHASE2_AUTO_REFRESH_V23",
-  "startedAt": "2026-09-02T23:19:35+00:00",
+  "phase": "DIRECT_COMPARISON_REFRESH_V1",
+  "startedAt": "2026-09-03T23:17:20+00:00",
+  "finishedAt": "2026-09-03T23:17:20+00:00",
   "enabledGames": [
+    "メメントモリ",
     "きのこ伝説",
-    "Township"
+    "Township",
+    "ワーキングヒーロー",
+    "ホワイトアウト・サバイバル"
   ],
   "results": [
+    {
+      "game": "メメントモリ",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
     {
       "game": "きのこ伝説",
       "returncode": 0,
       "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
-        "chobirich:known_page_miss",
-        "chobirich:search_failed",
-        "coincome:known_page_miss",
-        "coincome:search_failed",
-        "moppy:search_failed"
-      ]
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
+      "standardTotal": 6
     },
     {
       "game": "Township",
@@ -25,14 +38,33 @@
       "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
-        "chobirich:known_page_miss",
-        "chobirich:search_failed",
-        "coincome:known_page_miss",
-        "coincome:search_failed",
-        "moppy:search_failed"
-      ]
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
+      "standardTotal": 6
+    },
+    {
+      "game": "ワーキングヒーロー",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
     }
   ],
-  "success": true,
-  "finishedAt": "2026-09-02T23:20:33+00:00"
+  "success": true
 }
