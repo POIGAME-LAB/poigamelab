@@ -560,9 +560,130 @@ def inspect_chobirich_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def coincome_offer_id(url):
+    p = urlparse(url)
+    if (p.scheme != "https" or p.hostname != "cimcome.jp"
+            or p.username is not None or p.password is not None or p.port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/campaigns/details/([0-9]+)/?", p.path)
+    if not match or p.query:
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_coincome_offer(raw, requested_url, final_url, aliases):
+    """Review-only parser for COINCOME detail pages.
+
+    It intentionally refuses publication. A page must bind exact URL identity,
+    target name, one displayed yen-equivalent reward, one explicit app OS and a
+    complete conditions block before it is useful as structured review evidence.
+    """
+    try:
+        offer_id = coincome_offer_id(requested_url)
+        if coincome_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [n for n in doc.find(tag="link")
+                      if "canonical" in n.attrs.get("rel", "").split()]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical_url = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if coincome_offer_id(canonical_url) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        text = visible_text(raw)
+        if not target_present(text, aliases):
+            if any(marker in text for marker in ("ページが見つかりません", "404 Not Found", "Not Found")):
+                return {"state": "unavailable", "reason": "source_offer_unavailable",
+                        "offerId": offer_id}
+            raise ValueError("offer_title_mismatch")
+
+        positions = []
+        low = text.casefold()
+        for alias in aliases:
+            value = str(alias or "").strip()
+            if not value:
+                continue
+            pos = low.find(value.casefold())
+            if pos >= 0:
+                positions.append((pos, value))
+        if not positions:
+            raise ValueError("offer_title_mismatch")
+        start, matched_alias = min(positions, key=lambda item: item[0])
+
+        header_tail = text[start:start + 1800]
+        header_end_candidates = [
+            header_tail.find(marker) for marker in ("ストア概要", "概要", "適用端末")
+            if header_tail.find(marker) >= 0
+        ]
+        if not header_end_candidates:
+            raise ValueError("missing_offer_header_boundary")
+        header = header_tail[:min(header_end_candidates)]
+        if len(header) < len(matched_alias):
+            raise ValueError("missing_offer_header")
+
+        displayed = []
+        for match in re.finditer(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*円", header):
+            amount = int(match.group(1).replace(",", ""))
+            if 0 < amount < 1_000_000:
+                displayed.append(amount)
+        unique_displayed = sorted(set(displayed))
+        if len(unique_displayed) != 1:
+            raise ValueError("ambiguous_displayed_reward")
+        reward_yen = unique_displayed[0]
+
+        condition_start = text.find("適用端末", start)
+        if condition_start < 0:
+            raise ValueError("incomplete_offer_terms")
+        condition_end_candidates = [
+            x for x in (
+                text.find("リンクをコピーする", condition_start),
+                text.find("© COINCOME", condition_start),
+            ) if x >= 0
+        ]
+        if not condition_end_candidates:
+            raise ValueError("incomplete_offer_terms")
+        terms = text[condition_start:min(condition_end_candidates)].strip()
+
+        required = ("適用端末", "キャッシュバック条件", "承認条件", "ポイント獲得条件", "否認条件")
+        positions = [terms.find(marker) for marker in required]
+        if any(pos < 0 for pos in positions) or positions != sorted(positions):
+            raise ValueError("incomplete_offer_terms")
+
+        pre_terms = text[start:condition_start]
+        os_labels = sorted(set(re.findall(r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])", pre_terms, re.I)))
+        normalized_os = {"ios": "iOS", "android": "Android"}
+        platforms = sorted({normalized_os[label.casefold()] for label in os_labels})
+        if len(platforms) != 1:
+            raise ValueError("ambiguous_offer_platform")
+
+        summary = re.sub(r"\s+", " ", header).strip()
+        payload = {
+            "offerId": offer_id,
+            "name": matched_alias,
+            "platform": platforms[0],
+            "displayedRewardYen": reward_yen,
+            "rewardUnit": "JPY-equivalent",
+            "headerText": summary,
+            "termsText": terms,
+        }
+        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "coincome-detail-review-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def inspect_detail(url, source, aliases, fetcher=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
-    structured_parsers = {"warau": inspect_warau_offer, "chobirich": inspect_chobirich_offer}
+    structured_parsers = {
+        "warau": inspect_warau_offer,
+        "chobirich": inspect_chobirich_offer,
+        "coincome": inspect_coincome_offer,
+    }
     if source.get("id") in structured_parsers:
         evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
         return {"url": final_url, "sourceEvidence": evidence,
