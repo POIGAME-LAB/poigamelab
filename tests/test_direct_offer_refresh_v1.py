@@ -188,6 +188,13 @@ def test_first_party_guard_rejects_insecure_or_unexpected_transport(url):
         direct.fetch_first_party(url, source)
 
 
+def test_apex_registration_does_not_trust_arbitrary_subdomains():
+    source = {'search_domains': ['example.test', 'www.example.test']}
+    assert direct.source_host_allowed('https://example.test/path', source) is True
+    assert direct.source_host_allowed('https://www.example.test/path', source) is True
+    assert direct.source_host_allowed('https://evil.example.test/path', source) is False
+
+
 def test_allowed_redirect_and_oversized_response(monkeypatch):
     requested = []
 
