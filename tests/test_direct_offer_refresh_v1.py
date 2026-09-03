@@ -985,7 +985,7 @@ COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
 def coincome_markup():
     return f'''<html><head><link rel="canonical" href="{COINCOME_URL}"></head><body>
 <main>
-<h1>テストゲーム Android</h1>
+<h1>テストゲーム</h1>
 <div>600円</div>
 <p>新規アプリインストール後、StepUpミッションクリアでキャッシュバック</p>
 <div>Android 対象アプリ</div>
@@ -1026,7 +1026,7 @@ def test_coincome_review_parser_binds_identity_reward_os_and_full_terms(coincome
     ('ポイント獲得条件', '成果条件', 'incomplete_offer_terms'),
     ('否認条件', '対象外条件', 'incomplete_offer_terms'),
     ('<section>ストア概要</section>', '', 'missing_offer_header_boundary'),
-    ('<h1>テストゲーム Android</h1>', '<h1>別ゲーム Android</h1>', 'offer_title_mismatch'),
+    ('<h1>テストゲーム</h1>', '<h1>別ゲーム</h1>', 'offer_title_mismatch'),
     ('/campaigns/details/12345', '/campaigns/details/99999', 'canonical_offer_mismatch'),
 ])
 def test_coincome_rejects_ambiguous_or_incomplete_evidence(coincome_markup, old, new, reason):
