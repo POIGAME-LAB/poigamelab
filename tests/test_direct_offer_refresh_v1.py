@@ -1679,3 +1679,49 @@ def test_repository_offerwall_presence_policy_is_domain_only_and_no_follow():
     domains = payload['offerwall_domains_discovered']
     assert len(domains) == len(set(domains))
     assert all('/' not in domain and '?' not in domain and '#' not in domain for domain in domains)
+
+
+def test_offerwall_presence_does_not_cross_adjacent_offer_cards():
+    raw = '''<body>
+      <article class="offer-card"><h3>Game A</h3><p>100pt</p></article>
+      <article class="offer-card"><h3>Game B</h3>
+        <a href="https://ow-gf-rewards.com/path?uid=secret">Open wall</a>
+      </article>
+    </body>'''
+    assert direct.discover_offerwall_presence(
+        raw,
+        'https://example.test/list',
+        ['Game A'],
+        ['ow-gf-rewards.com'],
+    ) == []
+
+
+def test_offerwall_presence_accepts_nested_link_inside_same_offer_card():
+    raw = '''<body>
+      <article class="offer-card">
+        <header><h3>Game A</h3></header>
+        <div class="actions"><span><a href="https://ow-gf-rewards.com/path?uid=secret">Open wall</a></span></div>
+      </article>
+      <article class="offer-card"><h3>Game B</h3></article>
+    </body>'''
+    assert direct.discover_offerwall_presence(
+        raw,
+        'https://example.test/list',
+        ['Game A'],
+        ['ow-gf-rewards.com'],
+    ) == ['ow-gf-rewards.com']
+
+
+def test_offerwall_presence_rejects_page_wide_container_even_when_target_exists():
+    filler = 'x' * 1500
+    raw = (
+        '<body><main>Game A ' + filler +
+        '<a href="https://ow-gf-rewards.com/path?uid=secret">Open wall</a>'
+        '</main></body>'
+    )
+    assert direct.discover_offerwall_presence(
+        raw,
+        'https://example.test/list',
+        ['Game A'],
+        ['ow-gf-rewards.com'],
+    ) == []

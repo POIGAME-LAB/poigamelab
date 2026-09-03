@@ -177,16 +177,22 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
 
 
 def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
-    """Detect target-adjacent offerwall links without following or storing them.
+    """Detect same-card offerwall links without following or storing them.
 
-    Only normalized provider hostnames are returned. Paths, query strings,
-    fragments and embedded identifiers are intentionally discarded.
+    Only normalized provider hostnames are returned. A target alias must appear
+    in the anchor label or a bounded ancestor container; page-wide proximity is
+    intentionally insufficient.
     """
     allowed = {str(x).lower().strip() for x in (known_domains or []) if str(x).strip()}
     found = []
     seen = set()
-    for m in re.finditer(r'(?is)<a\b[^>]*?href\s*=\s*(["\'])(.*?)\1[^>]*>(.*?)</a>', raw or ""):
-        href = html.unescape(m.group(2)).strip()
+    try:
+        anchors = EvidenceHTML(raw or "").root.find(tag="a")
+    except (TypeError, ValueError, RecursionError):
+        return found
+
+    for anchor in anchors:
+        href = html.unescape(anchor.attrs.get("href", "")).strip()
         try:
             p = urlparse(urljoin(base_url, href))
             port = p.port
@@ -196,12 +202,36 @@ def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
         if (p.scheme != "https" or p.username is not None or p.password is not None
                 or port not in {None, 443} or host not in allowed):
             continue
-        start = max(0, m.start() - 650)
-        end = min(len(raw), m.end() + 650)
-        context = visible_text(raw[start:end])
-        label = visible_text(m.group(3))
-        if not (target_present(label, aliases) or target_present(context, aliases)):
+
+        matched = target_present(evidence_text(anchor), aliases)
+        node = anchor.parent
+        depth = 0
+        while not matched and node is not None and node.parent is not None and depth < 4:
+            context = evidence_text(node)
+            # A large container is effectively page-wide and is not acceptable
+            # evidence that the target belongs to this specific offerwall link.
+            if len(context) > 1400:
+                break
+            if target_present(context, aliases):
+                matched = True
+                break
+
+            marker = " ".join([
+                node.tag,
+                node.attrs.get("id", ""),
+                node.attrs.get("class", ""),
+            ]).casefold()
+            is_card_boundary = (
+                node.tag in {"article", "li", "tr"}
+                or any(token in marker for token in ("card", "offer", "campaign", "service-item"))
+            )
+            if is_card_boundary:
+                break
+            node = node.parent
+            depth += 1
+        if not matched:
             continue
+
         if host in seen:
             continue
         seen.add(host)
