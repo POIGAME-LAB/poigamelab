@@ -132,6 +132,24 @@
     return Math.max(0, (now - parsed) / 3600000);
   }
 
+  function offerHoursSinceUpdate(updatedAt, now = Date.now()) {
+    const raw = String(updatedAt || "").trim();
+    if (!raw) return null;
+    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(raw)
+      ? Date.parse(`${raw}T00:00:00+09:00`)
+      : Date.parse(raw);
+    if (!Number.isFinite(parsed)) return null;
+    return Math.max(0, (now - parsed) / 3600000);
+  }
+
+  function isOfferFresh(offer, staleAfterHours = 48, now = Date.now()) {
+    if (!offer?.verified) return false;
+    const ageHours = offerHoursSinceUpdate(offer.updatedAt, now);
+    if (ageHours === null) return false;
+    const limit = Number(staleAfterHours);
+    return ageHours <= (Number.isFinite(limit) && limit > 0 ? limit : 48);
+  }
+
   function buildGameHealth(refreshStatus, policy, now = Date.now()) {
     const staleAfterHours = Number(policy?.staleAfterHours || 48);
     const results = Array.isArray(refreshStatus?.results) ? refreshStatus.results : [];
@@ -185,8 +203,15 @@
     }
   }
 
-  function getOfferHealthLabel(offer, gameHealth) {
+  function getOfferHealthLabel(offer, gameHealth, now = Date.now()) {
     if (!offer?.verified) return { state: "legacy", text: "参考掲載" };
+    const staleAfterHours = Number(gameHealth?.staleAfterHours || 48);
+    if (!isOfferFresh(offer, staleAfterHours, now)) {
+      return {
+        state: "legacy",
+        text: offer.updatedAt ? `参考掲載 ・ 最終確認 ${offer.updatedAt}` : "参考掲載"
+      };
+    }
     if (!gameHealth) {
       return {
         state: "verified",
@@ -252,6 +277,8 @@
     normalizePlatform,
     loadOffersWithFallback,
     hoursSince,
+    offerHoursSinceUpdate,
+    isOfferFresh,
     buildGameHealth,
     loadDataHealth,
     getOfferHealthLabel,
