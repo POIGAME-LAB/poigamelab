@@ -88,6 +88,64 @@ function makeContext(fetchImpl) {
   assert.strictEqual(unavailable.available, false);
   assert.deepStrictEqual(Object.keys(unavailable.games), []);
 
+  const requiredLaunchFiles = [
+    'about.html',
+    'privacy.html',
+    'contact.html',
+    'site-footer.js',
+    'robots.txt'
+  ];
+  requiredLaunchFiles.forEach((path) => assert.ok(fs.existsSync(path), `missing launch file: ${path}`));
+
+  const publicPages = [
+    'index.html',
+    'game.html',
+    'kinoko-guide.html',
+    'mementomori-guide.html',
+    'township-lv60.html',
+    'township-lv70.html',
+    'whiteout-survival-guide.html',
+    'working-heroes-guide.html',
+    'data-status.html',
+    'about.html',
+    'privacy.html',
+    'contact.html'
+  ];
+  for (const path of publicPages) {
+    const html = fs.readFileSync(path, 'utf8');
+    assert.ok(html.includes('src="site-footer.js"'), `missing shared footer: ${path}`);
+  }
+
+  const indexHtml = fs.readFileSync('index.html', 'utf8');
+  assert.ok(indexHtml.includes('name="description"'));
+  assert.ok(indexHtml.includes('ポイ活ゲーム案件比較・攻略 | POIGAME LAB'));
+
+  const gameHtml = fs.readFileSync('game.html', 'utf8');
+  assert.ok(gameHtml.includes('name="description"'));
+  assert.ok(gameHtml.includes('現在確認できる案件はありません。'));
+
+  const aboutHtml = fs.readFileSync('about.html', 'utf8');
+  assert.ok(aboutHtml.includes('広告・アフィリエイト'));
+  assert.ok(aboutHtml.includes('免責事項'));
+
+  const privacyHtml = fs.readFileSync('privacy.html', 'utf8');
+  assert.ok(privacyHtml.includes('Cookie'));
+  assert.ok(privacyHtml.includes('個人情報'));
+
+  const contactHtml = fs.readFileSync('contact.html', 'utf8');
+  assert.ok(contactHtml.includes('https://github.com/POIGAME-LAB/poigamelab/issues/new'));
+  assert.ok(contactHtml.includes('個人情報・秘密情報は投稿しないでください'));
+
+  const footerJs = fs.readFileSync('site-footer.js', 'utf8');
+  for (const path of ['about.html', 'privacy.html', 'contact.html']) {
+    assert.ok(footerJs.includes(path), `footer missing link: ${path}`);
+  }
+
+  const robots = fs.readFileSync('robots.txt', 'utf8');
+  for (const path of ['/data/', '/config/', '/docs/', '/scripts/', '/tests/', '/data-status.html']) {
+    assert.ok(robots.includes(`Disallow: ${path}`), `robots missing internal path: ${path}`);
+  }
+
   console.log('V25 site-health tests: PASS');
 })().catch((error) => {
   console.error(error);

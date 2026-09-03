@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+Disallow: /config/
+Disallow: /docs/
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /data-status.html
