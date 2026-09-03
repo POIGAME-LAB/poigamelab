@@ -1116,6 +1116,23 @@ def main():
 
                 key = (game, source_id, offer_identity_key(url, source_id))
                 existing = row_by_identity.get(key)
+                if source.get("generic_reward_detection_enabled", True) is not True:
+                    item = {
+                        "game": game,
+                        "source": source_id,
+                        "url": detail["url"],
+                        "reason": "source_specific_reward_parser_required",
+                        "platformHint": detail.get("platform") or "",
+                        "checkedAt": checked_at,
+                    }
+                    if existing is not None:
+                        item["storedReward"] = existing.get("reward") or ""
+                        item["storedPlatform"] = existing.get("platform") or ""
+                    review.append(item)
+                    source_result["reviewRequired"] += 1
+                    continue
+
+                existing = row_by_identity.get(key)
                 if existing is None:
                     review.append({
                         "game": game, "source": source_id, "url": detail["url"],
