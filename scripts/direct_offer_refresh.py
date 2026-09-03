@@ -9,7 +9,7 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import parse_qs, urljoin, urlparse
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "config" / "refresh_policy.json"
@@ -47,6 +47,17 @@ def source_host_allowed(url, source):
     domains = [str(x).lower().strip() for x in (source.get("search_domains") or []) if str(x).strip()]
     return any(host == d or host.endswith("." + d) for d in domains)
 
+class FirstPartyRedirectHandler(HTTPRedirectHandler):
+    def __init__(self, source):
+        super().__init__()
+        self.source = source
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if not source_host_allowed(newurl, self.source):
+            raise ValueError("redirect left registered first-party domains")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
     if not source_host_allowed(url, source):
         raise ValueError("URL is outside registered first-party domains")
@@ -63,13 +74,14 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
     })
-    with urlopen(req, timeout=timeout) as response:
+    opener = build_opener(FirstPartyRedirectHandler(source))
+    with opener.open(req, timeout=timeout) as response:
         final_url = response.geturl() if hasattr(response, "geturl") else url
         if not source_host_allowed(final_url, source):
             raise ValueError("redirect left registered first-party domains")
         data = response.read(max_bytes + 1)
         if len(data) > max_bytes:
-            data = data[:max_bytes]
+            raise ValueError("response exceeds byte limit; incomplete evidence rejected")
         charset = None
         try:
             charset = response.headers.get_content_charset()
@@ -256,8 +268,8 @@ def offer_identity_key(url, source_id):
 
     return f"{source_id}:url:{exact}"
 
-def inspect_detail(url, source, aliases):
-    raw, final_url = fetch_first_party(url, source)
+def inspect_detail(url, source, aliases, fetcher=None):
+    raw, final_url = (fetcher or fetch_first_party)(url, source)
     text = visible_text(raw)
     if not target_present(text, aliases):
         return {"url": final_url, "targetPresent": False, "platform": "", "_text": text}
@@ -304,6 +316,19 @@ def main():
     results = []
     checked_at = now_iso()
     today = today_jst()
+    fetch_cache = {}
+
+    def fetch_once(url, source):
+        key = (source.get("id"), exact_url_key(url))
+        if key not in fetch_cache:
+            try:
+                fetch_cache[key] = (fetch_first_party(url, source), None)
+            except Exception as error:
+                fetch_cache[key] = (None, error)
+        result, error = fetch_cache[key]
+        if error is not None:
+            raise error
+        return result
 
     for target in targets:
         game = str(target.get("game") or "").strip()
@@ -341,9 +366,11 @@ def main():
 
             listing_errors = []
             discovered = []
-            for listing_url in (source.get("direct_listing_urls") or [])[:2]:
+            listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
+            detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
+            for listing_url in (source.get("direct_listing_urls") or [])[:listing_limit]:
                 try:
-                    raw, final_url = fetch_first_party(listing_url, source)
+                    raw, final_url = fetch_once(listing_url, source)
                     if target_present(visible_text(raw), aliases):
                         discovered.extend(discover_detail_links(raw, final_url, source, aliases, limit=6))
                 except Exception as e:
@@ -358,7 +385,7 @@ def main():
                     continue
                 seen_identities.add(identity)
                 deduped_urls.append(exact)
-            urls = deduped_urls
+            urls = deduped_urls[:detail_limit]
 
             source_result = {
                 "source": source_id,
@@ -368,6 +395,13 @@ def main():
                 "updatedRows": 0,
                 "reviewRequired": 0,
             }
+            if len(deduped_urls) > detail_limit:
+                review.append({
+                    "game": game, "source": source_id, "reason": "detail_limit_reached",
+                    "deferredCount": len(deduped_urls) - detail_limit,
+                    "checkedAt": checked_at,
+                })
+                source_result["reviewRequired"] += 1
 
             if not urls:
                 review.append({
@@ -381,7 +415,7 @@ def main():
 
             for url in urls:
                 try:
-                    detail = inspect_detail(url, source, aliases)
+                    detail = inspect_detail(url, source, aliases, fetcher=fetch_once)
                 except Exception as e:
                     review.append({
                         "game": game, "source": source_id, "url": url,
