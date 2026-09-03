@@ -120,6 +120,15 @@
       };
     }
 
+    if (policy?.publication?.allowLegacyFallback !== true) {
+      return {
+        offers: publishedRows,
+        publishedCount: publishedRows.length,
+        legacyCount: 0,
+        usingPublished: publishedRows.length > 0
+      };
+    }
+
     let legacyRows = [];
     try {
       legacyRows = (await fetchCsv("offers.csv"))
