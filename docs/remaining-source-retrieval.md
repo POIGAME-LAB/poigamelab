@@ -55,3 +55,21 @@ first-party guard, and the numeric path ID to produce a stable offer identity.
 
 No production collector/AI API call or live publication workflow dispatch is
 part of this change.
+
+
+## Gendama reward-unit guard
+
+The current public Gendama welcome page can display point balances and yen
+equivalents at different scales, for example 200,000pt alongside 20,000 yen.
+Until a source-specific detail parser and reviewed conversion contract bind those
+units for app/game offers, generic page-wide reward inference is unsafe.
+
+Gendama therefore sets `generic_reward_detection_enabled: false`. Scheduled
+retrieval may still discover and fetch target detail URLs for review, but once a
+target page is confirmed the runner stops before comparing page numbers with the
+published JPY reward field. The review queue records
+`source_specific_reward_parser_required` and may retain stored reward/platform
+context, but does not emit detected reward candidates.
+
+This keeps secure discovery useful without allowing a point amount to masquerade
+as a yen amount in human review or future automation.

@@ -143,7 +143,9 @@
       "direct_detail_limit": 6,
       "direct_detail_url_hints": [
         "/service/item/"
-      ]
+      ],
+      "generic_reward_detection_enabled": false,
+      "generic_reward_detection_reason": "Gendama displays points and yen at different scales; require a source-specific reviewed conversion/parser before comparing page numbers to published JPY rewards."
     },
     {
       "id": "hapitas",

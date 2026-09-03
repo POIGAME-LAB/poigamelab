@@ -995,10 +995,69 @@ def test_repository_gendama_uses_current_https_listing_and_service_item_identity
     assert gendama['direct_listing_urls'] == [listing]
     assert '/service/item/' in gendama['direct_detail_url_hints']
     assert gendama.get('scheduled_fetch_enabled', True) is True
+    assert gendama['generic_reward_detection_enabled'] is False
+    assert 'conversion' in gendama['generic_reward_detection_reason'].lower()
     assert direct.source_host_allowed(listing, gendama) is True
     assert direct.source_host_allowed(detail, gendama) is True
     assert direct.detail_like(detail, gendama) is True
     assert direct.offer_identity_key(detail, 'gendama') == 'gendama:pathid:1426617'
+
+
+def test_gendama_generic_points_never_become_yen_reward_candidates(monkeypatch):
+    detail = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['gendama'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'テストゲーム': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'テストゲーム',
+        'known_urls_by_source': {'gendama': [detail]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'gendama',
+        'search_domains': ['www.gendama.jp'],
+        'direct_listing_urls': [],
+        'direct_detail_limit': 6,
+        'direct_detail_url_hints': ['/service/item/'],
+        'generic_reward_detection_enabled': False,
+    }]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(
+        offerKey='gendama-test',
+        game='テストゲーム',
+        site='gendama',
+        reward='300',
+        condition='既存要約',
+        platform='Android',
+        updatedAt='2026-08-31',
+        url=detail,
+        sourceUrl=detail,
+        verified='true',
+    )
+    direct.write_published([row])
+
+    raw = '<html><body><h1>テストゲーム Android</h1><p>最大3,000pt</p></body></html>'
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (raw, url))
+    before = direct.PUBLISHED.read_bytes()
+
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+
+    status = json.loads(direct.STATUS.read_text())
+    assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
+    assert status['games'][0]['comparisonReady'] is False
+
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert len(items) == 1
+    item = items[0]
+    assert item['reason'] == 'source_specific_reward_parser_required'
+    assert item['storedReward'] == '300'
+    assert item['storedPlatform'] == 'Android'
+    assert item['platformHint'] == 'Android'
+    assert 'detectedReward' not in item
+    assert 'detectedStrongRewards' not in item
+    assert 'detectedWeakRewards' not in item
 
 
 COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
