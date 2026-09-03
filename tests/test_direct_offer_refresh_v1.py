@@ -1571,6 +1571,17 @@ def test_offerwall_presence_is_review_only_and_never_fetched_or_published(monkey
             'require_target_context': True,
         },
     }))
+    direct.SOURCES.with_name('offerwall_providers.json').write_text(json.dumps({
+        'schemaVersion': 1,
+        'providers': [{
+            'id': 'gf_rewards',
+            'name': 'GF Rewards',
+            'presenceDomains': ['ow-gf-rewards.com'],
+            'retrievalMode': 'presence_only',
+            'followExternalLinks': False,
+            'persist': 'provider_domain_only',
+        }],
+    }))
     row = dict.fromkeys(direct.FIELDS, '')
     row.update(
         offerKey='existing',
@@ -1608,12 +1619,19 @@ def test_offerwall_presence_is_review_only_and_never_fetched_or_published(monkey
     assert len(items) == 1
     assert items[0]['reason'] == 'offerwall_presence_candidate'
     assert items[0]['providerDomains'] == ['ow-gf-rewards.com']
+    assert items[0]['providerCandidates'] == [{
+        'providerId': 'gf_rewards',
+        'providerName': 'GF Rewards',
+        'domain': 'ow-gf-rewards.com',
+        'retrievalMode': 'presence_only',
+    }]
     assert secret not in review_text
     assert '/path' not in review_text
 
     status = json.loads(direct.STATUS.read_text())
     source = status['games'][0]['sources'][0]
     assert source['offerwallPresenceDomains'] == 1
+    assert source['offerwallReviewedProviders'] == 1
     assert source['confirmedOffers'] == source['updatedRows'] == 0
     assert source['reviewRequired'] == 1
     assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
@@ -1725,3 +1743,77 @@ def test_offerwall_presence_rejects_page_wide_container_even_when_target_exists(
         ['Game A'],
         ['ow-gf-rewards.com'],
     ) == []
+
+
+def test_offerwall_provider_registry_loads_reviewed_gf_rewards_contract(tmp_path):
+    path = tmp_path/'offerwall_providers.json'
+    path.write_text(json.dumps({
+        'schemaVersion': 1,
+        'providers': [{
+            'id': 'gf_rewards',
+            'name': 'GF Rewards',
+            'presenceDomains': ['ow-gf-rewards.com'],
+            'retrievalMode': 'presence_only',
+            'followExternalLinks': False,
+            'persist': 'provider_domain_only',
+        }],
+    }))
+    registry = direct.load_offerwall_provider_registry(path)
+    assert registry == {
+        'ow-gf-rewards.com': {
+            'providerId': 'gf_rewards',
+            'providerName': 'GF Rewards',
+            'domain': 'ow-gf-rewards.com',
+            'retrievalMode': 'presence_only',
+        }
+    }
+    assert direct.offerwall_provider_candidates(
+        ['ow-gf-rewards.com', 'appdriver.jp'], registry
+    ) == [{
+        'providerId': 'gf_rewards',
+        'providerName': 'GF Rewards',
+        'domain': 'ow-gf-rewards.com',
+        'retrievalMode': 'presence_only',
+    }]
+
+
+@pytest.mark.parametrize('providers', [
+    [{
+        'id': 'gf_rewards',
+        'presenceDomains': ['ow-gf-rewards.com'],
+        'retrievalMode': 'direct_fetch',
+        'followExternalLinks': True,
+        'persist': 'full_url',
+    }],
+    [{
+        'id': 'gf_rewards',
+        'presenceDomains': ['ow-gf-rewards.com'],
+        'retrievalMode': 'presence_only',
+        'followExternalLinks': False,
+        'persist': 'provider_domain_only',
+    }, {
+        'id': 'other_provider',
+        'presenceDomains': ['ow-gf-rewards.com'],
+        'retrievalMode': 'presence_only',
+        'followExternalLinks': False,
+        'persist': 'provider_domain_only',
+    }],
+])
+def test_offerwall_provider_registry_rejects_unsafe_or_duplicate_contracts(tmp_path, providers):
+    path = tmp_path/'offerwall_providers.json'
+    path.write_text(json.dumps({'schemaVersion': 1, 'providers': providers}))
+    with pytest.raises(ValueError):
+        direct.load_offerwall_provider_registry(path)
+
+
+def test_repository_gf_rewards_provider_contract_is_presence_only():
+    payload = json.loads((ROOT/'config/offerwall_providers.json').read_text())
+    assert payload['schemaVersion'] == 1
+    gf = next(item for item in payload['providers'] if item['id'] == 'gf_rewards')
+    assert gf['presenceDomains'] == ['ow-gf-rewards.com']
+    assert gf['informationDomains'] == ['info.gf-rewards.com']
+    assert gf['retrievalMode'] == 'presence_only'
+    assert gf['followExternalLinks'] is False
+    assert gf['persist'] == 'provider_domain_only'
+    assert gf['requiresUserTrackingContext'] is True
+    assert gf['privacyEvidenceUrl'] == 'https://info.gf-rewards.com/privacy.html'
