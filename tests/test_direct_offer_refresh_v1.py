@@ -976,3 +976,156 @@ def test_repository_chobirich_is_the_only_explicitly_disabled_comparison_source(
         for source_id in comparison
         if source_id != 'chobirich'
     )
+
+
+COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
+
+
+@pytest.fixture
+def coincome_markup():
+    return f'''<html><head><link rel="canonical" href="{COINCOME_URL}"></head><body>
+<main>
+<h1>テストゲーム Android</h1>
+<div>600円</div>
+<p>新規アプリインストール後、StepUpミッションクリアでキャッシュバック</p>
+<div>Android 対象アプリ</div>
+<section>ストア概要</section>
+<h2>適用端末</h2><p>SP</p>
+<h2>キャッシュバック条件</h2>
+<h3>承認条件</h3>
+<p>新規アプリインストール後、30日以内にStepUpミッションクリアで報酬獲得となります</p>
+<p>■ポイント獲得条件</p>
+<p>広告クリック後は同一端末・同一ブラウザで条件達成してください</p>
+<h3>否認条件</h3>
+<p>重複利用、虚偽、不正利用は対象外</p>
+<div>リンクをコピーする</div>
+</main></body></html>'''
+
+
+def parse_coincome(raw, requested=COINCOME_URL, final=COINCOME_URL):
+    return direct.inspect_coincome_offer(raw, requested, final, ['テストゲーム'])
+
+
+def test_coincome_review_parser_binds_identity_reward_os_and_full_terms(coincome_markup):
+    evidence = parse_coincome(coincome_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['offerId'] == '12345'
+    assert evidence['platform'] == 'Android'
+    assert evidence['displayedRewardYen'] == 600
+    assert evidence['rewardUnit'] == 'JPY-equivalent'
+    assert evidence['parserVersion'] == 'coincome-detail-review-v1'
+    assert all(marker in evidence['termsText'] for marker in (
+        '適用端末', 'キャッシュバック条件', '承認条件', 'ポイント獲得条件', '否認条件'))
+    assert len(evidence['evidenceFingerprint']) == 64
+
+
+@pytest.mark.parametrize('old,new,reason', [
+    ('<div>600円</div>', '<div>900円 600円</div>', 'ambiguous_displayed_reward'),
+    ('Android 対象アプリ', 'iOS Android 対象アプリ', 'ambiguous_offer_platform'),
+    ('Android 対象アプリ', '対象アプリ', 'ambiguous_offer_platform'),
+    ('ポイント獲得条件', '成果条件', 'incomplete_offer_terms'),
+    ('否認条件', '対象外条件', 'incomplete_offer_terms'),
+    ('<section>ストア概要</section>', '', 'missing_offer_header_boundary'),
+    ('<h1>テストゲーム Android</h1>', '<h1>別ゲーム Android</h1>', 'offer_title_mismatch'),
+    ('/campaigns/details/12345', '/campaigns/details/99999', 'canonical_offer_mismatch'),
+])
+def test_coincome_rejects_ambiguous_or_incomplete_evidence(coincome_markup, old, new, reason):
+    evidence = parse_coincome(coincome_markup.replace(old, new))
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == reason
+
+
+@pytest.mark.parametrize('url', [
+    'http://cimcome.jp/campaigns/details/12345',
+    'https://www.cimcome.jp/campaigns/details/12345',
+    'https://user@cimcome.jp/campaigns/details/12345',
+    'https://cimcome.jp:444/campaigns/details/12345',
+    'https://cimcome.jp/campaigns/details/12345/extra',
+    'https://cimcome.jp/campaigns/details/12345?ref=test',
+])
+def test_coincome_rejects_unsupported_identity_urls(coincome_markup, url):
+    assert parse_coincome(coincome_markup, requested=url)['state'] == 'review_required'
+
+
+def test_coincome_terms_change_invalidates_fingerprint(coincome_markup):
+    original = parse_coincome(coincome_markup)
+    changed = parse_coincome(coincome_markup.replace(
+        '広告クリック後は同一端末・同一ブラウザで条件達成してください',
+        '広告クリック後30日以内に同一端末・同一ブラウザで条件達成してください'))
+    assert original['state'] == changed['state'] == 'parsed'
+    assert original['evidenceFingerprint'] != changed['evidenceFingerprint']
+
+
+def test_coincome_explicit_not_found_page_is_unavailable():
+    raw = '<html><body><main>404 Not Found ページが見つかりません</main></body></html>'
+    evidence = parse_coincome(raw)
+    assert evidence['state'] == 'unavailable'
+    assert evidence['reason'] == 'source_offer_unavailable'
+
+
+@pytest.mark.parametrize('fetch_fails', [False, True])
+def test_coincome_is_review_only_and_never_refreshes_published_date(
+        coincome_markup, monkeypatch, fetch_fails):
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['coincome'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'テストゲーム': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'テストゲーム',
+        'known_urls_by_source': {'coincome': [COINCOME_URL]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'coincome',
+        'search_domains': ['cimcome.jp'],
+        'direct_listing_urls': [],
+        'direct_detail_limit': 6,
+    }]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(
+        offerKey='coincome-test',
+        game='テストゲーム',
+        site='coincome',
+        reward='600',
+        condition='既存要約',
+        platform='Android',
+        updatedAt='2026-08-31',
+        url=COINCOME_URL,
+        sourceUrl=COINCOME_URL,
+        verified='true',
+    )
+    direct.write_published([row])
+    direct.POLICY.with_name('approved_offer_baselines.json').write_text(json.dumps({
+        'schemaVersion': 1,
+        'approvals': [{
+            'offerKey': row['offerKey'],
+            'approved': True,
+            'source': 'coincome',
+        }],
+    }))
+    calls = []
+
+    def fetch(url, source):
+        calls.append(url)
+        if fetch_fails:
+            raise HTTPError(url, 404, 'Not Found', {}, None)
+        return coincome_markup, url
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    before = direct.PUBLISHED.read_bytes()
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert calls == [COINCOME_URL]
+
+    status = json.loads(direct.STATUS.read_text())
+    assert status['refreshedRows'] == status['publishedRewardChanges'] == status['apiCalls'] == 0
+    assert status['games'][0]['comparisonReady'] is False
+    item = json.loads(direct.REVIEW.read_text())['items'][0]
+    if fetch_fails:
+        assert item['reason'] == 'fetch_failed'
+        assert item['error'] == 'http_status_404'
+    else:
+        assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
+        assert item['sourceEvidence']['displayedRewardYen'] == 600
+        assert item['platformMatches'] is True
+        assert item['requiredChecks'] == ['reward_unit_conversion', 'complete_terms_vs_published_row']
