@@ -1867,3 +1867,50 @@ def test_repository_skyflag_provider_contract_is_presence_only():
         'domain': 'ow.skyflag.jp',
         'retrievalMode': 'presence_only',
     }
+
+
+def test_repository_all_discovered_offerwall_domains_have_reviewed_presence_only_providers():
+    source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
+    provider_path = ROOT/'config/offerwall_providers.json'
+    provider_payload = json.loads(provider_path.read_text())
+    registry = direct.load_offerwall_provider_registry(provider_path)
+
+    discovered = set(source_payload['offerwall_domains_discovered'])
+    assert set(registry) == discovered
+    assert len(discovered) == 9
+
+    expected = {
+        'ow-gf-rewards.com': 'gf_rewards',
+        'appdriver.jp': 'appdriver',
+        'ow.skyflag.jp': 'skyflag',
+        'cdn.mychips.io': 'mychips',
+        'ow.z.mobu.jp': 'zucks',
+        'wall.smaad.net': 'smaad',
+        'sdk.tyrads.com': 'tyrads',
+        'chobirich.playtimeweb.com': 'adjoe_playtime',
+        'offerwall.ayet.io': 'ayet',
+    }
+    assert {domain: item['providerId'] for domain, item in registry.items()} == expected
+
+    providers = provider_payload['providers']
+    assert len(providers) == len({item['id'] for item in providers})
+    assert all(item['retrievalMode'] == 'presence_only' for item in providers)
+    assert all(item['followExternalLinks'] is False for item in providers)
+    assert all(item['persist'] == 'provider_domain_only' for item in providers)
+
+
+def test_remaining_provider_contracts_keep_user_contextual_walls_presence_only():
+    path = ROOT/'config/offerwall_providers.json'
+    payload = json.loads(path.read_text())
+    by_id = {item['id']: item for item in payload['providers']}
+
+    for provider_id in ('mychips', 'zucks', 'tyrads', 'adjoe_playtime', 'ayet'):
+        item = by_id[provider_id]
+        assert item['requiresUserTrackingContext'] is True
+        assert item['retrievalMode'] == 'presence_only'
+        assert item['followExternalLinks'] is False
+        assert item['persist'] == 'provider_domain_only'
+
+    assert by_id['smaad']['anonymousPublicCatalogEstablished'] is False
+    assert by_id['smaad']['retrievalMode'] == 'presence_only'
+    assert by_id['smaad']['followExternalLinks'] is False

@@ -82,3 +82,14 @@ review metadata only and never changes source confirmation or publication.
 
 GF Rewards is the first reviewed entry and is fixed to
 `retrievalMode: presence_only`; see `docs/gf-rewards-review-evidence.md`.
+
+
+## Provider coverage invariant
+
+As of 2026-09-03, every hostname in `offerwall_domains_discovered` has exactly
+one reviewed provider contract. CI enforces exact coverage so a newly discovered
+offerwall domain cannot remain an unnamed review signal.
+
+All current provider contracts remain `presence_only`. Provider identity
+enrichment improves review clarity but does not authorize provider-side requests,
+reward inference, source confirmation, or publication.

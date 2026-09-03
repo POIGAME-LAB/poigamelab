@@ -59,6 +59,117 @@
       "caseEvidenceUrl": "https://skyflag.info/case-post/case-14/",
       "reviewedAt": "2026-09-03",
       "reviewNote": "Current official materials describe SKYFLAG offerwalls, API integration, user-segment optimization and recommended rewards, but do not establish an anonymous public campaign catalog suitable for unattended evidence retrieval. POIGAME LAB therefore records passive provider presence only."
+    },
+    {
+      "id": "mychips",
+      "name": "MyChips",
+      "presenceDomains": [
+        "cdn.mychips.io"
+      ],
+      "informationDomains": [
+        "docs.mychips.io",
+        "mychips.io"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "integrationEvidenceUrl": "https://docs.mychips.io/webview-and-direct-link",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official MyChips WebView/direct-link documentation requires content_id, user_id and webview parameters and recommends GAID/IDFA. POIGAME LAB therefore maps passive provider presence only and does not request the discovered offerwall endpoint."
+    },
+    {
+      "id": "zucks",
+      "name": "Zucks",
+      "presenceDomains": [
+        "ow.z.mobu.jp"
+      ],
+      "informationDomains": [
+        "zucks.freshdesk.com"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "serviceEvidenceUrl": "https://zucks.freshdesk.com/support/solutions/articles/157000368856--%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E6%96%B9%E6%B3%95",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official Zucks support documentation gives an offerwall inquiry URL example on ow.z.mobu.jp containing user_id. POIGAME LAB therefore treats the offerwall as user-contextual presence only."
+    },
+    {
+      "id": "smaad",
+      "name": "GMO SmaAD",
+      "operator": "GMO TECH株式会社",
+      "presenceDomains": [
+        "wall.smaad.net"
+      ],
+      "informationDomains": [
+        "smaad.net"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "anonymousPublicCatalogEstablished": false,
+      "serviceEvidenceUrl": "https://smaad.net/media/",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official SmaAD materials describe SmaAD Wall as a dedicated offer list integrated into partner websites/apps and SDK-supported surfaces. No anonymous public campaign catalog suitable for unattended evidence retrieval was established."
+    },
+    {
+      "id": "tyrads",
+      "name": "TyrAds",
+      "operator": "TyrAds Pte. Ltd.",
+      "presenceDomains": [
+        "sdk.tyrads.com"
+      ],
+      "informationDomains": [
+        "sdk-doc.tyrads.com",
+        "tyrads.com"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "integrationEvidenceUrl": "https://sdk-doc.tyrads.com/web-iframe/initialization",
+      "serviceEvidenceUrl": "https://tyrads.com/tyrsdk-terms-of-service/en",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official TyrAds SDK documentation shows offerwall initialization with publisher credentials and CUSTOMER_USER_ID, and other SDK docs describe device/user identifiers. POIGAME LAB therefore records passive provider presence only."
+    },
+    {
+      "id": "adjoe_playtime",
+      "name": "Playtime by adjoe",
+      "presenceDomains": [
+        "chobirich.playtimeweb.com"
+      ],
+      "informationDomains": [
+        "docs.adjoe.io",
+        "playtimeweb.com"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "integrationEvidenceUrl": "https://docs.adjoe.io/rewarded-solutions/playtimeweb-for-ios/intro-to-playtimeweb/integrate-playtimeweb",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official PlaytimeWeb integration documentation requires user_id in the PlaytimeWeb redirect URL and recommends IDFA for attribution. POIGAME LAB therefore records only passive provider presence."
+    },
+    {
+      "id": "ayet",
+      "name": "ayeT",
+      "operator": "ayeT-Studios GmbH",
+      "presenceDomains": [
+        "offerwall.ayet.io"
+      ],
+      "informationDomains": [
+        "docs.ayetstudios.com",
+        "ayetstudios.com",
+        "docs.ayet.io"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "integrationEvidenceUrl": "https://docs.ayetstudios.com/v/product-docs/offerwall/web-integrations/web-offerwall",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official ayeT Web Offerwall documentation requires externalIdentifier in the offerwall URL. POIGAME LAB therefore maps passive provider presence only and does not request the offerwall."
     }
   ]
 }
