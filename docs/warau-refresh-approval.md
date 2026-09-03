@@ -29,8 +29,23 @@ The official [exchange-rate help](https://www.warau.jp/help/qa/128/), checked on
 redemption destinations, fees and mile conversions can differ. The parser always
 preserves the observed `pt` unit; conversion requires separate review.
 
-**No production approval registry is added by this change. All eight rows remain
-unapproved for automatic freshness updates. Published CSVs are unchanged.**
+## Proposed corrections after the audit
+
+The review branch now changes exactly four published rows. Township's two
+deadline fields state 60 days from installation instead of the unsupported
+absolute date. Kinoko's two condition summaries enumerate all 11 steps, including
+cash purchases, the level-100 prerequisite before the 3,200-yen purchase, and
+30/40/45-day limits. The four manual check dates are 2026-09-03. Rewards, identities,
+OS, verified flags and all other rows are unchanged; none of the unavailable rows
+was removed or refreshed.
+
+`data/warau_baseline_candidates.json` records the four revised-row fingerprints
+and corresponding inspected evidence fingerprints. Every candidate explicitly has
+`approved: false`. The refresh runner does not read this candidate file.
+
+**No production approval registry is added. All eight rows remain unapproved for
+automatic freshness updates. These data corrections are PR changes, not a merge
+or a live deployment.**
 
 ## Approval input
 

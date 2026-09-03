@@ -59,6 +59,23 @@ function makeContext(fetchImpl) {
   assert.ok(api.safeHttpUrl('https://example.com/path').startsWith('https://example.com/path'));
   assert.strictEqual(api.escapeHtml('<script>'), '&lt;script&gt;');
 
+  // The real revised CSV must survive the same reader used by game.html.
+  const actualCsv = fs.readFileSync('data/published_offers.csv', 'utf8');
+  const actualRows = api.rowsToObjects(api.parseCsv(actualCsv));
+  const candidateKeys = JSON.parse(fs.readFileSync('data/warau_baseline_candidates.json', 'utf8'))
+    .candidates.map(candidate => candidate.offerKey);
+  const selectedRows = actualRows.filter(row => candidateKeys.includes(row.offerKey));
+  assert.strictEqual(selectedRows.length, 4);
+  for (const row of selectedRows) {
+    assert.ok(row.condition.length > 20);
+    assert.ok(row.deadline.includes('インストール日から起算'));
+    assert.ok(row.url.startsWith('https://www.warau.jp/'));
+    if (row.game === 'きのこ伝説') {
+      assert.ok(row.condition.includes('レベル100到達後に一括3200円課金'));
+      assert.ok(row.condition.includes('45日以内：プレイヤーレベル125到達'));
+    }
+  }
+
   console.log('V24 site-data tests: PASS');
 })().catch((error) => {
   console.error(error);
