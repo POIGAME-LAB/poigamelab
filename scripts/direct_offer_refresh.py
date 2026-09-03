@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "config" / "refresh_policy.json"
 TARGETS = ROOT / "config" / "game_targets.json"
 SOURCES = ROOT / "config" / "point_sources.json"
+OFFERWALL_PROVIDERS = ROOT / "config" / "offerwall_providers.json"
 PUBLISHED = ROOT / "data" / "published_offers.csv"
 STATUS = ROOT / "data" / "comparison_refresh_status.json"
 LEGACY_STATUS = ROOT / "data" / "refresh_status.json"
@@ -955,6 +956,60 @@ def approved_refresh_reason(row, evidence, approval, checked_at):
     return None
 
 
+def load_offerwall_provider_registry(path=OFFERWALL_PROVIDERS):
+    """Return exact presence-domain -> reviewed provider metadata.
+
+    The provider registry is review metadata only. Unsupported or unsafe
+    retrieval contracts are rejected rather than normalized heuristically.
+    """
+    if not path.exists():
+        return {}
+    value = load_json(path)
+    if (not isinstance(value, dict) or value.get("schemaVersion") != 1
+            or not isinstance(value.get("providers"), list)):
+        raise ValueError("invalid_offerwall_provider_registry")
+    by_domain = {}
+    provider_ids = set()
+    for item in value["providers"]:
+        if not isinstance(item, dict):
+            raise ValueError("invalid_offerwall_provider_entry")
+        provider_id = item.get("id")
+        if (not isinstance(provider_id, str)
+                or not re.fullmatch(r"[a-z][a-z0-9_]{1,63}", provider_id)
+                or provider_id in provider_ids):
+            raise ValueError("invalid_or_duplicate_offerwall_provider_id")
+        provider_ids.add(provider_id)
+        if (item.get("retrievalMode") != "presence_only"
+                or item.get("followExternalLinks") is not False
+                or item.get("persist") != "provider_domain_only"):
+            raise ValueError("unsafe_offerwall_provider_contract")
+        domains = item.get("presenceDomains")
+        if not isinstance(domains, list) or not domains:
+            raise ValueError("missing_offerwall_provider_domains")
+        for raw_domain in domains:
+            domain = str(raw_domain or "").lower().strip()
+            if (not re.fullmatch(r"[a-z0-9.-]+", domain)
+                    or domain.startswith(".") or domain.endswith(".")
+                    or ".." in domain or domain in by_domain):
+                raise ValueError("invalid_or_duplicate_offerwall_provider_domain")
+            by_domain[domain] = {
+                "providerId": provider_id,
+                "providerName": str(item.get("name") or provider_id),
+                "domain": domain,
+                "retrievalMode": "presence_only",
+            }
+    return by_domain
+
+
+def offerwall_provider_candidates(domains, registry):
+    candidates = []
+    for domain in domains:
+        item = registry.get(domain)
+        if item is not None:
+            candidates.append(dict(item))
+    return candidates
+
+
 def main():
     try:
         approvals = load_refresh_approvals()
@@ -970,6 +1025,12 @@ def main():
         if str(x).strip()
     ]
     offerwall_presence_cfg = source_cfg.get("offerwall_presence_detection") or {}
+    try:
+        offerwall_provider_registry = load_offerwall_provider_registry()
+    except (OSError, ValueError, TypeError):
+        # Provider enrichment is review-only metadata. If its registry is
+        # malformed, omit enrichment rather than affecting publication logic.
+        offerwall_provider_registry = {}
     offerwall_presence_enabled = (
         isinstance(offerwall_presence_cfg, dict)
         and offerwall_presence_cfg.get("enabled") is True
@@ -1098,6 +1159,9 @@ def main():
                     listing_errors.append({"url": listing_url, "error": summarize_fetch_error(e)})
             urls.extend(discovered)
             offerwall_presence = list(dict.fromkeys(offerwall_presence))
+            offerwall_candidates = offerwall_provider_candidates(
+                offerwall_presence, offerwall_provider_registry
+            )
             deduped_urls = []
             seen_identities = set()
             for candidate_url in urls:
@@ -1114,6 +1178,7 @@ def main():
                 "standard": is_standard,
                 "knownOrDiscoveredUrls": len(urls),
                 "offerwallPresenceDomains": len(offerwall_presence),
+                "offerwallReviewedProviders": len(offerwall_candidates),
                 "confirmedOffers": 0,
                 "updatedRows": 0,
                 "reviewRequired": 0,
@@ -1133,6 +1198,7 @@ def main():
                         "source": source_id,
                         "reason": "offerwall_presence_candidate",
                         "providerDomains": offerwall_presence,
+                        "providerCandidates": offerwall_candidates,
                         "listingErrors": [item["error"] for item in listing_errors],
                         "checkedAt": checked_at,
                     })
