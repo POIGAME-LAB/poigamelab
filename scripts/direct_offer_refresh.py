@@ -3,11 +3,13 @@ from __future__ import annotations
 
 import csv
 import html
+import hashlib
 import json
 import re
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from html.parser import HTMLParser
 from urllib.parse import parse_qs, urljoin, urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -268,8 +270,168 @@ def offer_identity_key(url, source_id):
 
     return f"{source_id}:url:{exact}"
 
+class EvidenceNode:
+    def __init__(self, tag="", attrs=(), parent=None):
+        self.tag, self.attrs, self.parent = tag, dict(attrs), parent
+        self.children = []
+
+    def text(self):
+        if self.tag in {"script", "style", "noscript", "svg"}:
+            return ""
+        return " ".join(c.text() if isinstance(c, EvidenceNode) else c for c in self.children)
+
+    def find(self, *, tag=None, ident=None, cls=None):
+        found = []
+        for child in self.children:
+            if not isinstance(child, EvidenceNode):
+                continue
+            if ((tag is None or child.tag == tag)
+                    and (ident is None or child.attrs.get("id") == ident)
+                    and (cls is None or cls in child.attrs.get("class", "").split())):
+                found.append(child)
+            found.extend(child.find(tag=tag, ident=ident, cls=cls))
+        return found
+
+
+class EvidenceHTML(HTMLParser):
+    VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+            "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self, raw):
+        super().__init__(convert_charrefs=True)
+        self.root = self.current = EvidenceNode()
+        self.feed(raw)
+        self.close()
+
+    def handle_starttag(self, tag, attrs):
+        node = EvidenceNode(tag, attrs, self.current)
+        self.current.children.append(node)
+        if tag not in self.VOID:
+            self.current = node
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        if tag not in self.VOID:
+            self.handle_endtag(tag)
+
+    def handle_endtag(self, tag):
+        node = self.current
+        while node.parent is not None:
+            if node.tag == tag:
+                self.current = node.parent
+                return
+            node = node.parent
+
+    def handle_data(self, data):
+        self.current.children.append(data)
+
+
+def evidence_text(node):
+    return re.sub(r"\s+", " ", node.text()).strip()
+
+
+def one(nodes):
+    if len(nodes) != 1:
+        raise ValueError("missing_or_ambiguous_offer_structure")
+    return nodes[0]
+
+
+def warau_offer_id(url):
+    p = urlparse(url)
+    if (p.scheme != "https" or p.hostname not in {"www.warau.jp", "ssl.warau.jp"}
+            or p.path != "/contents/point/pointEntrance.php"):
+        raise ValueError("unexpected_offer_url")
+    values = parse_qs(p.query, keep_blank_values=True).get("point_id", [])
+    if len(values) != 1 or not re.fullmatch(r"[0-9]+", values[0]):
+        raise ValueError("ambiguous_offer_identity")
+    return values[0]
+
+
+def exact_points(node):
+    value = evidence_text(node)
+    if not re.fullmatch(r"(?:[0-9]+|[1-9][0-9]{0,2}(?:,[0-9]{3})+)", value):
+        raise ValueError("invalid_points")
+    number = int(value.replace(",", ""))
+    if not 0 < number < 1_000_000:
+        raise ValueError("invalid_points")
+    return number
+
+
+def inspect_warau_offer(raw, requested_url, final_url, aliases):
+    """Extract review evidence from observed Warau desktop StepUp markup only.
+
+    No point-to-yen conversion or publication is authorized by this parser.
+    Full terms must be reviewed; a matching summary is not a verified snapshot.
+    """
+    try:
+        offer_id = warau_offer_id(requested_url)
+        if warau_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+        doc = EvidenceHTML(raw).root
+        canonical = one([n for n in doc.find(tag="link")
+                         if "canonical" in n.attrs.get("rel", "").split()])
+        if warau_offer_id(urljoin(final_url, canonical.attrs.get("href", ""))) != offer_id:
+            raise ValueError("canonical_offer_mismatch")
+        title = evidence_text(one(doc.find(tag="title")))
+        if doc.find(cls="pointEntranceNone-Main") or "掲載終了のご案内" in title:
+            return {"state": "unavailable", "reason": "source_offer_unavailable",
+                    "offerId": offer_id}
+        root = one(doc.find(ident="pointEntrancePointDetail"))
+        header = one(root.find(ident="innerEntranceBox"))
+        name = evidence_text(one(header.find(cls="pointEntrance-Head_Title")))
+        if not target_present(name, aliases):
+            raise ValueError("offer_title_mismatch")
+        platform = evidence_text(one(header.find(cls="pointEntrance-BannerBox_SpLabelText")))
+        if platform not in {"iOS", "Android"}:
+            raise ValueError("ambiguous_offer_platform")
+        table = one(header.find(cls="sw-SurInfo_PtList"))
+        steps = []
+        for row in table.find(tag="tr"):
+            cells = row.find(tag="td")
+            if not cells:
+                continue
+            if len(cells) != 2:
+                raise ValueError("incomplete_step_row")
+            condition = evidence_text(one(row.find(cls="sw-SurInfo_PtListAcquirement")))
+            if len(condition) < 4:
+                raise ValueError("missing_step_condition")
+            if evidence_text(one(row.find(cls="sw-PtUnit"))) != "pt":
+                raise ValueError("unexpected_reward_unit")
+            steps.append({"condition": condition,
+                          "rewardPoints": exact_points(one(row.find(cls="sw-Pt")))})
+        if not steps or len({s["condition"] for s in steps}) != len(steps):
+            raise ValueError("missing_or_duplicate_steps")
+        cumulative = one(header.find(cls="sw-SurInfo_PtListCumulative"))
+        if evidence_text(one(cumulative.find(cls="sw-PtUnit"))) != "pt":
+            raise ValueError("unexpected_reward_unit")
+        total = exact_points(one(cumulative.find(cls="sw-Pt")))
+        summary = one(header.find(ident="detailPointContainer"))
+        if evidence_text(one(summary.find(cls="entrance-ptItem_PtInfo-unit"))) != "pt":
+            raise ValueError("unexpected_reward_unit")
+        if (sum(s["rewardPoints"] for s in steps) != total
+                or exact_points(one(summary.find(cls="entrance-ptItem_PtInfo-point"))) != total):
+            raise ValueError("step_total_mismatch")
+        terms = evidence_text(one(root.find(ident="js_cautionDiv")))
+        if not all(marker in terms for marker in ("獲得条件", "獲得対象外", "注意事項")):
+            raise ValueError("incomplete_offer_terms")
+        payload = {"offerId": offer_id, "name": name, "platform": platform,
+                   "rewardPoints": total, "rewardUnit": "pt", "steps": steps,
+                   "termsText": terms}
+        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "warau-stepup-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def inspect_detail(url, source, aliases, fetcher=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
+    if source.get("id") == "warau":
+        evidence = inspect_warau_offer(raw, url, final_url, aliases)
+        return {"url": final_url, "sourceEvidence": evidence,
+                "targetPresent": evidence["state"] == "parsed",
+                "platform": evidence.get("platform", "")}
     text = visible_text(raw)
     if not target_present(text, aliases):
         return {"url": final_url, "targetPresent": False, "platform": "", "_text": text}
@@ -419,6 +581,23 @@ def main():
                         "game": game, "source": source_id, "url": url,
                         "reason": "fetch_failed", "error": str(e)[:240], "checkedAt": checked_at
                     })
+                    source_result["reviewRequired"] += 1
+                    continue
+
+                evidence = detail.get("sourceEvidence")
+                if evidence is not None:
+                    existing = row_by_identity.get((game, source_id, offer_identity_key(url, source_id)))
+                    item = {"game": game, "source": source_id, "url": detail["url"],
+                            "reason": "structured_offer_review_required" if evidence["state"] == "parsed"
+                            else evidence.get("reason", "source_structure_review_required"),
+                            "sourceEvidence": evidence, "checkedAt": checked_at}
+                    if existing is not None:
+                        item["storedPlatform"] = existing.get("platform") or ""
+                        item["storedReward"] = existing.get("reward") or ""
+                        if evidence["state"] == "parsed":
+                            item["platformMatches"] = evidence["platform"] == existing.get("platform")
+                            item["requiredChecks"] = ["reward_unit_conversion", "complete_terms_vs_published_row"]
+                    review.append(item)
                     source_result["reviewRequired"] += 1
                     continue
 

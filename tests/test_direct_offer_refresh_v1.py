@@ -19,17 +19,17 @@ def test_reward_change_is_review_only_not_auto_publish(tmp_path, monkeypatch):
     direct.REVIEW=tmp_path/'data/comparison_review_queue.json'
 
     direct.POLICY.write_text(json.dumps({
-        'comparisonSources':['warau'],
+        'comparisonSources':['testsite'],
         'minimumConfirmedSourcesForComparison':1,
         'games':{'ホワイトアウト・サバイバル':{'enabled':True,'supplementalSources':[]}}
     },ensure_ascii=False),encoding='utf-8')
     direct.TARGETS.write_text(json.dumps({'games':[{
         'game':'ホワイトアウト・サバイバル',
         'aliases':['Whiteout Survival'],
-        'known_urls_by_source':{'warau':['https://www.warau.jp/detail?id=1']}
+        'known_urls_by_source':{'testsite':['https://www.testsite.jp/detail?id=1']}
     }]},ensure_ascii=False),encoding='utf-8')
     direct.SOURCES.write_text(json.dumps({'sources':[{
-        'id':'warau','search_domains':['warau.jp','www.warau.jp','ssl.warau.jp'],'mobile':True,
+        'id':'testsite','search_domains':['testsite.jp','www.testsite.jp','ssl.testsite.jp'],'mobile':True,
         'direct_listing_urls':[],'direct_detail_url_hints':['/detail']
     }]},ensure_ascii=False),encoding='utf-8')
 
@@ -37,11 +37,11 @@ def test_reward_change_is_review_only_not_auto_publish(tmp_path, monkeypatch):
         w=csv.DictWriter(f,fieldnames=direct.FIELDS,lineterminator='\n')
         w.writeheader()
         w.writerow({
-            'offerKey':'k','game':'ホワイトアウト・サバイバル','site':'warau',
+            'offerKey':'k','game':'ホワイトアウト・サバイバル','site':'testsite',
             'provider':'','reward':'11500','condition':'ok','platform':'iOS',
             'type':'StepUp','deadline':'','updatedAt':'2026-09-01',
-            'url':'https://www.warau.jp/detail?id=1',
-            'sourceUrl':'https://www.warau.jp/detail?id=1','verified':'true'
+            'url':'https://www.testsite.jp/detail?id=1',
+            'sourceUrl':'https://www.testsite.jp/detail?id=1','verified':'true'
         })
 
     def fake_fetch(url, source, timeout=15, max_bytes=1200000):
@@ -71,17 +71,17 @@ def test_same_reward_requires_full_offer_verification(tmp_path, monkeypatch):
     direct.REVIEW=tmp_path/'data/comparison_review_queue.json'
 
     direct.POLICY.write_text(json.dumps({
-        'comparisonSources':['warau'],
+        'comparisonSources':['testsite'],
         'minimumConfirmedSourcesForComparison':1,
         'games':{'メメントモリ':{'enabled':True,'supplementalSources':[]}}
     },ensure_ascii=False),encoding='utf-8')
     direct.TARGETS.write_text(json.dumps({'games':[{
         'game':'メメントモリ',
         'aliases':['MementoMori'],
-        'known_urls_by_source':{'warau':['https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975']}
+        'known_urls_by_source':{'testsite':['https://www.testsite.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975']}
     }]},ensure_ascii=False),encoding='utf-8')
     direct.SOURCES.write_text(json.dumps({'sources':[{
-        'id':'warau','search_domains':['warau.jp','www.warau.jp'],'mobile':True,
+        'id':'testsite','search_domains':['testsite.jp','www.testsite.jp'],'mobile':True,
         'direct_listing_urls':[],'direct_detail_url_hints':['/detail']
     }]},ensure_ascii=False),encoding='utf-8')
 
@@ -89,11 +89,11 @@ def test_same_reward_requires_full_offer_verification(tmp_path, monkeypatch):
         w=csv.DictWriter(f,fieldnames=direct.FIELDS,lineterminator='\n')
         w.writeheader()
         w.writerow({
-            'offerKey':'m','game':'メメントモリ','site':'warau','provider':'',
+            'offerKey':'m','game':'メメントモリ','site':'testsite','provider':'',
             'reward':'12050','condition':'ok','platform':'Android','type':'StepUp',
             'deadline':'','updatedAt':'2026-09-01',
-            'url':'https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975',
-            'sourceUrl':'https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975','verified':'true'
+            'url':'https://ssl.testsite.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975',
+            'sourceUrl':'https://ssl.testsite.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975','verified':'true'
         })
 
     def fake_fetch(url, source, timeout=15, max_bytes=1200000):
@@ -185,18 +185,18 @@ def test_allowed_redirect_and_oversized_response(monkeypatch):
 
 @pytest.fixture
 def refresh_case(tmp_path):
-    source = {'id': 'warau', 'search_domains': ['example.test'],
+    source = {'id': 'testsite', 'search_domains': ['example.test'],
               'direct_listing_urls': ['https://example.test/list', 'https://example.test/unused'],
               'direct_listing_limit': 1, 'direct_detail_limit': 2}
-    direct.POLICY.write_text(json.dumps({'comparisonSources': ['warau'],
+    direct.POLICY.write_text(json.dumps({'comparisonSources': ['testsite'],
         'games': {'Game A': {'enabled': True}, 'Game B': {'enabled': True}}}))
     direct.TARGETS.write_text(json.dumps({'games': [
-        {'game': game, 'known_urls_by_source': {'warau': [
+        {'game': game, 'known_urls_by_source': {'testsite': [
             f'https://example.test/detail?id={n}' for n in range(5)]}}
         for game in ('Game A', 'Game B')]}))
     direct.SOURCES.write_text(json.dumps({'sources': [source]}))
     row = dict.fromkeys(direct.FIELDS, '')
-    row.update(offerKey='a', game='Game A', site='warau', reward='100',
+    row.update(offerKey='a', game='Game A', site='testsite', reward='100',
                condition='Original condition', platform='iOS', updatedAt='2026-01-01',
                url='https://example.test/detail?id=0', verified='true')
     direct.write_published([row])
@@ -278,3 +278,120 @@ def test_missing_target_does_not_refresh_or_create_offer(refresh_case, monkeypat
     reviews = json.loads(direct.REVIEW.read_text())['items']
     assert sum(item['reason'] == 'target_not_confirmed' for item in reviews) == 4
     assert not any(item['reason'] == 'unpublished_offer_found' for item in reviews)
+
+
+WARAU_URL = 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=101'
+
+
+@pytest.fixture
+def warau_markup():
+    # Synthetic amounts/terms in the structural selectors observed on Warau.
+    return '''<html><head><title>テストゲーム（StepUp）</title>
+<link rel="canonical" href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=101">
+</head><body><div id="pointEntrancePointDetail"><div id="innerEntranceBox">
+<h2 class="pointEntrance-Head_Title">テストゲーム（StepUp）</h2>
+<div class="pointEntrance-BannerBox_SpLabelText">iOS</div>
+<dl id="detailPointContainer"><span class="entrance-ptItem_PtInfo-point">300</span>
+<span class="entrance-ptItem_PtInfo-unit">pt</span></dl>
+<table class="sw-SurInfo_PtList"><tbody>
+<tr><th>達成条件</th><th>獲得pt</th></tr>
+<tr><td class="sw-SurInfo_PtListAcquirement">10日以内にレベル5到達</td>
+<td><span class="sw-Pt">100</span><span class="sw-PtUnit">pt</span></td></tr>
+<tr><td class="sw-SurInfo_PtListAcquirement">20日以内にレベル10到達</td>
+<td><span class="sw-Pt">200</span><span class="sw-PtUnit">pt</span></td></tr>
+</tbody></table><div class="sw-SurInfo_PtListCumulative">累計
+<span class="sw-Pt">300</span><span class="sw-PtUnit">pt</span></div></div>
+<div id="js_cautionDiv"><h3>ポイント獲得条件</h3><p>新規利用のみ</p>
+<p>獲得対象外：再利用</p><p>注意事項：利用時の条件を確認</p></div></div>
+<aside>おすすめ 別ゲーム Android 累計 999,999 pt</aside></body></html>'''
+
+
+def parse_warau(markup, requested=WARAU_URL, final=WARAU_URL):
+    return direct.inspect_warau_offer(markup, requested, final, ['テストゲーム'])
+
+
+def test_warau_scopes_points_os_and_steps_to_one_offer(warau_markup):
+    evidence = parse_warau(warau_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['offerId'] == '101'
+    assert evidence['platform'] == 'iOS'
+    assert evidence['rewardPoints'] == 300
+    assert evidence['rewardUnit'] == 'pt'
+    assert 'rewardYen' not in evidence
+    assert [step['rewardPoints'] for step in evidence['steps']] == [100, 200]
+    assert '再利用' in evidence['termsText']
+    assert len(evidence['evidenceFingerprint']) == 64
+    alternative = WARAU_URL.replace('www.', 'ssl.') + '&pl=navigation'
+    assert parse_warau(warau_markup, alternative, alternative)['state'] == 'parsed'
+
+
+@pytest.mark.parametrize('old,new,reason', [
+    ('<span class="sw-Pt">200</span>', '<span class="sw-Pt">201</span>', 'step_total_mismatch'),
+    ('PtInfo-point">300', 'PtInfo-point">301', 'step_total_mismatch'),
+    ('SpLabelText">iOS', 'SpLabelText">iOS Android', 'ambiguous_offer_platform'),
+    ('pointEntrance-Head_Title">テストゲーム', 'pointEntrance-Head_Title">別ゲーム', 'offer_title_mismatch'),
+    ('<span class="sw-PtUnit">pt', '<span class="sw-PtUnit">円', 'unexpected_reward_unit'),
+    ('PtInfo-unit">pt', 'PtInfo-unit">円', 'unexpected_reward_unit'),
+    ('<span class="sw-Pt">100</span>', '<span class="sw-Pt">1.00</span>', 'invalid_points'),
+    ('<span class="sw-Pt">100</span>', '<span class="sw-Pt">-100</span>', 'invalid_points'),
+    ('<span class="sw-Pt">100</span>', '<span class="sw-Pt">1,00</span>', 'invalid_points'),
+    ('20日以内にレベル10到達', '10日以内にレベル5到達', 'missing_or_duplicate_steps'),
+    ('<p>注意事項：利用時の条件を確認</p>', '', 'incomplete_offer_terms'),
+    ('id="js_cautionDiv"', 'id="other"', 'missing_or_ambiguous_offer_structure'),
+    ('id="innerEntranceBox"', 'id="other"', 'missing_or_ambiguous_offer_structure'),
+    ('?point_id=101', '?point_id=102', 'canonical_offer_mismatch'),
+    ('?point_id=101', '?point_id=101&amp;point_id=102', 'ambiguous_offer_identity'),
+])
+def test_warau_rejects_conflicting_or_missing_evidence(warau_markup, old, new, reason):
+    evidence = parse_warau(warau_markup.replace(old, new))
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == reason
+
+
+def test_warau_checks_final_identity_and_ended_page_before_recommendations(warau_markup):
+    assert parse_warau(warau_markup, final=WARAU_URL.replace('101', '102'))['reason'] == 'redirected_to_different_offer'
+    ended = warau_markup.replace('<body>', '<body><div class="pointEntranceNone-Main">広告にアクセスできません</div>')
+    assert parse_warau(ended)['state'] == 'unavailable'
+    assert parse_warau(ended)['reason'] == 'source_offer_unavailable'
+    duplicate = warau_markup.replace('</body>', '<div id="pointEntrancePointDetail"></div></body>')
+    assert parse_warau(duplicate)['state'] == 'review_required'
+
+
+@pytest.mark.parametrize('old,new', [
+    ('10日以内にレベル5到達', '10日以内にレベル6到達'),
+    ('20日以内にレベル10到達', '19日以内にレベル10到達'),
+    ('再利用', '再利用と課金'),
+    ('SpLabelText">iOS', 'SpLabelText">Android'),
+])
+def test_warau_snapshot_changes_when_terms_or_os_change(warau_markup, old, new):
+    assert parse_warau(warau_markup)['evidenceFingerprint'] != parse_warau(
+        warau_markup.replace(old, new))['evidenceFingerprint']
+
+
+def test_warau_snapshot_ignores_unrelated_recommendations(warau_markup):
+    assert parse_warau(warau_markup)['evidenceFingerprint'] == parse_warau(
+        warau_markup.replace('999,999', '888,888'))['evidenceFingerprint']
+
+
+def test_warau_structured_review_is_not_a_publication(warau_markup, monkeypatch):
+    direct.POLICY.write_text(json.dumps({'comparisonSources': ['warau'],
+        'games': {'テストゲーム': {'enabled': True}}}))
+    direct.TARGETS.write_text(json.dumps({'games': [{'game': 'テストゲーム',
+        'known_urls_by_source': {'warau': [WARAU_URL]}}]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{'id': 'warau',
+        'search_domains': ['warau.jp'], 'direct_listing_urls': []}]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(offerKey='test', game='テストゲーム', site='warau', platform='Android',
+               reward='300', condition='以前の条件', updatedAt='2026-01-01', url=WARAU_URL, verified='true')
+    direct.write_published([row])
+    before = direct.PUBLISHED.read_bytes()
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (warau_markup, url))
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert len(items) == 1
+    assert items[0]['reason'] == 'structured_offer_review_required'
+    assert items[0]['platformMatches'] is False
+    assert items[0]['sourceEvidence']['rewardPoints'] == 300
+    assert items[0]['sourceEvidence']['rewardUnit'] == 'pt'
+    assert json.loads(direct.STATUS.read_text())['refreshedRows'] == 0
