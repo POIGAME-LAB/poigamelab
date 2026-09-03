@@ -11,6 +11,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,6 +91,31 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
         except Exception:
             pass
     return data.decode(charset or "utf-8", errors="replace"), final_url
+
+
+def summarize_fetch_error(error):
+    """Keep diagnostic categories, never untrusted response/exception text.
+
+    A status code describes this fetch, not the offer's availability. In
+    particular, HTTPError subclasses URLError and must be checked first.
+    """
+    if isinstance(error, HTTPError):
+        code = error.code
+        return f"http_status_{code}" if type(code) is int and 100 <= code <= 599 else "http_error"
+    if isinstance(error, TimeoutError):
+        return "timeout"
+    if isinstance(error, URLError):
+        return "timeout" if isinstance(error.reason, TimeoutError) else "network_error"
+    if isinstance(error, ConnectionError):
+        return "network_error"
+    if isinstance(error, ValueError):
+        return {
+            "URL is outside registered first-party domains": "first_party_url_rejected",
+            "redirect left registered first-party domains": "first_party_redirect_rejected",
+            "response exceeds byte limit; incomplete evidence rejected": "response_too_large",
+        }.get(str(error), "fetch_error")
+    return "fetch_error"
+
 
 def visible_text(raw):
     x = re.sub(r"(?is)<(?:script|style|noscript|svg)\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw or "")
@@ -674,6 +700,13 @@ def main():
             try:
                 fetch_cache[key] = (fetch_first_party(url, source), None)
             except Exception as error:
+                if isinstance(error, HTTPError):
+                    # Cache the failure, not an open response. No error body is
+                    # needed and no retry is authorized by its classification.
+                    try:
+                        error.close()
+                    except OSError:
+                        pass  # Preserve/cache the original HTTP failure.
                 fetch_cache[key] = (None, error)
         result, error = fetch_cache[key]
         if error is not None:
@@ -724,7 +757,7 @@ def main():
                     if target_present(visible_text(raw), aliases):
                         discovered.extend(discover_detail_links(raw, final_url, source, aliases, limit=6))
                 except Exception as e:
-                    listing_errors.append(str(e)[:220])
+                    listing_errors.append({"url": listing_url, "error": summarize_fetch_error(e)})
             urls.extend(discovered)
             deduped_urls = []
             seen_identities = set()
@@ -756,12 +789,22 @@ def main():
             if not urls:
                 review.append({
                     "game": game, "source": source_id, "reason": "discovery_required",
-                    "listingErrors": listing_errors, "checkedAt": checked_at
+                    "listingErrors": [item["error"] for item in listing_errors], "checkedAt": checked_at
                 })
                 source_result["reviewRequired"] += 1
                 source_result["state"] = "review_required"
                 game_result["sources"].append(source_result)
                 continue
+
+            # Existing detail URLs do not imply the discovery listing worked.
+            # Preserve each failure while still inspecting known offers.
+            for listing_error in listing_errors:
+                review.append({
+                    "game": game, "source": source_id, "url": listing_error["url"],
+                    "reason": "listing_fetch_failed", "error": listing_error["error"],
+                    "checkedAt": checked_at,
+                })
+                source_result["reviewRequired"] += 1
 
             for url in urls:
                 try:
@@ -769,7 +812,7 @@ def main():
                 except Exception as e:
                     review.append({
                         "game": game, "source": source_id, "url": url,
-                        "reason": "fetch_failed", "error": str(e)[:240], "checkedAt": checked_at
+                        "reason": "fetch_failed", "error": summarize_fetch_error(e), "checkedAt": checked_at
                     })
                     source_result["reviewRequired"] += 1
                     continue

@@ -67,8 +67,8 @@ Synthetic fixtures reproduce structure without publishing copied full terms.
 ## Validation and remaining work
 
 The inspected DOM excerpt parses as 11 Android steps totaling 13,409 points/yen.
-The broader Python suite contains 153 passing cases, including 35 new parser and
-review-only cases. The unchanged GitHub workflow runs the 135-case targeted subset.
+The parser extension passed 153 broader Python cases, including 35 new parser and
+review-only cases; the then-current GitHub targeted subset contained 135 cases.
 Tests cover malformed/missing totals, obsolete conversion, incomplete steps,
 wrong identity, misleading OS text, changed terms and 404 retention. The Warau
 offline replay remains unchanged and no production AI/collector calls were made.
@@ -78,3 +78,41 @@ other variants, review/correct the existing OS and terms, and obtain separate
 approval for any future Chobirich freshness updates. This change does not make
 automatic two-site comparison ready. The local site's prior PC/mobile visual-QA
 limitation and PR merge approval requirement remain.
+
+## Retrieval diagnosis follow-up, 2026-09-03
+
+One further direct fetch of the same 1896275 URL, with the existing fetcher and
+unchanged request headers, again returned HTTP 404. Its final URL was unchanged,
+its content type was `text/plain; charset=UTF-8`, and its body said the page could
+not be found. This establishes the observed response, not why it differs from
+the earlier public browser observation. No User-Agent rotation, credentials,
+proxy, alternate host, browser retry or paid collector was introduced.
+
+Targeted official-help searches did not establish a cause or a supported
+automated retrieval method. The official terms link returned 403 through web
+lookup; it was not retried through another route. Automation permission has not
+been established by this investigation, and Chobirich refresh remains disabled.
+The existing published OS and terms still need separate review/correction.
+
+The follow-up found a local diagnostic gap: listing failures were discarded when
+known detail URLs existed. The runner now retains `listing_fetch_failed` review
+items for those listings while independently inspecting the known URLs. Without
+detail URLs, the existing `discovery_required` / `listingErrors` format remains.
+This does not add JSON keys or change CSV columns, approval logic or fetch limits.
+
+Existing error strings now contain safe categories such as `http_status_404`,
+`http_status_429`, `timeout`, `network_error` and guard rejection codes. HTTP errors
+are classified before their `URLError` parent. Unknown exception text and HTTP
+error bodies are not copied into diagnostics. These categories describe a fetch,
+not whether an offer ended. Error responses are closed before caching failures;
+an I/O error during close does not discard the original failure or cause retries.
+
+Validation added 21 cases (174 broader Python cases total; 156 in the unchanged
+CI subset), covering known/unknown detail URLs, 404/429, raw-text omission, response
+closure, failed-close handling, cross-game cache reuse, review counts, data
+preservation and successful approved Warau detail checks despite listing failure.
+All broader tests ran with outbound sockets blocked. Both frontend suites and
+the eight saved-evidence Warau replay scenarios passed. Published data, the four
+actual approvals, schedules and frontend files were unchanged. No live publication
+run or production AI/collector API call was made; PC/mobile visual QA remains
+incomplete.

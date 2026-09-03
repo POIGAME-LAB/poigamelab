@@ -125,6 +125,7 @@ def test_offer_identity_ignores_warau_host_and_navigation_params():
 # Each scenario owns every output path, regardless of test execution order.
 import io
 from email.message import Message
+from urllib.error import HTTPError, URLError
 from urllib.request import HTTPHandler, build_opener
 from urllib.response import addinfourl
 
@@ -227,6 +228,102 @@ def test_request_limits_and_cross_game_cache(refresh_case, monkeypatch, failed):
     assert all(not game['comparisonReady'] for game in status['games'])
     if failed:
         assert sum(x['reason'] == 'fetch_failed' for x in review) == 4
+
+
+@pytest.mark.parametrize('error,expected', [
+    (HTTPError('https://example.test/private', 404, 'untrusted message', {}, None), 'http_status_404'),
+    (HTTPError('https://example.test/private', 403, 'untrusted message', {}, None), 'http_status_403'),
+    (HTTPError('https://example.test/private', 429, 'untrusted message', {}, None), 'http_status_429'),
+    (HTTPError('https://example.test/private', 503, 'untrusted message', {}, None), 'http_status_503'),
+    (HTTPError('https://example.test/private', 'untrusted', 'message', {}, None), 'http_error'),
+    (TimeoutError('untrusted message'), 'timeout'),
+    (URLError(TimeoutError('untrusted message')), 'timeout'),
+    (URLError('untrusted message'), 'network_error'),
+    (ConnectionError('untrusted message'), 'network_error'),
+    (ValueError('redirect left registered first-party domains'), 'first_party_redirect_rejected'),
+    (ValueError('response exceeds byte limit; incomplete evidence rejected'), 'response_too_large'),
+    (ValueError('URL is outside registered first-party domains'), 'first_party_url_rejected'),
+    (ValueError('untrusted message'), 'fetch_error'),
+    (RuntimeError('untrusted message'), 'fetch_error'),
+])
+def test_fetch_errors_have_safe_stable_diagnostics(error, expected):
+    assert direct.summarize_fetch_error(error) == expected
+
+
+@pytest.mark.parametrize('known_details', [False, True])
+@pytest.mark.parametrize('status_code', [404, 429])
+def test_listing_failure_is_retained_with_or_without_known_details(
+        refresh_case, monkeypatch, known_details, status_code):
+    if not known_details:
+        direct.TARGETS.write_text(json.dumps({'games': [{'game': game}
+            for game in ('Game A', 'Game B')]}))
+        direct.write_published([])
+    before = direct.PUBLISHED.read_bytes()
+    requested = []
+    body = io.BytesIO(b'untrusted response body')
+
+    def fetch(url, source):
+        requested.append(url)
+        if url.endswith('/list'):
+            raise HTTPError(url, status_code, 'untrusted message', {}, body)
+        return '<body>Game A Game B 100 pt</body>', url
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert body.closed
+    assert requested == ['https://example.test/list'] + (
+        ['https://example.test/detail?id=0', 'https://example.test/detail?id=1'] if known_details else [])
+    reviews = json.loads(direct.REVIEW.read_text())['items']
+    code = f'http_status_{status_code}'
+    if known_details:
+        failures = [item for item in reviews if item['reason'] == 'listing_fetch_failed']
+        assert len(failures) == 2
+        assert all(item['url'] == 'https://example.test/list' and item['error'] == code for item in failures)
+    else:
+        assert len(reviews) == 2
+        assert all(item['reason'] == 'discovery_required' and item['listingErrors'] == [code]
+                   for item in reviews)
+    assert 'untrusted' not in direct.REVIEW.read_text()
+    status = json.loads(direct.STATUS.read_text())
+    assert status['apiCalls'] == status['refreshedRows'] == status['publishedRewardChanges'] == 0
+    assert status['reviewCount'] == len(reviews)
+    assert sum(source['reviewRequired'] for game in status['games'] for source in game['sources']) == len(reviews)
+    assert all(not game['comparisonReady'] for game in status['games'])
+
+
+@pytest.mark.parametrize('close_fails', [False, True])
+def test_cached_detail_failure_is_closed_and_sanitized(refresh_case, monkeypatch, close_fails):
+    requested = []
+    bodies = []
+
+    class ErrorBody(io.BytesIO):
+        def read(self, *args):
+            pytest.fail('HTTP error bodies must not be read for diagnostics')
+
+        def close(self):
+            super().close()
+            if close_fails:
+                raise OSError('untrusted close error')
+
+    def fetch(url, source):
+        requested.append(url)
+        if url.endswith('/list'):
+            return '<body>No target listed</body>', url
+        body = ErrorBody(b'untrusted response body')
+        bodies.append(body)
+        raise HTTPError(url, 404, 'untrusted message', {}, body)
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == refresh_case
+    assert len(requested) == len(set(requested)) == 3
+    assert len(bodies) == 2 and all(body.closed for body in bodies)
+    items = json.loads(direct.REVIEW.read_text())['items']
+    failures = [item for item in items if item['reason'] == 'fetch_failed']
+    assert len(failures) == 4
+    assert all(item['error'] == 'http_status_404' for item in failures)
+    assert 'untrusted' not in direct.REVIEW.read_text()
 
 
 @pytest.mark.parametrize('page', [
@@ -444,6 +541,35 @@ def test_approved_unchanged_snapshot_refreshes_only_date_once(approved_case, mon
     monkeypatch.setattr(direct, 'write_published', no_rewrite)
     assert direct.main() == 0
     assert json.loads(direct.STATUS.read_text())['refreshedRows'] == 1
+
+
+def test_listing_failure_does_not_hide_independently_approved_detail(approved_case, warau_markup, monkeypatch):
+    source = json.loads(direct.SOURCES.read_text())
+    listing = 'https://www.warau.jp/list'
+    source['sources'][0]['direct_listing_urls'] = [listing]
+    direct.SOURCES.write_text(json.dumps(source))
+    calls = []
+
+    def fetch(url, source):
+        calls.append(url)
+        if url == listing:
+            raise HTTPError(url, 404, 'untrusted message', {}, None)
+        return warau_markup, url
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    before = direct.read_published()
+    assert direct.main() == 0
+    after = direct.read_published()
+    assert calls == [listing, WARAU_URL]
+    assert after[0] == dict(before[0], updatedAt='2026-09-04')
+    assert after[1:] == before[1:]
+    status = json.loads(direct.STATUS.read_text())
+    result = status['games'][0]['sources'][0]
+    assert result['confirmedOffers'] == result['updatedRows'] == result['reviewRequired'] == 1
+    assert status['refreshedRows'] == status['reviewCount'] == 1
+    assert status['games'][0]['comparisonReady'] is False
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert len(items) == 1 and items[0]['reason'] == 'listing_fetch_failed'
 
 
 @pytest.mark.parametrize('field,value', [
