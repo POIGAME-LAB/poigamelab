@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import hashlib, json, os, re, subprocess, sys
+import json, os, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,14 +14,7 @@ def now_iso():
 
 def slugify_game(name):
     table={'Township':'township','きのこ伝説':'kinoko-densetsu','メメントモリ':'memento-mori','ワーキングヒーロー':'working-hero'}
-    if name in table:
-        return table[name]
-    raw=name or 'game'
-    x=re.sub(r'[^a-z0-9]+','-',raw.lower()).strip('-')
-    if x and raw.isascii():
-        return x
-    digest=hashlib.sha256(raw.encode('utf-8')).hexdigest()[:10]
-    return f"{x + '-' if x else 'game-'}{digest}"
+    return table.get(name,'')
 
 def main():
     policy=json.loads(POLICY.read_text(encoding='utf-8'))
@@ -47,17 +40,10 @@ def main():
 
     failed=False
     for game in enabled:
-        print(f'\n### 自動更新: {game}')
-        game_policy=policy.get('games',{}).get(game) or {}
-        refresh_sources=[
-            str(x).strip() for x in (game_policy.get('refreshSources') or [])
-            if str(x).strip()
-        ]
-        cmd=[sys.executable,str(ROOT/'scripts/collect_games.py'),game]
-        if refresh_sources:
-            cmd.extend(['--sources',','.join(refresh_sources)])
-        cp=subprocess.run(cmd,cwd=ROOT,env=env)
-        item={'game':game,'returncode':cp.returncode,'sources':refresh_sources}
+        print(f'\\n### 自動更新: {game}')
+        cp=subprocess.run([sys.executable,str(ROOT/'scripts/collect_games.py'),game],
+                          cwd=ROOT,env=env)
+        item={'game':game,'returncode':cp.returncode}
         result_path=ROOT/'data'/f'{slugify_game(game)}_firecrawl_result.json'
         if result_path.exists():
             try:
@@ -79,7 +65,7 @@ def main():
     tmp.write_text(json.dumps(status,ensure_ascii=False,indent=2),encoding='utf-8')
     tmp.replace(STATUS)
 
-    print('\n### 自動更新まとめ')
+    print('\\n### 自動更新まとめ')
     for x in status['results']:
         mark='OK' if x['returncode']==0 else 'ERROR'
         print(f"  {mark}: {x['game']} / 掲載候補 {x.get('publishableCount','?')}件")
