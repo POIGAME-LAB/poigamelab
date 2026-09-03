@@ -67,3 +67,18 @@ containers larger than 1,400 visible characters.
 This prevents a dense listing from attaching Game A to an offerwall link that
 actually belongs to the adjacent Game B card. Regression tests cover adjacent
 cards, nested links within the same card, and oversized page-wide containers.
+
+
+## Reviewed provider identity enrichment
+
+Passive presence observations may be enriched through
+`config/offerwall_providers.json`. The registry is deliberately separate from
+the raw discovered-domain allowlist: a domain can be known for safe passive
+detection without yet having a reviewed provider contract.
+
+For a reviewed provider, the review queue may add `providerCandidates` with
+provider ID, name, normalized presence domain, and retrieval mode. This remains
+review metadata only and never changes source confirmation or publication.
+
+GF Rewards is the first reviewed entry and is fixed to
+`retrievalMode: presence_only`; see `docs/gf-rewards-review-evidence.md`.

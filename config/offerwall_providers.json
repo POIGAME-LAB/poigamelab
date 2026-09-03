@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "providers": [
+    {
+      "id": "gf_rewards",
+      "name": "GF Rewards",
+      "operator": "株式会社フクロウラボ",
+      "presenceDomains": [
+        "ow-gf-rewards.com"
+      ],
+      "informationDomains": [
+        "info.gf-rewards.com"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "requiresUserTrackingContext": true,
+      "privacyEvidenceUrl": "https://info.gf-rewards.com/privacy.html",
+      "serviceEvidenceUrl": "https://info.gf-rewards.com/",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Official GF Rewards privacy information states that CookieID is automatically acquired to identify users who satisfy reward conditions. POIGAME LAB therefore records only first-party-observed provider presence and does not fetch provider offerwall URLs."
+    }
+  ]
+}
