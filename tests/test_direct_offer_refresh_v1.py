@@ -15,6 +15,7 @@ def test_reward_change_is_review_only_not_auto_publish(tmp_path, monkeypatch):
     direct.SOURCES=tmp_path/'config/point_sources.json'
     direct.PUBLISHED=tmp_path/'data/published_offers.csv'
     direct.STATUS=tmp_path/'data/comparison_refresh_status.json'
+    direct.LEGACY_STATUS=tmp_path/'data/refresh_status.json'
     direct.REVIEW=tmp_path/'data/comparison_review_queue.json'
 
     direct.POLICY.write_text(json.dumps({
