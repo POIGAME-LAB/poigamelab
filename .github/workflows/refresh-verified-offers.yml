@@ -1,4 +1,4 @@
-name: Refresh verified offers
+name: Refresh comparison offers (API-free)
 
 on:
   workflow_dispatch:
@@ -22,26 +22,26 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Refresh verified offers
+      - name: Check first-party comparison pages
         id: refresh
         continue-on-error: true
-        env:
-          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/auto_refresh.py
+        run: python scripts/direct_offer_refresh.py
 
-      - name: Commit safe outputs
+      - name: Commit safe direct-refresh outputs
         if: always()
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/published_offers.csv data/exception_queue.json data/refresh_status.json
-          git diff --cached --quiet || git commit -m "chore: refresh verified offers"
+          git add data/published_offers.csv
+          if [ -f data/comparison_refresh_status.json ]; then git add data/comparison_refresh_status.json; fi
+          if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
+          if [ -f data/comparison_review_queue.json ]; then git add data/comparison_review_queue.json; fi
+          git diff --cached --quiet || git commit -m "chore: check comparison offers"
           git pull --rebase
           git push
 
-      - name: Surface refresh failure
+      - name: Surface direct-refresh system failure
         if: steps.refresh.outcome == 'failure'
         run: |
-          echo "Automatic refresh failed or was incomplete. Previous verified rows were preserved."
+          echo "Direct comparison refresh failed. Existing verified rows were preserved."
           exit 1

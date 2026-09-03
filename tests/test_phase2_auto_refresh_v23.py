@@ -35,26 +35,32 @@ def test_complete_snapshot_preserves_other_games(tmp_path):
     rows={x['offerKey']:x for x in csv.DictReader(out.open(encoding='utf-8'))}
     assert set(rows)=={'town','kino-new'}
 
-def test_collector_emits_completeness_signal():
-    text=(ROOT/'scripts/firecrawl_township_probe.py').read_text()
-    assert 'assess_collection_completeness' in text
-    assert '"collectionComplete": collection_complete' in text
-    assert '"degradedReasons": degraded_reasons' in text
-
-def test_auto_refresh_only_uses_policy_enabled_games():
+def test_scheduled_policy_uses_all_six_standard_comparison_sources():
     policy=json.loads((ROOT/'config/refresh_policy.json').read_text())
-    assert policy['games']['Township']['enabled'] is True
-    assert policy['games']['きのこ伝説']['enabled'] is True
-    assert policy['games']['メメントモリ']['enabled'] is False
-    assert policy['games']['ワーキングヒーロー']['enabled'] is False
+    assert policy['comparisonSources']==[
+        'moppy','warau','chobirich','coincome','mikoshi','gendama'
+    ]
+    expected={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル'}
+    assert expected == {g for g,cfg in policy['games'].items() if cfg['enabled'] is True}
+    assert policy['minimumConfirmedSourcesForComparison'] >= 2
+    assert policy['scheduledMode']=='direct-http-api-free'
+    assert policy['publication']['directRefreshNeverCreatesNewPublishedRows'] is True
 
-def test_workflow_has_secrets_concurrency_and_daily_schedule():
+def test_working_heroes_can_keep_hapitas_as_supplemental_not_standard():
+    policy=json.loads((ROOT/'config/refresh_policy.json').read_text())
+    assert 'hapitas' not in policy['comparisonSources']
+    assert policy['games']['ワーキングヒーロー']['supplementalSources']==['hapitas']
+
+def test_workflow_is_api_free_and_daily():
     text=(ROOT/'.github/workflows/refresh-verified-offers.yml').read_text()
     assert 'cron: "17 21 * * *"' in text
     assert 'poigamelab-production-writer' in text
-    assert 'secrets.FIRECRAWL_API_KEY' in text
-    assert 'secrets.GEMINI_API_KEY' in text
-    assert 'python scripts/auto_refresh.py' in text
+    assert 'python scripts/direct_offer_refresh.py' in text
+    assert 'FIRECRAWL_API_KEY' not in text
+    assert 'GEMINI_API_KEY' not in text
+    assert 'TAVILY_API_KEY' not in text
+    assert 'data/comparison_refresh_status.json' in text
+    assert 'data/comparison_review_queue.json' in text
 
 def test_legacy_six_hour_workflow_not_active():
     assert not (ROOT/'.github/workflows/collect-data.yml').exists()
