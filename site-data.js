@@ -107,8 +107,9 @@
     }
 
     let managedGames;
+    let policy;
     try {
-      const policy = await fetchJson("config/refresh_policy.json");
+      policy = await fetchJson("config/refresh_policy.json");
       managedGames = new Set(Object.keys(policy?.games || {}));
     } catch (error) {
       console.info("更新ポリシーを確認できないため、旧案件データは表示しません。", error.message);
