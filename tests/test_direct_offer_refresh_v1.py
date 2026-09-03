@@ -1914,3 +1914,94 @@ def test_remaining_provider_contracts_keep_user_contextual_walls_presence_only()
     assert by_id['smaad']['anonymousPublicCatalogEstablished'] is False
     assert by_id['smaad']['retrievalMode'] == 'presence_only'
     assert by_id['smaad']['followExternalLinks'] is False
+
+
+def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_markup, monkeypatch):
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['moppy'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'テストゲーム': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'テストゲーム',
+        'known_urls_by_source': {'moppy': [MOPPY_URL]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'moppy',
+        'search_domains': ['pc.moppy.jp'],
+        'direct_listing_urls': [],
+        'direct_detail_limit': 6,
+    }]}))
+    direct.SOURCES.with_name('offerwall_providers.json').write_text(json.dumps({
+        'schemaVersion': 1,
+        'providers': [{
+            'id': 'appdriver',
+            'name': 'AppDriver',
+            'presenceDomains': ['appdriver.jp'],
+            'firstPartyLabels': ['アプリドライブ', 'AppDriver'],
+            'retrievalMode': 'presence_only',
+            'followExternalLinks': False,
+            'persist': 'provider_domain_only',
+        }],
+    }))
+    direct.write_published([])
+    calls = []
+    shell = moppy_markup.replace(
+        '■注意事項',
+        'ポイント未付与はアプリドライブのサイト内お問い合わせフォームをご利用ください。■注意事項',
+    )
+
+    def fetch(url, source):
+        calls.append(url)
+        assert url == MOPPY_URL
+        return shell, MOPPY_URL
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 0
+    assert calls == [MOPPY_URL]
+
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert len(items) == 1
+    evidence = items[0]['sourceEvidence']
+    assert evidence['downstreamTermsRequired'] is True
+    assert evidence['downstreamProviderCandidates'] == [{
+        'providerId': 'appdriver',
+        'providerName': 'AppDriver',
+        'domain': 'appdriver.jp',
+        'retrievalMode': 'presence_only',
+    }]
+    assert items[0]['reason'] == 'structured_offer_review_required'
+    assert direct.read_published() == []
+
+
+def test_offerwall_provider_label_registry_rejects_duplicate_review_labels(tmp_path):
+    path = tmp_path/'offerwall_providers.json'
+    path.write_text(json.dumps({
+        'schemaVersion': 1,
+        'providers': [{
+            'id': 'appdriver',
+            'name': 'AppDriver',
+            'presenceDomains': ['appdriver.jp'],
+            'firstPartyLabels': ['アプリドライブ'],
+            'retrievalMode': 'presence_only',
+            'followExternalLinks': False,
+            'persist': 'provider_domain_only',
+        }, {
+            'id': 'other',
+            'name': 'Other',
+            'presenceDomains': ['other.example'],
+            'firstPartyLabels': ['アプリドライブ'],
+            'retrievalMode': 'presence_only',
+            'followExternalLinks': False,
+            'persist': 'provider_domain_only',
+        }],
+    }))
+    domains = direct.load_offerwall_provider_registry(path)
+    with pytest.raises(ValueError, match='duplicate_offerwall_provider_label'):
+        direct.load_offerwall_provider_label_registry(path, domains)
+
+
+def test_repository_appdriver_has_reviewed_moppy_first_party_labels():
+    payload = json.loads((ROOT/'config/offerwall_providers.json').read_text())
+    appdriver = next(item for item in payload['providers'] if item['id'] == 'appdriver')
+    assert appdriver['firstPartyLabels'] == ['アプリドライブ', 'AppDriver']
