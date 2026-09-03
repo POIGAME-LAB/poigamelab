@@ -33,7 +33,7 @@ def test_same_identity_tracking_params_ok():
     assert o['auto_publish_ready']
     assert o['reward_yen']==3831
 
-def test_kinoko_clean_four_fastpaths_registered():
+def test_kinoko_clean_known_offer_ids_registered():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     k=next(x for x in data['games'] if x['game']=='きのこ伝説')
     known=k['known_urls_by_source']
@@ -42,7 +42,9 @@ def test_kinoko_clean_four_fastpaths_registered():
         'https://cimcome.jp/campaigns/details/10037',
         'https://cimcome.jp/campaigns/details/10038']
     assert known['warau']==[
-        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816']
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817']
+    assert all(len(urls)==len(set(urls)) for urls in known.values())
 
 def test_warau_deterministic_amount_uses_exact_identity_only():
     ios='https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643'

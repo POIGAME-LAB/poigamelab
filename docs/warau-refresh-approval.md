@@ -98,3 +98,43 @@ Coverage includes expiry, future dates, changed terms/OS/reward/published row,
 unsupported units, invalid/duplicate registries and rows, same-day idempotence,
 JST rollover, concurrent CSV changes, no-approval preservation and all earlier
 transport/parser regressions. Real approvals and live publication were not tested.
+
+## Additional pre-approval validation, 2026-09-03
+
+An offline replay of the eight saved official responses used the current game
+aliases and known Warau URLs, with all output paths redirected to temporary
+directories and outbound sockets disabled. Source and corrected-row fingerprints
+matched all four candidates. The other four source pages remained unavailable.
+
+Six scenarios passed: no approval (zero updates), test-only approval (four date-only
+updates), repeat on the same JST day (CSV writer not invoked), expired test approval
+(zero updates), one simulated timeout (three updates; failed row retained), and one
+changed condition (three updates; changed row held for review). Each run used eight
+distinct saved responses without duplicate fetches. A single confirmed site never
+made a game comparison-ready. The fixture approval window and reviewer label were
+test data only, never a maintainer approval or an enrollment recommendation.
+
+Broader Phase 2 regression checks exposed three stale tests. The same three failures
+were reproduced on the pre-PR main commit
+`bb4275cf5254c924dc50cf0b90195182798897fe`. Two expected only the old iOS Warau ID
+(one also assumed obsolete partial-fastpath opt-in); the third expected the previous
+API scheduler configuration. Their assertions now reflect both registered Kinoko
+IDs, default-off partial acceptance, bounded direct-fetch limits and preserved
+publication safeguards. Production config and workflows were not changed.
+
+After those test-only corrections, all 113 tests in the broader suite passed with
+outbound sockets disabled. Both frontend data/health Node suites also passed.
+
+Run the broader suite with:
+
+```sh
+python -m pytest -q tests/test_direct_offer_refresh_v1.py tests/test_phase2_identity_v20.py tests/test_phase2_fastpath_v21.py tests/test_phase2_parallel_v22.py tests/test_phase2_auto_refresh_v23.py tests/test_phase2_multigame.py tests/test_publisher.py
+node tests/test_site_data_v24.js
+node tests/test_site_health_v25.js
+```
+
+Desktop/mobile visual QA remains incomplete. The managed browser connected, but
+opening the local preview was blocked (`ERR_BLOCKED_BY_CLIENT`). No alternate
+network route or deployment was used to bypass that restriction. Initial baseline
+approval (including reviewer and validity window), merging and live publication
+remain separate decisions.
