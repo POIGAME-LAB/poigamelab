@@ -8,10 +8,16 @@ on:
       - "config/refresh_policy.json"
       - "config/game_targets.json"
       - "config/point_sources.json"
+      - "config/approved_offer_baselines.json"
+      - "data/published_offers.csv"
+      - "data/warau_baseline_candidates.json"
+      - "site-data.js"
       - "scripts/direct_offer_refresh.py"
       - "tests/test_direct_offer_refresh_v1.py"
       - "tests/test_phase2_auto_refresh_v23.py"
       - "tests/test_phase2_multigame.py"
+      - "tests/test_site_data_v24.js"
+      - "tests/test_site_health_v25.js"
   workflow_dispatch:
 
 permissions:
@@ -43,3 +49,8 @@ jobs:
             tests/test_direct_offer_refresh_v1.py \
             tests/test_phase2_auto_refresh_v23.py \
             tests/test_phase2_multigame.py
+
+      - name: Frontend data regression tests
+        run: |
+          node tests/test_site_data_v24.js
+          node tests/test_site_health_v25.js

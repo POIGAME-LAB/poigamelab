@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "authorizationScope": "Four reviewed Warau rows; exact-match date-only refresh for seven days. PR enrollment authorized; merge and live execution not authorized by this record.",
+  "approvals": [
+    {
+      "offerKey": "Township|warau|Android|https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
+      "game": "Township",
+      "source": "warau",
+      "sourceUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
+      "parserVersion": "warau-stepup-v1",
+      "evidenceFingerprint": "013f1e614f656beead87c999253c8609e42b7fde3b80193cac4356a6b692005e",
+      "publishedRowFingerprint": "2020662bf66af0562d41176753ccd68b47504b1ef5e4f379bf74dc607976b6e3",
+      "unitConversion": {
+        "sourceUnit": "pt",
+        "targetUnit": "JPY",
+        "yenPerPoint": 1,
+        "evidenceUrl": "https://www.warau.jp/help/qa/128/"
+      },
+      "approved": true,
+      "reviewedBy": "Codex evidence review; maintainer authorized seven-day PR enrollment in ChatGPT on 2026-09-03",
+      "reviewedAt": "2026-09-03T09:48:47+00:00",
+      "expiresAt": "2026-09-10T09:48:47+00:00"
+    },
+    {
+      "offerKey": "Township|warau|iOS|https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643",
+      "game": "Township",
+      "source": "warau",
+      "sourceUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643",
+      "parserVersion": "warau-stepup-v1",
+      "evidenceFingerprint": "9a34777f74c2c5f8faa78d70570192979f8fea1bcbaecb823f300d22c6f46682",
+      "publishedRowFingerprint": "96862d5ce5701c35c1e5fbd469d03f34d7aac529cd0c0e40833a9b81ff257735",
+      "unitConversion": {
+        "sourceUnit": "pt",
+        "targetUnit": "JPY",
+        "yenPerPoint": 1,
+        "evidenceUrl": "https://www.warau.jp/help/qa/128/"
+      },
+      "approved": true,
+      "reviewedBy": "Codex evidence review; maintainer authorized seven-day PR enrollment in ChatGPT on 2026-09-03",
+      "reviewedAt": "2026-09-03T09:48:47+00:00",
+      "expiresAt": "2026-09-10T09:48:47+00:00"
+    },
+    {
+      "offerKey": "きのこ伝説|warau|Android|https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817",
+      "game": "きのこ伝説",
+      "source": "warau",
+      "sourceUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817",
+      "parserVersion": "warau-stepup-v1",
+      "evidenceFingerprint": "083ec5da9db6051af2fac6432d6f6d7d7db87ab743897d31d47e9c869e821cf9",
+      "publishedRowFingerprint": "57a17a68b1126e878c62fbd3f7ffade3c3d4169f6cc146543f8c55fd7b1e9a1a",
+      "unitConversion": {
+        "sourceUnit": "pt",
+        "targetUnit": "JPY",
+        "yenPerPoint": 1,
+        "evidenceUrl": "https://www.warau.jp/help/qa/128/"
+      },
+      "approved": true,
+      "reviewedBy": "Codex evidence review; maintainer authorized seven-day PR enrollment in ChatGPT on 2026-09-03",
+      "reviewedAt": "2026-09-03T09:48:47+00:00",
+      "expiresAt": "2026-09-10T09:48:47+00:00"
+    },
+    {
+      "offerKey": "きのこ伝説|warau|iOS|https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
+      "game": "きのこ伝説",
+      "source": "warau",
+      "sourceUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
+      "parserVersion": "warau-stepup-v1",
+      "evidenceFingerprint": "a16b15e9f6707b8e96c44ede1c259110cf47888cf9e827616debe32376b96bba",
+      "publishedRowFingerprint": "88afd0b8d7652808e216d5a674050b24a1d1024f9119faae584cd2f46d0262d3",
+      "unitConversion": {
+        "sourceUnit": "pt",
+        "targetUnit": "JPY",
+        "yenPerPoint": 1,
+        "evidenceUrl": "https://www.warau.jp/help/qa/128/"
+      },
+      "approved": true,
+      "reviewedBy": "Codex evidence review; maintainer authorized seven-day PR enrollment in ChatGPT on 2026-09-03",
+      "reviewedAt": "2026-09-03T09:48:47+00:00",
+      "expiresAt": "2026-09-10T09:48:47+00:00"
+    }
+  ]
+}

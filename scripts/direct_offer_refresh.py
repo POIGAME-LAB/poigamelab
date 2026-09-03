@@ -3,13 +3,16 @@ from __future__ import annotations
 
 import csv
 import html
+import hashlib
 import json
 import re
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from html.parser import HTMLParser
 from urllib.parse import parse_qs, urljoin, urlparse
-from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "config" / "refresh_policy.json"
@@ -39,13 +42,31 @@ def load_json(path):
 def source_host_allowed(url, source):
     try:
         parsed = urlparse(str(url or ""))
-    except Exception:
+        port = parsed.port
+    except (TypeError, ValueError):
         return False
-    if parsed.scheme not in {"http", "https"}:
+    # Scheduled evidence collection is HTTPS-only. Reject credentials and
+    # non-standard ports so a same-domain redirect cannot silently downgrade
+    # transport security or reach an unexpected service.
+    if (parsed.scheme != "https" or parsed.username is not None or parsed.password is not None
+            or port not in {None, 443}):
         return False
     host = (parsed.hostname or "").lower()
     domains = [str(x).lower().strip() for x in (source.get("search_domains") or []) if str(x).strip()]
-    return any(host == d or host.endswith("." + d) for d in domains)
+    # Every allowed host must be registered explicitly. Listing an apex domain
+    # must not implicitly trust arbitrary sibling subdomains.
+    return host in domains
+
+class FirstPartyRedirectHandler(HTTPRedirectHandler):
+    def __init__(self, source):
+        super().__init__()
+        self.source = source
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if not source_host_allowed(newurl, self.source):
+            raise ValueError("redirect left registered first-party domains")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
 
 def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
     if not source_host_allowed(url, source):
@@ -63,19 +84,45 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
     })
-    with urlopen(req, timeout=timeout) as response:
+    opener = build_opener(FirstPartyRedirectHandler(source))
+    with opener.open(req, timeout=timeout) as response:
         final_url = response.geturl() if hasattr(response, "geturl") else url
         if not source_host_allowed(final_url, source):
             raise ValueError("redirect left registered first-party domains")
         data = response.read(max_bytes + 1)
         if len(data) > max_bytes:
-            data = data[:max_bytes]
+            raise ValueError("response exceeds byte limit; incomplete evidence rejected")
         charset = None
         try:
             charset = response.headers.get_content_charset()
         except Exception:
             pass
     return data.decode(charset or "utf-8", errors="replace"), final_url
+
+
+def summarize_fetch_error(error):
+    """Keep diagnostic categories, never untrusted response/exception text.
+
+    A status code describes this fetch, not the offer's availability. In
+    particular, HTTPError subclasses URLError and must be checked first.
+    """
+    if isinstance(error, HTTPError):
+        code = error.code
+        return f"http_status_{code}" if type(code) is int and 100 <= code <= 599 else "http_error"
+    if isinstance(error, TimeoutError):
+        return "timeout"
+    if isinstance(error, URLError):
+        return "timeout" if isinstance(error.reason, TimeoutError) else "network_error"
+    if isinstance(error, ConnectionError):
+        return "network_error"
+    if isinstance(error, ValueError):
+        return {
+            "URL is outside registered first-party domains": "first_party_url_rejected",
+            "redirect left registered first-party domains": "first_party_redirect_rejected",
+            "response exceeds byte limit; incomplete evidence rejected": "response_too_large",
+        }.get(str(error), "fetch_error")
+    return "fetch_error"
+
 
 def visible_text(raw):
     x = re.sub(r"(?is)<(?:script|style|noscript|svg)\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw or "")
@@ -256,8 +303,271 @@ def offer_identity_key(url, source_id):
 
     return f"{source_id}:url:{exact}"
 
-def inspect_detail(url, source, aliases):
-    raw, final_url = fetch_first_party(url, source)
+class EvidenceNode:
+    def __init__(self, tag="", attrs=(), parent=None):
+        self.tag, self.attrs, self.parent = tag, dict(attrs), parent
+        self.children = []
+
+    def text(self):
+        if self.tag in {"script", "style", "noscript", "svg"}:
+            return ""
+        return " ".join(c.text() if isinstance(c, EvidenceNode) else c for c in self.children)
+
+    def find(self, *, tag=None, ident=None, cls=None):
+        found = []
+        for child in self.children:
+            if not isinstance(child, EvidenceNode):
+                continue
+            if ((tag is None or child.tag == tag)
+                    and (ident is None or child.attrs.get("id") == ident)
+                    and (cls is None or cls in child.attrs.get("class", "").split())):
+                found.append(child)
+            found.extend(child.find(tag=tag, ident=ident, cls=cls))
+        return found
+
+
+class EvidenceHTML(HTMLParser):
+    VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+            "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self, raw):
+        super().__init__(convert_charrefs=True)
+        self.root = self.current = EvidenceNode()
+        self.feed(raw)
+        self.close()
+
+    def handle_starttag(self, tag, attrs):
+        node = EvidenceNode(tag, attrs, self.current)
+        self.current.children.append(node)
+        if tag not in self.VOID:
+            self.current = node
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        if tag not in self.VOID:
+            self.handle_endtag(tag)
+
+    def handle_endtag(self, tag):
+        node = self.current
+        while node.parent is not None:
+            if node.tag == tag:
+                self.current = node.parent
+                return
+            node = node.parent
+
+    def handle_data(self, data):
+        self.current.children.append(data)
+
+
+def evidence_text(node):
+    return re.sub(r"\s+", " ", node.text()).strip()
+
+
+def one(nodes):
+    if len(nodes) != 1:
+        raise ValueError("missing_or_ambiguous_offer_structure")
+    return nodes[0]
+
+
+def warau_offer_id(url):
+    p = urlparse(url)
+    if (p.scheme != "https" or p.hostname not in {"www.warau.jp", "ssl.warau.jp"}
+            or p.path != "/contents/point/pointEntrance.php"):
+        raise ValueError("unexpected_offer_url")
+    values = parse_qs(p.query, keep_blank_values=True).get("point_id", [])
+    if len(values) != 1 or not re.fullmatch(r"[0-9]+", values[0]):
+        raise ValueError("ambiguous_offer_identity")
+    return values[0]
+
+
+def exact_points(node):
+    value = evidence_text(node)
+    if not re.fullmatch(r"(?:[0-9]+|[1-9][0-9]{0,2}(?:,[0-9]{3})+)", value):
+        raise ValueError("invalid_points")
+    number = int(value.replace(",", ""))
+    if not 0 < number < 1_000_000:
+        raise ValueError("invalid_points")
+    return number
+
+
+def inspect_warau_offer(raw, requested_url, final_url, aliases):
+    """Extract review evidence from observed Warau desktop StepUp markup only.
+
+    No point-to-yen conversion or publication is authorized by this parser.
+    Full terms must be reviewed; a matching summary is not a verified snapshot.
+    """
+    try:
+        offer_id = warau_offer_id(requested_url)
+        if warau_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+        doc = EvidenceHTML(raw).root
+        canonical = one([n for n in doc.find(tag="link")
+                         if "canonical" in n.attrs.get("rel", "").split()])
+        if warau_offer_id(urljoin(final_url, canonical.attrs.get("href", ""))) != offer_id:
+            raise ValueError("canonical_offer_mismatch")
+        title = evidence_text(one(doc.find(tag="title")))
+        if doc.find(cls="pointEntranceNone-Main") or "掲載終了のご案内" in title:
+            return {"state": "unavailable", "reason": "source_offer_unavailable",
+                    "offerId": offer_id}
+        root = one(doc.find(ident="pointEntrancePointDetail"))
+        header = one(root.find(ident="innerEntranceBox"))
+        name = evidence_text(one(header.find(cls="pointEntrance-Head_Title")))
+        if not target_present(name, aliases):
+            raise ValueError("offer_title_mismatch")
+        platform = evidence_text(one(header.find(cls="pointEntrance-BannerBox_SpLabelText")))
+        if platform not in {"iOS", "Android"}:
+            raise ValueError("ambiguous_offer_platform")
+        table = one(header.find(cls="sw-SurInfo_PtList"))
+        steps = []
+        for row in table.find(tag="tr"):
+            cells = row.find(tag="td")
+            if not cells:
+                continue
+            if len(cells) != 2:
+                raise ValueError("incomplete_step_row")
+            condition = evidence_text(one(row.find(cls="sw-SurInfo_PtListAcquirement")))
+            if len(condition) < 4:
+                raise ValueError("missing_step_condition")
+            if evidence_text(one(row.find(cls="sw-PtUnit"))) != "pt":
+                raise ValueError("unexpected_reward_unit")
+            steps.append({"condition": condition,
+                          "rewardPoints": exact_points(one(row.find(cls="sw-Pt")))})
+        if not steps or len({s["condition"] for s in steps}) != len(steps):
+            raise ValueError("missing_or_duplicate_steps")
+        cumulative = one(header.find(cls="sw-SurInfo_PtListCumulative"))
+        if evidence_text(one(cumulative.find(cls="sw-PtUnit"))) != "pt":
+            raise ValueError("unexpected_reward_unit")
+        total = exact_points(one(cumulative.find(cls="sw-Pt")))
+        summary = one(header.find(ident="detailPointContainer"))
+        if evidence_text(one(summary.find(cls="entrance-ptItem_PtInfo-unit"))) != "pt":
+            raise ValueError("unexpected_reward_unit")
+        if (sum(s["rewardPoints"] for s in steps) != total
+                or exact_points(one(summary.find(cls="entrance-ptItem_PtInfo-point"))) != total):
+            raise ValueError("step_total_mismatch")
+        terms = evidence_text(one(root.find(ident="js_cautionDiv")))
+        if not all(marker in terms for marker in ("獲得条件", "獲得対象外", "注意事項")):
+            raise ValueError("incomplete_offer_terms")
+        payload = {"offerId": offer_id, "name": name, "platform": platform,
+                   "rewardPoints": total, "rewardUnit": "pt", "steps": steps,
+                   "termsText": terms}
+        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "warau-stepup-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
+def chobirich_offer_id(url):
+    p = urlparse(url)
+    if (p.scheme != "https" or p.hostname not in {"www.chobirich.com", "chobirich.com"}
+            or p.username is not None or p.password is not None or p.port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/ad_details/([0-9]+)/?", p.path)
+    if not match:
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def evidence_lines(node):
+    """Keep explicit line breaks for numbered conditions; ignore script content."""
+    if node.tag == "br":
+        return "\n"
+    if node.tag in {"script", "style", "noscript", "svg"}:
+        return ""
+    return "".join(evidence_lines(c) if isinstance(c, EvidenceNode) else c for c in node.children)
+
+
+def inspect_chobirich_offer(raw, requested_url, final_url, aliases):
+    """Review-only parser for the observed numbered StepUp DOM variant.
+
+    This does not authorize browser-backed collection or publication. Raw HTTP
+    lacking the rendered yen summary or full terms must remain held for review.
+    """
+    try:
+        offer_id = chobirich_offer_id(requested_url)
+        if chobirich_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+        doc = EvidenceHTML(raw).root
+        canonical = one([n for n in doc.find(tag="link")
+                         if "canonical" in n.attrs.get("rel", "").split()])
+        if chobirich_offer_id(urljoin(final_url, canonical.attrs.get("href", ""))) != offer_id:
+            raise ValueError("canonical_offer_mismatch")
+        root = one(doc.find(tag="main"))
+        name = evidence_text(one(root.find(tag="h1")))
+        if not target_present(name, aliases):
+            raise ValueError("offer_title_mismatch")
+        yen_node = one(root.find(ident="item_yen"))
+        yen_match = re.fullmatch(r"\(最大([0-9,]+)円相当\)", evidence_text(yen_node).replace(" ", ""))
+        if not yen_match:
+            raise ValueError("missing_explicit_yen_total")
+        total_yen = exact_points(EvidenceHTML(yen_match.group(1)).root)
+        point_node = one([n for n in yen_node.parent.children
+                          if isinstance(n, EvidenceNode) and n.tag == "p" and n is not yen_node])
+        point_match = re.fullmatch(r"最大([0-9,]+)ポイント", evidence_text(point_node))
+        if not point_match:
+            raise ValueError("missing_explicit_point_total")
+        total_points = exact_points(EvidenceHTML(point_match.group(1)).root)
+        if total_points != total_yen:
+            raise ValueError("source_reward_conversion_mismatch")
+        os_labels = []
+        for button in root.find(tag="button"):
+            label = evidence_text(button)
+            if label.startswith("QRコードを表示してスマホで利用する"):
+                match = re.fullmatch(r"QRコードを表示してスマホで利用する\((Android|iOS)用\)", label)
+                if not match:
+                    raise ValueError("ambiguous_offer_platform")
+                os_labels.append(match.group(1))
+        if len(set(os_labels)) != 1:
+            raise ValueError("ambiguous_offer_platform")
+        requirement = one(root.find(cls="ad-requirement"))
+        heading = evidence_text(one(requirement.find(tag="h2")))
+        if not heading.startswith("獲得方法：") or "各ステップクリア" not in heading:
+            raise ValueError("unsupported_achievement_method")
+        paragraph = one(requirement.find(tag="p"))
+        lines = [re.sub(r"\s+", " ", line).strip() for line in evidence_lines(paragraph).splitlines()]
+        lines = [line for line in lines if line]
+        steps, rest = [], []
+        for line in lines:
+            numbered = re.match(r"[0-9]+\.", line)
+            if numbered:
+                match = re.fullmatch(r"([1-9][0-9]*)\.\s*(.+)で([0-9,]+)pt", line)
+                if not match or rest or int(match.group(1)) != len(steps) + 1:
+                    raise ValueError("incomplete_numbered_steps")
+                condition = match.group(2)
+                if len(condition) < 4:
+                    raise ValueError("missing_step_condition")
+                steps.append({"condition": condition,
+                              "rewardPoints": exact_points(EvidenceHTML(match.group(3)).root)})
+            else:
+                rest.append(line)
+        if len(steps) < 2 or len({s["condition"] for s in steps}) != len(steps):
+            raise ValueError("missing_or_duplicate_steps")
+        if sum(s["rewardPoints"] for s in steps) != total_points:
+            raise ValueError("step_total_mismatch")
+        terms = "\n".join(lines)
+        if not all(marker in "\n".join(rest) for marker in (
+                "成果受付期限", "成果調査受付期限", "条件達成に関する注意事項", "却下条件")):
+            raise ValueError("incomplete_offer_terms")
+        payload = {"offerId": offer_id, "name": name, "platform": os_labels[0],
+                   "rewardPoints": total_points, "rewardUnit": "pt", "observedRewardYen": total_yen,
+                   "steps": steps, "termsText": terms}
+        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "chobirich-numbered-stepup-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
+def inspect_detail(url, source, aliases, fetcher=None):
+    raw, final_url = (fetcher or fetch_first_party)(url, source)
+    structured_parsers = {"warau": inspect_warau_offer, "chobirich": inspect_chobirich_offer}
+    if source.get("id") in structured_parsers:
+        evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
+        return {"url": final_url, "sourceEvidence": evidence,
+                "targetPresent": evidence["state"] == "parsed",
+                "platform": evidence.get("platform", "")}
     text = visible_text(raw)
     if not target_present(text, aliases):
         return {"url": final_url, "targetPresent": False, "platform": "", "_text": text}
@@ -272,7 +582,91 @@ def inspect_detail(url, source, aliases):
         "_text": text,
     }
 
+
+def published_row_fingerprint(row):
+    """Bind approval to all published fields except the renewable check date."""
+    values = {k: v for k, v in row.items() if k != "updatedAt"}
+    return hashlib.sha256(json.dumps(values, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+
+
+def load_refresh_approvals():
+    # This is a reviewed, version-controlled input, never generated from a run's
+    # review queue. Missing approval is normal; malformed approval fails closed.
+    path = POLICY.with_name("approved_offer_baselines.json")
+    if not path.exists():
+        return {}
+    value = load_json(path)
+    if (not isinstance(value, dict) or type(value.get("schemaVersion")) is not int
+            or value["schemaVersion"] != 1 or not isinstance(value.get("approvals"), list)):
+        raise ValueError("invalid_approval_registry")
+    approvals = {}
+    for item in value["approvals"]:
+        if not isinstance(item, dict) or not isinstance(item.get("offerKey"), str) or not item["offerKey"]:
+            raise ValueError("invalid_approval_entry")
+        if item["offerKey"] in approvals:
+            raise ValueError("duplicate_approval_key")
+        approvals[item["offerKey"]] = item
+    return approvals
+
+
+def approved_refresh_reason(row, evidence, approval, checked_at):
+    """Return a hold reason, or None for an exact, unexpired approved baseline.
+
+    Approval is an explicit maintainer decision about the full source conditions
+    AND the published summary. Parsing or equality alone must never create it.
+    """
+    if not isinstance(approval, dict) or approval.get("approved") is not True:
+        return "baseline_approval_required"
+    if row.get("site") != "warau" or row.get("verified") != "true":
+        return "published_row_not_verified"
+    if evidence.get("state") != "parsed" or evidence.get("parserVersion") != "warau-stepup-v1":
+        return "source_evidence_not_supported"
+    if (approval.get("offerKey") != row.get("offerKey") or approval.get("game") != row.get("game")
+            or approval.get("source") != "warau" or not isinstance(approval.get("reviewedBy"), str)
+            or not approval["reviewedBy"].strip()):
+        return "approval_identity_mismatch"
+    try:
+        if (warau_offer_id(row["url"]) != evidence.get("offerId")
+                or warau_offer_id(row["sourceUrl"]) != evidence.get("offerId")):
+            return "approval_identity_mismatch"
+        now = datetime.fromisoformat(checked_at)
+        reviewed = datetime.fromisoformat(approval["reviewedAt"])
+        expires = datetime.fromisoformat(approval["expiresAt"])
+        if any(x.tzinfo is None for x in (now, reviewed, expires)) or not reviewed <= now < expires:
+            return "approval_expired_or_invalid_time"
+        deadline = row.get("deadline", "")
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", deadline):
+            if datetime.fromisoformat(deadline).date() < now.astimezone(timezone(timedelta(hours=9))).date():
+                return "published_deadline_expired"
+    except (KeyError, ValueError, TypeError):
+        return "approval_expired_or_invalid_identity"
+    if row.get("platform") != evidence.get("platform"):
+        return "approved_platform_changed"
+    if approval.get("publishedRowFingerprint") != published_row_fingerprint(row):
+        return "published_row_changed_since_approval"
+    if (approval.get("parserVersion") != evidence.get("parserVersion")
+            or approval.get("evidenceFingerprint") != evidence.get("evidenceFingerprint")):
+        return "source_terms_changed_since_approval"
+    # Reviewed Warau base face-value conversion only; not redemption fees/miles.
+    rate = approval.get("unitConversion")
+    if (not isinstance(rate, dict) or rate.get("sourceUnit") != "pt" or rate.get("targetUnit") != "JPY"
+            or type(rate.get("yenPerPoint")) is not int or rate["yenPerPoint"] != 1
+            or rate.get("evidenceUrl") != "https://www.warau.jp/help/qa/128/"
+            or evidence.get("rewardUnit") != "pt"):
+        return "unit_conversion_review_required"
+    reward = str(row.get("reward", ""))
+    if not re.fullmatch(r"[1-9][0-9]*", reward) or int(reward) != evidence.get("rewardPoints"):
+        return "approved_reward_changed"
+    return None
+
+
 def main():
+    try:
+        approvals = load_refresh_approvals()
+    except (OSError, ValueError, TypeError):
+        print("ERROR: approval registry is unreadable or invalid; no refresh performed", file=sys.stderr)
+        return 2
     policy = load_json(POLICY)
     targets = load_json(TARGETS).get("games") or []
     source_cfg = load_json(SOURCES)
@@ -288,6 +682,7 @@ def main():
         print("ERROR: unregistered comparison sources: " + ", ".join(unknown), file=sys.stderr)
         return 2
 
+    original_published = PUBLISHED.read_bytes() if PUBLISHED.exists() else None
     rows = read_published()
     row_by_identity = {
         (
@@ -299,11 +694,31 @@ def main():
         if r.get("url") and offer_identity_key(r.get("url"), str(r.get("site") or ""))
     }
     changed = 0  # kept for status compatibility; scheduled mode never changes reward values
-    touched = set()
     review = []
     results = []
     checked_at = now_iso()
-    today = today_jst()
+    refreshed = set()
+    publication_changed = False
+    fetch_cache = {}
+
+    def fetch_once(url, source):
+        key = (source.get("id"), exact_url_key(url))
+        if key not in fetch_cache:
+            try:
+                fetch_cache[key] = (fetch_first_party(url, source), None)
+            except Exception as error:
+                if isinstance(error, HTTPError):
+                    # Cache the failure, not an open response. No error body is
+                    # needed and no retry is authorized by its classification.
+                    try:
+                        error.close()
+                    except OSError:
+                        pass  # Preserve/cache the original HTTP failure.
+                fetch_cache[key] = (None, error)
+        result, error = fetch_cache[key]
+        if error is not None:
+            raise error
+        return result
 
     for target in targets:
         game = str(target.get("game") or "").strip()
@@ -341,13 +756,15 @@ def main():
 
             listing_errors = []
             discovered = []
-            for listing_url in (source.get("direct_listing_urls") or [])[:2]:
+            listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
+            detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
+            for listing_url in (source.get("direct_listing_urls") or [])[:listing_limit]:
                 try:
-                    raw, final_url = fetch_first_party(listing_url, source)
+                    raw, final_url = fetch_once(listing_url, source)
                     if target_present(visible_text(raw), aliases):
                         discovered.extend(discover_detail_links(raw, final_url, source, aliases, limit=6))
                 except Exception as e:
-                    listing_errors.append(str(e)[:220])
+                    listing_errors.append({"url": listing_url, "error": summarize_fetch_error(e)})
             urls.extend(discovered)
             deduped_urls = []
             seen_identities = set()
@@ -358,7 +775,7 @@ def main():
                     continue
                 seen_identities.add(identity)
                 deduped_urls.append(exact)
-            urls = deduped_urls
+            urls = deduped_urls[:detail_limit]
 
             source_result = {
                 "source": source_id,
@@ -368,25 +785,77 @@ def main():
                 "updatedRows": 0,
                 "reviewRequired": 0,
             }
+            if len(deduped_urls) > detail_limit:
+                review.append({
+                    "game": game, "source": source_id, "reason": "detail_limit_reached",
+                    "deferredCount": len(deduped_urls) - detail_limit,
+                    "checkedAt": checked_at,
+                })
+                source_result["reviewRequired"] += 1
 
             if not urls:
                 review.append({
                     "game": game, "source": source_id, "reason": "discovery_required",
-                    "listingErrors": listing_errors, "checkedAt": checked_at
+                    "listingErrors": [item["error"] for item in listing_errors], "checkedAt": checked_at
                 })
                 source_result["reviewRequired"] += 1
                 source_result["state"] = "review_required"
                 game_result["sources"].append(source_result)
                 continue
 
+            # Existing detail URLs do not imply the discovery listing worked.
+            # Preserve each failure while still inspecting known offers.
+            for listing_error in listing_errors:
+                review.append({
+                    "game": game, "source": source_id, "url": listing_error["url"],
+                    "reason": "listing_fetch_failed", "error": listing_error["error"],
+                    "checkedAt": checked_at,
+                })
+                source_result["reviewRequired"] += 1
+
             for url in urls:
                 try:
-                    detail = inspect_detail(url, source, aliases)
+                    detail = inspect_detail(url, source, aliases, fetcher=fetch_once)
                 except Exception as e:
                     review.append({
                         "game": game, "source": source_id, "url": url,
-                        "reason": "fetch_failed", "error": str(e)[:240], "checkedAt": checked_at
+                        "reason": "fetch_failed", "error": summarize_fetch_error(e), "checkedAt": checked_at
                     })
+                    source_result["reviewRequired"] += 1
+                    continue
+
+                evidence = detail.get("sourceEvidence")
+                if evidence is not None:
+                    existing = row_by_identity.get((game, source_id, offer_identity_key(url, source_id)))
+                    item = {"game": game, "source": source_id, "url": detail["url"],
+                            "reason": "structured_offer_review_required" if evidence["state"] == "parsed"
+                            else evidence.get("reason", "source_structure_review_required"),
+                            "sourceEvidence": evidence, "checkedAt": checked_at}
+                    if existing is not None:
+                        item["storedPlatform"] = existing.get("platform") or ""
+                        item["storedReward"] = existing.get("reward") or ""
+                        if evidence["state"] == "parsed":
+                            item["platformMatches"] = evidence["platform"] == existing.get("platform")
+                            item["requiredChecks"] = ["reward_unit_conversion", "complete_terms_vs_published_row"]
+                            reason = (approved_refresh_reason(existing, evidence,
+                                approvals.get(existing.get("offerKey")), checked_at)
+                                if source_id == "warau" else "source_refresh_not_enabled")
+                            identity_rows = [r for r in current_rows
+                                if offer_identity_key(r.get("url"), source_id) == offer_identity_key(url, source_id)]
+                            if len(identity_rows) != 1 or sum(r.get("offerKey") == existing.get("offerKey") for r in rows) != 1:
+                                reason = "ambiguous_published_identity"
+                            if reason is None:
+                                check_date = datetime.fromisoformat(checked_at).astimezone(
+                                    timezone(timedelta(hours=9))).date().isoformat()
+                                if existing.get("updatedAt") != check_date:
+                                    existing["updatedAt"] = check_date
+                                    publication_changed = True
+                                refreshed.add(existing["offerKey"])
+                                source_result["confirmedOffers"] += 1
+                                source_result["updatedRows"] += 1
+                                continue
+                            item["approvalHoldReason"] = reason
+                    review.append(item)
                     source_result["reviewRequired"] += 1
                     continue
 
@@ -398,7 +867,6 @@ def main():
                     source_result["reviewRequired"] += 1
                     continue
 
-                source_result["confirmedOffers"] += 1
                 key = (game, source_id, offer_identity_key(url, source_id))
                 existing = row_by_identity.get(key)
                 if existing is None:
@@ -422,13 +890,25 @@ def main():
                 )
 
                 if detected is not None and detected == old_reward:
-                    # Scheduled direct checks NEVER change monetary values.
-                    # Point programs use different point-to-yen units, so a changed
-                    # number is review material, not an automatic publication.
-                    existing["updatedAt"] = today
-                    existing["verified"] = "true"
-                    touched.add(existing.get("offerKey") or exact_url_key(url))
-                    source_result["updatedRows"] += 1
+                    # A page-wide numeric match is discovery evidence only.
+                    # It does not bind the amount/unit, OS and complete terms to
+                    # this offer. Keep all published fields unchanged until a
+                    # source-specific verifier can establish that binding.
+                    review.append({
+                        "game": game, "source": source_id, "url": detail["url"],
+                        "reason": "offer_terms_review_required",
+                        "storedReward": old_reward,
+                        "detectedReward": detected,
+                        "rewardMethod": reward_method,
+                        "storedPlatform": existing.get("platform") or "",
+                        "platformHint": detail.get("platform") or "",
+                        "requiredChecks": [
+                            "offer_identity", "reward_unit", "platform",
+                            "achievement_conditions", "deadline", "availability",
+                        ],
+                        "checkedAt": checked_at,
+                    })
+                    source_result["reviewRequired"] += 1
                 elif detected is not None and detected != old_reward:
                     review.append({
                         "game": game, "source": source_id, "url": detail["url"],
@@ -468,7 +948,10 @@ def main():
         )
         results.append(game_result)
 
-    if touched:
+    if publication_changed:
+        if not PUBLISHED.exists() or PUBLISHED.read_bytes() != original_published:
+            print("ERROR: published data changed during refresh; refusing to overwrite", file=sys.stderr)
+            return 2
         write_published(rows)
 
     STATUS.parent.mkdir(parents=True, exist_ok=True)
@@ -478,7 +961,7 @@ def main():
         "comparisonSources": comparison_sources,
         "apiCalls": 0,
         "publishedRewardChanges": changed,
-        "refreshedRows": len(touched),
+        "refreshedRows": len(refreshed),
         "reviewCount": len(review),
         "games": results,
         "success": True,

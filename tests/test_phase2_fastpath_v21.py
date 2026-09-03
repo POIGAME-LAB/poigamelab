@@ -2,15 +2,19 @@ import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 
-def test_kinoko_v21_fastpaths():
+def test_kinoko_known_pages_do_not_enable_partial_fastpath():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     k=next(x for x in data['games'] if x['game']=='きのこ伝説')
     assert k['known_urls_by_source']['warau']==[
-        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816']
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817']
     assert k['known_urls_by_source']['coincome']==[
         'https://cimcome.jp/campaigns/details/10037',
         'https://cimcome.jp/campaigns/details/10038']
-    assert set(k['partial_fast_path_sources'])=={'warau','coincome'}
+    # collect_games.py defaults a missing opt-in to no partial acceptance.
+    assert (k.get('partial_fast_path_sources') or []) == []
+    collector=(ROOT/'scripts/collect_games.py').read_text()
+    assert "source['allow_partial_known_fast_path']=source['id'] in (target.get('partial_fast_path_sources') or [])" in collector
 
 def test_transient_retry_is_bounded():
     text=(ROOT/'scripts/firecrawl_township_probe.py').read_text()
