@@ -42,9 +42,14 @@ def load_json(path):
 def source_host_allowed(url, source):
     try:
         parsed = urlparse(str(url or ""))
-    except Exception:
+        port = parsed.port
+    except (TypeError, ValueError):
         return False
-    if parsed.scheme not in {"http", "https"}:
+    # Scheduled evidence collection is HTTPS-only. Reject credentials and
+    # non-standard ports so a same-domain redirect cannot silently downgrade
+    # transport security or reach an unexpected service.
+    if (parsed.scheme != "https" or parsed.username is not None or parsed.password is not None
+            or port not in {None, 443}):
         return False
     host = (parsed.hostname or "").lower()
     domains = [str(x).lower().strip() for x in (source.get("search_domains") or []) if str(x).strip()]
