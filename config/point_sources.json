@@ -103,7 +103,7 @@
     {
       "id": "mikoshi",
       "name": "MIKOSHI",
-      "start_url": "https://web.mikoshi.jp/",
+      "start_url": "https://web.mikoshi.jp/shopping/suggest",
       "search_domains": [
         "mikoshi.jp",
         "web.mikoshi.jp"
@@ -113,7 +113,7 @@
       "known_target_urls": [],
       "prefer_known_pages": false,
       "direct_listing_urls": [
-        "https://web.mikoshi.jp/"
+        "https://web.mikoshi.jp/shopping/suggest"
       ],
       "direct_listing_limit": 1,
       "direct_detail_limit": 6,
@@ -122,7 +122,7 @@
     {
       "id": "gendama",
       "name": "げん玉",
-      "start_url": "https://www.gendama.jp/",
+      "start_url": "https://www.gendama.jp/sp/service/object?i=free_now",
       "search_domains": [
         "gendama.jp",
         "www.gendama.jp",
@@ -133,7 +133,7 @@
       "known_target_urls": [],
       "prefer_known_pages": false,
       "direct_listing_urls": [
-        "https://www.gendama.jp/"
+        "https://www.gendama.jp/sp/service/object?i=free_now"
       ],
       "direct_listing_limit": 1,
       "direct_detail_limit": 6,
