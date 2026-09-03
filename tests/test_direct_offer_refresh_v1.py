@@ -1847,3 +1847,23 @@ def test_repository_appdriver_provider_contract_is_presence_only():
         'domain': 'appdriver.jp',
         'retrievalMode': 'presence_only',
     }]
+
+
+def test_repository_skyflag_provider_contract_is_presence_only():
+    path = ROOT/'config/offerwall_providers.json'
+    payload = json.loads(path.read_text())
+    skyflag = next(item for item in payload['providers'] if item['id'] == 'skyflag')
+    assert skyflag['presenceDomains'] == ['ow.skyflag.jp']
+    assert skyflag['informationDomains'] == ['skyflag.info', 'skyfall.co.jp']
+    assert skyflag['retrievalMode'] == 'presence_only'
+    assert skyflag['followExternalLinks'] is False
+    assert skyflag['persist'] == 'provider_domain_only'
+    assert skyflag['anonymousPublicCatalogEstablished'] is False
+
+    registry = direct.load_offerwall_provider_registry(path)
+    assert registry['ow.skyflag.jp'] == {
+        'providerId': 'skyflag',
+        'providerName': 'SKYFLAG',
+        'domain': 'ow.skyflag.jp',
+        'retrievalMode': 'presence_only',
+    }

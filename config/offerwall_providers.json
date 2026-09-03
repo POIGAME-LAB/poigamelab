@@ -39,6 +39,26 @@
       "integrationEvidenceUrl": "https://appdriver.jp/static/file/Reward_for_publisher_ver1.4_English.pdf",
       "reviewedAt": "2026-09-03",
       "reviewNote": "The publicly accessible AppDriver web offerwall integration guide shows request URLs carrying identifier (UserID), media_id and digest. Because the production offerwall is therefore not treated as an anonymous catalog, POIGAME LAB records passive provider presence only and does not request offerwall URLs."
+    },
+    {
+      "id": "skyflag",
+      "name": "SKYFLAG",
+      "operator": "株式会社Skyfall",
+      "presenceDomains": [
+        "ow.skyflag.jp"
+      ],
+      "informationDomains": [
+        "skyflag.info",
+        "skyfall.co.jp"
+      ],
+      "retrievalMode": "presence_only",
+      "followExternalLinks": false,
+      "persist": "provider_domain_only",
+      "anonymousPublicCatalogEstablished": false,
+      "serviceEvidenceUrl": "https://skyflag.info/monetize/",
+      "caseEvidenceUrl": "https://skyflag.info/case-post/case-14/",
+      "reviewedAt": "2026-09-03",
+      "reviewNote": "Current official materials describe SKYFLAG offerwalls, API integration, user-segment optimization and recommended rewards, but do not establish an anonymous public campaign catalog suitable for unattended evidence retrieval. POIGAME LAB therefore records passive provider presence only."
     }
   ]
 }
