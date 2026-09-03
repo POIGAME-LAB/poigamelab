@@ -395,3 +395,140 @@ def test_warau_structured_review_is_not_a_publication(warau_markup, monkeypatch)
     assert items[0]['sourceEvidence']['rewardPoints'] == 300
     assert items[0]['sourceEvidence']['rewardUnit'] == 'pt'
     assert json.loads(direct.STATUS.read_text())['refreshedRows'] == 0
+
+
+@pytest.fixture
+def approved_case(warau_markup, monkeypatch):
+    direct.POLICY.write_text(json.dumps({'comparisonSources': ['warau'],
+        'minimumConfirmedSourcesForComparison': 2, 'games': {'テストゲーム': {'enabled': True}}}))
+    direct.TARGETS.write_text(json.dumps({'games': [{'game': 'テストゲーム',
+        'known_urls_by_source': {'warau': [WARAU_URL]}}]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{'id': 'warau',
+        'search_domains': ['warau.jp'], 'direct_listing_urls': []}]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(offerKey='approved', game='テストゲーム', site='warau', platform='iOS',
+               reward='300', condition='審査済みの条件要約', type='StepUp', updatedAt='2026-09-01',
+               url=WARAU_URL, sourceUrl=WARAU_URL, verified='true')
+    other = dict(row, offerKey='unrelated', game='別ゲーム', site='other', reward='700')
+    direct.write_published([row, other])
+    evidence = parse_warau(warau_markup)
+    approval = {'offerKey': row['offerKey'], 'game': row['game'], 'source': 'warau',
+        'approved': True, 'reviewedBy': 'fixture-only', 'reviewedAt': '2026-09-02T00:00:00+00:00',
+        'expiresAt': '2026-09-10T00:00:00+00:00', 'parserVersion': evidence['parserVersion'],
+        'evidenceFingerprint': evidence['evidenceFingerprint'],
+        'publishedRowFingerprint': direct.published_row_fingerprint(row),
+        'unitConversion': {'sourceUnit': 'pt', 'targetUnit': 'JPY', 'yenPerPoint': 1,
+                           'evidenceUrl': 'https://www.warau.jp/help/qa/128/'}}
+    path = direct.POLICY.with_name('approved_offer_baselines.json')
+    path.write_text(json.dumps({'schemaVersion': 1, 'approvals': [approval]}))
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (warau_markup, url))
+    monkeypatch.setattr(direct, 'now_iso', lambda: '2026-09-03T16:00:00+00:00')
+    return row, approval, evidence, path
+
+
+def test_approved_unchanged_snapshot_refreshes_only_date_once(approved_case, monkeypatch):
+    before = direct.read_published()
+    assert direct.main() == 0
+    after = direct.read_published()
+    assert after[0]['updatedAt'] == '2026-09-04'  # JST
+    assert after[1] == before[1]
+    assert {k:v for k,v in after[0].items() if k != 'updatedAt'} == {
+        k:v for k,v in before[0].items() if k != 'updatedAt'}
+    status = json.loads(direct.STATUS.read_text())
+    assert status['refreshedRows'] == 1
+    assert status['publishedRewardChanges'] == 0
+    assert status['games'][0]['standardConfirmed'] == 1
+    assert status['games'][0]['comparisonReady'] is False  # one source is not a comparison
+    def no_rewrite(rows):
+        pytest.fail('same-day confirmation must not rewrite the CSV')
+    monkeypatch.setattr(direct, 'write_published', no_rewrite)
+    assert direct.main() == 0
+    assert json.loads(direct.STATUS.read_text())['refreshedRows'] == 1
+
+
+@pytest.mark.parametrize('field,value', [
+    ('approved', False), ('approved', 'true'), ('offerKey', 'different'),
+    ('game', '別ゲーム'), ('source', 'other'), ('reviewedBy', ''),
+    ('reviewedAt', '2027-01-01T00:00:00+00:00'), ('reviewedAt', '2026-09-01'),
+    ('expiresAt', '2026-09-03T16:00:00+00:00'), ('expiresAt', 'invalid'),
+    ('publishedRowFingerprint', '0'*64), ('evidenceFingerprint', '0'*64),
+    ('parserVersion', 'future-version'), ('unitConversion', None),
+    ('unitConversion', {'sourceUnit':'pt', 'targetUnit':'JPY', 'yenPerPoint': True,
+                        'evidenceUrl':'https://www.warau.jp/help/qa/128/'}),
+    ('unitConversion', {'sourceUnit':'pt', 'targetUnit':'JPY', 'yenPerPoint': 2,
+                        'evidenceUrl':'https://www.warau.jp/help/qa/128/'}),
+])
+def test_invalid_approvals_keep_existing_bytes(approved_case, field, value):
+    row, approval, evidence, path = approved_case
+    approval[field] = value
+    path.write_text(json.dumps({'schemaVersion': 1, 'approvals': [approval]}))
+    before = direct.PUBLISHED.read_bytes()
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert json.loads(direct.STATUS.read_text())['refreshedRows'] == 0
+
+
+@pytest.mark.parametrize('field,value', [
+    ('condition', 'changed'), ('deadline', '2026-12-01'), ('platform', 'Android'),
+    ('reward', '301'), ('verified', 'false'), ('sourceUrl', WARAU_URL.replace('101','102')),
+])
+def test_published_edit_invalidates_approval(approved_case, field, value):
+    rows = direct.read_published()
+    rows[0][field] = value
+    direct.write_published(rows)
+    before = direct.PUBLISHED.read_bytes()
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+
+
+def test_changed_source_terms_require_new_approval(approved_case, warau_markup, monkeypatch):
+    before = direct.PUBLISHED.read_bytes()
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (
+        warau_markup.replace('20日以内にレベル10到達', '19日以内にレベル10到達'), url))
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert json.loads(direct.REVIEW.read_text())['items'][0]['approvalHoldReason'] == 'source_terms_changed_since_approval'
+
+
+@pytest.mark.parametrize('payload', ['{', '{"schemaVersion": 2, "approvals": []}',
+    '{"schemaVersion": 1, "approvals": [null]}'])
+def test_malformed_registry_stops_before_fetch(approved_case, payload, monkeypatch):
+    approved_case[3].write_text(payload)
+    before = direct.PUBLISHED.read_bytes()
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda *args: pytest.fail('must not fetch'))
+    assert direct.main() == 2
+    assert direct.PUBLISHED.read_bytes() == before
+
+
+def test_duplicate_approvals_stop_before_fetch(approved_case, monkeypatch):
+    approval = approved_case[1]
+    approved_case[3].write_text(json.dumps({'schemaVersion': 1, 'approvals': [approval, approval]}))
+    monkeypatch.setattr(direct, 'fetch_first_party', lambda *args: pytest.fail('must not fetch'))
+    assert direct.main() == 2
+
+
+def test_duplicate_published_identity_is_not_refreshed(approved_case):
+    rows = direct.read_published()
+    rows.append(dict(rows[0], offerKey='duplicate'))
+    direct.write_published(rows)
+    before = direct.PUBLISHED.read_bytes()
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert json.loads(direct.REVIEW.read_text())['items'][0]['approvalHoldReason'] == 'ambiguous_published_identity'
+
+
+def test_concurrent_publication_change_is_not_overwritten(approved_case, warau_markup, monkeypatch):
+    changed_bytes = direct.PUBLISHED.read_bytes() + b'\n'
+    def fetch(url, source):
+        direct.PUBLISHED.write_bytes(changed_bytes)
+        return warau_markup, url
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 2
+    assert direct.PUBLISHED.read_bytes() == changed_bytes
+
+
+def test_expired_absolute_deadline_cannot_be_refreshed(approved_case):
+    row, approval, evidence, path = approved_case
+    row['deadline'] = '2026-09-03'
+    approval['publishedRowFingerprint'] = direct.published_row_fingerprint(row)
+    assert direct.approved_refresh_reason(row, evidence, approval, '2026-09-03T16:00:00+00:00') == 'published_deadline_expired'

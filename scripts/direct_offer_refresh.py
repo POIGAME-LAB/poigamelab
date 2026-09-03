@@ -446,7 +446,91 @@ def inspect_detail(url, source, aliases, fetcher=None):
         "_text": text,
     }
 
+
+def published_row_fingerprint(row):
+    """Bind approval to all published fields except the renewable check date."""
+    values = {k: v for k, v in row.items() if k != "updatedAt"}
+    return hashlib.sha256(json.dumps(values, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+
+
+def load_refresh_approvals():
+    # This is a reviewed, version-controlled input, never generated from a run's
+    # review queue. Missing approval is normal; malformed approval fails closed.
+    path = POLICY.with_name("approved_offer_baselines.json")
+    if not path.exists():
+        return {}
+    value = load_json(path)
+    if (not isinstance(value, dict) or type(value.get("schemaVersion")) is not int
+            or value["schemaVersion"] != 1 or not isinstance(value.get("approvals"), list)):
+        raise ValueError("invalid_approval_registry")
+    approvals = {}
+    for item in value["approvals"]:
+        if not isinstance(item, dict) or not isinstance(item.get("offerKey"), str) or not item["offerKey"]:
+            raise ValueError("invalid_approval_entry")
+        if item["offerKey"] in approvals:
+            raise ValueError("duplicate_approval_key")
+        approvals[item["offerKey"]] = item
+    return approvals
+
+
+def approved_refresh_reason(row, evidence, approval, checked_at):
+    """Return a hold reason, or None for an exact, unexpired approved baseline.
+
+    Approval is an explicit maintainer decision about the full source conditions
+    AND the published summary. Parsing or equality alone must never create it.
+    """
+    if not isinstance(approval, dict) or approval.get("approved") is not True:
+        return "baseline_approval_required"
+    if row.get("site") != "warau" or row.get("verified") != "true":
+        return "published_row_not_verified"
+    if evidence.get("state") != "parsed" or evidence.get("parserVersion") != "warau-stepup-v1":
+        return "source_evidence_not_supported"
+    if (approval.get("offerKey") != row.get("offerKey") or approval.get("game") != row.get("game")
+            or approval.get("source") != "warau" or not isinstance(approval.get("reviewedBy"), str)
+            or not approval["reviewedBy"].strip()):
+        return "approval_identity_mismatch"
+    try:
+        if (warau_offer_id(row["url"]) != evidence.get("offerId")
+                or warau_offer_id(row["sourceUrl"]) != evidence.get("offerId")):
+            return "approval_identity_mismatch"
+        now = datetime.fromisoformat(checked_at)
+        reviewed = datetime.fromisoformat(approval["reviewedAt"])
+        expires = datetime.fromisoformat(approval["expiresAt"])
+        if any(x.tzinfo is None for x in (now, reviewed, expires)) or not reviewed <= now < expires:
+            return "approval_expired_or_invalid_time"
+        deadline = row.get("deadline", "")
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", deadline):
+            if datetime.fromisoformat(deadline).date() < now.astimezone(timezone(timedelta(hours=9))).date():
+                return "published_deadline_expired"
+    except (KeyError, ValueError, TypeError):
+        return "approval_expired_or_invalid_identity"
+    if row.get("platform") != evidence.get("platform"):
+        return "approved_platform_changed"
+    if approval.get("publishedRowFingerprint") != published_row_fingerprint(row):
+        return "published_row_changed_since_approval"
+    if (approval.get("parserVersion") != evidence.get("parserVersion")
+            or approval.get("evidenceFingerprint") != evidence.get("evidenceFingerprint")):
+        return "source_terms_changed_since_approval"
+    # Reviewed Warau base face-value conversion only; not redemption fees/miles.
+    rate = approval.get("unitConversion")
+    if (not isinstance(rate, dict) or rate.get("sourceUnit") != "pt" or rate.get("targetUnit") != "JPY"
+            or type(rate.get("yenPerPoint")) is not int or rate["yenPerPoint"] != 1
+            or rate.get("evidenceUrl") != "https://www.warau.jp/help/qa/128/"
+            or evidence.get("rewardUnit") != "pt"):
+        return "unit_conversion_review_required"
+    reward = str(row.get("reward", ""))
+    if not re.fullmatch(r"[1-9][0-9]*", reward) or int(reward) != evidence.get("rewardPoints"):
+        return "approved_reward_changed"
+    return None
+
+
 def main():
+    try:
+        approvals = load_refresh_approvals()
+    except (OSError, ValueError, TypeError):
+        print("ERROR: approval registry is unreadable or invalid; no refresh performed", file=sys.stderr)
+        return 2
     policy = load_json(POLICY)
     targets = load_json(TARGETS).get("games") or []
     source_cfg = load_json(SOURCES)
@@ -462,6 +546,7 @@ def main():
         print("ERROR: unregistered comparison sources: " + ", ".join(unknown), file=sys.stderr)
         return 2
 
+    original_published = PUBLISHED.read_bytes() if PUBLISHED.exists() else None
     rows = read_published()
     row_by_identity = {
         (
@@ -476,6 +561,8 @@ def main():
     review = []
     results = []
     checked_at = now_iso()
+    refreshed = set()
+    publication_changed = False
     fetch_cache = {}
 
     def fetch_once(url, source):
@@ -597,6 +684,23 @@ def main():
                         if evidence["state"] == "parsed":
                             item["platformMatches"] = evidence["platform"] == existing.get("platform")
                             item["requiredChecks"] = ["reward_unit_conversion", "complete_terms_vs_published_row"]
+                            reason = approved_refresh_reason(existing, evidence,
+                                approvals.get(existing.get("offerKey")), checked_at)
+                            identity_rows = [r for r in current_rows
+                                if offer_identity_key(r.get("url"), source_id) == offer_identity_key(url, source_id)]
+                            if len(identity_rows) != 1 or sum(r.get("offerKey") == existing.get("offerKey") for r in rows) != 1:
+                                reason = "ambiguous_published_identity"
+                            if reason is None:
+                                check_date = datetime.fromisoformat(checked_at).astimezone(
+                                    timezone(timedelta(hours=9))).date().isoformat()
+                                if existing.get("updatedAt") != check_date:
+                                    existing["updatedAt"] = check_date
+                                    publication_changed = True
+                                refreshed.add(existing["offerKey"])
+                                source_result["confirmedOffers"] += 1
+                                source_result["updatedRows"] += 1
+                                continue
+                            item["approvalHoldReason"] = reason
                     review.append(item)
                     source_result["reviewRequired"] += 1
                     continue
@@ -690,6 +794,12 @@ def main():
         )
         results.append(game_result)
 
+    if publication_changed:
+        if not PUBLISHED.exists() or PUBLISHED.read_bytes() != original_published:
+            print("ERROR: published data changed during refresh; refusing to overwrite", file=sys.stderr)
+            return 2
+        write_published(rows)
+
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     status = {
         "phase": "DIRECT_COMPARISON_REFRESH_V1",
@@ -697,7 +807,7 @@ def main():
         "comparisonSources": comparison_sources,
         "apiCalls": 0,
         "publishedRewardChanges": changed,
-        "refreshedRows": 0,
+        "refreshedRows": len(refreshed),
         "reviewCount": len(review),
         "games": results,
         "success": True,
