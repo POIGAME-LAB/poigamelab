@@ -2005,3 +2005,41 @@ def test_repository_appdriver_has_reviewed_moppy_first_party_labels():
     payload = json.loads((ROOT/'config/offerwall_providers.json').read_text())
     appdriver = next(item for item in payload['providers'] if item['id'] == 'appdriver')
     assert appdriver['firstPartyLabels'] == ['アプリドライブ', 'AppDriver']
+
+
+def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
+    source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
+    by_id = {source['id']: source for source in source_payload['sources']}
+    hapitas = by_id['hapitas']
+    assert hapitas['scheduled_fetch_enabled'] is False
+    assert 'review-only' in hapitas['scheduled_fetch_reason'].lower()
+
+    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
+    by_game = {item['game']: item for item in targets}
+
+    working = by_game['ワーキングヒーロー']['known_urls_by_source']['hapitas']
+    township = by_game['Township']['known_urls_by_source']['hapitas']
+    kinoko = by_game['きのこ伝説']['known_urls_by_source']['hapitas']
+
+    assert set(working) == {
+        'https://hapitas.jp/item/detail/itemid/101445',
+        'https://hapitas.jp/item/detail/itemid/101444',
+    }
+    assert set(township) == {
+        'https://hapitas.jp/item/detail/itemid/101453',
+        'https://hapitas.jp/item/detail/itemid/101454',
+    }
+    assert set(kinoko) == {
+        'https://hapitas.jp/item/detail/itemid/99850',
+        'https://hapitas.jp/item/detail/itemid/100403',
+    }
+
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    hapitas_rows = [row for row in rows if row['site'] == 'hapitas']
+    assert {(row['game'], row['platform'], row['reward']) for row in hapitas_rows} == {
+        ('ワーキングヒーロー', 'Android', '11502'),
+        ('ワーキングヒーロー', 'iOS', '11502'),
+    }
+    assert not any(row['game'] in {'Township', 'きのこ伝説'} for row in hapitas_rows)
