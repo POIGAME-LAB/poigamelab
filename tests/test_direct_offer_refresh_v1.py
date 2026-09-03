@@ -964,18 +964,41 @@ def test_scheduled_fetch_disabled_source_never_calls_network_or_changes_publishe
     assert items[0]['existingRows'] == 1
 
 
-def test_repository_chobirich_is_the_only_explicitly_disabled_comparison_source(monkeypatch):
+def test_repository_unattended_fetch_disables_only_unreliable_comparison_sources(monkeypatch):
     monkeypatch.setattr(direct, 'SOURCES', ROOT/'config/point_sources.json')
     payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in payload['sources']}
-    assert by_id['chobirich']['scheduled_fetch_enabled'] is False
-    assert 'reliable' in by_id['chobirich']['scheduled_fetch_reason'].lower()
     comparison = json.loads((ROOT/'config/refresh_policy.json').read_text())['comparisonSources']
+
+    disabled = {
+        source_id for source_id in comparison
+        if by_id[source_id].get('scheduled_fetch_enabled', True) is not True
+    }
+    assert disabled == {'chobirich', 'mikoshi'}
+    assert 'reliable' in by_id['chobirich']['scheduled_fetch_reason'].lower()
+    assert 'javascript' in by_id['mikoshi']['scheduled_fetch_reason'].lower()
+
     assert all(
         by_id[source_id].get('scheduled_fetch_enabled', True) is True
         for source_id in comparison
-        if source_id != 'chobirich'
+        if source_id not in disabled
     )
+
+
+def test_repository_gendama_uses_current_https_listing_and_service_item_identity():
+    payload = json.loads((ROOT/'config/point_sources.json').read_text())
+    gendama = next(source for source in payload['sources'] if source['id'] == 'gendama')
+    listing = 'https://www.gendama.jp/welcome'
+    detail = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+
+    assert gendama['start_url'] == listing
+    assert gendama['direct_listing_urls'] == [listing]
+    assert '/service/item/' in gendama['direct_detail_url_hints']
+    assert gendama.get('scheduled_fetch_enabled', True) is True
+    assert direct.source_host_allowed(listing, gendama) is True
+    assert direct.source_host_allowed(detail, gendama) is True
+    assert direct.detail_like(detail, gendama) is True
+    assert direct.offer_identity_key(detail, 'gendama') == 'gendama:pathid:1426617'
 
 
 COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
