@@ -259,7 +259,7 @@ def main():
         (str(r.get("game") or ""), str(r.get("site") or ""), exact_url_key(r.get("url"))): r
         for r in rows if r.get("url")
     }
-    changed = 0
+    changed = 0  # kept for status compatibility; scheduled mode never changes reward values
     touched = set()
     review = []
     results = []
@@ -373,14 +373,24 @@ def main():
                     detail.get("_text") or "", old_reward
                 )
 
-                if detected is not None:
-                    if detected != old_reward:
-                        existing["reward"] = str(detected)
-                        changed += 1
+                if detected is not None and detected == old_reward:
+                    # Scheduled direct checks NEVER change monetary values.
+                    # Point programs use different point-to-yen units, so a changed
+                    # number is review material, not an automatic publication.
                     existing["updatedAt"] = today
                     existing["verified"] = "true"
                     touched.add(existing.get("offerKey") or exact_url_key(url))
                     source_result["updatedRows"] += 1
+                elif detected is not None and detected != old_reward:
+                    review.append({
+                        "game": game, "source": source_id, "url": detail["url"],
+                        "reason": "reward_change_candidate",
+                        "storedReward": old_reward,
+                        "detectedReward": detected,
+                        "rewardMethod": reward_method,
+                        "checkedAt": checked_at
+                    })
+                    source_result["reviewRequired"] += 1
                 elif (
                     old_reward > 0
                     and reward_method == "no_unambiguous_reward_marker"
