@@ -1,0 +1,57 @@
+name: Deploy POIGAME LAB to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: poigamelab-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Pre-deploy regression tests
+        run: |
+          python -m pytest -q \
+            tests/test_direct_offer_refresh_v1.py \
+            tests/test_warau_baseline_candidates.py \
+            tests/test_public_site_build.py \
+            tests/test_phase2_auto_refresh_v23.py \
+            tests/test_phase2_multigame.py
+          node tests/test_site_data_v24.js
+          node tests/test_site_health_v25.js
+
+      - name: Build explicit public artifact
+        run: python scripts/build_public_site.py
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
