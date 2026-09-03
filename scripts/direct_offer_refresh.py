@@ -677,12 +677,120 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def moppy_offer_id(url):
+    p = urlparse(url)
+    if (p.scheme != "https" or p.hostname != "pc.moppy.jp"
+            or p.username is not None or p.password is not None or p.port not in {None, 443}
+            or p.path != "/ad/detail.php"):
+        raise ValueError("unexpected_offer_url")
+    query = parse_qs(p.query, keep_blank_values=False)
+    if any(key not in {"site_id", "s_id"} for key in query):
+        raise ValueError("ambiguous_offer_identity")
+    values = []
+    for key in ("site_id", "s_id"):
+        values.extend(query.get(key) or [])
+    if len(values) != 1 or not re.fullmatch(r"[0-9]+", values[0]):
+        raise ValueError("ambiguous_offer_identity")
+    return values[0]
+
+
+def inspect_moppy_offer(raw, requested_url, final_url, aliases):
+    """Review-only parser for the public Moppy offer shell.
+
+    Moppy explicitly states that the POINT GET destination can contain the
+    applicable reward/conditions when they differ from the shell page. This
+    parser therefore fingerprints shell evidence but never authorizes refresh.
+    """
+    try:
+        offer_id = moppy_offer_id(requested_url)
+        if moppy_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [n for n in doc.find(tag="link")
+                      if "canonical" in n.attrs.get("rel", "").split()]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            if moppy_offer_id(urljoin(final_url, canonicals[0].attrs.get("href", ""))) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        title = evidence_text(one(doc.find(tag="h1")))
+        if not target_present(title, aliases):
+            raise ValueError("offer_title_mismatch")
+        platforms = sorted(set(re.findall(r"(iOS|Android)", title, re.I)))
+        normalized = {"ios": "iOS", "android": "Android"}
+        platform_values = sorted({normalized[value.casefold()] for value in platforms})
+        if len(platform_values) != 1:
+            raise ValueError("ambiguous_offer_platform")
+        platform = platform_values[0]
+
+        text = visible_text(raw)
+        start = text.find(title)
+        if start < 0:
+            raise ValueError("missing_offer_header")
+        tail = text[start:start + 2200]
+        boundaries = [
+            tail.find(marker) for marker in ("ポイ活応援サービス", "ポイント獲得条件")
+            if tail.find(marker) >= 0
+        ]
+        if not boundaries:
+            raise ValueError("missing_offer_header_boundary")
+        header = tail[:min(boundaries)]
+
+        rewards = []
+        for match in re.finditer(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*P(?![A-Za-z])", header):
+            amount = int(match.group(1).replace(",", ""))
+            if 0 < amount < 1_000_000:
+                rewards.append(amount)
+        unique_rewards = sorted(set(rewards))
+        if len(unique_rewards) != 1:
+            raise ValueError("ambiguous_displayed_reward")
+        reward_points = unique_rewards[0]
+
+        if "1ポイント=1円" not in text:
+            raise ValueError("unit_conversion_review_required")
+
+        terms_start = text.find("■獲得条件", start)
+        if terms_start < 0:
+            raise ValueError("incomplete_offer_terms")
+        terms_end = text.find("広告概要", terms_start)
+        if terms_end < 0:
+            raise ValueError("incomplete_offer_terms")
+        terms = text[terms_start:terms_end].strip()
+        if "成果受付期間" not in terms:
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in ("■注意事項", "■却下条件", "却下条件")):
+            raise ValueError("incomplete_offer_terms")
+        if "POINT GET" not in text or "遷移" not in text:
+            raise ValueError("downstream_terms_review_required")
+
+        payload = {
+            "offerId": offer_id,
+            "name": title,
+            "platform": platform,
+            "displayedRewardPoints": reward_points,
+            "rewardUnit": "P",
+            "baseYenPerPoint": 1,
+            "downstreamTermsRequired": True,
+            "headerText": re.sub(r"\s+", " ", header).strip(),
+            "termsText": terms,
+        }
+        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
+                                    sort_keys=True).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "moppy-shell-review-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def inspect_detail(url, source, aliases, fetcher=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
     structured_parsers = {
         "warau": inspect_warau_offer,
         "chobirich": inspect_chobirich_offer,
         "coincome": inspect_coincome_offer,
+        "moppy": inspect_moppy_offer,
     }
     if source.get("id") in structured_parsers:
         evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)

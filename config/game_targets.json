@@ -79,7 +79,8 @@
       ],
       "known_urls_by_source": {
         "moppy": [
-          "https://pc.moppy.jp/ad/detail.php?site_id=160375"
+          "https://pc.moppy.jp/ad/detail.php?site_id=160375",
+          "https://pc.moppy.jp/ad/detail.php?site_id=160371"
         ],
         "warau": [
           "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205389",
