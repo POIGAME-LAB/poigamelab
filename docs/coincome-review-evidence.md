@@ -86,3 +86,24 @@ retention, and the publication-disabled gate.
 
 No production collector/AI API call, live publication workflow dispatch, or
 published CSV edit is part of this change.
+
+
+## Listing-first scheduled discovery, 2026-09-03
+
+Current public COINCOME pages remain readable and the campaigns listing is available,
+but the repository's previously stored Township/Kinoko detail identities have not
+been re-established as current offers. Scheduled refresh therefore no longer
+pre-seeds COINCOME checks from repository-known or already-published detail URLs.
+
+COINCOME now uses `scheduled_known_detail_fetch_enabled: false`. Scheduled runs
+still fetch the registered first-party campaigns listing. A detail page is fetched
+only when the current listing itself exposes a target-matching
+`/campaigns/details/<id>` link. If the target is absent, the runner records
+`discovery_required` and preserves existing published rows without touching the
+stale detail identities.
+
+This does not delete the historical URLs from `game_targets.json` or publication
+data, and it does not authorize COINCOME publication. It separates historical
+identity from current discovery so that an old 404 cannot be mistaken for a
+current availability result. The source-specific COINCOME parser and the existing
+review-only publication gate remain unchanged.

@@ -993,13 +993,15 @@ def main():
                 })
                 continue
             urls = []
-            for u in ((target.get("known_urls_by_source") or {}).get(source_id) or []):
-                if source_host_allowed(u, source):
-                    urls.append(u)
-            for r in current_rows:
-                u = str(r.get("url") or "")
-                if u and source_host_allowed(u, source):
-                    urls.append(u)
+            known_detail_fetch_enabled = source.get("scheduled_known_detail_fetch_enabled", True) is True
+            if known_detail_fetch_enabled:
+                for u in ((target.get("known_urls_by_source") or {}).get(source_id) or []):
+                    if source_host_allowed(u, source):
+                        urls.append(u)
+                for r in current_rows:
+                    u = str(r.get("url") or "")
+                    if u and source_host_allowed(u, source):
+                        urls.append(u)
 
             listing_errors = []
             discovered = []
@@ -1043,7 +1045,9 @@ def main():
             if not urls:
                 review.append({
                     "game": game, "source": source_id, "reason": "discovery_required",
-                    "listingErrors": [item["error"] for item in listing_errors], "checkedAt": checked_at
+                    "listingErrors": [item["error"] for item in listing_errors],
+                    "knownDetailFetchEnabled": known_detail_fetch_enabled,
+                    "checkedAt": checked_at
                 })
                 source_result["reviewRequired"] += 1
                 source_result["state"] = "review_required"

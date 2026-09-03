@@ -100,7 +100,9 @@
       "direct_detail_limit": 6,
       "direct_detail_url_hints": [
         "/campaigns/details/"
-      ]
+      ],
+      "scheduled_known_detail_fetch_enabled": false,
+      "scheduled_known_detail_fetch_reason": "Repository game detail IDs may be stale; scheduled runs should discover current offers from the first-party listing before fetching details."
     },
     {
       "id": "mikoshi",
