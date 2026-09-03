@@ -698,18 +698,23 @@
   let currentSearch = "";
 
   function getBestOffer(game) {
-    if (!game.offers || game.offers.length === 0) {
+    const currentOffers = (game.offers || []).filter((offer) =>
+      POIGAME_DATA.isOfferFresh(offer, dataHealth.staleAfterHours || 48)
+    );
+    if (currentOffers.length === 0) {
       return null;
     }
 
-    return game.offers.reduce((best, offer) => {
+    return currentOffers.reduce((best, offer) => {
       return offer.reward > best.reward ? offer : best;
     });
   }
 
   function updateDashboard() {
     const allOffers = games.flatMap((game) => game.offers || []);
-    const verifiedOffers = allOffers.filter((offer) => offer.verified);
+    const verifiedOffers = allOffers.filter((offer) =>
+      POIGAME_DATA.isOfferFresh(offer, dataHealth.staleAfterHours || 48)
+    );
     const maxReward = verifiedOffers.length
       ? Math.max(...verifiedOffers.map((offer) => Number(offer.reward) || 0))
       : 0;
