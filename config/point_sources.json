@@ -78,7 +78,9 @@
       "direct_detail_limit": 6,
       "direct_detail_url_hints": [
         "/ad_details/"
-      ]
+      ],
+      "scheduled_fetch_enabled": false,
+      "scheduled_fetch_reason": "Direct detail/listing retrieval is not reliable enough for unattended refresh; keep review-only until a permitted stable retrieval path is established."
     },
     {
       "id": "coincome",

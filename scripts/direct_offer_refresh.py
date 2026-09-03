@@ -745,6 +745,24 @@ def main():
                 r for r in rows
                 if str(r.get("game") or "") == game and str(r.get("site") or "") == source_id
             ]
+            if source.get("scheduled_fetch_enabled", True) is not True:
+                review.append({
+                    "game": game,
+                    "source": source_id,
+                    "reason": "scheduled_source_fetch_disabled",
+                    "existingRows": len(current_rows),
+                    "checkedAt": checked_at,
+                })
+                game_result["sources"].append({
+                    "source": source_id,
+                    "standard": is_standard,
+                    "knownOrDiscoveredUrls": 0,
+                    "confirmedOffers": 0,
+                    "updatedRows": 0,
+                    "reviewRequired": 1,
+                    "state": "review_required",
+                })
+                continue
             urls = []
             for u in ((target.get("known_urls_by_source") or {}).get(source_id) or []):
                 if source_host_allowed(u, source):

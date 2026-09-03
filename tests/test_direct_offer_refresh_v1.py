@@ -906,3 +906,73 @@ def test_chobirich_is_review_only_even_with_an_approval_record(chobi_markup, mon
         assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
         assert item['sourceEvidence']['platform'] == 'Android'
         assert item['platformMatches'] is False
+
+
+def test_scheduled_fetch_disabled_source_never_calls_network_or_changes_published(monkeypatch):
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['chobirich'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'テストゲーム': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'テストゲーム',
+        'known_urls_by_source': {'chobirich': [CHOBI_URL]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'chobirich',
+        'search_domains': ['chobirich.com', 'www.chobirich.com'],
+        'direct_listing_urls': ['https://www.chobirich.com/smartphone?pos=app'],
+        'direct_listing_limit': 1,
+        'direct_detail_limit': 6,
+        'scheduled_fetch_enabled': False,
+    }]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(
+        offerKey='chobi-disabled',
+        game='テストゲーム',
+        site='chobirich',
+        reward='600',
+        condition='既存掲載を保持',
+        platform='Android',
+        updatedAt='2026-08-31',
+        url=CHOBI_URL,
+        sourceUrl=CHOBI_URL,
+        verified='true',
+    )
+    direct.write_published([row])
+    before = direct.PUBLISHED.read_bytes()
+    monkeypatch.setattr(
+        direct, 'fetch_first_party',
+        lambda *args, **kwargs: pytest.fail('disabled source must not fetch'),
+    )
+
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+
+    status = json.loads(direct.STATUS.read_text())
+    assert status['apiCalls'] == status['refreshedRows'] == status['publishedRewardChanges'] == 0
+    source = status['games'][0]['sources'][0]
+    assert source['source'] == 'chobirich'
+    assert source['state'] == 'review_required'
+    assert source['knownOrDiscoveredUrls'] == source['confirmedOffers'] == source['updatedRows'] == 0
+    assert source['reviewRequired'] == 1
+    assert status['games'][0]['comparisonReady'] is False
+
+    items = json.loads(direct.REVIEW.read_text())['items']
+    assert len(items) == 1
+    assert items[0]['reason'] == 'scheduled_source_fetch_disabled'
+    assert items[0]['existingRows'] == 1
+
+
+def test_repository_chobirich_is_the_only_explicitly_disabled_comparison_source(monkeypatch):
+    monkeypatch.setattr(direct, 'SOURCES', ROOT/'config/point_sources.json')
+    payload = json.loads((ROOT/'config/point_sources.json').read_text())
+    by_id = {source['id']: source for source in payload['sources']}
+    assert by_id['chobirich']['scheduled_fetch_enabled'] is False
+    assert 'reliable' in by_id['chobirich']['scheduled_fetch_reason'].lower()
+    comparison = json.loads((ROOT/'config/refresh_policy.json').read_text())['comparisonSources']
+    assert all(
+        by_id[source_id].get('scheduled_fetch_enabled', True) is True
+        for source_id in comparison
+        if source_id != 'chobirich'
+    )
