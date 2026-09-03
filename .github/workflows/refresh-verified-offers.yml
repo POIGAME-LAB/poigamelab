@@ -28,7 +28,7 @@ jobs:
         run: python scripts/direct_offer_refresh.py
 
       - name: Commit safe direct-refresh outputs
-        if: always()
+        if: steps.refresh.outcome == 'success'
         run: |
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
