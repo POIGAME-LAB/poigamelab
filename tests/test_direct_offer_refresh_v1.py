@@ -126,7 +126,7 @@ def test_offer_identity_ignores_warau_host_and_navigation_params():
 import io
 from email.message import Message
 from urllib.error import HTTPError, URLError
-from urllib.request import HTTPHandler, build_opener
+from urllib.request import HTTPSHandler, build_opener
 from urllib.response import addinfourl
 
 import pytest
@@ -141,47 +141,75 @@ def isolate_module_paths(tmp_path, monkeypatch):
 def test_external_redirect_is_blocked_before_destination_request(monkeypatch):
     requested = []
 
-    class FakeHTTP(HTTPHandler):
-        def http_open(self, req):
+    class FakeHTTPS(HTTPSHandler):
+        def https_open(self, req):
             requested.append(req.full_url)
             headers = Message()
-            redirect = req.full_url == 'http://example.test/offer'
+            redirect = req.full_url == 'https://example.test/offer'
             if redirect:
-                headers['Location'] = 'http://outside.invalid/private'
+                headers['Location'] = 'https://outside.invalid/private'
             response = addinfourl(io.BytesIO(b''), headers, req.full_url, 302 if redirect else 200)
             response.msg = 'Found' if redirect else 'OK'
             return response
 
-    monkeypatch.setattr(direct, 'build_opener', lambda guard: build_opener(FakeHTTP(), guard), raising=False)
-    monkeypatch.setattr(direct, 'urlopen', build_opener(FakeHTTP()).open, raising=False)
+    monkeypatch.setattr(direct, 'build_opener', lambda guard: build_opener(FakeHTTPS(), guard), raising=False)
     with pytest.raises(ValueError, match='redirect left'):
-        direct.fetch_first_party('http://example.test/offer', {'search_domains': ['example.test']})
-    assert requested == ['http://example.test/offer']
+        direct.fetch_first_party('https://example.test/offer', {'search_domains': ['example.test']})
+    assert requested == ['https://example.test/offer']
+
+
+def test_same_domain_transport_downgrade_is_blocked_before_destination_request(monkeypatch):
+    requested = []
+
+    class FakeHTTPS(HTTPSHandler):
+        def https_open(self, req):
+            requested.append(req.full_url)
+            headers = Message()
+            headers['Location'] = 'http://example.test/detail'
+            response = addinfourl(io.BytesIO(b''), headers, req.full_url, 302)
+            response.msg = 'Found'
+            return response
+
+    monkeypatch.setattr(direct, 'build_opener', lambda guard: build_opener(FakeHTTPS(), guard), raising=False)
+    with pytest.raises(ValueError, match='redirect left'):
+        direct.fetch_first_party('https://example.test/start', {'search_domains': ['example.test']})
+    assert requested == ['https://example.test/start']
+
+
+@pytest.mark.parametrize('url', [
+    'http://example.test/detail',
+    'https://user@example.test/detail',
+    'https://example.test:444/detail',
+])
+def test_first_party_guard_rejects_insecure_or_unexpected_transport(url):
+    source = {'search_domains': ['example.test']}
+    assert direct.source_host_allowed(url, source) is False
+    with pytest.raises(ValueError, match='outside registered first-party domains'):
+        direct.fetch_first_party(url, source)
 
 
 def test_allowed_redirect_and_oversized_response(monkeypatch):
     requested = []
 
-    class FakeHTTP(HTTPHandler):
-        def http_open(self, req):
+    class FakeHTTPS(HTTPSHandler):
+        def https_open(self, req):
             requested.append(req.full_url)
             headers = Message()
             redirect = req.full_url.endswith('/start')
             if redirect:
-                headers['Location'] = 'http://example.test/detail'
+                headers['Location'] = 'https://example.test/detail'
             response = addinfourl(io.BytesIO(b'' if redirect else b'12345'), headers,
                                   req.full_url, 302 if redirect else 200)
             response.msg = 'Found' if redirect else 'OK'
             return response
 
-    monkeypatch.setattr(direct, 'build_opener', lambda guard: build_opener(FakeHTTP(), guard), raising=False)
-    monkeypatch.setattr(direct, 'urlopen', build_opener(FakeHTTP()).open, raising=False)
+    monkeypatch.setattr(direct, 'build_opener', lambda guard: build_opener(FakeHTTPS(), guard), raising=False)
     source = {'search_domains': ['example.test']}
-    assert direct.fetch_first_party('http://example.test/start', source, max_bytes=5) == (
-        '12345', 'http://example.test/detail')
+    assert direct.fetch_first_party('https://example.test/start', source, max_bytes=5) == (
+        '12345', 'https://example.test/detail')
     assert len(requested) == 2
     with pytest.raises(ValueError, match='incomplete evidence'):
-        direct.fetch_first_party('http://example.test/detail', source, max_bytes=4)
+        direct.fetch_first_party('https://example.test/detail', source, max_bytes=4)
 
 
 @pytest.fixture
