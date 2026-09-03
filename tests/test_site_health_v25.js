@@ -41,6 +41,22 @@ function makeContext(fetchImpl) {
   }, { staleAfterHours: 48 }, now);
   assert.strictEqual(stale['Township'].state, 'stale');
 
+  const offerFreshNow = Date.parse('2026-09-01T14:59:59Z');
+  const offerStaleNow = Date.parse('2026-09-01T15:00:01Z');
+  const datedOffer = { verified: true, updatedAt: '2026-08-30' };
+  assert.strictEqual(api.isOfferFresh(datedOffer, 48, offerFreshNow), true);
+  assert.strictEqual(api.isOfferFresh(datedOffer, 48, offerStaleNow), false);
+  assert.strictEqual(api.isOfferFresh({ verified: false, updatedAt: '2026-08-31' }, 48, now), false);
+  assert.strictEqual(api.isOfferFresh({ verified: true, updatedAt: '' }, 48, now), false);
+  assert.strictEqual(
+    api.getOfferHealthLabel(datedOffer, { state: 'fresh', staleAfterHours: 48 }, offerStaleNow).state,
+    'legacy'
+  );
+  assert.strictEqual(
+    api.getOfferHealthLabel(datedOffer, { state: 'fresh', staleAfterHours: 48 }, offerStaleNow).text,
+    '参考掲載 ・ 最終確認 2026-08-30'
+  );
+
   assert.strictEqual(api.getOfferHealthLabel({ verified: false }, health['Township']).state, 'legacy');
   assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-31' }, health['Township']).state, 'verified');
   assert.strictEqual(api.getOfferHealthLabel({ verified: true }, health['きのこ伝説']).state, 'warning');
@@ -57,7 +73,7 @@ function makeContext(fetchImpl) {
   }, { staleAfterHours: 48 }, now);
   assert.strictEqual(discovery['Township'].state, 'degraded');
   const discoveryLabel = api.getOfferHealthLabel(
-    { verified: true, updatedAt: '2026-08-29' }, discovery['Township']);
+    { verified: true, updatedAt: '2026-08-31' }, discovery['Township'], now);
   assert.strictEqual(discoveryLabel.state, 'warning');
   assert.strictEqual(discoveryLabel.text, '掲載情報を確認中');
 
