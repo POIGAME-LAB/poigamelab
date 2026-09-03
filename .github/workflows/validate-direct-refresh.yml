@@ -57,4 +57,8 @@ jobs:
               print(g["game"], "confirmed", f'{g.get("standardConfirmed",0)}/{g.get("standardTotal",0)}', "ready", g.get("comparisonReady"))
           reasons=collections.Counter(x.get("reason") for x in review.get("items", []))
           print("review reasons =", dict(reasons))
+          for item in review.get("items", []):
+              if item.get("game") in {"メメントモリ","ワーキングヒーロー","ホワイトアウト・サバイバル"}:
+                  safe={k:v for k,v in item.items() if k not in {"error"}}
+                  print("review item =", safe)
           PY
