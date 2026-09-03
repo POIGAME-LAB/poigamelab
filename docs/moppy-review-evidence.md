@@ -64,3 +64,20 @@ terms changes, transport failures, and the publication-disabled gate.
 
 No production collector/AI API call or live publication workflow dispatch is
 part of this change.
+
+
+## Current MementoMori review targets, 2026-09-03
+
+Fresh public Moppy pages were found for a newer 45-day MementoMori StepUp pair:
+
+- Android: offer ID 160690, displayed 9,661P, 45-day StepUp.
+- iOS: offer ID 160688, displayed 13,354P, 45-day StepUp.
+
+Older 30-day MementoMori pages with IDs 161975/161974 remain visible in search
+indexes, but this review target update intentionally records only the fresher
+45-day pair. The two new IDs are added to `game_targets.json` only. They are not
+added to `published_offers.csv`, and their displayed shell rewards are not used
+to refresh publication because the Moppy shell still requires authoritative
+`POINT GET` destination terms.
+
+This is target discovery, not publication approval.
