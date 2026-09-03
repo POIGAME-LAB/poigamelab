@@ -175,6 +175,41 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
             break
     return found
 
+
+def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
+    """Detect target-adjacent offerwall links without following or storing them.
+
+    Only normalized provider hostnames are returned. Paths, query strings,
+    fragments and embedded identifiers are intentionally discarded.
+    """
+    allowed = {str(x).lower().strip() for x in (known_domains or []) if str(x).strip()}
+    found = []
+    seen = set()
+    for m in re.finditer(r'(?is)<a\b[^>]*?href\s*=\s*(["\'])(.*?)\1[^>]*>(.*?)</a>', raw or ""):
+        href = html.unescape(m.group(2)).strip()
+        try:
+            p = urlparse(urljoin(base_url, href))
+            port = p.port
+        except (TypeError, ValueError):
+            continue
+        host = (p.hostname or "").lower()
+        if (p.scheme != "https" or p.username is not None or p.password is not None
+                or port not in {None, 443} or host not in allowed):
+            continue
+        start = max(0, m.start() - 650)
+        end = min(len(raw), m.end() + 650)
+        context = visible_text(raw[start:end])
+        label = visible_text(m.group(3))
+        if not (target_present(label, aliases) or target_present(context, aliases)):
+            continue
+        if host in seen:
+            continue
+        seen.add(host)
+        found.append(host)
+        if len(found) >= limit:
+            break
+    return found
+
 def _to_int(raw):
     digits = re.sub(r"[^\d]", "", str(raw or ""))
     if not digits:
@@ -900,6 +935,18 @@ def main():
     targets = load_json(TARGETS).get("games") or []
     source_cfg = load_json(SOURCES)
     sources = {str(x.get("id") or ""): x for x in (source_cfg.get("sources") or [])}
+    offerwall_domains = [
+        str(x).lower().strip() for x in (source_cfg.get("offerwall_domains_discovered") or [])
+        if str(x).strip()
+    ]
+    offerwall_presence_cfg = source_cfg.get("offerwall_presence_detection") or {}
+    offerwall_presence_enabled = (
+        isinstance(offerwall_presence_cfg, dict)
+        and offerwall_presence_cfg.get("enabled") is True
+        and offerwall_presence_cfg.get("follow_external_links") is False
+        and offerwall_presence_cfg.get("persist") == "provider_domain_only"
+        and offerwall_presence_cfg.get("require_target_context") is True
+    )
     comparison_sources = [
         str(x).strip() for x in (policy.get("comparisonSources") or []) if str(x).strip()
     ]
@@ -1005,6 +1052,7 @@ def main():
 
             listing_errors = []
             discovered = []
+            offerwall_presence = []
             listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
             detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
             for listing_url in (source.get("direct_listing_urls") or [])[:listing_limit]:
@@ -1012,9 +1060,14 @@ def main():
                     raw, final_url = fetch_once(listing_url, source)
                     if target_present(visible_text(raw), aliases):
                         discovered.extend(discover_detail_links(raw, final_url, source, aliases, limit=6))
+                        if offerwall_presence_enabled:
+                            offerwall_presence.extend(
+                                discover_offerwall_presence(raw, final_url, aliases, offerwall_domains, limit=6)
+                            )
                 except Exception as e:
                     listing_errors.append({"url": listing_url, "error": summarize_fetch_error(e)})
             urls.extend(discovered)
+            offerwall_presence = list(dict.fromkeys(offerwall_presence))
             deduped_urls = []
             seen_identities = set()
             for candidate_url in urls:
@@ -1030,6 +1083,7 @@ def main():
                 "source": source_id,
                 "standard": is_standard,
                 "knownOrDiscoveredUrls": len(urls),
+                "offerwallPresenceDomains": len(offerwall_presence),
                 "confirmedOffers": 0,
                 "updatedRows": 0,
                 "reviewRequired": 0,
@@ -1043,16 +1097,37 @@ def main():
                 source_result["reviewRequired"] += 1
 
             if not urls:
-                review.append({
-                    "game": game, "source": source_id, "reason": "discovery_required",
-                    "listingErrors": [item["error"] for item in listing_errors],
-                    "knownDetailFetchEnabled": known_detail_fetch_enabled,
-                    "checkedAt": checked_at
-                })
+                if offerwall_presence:
+                    review.append({
+                        "game": game,
+                        "source": source_id,
+                        "reason": "offerwall_presence_candidate",
+                        "providerDomains": offerwall_presence,
+                        "listingErrors": [item["error"] for item in listing_errors],
+                        "checkedAt": checked_at,
+                    })
+                else:
+                    review.append({
+                        "game": game, "source": source_id, "reason": "discovery_required",
+                        "listingErrors": [item["error"] for item in listing_errors],
+                        "knownDetailFetchEnabled": known_detail_fetch_enabled,
+                        "checkedAt": checked_at
+                    })
                 source_result["reviewRequired"] += 1
                 source_result["state"] = "review_required"
                 game_result["sources"].append(source_result)
                 continue
+
+            if offerwall_presence:
+                review.append({
+                    "game": game,
+                    "source": source_id,
+                    "reason": "offerwall_presence_candidate",
+                    "providerDomains": offerwall_presence,
+                    "listingErrors": [item["error"] for item in listing_errors],
+                    "checkedAt": checked_at,
+                })
+                source_result["reviewRequired"] += 1
 
             # Existing detail URLs do not imply the discovery listing worked.
             # Preserve each failure while still inspecting known offers.

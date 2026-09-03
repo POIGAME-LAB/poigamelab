@@ -180,5 +180,11 @@
     "chobirich.playtimeweb.com",
     "offerwall.ayet.io"
   ],
-  "privacy_note": "個人識別子付きURLは保存しない。Scheduled direct refreshは登録済みfirst-party URLだけを取得する。"
+  "privacy_note": "個人識別子付きURLは保存しない。Scheduled direct refreshは登録済みfirst-party URLだけを取得する。Offerwallはfirst-party一覧HTML内の対象ゲーム近傍リンクから既知provider domainのみを記録し、外部リンクは取得しない。",
+  "offerwall_presence_detection": {
+    "enabled": true,
+    "follow_external_links": false,
+    "persist": "provider_domain_only",
+    "require_target_context": true
+  }
 }

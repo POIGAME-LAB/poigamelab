@@ -1503,3 +1503,179 @@ def test_repository_mementomori_moppy_review_targets_use_current_45_day_pair():
     rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
     published = [row for row in rows if row['game'] == 'メメントモリ' and row['site'] == 'moppy']
     assert published == []
+
+
+def test_offerwall_presence_returns_only_known_sanitized_provider_domains():
+    secret = 'user-token-DO-NOT-STORE'
+    raw = f'''<body>
+    <section>Game A
+      <a href="https://ow-gf-rewards.com/offers/game-a?uid={secret}#step">Open offerwall</a>
+      <a href="https://unknown.example/path?uid={secret}">Unknown provider</a>
+      <a href="http://appdriver.jp/path?uid={secret}">Insecure provider</a>
+      <a href="https://user@appdriver.jp/path">Credentialed provider</a>
+      <a href="https://appdriver.jp:444/path">Unexpected port</a>
+    </section>
+    </body>'''
+    found = direct.discover_offerwall_presence(
+        raw,
+        'https://example.test/list',
+        ['Game A'],
+        ['ow-gf-rewards.com', 'appdriver.jp'],
+    )
+    assert found == ['ow-gf-rewards.com']
+    serialized = json.dumps(found)
+    assert secret not in serialized
+    assert '/offers/' not in serialized
+    assert '?' not in serialized
+    assert '#' not in serialized
+
+
+def test_offerwall_presence_requires_target_adjacent_context():
+    padding = 'x' * 1600
+    raw = (
+        '<body>Game A ' + padding +
+        '<a href="https://ow-gf-rewards.com/private?uid=secret">Unrelated wall</a>'
+        '</body>'
+    )
+    assert direct.discover_offerwall_presence(
+        raw,
+        'https://example.test/list',
+        ['Game A'],
+        ['ow-gf-rewards.com'],
+    ) == []
+
+
+def test_offerwall_presence_is_review_only_and_never_fetched_or_published(monkeypatch):
+    listing = 'https://example.test/list'
+    secret = 'sensitive-user-id'
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['testsite'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'Game A': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{'game': 'Game A'}]}))
+    direct.SOURCES.write_text(json.dumps({
+        'sources': [{
+            'id': 'testsite',
+            'search_domains': ['example.test'],
+            'direct_listing_urls': [listing],
+            'direct_listing_limit': 1,
+            'direct_detail_limit': 4,
+            'direct_detail_url_hints': ['/detail'],
+        }],
+        'offerwall_domains_discovered': ['ow-gf-rewards.com'],
+        'offerwall_presence_detection': {
+            'enabled': True,
+            'follow_external_links': False,
+            'persist': 'provider_domain_only',
+            'require_target_context': True,
+        },
+    }))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(
+        offerKey='existing',
+        game='Game A',
+        site='testsite',
+        reward='100',
+        condition='existing',
+        platform='iOS',
+        updatedAt='2026-09-01',
+        url='',
+        sourceUrl='',
+        verified='true',
+    )
+    direct.write_published([row])
+    before = direct.PUBLISHED.read_bytes()
+    requested = []
+
+    def fetch(url, source):
+        requested.append(url)
+        assert url == listing
+        return (
+            f'<body><section>Game A '
+            f'<a href="https://ow-gf-rewards.com/path?uid={secret}">Offerwall</a>'
+            f'</section></body>',
+            listing,
+        )
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    assert direct.main() == 0
+    assert requested == [listing]
+    assert direct.PUBLISHED.read_bytes() == before
+
+    review_text = direct.REVIEW.read_text()
+    items = json.loads(review_text)['items']
+    assert len(items) == 1
+    assert items[0]['reason'] == 'offerwall_presence_candidate'
+    assert items[0]['providerDomains'] == ['ow-gf-rewards.com']
+    assert secret not in review_text
+    assert '/path' not in review_text
+
+    status = json.loads(direct.STATUS.read_text())
+    source = status['games'][0]['sources'][0]
+    assert source['offerwallPresenceDomains'] == 1
+    assert source['confirmedOffers'] == source['updatedRows'] == 0
+    assert source['reviewRequired'] == 1
+    assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
+    assert status['games'][0]['comparisonReady'] is False
+
+
+def test_offerwall_presence_detection_fails_closed_without_exact_privacy_contract(monkeypatch):
+    listing = 'https://example.test/list'
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['testsite'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'Game A': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{'game': 'Game A'}]}))
+    direct.write_published([])
+
+    base_source = {
+        'sources': [{
+            'id': 'testsite',
+            'search_domains': ['example.test'],
+            'direct_listing_urls': [listing],
+            'direct_listing_limit': 1,
+            'direct_detail_limit': 4,
+            'direct_detail_url_hints': ['/detail'],
+        }],
+        'offerwall_domains_discovered': ['ow-gf-rewards.com'],
+    }
+    unsafe_policies = [
+        None,
+        {'enabled': True, 'follow_external_links': True,
+         'persist': 'provider_domain_only', 'require_target_context': True},
+        {'enabled': True, 'follow_external_links': False,
+         'persist': 'full_url', 'require_target_context': True},
+        {'enabled': True, 'follow_external_links': False,
+         'persist': 'provider_domain_only', 'require_target_context': False},
+    ]
+
+    for policy in unsafe_policies:
+        payload = dict(base_source)
+        if policy is not None:
+            payload['offerwall_presence_detection'] = policy
+        direct.SOURCES.write_text(json.dumps(payload))
+        monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (
+            '<body>Game A <a href="https://ow-gf-rewards.com/path?uid=secret">Wall</a></body>',
+            listing,
+        ))
+        assert direct.main() == 0
+        items = json.loads(direct.REVIEW.read_text())['items']
+        assert len(items) == 1
+        assert items[0]['reason'] == 'discovery_required'
+        assert 'providerDomains' not in items[0]
+
+
+def test_repository_offerwall_presence_policy_is_domain_only_and_no_follow():
+    payload = json.loads((ROOT/'config/point_sources.json').read_text())
+    policy = payload['offerwall_presence_detection']
+    assert policy == {
+        'enabled': True,
+        'follow_external_links': False,
+        'persist': 'provider_domain_only',
+        'require_target_context': True,
+    }
+    domains = payload['offerwall_domains_discovered']
+    assert len(domains) == len(set(domains))
+    assert all('/' not in domain and '?' not in domain and '#' not in domain for domain in domains)
