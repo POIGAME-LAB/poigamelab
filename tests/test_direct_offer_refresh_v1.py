@@ -1129,3 +1129,156 @@ def test_coincome_is_review_only_and_never_refreshes_published_date(
         assert item['sourceEvidence']['displayedRewardYen'] == 600
         assert item['platformMatches'] is True
         assert item['requiredChecks'] == ['reward_unit_conversion', 'complete_terms_vs_published_row']
+
+
+MOPPY_URL = 'https://pc.moppy.jp/ad/detail.php?site_id=12345'
+MOPPY_ALT_URL = 'https://pc.moppy.jp/ad/detail.php?s_id=12345'
+
+
+@pytest.fixture
+def moppy_markup():
+    return f'''<html><head><link rel="canonical" href="{MOPPY_URL}"></head><body>
+<main>
+<h1>テストゲーム（StepUp）〖Android〗</h1>
+<p>新規アプリインストール後、45日以内に各成果地点到達でクリア</p>
+<div>600P</div>
+<section>ポイント獲得条件</section>
+<p>モッピーでは「1ポイント=1円」のポイントが貯まります。</p>
+<p>※ご注意ください。「POINT GET」をタップ後に遷移するページに記載のポイント数と獲得条件が適用となります。</p>
+<div>■獲得条件 新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。
+〖成果受付期間〗インストール後、45日以内
+各成果地点は「POINT GET」をタップ後に遷移するページでご確認ください。
+■注意事項 クリックされた時点で表示されていた条件が適用されます。</div>
+<h3>広告概要</h3>
+</main></body></html>'''
+
+
+def parse_moppy(raw, requested=MOPPY_URL, final=MOPPY_URL):
+    return direct.inspect_moppy_offer(raw, requested, final, ['テストゲーム'])
+
+
+def test_moppy_review_parser_binds_shell_identity_reward_os_and_terms(moppy_markup):
+    evidence = parse_moppy(moppy_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['offerId'] == '12345'
+    assert evidence['platform'] == 'Android'
+    assert evidence['displayedRewardPoints'] == 600
+    assert evidence['rewardUnit'] == 'P'
+    assert evidence['baseYenPerPoint'] == 1
+    assert evidence['downstreamTermsRequired'] is True
+    assert evidence['parserVersion'] == 'moppy-shell-review-v1'
+    assert '成果受付期間' in evidence['termsText']
+    assert len(evidence['evidenceFingerprint']) == 64
+
+
+def test_moppy_site_id_and_s_id_are_same_offer_identity(moppy_markup):
+    assert direct.moppy_offer_id(MOPPY_URL) == direct.moppy_offer_id(MOPPY_ALT_URL) == '12345'
+    evidence = parse_moppy(moppy_markup, requested=MOPPY_URL, final=MOPPY_ALT_URL)
+    assert evidence['state'] == 'parsed'
+
+
+@pytest.mark.parametrize('old,new,reason', [
+    ('<div>600P</div>', '<div>600P 900P</div>', 'ambiguous_displayed_reward'),
+    ('〖Android〗', '〖Android / iOS〗', 'ambiguous_offer_platform'),
+    ('「1ポイント=1円」', '「2ポイント=1円」', 'unit_conversion_review_required'),
+    ('POINT GET', '案件ボタン', 'downstream_terms_review_required'),
+    ('成果受付期間', '受付期間', 'incomplete_offer_terms'),
+    ('■注意事項', '一般注意', 'incomplete_offer_terms'),
+    ('<section>ポイント獲得条件</section>', '', 'missing_offer_header_boundary'),
+    ('<h1>テストゲーム（StepUp）〖Android〗</h1>', '<h1>別ゲーム（StepUp）〖Android〗</h1>', 'offer_title_mismatch'),
+    ('/ad/detail.php?site_id=12345', '/ad/detail.php?site_id=99999', 'canonical_offer_mismatch'),
+])
+def test_moppy_rejects_ambiguous_or_incomplete_shell_evidence(moppy_markup, old, new, reason):
+    evidence = parse_moppy(moppy_markup.replace(old, new))
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == reason
+
+
+@pytest.mark.parametrize('url', [
+    'http://pc.moppy.jp/ad/detail.php?site_id=12345',
+    'https://moppy.jp/ad/detail.php?site_id=12345',
+    'https://user@pc.moppy.jp/ad/detail.php?site_id=12345',
+    'https://pc.moppy.jp:444/ad/detail.php?site_id=12345',
+    'https://pc.moppy.jp/ad/detail.php?site_id=12345&ref=test',
+    'https://pc.moppy.jp/ad/detail.php?site_id=12345&s_id=12345',
+    'https://pc.moppy.jp/ad/other.php?site_id=12345',
+])
+def test_moppy_rejects_unsupported_identity_urls(moppy_markup, url):
+    assert parse_moppy(moppy_markup, requested=url)['state'] == 'review_required'
+
+
+def test_moppy_terms_change_invalidates_fingerprint(moppy_markup):
+    original = parse_moppy(moppy_markup)
+    changed = parse_moppy(moppy_markup.replace(
+        'インストール後、45日以内',
+        'インストール後、44日以内'))
+    assert original['state'] == changed['state'] == 'parsed'
+    assert original['evidenceFingerprint'] != changed['evidenceFingerprint']
+
+
+@pytest.mark.parametrize('fetch_fails', [False, True])
+def test_moppy_is_review_only_even_when_shell_matches_published_row(
+        moppy_markup, monkeypatch, fetch_fails):
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['moppy'],
+        'minimumConfirmedSourcesForComparison': 2,
+        'games': {'テストゲーム': {'enabled': True}},
+    }))
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'テストゲーム',
+        'known_urls_by_source': {'moppy': [MOPPY_URL]},
+    }]}))
+    direct.SOURCES.write_text(json.dumps({'sources': [{
+        'id': 'moppy',
+        'search_domains': ['pc.moppy.jp'],
+        'direct_listing_urls': [],
+        'direct_detail_limit': 6,
+    }]}))
+    row = dict.fromkeys(direct.FIELDS, '')
+    row.update(
+        offerKey='moppy-test',
+        game='テストゲーム',
+        site='moppy',
+        reward='600',
+        condition='既存要約',
+        platform='Android',
+        updatedAt='2026-08-31',
+        url=MOPPY_URL,
+        sourceUrl=MOPPY_URL,
+        verified='true',
+    )
+    direct.write_published([row])
+    direct.POLICY.with_name('approved_offer_baselines.json').write_text(json.dumps({
+        'schemaVersion': 1,
+        'approvals': [{
+            'offerKey': row['offerKey'],
+            'approved': True,
+            'source': 'moppy',
+        }],
+    }))
+    calls = []
+
+    def fetch(url, source):
+        calls.append(url)
+        if fetch_fails:
+            raise HTTPError(url, 404, 'Not Found', {}, None)
+        return moppy_markup, MOPPY_ALT_URL
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
+    before = direct.PUBLISHED.read_bytes()
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+    assert calls == [MOPPY_URL]
+
+    status = json.loads(direct.STATUS.read_text())
+    assert status['refreshedRows'] == status['publishedRewardChanges'] == status['apiCalls'] == 0
+    assert status['games'][0]['comparisonReady'] is False
+    item = json.loads(direct.REVIEW.read_text())['items'][0]
+    if fetch_fails:
+        assert item['reason'] == 'fetch_failed'
+        assert item['error'] == 'http_status_404'
+    else:
+        assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
+        assert item['sourceEvidence']['displayedRewardPoints'] == 600
+        assert item['sourceEvidence']['downstreamTermsRequired'] is True
+        assert item['platformMatches'] is True
