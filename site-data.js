@@ -103,7 +103,21 @@
         .map((row) => normalizeOffer(row, "published"))
         .filter((offer) => offer.gameName && offer.verified && offer.reward > 0);
     } catch (error) {
-      console.info("検証済み案件データはまだありません。旧データへフォールバックします。", error.message);
+      console.info("検証済み案件データはまだありません。", error.message);
+    }
+
+    let managedGames;
+    try {
+      const policy = await fetchJson("config/refresh_policy.json");
+      managedGames = new Set(Object.keys(policy?.games || {}));
+    } catch (error) {
+      console.info("更新ポリシーを確認できないため、旧案件データは表示しません。", error.message);
+      return {
+        offers: publishedRows,
+        publishedCount: publishedRows.length,
+        legacyCount: 0,
+        usingPublished: publishedRows.length > 0
+      };
     }
 
     let legacyRows = [];
@@ -112,11 +126,13 @@
         .map((row) => normalizeOffer(row, "legacy"))
         .filter((offer) => offer.gameName && offer.reward > 0);
     } catch (error) {
-      console.error("旧案件データの読み込みにも失敗しました", error);
+      console.error("旧案件データの読み込みに失敗しました", error);
     }
 
     const verifiedGames = new Set(publishedRows.map((offer) => offer.gameName));
-    const legacyOnly = legacyRows.filter((offer) => !verifiedGames.has(offer.gameName));
+    const legacyOnly = legacyRows.filter((offer) =>
+      !managedGames.has(offer.gameName) && !verifiedGames.has(offer.gameName)
+    );
 
     return {
       offers: [...publishedRows, ...legacyOnly],
