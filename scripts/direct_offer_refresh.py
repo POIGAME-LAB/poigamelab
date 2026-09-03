@@ -53,7 +53,9 @@ def source_host_allowed(url, source):
         return False
     host = (parsed.hostname or "").lower()
     domains = [str(x).lower().strip() for x in (source.get("search_domains") or []) if str(x).strip()]
-    return any(host == d or host.endswith("." + d) for d in domains)
+    # Every allowed host must be registered explicitly. Listing an apex domain
+    # must not implicitly trust arbitrary sibling subdomains.
+    return host in domains
 
 class FirstPartyRedirectHandler(HTTPRedirectHandler):
     def __init__(self, source):
