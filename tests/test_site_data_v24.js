@@ -59,6 +59,13 @@ function makeContext(fetchImpl) {
   assert.ok(api.safeHttpUrl('https://example.com/path').startsWith('https://example.com/path'));
   assert.strictEqual(api.escapeHtml('<script>'), '&lt;script&gt;');
 
+  const indexSource = fs.readFileSync('index.html', 'utf8');
+  const gameSource = fs.readFileSync('game.html', 'utf8');
+  assert.ok(indexSource.includes('POIGAME_DATA.isOfferFresh'));
+  assert.ok(gameSource.includes('POIGAME_DATA.isOfferFresh'));
+  assert.ok(gameSource.includes('row.classList.add("inactive-row")'));
+  assert.ok(gameSource.includes('class="stale-note"'));
+
   // The real revised CSV must survive the same reader used by game.html.
   const actualCsv = fs.readFileSync('data/published_offers.csv', 'utf8');
   const actualRows = api.rowsToObjects(api.parseCsv(actualCsv));
