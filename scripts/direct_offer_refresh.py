@@ -8,7 +8,7 @@ import re
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qs, urljoin, urlparse
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -219,6 +219,43 @@ def exact_url_key(url):
         return ""
     return p._replace(fragment="").geturl()
 
+def offer_identity_key(url, source_id):
+    """Stable first-party offer identity across harmless URL variants.
+
+    Point sites commonly move the same offer between www/ssl hosts or add
+    navigation query parameters. Prefer the site's stable numeric offer ID
+    when present, then fall back to well-known numeric detail paths.
+    """
+    exact = exact_url_key(url)
+    if not exact:
+        return ""
+    try:
+        p = urlparse(exact)
+        query = parse_qs(p.query, keep_blank_values=False)
+    except Exception:
+        return f"{source_id}:url:{exact}"
+
+    for key in ("point_id", "site_id", "itemid", "campaign_id", "campaignid", "id"):
+        values = query.get(key) or []
+        if values:
+            value = str(values[0]).strip()
+            if value:
+                return f"{source_id}:{key}:{value}"
+
+    path = p.path or ""
+    for pattern in (
+        r"/ad_details/(\d+)",
+        r"/campaigns/details/(\d+)",
+        r"/item/detail/itemid/(\d+)",
+        r"/shopping/(\d+)",
+        r"/service/item/(\d+)",
+    ):
+        m = re.search(pattern, path, re.I)
+        if m:
+            return f"{source_id}:pathid:{m.group(1)}"
+
+    return f"{source_id}:url:{exact}"
+
 def inspect_detail(url, source, aliases):
     raw, final_url = fetch_first_party(url, source)
     text = visible_text(raw)
@@ -252,9 +289,14 @@ def main():
         return 2
 
     rows = read_published()
-    row_by_url = {
-        (str(r.get("game") or ""), str(r.get("site") or ""), exact_url_key(r.get("url"))): r
-        for r in rows if r.get("url")
+    row_by_identity = {
+        (
+            str(r.get("game") or ""),
+            str(r.get("site") or ""),
+            offer_identity_key(r.get("url"), str(r.get("site") or "")),
+        ): r
+        for r in rows
+        if r.get("url") and offer_identity_key(r.get("url"), str(r.get("site") or ""))
     }
     changed = 0  # kept for status compatibility; scheduled mode never changes reward values
     touched = set()
@@ -307,7 +349,16 @@ def main():
                 except Exception as e:
                     listing_errors.append(str(e)[:220])
             urls.extend(discovered)
-            urls = list(dict.fromkeys(exact_url_key(x) for x in urls if exact_url_key(x)))
+            deduped_urls = []
+            seen_identities = set()
+            for candidate_url in urls:
+                exact = exact_url_key(candidate_url)
+                identity = offer_identity_key(exact, source_id)
+                if not exact or not identity or identity in seen_identities:
+                    continue
+                seen_identities.add(identity)
+                deduped_urls.append(exact)
+            urls = deduped_urls
 
             source_result = {
                 "source": source_id,
@@ -348,8 +399,8 @@ def main():
                     continue
 
                 source_result["confirmedOffers"] += 1
-                key = (game, source_id, exact_url_key(url))
-                existing = row_by_url.get(key)
+                key = (game, source_id, offer_identity_key(url, source_id))
+                existing = row_by_identity.get(key)
                 if existing is None:
                     review.append({
                         "game": game, "source": source_id, "url": detail["url"],

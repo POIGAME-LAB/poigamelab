@@ -29,7 +29,7 @@ def test_reward_change_is_review_only_not_auto_publish(tmp_path, monkeypatch):
         'known_urls_by_source':{'warau':['https://www.warau.jp/detail?id=1']}
     }]},ensure_ascii=False),encoding='utf-8')
     direct.SOURCES.write_text(json.dumps({'sources':[{
-        'id':'warau','search_domains':['warau.jp','www.warau.jp'],'mobile':True,
+        'id':'warau','search_domains':['warau.jp','www.warau.jp','ssl.warau.jp'],'mobile':True,
         'direct_listing_urls':[],'direct_detail_url_hints':['/detail']
     }]},ensure_ascii=False),encoding='utf-8')
 
@@ -67,6 +67,7 @@ def test_same_reward_refreshes_freshness(tmp_path, monkeypatch):
     direct.SOURCES=tmp_path/'config/point_sources.json'
     direct.PUBLISHED=tmp_path/'data/published_offers.csv'
     direct.STATUS=tmp_path/'data/comparison_refresh_status.json'
+    direct.LEGACY_STATUS=tmp_path/'data/refresh_status.json'
     direct.REVIEW=tmp_path/'data/comparison_review_queue.json'
 
     direct.POLICY.write_text(json.dumps({
@@ -77,7 +78,7 @@ def test_same_reward_refreshes_freshness(tmp_path, monkeypatch):
     direct.TARGETS.write_text(json.dumps({'games':[{
         'game':'メメントモリ',
         'aliases':['MementoMori'],
-        'known_urls_by_source':{'warau':['https://www.warau.jp/detail?id=2']}
+        'known_urls_by_source':{'warau':['https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975']}
     }]},ensure_ascii=False),encoding='utf-8')
     direct.SOURCES.write_text(json.dumps({'sources':[{
         'id':'warau','search_domains':['warau.jp','www.warau.jp'],'mobile':True,
@@ -91,8 +92,8 @@ def test_same_reward_refreshes_freshness(tmp_path, monkeypatch):
             'offerKey':'m','game':'メメントモリ','site':'warau','provider':'',
             'reward':'12050','condition':'ok','platform':'Android','type':'StepUp',
             'deadline':'','updatedAt':'2026-09-01',
-            'url':'https://www.warau.jp/detail?id=2',
-            'sourceUrl':'https://www.warau.jp/detail?id=2','verified':'true'
+            'url':'https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975',
+            'sourceUrl':'https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975','verified':'true'
         })
 
     def fake_fetch(url, source, timeout=15, max_bytes=1200000):
@@ -106,3 +107,14 @@ def test_same_reward_refreshes_freshness(tmp_path, monkeypatch):
     status=json.loads(direct.STATUS.read_text(encoding='utf-8'))
     assert status['apiCalls']==0
     assert status['refreshedRows']==1
+
+def test_offer_identity_ignores_warau_host_and_navigation_params():
+    a=direct.offer_identity_key(
+        'https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975',
+        'warau'
+    )
+    b=direct.offer_identity_key(
+        'https://www.warau.jp/contents/point/pointEntrance.php?page=2&point_id=205975&sort=relation',
+        'warau'
+    )
+    assert a==b=='warau:point_id:205975'
