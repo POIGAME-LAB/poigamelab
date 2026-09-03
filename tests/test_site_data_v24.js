@@ -34,9 +34,19 @@ function makeContext(fetchImpl) {
     'game,site,provider,reward,condition,platform,type,deadline,updatedAt,url,sourceUrl,verified',
     'Township,moppy,,8000,旧案件,iOS|Android,通常,,2026-08-29,https://moppy.jp/,https://moppy.jp/,false',
     'メメントモリ,coincome,,7200,旧案件,iOS|Android,通常,,2026-08-29,https://cimcome.jp/,https://cimcome.jp/,false',
+    '未管理ゲーム,coincome,,555,旧参考案件,iOS,通常,,2026-08-29,https://cimcome.jp/,https://cimcome.jp/,false',
   ].join('\n');
+  const policy = {
+    games: {
+      Township: { enabled: true },
+      'メメントモリ': { enabled: true }
+    }
+  };
 
   const apiMerge = makeContext(async (path) => {
+    if (path.includes('refresh_policy')) {
+      return { ok: true, status: 200, json: async () => policy };
+    }
     const text = path.includes('published') ? published : legacy;
     return { ok: true, status: 200, text: async () => text };
   });
@@ -45,15 +55,33 @@ function makeContext(fetchImpl) {
   assert.strictEqual(merged.legacyCount, 1);
   assert.strictEqual(merged.offers.length, 2);
   assert.strictEqual(merged.offers.find(x => x.gameName === 'Township').reward, 16760);
-  assert.strictEqual(merged.offers.find(x => x.gameName === 'メメントモリ').verified, false);
+  assert.strictEqual(merged.offers.some(x => x.gameName === 'メメントモリ'), false);
+  assert.strictEqual(merged.offers.find(x => x.gameName === '未管理ゲーム').verified, false);
 
   const apiFallback = makeContext(async (path) => {
+    if (path.includes('refresh_policy')) {
+      return { ok: true, status: 200, json: async () => policy };
+    }
     if (path.includes('published')) return { ok: false, status: 404, text: async () => '' };
     return { ok: true, status: 200, text: async () => legacy };
   });
   const fallback = await apiFallback.loadOffersWithFallback();
   assert.strictEqual(fallback.publishedCount, 0);
-  assert.strictEqual(fallback.legacyCount, 2);
+  assert.strictEqual(fallback.legacyCount, 1);
+  assert.strictEqual(fallback.offers.length, 1);
+  assert.strictEqual(fallback.offers[0].gameName, '未管理ゲーム');
+
+  const apiPolicyFailClosed = makeContext(async (path) => {
+    if (path.includes('refresh_policy')) {
+      return { ok: false, status: 500, json: async () => ({}) };
+    }
+    const text = path.includes('published') ? published : legacy;
+    return { ok: true, status: 200, text: async () => text };
+  });
+  const policyFailClosed = await apiPolicyFailClosed.loadOffersWithFallback();
+  assert.strictEqual(policyFailClosed.publishedCount, 1);
+  assert.strictEqual(policyFailClosed.legacyCount, 0);
+  assert.strictEqual(policyFailClosed.offers.length, 1);
 
   assert.strictEqual(api.safeHttpUrl('javascript:alert(1)'), '');
   assert.ok(api.safeHttpUrl('https://example.com/path').startsWith('https://example.com/path'));
@@ -62,6 +90,19 @@ function makeContext(fetchImpl) {
   // The real revised CSV must survive the same reader used by game.html.
   const actualCsv = fs.readFileSync('data/published_offers.csv', 'utf8');
   const actualRows = api.rowsToObjects(api.parseCsv(actualCsv));
+  const endedWarauIds = new Set(['205975', '206035', '205389', '205390']);
+  assert.strictEqual(actualRows.some(row =>
+    row.site === 'warau' && [...endedWarauIds].some(id => String(row.url || '').includes(`point_id=${id}`))
+  ), false);
+
+  const targets = JSON.parse(fs.readFileSync('config/game_targets.json', 'utf8')).games;
+  for (const gameName of ['メメントモリ', 'ホワイトアウト・サバイバル']) {
+    const target = targets.find(item => item.game === gameName);
+    const warauUrls = ((target.known_urls_by_source || {}).warau || []);
+    assert.strictEqual(warauUrls.some(url =>
+      [...endedWarauIds].some(id => String(url).includes(`point_id=${id}`))
+    ), false);
+  }
   const candidateKeys = JSON.parse(fs.readFileSync('data/warau_baseline_candidates.json', 'utf8'))
     .candidates.map(candidate => candidate.offerKey);
   const selectedRows = actualRows.filter(row => candidateKeys.includes(row.offerKey));
