@@ -511,7 +511,7 @@ def test_warau_structured_review_is_not_a_publication(warau_markup, monkeypatch)
     direct.TARGETS.write_text(json.dumps({'games': [{'game': 'テストゲーム',
         'known_urls_by_source': {'warau': [WARAU_URL]}}]}))
     direct.SOURCES.write_text(json.dumps({'sources': [{'id': 'warau',
-        'search_domains': ['warau.jp'], 'direct_listing_urls': []}]}))
+        'search_domains': ['warau.jp', 'www.warau.jp', 'ssl.warau.jp'], 'direct_listing_urls': []}]}))
     row = dict.fromkeys(direct.FIELDS, '')
     row.update(offerKey='test', game='テストゲーム', site='warau', platform='Android',
                reward='300', condition='以前の条件', updatedAt='2026-01-01', url=WARAU_URL, verified='true')
@@ -536,7 +536,7 @@ def approved_case(warau_markup, monkeypatch):
     direct.TARGETS.write_text(json.dumps({'games': [{'game': 'テストゲーム',
         'known_urls_by_source': {'warau': [WARAU_URL]}}]}))
     direct.SOURCES.write_text(json.dumps({'sources': [{'id': 'warau',
-        'search_domains': ['warau.jp'], 'direct_listing_urls': []}]}))
+        'search_domains': ['warau.jp', 'www.warau.jp', 'ssl.warau.jp'], 'direct_listing_urls': []}]}))
     row = dict.fromkeys(direct.FIELDS, '')
     row.update(offerKey='approved', game='テストゲーム', site='warau', platform='iOS',
                reward='300', condition='審査済みの条件要約', type='StepUp', updatedAt='2026-09-01',
@@ -877,7 +877,7 @@ def test_chobirich_is_review_only_even_with_an_approval_record(chobi_markup, mon
         'minimumConfirmedSourcesForComparison':2, 'games':{'テストゲーム':{'enabled':True}}}))
     direct.TARGETS.write_text(json.dumps({'games':[{'game':'テストゲーム'}]}))
     direct.SOURCES.write_text(json.dumps({'sources':[{'id':'chobirich',
-        'search_domains':['chobirich.com'], 'direct_listing_urls':[]}]}))
+        'search_domains':['chobirich.com','www.chobirich.com'], 'direct_listing_urls':[]}]}))
     row = dict.fromkeys(direct.FIELDS, '')
     row.update(offerKey='chobi-test', game='テストゲーム', site='chobirich', platform='不明',
         reward='600', condition='以前の要約', updatedAt='2026-08-31', url=CHOBI_URL, sourceUrl=CHOBI_URL, verified='true')
