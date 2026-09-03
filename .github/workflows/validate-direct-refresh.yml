@@ -8,6 +8,7 @@ on:
       - "config/refresh_policy.json"
       - "config/game_targets.json"
       - "config/point_sources.json"
+      - "config/offerwall_providers.json"
       - "config/approved_offer_baselines.json"
       - "data/published_offers.csv"
       - "data/warau_baseline_candidates.json"
