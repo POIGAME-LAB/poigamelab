@@ -41,8 +41,8 @@ function makeContext(fetchImpl) {
   }, { staleAfterHours: 48 }, now);
   assert.strictEqual(stale['Township'].state, 'stale');
 
-  const offerFreshNow = Date.parse('2026-09-01T14:59:59Z');
-  const offerStaleNow = Date.parse('2026-09-01T15:00:01Z');
+  const offerFreshNow = Date.parse('2026-08-31T14:59:59Z');
+  const offerStaleNow = Date.parse('2026-08-31T15:00:01Z');
   const datedOffer = { verified: true, updatedAt: '2026-08-30' };
   assert.strictEqual(api.isOfferFresh(datedOffer, 48, offerFreshNow), true);
   assert.strictEqual(api.isOfferFresh(datedOffer, 48, offerStaleNow), false);
