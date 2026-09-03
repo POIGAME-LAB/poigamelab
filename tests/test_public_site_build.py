@@ -1,7 +1,9 @@
 import importlib.util
 import json
 import shutil
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 import pytest
 
@@ -13,6 +15,34 @@ SPEC = importlib.util.spec_from_file_location(
 builder = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
 SPEC.loader.exec_module(builder)
+
+
+class LocalReferenceParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.references = []
+
+    def handle_starttag(self, tag, attrs):
+        for key, value in attrs:
+            if key in {"href", "src"} and value:
+                self.references.append((tag, key, value))
+
+
+def local_reference_target(page: Path, reference: str):
+    raw = reference.strip()
+    if not raw or raw.startswith(("#", "data:", "mailto:", "tel:", "javascript:", "//")):
+        return None
+    if "$" + "{" in raw or "{{" in raw:
+        return None
+    parsed = urlsplit(raw)
+    if parsed.scheme or parsed.netloc:
+        return None
+    if parsed.path.startswith("/"):
+        raise AssertionError(f"root-relative reference breaks project Pages: {page.name}: {raw}")
+    path = unquote(parsed.path)
+    if not path:
+        return page
+    return (page.parent / path).resolve()
 
 
 @pytest.fixture
@@ -108,3 +138,31 @@ def test_builder_rejects_unsafe_output_locations(tmp_path):
         builder.build_public_site(ROOT)
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(tmp_path / "outside")
+
+
+def test_all_static_local_html_references_exist_in_public_artifact(output_dir):
+    builder.build_public_site(output_dir)
+    output_root = output_dir.resolve()
+    failures = []
+
+    for page in sorted(output_dir.rglob("*.html")):
+        parser = LocalReferenceParser()
+        parser.feed(page.read_text(encoding="utf-8"))
+        for tag, attribute, reference in parser.references:
+            try:
+                target = local_reference_target(page, reference)
+            except AssertionError as error:
+                failures.append(str(error))
+                continue
+            if target is None:
+                continue
+            if output_root not in target.parents and target != output_root:
+                failures.append(f"reference escapes artifact: {page.name}: {reference}")
+                continue
+            if not target.exists():
+                failures.append(
+                    f"missing local {tag}[{attribute}] target: "
+                    f"{page.relative_to(output_dir)} -> {reference}"
+                )
+
+    assert failures == []
