@@ -1491,3 +1491,15 @@ def test_repository_coincome_uses_listing_only_scheduled_discovery(monkeypatch):
     assert coincome['scheduled_known_detail_fetch_enabled'] is False
     assert 'listing' in coincome['scheduled_known_detail_fetch_reason'].lower()
     assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
+
+
+def test_repository_mementomori_moppy_review_targets_use_current_45_day_pair():
+    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
+    memo = next(item for item in targets if item['game'] == 'メメントモリ')
+    urls = memo['known_urls_by_source']['moppy']
+    by_id = {direct.moppy_offer_id(url): url for url in urls}
+    assert set(by_id) == {'160690', '160688'}
+
+    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
+    published = [row for row in rows if row['game'] == 'メメントモリ' and row['site'] == 'moppy']
+    assert published == []
