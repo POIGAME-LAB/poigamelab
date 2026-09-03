@@ -34,6 +34,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add data/published_offers.csv
           if [ -f data/comparison_refresh_status.json ]; then git add data/comparison_refresh_status.json; fi
+          if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
           if [ -f data/comparison_review_queue.json ]; then git add data/comparison_review_queue.json; fi
           git diff --cached --quiet || git commit -m "chore: check comparison offers"
           git pull --rebase
