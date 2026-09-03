@@ -9,8 +9,8 @@
       ],
       "known_urls_by_source": {
         "warau": [
-          "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975",
-          "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206035"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035"
         ],
         "moppy": [
           "https://pc.moppy.jp/ad/detail.php?site_id=160690",
@@ -95,8 +95,8 @@
           "https://pc.moppy.jp/ad/detail.php?site_id=160371"
         ],
         "warau": [
-          "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205389",
-          "https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205390"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205389",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205390"
         ]
       }
     }
