@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   candidate-review:
-    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'review/warau-live-candidates-20260903-r2'
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'review/warau-live-candidates-20260903-r3'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
