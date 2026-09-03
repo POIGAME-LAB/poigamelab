@@ -43,18 +43,3 @@ jobs:
             tests/test_direct_offer_refresh_v1.py \
             tests/test_phase2_auto_refresh_v23.py \
             tests/test_phase2_multigame.py
-
-      - name: One-time live first-party smoke check
-        run: |
-          python scripts/direct_offer_refresh.py
-          python - <<'PY'
-          import collections, json
-          from pathlib import Path
-          status=json.loads(Path("data/comparison_refresh_status.json").read_text())
-          review=json.loads(Path("data/comparison_review_queue.json").read_text())
-          print("apiCalls =", status.get("apiCalls"))
-          for g in status.get("games", []):
-              print(g["game"], "confirmed", f'{g.get("standardConfirmed",0)}/{g.get("standardTotal",0)}', "ready", g.get("comparisonReady"))
-          reasons=collections.Counter(x.get("reason") for x in review.get("items", []))
-          print("review reasons =", dict(reasons))
-          PY
