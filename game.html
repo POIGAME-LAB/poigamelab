@@ -190,6 +190,15 @@
   background: #fbfaff;
 }
 
+.stale-note {
+  display: inline-block;
+  margin-top: 4px;
+  color: #756f80;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .offer-link {
   display: inline-block;
   padding: 8px 14px;
@@ -545,11 +554,14 @@
         if (tableBody) {
           tableBody.innerHTML = "";
           const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+          const currentOffers = sortedOffers.filter((offer) =>
+            POIGAME_DATA.isOfferFresh(offer, dataHealth.staleAfterHours || 48)
+          );
 
-          if (sortedOffers.length > 0) {
-            const bestOffer = sortedOffers[0];
+          if (currentOffers.length > 0) {
+            const bestOffer = currentOffers[0];
             document.getElementById("bestReward").textContent =
-              `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
+              `${bestOffer.reward.toLocaleString()}円`;
             document.getElementById("bestSite").textContent =
               `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
 
@@ -582,9 +594,16 @@
             const row = document.createElement("tr");
             const siteName = pointSites[offer.site] || offer.site;
             const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
+            const isCurrent = POIGAME_DATA.isOfferFresh(
+              offer, dataHealth.staleAfterHours || 48
+            );
+            if (!isCurrent) row.classList.add("inactive-row");
             const rowHealth = POIGAME_DATA.getOfferHealthLabel(offer, gameHealth);
             const labelClass = rowHealth.state === "legacy" ? "legacy-label" : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
             const verifyLabel = `<br><small class="${labelClass}">${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>`;
+            const staleNote = !isCurrent
+              ? `<br><small class="stale-note">参考掲載</small>`
+              : "";
 
             row.innerHTML = `
               <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
@@ -592,7 +611,7 @@
               <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
               <td>${POIGAME_DATA.escapeHtml(offer.platform.join(" / "))}</td>
               <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
+              <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}${staleNote}</td>
               <td>
                 ${safeUrl
                   ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
