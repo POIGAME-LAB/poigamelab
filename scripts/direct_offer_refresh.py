@@ -1132,7 +1132,6 @@ def main():
                     source_result["reviewRequired"] += 1
                     continue
 
-                existing = row_by_identity.get(key)
                 if existing is None:
                     review.append({
                         "game": game, "source": source_id, "url": detail["url"],
