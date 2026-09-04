@@ -19,6 +19,8 @@ ROOT_FILES = (
     "tokyo-debunker-guide.html",
     "puzzles-survival-guide.html",
     "kingshot-guide.html",
+    "houchishojo-guide.html",
+    "evertale-guide.html",
     "data-status.html",
     "about.html",
     "privacy.html",
