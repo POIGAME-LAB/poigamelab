@@ -300,30 +300,4 @@
     if (event.key === "Escape") setOpen(false);
   });
 
-  const guideGameByFile = {
-    "township-lv60.html": "Township",
-    "township-lv70.html": "Township",
-    "kinoko-guide.html": "きのこ伝説",
-    "mementomori-guide.html": "メメントモリ",
-    "working-heroes-guide.html": "ワーキングヒーロー",
-    "whiteout-survival-guide.html": "ホワイトアウト・サバイバル",
-    "tokyo-debunker-guide.html": "東京ディバンカー",
-    "puzzles-survival-guide.html": "パズル＆サバイバル",
-    "kingshot-guide.html": "キングショット",
-    "houchishojo-guide.html": "放置少女",
-    "evertale-guide.html": "エバーテイル"
-  };
-
-  const guideGame = guideGameByFile[filename];
-  if (guideGame) {
-    const bar = document.createElement("div");
-    bar.className = "poigame-context-bar";
-    bar.innerHTML = `
-      <div class="poigame-context-bar__inner">
-        <span>${guideGame} 攻略ガイド</span>
-        <a href="game.html?game=${encodeURIComponent(guideGame)}">案件を比較する →</a>
-      </div>
-    `;
-    root.insertAdjacentElement("afterend", bar);
-  }
 })();
