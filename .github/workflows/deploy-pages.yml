@@ -36,6 +36,7 @@ jobs:
             tests/test_direct_offer_refresh_v1.py \
             tests/test_warau_baseline_candidates.py \
             tests/test_public_site_build.py \
+            tests/test_offer_history.py \
             tests/test_phase2_auto_refresh_v23.py \
             tests/test_phase2_multigame.py
           node tests/test_site_data_v24.js
