@@ -24,7 +24,7 @@ class LocalReferenceParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         for key, value in attrs:
-            if key in {"href", "src"} and value:
+            if key in {"href", "src", "data-experience-src"} and value:
                 self.references.append((tag, key, value))
 
 
@@ -78,6 +78,10 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "data/offer_history.csv",
         "data/refresh_status.json",
         "data/exception_queue.json",
+        "data/guide-experiences/kinoko.json",
+        "data/guide-experiences/mementomori.json",
+        "data/guide-experiences/whiteout-survival.json",
+        "data/guide-experiences/working-heroes.json",
         "config/refresh_policy.json",
     }
     assert required <= copied_set
@@ -105,6 +109,10 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "data/offer_history.csv",
         "data/refresh_status.json",
         "data/exception_queue.json",
+        "data/guide-experiences/kinoko.json",
+        "data/guide-experiences/mementomori.json",
+        "data/guide-experiences/whiteout-survival.json",
+        "data/guide-experiences/working-heroes.json",
     }
     assert {p for p in copied_set if p.startswith("config/")} == {
         "config/refresh_policy.json",
