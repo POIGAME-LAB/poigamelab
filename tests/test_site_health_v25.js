@@ -125,11 +125,34 @@ function makeContext(fetchImpl) {
     );
   }
 
+  const gamesCsvText = fs.readFileSync('games.csv', 'utf8');
+  const gamesRows = api.rowsToObjects(api.parseCsv(gamesCsvText));
+  const gamesByName = new Map(gamesRows.map(row => [row.name, row]));
+
+  for (const gameName of ['Township', 'きのこ伝説']) {
+    const game = gamesByName.get(gameName);
+    assert.ok(game, `missing game row: ${gameName}`);
+    assert.ok(game.overview && game.overview !== '調査中', `missing overview: ${gameName}`);
+    assert.ok(game.days && game.days !== '調査中', `missing pace: ${gameName}`);
+    assert.ok(game.difficulty && game.difficulty !== '調査中', `missing difficulty: ${gameName}`);
+    assert.ok(game.tips && !game.tips.includes('準備中'), `missing tips: ${gameName}`);
+  }
+
   const indexHtml = fs.readFileSync('index.html', 'utf8');
   assert.ok(indexHtml.includes('name="description"'));
   assert.ok(indexHtml.includes('ポイ活ゲーム案件比較・攻略 | POIGAME LAB'));
+  assert.ok(indexHtml.includes('class="game-title-link"'));
+  assert.strictEqual(indexHtml.includes('<div class="image-placeholder">GAME IMAGE</div>'), false);
 
   const gameHtml = fs.readFileSync('game.html', 'utf8');
+  assert.ok(gameHtml.includes('class="os-filter"'));
+  assert.ok(gameHtml.includes('data-platform="iOS"'));
+  assert.ok(gameHtml.includes('data-platform="Android"'));
+  assert.ok(gameHtml.includes('id="offerCards"'));
+  assert.ok(gameHtml.includes('class="section collapsible-section"'));
+  assert.ok(gameHtml.includes('id="gameTips"'));
+  assert.strictEqual(gameHtml.includes('攻略情報は準備中です。'), false);
+  assert.ok(gameHtml.includes('mobile-offer-card'));
   assert.ok(gameHtml.includes('name="description"'));
   assert.ok(gameHtml.includes('現在確認できる案件はありません。'));
 
