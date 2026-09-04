@@ -190,6 +190,20 @@ function makeContext(fetchImpl) {
   assert.ok(contactHtml.includes('https://github.com/POIGAME-LAB/poigamelab/issues/new'));
   assert.ok(contactHtml.includes('個人情報・秘密情報は投稿しないでください'));
 
+  const referralJs = fs.readFileSync('site-referrals.js', 'utf8');
+  assert.ok(referralJs.includes('https://pc.moppy.jp/entry/invite.php?invite=Jh7He170'));
+  assert.ok(referralJs.includes('code: "Jh7He170"'));
+  assert.ok(referralJs.includes('https://www.warau.jp/friend/reg/d5em'));
+  assert.ok(referralJs.includes('code: "d5eo"'));
+  assert.ok(referralJs.includes('https://hapitas.jp/appinvite?i=23001138&route=text'));
+  assert.ok(referralJs.includes('code: "WSOVBE"'));
+
+  const gameReferralHtml = fs.readFileSync('game.html', 'utf8');
+  assert.ok(gameReferralHtml.includes('src="site-referrals.js"'));
+  assert.ok(gameReferralHtml.includes('このサイトに登録［PR］'));
+  assert.ok(gameReferralHtml.includes('rel="sponsored noopener noreferrer"'));
+  assert.ok(gameReferralHtml.includes('この案件を見る'));
+
   const footerJs = fs.readFileSync('site-footer.js', 'utf8');
   for (const path of ['about.html', 'privacy.html', 'contact.html']) {
     assert.ok(footerJs.includes(path), `footer missing link: ${path}`);
