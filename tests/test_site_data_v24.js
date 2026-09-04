@@ -169,6 +169,24 @@ function makeContext(fetchImpl) {
   assert.strictEqual(warauTrend.changeAmount, -5000);
   assert.ok(Math.abs(warauTrend.fromPreviousHighPercent - (-20)) < 0.001);
 
+  const gameTrendHistory = [
+    { observedAt: '2026-09-01T00:00:00Z', game: 'Game X', site: 'warau', platform: 'Android', reward: 11500 },
+    { observedAt: '2026-09-02T00:00:00Z', game: 'Game X', site: 'warau', platform: 'Android', reward: 12500 },
+    { observedAt: '2026-09-03T00:00:00Z', game: 'Other Game', site: 'warau', platform: 'Android', reward: 5000 },
+  ];
+  const endedGameTrend = api.buildGameRewardTrend(gameTrendHistory, [], 'Game X', 'Android');
+  assert.strictEqual(endedGameTrend.available, false);
+  assert.strictEqual(endedGameTrend.currentReward, 0);
+  assert.strictEqual(endedGameTrend.previousReward, 12500);
+  assert.strictEqual(endedGameTrend.previousHigh, 12500);
+  assert.strictEqual(endedGameTrend.changeAmount, -12500);
+  assert.strictEqual(endedGameTrend.changePercent, -100);
+  assert.strictEqual(endedGameTrend.fromPreviousHighPercent, -100);
+  assert.deepStrictEqual(
+    Array.from(endedGameTrend.changes).map(item => item.reward),
+    [11500, 12500, 0]
+  );
+
   const actualHistory = api.rowsToObjects(api.parseCsv(fs.readFileSync('data/offer_history.csv', 'utf8')));
   assert.ok(actualHistory.length > 0);
   assert.ok(actualHistory.some(row =>
