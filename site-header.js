@@ -169,6 +169,7 @@
       }
 
       .poigame-mobile-menu-dialog__panel {
+        box-sizing: border-box;
         position: absolute;
         top: calc(env(safe-area-inset-top, 0px) + 78px);
         right: 14px;
