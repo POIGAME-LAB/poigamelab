@@ -440,3 +440,18 @@ def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
     assert 'aria-controls="poigame-mobile-menu"' in header_js
     assert 'document.body.style.overflow = open ? "hidden" : "";' in header_js
     assert 'z-index: 2147483001' not in header_js
+
+
+
+def test_homepage_does_not_hide_shared_mobile_nav(output_dir):
+    builder.build_public_site(output_dir)
+    html = (output_dir / "index.html").read_text(encoding="utf-8")
+
+    assert "\n    nav {\n" not in html
+    assert "\n    nav a {\n" not in html
+    assert "\n      nav {\n        display: none;\n      }" not in html
+
+    assert "header nav {" in html
+    assert "header nav a {" in html
+    assert "header nav {\n        display: none;" in html
+    assert 'src="site-header.js?v=20260905-0315"' in html
