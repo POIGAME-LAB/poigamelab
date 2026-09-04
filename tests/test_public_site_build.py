@@ -131,6 +131,9 @@ def test_public_artifact_is_self_contained_for_current_managed_games(output_dir)
         "メメントモリ",
         "ワーキングヒーロー",
         "ホワイトアウト・サバイバル",
+        "東京ディバンカー",
+        "パズル＆サバイバル",
+        "キングショット",
     }
 
     site_data = (output_dir / "site-data.js").read_text()
