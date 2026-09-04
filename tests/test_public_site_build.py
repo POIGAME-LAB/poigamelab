@@ -225,7 +225,23 @@ def test_every_catalog_game_has_published_guide_mapping(output_dir):
     games = list(csv.DictReader((output_dir / "games.csv").open(encoding="utf-8", newline="")))
     guide_text = (output_dir / "site-guides.js").read_text(encoding="utf-8")
 
-    mapped_games = set(re.findall(r'^  "([^"]+)": \\{$', guide_text, flags=re.MULTILINE))
+    mapped_games = set(re.findall(r'^  "([^"]+)": \{
+    catalog_games = {row["name"] for row in games}
+
+    assert mapped_games == catalog_games
+
+    hrefs = re.findall(r'href: "([^"]+)"', guide_text)
+    assert hrefs
+    for href in hrefs:
+        assert not href.startswith("/")
+        assert (output_dir / href).is_file(), f"missing guide target: {href}"
+
+    for game in catalog_games:
+        assert f'game.html?game={game}' in (output_dir / next(
+            href for href in hrefs
+            if game in (output_dir / href).read_text(encoding="utf-8")
+        )).read_text(encoding="utf-8")
+, guide_text, flags=re.MULTILINE))
     catalog_games = {row["name"] for row in games}
 
     assert mapped_games == catalog_games
