@@ -400,3 +400,27 @@ def test_game_detail_exposes_guide_cta_near_top(output_dir):
     assert 'id="gameTopGuideLinks"' in html
     assert 'id="comparison"' in html
     assert 'id="gameArtwork"' in html
+
+
+
+def test_every_catalog_game_has_a_published_visual(output_dir):
+    builder.build_public_site(output_dir)
+
+    import csv
+
+    games = list(csv.DictReader(
+        (output_dir / "games.csv").open(encoding="utf-8", newline="")
+    ))
+    assert games
+
+    images = []
+    for row in games:
+        image = str(row.get("image") or "").strip()
+        assert image, f'missing visual for {row.get("name")}'
+        assert image.startswith("assets/game-art/")
+        target = output_dir / image
+        assert target.is_file(), f"missing published game visual: {image}"
+        assert target.suffix.lower() == ".svg"
+        images.append(image)
+
+    assert len(images) == len(set(images))
