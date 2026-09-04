@@ -684,48 +684,10 @@
       <div class="collapsible-content">
         <p id="gameTips">読み込み中</p>
 
-      <div id="townshipGuideCta" class="guide-cta">
-        <strong>Township攻略</strong>
-        <p>目標レベル別に、実際の進捗データと攻略の優先ポイントをまとめています。</p>
-        <div class="guide-links">
-          <a href="township-lv60.html">Lv60攻略を読む →</a>
-          <a href="township-lv70.html">Lv70攻略を読む →</a>
-        </div>
-      </div>
-
-
-
-      <div id="kinokoGuideCta" class="guide-cta">
-        <strong>きのこ伝説 ポイ活攻略</strong>
-        <p>Lv100・120・125系案件の到達ペースと、実際のプレイヤー進捗をまとめました。</p>
-        <div class="guide-links">
-          <a href="kinoko-guide.html">攻略を読む →</a>
-        </div>
-      </div>
-
-
-      <div id="mementomoriGuideCta" class="guide-cta">
-        <strong>メメントモリ ポイ活攻略</strong>
-        <p>ランク110・140系案件の到達ペースと、実際のプレイヤー進捗をまとめました。</p>
-        <div class="guide-links">
-          <a href="mementomori-guide.html">攻略を読む →</a>
-        </div>
-      </div>
-
-      <div id="workingHeroesGuideCta" class="guide-cta">
-        <strong>ワーキングヒーローズ ポイ活攻略</strong>
-        <p>現行StepUpと仕様変更をまたいだ実プレイヤー進捗を分けてまとめました。</p>
-        <div class="guide-links">
-          <a href="working-heroes-guide.html">攻略を読む →</a>
-        </div>
-      </div>
-
-      <div id="whiteoutGuideCta" class="guide-cta">
-        <strong>ホワイトアウト・サバイバル ポイ活攻略</strong>
-        <p>大溶鉱炉Lv23・26の到達ペースと、25日案件の続行判断を実プレイヤー進捗からまとめました。</p>
-        <div class="guide-links">
-          <a href="whiteout-survival-guide.html">詳しい攻略を読む →</a>
-        </div>
+      <div id="gameGuideCta" class="guide-cta">
+        <strong id="gameGuideTitle">ポイ活攻略</strong>
+        <p id="gameGuideDescription">詳しい攻略情報をまとめています。</p>
+        <div id="gameGuideLinks" class="guide-links"></div>
       </div>
       </div>
     </details>
@@ -735,6 +697,7 @@
   <script src="games.js"></script>
   <script src="site-data.js"></script>
   <script src="site-referrals.js"></script>
+  <script src="site-guides.js"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -797,32 +760,25 @@
         const tips = document.getElementById("gameTips");
         if (tips) tips.textContent = game.tips || "攻略情報を整理中です。";
 
-        const townshipGuideCta = document.getElementById("townshipGuideCta");
-        if (townshipGuideCta && game.name === "Township") {
-          townshipGuideCta.style.display = "block";
+        const guideCta = document.getElementById("gameGuideCta");
+        const guideTitle = document.getElementById("gameGuideTitle");
+        const guideDescription = document.getElementById("gameGuideDescription");
+        const guideLinks = document.getElementById("gameGuideLinks");
+        const guide = window.POIGAME_GUIDES?.[game.name];
+
+        if (guideCta && guide && Array.isArray(guide.links) && guide.links.length) {
+          guideTitle.textContent = guide.title || `${game.name} ポイ活攻略`;
+          guideDescription.textContent = guide.description || "詳しい攻略情報をまとめています。";
+          guideLinks.replaceChildren();
+          guide.links.forEach((item) => {
+            if (!item || !item.href || !item.label) return;
+            const link = document.createElement("a");
+            link.href = item.href;
+            link.textContent = item.label;
+            guideLinks.appendChild(link);
+          });
+          guideCta.style.display = "block";
         }
-
-        const kinokoGuideCta = document.getElementById("kinokoGuideCta");
-        if (kinokoGuideCta && game.name === "きのこ伝説") {
-          kinokoGuideCta.style.display = "block";
-        }
-
-
-        const mementomoriGuideCta = document.getElementById("mementomoriGuideCta");
-        if (mementomoriGuideCta && game.name === "メメントモリ") {
-          mementomoriGuideCta.style.display = "block";
-        }
-
-        const workingHeroesGuideCta = document.getElementById("workingHeroesGuideCta");
-        if (workingHeroesGuideCta && game.name === "ワーキングヒーロー") {
-          workingHeroesGuideCta.style.display = "block";
-        }
-
-        const whiteoutGuideCta = document.getElementById("whiteoutGuideCta");
-        if (whiteoutGuideCta && game.name === "ホワイトアウト・サバイバル") {
-          whiteoutGuideCta.style.display = "block";
-        }
-
 
         const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
         const tableBody = document.getElementById("offerTableBody");
