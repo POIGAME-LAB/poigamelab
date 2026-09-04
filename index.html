@@ -519,6 +519,28 @@
   cursor: default;
   pointer-events: none;
 }
+
+.referral-button {
+  display: block;
+  margin-top: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  border: 1px solid #7047ff;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #5f36e8;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.referral-code {
+  display: block;
+  margin-top: 5px;
+  color: #746d80;
+  font-size: 10px;
+  text-align: center;
+}
   .verification-line {
     margin: 8px 0 0;
     font-size: 12px;
@@ -646,6 +668,7 @@
   </main>
   <script src="games.js"></script>
   <script src="site-data.js"></script>
+  <script src="site-referrals.js"></script>
 
 <script>
   async function loadGames() {
@@ -831,6 +854,13 @@
         ? pointSites[bestOffer.site] || bestOffer.site
         : "調査中";
 
+      const referral = bestOffer
+        ? window.POIGAME_REFERRALS?.get(bestOffer.site) || null
+        : null;
+      const safeReferralUrl = referral
+        ? POIGAME_DATA.safeHttpUrl(referral.url)
+        : "";
+
       const card = document.createElement("article");
       card.className = "game-card";
 
@@ -898,6 +928,21 @@
             💰 案件リンク準備中
           </span>
         `
+    }
+
+    ${safeReferralUrl
+      ? `
+        <a
+          href="${safeReferralUrl}"
+          class="referral-button"
+          target="_blank"
+          rel="sponsored noopener noreferrer"
+        >
+          このポイントサイトに登録［PR］
+        </a>
+        <small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referral.code)}</small>
+      `
+      : ""
     }
   </div>
 `;
