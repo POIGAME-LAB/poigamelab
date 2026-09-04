@@ -33,6 +33,25 @@
       "enabled": true,
       "supplementalSources": [],
       "adoptedBy": "V30"
+    },
+    "東京ディバンカー": {
+      "enabled": true,
+      "supplementalSources": [
+        "hapitas"
+      ],
+      "adoptedBy": "V31"
+    },
+    "パズル＆サバイバル": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "V31"
+    },
+    "キングショット": {
+      "enabled": true,
+      "supplementalSources": [
+        "hapitas"
+      ],
+      "adoptedBy": "V31"
     }
   },
   "publication": {
