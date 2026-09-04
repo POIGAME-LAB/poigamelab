@@ -681,7 +681,7 @@
         if (dataHealthBox && gameHealth) {
           dataHealthBox.hidden = false;
           if (gameHealth.state === "fresh") {
-            dataHealthBox.textContent = \`自動更新：正常 ・ \${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}\`;
+            dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
           } else if (gameHealth.state === "degraded" || gameHealth.state === "failed") {
             dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
             dataHealthBox.classList.add("health-warning");
@@ -703,7 +703,7 @@
           const bestReward = document.getElementById("bestReward");
           const bestSite = document.getElementById("bestSite");
           const bestVerified = document.getElementById("bestVerified");
-          const label = platform === "all" ? "最高還元" : (platform === "unknown" ? "OS不明の最高還元" : \`\${platform}の最高還元\`);
+          const label = platform === "all" ? "最高還元" : (platform === "unknown" ? "OS不明の最高還元" : `${platform}の最高還元`);
           if (bestRewardLabel) bestRewardLabel.textContent = label;
 
           if (!offers.length) {
@@ -715,15 +715,15 @@
 
           const bestOffer = offers[0];
           if (bestReward) {
-            bestReward.textContent = \`\${bestOffer.reward.toLocaleString()}円\${bestOffer.verified ? "" : "（参考）"}\`;
+            bestReward.textContent = `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
           }
           if (bestSite) {
-            bestSite.textContent = \`ポイントサイト：\${pointSites[bestOffer.site] || bestOffer.site}\`;
+            bestSite.textContent = `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
           }
           if (bestVerified) {
             const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
             bestVerified.textContent = healthLabel.text;
-            bestVerified.className = \`best-verified \${healthLabel.state}\`;
+            bestVerified.className = `best-verified ${healthLabel.state}`;
           }
         }
 
@@ -753,45 +753,45 @@
             const labelClass = rowHealth.state === "legacy"
               ? "legacy-label"
               : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
-            const verifyLabel = \`<br><small class="\${labelClass}">\${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>\`;
+            const verifyLabel = `<br><small class="${labelClass}">${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>`;
             const platformText = offer.platform.length ? offer.platform.join(" / ") : "不明";
 
             if (tableBody) {
               const row = document.createElement("tr");
-              row.innerHTML = \`
-                <td>\${POIGAME_DATA.escapeHtml(siteName)}</td>
-                <td>\${offer.reward.toLocaleString()}円\${verifyLabel}</td>
-                <td>\${POIGAME_DATA.escapeHtml(offer.condition)}</td>
-                <td>\${POIGAME_DATA.escapeHtml(platformText)}</td>
-                <td>\${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
-                <td>\${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
+              row.innerHTML = `
+                <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
+                <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
+                <td>${POIGAME_DATA.escapeHtml(platformText)}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
                 <td>
-                  \${safeUrl
-                    ? \`<a href="\${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>\`
+                  ${safeUrl
+                    ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
                     : "準備中"}
                 </td>
-              \`;
+              `;
               tableBody.appendChild(row);
             }
 
             if (offerCards) {
               const card = document.createElement("article");
               card.className = "mobile-offer-card";
-              card.innerHTML = \`
+              card.innerHTML = `
                 <div class="mobile-offer-head">
-                  <div class="mobile-offer-site">\${POIGAME_DATA.escapeHtml(siteName)}</div>
-                  <div class="mobile-offer-reward">\${offer.reward.toLocaleString()}円</div>
+                  <div class="mobile-offer-site">${POIGAME_DATA.escapeHtml(siteName)}</div>
+                  <div class="mobile-offer-reward">${offer.reward.toLocaleString()}円</div>
                 </div>
-                <span class="platform-pill">\${POIGAME_DATA.escapeHtml(platformText)}</span>
-                <p class="mobile-offer-condition">\${POIGAME_DATA.escapeHtml(offer.condition)}</p>
+                <span class="platform-pill">${POIGAME_DATA.escapeHtml(platformText)}</span>
+                <p class="mobile-offer-condition">${POIGAME_DATA.escapeHtml(offer.condition)}</p>
                 <div class="mobile-offer-meta">
-                  <span>締切：\${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</span>
-                  <span>更新：\${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
+                  <span>締切：${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</span>
+                  <span>更新：${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
                 </div>
-                \${safeUrl
-                  ? \`<a href="\${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>\`
+                ${safeUrl
+                  ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>`
                   : '<span class="coming-soon">リンク準備中</span>'}
-              \`;
+              `;
               offerCards.appendChild(card);
             }
           });
