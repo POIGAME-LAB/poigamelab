@@ -182,6 +182,12 @@ function makeContext(fetchImpl) {
     assert.ok(robots.includes(`Disallow: ${path}`), `robots missing internal path: ${path}`);
   }
 
+  const deployWorkflow = fs.readFileSync('.github/workflows/deploy-pages.yml', 'utf8');
+  assert.ok(deployWorkflow.includes('workflow_dispatch:'));
+  assert.ok(deployWorkflow.includes('push:'));
+  assert.ok(deployWorkflow.includes('branches:'));
+  assert.ok(deployWorkflow.includes('- main'));
+
   console.log('V25 site-health tests: PASS');
 })().catch((error) => {
   console.error(error);

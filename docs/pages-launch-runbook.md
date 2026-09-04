@@ -4,9 +4,7 @@
 
 The repository is public and GitHub Pages has been enabled using GitHub Actions.
 
-The deployment workflow in
-`.github/workflows/deploy-pages.yml` is intentionally `workflow_dispatch`
-only. It will not deploy from a pull request or from an ordinary push.
+The deployment workflow in `.github/workflows/deploy-pages.yml` runs automatically after a push to `main` and can also be started manually with `workflow_dispatch`. Pull-request branches do not deploy.
 
 The workflow publishes an explicit `_site` allowlist built by
 `scripts/build_public_site.py`; it does not upload the repository root.
@@ -41,18 +39,9 @@ Regression tests enforce this boundary.
 
 GitHub Pages is configured to use **GitHub Actions** as the source. If this setting is ever reset, restore it under **Settings → Pages → Build and deployment → GitHub Actions** before running the deploy workflow.
 
-## First deployment
+## Deployment
 
-After Pages is enabled:
-
-1. Open **Actions**.
-2. Select **Deploy POIGAME LAB to GitHub Pages**.
-3. Choose **Run workflow** on `main`.
-4. Review the pre-deploy regression result.
-5. Read the deployment URL from the completed `github-pages` environment.
-
-The workflow runs Python and frontend regressions before building and uploading
-the public artifact.
+Every merge to `main` now triggers the Pages deployment automatically. The workflow runs Python and frontend regressions before building and uploading the public artifact. Manual **Run workflow** remains available for an intentional redeploy.
 
 ## Custom domain
 
