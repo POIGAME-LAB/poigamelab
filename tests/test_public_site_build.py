@@ -69,6 +69,8 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "tokyo-debunker-guide.html",
         "puzzles-survival-guide.html",
         "kingshot-guide.html",
+        "houchishojo-guide.html",
+        "evertale-guide.html",
         "site-data.js",
         "site-footer.js",
         "site-referrals.js",
@@ -137,6 +139,8 @@ def test_public_artifact_is_self_contained_for_current_managed_games(output_dir)
         "東京ディバンカー",
         "パズル＆サバイバル",
         "キングショット",
+        "放置少女",
+        "エバーテイル",
     }
 
     site_data = (output_dir / "site-data.js").read_text()
@@ -201,6 +205,8 @@ def test_adsense_code_is_present_on_monetized_pages(output_dir):
         "tokyo-debunker-guide.html",
         "puzzles-survival-guide.html",
         "kingshot-guide.html",
+        "houchishojo-guide.html",
+        "evertale-guide.html",
     }
 
     for filename in monetized_pages:
