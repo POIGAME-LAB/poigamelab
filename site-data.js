@@ -320,13 +320,17 @@
         }
       }
 
-      const high = Math.max(currentReward, ...changes.map((item) => item.reward));
+      const priorChanges = changes.slice(0, -1);
+      const previousHigh = priorChanges.length
+        ? Math.max(...priorChanges.map((item) => item.reward))
+        : null;
+      const historicalHigh = Math.max(currentReward, previousHigh || 0);
       const changeAmount = previousReward === null ? null : currentReward - previousReward;
       const changePercent = previousReward
         ? ((currentReward - previousReward) / previousReward) * 100
         : null;
-      const fromHighPercent = high
-        ? ((currentReward - high) / high) * 100
+      const fromPreviousHighPercent = previousHigh
+        ? ((currentReward - previousHigh) / previousHigh) * 100
         : null;
 
       return {
@@ -336,8 +340,9 @@
         previousReward,
         changeAmount,
         changePercent,
-        historicalHigh: high,
-        fromHighPercent,
+        previousHigh,
+        historicalHigh,
+        fromPreviousHighPercent,
         changes: changes.slice(-6)
       };
     }).sort((a, b) => b.currentReward - a.currentReward);
