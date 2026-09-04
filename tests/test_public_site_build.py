@@ -404,7 +404,8 @@ def test_game_detail_exposes_guide_cta_near_top(output_dir):
 
 
 
-def test_every_catalog_game_has_a_published_visual(output_dir):
+
+def test_low_quality_temporary_game_art_is_not_referenced(output_dir):
     builder.build_public_site(output_dir)
 
     import csv
@@ -413,19 +414,10 @@ def test_every_catalog_game_has_a_published_visual(output_dir):
         (output_dir / "games.csv").open(encoding="utf-8", newline="")
     ))
     assert games
-
-    images = []
-    for row in games:
-        image = str(row.get("image") or "").strip()
-        assert image, f'missing visual for {row.get("name")}'
-        assert image.startswith("assets/game-art/")
-        target = output_dir / image
-        assert target.is_file(), f"missing published game visual: {image}"
-        assert target.suffix.lower() == ".svg"
-        images.append(image)
-
-    assert len(images) == len(set(images))
-
+    assert all(
+        not str(row.get("image") or "").strip().startswith("assets/game-art/")
+        for row in games
+    )
 
 
 def test_mobile_menu_is_body_level_fixed_overlay(output_dir):
