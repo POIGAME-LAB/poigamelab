@@ -25,7 +25,7 @@
       .poigame-site-header {
         position: sticky;
         top: 0;
-        z-index: 2147483002;
+        z-index: 1000;
         width: 100%;
         border-bottom: 1px solid rgba(112,71,255,.12);
         background: rgba(255,255,255,.96);
@@ -121,10 +121,6 @@
       .poigame-site-header__menu[aria-expanded="true"]::before { transform: translateY(6px) rotate(45deg); }
       .poigame-site-header__menu[aria-expanded="true"]::after { transform: translateY(-6px) rotate(-45deg); }
 
-      .poigame-mobile-nav {
-        display: none;
-      }
-
       .poigame-context-bar {
         border-bottom: 1px solid var(--poigame-line);
         background: linear-gradient(90deg,#fbf9ff,#fffdf2);
@@ -148,6 +144,64 @@
         text-decoration: none;
       }
 
+      .poigame-mobile-menu-dialog {
+        width: min(calc(100vw - 28px), 360px);
+        max-width: none;
+        max-height: calc(100dvh - 92px);
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 20px;
+        background: transparent;
+        overflow: visible;
+      }
+
+      .poigame-mobile-menu-dialog[open] {
+        position: fixed;
+        inset: 78px 14px auto auto;
+      }
+
+      .poigame-mobile-menu-dialog::backdrop {
+        background: rgba(25,12,58,.46);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+
+      .poigame-mobile-menu-dialog__panel {
+        max-height: calc(100dvh - 92px);
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 20px;
+        background: linear-gradient(145deg,#28105f,#5c2fd7 64%,#7047ff);
+        box-shadow: 0 22px 70px rgba(35,15,86,.42);
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .poigame-mobile-menu-dialog__panel a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 52px;
+        padding: 0 14px;
+        border-radius: 13px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 900;
+        text-decoration: none;
+      }
+
+      .poigame-mobile-menu-dialog__panel a + a {
+        border-top: 1px solid rgba(255,255,255,.12);
+      }
+
+      .poigame-mobile-menu-dialog__panel a::after {
+        content: "›";
+        color: #ffe25a;
+        font-size: 22px;
+        line-height: 1;
+      }
+
       @media (max-width: 820px) {
         .poigame-site-header__inner {
           width: calc(100% - 28px);
@@ -167,73 +221,15 @@
           flex: 0 0 auto;
         }
 
-        .poigame-mobile-nav {
-          position: fixed;
-          inset: 66px 0 0 0;
-          z-index: 2147483001;
-          display: block;
-          visibility: hidden;
-          opacity: 0;
-          pointer-events: none;
-          transition: opacity .18s ease, visibility .18s ease;
-        }
-
-        .poigame-mobile-nav.is-open {
-          visibility: visible;
-          opacity: 1;
-          pointer-events: auto;
-        }
-
-        .poigame-mobile-nav__scrim {
-          position: absolute;
-          inset: 0;
-          background: rgba(25,12,58,.45);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
-        }
-
-        .poigame-mobile-nav__panel {
-          position: absolute;
-          top: 12px;
-          right: 14px;
-          width: min(calc(100vw - 28px), 360px);
-          max-height: calc(100dvh - 92px);
-          overflow-y: auto;
-          padding: 10px;
-          border: 1px solid rgba(255,255,255,.16);
-          border-radius: 20px;
-          background: linear-gradient(145deg,#28105f,#5c2fd7 64%,#7047ff);
-          box-shadow: 0 22px 70px rgba(35,15,86,.42);
-          -webkit-overflow-scrolling: touch;
-        }
-
-        .poigame-mobile-nav__panel a {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          min-height: 52px;
-          padding: 0 14px;
-          border-radius: 13px;
-          color: #fff;
-          font-size: 14px;
-          font-weight: 900;
-          text-decoration: none;
-        }
-
-        .poigame-mobile-nav__panel a + a {
-          border-top: 1px solid rgba(255,255,255,.12);
-        }
-
-        .poigame-mobile-nav__panel a::after {
-          content: "›";
-          color: #ffe25a;
-          font-size: 22px;
-          line-height: 1;
-        }
-
         .poigame-context-bar__inner {
           width: calc(100% - 28px);
           min-height: 40px;
+        }
+      }
+
+      @media (min-width: 821px) {
+        .poigame-mobile-menu-dialog {
+          display: none;
         }
       }
     `;
@@ -269,46 +265,64 @@
             <a href="${href}" ${activeFor(href) ? 'aria-current="page"' : ""} class="${href === "contact.html" ? "poigame-site-header__contact" : ""}">${label}</a>
           `).join("")}
         </nav>
-        <button class="poigame-site-header__menu" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="poigame-mobile-nav"><span></span></button>
+        <button class="poigame-site-header__menu" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="poigame-mobile-menu"><span></span></button>
       </div>
     </div>
   `;
 
-  document.getElementById("poigame-mobile-nav")?.remove();
-  const mobileNav = document.createElement("div");
-  mobileNav.id = "poigame-mobile-nav";
-  mobileNav.className = "poigame-mobile-nav";
-  mobileNav.setAttribute("aria-hidden", "true");
-  mobileNav.innerHTML = `
-    <div class="poigame-mobile-nav__scrim" data-menu-close></div>
-    <nav class="poigame-mobile-nav__panel" aria-label="スマートフォンメニュー">
+  document.getElementById("poigame-mobile-menu")?.remove();
+  const dialog = document.createElement("dialog");
+  dialog.id = "poigame-mobile-menu";
+  dialog.className = "poigame-mobile-menu-dialog";
+  dialog.setAttribute("aria-label", "スマートフォンメニュー");
+  dialog.innerHTML = `
+    <nav class="poigame-mobile-menu-dialog__panel">
       ${navItems.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}
     </nav>
   `;
-  document.body.appendChild(mobileNav);
+  document.body.appendChild(dialog);
 
   const button = root.querySelector(".poigame-site-header__menu");
-  const scrim = mobileNav.querySelector("[data-menu-close]");
 
-  const setOpen = (open) => {
+  const setButtonState = (open) => {
     button.setAttribute("aria-expanded", String(open));
     button.setAttribute("aria-label", open ? "メニューを閉じる" : "メニューを開く");
-    mobileNav.classList.toggle("is-open", open);
-    mobileNav.setAttribute("aria-hidden", String(!open));
     document.documentElement.style.overflow = open ? "hidden" : "";
     document.body.style.overflow = open ? "hidden" : "";
   };
 
+  const openMenu = () => {
+    if (dialog.open) return;
+    dialog.showModal();
+    setButtonState(true);
+  };
+
+  const closeMenu = () => {
+    if (dialog.open) dialog.close();
+    setButtonState(false);
+  };
+
   button.addEventListener("click", () => {
-    setOpen(button.getAttribute("aria-expanded") !== "true");
+    if (dialog.open) closeMenu();
+    else openMenu();
   });
 
-  scrim.addEventListener("click", () => setOpen(false));
-  mobileNav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setOpen(false)));
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setOpen(false);
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) closeMenu();
   });
+
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeMenu();
+  });
+
+  dialog.addEventListener("close", () => setButtonState(false));
+
+  dialog.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => closeMenu());
+  });
+
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 820) setOpen(false);
+    if (window.innerWidth > 820) closeMenu();
   });
 })();
