@@ -166,7 +166,8 @@ function makeContext(fetchImpl) {
   assert.ok(referralJs.includes('code: "Jh7He170"'));
   assert.ok(referralJs.includes('https://www.warau.jp/friend/reg/d5em'));
   assert.ok(referralJs.includes('code: "d5eo"'));
-  assert.strictEqual(referralJs.includes('hapitas'), false);
+  assert.ok(referralJs.includes('https://hapitas.jp/appinvite?i=23001138&route=text'));
+  assert.ok(referralJs.includes('code: "WSOVBE"'));
 
   for (const html of [indexHtml, gameHtml]) {
     assert.ok(html.includes('src="site-referrals.js"'));
@@ -189,6 +190,7 @@ function makeContext(fetchImpl) {
   const contactHtml = fs.readFileSync('contact.html', 'utf8');
   assert.ok(contactHtml.includes('https://github.com/POIGAME-LAB/poigamelab/issues/new'));
   assert.ok(contactHtml.includes('個人情報・秘密情報は投稿しないでください'));
+
 
   const footerJs = fs.readFileSync('site-footer.js', 'utf8');
   for (const path of ['about.html', 'privacy.html', 'contact.html']) {

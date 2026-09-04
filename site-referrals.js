@@ -15,6 +15,13 @@
       url: "https://www.warau.jp/friend/reg/d5em",
       code: "d5eo",
       disclosure: "PR"
+    }),
+    hapitas: Object.freeze({
+      site: "hapitas",
+      name: "ハピタス",
+      url: "https://hapitas.jp/appinvite?i=23001138&route=text",
+      code: "WSOVBE",
+      disclosure: "PR"
     })
   });
 
