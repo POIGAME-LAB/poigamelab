@@ -66,10 +66,13 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "about.html",
         "privacy.html",
         "contact.html",
+        "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html",
+        "kingshot-guide.html",
         "site-data.js",
         "site-footer.js",
         "site-referrals.js",
-        "site-referrals.js",
+        "site-guides.js",
         "games.js",
         "games.csv",
         "robots.txt",
@@ -195,6 +198,9 @@ def test_adsense_code_is_present_on_monetized_pages(output_dir):
         "township-lv70.html",
         "whiteout-survival-guide.html",
         "working-heroes-guide.html",
+        "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html",
+        "kingshot-guide.html",
     }
 
     for filename in monetized_pages:
@@ -207,3 +213,43 @@ def test_adsense_code_is_present_on_monetized_pages(output_dir):
     for filename in {"404.html", "data-status.html"}:
         html = (output_dir / filename).read_text(encoding="utf-8")
         assert publisher_id not in html
+
+
+
+
+def test_every_catalog_game_has_published_guide_mapping(output_dir):
+    builder.build_public_site(output_dir)
+
+    import csv
+    import re
+
+    games = list(csv.DictReader(
+        (output_dir / "games.csv").open(encoding="utf-8", newline="")
+    ))
+    guide_text = (output_dir / "site-guides.js").read_text(encoding="utf-8")
+
+    mapped_games = set(re.findall(
+        r'^  "([^"]+)": \{$',
+        guide_text,
+        flags=re.MULTILINE,
+    ))
+    catalog_games = {row["name"] for row in games}
+    assert mapped_games == catalog_games
+
+    hrefs = re.findall(r'href: "([^"]+)"', guide_text)
+    assert hrefs
+    assert len(hrefs) == len(set(hrefs))
+
+    guide_pages = {}
+    for href in hrefs:
+        assert not href.startswith("/")
+        target = output_dir / href
+        assert target.is_file(), f"missing guide target: {href}"
+        guide_pages[href] = target.read_text(encoding="utf-8")
+
+    for game in catalog_games:
+        expected_backlink = f"game.html?game={game}"
+        assert any(
+            expected_backlink in html
+            for html in guide_pages.values()
+        ), f"no guide page links back to game detail: {game}"
