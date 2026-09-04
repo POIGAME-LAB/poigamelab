@@ -433,6 +433,7 @@ def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
     assert 'width: 100vw;' in header_js
     assert 'height: 100dvh;' in header_js
     assert 'inset: 0;' in header_js
+    assert 'box-sizing: border-box;' in header_js
     assert 'position: absolute;' in header_js
     assert 'top: calc(env(safe-area-inset-top, 0px) + 78px);' in header_js
     assert 'right: 14px;' in header_js
