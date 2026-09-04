@@ -1,3 +1,4 @@
+import re
 import importlib.util
 import json
 import shutil
@@ -205,17 +206,8 @@ def test_custom_domain_seo_metadata_and_sitemap(output_dir):
         assert 'rel="canonical" href="https://poigame-lab.github.io' not in html
 
     sitemap = (output_dir / "sitemap.xml").read_text(encoding="utf-8")
-    for canonical in expected.values():
-        assert f"<loc>{canonical}</loc>" in sitemap
-
-    for forbidden in (
-        "game.html",
-        "data-status.html",
-        "404.html",
-        "/data/",
-        "/config/",
-    ):
-        assert f"<loc>{origin}/{forbidden}" not in sitemap
+    sitemap_urls = set(re.findall(r"<loc>([^<]+)</loc>", sitemap))
+    assert sitemap_urls == set(expected.values())
 
     robots = (output_dir / "robots.txt").read_text(encoding="utf-8")
     assert "Sitemap: https://poigamelab.com/sitemap.xml" in robots
