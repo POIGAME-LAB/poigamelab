@@ -878,6 +878,45 @@
             }).format(date);
           };
 
+          const gameTrend = POIGAME_DATA.buildGameRewardTrend(
+            offerHistory,
+            game.offers,
+            game.name,
+            platform
+          );
+          const trendSummary = document.getElementById("gameTrendSummary");
+          if (trendSummary) {
+            const platformLabel = platform === "all"
+              ? "全OS"
+              : (platform === "unknown" ? "OS不明" : platform);
+            const currentText = gameTrend.available
+              ? `${gameTrend.currentReward.toLocaleString()}円`
+              : "現在掲載なし";
+            const changeText = gameTrend.previousReward === null
+              ? "前回比較：変動履歴なし"
+              : `前回比 ${gameTrend.changeAmount > 0 ? "+" : ""}${gameTrend.changeAmount.toLocaleString()}円（${formatSigned(gameTrend.changePercent, "%")}）`;
+
+            let highText = "過去最高比較：履歴開始後の初回値";
+            if (gameTrend.previousHigh !== null) {
+              if (gameTrend.fromPreviousHighPercent > 0) {
+                highText = `過去最高 ${gameTrend.previousHigh.toLocaleString()}円を ${formatSigned(gameTrend.fromPreviousHighPercent, "%")} 更新`;
+              } else if (gameTrend.fromPreviousHighPercent < 0) {
+                highText = `過去最高 ${gameTrend.previousHigh.toLocaleString()}円から ${formatSigned(gameTrend.fromPreviousHighPercent, "%")}`;
+              } else {
+                highText = `過去最高 ${gameTrend.previousHigh.toLocaleString()}円と同額`;
+              }
+            }
+
+            trendSummary.innerHTML = `
+              <span class="trend-summary-label">${POIGAME_DATA.escapeHtml(platformLabel)}の最高還元</span>
+              <strong class="trend-summary-value">${POIGAME_DATA.escapeHtml(currentText)}</strong>
+              <div class="trend-summary-row">
+                <span>${POIGAME_DATA.escapeHtml(changeText)}</span>
+                <span>${POIGAME_DATA.escapeHtml(highText)}</span>
+              </div>
+            `;
+          }
+
           trendList.innerHTML = filtered.map((trend) => {
             const siteName = pointSites[trend.site] || trend.site;
             const changeClass = trend.changeAmount === null
