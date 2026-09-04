@@ -331,6 +331,7 @@ def test_shared_header_and_navigation_are_wired(output_dir):
 
     header_js = (output_dir / "site-header.js").read_text(encoding="utf-8")
     assert "poigamelab_logo_horizontal.png" in header_js
+    assert '["ゲームを探す", "index.html#game-list"]' in header_js
     assert '["案件一覧", "offers.html"]' in header_js
     assert '["攻略一覧", "guides.html"]' in header_js
     assert '["POIGAME LABとは", "about.html"]' in header_js
