@@ -36,4 +36,5 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;bac
     return `<tr><td>${POIGAME_DATA.escapeHtml(name)}</td><td>${Number(h.publishableCount||0)}件</td><td><span class="${klass}">${POIGAME_DATA.escapeHtml(labels[h.state]||h.state)}</span></td><td>${POIGAME_DATA.escapeHtml(note)}</td></tr>`;
   }).join('') || '<tr><td colspan="4">自動更新履歴はまだありません。</td></tr>';
 }catch(e){console.error(e);overallEl.textContent='読込エラー';overallEl.className='status-pill warn';}})();
-</script></main>  <script src="site-footer.js"></script>\n</body></html>
+</script></main>  <script src="site-footer.js"></script>
+</body></html>
