@@ -379,7 +379,17 @@
 /* カード本文 */
 
 .game-info {
-  padding: 4px 18px 20px;
+  padding: 20px 18px 20px;
+}
+
+.card-rank-row {
+  min-height: 30px;
+  margin-bottom: 10px;
+}
+
+.card-rank-row .rank-badge {
+  position: static;
+  display: inline-block;
 }
 
 .game-info h3 {
@@ -387,6 +397,17 @@
   color: #28125f;
   font-size: 20px;
   font-weight: 900;
+}
+
+.game-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.game-title-link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .game-condition {
@@ -814,22 +835,17 @@
       card.className = "game-card";
 
       card.innerHTML = `
-  <div class="game-image">
-    ${cardIndex < 3 ? `<span class="rank-badge">${cardIndex + 1}位</span>` : (game.featured ? `<span class="rank-badge">注目</span>` : "")}
-
-    ${
-      game.image
-        ? `<img
-            src="${POIGAME_DATA.safeHttpUrl(game.image) || POIGAME_DATA.escapeHtml(game.image)}"
-            alt="${POIGAME_DATA.escapeHtml(game.name)}"
-            class="game-thumbnail"
-          >`
-        : `<div class="image-placeholder">GAME IMAGE</div>`
-    }
-  </div>
-
   <div class="game-info">
-    <h3>${POIGAME_DATA.escapeHtml(game.name)}</h3>
+    <div class="card-rank-row">
+      ${cardIndex < 3 ? `<span class="rank-badge">${cardIndex + 1}位</span>` : (game.featured ? `<span class="rank-badge">注目</span>` : "")}
+    </div>
+
+    <h3>
+      <a
+        class="game-title-link"
+        href="game.html?game=${encodeURIComponent(game.name)}"
+      >${POIGAME_DATA.escapeHtml(game.name)}</a>
+    </h3>
 
     <p class="game-condition">
       ${POIGAME_DATA.escapeHtml(game.condition)}
