@@ -40,7 +40,7 @@ def test_scheduled_policy_uses_all_six_standard_comparison_sources():
     assert policy['comparisonSources']==[
         'moppy','warau','chobirich','coincome','mikoshi','gendama'
     ]
-    expected={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル','東京ディバンカー','パズル＆サバイバル','キングショット'}
+    expected={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル','東京ディバンカー','パズル＆サバイバル','キングショット','放置少女','エバーテイル'}
     assert expected == {g for g,cfg in policy['games'].items() if cfg['enabled'] is True}
     assert policy['minimumConfirmedSourcesForComparison'] >= 2
     assert policy['scheduledMode']=='direct-http-api-free'
@@ -98,3 +98,20 @@ def test_new_game_enrollment_keeps_single_daily_api_free_workflow():
     assert 'FIRECRAWL_API_KEY' not in text
     assert 'GEMINI_API_KEY' not in text
     assert 'TAVILY_API_KEY' not in text
+
+
+def test_v32_games_join_daily_refresh_with_same_schedule():
+    policy=json.loads((ROOT/'config/refresh_policy.json').read_text())
+    assert policy['games']['放置少女']=={
+        'enabled':True,
+        'supplementalSources':[],
+        'adoptedBy':'V32',
+    }
+    assert policy['games']['エバーテイル']=={
+        'enabled':True,
+        'supplementalSources':['hapitas'],
+        'adoptedBy':'V32',
+    }
+    assert 'hapitas' not in policy['comparisonSources']
+    text=(ROOT/'.github/workflows/refresh-verified-offers.yml').read_text()
+    assert text.count('cron: "17 21 * * *"') == 1

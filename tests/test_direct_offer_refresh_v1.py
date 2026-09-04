@@ -2022,6 +2022,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     kinoko = by_game['きのこ伝説']['known_urls_by_source']['hapitas']
     tokyo = by_game['東京ディバンカー']['known_urls_by_source']['hapitas']
     kingshot = by_game['キングショット']['known_urls_by_source']['hapitas']
+    evertale = by_game['エバーテイル']['known_urls_by_source']['hapitas']
 
     assert set(working) == {
         'https://hapitas.jp/item/detail/itemid/101445',
@@ -2043,6 +2044,10 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/101355',
         'https://hapitas.jp/item/detail/itemid/101354',
     }
+    assert set(evertale) == {
+        'https://hapitas.jp/item/detail/itemid/96066',
+        'https://hapitas.jp/item/detail/itemid/91344',
+    }
 
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
@@ -2053,5 +2058,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('ワーキングヒーロー', 'iOS', '11502'),
         ('東京ディバンカー', '不明', '147'),
         ('キングショット', 'Android', '16320'),
+        ('エバーテイル', 'Android', '195'),
+        ('エバーテイル', 'iOS', '140'),
     }
     assert not any(row['game'] in {'Township', 'きのこ伝説'} for row in hapitas_rows)

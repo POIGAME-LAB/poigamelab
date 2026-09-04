@@ -13,7 +13,7 @@ def test_slug_paths_are_distinct():
 def test_all_games_registered():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     games=[x['game'] for x in data['games']]
-    required={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル','東京ディバンカー','パズル＆サバイバル','キングショット'}
+    required={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル','東京ディバンカー','パズル＆サバイバル','キングショット','放置少女','エバーテイル'}
     assert required.issubset(set(games))
     assert len(games)==len(set(games))
 
@@ -61,4 +61,24 @@ def test_kingshot_known_sources_are_isolated():
     assert set(kingshot['hapitas']) == {
         'https://hapitas.jp/item/detail/itemid/101355',
         'https://hapitas.jp/item/detail/itemid/101354',
+    }
+
+
+def test_v32_game_known_sources_are_isolated():
+    data=json.loads((ROOT/'config/game_targets.json').read_text())
+    by_game={x['game']:x for x in data['games']}
+
+    houchi=by_game['放置少女']['known_urls_by_source']
+    assert set(houchi)=={'moppy','warau'}
+    assert houchi['moppy']==['https://pc.moppy.jp/ad/detail.php?site_id=147270']
+    assert houchi['warau']==[
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971'
+    ]
+
+    evertale=by_game['エバーテイル']['known_urls_by_source']
+    assert set(evertale)=={'moppy','hapitas'}
+    assert evertale['moppy']==['https://pc.moppy.jp/ad/detail.php?site_id=158276']
+    assert set(evertale['hapitas'])=={
+        'https://hapitas.jp/item/detail/itemid/96066',
+        'https://hapitas.jp/item/detail/itemid/91344',
     }

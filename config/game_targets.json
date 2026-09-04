@@ -143,6 +143,38 @@
           "https://hapitas.jp/item/detail/itemid/101354"
         ]
       }
+    },
+    {
+      "game": "放置少女",
+      "aliases": [
+        "放置少女",
+        "放置少女〜百花繚乱の萌姫たち〜",
+        "放置少女～百花繚乱の萌姫たち～"
+      ],
+      "known_urls_by_source": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=147270"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971"
+        ]
+      }
+    },
+    {
+      "game": "エバーテイル",
+      "aliases": [
+        "エバーテイル",
+        "Evertale"
+      ],
+      "known_urls_by_source": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=158276"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/96066",
+          "https://hapitas.jp/item/detail/itemid/91344"
+        ]
+      }
     }
   ]
 }
