@@ -1,3 +1,4 @@
+import re
 import importlib.util
 import json
 import shutil
@@ -69,10 +70,10 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "site-data.js",
         "site-footer.js",
         "site-referrals.js",
-        "site-referrals.js",
         "games.js",
         "games.csv",
         "robots.txt",
+        "sitemap.xml",
         "poigamelab_icon.png",
         "assets/guide-experience.css",
         "assets/guide-experience.js",
@@ -178,3 +179,35 @@ def test_all_static_local_html_references_exist_in_public_artifact(output_dir):
                 )
 
     assert failures == []
+
+
+def test_custom_domain_seo_metadata_and_sitemap(output_dir):
+    builder.build_public_site(output_dir)
+    origin = "https://poigamelab.com"
+    expected = {
+        "index.html": f"{origin}/",
+        "kinoko-guide.html": f"{origin}/kinoko-guide.html",
+        "mementomori-guide.html": f"{origin}/mementomori-guide.html",
+        "township-lv60.html": f"{origin}/township-lv60.html",
+        "township-lv70.html": f"{origin}/township-lv70.html",
+        "whiteout-survival-guide.html": f"{origin}/whiteout-survival-guide.html",
+        "working-heroes-guide.html": f"{origin}/working-heroes-guide.html",
+        "about.html": f"{origin}/about.html",
+        "privacy.html": f"{origin}/privacy.html",
+        "contact.html": f"{origin}/contact.html",
+    }
+
+    for filename, canonical in expected.items():
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert f'<link rel="canonical" href="{canonical}">' in html
+        assert f'<meta property="og:url" content="{canonical}">' in html
+        assert f'<meta property="og:image" content="{origin}/poigamelab_hero.png">' in html
+        assert '<meta name="twitter:card" content="summary_large_image">' in html
+        assert 'rel="canonical" href="https://poigame-lab.github.io' not in html
+
+    sitemap = (output_dir / "sitemap.xml").read_text(encoding="utf-8")
+    sitemap_urls = set(re.findall(r"<loc>([^<]+)</loc>", sitemap))
+    assert sitemap_urls == set(expected.values())
+
+    robots = (output_dir / "robots.txt").read_text(encoding="utf-8")
+    assert "Sitemap: https://poigamelab.com/sitemap.xml" in robots
