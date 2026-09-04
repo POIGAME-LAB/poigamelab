@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#161b4b"/><stop offset=".58" stop-color="#54379e"/><stop offset="1" stop-color="#15102f"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#f0d8ff" stop-opacity=".85"/><stop offset="1" stop-color="#f0d8ff" stop-opacity="0"/></radialGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+  <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#fff" stroke-opacity=".055"/></pattern>
+</defs>
+<rect width="1200" height="675" rx="32" fill="url(#bg)"/>
+<rect width="1200" height="675" rx="32" fill="url(#grid)"/>
+<circle cx="950" cy="110" r="240" fill="url(#glow)" opacity=".28"/>
+
+  <circle cx="850" cy="300" r="205" fill="#dce7ff" opacity=".92"/>
+  <circle cx="920" cy="245" r="205" fill="#3a247c"/>
+  <path d="M770 555c20-120 70-210 140-260 46 31 78 99 90 260z" fill="#17162b" opacity=".9"/>
+  <path d="M822 342c55-86 139-92 196-13-14 32-50 50-96 50-44 0-78-12-100-37z" fill="#c9a36f" opacity=".75"/>
+  <path d="M650 525c-80-60-120-115-136-185 85 33 137 82 166 150z" fill="#9a73d8" opacity=".54"/>
+  <g fill="#f8e7ff" opacity=".75"><circle cx="240" cy="170" r="7"/><circle cx="340" cy="255" r="5"/><circle cx="470" cy="140" r="6"/><circle cx="580" cy="230" r="4"/></g>
+
+<path d="M70 565h260l58-58h168" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width="3"/>
+<circle cx="330" cy="565" r="6" fill="#f0d8ff"/>
+<circle cx="556" cy="507" r="6" fill="#f0d8ff"/>
+</svg>
