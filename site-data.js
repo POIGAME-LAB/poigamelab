@@ -348,6 +348,93 @@
     }).sort((a, b) => b.currentReward - a.currentReward);
   }
 
+  function buildGameRewardTrend(historyRows, currentOffers, gameName, platform = "all") {
+    const matchesPlatform = (value) => {
+      const normalized = String(value || "").trim() || "不明";
+      if (platform === "all") return true;
+      if (platform === "unknown") return normalized === "不明";
+      return normalized === platform;
+    };
+
+    const observedTimes = [...new Set(
+      (historyRows || []).map((row) => row.observedAt).filter(Boolean)
+    )].sort((a, b) => Date.parse(a) - Date.parse(b));
+
+    const changes = [];
+    let started = false;
+    observedTimes.forEach((observedAt) => {
+      const rewards = (historyRows || [])
+        .filter((row) =>
+          row.observedAt === observedAt
+          && row.game === gameName
+          && matchesPlatform(row.platform)
+        )
+        .map((row) => Number(row.reward) || 0)
+        .filter((reward) => reward > 0);
+      const reward = rewards.length ? Math.max(...rewards) : 0;
+      if (!started && reward <= 0) return;
+      started = true;
+      const last = changes[changes.length - 1];
+      if (!last || last.reward !== reward) {
+        changes.push({ observedAt, reward });
+      }
+    });
+
+    const currentRewards = [];
+    (currentOffers || []).forEach((offer) => {
+      const platforms = Array.isArray(offer.platform) && offer.platform.length
+        ? offer.platform
+        : ["不明"];
+      if (platform === "all") {
+        currentRewards.push(Number(offer.reward) || 0);
+      } else if (platform === "unknown") {
+        if (platforms.includes("不明")) currentRewards.push(Number(offer.reward) || 0);
+      } else if (platforms.includes(platform)) {
+        currentRewards.push(Number(offer.reward) || 0);
+      }
+    });
+    const currentReward = currentRewards.length ? Math.max(...currentRewards) : 0;
+
+    const last = changes[changes.length - 1];
+    if (started && (!last || last.reward !== currentReward)) {
+      changes.push({ observedAt: new Date().toISOString(), reward: currentReward });
+    } else if (!started && currentReward > 0) {
+      changes.push({ observedAt: new Date().toISOString(), reward: currentReward });
+    }
+
+    let previousReward = null;
+    for (let i = changes.length - 2; i >= 0; i -= 1) {
+      if (changes[i].reward !== currentReward) {
+        previousReward = changes[i].reward;
+        break;
+      }
+    }
+
+    const priorChanges = changes.slice(0, -1).filter((item) => item.reward > 0);
+    const previousHigh = priorChanges.length
+      ? Math.max(...priorChanges.map((item) => item.reward))
+      : null;
+    const changeAmount = previousReward === null ? null : currentReward - previousReward;
+    const changePercent = previousReward
+      ? ((currentReward - previousReward) / previousReward) * 100
+      : null;
+    const fromPreviousHighPercent = previousHigh
+      ? ((currentReward - previousHigh) / previousHigh) * 100
+      : null;
+
+    return {
+      platform,
+      currentReward,
+      available: currentReward > 0,
+      previousReward,
+      previousHigh,
+      changeAmount,
+      changePercent,
+      fromPreviousHighPercent,
+      changes: changes.slice(-6)
+    };
+  }
+
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -383,6 +470,7 @@
     formatHealthUpdatedAt,
     loadOfferHistory,
     buildRewardTrends,
+    buildGameRewardTrend,
     escapeHtml,
     safeHttpUrl
   };
