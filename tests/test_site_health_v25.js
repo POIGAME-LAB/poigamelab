@@ -93,6 +93,7 @@ function makeContext(fetchImpl) {
     'privacy.html',
     'contact.html',
     'site-footer.js',
+    'site-referrals.js',
     'robots.txt'
   ];
   requiredLaunchFiles.forEach((path) => assert.ok(fs.existsSync(path), `missing launch file: ${path}`));
@@ -159,6 +160,23 @@ function makeContext(fetchImpl) {
   assert.ok(gameHtml.includes('mobile-offer-card'));
   assert.ok(gameHtml.includes('name="description"'));
   assert.ok(gameHtml.includes('現在確認できる案件はありません。'));
+
+  const referralJs = fs.readFileSync('site-referrals.js', 'utf8');
+  assert.ok(referralJs.includes('https://pc.moppy.jp/entry/invite.php?invite=Jh7He170'));
+  assert.ok(referralJs.includes('code: "Jh7He170"'));
+  assert.ok(referralJs.includes('https://www.warau.jp/friend/reg/d5em'));
+  assert.ok(referralJs.includes('code: "d5eo"'));
+  assert.strictEqual(referralJs.includes('hapitas'), false);
+
+  for (const html of [indexHtml, gameHtml]) {
+    assert.ok(html.includes('src="site-referrals.js"'));
+    assert.ok(html.includes('［PR］'));
+    assert.ok(html.includes('rel="sponsored noopener noreferrer"'));
+  }
+  assert.ok(gameHtml.includes('このサイトに登録［PR］'));
+  assert.ok(gameHtml.includes('この案件を見る'));
+  assert.ok(indexHtml.includes('このポイントサイトに登録［PR］'));
+  assert.ok(indexHtml.includes('最高還元サイトへ'));
 
   const aboutHtml = fs.readFileSync('about.html', 'utf8');
   assert.ok(aboutHtml.includes('広告・アフィリエイト'));

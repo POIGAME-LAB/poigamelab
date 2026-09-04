@@ -25,6 +25,7 @@ ROOT_FILES = (
     "games.js",
     "site-data.js",
     "site-footer.js",
+    "site-referrals.js",
     "poigamelab_hero.png",
     "poigamelab_icon.png",
     "poigamelab_logo_horizontal.png",
