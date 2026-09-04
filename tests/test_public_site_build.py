@@ -68,6 +68,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "contact.html",
         "site-data.js",
         "site-footer.js",
+        "site-referrals.js",
         "games.js",
         "games.csv",
         "robots.txt",
