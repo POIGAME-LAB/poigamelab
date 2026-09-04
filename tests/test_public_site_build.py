@@ -75,6 +75,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "assets/guide-experience.css",
         "assets/guide-experience.js",
         "data/published_offers.csv",
+        "data/offer_history.csv",
         "data/refresh_status.json",
         "data/exception_queue.json",
         "config/refresh_policy.json",
@@ -101,6 +102,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
     # The build should contain only explicitly published data/config subfiles.
     assert {p for p in copied_set if p.startswith("data/")} == {
         "data/published_offers.csv",
+        "data/offer_history.csv",
         "data/refresh_status.json",
         "data/exception_queue.json",
     }
