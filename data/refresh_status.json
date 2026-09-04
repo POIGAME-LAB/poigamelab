@@ -1,13 +1,18 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-03T23:17:20+00:00",
-  "finishedAt": "2026-09-03T23:17:20+00:00",
+  "startedAt": "2026-09-04T23:03:23+00:00",
+  "finishedAt": "2026-09-04T23:03:23+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
     "Township",
     "ワーキングヒーロー",
-    "ホワイトアウト・サバイバル"
+    "ホワイトアウト・サバイバル",
+    "東京ディバンカー",
+    "パズル＆サバイバル",
+    "キングショット",
+    "放置少女",
+    "エバーテイル"
   ],
   "results": [
     {
@@ -56,6 +61,61 @@
     },
     {
       "game": "ホワイトアウト・サバイバル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "東京ディバンカー",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "パズル＆サバイバル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "キングショット",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "放置少女",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "エバーテイル",
       "returncode": 0,
       "publishableCount": 0,
       "collectionComplete": false,

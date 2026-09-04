@@ -1,6 +1,6 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "checkedAt": "2026-09-03T23:17:20+00:00",
+  "checkedAt": "2026-09-04T23:03:23+00:00",
   "comparisonSources": [
     "moppy",
     "warau",
@@ -12,7 +12,7 @@
   "apiCalls": 0,
   "publishedRewardChanges": 0,
   "refreshedRows": 4,
-  "reviewCount": 36,
+  "reviewCount": 79,
   "games": [
     {
       "game": "メメントモリ",
@@ -191,12 +191,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 2,
           "state": "review_required"
         },
         {
@@ -340,12 +340,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 0,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 2,
+          "reviewRequired": 1,
           "state": "review_required"
         },
         {
@@ -363,6 +363,383 @@
           "knownOrDiscoveredUrls": 0,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        }
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6,
+      "comparisonReady": false
+    },
+    {
+      "game": "東京ディバンカー",
+      "sources": [
+        {
+          "source": "moppy",
+          "standard": true,
+          "knownOrDiscoveredUrls": 2,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 2,
+          "state": "review_required"
+        },
+        {
+          "source": "warau",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "chobirich",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "coincome",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "mikoshi",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "gendama",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "hapitas",
+          "standard": false,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        }
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6,
+      "comparisonReady": false
+    },
+    {
+      "game": "パズル＆サバイバル",
+      "sources": [
+        {
+          "source": "moppy",
+          "standard": true,
+          "knownOrDiscoveredUrls": 2,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 2,
+          "state": "review_required"
+        },
+        {
+          "source": "warau",
+          "standard": true,
+          "knownOrDiscoveredUrls": 5,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 5,
+          "state": "review_required"
+        },
+        {
+          "source": "chobirich",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "coincome",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "mikoshi",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "gendama",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        }
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6,
+      "comparisonReady": false
+    },
+    {
+      "game": "キングショット",
+      "sources": [
+        {
+          "source": "moppy",
+          "standard": true,
+          "knownOrDiscoveredUrls": 2,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 2,
+          "state": "review_required"
+        },
+        {
+          "source": "warau",
+          "standard": true,
+          "knownOrDiscoveredUrls": 3,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 3,
+          "state": "review_required"
+        },
+        {
+          "source": "chobirich",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "coincome",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "mikoshi",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "gendama",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "hapitas",
+          "standard": false,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        }
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6,
+      "comparisonReady": false
+    },
+    {
+      "game": "放置少女",
+      "sources": [
+        {
+          "source": "moppy",
+          "standard": true,
+          "knownOrDiscoveredUrls": 1,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "warau",
+          "standard": true,
+          "knownOrDiscoveredUrls": 2,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 2,
+          "state": "review_required"
+        },
+        {
+          "source": "chobirich",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "coincome",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "mikoshi",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "gendama",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        }
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6,
+      "comparisonReady": false
+    },
+    {
+      "game": "エバーテイル",
+      "sources": [
+        {
+          "source": "moppy",
+          "standard": true,
+          "knownOrDiscoveredUrls": 1,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "warau",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "chobirich",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "coincome",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "mikoshi",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "gendama",
+          "standard": true,
+          "knownOrDiscoveredUrls": 0,
+          "offerwallPresenceDomains": 0,
+          "offerwallReviewedProviders": 0,
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 1,
+          "state": "review_required"
+        },
+        {
+          "source": "hapitas",
+          "standard": false,
+          "knownOrDiscoveredUrls": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
           "reviewRequired": 1,
