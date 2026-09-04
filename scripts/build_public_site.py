@@ -46,6 +46,10 @@ PUBLIC_DIRS = (
     "assets",
 )
 
+DATA_DIRS = (
+    "guide-experiences",
+)
+
 
 def _safe_source(path: Path) -> None:
     if not path.exists():
@@ -95,6 +99,9 @@ def build_public_site(output: Path) -> list[str]:
 
     for name in CONFIG_FILES:
         _copy_file(ROOT / "config" / name, output / "config" / name)
+
+    for name in DATA_DIRS:
+        _copy_tree(ROOT / "data" / name, output / "data" / name)
 
     for name in PUBLIC_DIRS:
         _copy_tree(ROOT / name, output / name)
