@@ -427,6 +427,76 @@
       text-align: center;
     }
 
+    .trend-note {
+      margin: 0 0 14px;
+      color: #82798f;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .trend-card {
+      padding: 16px;
+      border: 1px solid #e7e0f7;
+      border-radius: 16px;
+      background: #fbf9ff;
+    }
+
+    .trend-card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .trend-card-site {
+      color: #28125f;
+      font-weight: 900;
+    }
+
+    .trend-current {
+      color: #7047ff;
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .trend-change {
+      margin: 7px 0;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .trend-change.up { color: #137a4f; }
+    .trend-change.down { color: #b44a45; }
+    .trend-change.flat { color: #6f6878; }
+
+    .trend-high {
+      margin: 4px 0 10px;
+      color: #655d71;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .trend-timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      color: #746d80;
+      font-size: 11px;
+    }
+
+    .trend-point {
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #f1edff;
+    }
+
     @media (max-width: 700px) {
       .comparison-table {
         display: none;
@@ -442,6 +512,10 @@
 
       .collapsible-section > summary {
         font-size: 20px;
+      }
+
+      .trend-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -511,6 +585,14 @@
       <div id="offerCards" class="offer-card-list" aria-live="polite"></div>
 
     </section>
+
+    <details class="section collapsible-section" open>
+      <summary>📈 還元額の推移</summary>
+      <div class="collapsible-content">
+        <p class="trend-note">POIGAME LABで検証済みデータを持ち始めた2026年8月31日以降の履歴です。ポイントサイト・OSごとに現在値、前回の変動、過去最高との比較を表示します。</p>
+        <div id="rewardTrendList" class="trend-grid"></div>
+      </div>
+    </details>
 
     <details class="section collapsible-section" open>
       <summary>🎮 ゲーム概要</summary>
