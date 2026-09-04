@@ -116,6 +116,15 @@ function makeContext(fetchImpl) {
     assert.ok(html.includes('src="site-footer.js"'), `missing shared footer: ${path}`);
   }
 
+  for (const path of publicPages) {
+    const html = fs.readFileSync(path, 'utf8');
+    assert.strictEqual(
+      html.includes('\\n'),
+      false,
+      `literal \\n text leaked into public HTML: ${path}`
+    );
+  }
+
   const indexHtml = fs.readFileSync('index.html', 'utf8');
   assert.ok(indexHtml.includes('name="description"'));
   assert.ok(indexHtml.includes('ポイ活ゲーム案件比較・攻略 | POIGAME LAB'));
