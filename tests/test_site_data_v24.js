@@ -142,6 +142,42 @@ function makeContext(fetchImpl) {
     }
   }
 
+  const trendHistory = [
+    { observedAt: '2026-08-31T00:00:00Z', game: 'Township', site: 'coincome', platform: 'Android', reward: 30000 },
+    { observedAt: '2026-09-01T00:00:00Z', game: 'Township', site: 'coincome', platform: 'Android', reward: 33125 },
+    { observedAt: '2026-08-31T00:00:00Z', game: 'Township', site: 'warau', platform: 'Android', reward: 25000 },
+    { observedAt: '2026-09-01T00:00:00Z', game: 'Township', site: 'warau', platform: 'Android', reward: 20000 },
+  ];
+  const trendOffers = [
+    { gameName: 'Township', site: 'coincome', platform: ['Android'], reward: 33125, updatedAt: '2026-09-04' },
+    { gameName: 'Township', site: 'warau', platform: ['Android'], reward: 20000, updatedAt: '2026-09-04' },
+  ];
+  const trends = api.buildRewardTrends(trendHistory, trendOffers, 'Township');
+  const coincomeTrend = trends.find(item => item.site === 'coincome');
+  const warauTrend = trends.find(item => item.site === 'warau');
+  assert.strictEqual(coincomeTrend.currentReward, 33125);
+  assert.strictEqual(coincomeTrend.previousReward, 30000);
+  assert.strictEqual(coincomeTrend.changeAmount, 3125);
+  assert.ok(Math.abs(coincomeTrend.changePercent - 10.4166667) < 0.001);
+  assert.strictEqual(coincomeTrend.previousHigh, 30000);
+  assert.strictEqual(coincomeTrend.historicalHigh, 33125);
+  assert.ok(Math.abs(coincomeTrend.fromPreviousHighPercent - 10.4166667) < 0.001);
+  assert.strictEqual(warauTrend.currentReward, 20000);
+  assert.strictEqual(warauTrend.previousReward, 25000);
+  assert.strictEqual(warauTrend.previousHigh, 25000);
+  assert.strictEqual(warauTrend.historicalHigh, 25000);
+  assert.strictEqual(warauTrend.changeAmount, -5000);
+  assert.ok(Math.abs(warauTrend.fromPreviousHighPercent - (-20)) < 0.001);
+
+  const actualHistory = api.rowsToObjects(api.parseCsv(fs.readFileSync('data/offer_history.csv', 'utf8')));
+  assert.ok(actualHistory.length > 0);
+  assert.ok(actualHistory.some(row =>
+    row.game === 'ホワイトアウト・サバイバル'
+    && row.site === 'warau'
+    && row.platform === 'Android'
+    && row.reward === '12500'
+  ));
+
   console.log('V24 site-data tests: PASS');
 })().catch((error) => {
   console.error(error);
