@@ -354,23 +354,49 @@
 }
 
 .image-placeholder {
+  position: relative;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
   width: 100%;
   aspect-ratio: 16 / 9;
+  padding: 22px;
   border-radius: 15px;
   background:
-    linear-gradient(
-      135deg,
-      #efeaff 0%,
-      #f8f6ff 50%,
-      #fff4c8 100%
-    );
-  color: #8069c9;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1px;
+    radial-gradient(circle at 82% 16%, rgba(255,217,61,.52), transparent 22%),
+    radial-gradient(circle at 15% 86%, rgba(130,91,255,.55), transparent 36%),
+    linear-gradient(135deg, #1f0c4e 0%, #4b22b9 52%, #7047ff 100%);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
+}
+.image-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0 46%, rgba(255,255,255,.06) 46% 47%, transparent 47% 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 1px, transparent 1px 54px);
+  pointer-events: none;
+}
+.image-placeholder small,
+.image-placeholder strong {
+  position: relative;
+  z-index: 1;
+}
+.image-placeholder small {
+  margin-bottom: 7px;
+  color: #ffe66a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 1.8px;
+}
+.image-placeholder strong {
+  max-width: 90%;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
 }
 
 .rank-badge {
@@ -913,7 +939,7 @@
       const guideHref = guide?.links?.[0]?.href || "";
       const imageMarkup = game.image
         ? `<img class="game-thumbnail" src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ" loading="lazy">`
-        : `<div class="image-placeholder">POIGAME LAB VISUAL</div>`;
+        : `<div class="image-placeholder"><small>POIGAME LAB</small><strong>${POIGAME_DATA.escapeHtml(game.name)}</strong></div>`;
 
       card.innerHTML = `
   <div class="game-image">
