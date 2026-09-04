@@ -703,12 +703,18 @@
           offers: []
         };
 
-        const [offerResult, dataHealth] = await Promise.all([
+        const [offerResult, dataHealth, offerHistory] = await Promise.all([
           POIGAME_DATA.loadOffersWithFallback(),
-          POIGAME_DATA.loadDataHealth()
+          POIGAME_DATA.loadDataHealth(),
+          POIGAME_DATA.loadOfferHistory()
         ]);
         game.offers = offerResult.offers.filter((offer) => offer.gameName === game.name);
         const gameHealth = dataHealth.games?.[game.name];
+        const rewardTrends = POIGAME_DATA.buildRewardTrends(
+          offerHistory,
+          game.offers,
+          game.name
+        );
 
         document.title = `${game.name} | POIGAME LAB`;
         document.getElementById("gameName").textContent = game.name;
@@ -809,9 +815,83 @@
           }
         }
 
+        function renderRewardTrends(platform) {
+          const trendList = document.getElementById("rewardTrendList");
+          if (!trendList) return;
+
+          const filtered = rewardTrends.filter((trend) => {
+            if (platform === "all") return true;
+            if (platform === "unknown") return trend.platform === "不明";
+            return trend.platform === platform;
+          });
+
+          if (!filtered.length) {
+            trendList.innerHTML = '<div class="no-offers-card">このOSで表示できる還元履歴はありません。</div>';
+            return;
+          }
+
+          const formatSigned = (value, suffix = "") => {
+            if (value === null || !Number.isFinite(Number(value))) return "—";
+            const numeric = Number(value);
+            const sign = numeric > 0 ? "+" : "";
+            return `${sign}${numeric.toFixed(1)}${suffix}`;
+          };
+
+          const formatDate = (value) => {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value || "").slice(0, 10);
+            return new Intl.DateTimeFormat("ja-JP", {
+              timeZone: "Asia/Tokyo",
+              month: "numeric",
+              day: "numeric"
+            }).format(date);
+          };
+
+          trendList.innerHTML = filtered.map((trend) => {
+            const siteName = pointSites[trend.site] || trend.site;
+            const changeClass = trend.changeAmount === null
+              ? "flat"
+              : (trend.changeAmount > 0 ? "up" : (trend.changeAmount < 0 ? "down" : "flat"));
+            const changeText = trend.changeAmount === null
+              ? "前回比較：変動履歴なし"
+              : `前回比 ${trend.changeAmount > 0 ? "+" : ""}${trend.changeAmount.toLocaleString()}円（${formatSigned(trend.changePercent, "%")}）`;
+
+            let highText = "過去最高比較：履歴開始後の初回値";
+            if (trend.previousHigh !== null) {
+              if (trend.fromPreviousHighPercent > 0) {
+                highText = `過去最高 ${trend.previousHigh.toLocaleString()}円を ${formatSigned(trend.fromPreviousHighPercent, "%")} 更新`;
+              } else if (trend.fromPreviousHighPercent < 0) {
+                highText = `過去最高 ${trend.previousHigh.toLocaleString()}円から ${formatSigned(trend.fromPreviousHighPercent, "%")}`;
+              } else {
+                highText = `過去最高 ${trend.previousHigh.toLocaleString()}円と同額`;
+              }
+            }
+
+            const timeline = trend.changes.map((point) =>
+              `<span class="trend-point">${POIGAME_DATA.escapeHtml(formatDate(point.observedAt))} ${point.reward.toLocaleString()}円</span>`
+            ).join("");
+
+            return `
+              <article class="trend-card">
+                <div class="trend-card-head">
+                  <div>
+                    <div class="trend-card-site">${POIGAME_DATA.escapeHtml(siteName)}</div>
+                    <span class="platform-pill">${POIGAME_DATA.escapeHtml(trend.platform)}</span>
+                  </div>
+                  <div class="trend-current">${trend.currentReward.toLocaleString()}円</div>
+                </div>
+                <div class="trend-change ${changeClass}">${POIGAME_DATA.escapeHtml(changeText)}</div>
+                <p class="trend-high">${POIGAME_DATA.escapeHtml(highText)}</p>
+                <div class="trend-timeline">${timeline}</div>
+              </article>
+            `;
+          }).join("");
+        }
+
         function renderOfferViews() {
           const filteredOffers = sortedOffers.filter((offer) => matchesPlatform(offer, activePlatform));
           updateBestOffer(filteredOffers, activePlatform);
+          renderRewardTrends(activePlatform);
 
           if (tableBody) tableBody.innerHTML = "";
           if (offerCards) offerCards.innerHTML = "";
