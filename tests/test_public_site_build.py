@@ -425,3 +425,19 @@ def test_every_catalog_game_has_a_published_visual(output_dir):
         images.append(image)
 
     assert len(images) == len(set(images))
+
+
+
+def test_mobile_menu_is_body_level_fixed_overlay(output_dir):
+    builder.build_public_site(output_dir)
+    header_js = (output_dir / "site-header.js").read_text(encoding="utf-8")
+
+    assert 'document.body.appendChild(mobileNav)' in header_js
+    assert 'position: fixed;' in header_js
+    assert 'inset: 66px 0 0 0;' in header_js
+    assert 'z-index: 2147483001;' in header_js
+    assert 'visibility: hidden;' in header_js
+    assert '.poigame-mobile-nav.is-open' in header_js
+    assert 'visibility: visible;' in header_js
+    assert 'mobileNav.classList.toggle("is-open", open)' in header_js
+    assert 'document.body.style.overflow = open ? "hidden" : "";' in header_js
