@@ -52,6 +52,18 @@
         "hapitas"
       ],
       "adoptedBy": "V31"
+    },
+    "放置少女": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "V32"
+    },
+    "エバーテイル": {
+      "enabled": true,
+      "supplementalSources": [
+        "hapitas"
+      ],
+      "adoptedBy": "V32"
     }
   },
   "publication": {
