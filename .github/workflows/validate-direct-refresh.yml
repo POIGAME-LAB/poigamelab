@@ -12,6 +12,7 @@ on:
       - "config/offerwall_providers.json"
       - "config/approved_offer_baselines.json"
       - "data/published_offers.csv"
+      - "data/offer_history.csv"
       - "data/warau_baseline_candidates.json"
       - "site-data.js"
       - "site-footer.js"
