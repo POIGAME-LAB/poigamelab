@@ -21,7 +21,7 @@ The Pages artifact includes only the files needed by the public site:
 - `data/refresh_status.json`;
 - `data/exception_queue.json`;
 - `config/refresh_policy.json`;
-- `robots.txt`.
+- `robots.txt` and `sitemap.xml`.
 
 It deliberately excludes repository internals such as:
 
@@ -45,16 +45,23 @@ Every merge to `main` now triggers the Pages deployment automatically. The workf
 
 ## Custom domain
 
-Do not add a `CNAME`, canonical URLs, or a production sitemap until the actual
-custom domain and DNS target are confirmed.
+The production origin is `https://poigamelab.com`.
 
-After a custom domain is confirmed:
+GitHub Pages is configured with `poigamelab.com` as the custom domain, and the
+registrar DNS is configured with the four GitHub Pages apex A records plus a
+`www` CNAME to `poigame-lab.github.io`.
 
-1. configure the domain in GitHub Pages and DNS;
-2. verify HTTPS;
-3. add the matching canonical/OG URLs;
-4. add a sitemap using the exact production origin;
-5. submit that sitemap to Search Console.
+The public artifact includes canonical/OG metadata for indexable static pages and
+a production `sitemap.xml`. Pages that are intentionally noindex or dynamic
+comparison shells are excluded from the sitemap.
+
+Before submitting the sitemap to Search Console:
+
+1. confirm public DNS propagation;
+2. confirm GitHub Pages reports the DNS check as successful;
+3. enable and verify HTTPS;
+4. verify `https://poigamelab.com` and `https://www.poigamelab.com` resolve as intended;
+5. then submit `https://poigamelab.com/sitemap.xml` to Search Console.
 
 ## Monetization boundary
 
