@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="POIGAME LABで掲載中のポイ活ゲーム案件を一覧で比較。最高還元、条件、達成目安、難易度から自分に合う案件を探せます。">
+<title>ポイ活ゲーム案件一覧 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f8f6ff;color:#302743}.page{max-width:1160px;margin:0 auto;padding:44px 22px 84px}.hero{position:relative;overflow:hidden;padding:38px;border-radius:28px;background:radial-gradient(circle at 85% 0,rgba(255,217,61,.32),transparent 26%),linear-gradient(135deg,#27105c,#7047ff 68%,#875fff);color:#fff;box-shadow:0 20px 55px rgba(58,29,132,.20)}.hero small{display:inline-block;margin-bottom:10px;color:#ffe360;font-weight:950;letter-spacing:.16em}.hero h1{margin:0;font-size:40px;line-height:1.25}.hero p{max-width:720px;margin:14px 0 0;color:#eee9ff;line-height:1.8}.toolbar{display:grid;grid-template-columns:1fr auto;gap:12px;margin:24px 0}.search{display:flex;align-items:center;gap:10px;padding:5px;border:1px solid #e4dcfb;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(62,33,135,.07)}.search input{flex:1;min-width:0;height:46px;border:0;outline:0;padding:0 13px;font-size:15px}.search button{height:46px;padding:0 18px;border:0;border-radius:12px;background:#7047ff;color:#fff;font-weight:900;cursor:pointer}.count{display:flex;align-items:center;padding:0 16px;border:1px solid #e4dcfb;border-radius:16px;background:#fff;color:#685d79;font-size:13px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.card{overflow:hidden;border:1px solid #ebe5fa;border-radius:22px;background:#fff;box-shadow:0 12px 34px rgba(65,35,145,.09);transition:transform .18s ease,box-shadow .18s ease}.card:hover{transform:translateY(-4px);box-shadow:0 18px 42px rgba(65,35,145,.14)}.art{aspect-ratio:16/9;background:linear-gradient(135deg,#e8e1ff,#fff4bd);overflow:hidden}.art img{width:100%;height:100%;object-fit:cover;display:block}.art-fallback{height:100%;display:grid;place-items:center;color:#6543bd;font-weight:950;letter-spacing:.08em}.body{padding:18px}.body h2{margin:0 0 7px;font-size:21px;color:#28125f}.condition{min-height:42px;margin:0 0 14px;color:#7a7188;font-size:12px;line-height:1.65}.reward{display:flex;align-items:flex-end;justify-content:space-between;padding:13px 14px;border-radius:14px;background:#f5f1ff}.reward span{font-size:11px;color:#766b8a;font-weight:800}.reward strong{color:#7047ff;font-size:22px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.meta span{padding:9px;border-radius:10px;background:#faf8ff;color:#655b75;font-size:11px;font-weight:800;text-align:center}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.actions a,.actions span{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:12px;font-size:13px;font-weight:950;text-decoration:none}.compare{border:1px solid #d8ccff;color:#5c35cf;background:#fff}.guide{color:#fff;background:linear-gradient(135deg,#4b1ec3,#7047ff);box-shadow:0 8px 18px rgba(82,43,190,.18)}.disabled{color:#9b94a3;background:#f1eff4}.empty{grid-column:1/-1;padding:34px;border-radius:18px;background:#fff;color:#81788f;text-align:center}@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:33px}}@media(max-width:620px){.page{padding:24px 14px 64px}.hero{padding:26px 20px;border-radius:22px}.hero h1{font-size:28px}.toolbar{grid-template-columns:1fr}.count{min-height:44px}.grid{grid-template-columns:1fr}.body h2{font-size:20px}}
+</style>
+</head>
+<body>
+<div data-poigame-header></div>
+<script src="site-header.js"></script>
+<main class="page">
+  <section class="hero">
+    <small>OFFERS</small>
+    <h1>ポイ活ゲーム案件一覧</h1>
+    <p>最高還元だけでなく、条件・達成目安・難易度までまとめて比較。気になる案件はそのまま比較ページ、攻略ページへ進めます。</p>
+  </section>
+  <section class="toolbar" aria-label="案件検索">
+    <div class="search"><input id="offerSearch" type="search" placeholder="ゲーム名・条件で検索"><button id="offerSearchButton" type="button">検索</button></div>
+    <div id="offerCount" class="count">-- 件</div>
+  </section>
+  <section id="offerGrid" class="grid" aria-live="polite"></section>
+</main>
+<script src="games.js"></script>
+<script src="site-data.js"></script>
+<script src="site-guides.js"></script>
+<script>
+(async () => {
+  const grid = document.getElementById("offerGrid");
+  const count = document.getElementById("offerCount");
+  const input = document.getElementById("offerSearch");
+  let gamesData = [];
+  try {
+    const [rows, offerResult] = await Promise.all([
+      POIGAME_DATA.fetchCsv("games.csv"),
+      POIGAME_DATA.loadOffersWithFallback()
+    ]);
+    gamesData = rows.map((row) => {
+      const name = String(row.name || "").trim();
+      const offers = offerResult.offers.filter((offer) => offer.gameName === name);
+      const best = offers.sort((a,b) => b.reward - a.reward)[0] || null;
+      return {
+        name,
+        image: String(row.image || "").trim(),
+        condition: String(row.condition || "").trim(),
+        days: String(row.days || "").trim() || "調査中",
+        difficulty: String(row.difficulty || "").trim() || "調査中",
+        best
+      };
+    }).filter((game) => game.name);
+  } catch (error) {
+    console.error(error);
+  }
+
+  const render = () => {
+    const q = input.value.trim().toLowerCase();
+    const visible = gamesData.filter((game) => !q || (game.name + " " + game.condition).toLowerCase().includes(q));
+    count.textContent = visible.length + " 件";
+    grid.replaceChildren();
+    if (!visible.length) {
+      grid.innerHTML = '<div class="empty">該当する案件が見つかりませんでした。</div>';
+      return;
+    }
+    visible.forEach((game) => {
+      const guide = window.POIGAME_GUIDES?.[game.name];
+      const guideHref = guide?.links?.[0]?.href || "";
+      const reward = game.best ? game.best.reward.toLocaleString() + "円" : "確認中";
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="art">
+          ${game.image
+            ? `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ" loading="lazy">`
+            : '<div class="art-fallback">POIGAME LAB VISUAL</div>'}
+        </div>
+        <div class="body">
+          <h2>${POIGAME_DATA.escapeHtml(game.name)}</h2>
+          <p class="condition">${POIGAME_DATA.escapeHtml(game.condition || "指定条件クリア")}</p>
+          <div class="reward"><span>最高還元</span><strong>${reward}</strong></div>
+          <div class="meta"><span>⏱ ${POIGAME_DATA.escapeHtml(game.days)}</span><span>🎮 ${POIGAME_DATA.escapeHtml(game.difficulty)}</span></div>
+          <div class="actions">
+            <a class="compare" href="game.html?game=${encodeURIComponent(game.name)}#comparison">比較を見る</a>
+            ${guideHref ? `<a class="guide" href="${guideHref}">攻略を見る</a>` : '<span class="disabled">攻略準備中</span>'}
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  };
+
+  document.getElementById("offerSearchButton").addEventListener("click", render);
+  input.addEventListener("input", render);
+  render();
+})();
+</script>
+<script src="site-footer.js"></script>
+</body>
+</html>

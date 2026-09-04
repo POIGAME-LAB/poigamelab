@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 ROOT_FILES = (
     "index.html",
     "game.html",
+    "guides.html",
+    "offers.html",
     "kinoko-guide.html",
     "mementomori-guide.html",
     "township-lv60.html",
@@ -32,6 +34,7 @@ ROOT_FILES = (
     "site-footer.js",
     "site-referrals.js",
     "site-guides.js",
+    "site-header.js",
     "poigamelab_hero.png",
     "poigamelab_icon.png",
     "poigamelab_logo_horizontal.png",

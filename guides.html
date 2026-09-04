@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="POIGAME LABのポイ活ゲーム攻略一覧。各案件の達成条件に合わせた進め方、到達ペース、撤退判断をゲーム別に整理しています。">
+<title>ポイ活ゲーム攻略一覧 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f8f6ff;color:#302743}.page{max-width:1160px;margin:0 auto;padding:44px 22px 84px}.hero{position:relative;overflow:hidden;padding:38px;border-radius:28px;background:radial-gradient(circle at 85% 0,rgba(255,217,61,.34),transparent 26%),linear-gradient(135deg,#251052,#5f31db 62%,#7047ff);color:#fff;box-shadow:0 20px 55px rgba(58,29,132,.20)}.hero small{display:inline-block;margin-bottom:10px;color:#ffe360;font-weight:950;letter-spacing:.16em}.hero h1{margin:0;font-size:40px;line-height:1.25}.hero p{max-width:760px;margin:14px 0 0;color:#eee9ff;line-height:1.8}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:24px}.card{overflow:hidden;border:1px solid #eae3fb;border-radius:22px;background:#fff;box-shadow:0 12px 34px rgba(65,35,145,.09);transition:transform .18s ease,box-shadow .18s ease}.card:hover{transform:translateY(-4px);box-shadow:0 18px 42px rgba(65,35,145,.14)}.art{aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,#e8e1ff,#fff4bd)}.art img{width:100%;height:100%;object-fit:cover;display:block}.fallback{height:100%;display:grid;place-items:center;color:#6543bd;font-weight:950;letter-spacing:.08em}.body{padding:19px}.eyebrow{display:inline-flex;margin-bottom:8px;padding:5px 8px;border-radius:999px;background:#f3efff;color:#7047ff;font-size:10px;font-weight:950}.body h2{margin:0 0 8px;color:#28125f;font-size:21px}.body p{min-height:66px;margin:0;color:#746b80;font-size:12px;line-height:1.75}.links{display:grid;gap:8px;margin-top:15px}.links a{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:9px 13px;border-radius:12px;background:linear-gradient(135deg,#4c1fc5,#7047ff);color:#fff;font-size:12px;font-weight:950;text-decoration:none;box-shadow:0 8px 18px rgba(82,43,190,.16)}.links a::after{content:"→";color:#ffe264}.compare{display:inline-flex;margin-top:11px;color:#5d37cf;font-size:12px;font-weight:900;text-decoration:none}@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:33px}}@media(max-width:620px){.page{padding:24px 14px 64px}.hero{padding:26px 20px;border-radius:22px}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}.body p{min-height:0}}
+</style>
+</head>
+<body>
+<div data-poigame-header></div>
+<script src="site-header.js"></script>
+<main class="page">
+  <section class="hero">
+    <small>GUIDES</small>
+    <h1>ポイ活ゲーム攻略一覧</h1>
+    <p>「何を優先するか」「どこまで狙うか」を案件条件と実例から整理。比較ページと攻略ページを行き来しながら、始める前の判断にも使えます。</p>
+  </section>
+  <section id="guideGrid" class="grid" aria-live="polite"></section>
+</main>
+<script src="site-data.js"></script>
+<script src="site-guides.js"></script>
+<script>
+(async () => {
+  const grid = document.getElementById("guideGrid");
+  try {
+    const rows = await POIGAME_DATA.fetchCsv("games.csv");
+    rows.forEach((row) => {
+      const name = String(row.name || "").trim();
+      const guide = window.POIGAME_GUIDES?.[name];
+      if (!name || !guide || !Array.isArray(guide.links) || !guide.links.length) return;
+      const image = String(row.image || "").trim();
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="art">
+          ${image
+            ? `<img src="${POIGAME_DATA.escapeHtml(image)}" alt="${POIGAME_DATA.escapeHtml(name)} オリジナルイメージ" loading="lazy">`
+            : '<div class="fallback">POIGAME LAB VISUAL</div>'}
+        </div>
+        <div class="body">
+          <span class="eyebrow">POIGAME攻略</span>
+          <h2>${POIGAME_DATA.escapeHtml(guide.title || name)}</h2>
+          <p>${POIGAME_DATA.escapeHtml(guide.description || "攻略情報をまとめています。")}</p>
+          <div class="links">
+            ${guide.links.map((item) => `<a href="${item.href}">${POIGAME_DATA.escapeHtml(item.label)}</a>`).join("")}
+          </div>
+          <a class="compare" href="game.html?game=${encodeURIComponent(name)}#comparison">案件を比較する →</a>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  } catch (error) {
+    console.error(error);
+    grid.innerHTML = '<div>攻略一覧を読み込めませんでした。</div>';
+  }
+})();
+</script>
+<script src="site-footer.js"></script>
+</body>
+</html>

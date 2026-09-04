@@ -464,23 +464,67 @@
 }
 
 
-/* 詳細ボタン */
+/* カード導線 */
 
-.detail-button {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #7047ff, #8b52ff);
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 800;
-  text-align: center;
-  text-decoration: none;
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 16px;
 }
 
-.detail-button:hover {
-  opacity: 0.9;
+.card-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d9ceff;
+  border-radius: 12px;
+  color: #5a34ce;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.card-action--guide {
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(135deg,#4f20c7,#7047ff 60%,#865bff);
+  box-shadow: 0 8px 18px rgba(90,50,205,.20);
+}
+
+.card-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(74,39,165,.14);
+}
+
+.card-action.is-disabled {
+  pointer-events: none;
+  color: #9d96a9;
+  background: #f4f2f7;
+  border-color: #e9e5ef;
+  box-shadow: none;
+}
+
+.game-card .game-image {
+  padding: 14px 14px 0;
+}
+
+.game-card .game-thumbnail,
+.game-card .image-placeholder {
+  box-shadow: 0 10px 26px rgba(48,22,108,.12);
+}
+
+.game-card .game-thumbnail {
+  transition: transform .24s ease;
+}
+
+.game-card:hover .game-thumbnail {
+  transform: scale(1.018);
 }
 
 
@@ -596,19 +640,8 @@
 </head>
 
 <body>
-
-  <header>
-    <a href="#" class="header-logo">
-      <img src="poigamelab_logo_horizontal.png" alt="POIGAME LAB">
-    </a>
-
-    <nav>
-      <a href="#">ゲームを探す</a>
-      <a href="#">案件を比べる</a>
-      <a href="#">攻略情報</a>
-      <a href="#">POIGAME LABとは</a>
-    </nav>
-  </header>
+  <div data-poigame-header></div>
+  <script src="site-header.js"></script>
 
   <main class="hero">
 
@@ -650,7 +683,7 @@
     </section>
 
         <!-- 注目ゲーム案件 -->
-        <section class="featured-games">
+        <section class="featured-games" id="game-list">
 
           <div class="section-heading">
             <div>
@@ -658,7 +691,7 @@
               <h2>🔥 いま注目のポイ活ゲーム</h2>
             </div>
 
-            <a href="#" class="view-all">すべて見る →</a>
+            <a href="offers.html" class="view-all">すべて見る →</a>
           </div>
 
           <div class="sort-buttons">
@@ -680,6 +713,7 @@
   <script src="games.js"></script>
   <script src="site-data.js"></script>
   <script src="site-referrals.js"></script>
+  <script src="site-guides.js"></script>
 
 <script>
   async function loadGames() {
@@ -875,22 +909,28 @@
       const card = document.createElement("article");
       card.className = "game-card";
 
+      const guide = window.POIGAME_GUIDES?.[game.name];
+      const guideHref = guide?.links?.[0]?.href || "";
+      const imageMarkup = game.image
+        ? `<img class="game-thumbnail" src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ" loading="lazy">`
+        : `<div class="image-placeholder">POIGAME LAB VISUAL</div>`;
+
       card.innerHTML = `
+  <div class="game-image">
+    ${imageMarkup}
+  </div>
   <div class="game-info">
     <div class="card-rank-row">
       ${cardIndex < 3 ? `<span class="rank-badge">${cardIndex + 1}位</span>` : (game.featured ? `<span class="rank-badge">注目</span>` : "")}
     </div>
 
     <h3>
-      <a
-        class="game-title-link"
-        href="game.html?game=${encodeURIComponent(game.name)}"
-      >${POIGAME_DATA.escapeHtml(game.name)}</a>
+      <a class="game-title-link" href="game.html?game=${encodeURIComponent(game.name)}">
+        ${POIGAME_DATA.escapeHtml(game.name)}
+      </a>
     </h3>
 
-    <p class="game-condition">
-      ${POIGAME_DATA.escapeHtml(game.condition)}
-    </p>
+    <p class="game-condition">${POIGAME_DATA.escapeHtml(game.condition)}</p>
 
     <div class="reward-box">
       <span>最高還元</span>
@@ -915,12 +955,15 @@
       <span>🎮 難易度：${POIGAME_DATA.escapeHtml(game.difficulty)}</span>
     </div>
 
-    <a
-      href="game.html?game=${encodeURIComponent(game.name)}"
-      class="detail-button"
-    >
-      比較・攻略を見る
-    </a>
+    <div class="card-actions">
+      <a href="game.html?game=${encodeURIComponent(game.name)}#comparison" class="card-action">
+        比較を見る
+      </a>
+      ${guideHref
+        ? `<a href="${guideHref}" class="card-action card-action--guide">攻略を見る</a>`
+        : `<span class="card-action is-disabled">攻略準備中</span>`
+      }
+    </div>
 
     ${
       bestOffer && bestOffer.url

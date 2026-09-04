@@ -53,7 +53,93 @@
       padding: 30px;
       border-radius: 24px;
       background: #ffffff;
-      box-shadow: 0 10px 35px rgba(73, 40, 145, 0.10);
+      box-shadow: 0 14px 42px rgba(73, 40, 145, 0.11);
+    }
+
+    .game-header-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 320px) 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .game-artwork {
+      min-height: 250px;
+      overflow: hidden;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 80% 10%, rgba(255,217,61,.45), transparent 28%),
+        linear-gradient(145deg,#2b135e,#7047ff);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.15), 0 16px 36px rgba(54,26,126,.18);
+    }
+
+    .game-artwork img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 250px;
+      object-fit: cover;
+    }
+
+    .game-artwork-fallback {
+      min-height: 250px;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: #fff;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-align: center;
+    }
+
+    .game-header-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .game-top-guide {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid #e1d8ff;
+      border-radius: 16px;
+      background: linear-gradient(135deg,#faf7ff,#fff9dc);
+    }
+
+    .game-top-guide strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #32156f;
+      font-size: 15px;
+    }
+
+    .game-top-guide p {
+      margin: 0 0 10px;
+      color: #756b84;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .game-top-guide-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-top-guide a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 11px;
+      color: #fff;
+      background: linear-gradient(135deg,#4d20c4,#7047ff);
+      box-shadow: 0 8px 18px rgba(87,47,191,.18);
+      font-size: 12px;
+      font-weight: 900;
+      text-decoration: none;
     }
 
     .game-header h1 {
@@ -569,6 +655,30 @@
     }
 
     @media (max-width: 700px) {
+      .detail-page {
+        padding: 24px 14px 64px;
+      }
+
+      .game-header {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .game-header-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .game-artwork,
+      .game-artwork img,
+      .game-artwork-fallback {
+        min-height: 190px;
+      }
+
+      .game-header h1 {
+        font-size: 28px;
+      }
+
       .comparison-table {
         display: none;
       }
@@ -594,6 +704,8 @@
 </head>
 
 <body>
+  <div data-poigame-header></div>
+  <script src="site-header.js"></script>
 
   <main class="detail-page">
 
@@ -602,32 +714,36 @@
     </a>
 
     <section class="game-header">
+      <div class="game-header-grid">
+        <div id="gameArtwork" class="game-artwork" aria-label="ゲームイメージ">
+          <div class="game-artwork-fallback">POIGAME LAB VISUAL</div>
+        </div>
 
-      <h1 id="gameName">
-        ゲーム名
-      </h1>
+        <div class="game-header-copy">
+          <h1 id="gameName">ゲーム名</h1>
 
-      <p id="gameCondition">
-        条件を読み込み中
-      </p>
+          <p id="gameCondition">条件を読み込み中</p>
 
-      <div class="best-offer">
-        <span id="bestRewardLabel">最高還元</span>
+          <div class="best-offer">
+            <span id="bestRewardLabel">最高還元</span>
 
-        <strong id="bestReward">
-          --- 円
-        </strong>
+            <strong id="bestReward">--- 円</strong>
 
-        <p id="bestSite">
-          ポイントサイト：調査中
-        </p>
-        <p id="bestVerified" class="best-verified"></p>
-        <p id="dataHealthBox" class="data-health-box" hidden></p>
+            <p id="bestSite">ポイントサイト：調査中</p>
+            <p id="bestVerified" class="best-verified"></p>
+            <p id="dataHealthBox" class="data-health-box" hidden></p>
+          </div>
+
+          <div id="gameTopGuideCta" class="game-top-guide" hidden>
+            <strong id="gameTopGuideTitle">攻略情報</strong>
+            <p id="gameTopGuideDescription">詳しい攻略をすぐ確認できます。</p>
+            <div id="gameTopGuideLinks" class="game-top-guide-links"></div>
+          </div>
+        </div>
       </div>
-
     </section>
 
-    <section class="section">
+    <section class="section" id="comparison">
 
       <h2>📊 ポイントサイト比較</h2>
 
@@ -756,6 +872,15 @@
         document.getElementById("gameName").textContent = game.name;
         document.getElementById("gameCondition").textContent = game.condition;
 
+        const artwork = document.getElementById("gameArtwork");
+        if (artwork) {
+          if (game.image) {
+            artwork.innerHTML = `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ">`;
+          } else {
+            artwork.innerHTML = `<div class="game-artwork-fallback">${POIGAME_DATA.escapeHtml(game.name)}<br>POIGAME LAB VISUAL</div>`;
+          }
+        }
+
         const gameDays = document.getElementById("gameDays");
         if (gameDays) gameDays.textContent = game.days;
 
@@ -772,20 +897,39 @@
         const guideTitle = document.getElementById("gameGuideTitle");
         const guideDescription = document.getElementById("gameGuideDescription");
         const guideLinks = document.getElementById("gameGuideLinks");
+        const topGuideCta = document.getElementById("gameTopGuideCta");
+        const topGuideTitle = document.getElementById("gameTopGuideTitle");
+        const topGuideDescription = document.getElementById("gameTopGuideDescription");
+        const topGuideLinks = document.getElementById("gameTopGuideLinks");
         const guide = window.POIGAME_GUIDES?.[game.name];
 
         if (guideCta && guide && Array.isArray(guide.links) && guide.links.length) {
           guideTitle.textContent = guide.title || `${game.name} ポイ活攻略`;
           guideDescription.textContent = guide.description || "詳しい攻略情報をまとめています。";
           guideLinks.replaceChildren();
+
+          if (topGuideTitle) topGuideTitle.textContent = guide.title || `${game.name} ポイ活攻略`;
+          if (topGuideDescription) topGuideDescription.textContent = guide.description || "詳しい攻略情報をまとめています。";
+          if (topGuideLinks) topGuideLinks.replaceChildren();
+
           guide.links.forEach((item) => {
             if (!item || !item.href || !item.label) return;
+
             const link = document.createElement("a");
             link.href = item.href;
             link.textContent = item.label;
             guideLinks.appendChild(link);
+
+            if (topGuideLinks) {
+              const topLink = document.createElement("a");
+              topLink.href = item.href;
+              topLink.textContent = item.label;
+              topGuideLinks.appendChild(topLink);
+            }
           });
+
           guideCta.style.display = "block";
+          if (topGuideCta) topGuideCta.hidden = false;
         }
 
         const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);

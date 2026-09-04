@@ -62,6 +62,8 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
     required = {
         "index.html",
         "game.html",
+        "offers.html",
+        "guides.html",
         "404.html",
         "about.html",
         "privacy.html",
@@ -75,6 +77,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "site-footer.js",
         "site-referrals.js",
         "site-guides.js",
+        "site-header.js",
         "games.js",
         "games.csv",
         "robots.txt",
@@ -196,6 +199,8 @@ def test_adsense_code_is_present_on_monetized_pages(output_dir):
     monetized_pages = {
         "index.html",
         "game.html",
+        "offers.html",
+        "guides.html",
         "kinoko-guide.html",
         "mementomori-guide.html",
         "township-lv60.html",
@@ -277,6 +282,8 @@ def test_ga4_uses_standard_gtag_snippet_once_on_public_pages(output_dir):
     tracked_pages = {
         "index.html",
         "game.html",
+        "offers.html",
+        "guides.html",
         "kinoko-guide.html",
         "mementomori-guide.html",
         "township-lv60.html",
@@ -316,3 +323,105 @@ def test_privacy_policy_discloses_google_analytics(output_dir):
     assert "Google Analytics 4" in html
     assert "Google プライバシーポリシー" in html
     assert "2026年9月5日" in html
+
+
+
+def test_shared_header_and_navigation_are_wired(output_dir):
+    builder.build_public_site(output_dir)
+
+    header_js = (output_dir / "site-header.js").read_text(encoding="utf-8")
+    assert "poigamelab_logo_horizontal.png" in header_js
+    assert '["ゲームを探す", "index.html#game-list"]' in header_js
+    assert '["案件一覧", "offers.html"]' in header_js
+    assert '["攻略一覧", "guides.html"]' in header_js
+    assert '["POIGAME LABとは", "about.html"]' in header_js
+    assert '["お問い合わせ", "contact.html"]' in header_js
+    assert "poigame-site-header__menu" in header_js
+    assert "poigame-mobile-nav" in header_js
+
+    shared_header_pages = {
+        "index.html",
+        "game.html",
+        "offers.html",
+        "guides.html",
+        "kinoko-guide.html",
+        "mementomori-guide.html",
+        "township-lv60.html",
+        "township-lv70.html",
+        "whiteout-survival-guide.html",
+        "working-heroes-guide.html",
+        "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html",
+        "kingshot-guide.html",
+        "houchishojo-guide.html",
+        "evertale-guide.html",
+        "about.html",
+        "privacy.html",
+        "contact.html",
+    }
+
+    for filename in shared_header_pages:
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert html.count('src="site-header.js"') == 1
+
+    for filename in {
+        "kinoko-guide.html",
+        "mementomori-guide.html",
+        "township-lv60.html",
+        "township-lv70.html",
+        "whiteout-survival-guide.html",
+        "working-heroes-guide.html",
+        "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html",
+        "kingshot-guide.html",
+        "houchishojo-guide.html",
+        "evertale-guide.html",
+    }:
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert '<header class="topbar">' not in html
+
+
+def test_homepage_cards_offer_direct_compare_and_guide_actions(output_dir):
+    builder.build_public_site(output_dir)
+    html = (output_dir / "index.html").read_text(encoding="utf-8")
+    assert 'id="game-list"' in html
+    assert 'href="offers.html" class="view-all"' in html
+    assert 'src="site-guides.js"' in html
+    assert "比較を見る" in html
+    assert "攻略を見る" in html
+    assert "card-action--guide" in html
+    assert "game.html?game=" in html
+    assert "#comparison" in html
+
+
+def test_game_detail_exposes_guide_cta_near_top(output_dir):
+    builder.build_public_site(output_dir)
+    html = (output_dir / "game.html").read_text(encoding="utf-8")
+    assert 'id="gameTopGuideCta"' in html
+    assert 'id="gameTopGuideLinks"' in html
+    assert 'id="comparison"' in html
+    assert 'id="gameArtwork"' in html
+
+
+
+def test_every_catalog_game_has_a_published_visual(output_dir):
+    builder.build_public_site(output_dir)
+
+    import csv
+
+    games = list(csv.DictReader(
+        (output_dir / "games.csv").open(encoding="utf-8", newline="")
+    ))
+    assert games
+
+    images = []
+    for row in games:
+        image = str(row.get("image") or "").strip()
+        assert image, f'missing visual for {row.get("name")}'
+        assert image.startswith("assets/game-art/")
+        target = output_dir / image
+        assert target.is_file(), f"missing published game visual: {image}"
+        assert target.suffix.lower() == ".svg"
+        images.append(image)
+
+    assert len(images) == len(set(images))
