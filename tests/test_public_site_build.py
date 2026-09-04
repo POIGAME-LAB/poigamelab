@@ -75,6 +75,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "site-footer.js",
         "site-referrals.js",
         "site-guides.js",
+        "site-analytics.js",
         "games.js",
         "games.csv",
         "robots.txt",
@@ -259,3 +260,55 @@ def test_every_catalog_game_has_published_guide_mapping(output_dir):
             expected_backlink in html
             for html in guide_pages.values()
         ), f"no guide page links back to game detail: {game}"
+
+
+
+def test_ga4_is_loaded_once_on_public_pages(output_dir):
+    builder.build_public_site(output_dir)
+
+    measurement_id = "G-E4SF1QQDWB"
+    analytics_js = (output_dir / "site-analytics.js").read_text(encoding="utf-8")
+
+    assert analytics_js.count(measurement_id) == 1
+    assert 'window.__POIGAME_GA4_LOADED__' in analytics_js
+    assert 'window.gtag("config", MEASUREMENT_ID);' in analytics_js
+    assert "www.googletagmanager.com/gtag/js?id=" in analytics_js
+
+    tracked_pages = {
+        "index.html",
+        "game.html",
+        "kinoko-guide.html",
+        "mementomori-guide.html",
+        "township-lv60.html",
+        "township-lv70.html",
+        "whiteout-survival-guide.html",
+        "working-heroes-guide.html",
+        "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html",
+        "kingshot-guide.html",
+        "houchishojo-guide.html",
+        "evertale-guide.html",
+        "about.html",
+        "privacy.html",
+        "contact.html",
+        "404.html",
+    }
+
+    for filename in tracked_pages:
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert html.count('src="site-analytics.js"') == 1
+        assert measurement_id not in html
+        head = html.split("</head>", 1)[0]
+        assert 'src="site-analytics.js"' in head
+
+    internal_status = (output_dir / "data-status.html").read_text(encoding="utf-8")
+    assert 'src="site-analytics.js"' not in internal_status
+    assert measurement_id not in internal_status
+
+
+def test_privacy_policy_discloses_google_analytics(output_dir):
+    builder.build_public_site(output_dir)
+    html = (output_dir / "privacy.html").read_text(encoding="utf-8")
+    assert "Google Analytics 4" in html
+    assert "Google プライバシーポリシー" in html
+    assert "2026年9月5日" in html
