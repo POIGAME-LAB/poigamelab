@@ -225,7 +225,7 @@ def test_every_catalog_game_has_published_guide_mapping(output_dir):
     games = list(csv.DictReader((output_dir / "games.csv").open(encoding="utf-8", newline="")))
     guide_text = (output_dir / "site-guides.js").read_text(encoding="utf-8")
 
-    mapped_games = set(re.findall(r'^  "([^"]+)": \{
+    mapped_games = set(re.findall(r'^  "([^"]+)": \{$', guide_text, flags=re.MULTILINE))
     catalog_games = {row["name"] for row in games}
 
     assert mapped_games == catalog_games
