@@ -467,7 +467,7 @@
       </p>
 
       <div class="best-offer">
-        <span>最高還元</span>
+        <span id="bestRewardLabel">最高還元</span>
 
         <strong id="bestReward">
           --- 円
@@ -641,8 +641,8 @@
         const overview = document.getElementById("gameOverview");
         if (overview) overview.textContent = game.overview || "ゲーム概要は準備中です。";
 
-        const tips = document.querySelector(".section:last-of-type p");
-        if (tips) tips.textContent = game.tips || "攻略情報は準備中です。";
+        const tips = document.getElementById("gameTips");
+        if (tips) tips.textContent = game.tips || "攻略情報を整理中です。";
 
         const townshipGuideCta = document.getElementById("townshipGuideCta");
         if (townshipGuideCta && game.name === "Township") {
