@@ -337,7 +337,7 @@ def test_shared_header_and_navigation_are_wired(output_dir):
     assert '["POIGAME LABとは", "about.html"]' in header_js
     assert '["お問い合わせ", "contact.html"]' in header_js
     assert "poigame-site-header__menu" in header_js
-    assert "poigame-mobile-nav" in header_js
+    assert "poigame-mobile-menu-dialog" in header_js
 
     shared_header_pages = {
         "index.html",
@@ -362,7 +362,8 @@ def test_shared_header_and_navigation_are_wired(output_dir):
 
     for filename in shared_header_pages:
         html = (output_dir / filename).read_text(encoding="utf-8")
-        assert html.count('src="site-header.js"') == 1
+        assert html.count('src="site-header.js?v=20260905-0300"') == 1
+        assert 'src="site-header.js"' not in html
 
     for filename in {
         "kinoko-guide.html",
@@ -420,16 +421,16 @@ def test_low_quality_temporary_game_art_is_not_referenced(output_dir):
     )
 
 
-def test_mobile_menu_is_body_level_fixed_overlay(output_dir):
+def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
     builder.build_public_site(output_dir)
     header_js = (output_dir / "site-header.js").read_text(encoding="utf-8")
 
-    assert 'document.body.appendChild(mobileNav)' in header_js
-    assert 'position: fixed;' in header_js
-    assert 'inset: 66px 0 0 0;' in header_js
-    assert 'z-index: 2147483001;' in header_js
-    assert 'visibility: hidden;' in header_js
-    assert '.poigame-mobile-nav.is-open' in header_js
-    assert 'visibility: visible;' in header_js
-    assert 'mobileNav.classList.toggle("is-open", open)' in header_js
+    assert 'document.createElement("dialog")' in header_js
+    assert 'dialog.showModal();' in header_js
+    assert 'dialog.close();' in header_js
+    assert 'document.body.appendChild(dialog)' in header_js
+    assert '.poigame-mobile-menu-dialog::backdrop' in header_js
+    assert 'inset: 78px 14px auto auto;' in header_js
+    assert 'aria-controls="poigame-mobile-menu"' in header_js
     assert 'document.body.style.overflow = open ? "hidden" : "";' in header_js
+    assert 'z-index: 2147483001' not in header_js
