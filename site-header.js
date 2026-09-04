@@ -145,20 +145,21 @@
       }
 
       .poigame-mobile-menu-dialog {
-        width: min(calc(100vw - 28px), 360px);
+        width: 100vw;
+        height: 100dvh;
         max-width: none;
-        max-height: calc(100dvh - 92px);
+        max-height: none;
         margin: 0;
         padding: 0;
         border: 0;
-        border-radius: 20px;
+        border-radius: 0;
         background: transparent;
-        overflow: visible;
+        overflow: hidden;
       }
 
       .poigame-mobile-menu-dialog[open] {
         position: fixed;
-        inset: 78px 14px auto auto;
+        inset: 0;
       }
 
       .poigame-mobile-menu-dialog::backdrop {
@@ -168,7 +169,12 @@
       }
 
       .poigame-mobile-menu-dialog__panel {
-        max-height: calc(100dvh - 92px);
+        box-sizing: border-box;
+        position: absolute;
+        top: calc(env(safe-area-inset-top, 0px) + 78px);
+        right: 14px;
+        width: min(calc(100vw - 28px), 360px);
+        max-height: calc(100dvh - 106px);
         overflow-y: auto;
         padding: 10px;
         border: 1px solid rgba(255,255,255,.16);

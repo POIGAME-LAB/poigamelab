@@ -362,7 +362,7 @@ def test_shared_header_and_navigation_are_wired(output_dir):
 
     for filename in shared_header_pages:
         html = (output_dir / filename).read_text(encoding="utf-8")
-        assert html.count('src="site-header.js?v=20260905-0300"') == 1
+        assert html.count('src="site-header.js?v=20260905-0315"') == 1
         assert 'src="site-header.js"' not in html
 
     for filename in {
@@ -430,7 +430,13 @@ def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
     assert 'dialog.close();' in header_js
     assert 'document.body.appendChild(dialog)' in header_js
     assert '.poigame-mobile-menu-dialog::backdrop' in header_js
-    assert 'inset: 78px 14px auto auto;' in header_js
+    assert 'width: 100vw;' in header_js
+    assert 'height: 100dvh;' in header_js
+    assert 'inset: 0;' in header_js
+    assert 'box-sizing: border-box;' in header_js
+    assert 'position: absolute;' in header_js
+    assert 'top: calc(env(safe-area-inset-top, 0px) + 78px);' in header_js
+    assert 'right: 14px;' in header_js
     assert 'aria-controls="poigame-mobile-menu"' in header_js
     assert 'document.body.style.overflow = open ? "hidden" : "";' in header_js
     assert 'z-index: 2147483001' not in header_js
