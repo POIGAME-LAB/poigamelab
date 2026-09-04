@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#123b45"/><stop offset=".58" stop-color="#4b48a8"/><stop offset="1" stop-color="#15102f"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#9ff3d0" stop-opacity=".85"/><stop offset="1" stop-color="#9ff3d0" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#fff" stroke-opacity=".055"/></pattern>
+</defs>
+<rect width="1200" height="675" rx="32" fill="url(#bg)"/>
+<rect width="1200" height="675" rx="32" fill="url(#grid)"/>
+<circle cx="950" cy="110" r="240" fill="url(#glow)" opacity=".28"/>
+
+  <path d="M0 530c130-145 250-194 365-145 72 31 133 78 205 145z" fill="#276a5e" opacity=".74"/>
+  <path d="M520 500c70-170 195-275 360-278 75 2 145 23 215 70-127 18-216 75-270 170-55 98-153 130-305 38z" fill="#1a2d38" opacity=".92"/>
+  <path d="M760 295c46-70 105-93 180-67-32 28-50 57-56 88 55-10 102 6 141 48-72-1-122 20-153 63z" fill="#72d7a8" opacity=".88"/>
+  <circle cx="260" cy="160" r="18" fill="#ffd93d"/><circle cx="360" cy="220" r="10" fill="#8ff0d0"/><circle cx="470" cy="135" r="13" fill="#ffd93d"/>
+  <path d="M180 460c55-95 107-155 175-184 4 83 27 137 76 179-91-8-164-6-251 5z" fill="#3aa47d" opacity=".65"/>
+
+<path d="M70 565h260l58-58h168" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width="3"/>
+<circle cx="330" cy="565" r="6" fill="#9ff3d0"/>
+<circle cx="556" cy="507" r="6" fill="#9ff3d0"/>
+</svg>
