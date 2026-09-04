@@ -434,6 +434,36 @@
       line-height: 1.7;
     }
 
+    .trend-summary {
+      margin-bottom: 14px;
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f1edff, #fff9d9);
+    }
+
+    .trend-summary-label {
+      color: #6f6482;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .trend-summary-value {
+      display: block;
+      margin: 4px 0 8px;
+      color: #5f36e8;
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .trend-summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      color: #655d71;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
     .trend-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -590,6 +620,7 @@
       <summary>📈 還元額の推移</summary>
       <div class="collapsible-content">
         <p class="trend-note">POIGAME LABで検証済みデータを持ち始めた2026年8月31日以降の履歴です。ポイントサイト・OSごとに現在値、前回の変動、過去最高との比較を表示します。</p>
+        <div id="gameTrendSummary" class="trend-summary"></div>
         <div id="rewardTrendList" class="trend-grid"></div>
       </div>
     </details>
