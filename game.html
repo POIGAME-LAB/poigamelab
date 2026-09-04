@@ -299,6 +299,152 @@
       gap: 10px;
     }
 
+    .collapsible-section {
+      overflow: hidden;
+    }
+
+    .collapsible-section > summary {
+      cursor: pointer;
+      list-style: none;
+      color: #28125f;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .collapsible-section > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .collapsible-section > summary::after {
+      content: "＋";
+      float: right;
+      color: #7047ff;
+      font-size: 22px;
+    }
+
+    .collapsible-section[open] > summary::after {
+      content: "−";
+    }
+
+    .collapsible-content {
+      padding-top: 18px;
+      color: #554c63;
+      line-height: 1.85;
+    }
+
+    .os-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+
+    .os-filter button {
+      border: 1px solid #ddd5f5;
+      border-radius: 999px;
+      padding: 9px 14px;
+      background: #fff;
+      color: #5f5572;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .os-filter button.active {
+      border-color: #7047ff;
+      background: #7047ff;
+      color: #fff;
+    }
+
+    .offer-card-list {
+      display: none;
+    }
+
+    .mobile-offer-card {
+      padding: 16px;
+      border: 1px solid #e9e3f8;
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .mobile-offer-card + .mobile-offer-card {
+      margin-top: 12px;
+    }
+
+    .mobile-offer-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mobile-offer-site {
+      color: #28125f;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .mobile-offer-reward {
+      color: #7047ff;
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .platform-pill {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f1edff;
+      color: #5c3db1;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .mobile-offer-condition {
+      margin: 0 0 12px;
+      color: #51485f;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .mobile-offer-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: #746d80;
+      font-size: 11px;
+    }
+
+    .no-offers-card {
+      padding: 18px;
+      border-radius: 14px;
+      background: #faf8ff;
+      color: #8b8397;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .comparison-table {
+        display: none;
+      }
+
+      .offer-card-list {
+        display: block;
+      }
+
+      .section {
+        overflow-x: visible;
+      }
+
+      .collapsible-section > summary {
+        font-size: 20px;
+      }
+    }
+
   </style>
 </head>
 
@@ -321,7 +467,7 @@
       </p>
 
       <div class="best-offer">
-        <span>最高還元</span>
+        <span id="bestRewardLabel">最高還元</span>
 
         <strong id="bestReward">
           --- 円
@@ -338,76 +484,59 @@
 
     <section class="section">
 
-      <h2>
-        📊 ポイントサイト比較
-      </h2>
+      <h2>📊 ポイントサイト比較</h2>
+
+      <div class="os-filter" aria-label="対応OSで絞り込み">
+        <button type="button" class="active" data-platform="all">すべて</button>
+        <button type="button" data-platform="iOS">iOS</button>
+        <button type="button" data-platform="Android">Android</button>
+        <button type="button" data-platform="unknown">OS不明</button>
+      </div>
 
       <table class="comparison-table">
-
         <thead>
-            <tr>
-                <th>ポイントサイト</th>
-                <th>還元額</th>
-                <th>条件</th>
-                <th>対応OS</th>
-                <th>締切</th>
-                <th>更新日</th>
-                <th>リンク</th>
-              </tr>
+          <tr>
+            <th>ポイントサイト</th>
+            <th>還元額</th>
+            <th>条件</th>
+            <th>対応OS</th>
+            <th>締切</th>
+            <th>更新日</th>
+            <th>リンク</th>
+          </tr>
         </thead>
-
-        <tbody id="offerTableBody">
-        </tbody>
-
+        <tbody id="offerTableBody"></tbody>
       </table>
 
-    </section>
-
-    <section class="section">
-
-      <h2>
-        🎮 ゲーム概要
-      </h2>
-
-      <p id="gameOverview">
-        準備中
-      </p>
+      <div id="offerCards" class="offer-card-list" aria-live="polite"></div>
 
     </section>
 
-    <section class="section">
+    <details class="section collapsible-section" open>
+      <summary>🎮 ゲーム概要</summary>
+      <div class="collapsible-content">
+        <p id="gameOverview">読み込み中</p>
+      </div>
+    </details>
 
-      <h2>
-        ⏱ 達成目安
-      </h2>
+    <details class="section collapsible-section" open>
+      <summary>⏱ 達成目安</summary>
+      <div class="collapsible-content">
+        <p id="gameDays">読み込み中</p>
+      </div>
+    </details>
 
-      <p id="gameDays">
-        調査中
-      </p>
+    <details class="section collapsible-section" open>
+      <summary>⭐ 難易度</summary>
+      <div class="collapsible-content">
+        <p id="gameDifficulty">読み込み中</p>
+      </div>
+    </details>
 
-    </section>
-
-    <section class="section">
-
-      <h2>
-        ⭐ 難易度
-      </h2>
-
-      <p id="gameDifficulty">
-        調査中
-      </p>
-
-    </section>
-
-    <section class="section">
-
-      <h2>
-        💡 攻略・達成のコツ
-      </h2>
-
-      <p>
-        攻略情報は準備中です。
-      </p>
+    <details class="section collapsible-section" open>
+      <summary>💡 攻略・達成のコツ</summary>
+      <div class="collapsible-content">
+        <p id="gameTips">読み込み中</p>
 
       <div id="townshipGuideCta" class="guide-cta">
         <strong>Township攻略</strong>
@@ -449,11 +578,11 @@
         <strong>ホワイトアウト・サバイバル ポイ活攻略</strong>
         <p>大溶鉱炉Lv23・26の到達ペースと、25日案件の続行判断を実プレイヤー進捗からまとめました。</p>
         <div class="guide-links">
-          <a href="whiteout-survival-guide.html">攻略を読む →</a>
+          <a href="whiteout-survival-guide.html">詳しい攻略を読む →</a>
         </div>
       </div>
-
-    </section>
+      </div>
+    </details>
 
   </main>
 
@@ -512,8 +641,8 @@
         const overview = document.getElementById("gameOverview");
         if (overview) overview.textContent = game.overview || "ゲーム概要は準備中です。";
 
-        const tips = document.querySelector(".section:last-of-type p");
-        if (tips) tips.textContent = game.tips || "攻略情報は準備中です。";
+        const tips = document.getElementById("gameTips");
+        if (tips) tips.textContent = game.tips || "攻略情報を整理中です。";
 
         const townshipGuideCta = document.getElementById("townshipGuideCta");
         if (townshipGuideCta && game.name === "Township") {
@@ -542,73 +671,145 @@
         }
 
 
-        const tableBody = document.querySelector("tbody");
-        if (tableBody) {
-          tableBody.innerHTML = "";
-          const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+        const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+        const tableBody = document.getElementById("offerTableBody");
+        const offerCards = document.getElementById("offerCards");
+        const platformButtons = [...document.querySelectorAll(".os-filter button")];
+        let activePlatform = "all";
 
-          if (sortedOffers.length > 0) {
-            const bestOffer = sortedOffers[0];
-            document.getElementById("bestReward").textContent =
-              `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
-            document.getElementById("bestSite").textContent =
-              `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
+        const dataHealthBox = document.getElementById("dataHealthBox");
+        if (dataHealthBox && gameHealth) {
+          dataHealthBox.hidden = false;
+          if (gameHealth.state === "fresh") {
+            dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
+          } else if (gameHealth.state === "degraded" || gameHealth.state === "failed") {
+            dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
+            dataHealthBox.classList.add("health-warning");
+          } else if (gameHealth.state === "stale") {
+            dataHealthBox.textContent = "申込み前に案件ページで最新条件をご確認ください。";
+            dataHealthBox.classList.add("health-warning");
+          }
+        }
 
-            const bestVerified = document.getElementById("bestVerified");
-            if (bestVerified) {
-              const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
-              bestVerified.textContent = healthLabel.text;
-              bestVerified.className = `best-verified ${healthLabel.state}`;
-            }
+        function matchesPlatform(offer, platform) {
+          const values = Array.isArray(offer.platform) ? offer.platform : [];
+          if (platform === "all") return true;
+          if (platform === "unknown") return values.length === 0 || values.includes("不明");
+          return values.includes(platform);
+        }
+
+        function updateBestOffer(offers, platform) {
+          const bestRewardLabel = document.getElementById("bestRewardLabel");
+          const bestReward = document.getElementById("bestReward");
+          const bestSite = document.getElementById("bestSite");
+          const bestVerified = document.getElementById("bestVerified");
+          const label = platform === "all" ? "最高還元" : (platform === "unknown" ? "OS不明の最高還元" : `${platform}の最高還元`);
+          if (bestRewardLabel) bestRewardLabel.textContent = label;
+
+          if (!offers.length) {
+            if (bestReward) bestReward.textContent = "確認できる案件なし";
+            if (bestSite) bestSite.textContent = "ポイントサイト：—";
+            if (bestVerified) bestVerified.textContent = "";
+            return;
           }
 
-          const dataHealthBox = document.getElementById("dataHealthBox");
-          if (dataHealthBox && gameHealth) {
-            dataHealthBox.hidden = false;
-            if (gameHealth.state === "fresh") {
-              dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
-            } else if (gameHealth.state === "degraded") {
-              dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
-              dataHealthBox.classList.add("health-warning");
-            } else if (gameHealth.state === "failed") {
-              dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
-              dataHealthBox.classList.add("health-warning");
-            } else if (gameHealth.state === "stale") {
-              dataHealthBox.textContent = "申込み前に案件ページで最新条件をご確認ください。";
-              dataHealthBox.classList.add("health-warning");
+          const bestOffer = offers[0];
+          if (bestReward) {
+            bestReward.textContent = `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
+          }
+          if (bestSite) {
+            bestSite.textContent = `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
+          }
+          if (bestVerified) {
+            const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
+            bestVerified.textContent = healthLabel.text;
+            bestVerified.className = `best-verified ${healthLabel.state}`;
+          }
+        }
+
+        function renderOfferViews() {
+          const filteredOffers = sortedOffers.filter((offer) => matchesPlatform(offer, activePlatform));
+          updateBestOffer(filteredOffers, activePlatform);
+
+          if (tableBody) tableBody.innerHTML = "";
+          if (offerCards) offerCards.innerHTML = "";
+
+          if (!filteredOffers.length) {
+            if (tableBody) {
+              const row = document.createElement("tr");
+              row.innerHTML = '<td colspan="7">このOSで現在確認できる案件はありません。</td>';
+              tableBody.appendChild(row);
             }
+            if (offerCards) {
+              offerCards.innerHTML = '<div class="no-offers-card">このOSで現在確認できる案件はありません。</div>';
+            }
+            return;
           }
 
-          sortedOffers.forEach((offer) => {
-            const row = document.createElement("tr");
+          filteredOffers.forEach((offer) => {
             const siteName = pointSites[offer.site] || offer.site;
             const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
             const rowHealth = POIGAME_DATA.getOfferHealthLabel(offer, gameHealth);
-            const labelClass = rowHealth.state === "legacy" ? "legacy-label" : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
+            const labelClass = rowHealth.state === "legacy"
+              ? "legacy-label"
+              : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
             const verifyLabel = `<br><small class="${labelClass}">${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>`;
+            const platformText = offer.platform.length ? offer.platform.join(" / ") : "不明";
 
-            row.innerHTML = `
-              <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
-              <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.platform.join(" / "))}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
-              <td>
+            if (tableBody) {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
+                <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
+                <td>${POIGAME_DATA.escapeHtml(platformText)}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
+                <td>
+                  ${safeUrl
+                    ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
+                    : "準備中"}
+                </td>
+              `;
+              tableBody.appendChild(row);
+            }
+
+            if (offerCards) {
+              const card = document.createElement("article");
+              card.className = "mobile-offer-card";
+              card.innerHTML = `
+                <div class="mobile-offer-head">
+                  <div class="mobile-offer-site">${POIGAME_DATA.escapeHtml(siteName)}</div>
+                  <div class="mobile-offer-reward">${offer.reward.toLocaleString()}円</div>
+                </div>
+                <span class="platform-pill">${POIGAME_DATA.escapeHtml(platformText)}</span>
+                <p class="mobile-offer-condition">${POIGAME_DATA.escapeHtml(offer.condition)}</p>
+                <div class="mobile-offer-meta">
+                  <span>締切：${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</span>
+                  <span>更新：${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
+                </div>
                 ${safeUrl
-                  ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
-                  : "準備中"}
-              </td>
-            `;
-            tableBody.appendChild(row);
+                  ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>`
+                  : '<span class="coming-soon">リンク準備中</span>'}
+              `;
+              offerCards.appendChild(card);
+            }
           });
-
-          if (sortedOffers.length === 0) {
-            const row = document.createElement("tr");
-            row.innerHTML = '<td colspan="7">現在確認できる案件はありません。</td>';
-            tableBody.appendChild(row);
-          }
         }
+
+        const hasUnknown = sortedOffers.some((offer) => matchesPlatform(offer, "unknown"));
+        const unknownButton = platformButtons.find((button) => button.dataset.platform === "unknown");
+        if (unknownButton) unknownButton.hidden = !hasUnknown;
+
+        platformButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            activePlatform = button.dataset.platform || "all";
+            platformButtons.forEach((item) => item.classList.toggle("active", item === button));
+            renderOfferViews();
+          });
+        });
+
+        renderOfferViews();
       } catch (error) {
         console.error("ゲーム詳細の読み込みに失敗しました", error);
       }
