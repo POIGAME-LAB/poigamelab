@@ -856,11 +856,6 @@
             return trend.platform === platform;
           });
 
-          if (!filtered.length) {
-            trendList.innerHTML = '<div class="no-offers-card">このOSで表示できる還元履歴はありません。</div>';
-            return;
-          }
-
           const formatSigned = (value, suffix = "") => {
             if (value === null || !Number.isFinite(Number(value))) return "—";
             const numeric = Number(value);
@@ -915,6 +910,11 @@
                 <span>${POIGAME_DATA.escapeHtml(highText)}</span>
               </div>
             `;
+          }
+
+          if (!filtered.length) {
+            trendList.innerHTML = '<div class="no-offers-card">現在掲載中のポイントサイト別履歴はありません。</div>';
+            return;
           }
 
           trendList.innerHTML = filtered.map((trend) => {
