@@ -206,6 +206,36 @@
   opacity: 0.9;
   transform: translateY(-1px);
 }
+
+.referral-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.referral-link {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid #7047ff;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #5f36e8;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.referral-link:hover {
+  background: #f4f0ff;
+}
+
+.referral-code {
+  color: #746d80;
+  font-size: 10px;
+  line-height: 1.5;
+}
     .best-verified {
       margin: 8px 0 0;
       font-size: 12px;
@@ -701,6 +731,7 @@
 
   <script src="games.js"></script>
   <script src="site-data.js"></script>
+  <script src="site-referrals.js"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -981,6 +1012,20 @@
           filteredOffers.forEach((offer) => {
             const siteName = pointSites[offer.site] || offer.site;
             const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
+            const referral = window.POIGAME_REFERRALS?.get(offer.site) || null;
+            const safeReferralUrl = referral
+              ? POIGAME_DATA.safeHttpUrl(referral.url)
+              : "";
+            const referralMarkup = safeReferralUrl
+              ? `
+                  <div class="referral-stack">
+                    <a href="${safeReferralUrl}" target="_blank" rel="sponsored noopener noreferrer" class="referral-link">
+                      このサイトに登録［PR］
+                    </a>
+                    <small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referral.code)}</small>
+                  </div>
+                `
+              : "";
             const rowHealth = POIGAME_DATA.getOfferHealthLabel(offer, gameHealth);
             const labelClass = rowHealth.state === "legacy"
               ? "legacy-label"
@@ -1001,6 +1046,7 @@
                   ${safeUrl
                     ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
                     : "準備中"}
+                  ${referralMarkup}
                 </td>
               `;
               tableBody.appendChild(row);
@@ -1023,6 +1069,7 @@
                 ${safeUrl
                   ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>`
                   : '<span class="coming-soon">リンク準備中</span>'}
+                ${referralMarkup}
               `;
               offerCards.appendChild(card);
             }
