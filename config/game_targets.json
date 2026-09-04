@@ -126,6 +126,23 @@
           "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361"
         ]
       }
+    },
+    {
+      "game": "キングショット",
+      "aliases": [
+        "キングショット",
+        "Kingshot"
+      ],
+      "known_urls_by_source": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=161855",
+          "https://pc.moppy.jp/ad/detail.php?site_id=161854"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/101355",
+          "https://hapitas.jp/item/detail/itemid/101354"
+        ]
+      }
     }
   ]
 }
