@@ -427,6 +427,106 @@
       text-align: center;
     }
 
+    .trend-note {
+      margin: 0 0 14px;
+      color: #82798f;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .trend-summary {
+      margin-bottom: 14px;
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f1edff, #fff9d9);
+    }
+
+    .trend-summary-label {
+      color: #6f6482;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .trend-summary-value {
+      display: block;
+      margin: 4px 0 8px;
+      color: #5f36e8;
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .trend-summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      color: #655d71;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .trend-card {
+      padding: 16px;
+      border: 1px solid #e7e0f7;
+      border-radius: 16px;
+      background: #fbf9ff;
+    }
+
+    .trend-card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .trend-card-site {
+      color: #28125f;
+      font-weight: 900;
+    }
+
+    .trend-current {
+      color: #7047ff;
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .trend-change {
+      margin: 7px 0;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .trend-change.up { color: #137a4f; }
+    .trend-change.down { color: #b44a45; }
+    .trend-change.flat { color: #6f6878; }
+
+    .trend-high {
+      margin: 4px 0 10px;
+      color: #655d71;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .trend-timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      color: #746d80;
+      font-size: 11px;
+    }
+
+    .trend-point {
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #f1edff;
+    }
+
     @media (max-width: 700px) {
       .comparison-table {
         display: none;
@@ -442,6 +542,10 @@
 
       .collapsible-section > summary {
         font-size: 20px;
+      }
+
+      .trend-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -511,6 +615,15 @@
       <div id="offerCards" class="offer-card-list" aria-live="polite"></div>
 
     </section>
+
+    <details class="section collapsible-section" open>
+      <summary>📈 還元額の推移</summary>
+      <div class="collapsible-content">
+        <p class="trend-note">POIGAME LABで検証済みデータを持ち始めた2026年8月31日以降の履歴です。ポイントサイト・OSごとに現在値、前回の変動、過去最高との比較を表示します。</p>
+        <div id="gameTrendSummary" class="trend-summary"></div>
+        <div id="rewardTrendList" class="trend-grid"></div>
+      </div>
+    </details>
 
     <details class="section collapsible-section" open>
       <summary>🎮 ゲーム概要</summary>
@@ -621,12 +734,18 @@
           offers: []
         };
 
-        const [offerResult, dataHealth] = await Promise.all([
+        const [offerResult, dataHealth, offerHistory] = await Promise.all([
           POIGAME_DATA.loadOffersWithFallback(),
-          POIGAME_DATA.loadDataHealth()
+          POIGAME_DATA.loadDataHealth(),
+          POIGAME_DATA.loadOfferHistory()
         ]);
         game.offers = offerResult.offers.filter((offer) => offer.gameName === game.name);
         const gameHealth = dataHealth.games?.[game.name];
+        const rewardTrends = POIGAME_DATA.buildRewardTrends(
+          offerHistory,
+          game.offers,
+          game.name
+        );
 
         document.title = `${game.name} | POIGAME LAB`;
         document.getElementById("gameName").textContent = game.name;
@@ -727,9 +846,122 @@
           }
         }
 
+        function renderRewardTrends(platform) {
+          const trendList = document.getElementById("rewardTrendList");
+          if (!trendList) return;
+
+          const filtered = rewardTrends.filter((trend) => {
+            if (platform === "all") return true;
+            if (platform === "unknown") return trend.platform === "不明";
+            return trend.platform === platform;
+          });
+
+          const formatSigned = (value, suffix = "") => {
+            if (value === null || !Number.isFinite(Number(value))) return "—";
+            const numeric = Number(value);
+            const sign = numeric > 0 ? "+" : "";
+            return `${sign}${numeric.toFixed(1)}${suffix}`;
+          };
+
+          const formatDate = (value) => {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return String(value || "").slice(0, 10);
+            return new Intl.DateTimeFormat("ja-JP", {
+              timeZone: "Asia/Tokyo",
+              month: "numeric",
+              day: "numeric"
+            }).format(date);
+          };
+
+          const gameTrend = POIGAME_DATA.buildGameRewardTrend(
+            offerHistory,
+            game.offers,
+            game.name,
+            platform
+          );
+          const trendSummary = document.getElementById("gameTrendSummary");
+          if (trendSummary) {
+            const platformLabel = platform === "all"
+              ? "全OS"
+              : (platform === "unknown" ? "OS不明" : platform);
+            const currentText = gameTrend.available
+              ? `${gameTrend.currentReward.toLocaleString()}円`
+              : "現在掲載なし";
+            const changeText = gameTrend.previousReward === null
+              ? "前回比較：変動履歴なし"
+              : `前回比 ${gameTrend.changeAmount > 0 ? "+" : ""}${gameTrend.changeAmount.toLocaleString()}円（${formatSigned(gameTrend.changePercent, "%")}）`;
+
+            let highText = "過去最高比較：履歴開始後の初回値";
+            if (gameTrend.previousHigh !== null) {
+              if (gameTrend.fromPreviousHighPercent > 0) {
+                highText = `過去最高 ${gameTrend.previousHigh.toLocaleString()}円を ${formatSigned(gameTrend.fromPreviousHighPercent, "%")} 更新`;
+              } else if (gameTrend.fromPreviousHighPercent < 0) {
+                highText = `過去最高 ${gameTrend.previousHigh.toLocaleString()}円から ${formatSigned(gameTrend.fromPreviousHighPercent, "%")}`;
+              } else {
+                highText = `過去最高 ${gameTrend.previousHigh.toLocaleString()}円と同額`;
+              }
+            }
+
+            trendSummary.innerHTML = `
+              <span class="trend-summary-label">${POIGAME_DATA.escapeHtml(platformLabel)}の最高還元</span>
+              <strong class="trend-summary-value">${POIGAME_DATA.escapeHtml(currentText)}</strong>
+              <div class="trend-summary-row">
+                <span>${POIGAME_DATA.escapeHtml(changeText)}</span>
+                <span>${POIGAME_DATA.escapeHtml(highText)}</span>
+              </div>
+            `;
+          }
+
+          if (!filtered.length) {
+            trendList.innerHTML = '<div class="no-offers-card">現在掲載中のポイントサイト別履歴はありません。</div>';
+            return;
+          }
+
+          trendList.innerHTML = filtered.map((trend) => {
+            const siteName = pointSites[trend.site] || trend.site;
+            const changeClass = trend.changeAmount === null
+              ? "flat"
+              : (trend.changeAmount > 0 ? "up" : (trend.changeAmount < 0 ? "down" : "flat"));
+            const changeText = trend.changeAmount === null
+              ? "前回比較：変動履歴なし"
+              : `前回比 ${trend.changeAmount > 0 ? "+" : ""}${trend.changeAmount.toLocaleString()}円（${formatSigned(trend.changePercent, "%")}）`;
+
+            let highText = "過去最高比較：履歴開始後の初回値";
+            if (trend.previousHigh !== null) {
+              if (trend.fromPreviousHighPercent > 0) {
+                highText = `過去最高 ${trend.previousHigh.toLocaleString()}円を ${formatSigned(trend.fromPreviousHighPercent, "%")} 更新`;
+              } else if (trend.fromPreviousHighPercent < 0) {
+                highText = `過去最高 ${trend.previousHigh.toLocaleString()}円から ${formatSigned(trend.fromPreviousHighPercent, "%")}`;
+              } else {
+                highText = `過去最高 ${trend.previousHigh.toLocaleString()}円と同額`;
+              }
+            }
+
+            const timeline = trend.changes.map((point) =>
+              `<span class="trend-point">${POIGAME_DATA.escapeHtml(formatDate(point.observedAt))} ${point.reward.toLocaleString()}円</span>`
+            ).join("");
+
+            return `
+              <article class="trend-card">
+                <div class="trend-card-head">
+                  <div>
+                    <div class="trend-card-site">${POIGAME_DATA.escapeHtml(siteName)}</div>
+                    <span class="platform-pill">${POIGAME_DATA.escapeHtml(trend.platform)}</span>
+                  </div>
+                  <div class="trend-current">${trend.currentReward.toLocaleString()}円</div>
+                </div>
+                <div class="trend-change ${changeClass}">${POIGAME_DATA.escapeHtml(changeText)}</div>
+                <p class="trend-high">${POIGAME_DATA.escapeHtml(highText)}</p>
+                <div class="trend-timeline">${timeline}</div>
+              </article>
+            `;
+          }).join("");
+        }
+
         function renderOfferViews() {
           const filteredOffers = sortedOffers.filter((offer) => matchesPlatform(offer, activePlatform));
           updateBestOffer(filteredOffers, activePlatform);
+          renderRewardTrends(activePlatform);
 
           if (tableBody) tableBody.innerHTML = "";
           if (offerCards) offerCards.innerHTML = "";

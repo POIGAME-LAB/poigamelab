@@ -33,6 +33,7 @@ ROOT_FILES = (
 
 DATA_FILES = (
     "published_offers.csv",
+    "offer_history.csv",
     "refresh_status.json",
     "exception_queue.json",
 )

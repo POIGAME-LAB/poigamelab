@@ -249,6 +249,192 @@
     }).format(date);
   }
 
+  async function loadOfferHistory() {
+    try {
+      return (await fetchCsv("data/offer_history.csv"))
+        .map((row) => ({
+          observedAt: String(row.observedAt || "").trim(),
+          game: String(row.game || "").trim(),
+          site: String(row.site || "").trim(),
+          platform: String(row.platform || "").trim() || "不明",
+          reward: Number(row.reward) || 0,
+          offerKey: String(row.offerKey || "").trim()
+        }))
+        .filter((row) => row.observedAt && row.game && row.site && row.reward > 0);
+    } catch (error) {
+      console.info("還元履歴はまだ利用できません。", error.message);
+      return [];
+    }
+  }
+
+  function buildRewardTrends(historyRows, currentOffers, gameName) {
+    const historyByGroup = new Map();
+    (historyRows || []).forEach((row) => {
+      if (row.game !== gameName) return;
+      const key = [row.site, row.platform || "不明"].join("|");
+      if (!historyByGroup.has(key)) historyByGroup.set(key, []);
+      historyByGroup.get(key).push(row);
+    });
+    historyByGroup.forEach((rows) => {
+      rows.sort((a, b) => Date.parse(a.observedAt) - Date.parse(b.observedAt));
+    });
+
+    const currentByGroup = new Map();
+    (currentOffers || []).forEach((offer) => {
+      const platforms = Array.isArray(offer.platform) && offer.platform.length
+        ? offer.platform
+        : ["不明"];
+      platforms.forEach((platform) => {
+        const key = [offer.site, platform].join("|");
+        const current = currentByGroup.get(key);
+        if (!current || Number(offer.reward) > Number(current.reward)) {
+          currentByGroup.set(key, { ...offer, trendPlatform: platform });
+        }
+      });
+    });
+
+    return [...currentByGroup.entries()].map(([key, offer]) => {
+      const rows = historyByGroup.get(key) || [];
+      const currentReward = Number(offer.reward) || 0;
+      const changes = [];
+      rows.forEach((row) => {
+        const reward = Number(row.reward) || 0;
+        const last = changes[changes.length - 1];
+        if (!last || last.reward !== reward) {
+          changes.push({ observedAt: row.observedAt, reward });
+        }
+      });
+      const last = changes[changes.length - 1];
+      if (!last || last.reward !== currentReward) {
+        changes.push({
+          observedAt: offer.updatedAt ? `${offer.updatedAt}T00:00:00Z` : new Date().toISOString(),
+          reward: currentReward
+        });
+      }
+
+      let previousReward = null;
+      for (let i = changes.length - 2; i >= 0; i -= 1) {
+        if (changes[i].reward !== currentReward) {
+          previousReward = changes[i].reward;
+          break;
+        }
+      }
+
+      const priorChanges = changes.slice(0, -1);
+      const previousHigh = priorChanges.length
+        ? Math.max(...priorChanges.map((item) => item.reward))
+        : null;
+      const historicalHigh = Math.max(currentReward, previousHigh || 0);
+      const changeAmount = previousReward === null ? null : currentReward - previousReward;
+      const changePercent = previousReward
+        ? ((currentReward - previousReward) / previousReward) * 100
+        : null;
+      const fromPreviousHighPercent = previousHigh
+        ? ((currentReward - previousHigh) / previousHigh) * 100
+        : null;
+
+      return {
+        site: offer.site,
+        platform: offer.trendPlatform,
+        currentReward,
+        previousReward,
+        changeAmount,
+        changePercent,
+        previousHigh,
+        historicalHigh,
+        fromPreviousHighPercent,
+        changes: changes.slice(-6)
+      };
+    }).sort((a, b) => b.currentReward - a.currentReward);
+  }
+
+  function buildGameRewardTrend(historyRows, currentOffers, gameName, platform = "all") {
+    const matchesPlatform = (value) => {
+      const normalized = String(value || "").trim() || "不明";
+      if (platform === "all") return true;
+      if (platform === "unknown") return normalized === "不明";
+      return normalized === platform;
+    };
+
+    const observedTimes = [...new Set(
+      (historyRows || []).map((row) => row.observedAt).filter(Boolean)
+    )].sort((a, b) => Date.parse(a) - Date.parse(b));
+
+    const changes = [];
+    let started = false;
+    observedTimes.forEach((observedAt) => {
+      const rewards = (historyRows || [])
+        .filter((row) =>
+          row.observedAt === observedAt
+          && row.game === gameName
+          && matchesPlatform(row.platform)
+        )
+        .map((row) => Number(row.reward) || 0)
+        .filter((reward) => reward > 0);
+      const reward = rewards.length ? Math.max(...rewards) : 0;
+      if (!started && reward <= 0) return;
+      started = true;
+      const last = changes[changes.length - 1];
+      if (!last || last.reward !== reward) {
+        changes.push({ observedAt, reward });
+      }
+    });
+
+    const currentRewards = [];
+    (currentOffers || []).forEach((offer) => {
+      const platforms = Array.isArray(offer.platform) && offer.platform.length
+        ? offer.platform
+        : ["不明"];
+      if (platform === "all") {
+        currentRewards.push(Number(offer.reward) || 0);
+      } else if (platform === "unknown") {
+        if (platforms.includes("不明")) currentRewards.push(Number(offer.reward) || 0);
+      } else if (platforms.includes(platform)) {
+        currentRewards.push(Number(offer.reward) || 0);
+      }
+    });
+    const currentReward = currentRewards.length ? Math.max(...currentRewards) : 0;
+
+    const last = changes[changes.length - 1];
+    if (started && (!last || last.reward !== currentReward)) {
+      changes.push({ observedAt: new Date().toISOString(), reward: currentReward });
+    } else if (!started && currentReward > 0) {
+      changes.push({ observedAt: new Date().toISOString(), reward: currentReward });
+    }
+
+    let previousReward = null;
+    for (let i = changes.length - 2; i >= 0; i -= 1) {
+      if (changes[i].reward !== currentReward) {
+        previousReward = changes[i].reward;
+        break;
+      }
+    }
+
+    const priorChanges = changes.slice(0, -1).filter((item) => item.reward > 0);
+    const previousHigh = priorChanges.length
+      ? Math.max(...priorChanges.map((item) => item.reward))
+      : null;
+    const changeAmount = previousReward === null ? null : currentReward - previousReward;
+    const changePercent = previousReward
+      ? ((currentReward - previousReward) / previousReward) * 100
+      : null;
+    const fromPreviousHighPercent = previousHigh
+      ? ((currentReward - previousHigh) / previousHigh) * 100
+      : null;
+
+    return {
+      platform,
+      currentReward,
+      available: currentReward > 0,
+      previousReward,
+      previousHigh,
+      changeAmount,
+      changePercent,
+      fromPreviousHighPercent,
+      changes: changes.slice(-6)
+    };
+  }
+
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -282,6 +468,9 @@
     loadDataHealth,
     getOfferHealthLabel,
     formatHealthUpdatedAt,
+    loadOfferHistory,
+    buildRewardTrends,
+    buildGameRewardTrend,
     escapeHtml,
     safeHttpUrl
   };

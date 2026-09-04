@@ -12,6 +12,7 @@ on:
       - "config/offerwall_providers.json"
       - "config/approved_offer_baselines.json"
       - "data/published_offers.csv"
+      - "data/offer_history.csv"
       - "data/warau_baseline_candidates.json"
       - "site-data.js"
       - "site-footer.js"
@@ -21,9 +22,11 @@ on:
       - "scripts/direct_offer_refresh.py"
       - "scripts/generate_warau_baseline_candidates.py"
       - "scripts/build_public_site.py"
+      - "scripts/append_offer_history.py"
       - "tests/test_direct_offer_refresh_v1.py"
       - "tests/test_warau_baseline_candidates.py"
       - "tests/test_public_site_build.py"
+      - "tests/test_offer_history.py"
       - "tests/test_phase2_auto_refresh_v23.py"
       - "tests/test_phase2_multigame.py"
       - "tests/test_site_data_v24.js"
@@ -51,9 +54,11 @@ jobs:
           python -m py_compile scripts/direct_offer_refresh.py
           python -m py_compile scripts/generate_warau_baseline_candidates.py
           python -m py_compile scripts/build_public_site.py
+          python -m py_compile scripts/append_offer_history.py
           python -m py_compile tests/test_direct_offer_refresh_v1.py
           python -m py_compile tests/test_warau_baseline_candidates.py
           python -m py_compile tests/test_public_site_build.py
+          python -m py_compile tests/test_offer_history.py
           python -m py_compile tests/test_phase2_auto_refresh_v23.py
           python -m py_compile tests/test_phase2_multigame.py
 
@@ -63,6 +68,7 @@ jobs:
             tests/test_direct_offer_refresh_v1.py \
             tests/test_warau_baseline_candidates.py \
             tests/test_public_site_build.py \
+            tests/test_offer_history.py \
             tests/test_phase2_auto_refresh_v23.py \
             tests/test_phase2_multigame.py
 
