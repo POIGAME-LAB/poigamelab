@@ -13,7 +13,7 @@ def test_slug_paths_are_distinct():
 def test_all_games_registered():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     games=[x['game'] for x in data['games']]
-    required={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー'}
+    required={'Township','きのこ伝説','メメントモリ','ワーキングヒーロー','ホワイトアウト・サバイバル','東京ディバンカー','パズル＆サバイバル'}
     assert required.issubset(set(games))
     assert len(games)==len(set(games))
 
@@ -35,3 +35,15 @@ def test_dynamic_merge_game():
 def test_config_restore_even_on_failure():
     text=(ROOT/'scripts/collect_games.py').read_text()
     assert 'finally:' in text and "CFG.write_text(original" in text
+
+
+def test_new_game_known_sources_are_isolated():
+    data=json.loads((ROOT/'config/game_targets.json').read_text())
+    by_game={x['game']:x for x in data['games']}
+    tokyo=by_game['東京ディバンカー']['known_urls_by_source']
+    puzzles=by_game['パズル＆サバイバル']['known_urls_by_source']
+    assert set(tokyo)=={'moppy','hapitas'}
+    assert set(puzzles)=={'moppy','warau'}
+    assert all('15827' in u or '158257' in u for u in tokyo['moppy'])
+    assert all('16036' in u for u in puzzles['moppy'])
+    assert all('point_id=205' in u for u in puzzles['warau'])
