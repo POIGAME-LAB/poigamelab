@@ -55,5 +55,19 @@ window.POIGAME_GUIDES = Object.freeze({
     links: [
       { label: "役場攻略を読む →", href: "kingshot-guide.html" }
     ]
+  },
+  "放置少女": {
+    title: "放置少女 ポイ活攻略",
+    description: "Lv120（1転生Lv20）へ向けて、初日進行・高速放置・主力育成・毎日の経験値回収をまとめています。",
+    links: [
+      { label: "Lv120攻略を読む →", href: "houchishojo-guide.html" }
+    ]
+  },
+  "エバーテイル": {
+    title: "エバーテイル ポイ活攻略",
+    description: "3日連続ログイン案件を、判定中確認・チュートリアル・Day1〜3の手順で安全に進めます。",
+    links: [
+      { label: "3日ログイン攻略を読む →", href: "evertale-guide.html" }
+    ]
   }
 });
