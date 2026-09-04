@@ -178,3 +178,29 @@ def test_all_static_local_html_references_exist_in_public_artifact(output_dir):
                 )
 
     assert failures == []
+
+
+def test_adsense_code_is_present_on_monetized_pages(output_dir):
+    builder.build_public_site(output_dir)
+    publisher_id = "ca-pub-2224207953863103"
+    monetized_pages = {
+        "index.html",
+        "game.html",
+        "kinoko-guide.html",
+        "mementomori-guide.html",
+        "township-lv60.html",
+        "township-lv70.html",
+        "whiteout-survival-guide.html",
+        "working-heroes-guide.html",
+    }
+
+    for filename in monetized_pages:
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert html.count(publisher_id) == 1
+        assert "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" in html
+        head = html.split("</head>", 1)[0]
+        assert publisher_id in head
+
+    for filename in {"404.html", "data-status.html"}:
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert publisher_id not in html
