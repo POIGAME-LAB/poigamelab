@@ -83,13 +83,31 @@
 
     .game-artwork-fallback {
       min-height: 250px;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 82% 16%, rgba(255,217,61,.50), transparent 22%),
+        radial-gradient(circle at 15% 86%, rgba(130,91,255,.55), transparent 36%),
+        linear-gradient(135deg,#1f0c4e,#4b22b9 52%,#7047ff);
       color: #fff;
+      text-align: left;
+    }
+
+    .game-artwork-fallback small {
+      margin-bottom: 8px;
+      color: #ffe66a;
+      font-size: 11px;
       font-weight: 950;
-      letter-spacing: .08em;
-      text-align: center;
+      letter-spacing: .16em;
+    }
+
+    .game-artwork-fallback strong {
+      max-width: 92%;
+      font-size: 28px;
+      line-height: 1.25;
     }
 
     .game-header-copy {
@@ -716,7 +734,7 @@
     <section class="game-header">
       <div class="game-header-grid">
         <div id="gameArtwork" class="game-artwork" aria-label="ゲームイメージ">
-          <div class="game-artwork-fallback">POIGAME LAB VISUAL</div>
+          <div class="game-artwork-fallback"><small>POIGAME LAB</small><strong>ゲームイメージ</strong></div>
         </div>
 
         <div class="game-header-copy">
@@ -877,7 +895,7 @@
           if (game.image) {
             artwork.innerHTML = `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ">`;
           } else {
-            artwork.innerHTML = `<div class="game-artwork-fallback">${POIGAME_DATA.escapeHtml(game.name)}<br>POIGAME LAB VISUAL</div>`;
+            artwork.innerHTML = `<div class="game-artwork-fallback"><small>POIGAME LAB</small><strong>${POIGAME_DATA.escapeHtml(game.name)}</strong></div>`;
           }
         }
 
