@@ -51,6 +51,8 @@
   footer.setAttribute("data-poigame-footer", "");
   footer.innerHTML = `
     <nav class="poigame-footer__links" aria-label="サイト情報">
+      <a href="offers.html">案件一覧</a>
+      <a href="guides.html">攻略一覧</a>
       <a href="about.html">運営情報・免責事項</a>
       <a href="privacy.html">プライバシーポリシー</a>
       <a href="contact.html">お問い合わせ</a>
