@@ -2,7 +2,7 @@
 
 ## Current state
 
-The repository is public, but GitHub Pages is not currently enabled.
+The repository is public and GitHub Pages has been enabled using GitHub Actions.
 
 The deployment workflow in
 `.github/workflows/deploy-pages.yml` is intentionally `workflow_dispatch`
@@ -19,6 +19,7 @@ The Pages artifact includes only the files needed by the public site:
 - public images and `assets/`;
 - `games.csv`;
 - `data/published_offers.csv`;
+- `data/offer_history.csv`;
 - `data/refresh_status.json`;
 - `data/exception_queue.json`;
 - `config/refresh_policy.json`;
@@ -36,16 +37,9 @@ It deliberately excludes repository internals such as:
 
 Regression tests enforce this boundary.
 
-## One-time Pages enablement
+## Pages configuration
 
-A repository administrator must first enable GitHub Pages in the GitHub UI:
-
-1. Open the repository.
-2. Open **Settings**.
-3. Open **Pages**.
-4. Under **Build and deployment**, choose **GitHub Actions** as the source.
-
-Do not run the deploy workflow before this setting is enabled.
+GitHub Pages is configured to use **GitHub Actions** as the source. If this setting is ever reset, restore it under **Settings → Pages → Build and deployment → GitHub Actions** before running the deploy workflow.
 
 ## First deployment
 
