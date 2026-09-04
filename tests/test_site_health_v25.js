@@ -146,6 +146,7 @@ function makeContext(fetchImpl) {
 
   const gameHtml = fs.readFileSync('game.html', 'utf8');
   assert.ok(gameHtml.includes('id="rewardTrendList"'));
+  assert.ok(gameHtml.includes('id="gameTrendSummary"'));
   assert.ok(gameHtml.includes('還元額の推移'));
   assert.ok(gameHtml.includes('過去最高'));
   assert.ok(gameHtml.includes('class="os-filter"'));
