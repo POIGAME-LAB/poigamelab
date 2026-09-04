@@ -671,72 +671,145 @@
         }
 
 
-        const tableBody = document.querySelector("tbody");
-        if (tableBody) {
-          tableBody.innerHTML = "";
-          const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+        const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+        const tableBody = document.getElementById("offerTableBody");
+        const offerCards = document.getElementById("offerCards");
+        const platformButtons = [...document.querySelectorAll(".os-filter button")];
+        let activePlatform = "all";
 
-          if (sortedOffers.length > 0) {
-            const bestOffer = sortedOffers[0];
-            document.getElementById("bestReward").textContent =
-              `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
-            document.getElementById("bestSite").textContent =
-              `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
+        const dataHealthBox = document.getElementById("dataHealthBox");
+        if (dataHealthBox && gameHealth) {
+          dataHealthBox.hidden = false;
+          if (gameHealth.state === "fresh") {
+            dataHealthBox.textContent = \`自動更新：正常 ・ \${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}\`;
+          } else if (gameHealth.state === "degraded" || gameHealth.state === "failed") {
+            dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
+            dataHealthBox.classList.add("health-warning");
+          } else if (gameHealth.state === "stale") {
+            dataHealthBox.textContent = "申込み前に案件ページで最新条件をご確認ください。";
+            dataHealthBox.classList.add("health-warning");
+          }
+        }
 
-            const bestVerified = document.getElementById("bestVerified");
-            if (bestVerified) {
-              const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
-              bestVerified.textContent = healthLabel.text;
-              bestVerified.className = `best-verified ${healthLabel.state}`;
-            }
+        function matchesPlatform(offer, platform) {
+          const values = Array.isArray(offer.platform) ? offer.platform : [];
+          if (platform === "all") return true;
+          if (platform === "unknown") return values.length === 0 || values.includes("不明");
+          return values.includes(platform);
+        }
+
+        function updateBestOffer(offers, platform) {
+          const bestRewardLabel = document.getElementById("bestRewardLabel");
+          const bestReward = document.getElementById("bestReward");
+          const bestSite = document.getElementById("bestSite");
+          const bestVerified = document.getElementById("bestVerified");
+          const label = platform === "all" ? "最高還元" : (platform === "unknown" ? "OS不明の最高還元" : \`\${platform}の最高還元\`);
+          if (bestRewardLabel) bestRewardLabel.textContent = label;
+
+          if (!offers.length) {
+            if (bestReward) bestReward.textContent = "確認できる案件なし";
+            if (bestSite) bestSite.textContent = "ポイントサイト：—";
+            if (bestVerified) bestVerified.textContent = "";
+            return;
           }
 
-          const dataHealthBox = document.getElementById("dataHealthBox");
-          if (dataHealthBox && gameHealth) {
-            dataHealthBox.hidden = false;
-            if (gameHealth.state === "fresh") {
-              dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
-            } else if (gameHealth.state === "degraded") {
-              dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
-              dataHealthBox.classList.add("health-warning");
-            } else if (gameHealth.state === "failed") {
-              dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
-              dataHealthBox.classList.add("health-warning");
-            } else if (gameHealth.state === "stale") {
-              dataHealthBox.textContent = "申込み前に案件ページで最新条件をご確認ください。";
-              dataHealthBox.classList.add("health-warning");
+          const bestOffer = offers[0];
+          if (bestReward) {
+            bestReward.textContent = \`\${bestOffer.reward.toLocaleString()}円\${bestOffer.verified ? "" : "（参考）"}\`;
+          }
+          if (bestSite) {
+            bestSite.textContent = \`ポイントサイト：\${pointSites[bestOffer.site] || bestOffer.site}\`;
+          }
+          if (bestVerified) {
+            const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
+            bestVerified.textContent = healthLabel.text;
+            bestVerified.className = \`best-verified \${healthLabel.state}\`;
+          }
+        }
+
+        function renderOfferViews() {
+          const filteredOffers = sortedOffers.filter((offer) => matchesPlatform(offer, activePlatform));
+          updateBestOffer(filteredOffers, activePlatform);
+
+          if (tableBody) tableBody.innerHTML = "";
+          if (offerCards) offerCards.innerHTML = "";
+
+          if (!filteredOffers.length) {
+            if (tableBody) {
+              const row = document.createElement("tr");
+              row.innerHTML = '<td colspan="7">このOSで現在確認できる案件はありません。</td>';
+              tableBody.appendChild(row);
             }
+            if (offerCards) {
+              offerCards.innerHTML = '<div class="no-offers-card">このOSで現在確認できる案件はありません。</div>';
+            }
+            return;
           }
 
-          sortedOffers.forEach((offer) => {
-            const row = document.createElement("tr");
+          filteredOffers.forEach((offer) => {
             const siteName = pointSites[offer.site] || offer.site;
             const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
             const rowHealth = POIGAME_DATA.getOfferHealthLabel(offer, gameHealth);
-            const labelClass = rowHealth.state === "legacy" ? "legacy-label" : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
-            const verifyLabel = `<br><small class="${labelClass}">${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>`;
+            const labelClass = rowHealth.state === "legacy"
+              ? "legacy-label"
+              : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
+            const verifyLabel = \`<br><small class="\${labelClass}">\${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>\`;
+            const platformText = offer.platform.length ? offer.platform.join(" / ") : "不明";
 
-            row.innerHTML = `
-              <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
-              <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.platform.join(" / "))}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
-              <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
-              <td>
-                ${safeUrl
-                  ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
-                  : "準備中"}
-              </td>
-            `;
-            tableBody.appendChild(row);
+            if (tableBody) {
+              const row = document.createElement("tr");
+              row.innerHTML = \`
+                <td>\${POIGAME_DATA.escapeHtml(siteName)}</td>
+                <td>\${offer.reward.toLocaleString()}円\${verifyLabel}</td>
+                <td>\${POIGAME_DATA.escapeHtml(offer.condition)}</td>
+                <td>\${POIGAME_DATA.escapeHtml(platformText)}</td>
+                <td>\${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
+                <td>\${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
+                <td>
+                  \${safeUrl
+                    ? \`<a href="\${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>\`
+                    : "準備中"}
+                </td>
+              \`;
+              tableBody.appendChild(row);
+            }
+
+            if (offerCards) {
+              const card = document.createElement("article");
+              card.className = "mobile-offer-card";
+              card.innerHTML = \`
+                <div class="mobile-offer-head">
+                  <div class="mobile-offer-site">\${POIGAME_DATA.escapeHtml(siteName)}</div>
+                  <div class="mobile-offer-reward">\${offer.reward.toLocaleString()}円</div>
+                </div>
+                <span class="platform-pill">\${POIGAME_DATA.escapeHtml(platformText)}</span>
+                <p class="mobile-offer-condition">\${POIGAME_DATA.escapeHtml(offer.condition)}</p>
+                <div class="mobile-offer-meta">
+                  <span>締切：\${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</span>
+                  <span>更新：\${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
+                </div>
+                \${safeUrl
+                  ? \`<a href="\${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>\`
+                  : '<span class="coming-soon">リンク準備中</span>'}
+              \`;
+              offerCards.appendChild(card);
+            }
           });
+        }
 
-          if (sortedOffers.length === 0) {
-            const row = document.createElement("tr");
-            row.innerHTML = '<td colspan="7">現在確認できる案件はありません。</td>';
-            tableBody.appendChild(row);
-          }
+        const hasUnknown = sortedOffers.some((offer) => matchesPlatform(offer, "unknown"));
+        const unknownButton = platformButtons.find((button) => button.dataset.platform === "unknown");
+        if (unknownButton) unknownButton.hidden = !hasUnknown;
+
+        platformButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            activePlatform = button.dataset.platform || "all";
+            platformButtons.forEach((item) => item.classList.toggle("active", item === button));
+            renderOfferViews();
+          });
+        });
+
+        renderOfferViews();
         }
       } catch (error) {
         console.error("ゲーム詳細の読み込みに失敗しました", error);
