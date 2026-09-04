@@ -91,6 +91,41 @@
           "https://pc.moppy.jp/ad/detail.php?site_id=160371"
         ]
       }
+    },
+    {
+      "game": "東京ディバンカー",
+      "aliases": [
+        "東京ディバンカー",
+        "Tokyo Debunker"
+      ],
+      "known_urls_by_source": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=158270",
+          "https://pc.moppy.jp/ad/detail.php?site_id=158257"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/91316",
+          "https://hapitas.jp/item/detail/itemid/91334"
+        ]
+      }
+    },
+    {
+      "game": "パズル＆サバイバル",
+      "aliases": [
+        "パズル＆サバイバル",
+        "パズル&サバイバル",
+        "Puzzles & Survival"
+      ],
+      "known_urls_by_source": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=160367",
+          "https://pc.moppy.jp/ad/detail.php?site_id=160366"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205557",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361"
+        ]
+      }
     }
   ]
 }
