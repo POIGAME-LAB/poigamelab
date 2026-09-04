@@ -243,6 +243,7 @@
   const filename = current.pathname.split("/").pop() || "index.html";
 
   const navItems = [
+    ["ゲームを探す", "index.html#game-list"],
     ["案件一覧", "offers.html"],
     ["攻略一覧", "guides.html"],
     ["POIGAME LABとは", "about.html"],
@@ -250,6 +251,7 @@
   ];
 
   const activeFor = (href) => {
+    if (href === "index.html#game-list" && filename === "index.html") return true;
     if (href === "offers.html" && (filename === "offers.html" || filename === "game.html")) return true;
     if (href === "guides.html" && (filename === "guides.html" || filename.includes("guide") || filename.startsWith("township-lv"))) return true;
     return filename === href;
@@ -272,7 +274,6 @@
     <div id="poigame-mobile-nav" class="poigame-mobile-nav" aria-hidden="true">
       <div class="poigame-mobile-nav__scrim" data-menu-close></div>
       <nav class="poigame-mobile-nav__panel" aria-label="スマートフォンメニュー">
-        <a href="index.html#game-list">ゲームを探す</a>
         ${navItems.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}
       </nav>
     </div>
