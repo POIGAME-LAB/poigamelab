@@ -353,6 +353,14 @@
   padding: 14px;
 }
 
+.image-rights-note {
+  display: block;
+  margin-top: 8px;
+  color: #8a8196;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
 .image-placeholder {
   position: relative;
   overflow: hidden;
@@ -740,6 +748,7 @@
   <script src="site-data.js"></script>
   <script src="site-referrals.js"></script>
   <script src="site-guides.js"></script>
+  <script src="site-image-rights.js"></script>
 
 <script>
   async function loadGames() {
@@ -937,13 +946,18 @@
 
       const guide = window.POIGAME_GUIDES?.[game.name];
       const guideHref = guide?.links?.[0]?.href || "";
+      const imageRights = window.POIGAME_IMAGE_RIGHTS?.[game.name] || null;
       const imageMarkup = game.image
-        ? `<img class="game-thumbnail" src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ" loading="lazy">`
+        ? `<img class="game-thumbnail" src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} イメージ" loading="lazy" referrerpolicy="no-referrer">`
         : `<div class="image-placeholder"><small>POIGAME LAB</small><strong>${POIGAME_DATA.escapeHtml(game.name)}</strong></div>`;
+      const imageRightsMarkup = imageRights?.credit
+        ? `<small class="image-rights-note">${POIGAME_DATA.escapeHtml(imageRights.credit)}</small>`
+        : "";
 
       card.innerHTML = `
   <div class="game-image">
     ${imageMarkup}
+    ${imageRightsMarkup}
   </div>
   <div class="game-info">
     <div class="card-rank-row">
