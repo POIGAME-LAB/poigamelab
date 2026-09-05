@@ -34,6 +34,7 @@ ROOT_FILES = (
     "site-footer.js",
     "site-referrals.js",
     "site-guides.js",
+    "site-image-rights.js",
     "site-header.js",
     "poigamelab_hero.png",
     "poigamelab_icon.png",
