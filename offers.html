@@ -86,9 +86,10 @@
       card.innerHTML = `
         <div class="art">
           ${game.image
-            ? `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ" loading="lazy">`
+            ? `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} イメージ" loading="lazy" referrerpolicy="no-referrer">`
             : `<div class="art-fallback"><small>POIGAME LAB</small><strong>${POIGAME_DATA.escapeHtml(game.name)}</strong></div>`}
         </div>
+        ${imageRights?.credit ? `<small class="image-rights-note">${POIGAME_DATA.escapeHtml(imageRights.credit)}</small>` : ""}
         <div class="body">
           <h2>${POIGAME_DATA.escapeHtml(game.name)}</h2>
           <p class="condition">${POIGAME_DATA.escapeHtml(game.condition || "指定条件クリア")}</p>
