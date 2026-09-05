@@ -406,19 +406,31 @@ def test_game_detail_exposes_guide_cta_near_top(output_dir):
 
 
 
-def test_low_quality_temporary_game_art_is_not_referenced(output_dir):
+def test_approved_catalog_game_art_is_published(output_dir):
     builder.build_public_site(output_dir)
 
     import csv
 
-    games = list(csv.DictReader(
-        (output_dir / "games.csv").open(encoding="utf-8", newline="")
-    ))
-    assert games
-    assert all(
-        not str(row.get("image") or "").strip().startswith("assets/game-art/")
-        for row in games
-    )
+    games = {
+        row["name"]: row
+        for row in csv.DictReader(
+            (output_dir / "games.csv").open(encoding="utf-8", newline="")
+        )
+    }
+
+    approved = {
+        "Township": "assets/game-art/township.webp",
+        "きのこ伝説": "assets/game-art/kinoko.webp",
+    }
+
+    for game, image in approved.items():
+        assert games[game]["image"] == image
+        assert (output_dir / image).is_file(), f"missing approved image: {image}"
+
+    for row in games.values():
+        image = str(row.get("image") or "").strip()
+        if image:
+            assert not image.endswith(".svg"), f"temporary SVG returned: {image}"
 
 
 def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
