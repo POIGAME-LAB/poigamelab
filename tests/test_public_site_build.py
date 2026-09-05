@@ -77,6 +77,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "site-footer.js",
         "site-referrals.js",
         "site-guides.js",
+        "site-image-rights.js",
         "site-header.js",
         "games.js",
         "games.csv",
@@ -418,14 +419,18 @@ def test_approved_catalog_game_art_is_published(output_dir):
         )
     }
 
-    approved = {
+    approved_local = {
         "Township": "assets/game-art/township.webp",
         "きのこ伝説": "assets/game-art/kinoko.webp",
     }
 
-    for game, image in approved.items():
+    for game, image in approved_local.items():
         assert games[game]["image"] == image
         assert (output_dir / image).is_file(), f"missing approved image: {image}"
+
+    assert games["メメントモリ"]["image"] == (
+        "https://mememori-game.com/assets/img/top/game_06.jpg"
+    )
 
     for row in games.values():
         image = str(row.get("image") or "").strip()
@@ -467,3 +472,29 @@ def test_homepage_does_not_hide_shared_mobile_nav(output_dir):
     assert "header nav a {" in html
     assert "header nav {\n        display: none;" in html
     assert 'src="site-header.js?v=20260905-0315"' in html
+
+
+
+def test_official_image_rights_are_published_and_rendered(output_dir):
+    builder.build_public_site(output_dir)
+
+    rights = (output_dir / "site-image-rights.js").read_text(encoding="utf-8")
+    required_credit = (
+        "(c)BANK OF INNOVATION　"
+        "該当画像の転載・配布等は禁止しております。"
+    )
+
+    assert '"メメントモリ"' in rights
+    assert required_credit in rights
+    assert "https://mememori-game.com/?goto=game" in rights
+    assert "https://mememori-game.com/guideline/" in rights
+
+    for filename in {"index.html", "offers.html", "guides.html", "game.html"}:
+        html = (output_dir / filename).read_text(encoding="utf-8")
+        assert 'src="site-image-rights.js"' in html
+        assert "POIGAME_IMAGE_RIGHTS" in html
+        assert "image-rights-note" in html or "gameArtworkRights" in html
+
+    game_html = (output_dir / "game.html").read_text(encoding="utf-8")
+    assert 'id="gameArtworkRights"' in game_html
+    assert 'referrerpolicy="no-referrer"' in game_html
