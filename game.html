@@ -81,6 +81,14 @@
       object-fit: cover;
     }
 
+    .game-artwork-rights {
+      display: block;
+      margin: 8px 2px 0;
+      color: #8a8196;
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
     .game-artwork-fallback {
       min-height: 250px;
       display: flex;
@@ -733,8 +741,11 @@
 
     <section class="game-header">
       <div class="game-header-grid">
-        <div id="gameArtwork" class="game-artwork" aria-label="ゲームイメージ">
-          <div class="game-artwork-fallback"><small>POIGAME LAB</small><strong>ゲームイメージ</strong></div>
+        <div>
+          <div id="gameArtwork" class="game-artwork" aria-label="ゲームイメージ">
+            <div class="game-artwork-fallback"><small>POIGAME LAB</small><strong>ゲームイメージ</strong></div>
+          </div>
+          <small id="gameArtworkRights" class="game-artwork-rights" hidden></small>
         </div>
 
         <div class="game-header-copy">
@@ -840,6 +851,7 @@
   <script src="site-data.js"></script>
   <script src="site-referrals.js"></script>
   <script src="site-guides.js"></script>
+  <script src="site-image-rights.js"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -891,11 +903,22 @@
         document.getElementById("gameCondition").textContent = game.condition;
 
         const artwork = document.getElementById("gameArtwork");
+        const artworkRights = document.getElementById("gameArtworkRights");
+        const imageRights = window.POIGAME_IMAGE_RIGHTS?.[game.name] || null;
         if (artwork) {
           if (game.image) {
-            artwork.innerHTML = `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} オリジナルイメージ">`;
+            artwork.innerHTML = `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} イメージ" referrerpolicy="no-referrer">`;
           } else {
             artwork.innerHTML = `<div class="game-artwork-fallback"><small>POIGAME LAB</small><strong>${POIGAME_DATA.escapeHtml(game.name)}</strong></div>`;
+          }
+        }
+        if (artworkRights) {
+          if (imageRights?.credit) {
+            artworkRights.textContent = imageRights.credit;
+            artworkRights.hidden = false;
+          } else {
+            artworkRights.textContent = "";
+            artworkRights.hidden = true;
           }
         }
 
