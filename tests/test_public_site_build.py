@@ -423,16 +423,23 @@ def test_approved_catalog_game_art_is_published(output_dir):
         "Township": "assets/game-art/township.webp",
         "きのこ伝説": "assets/game-art/kinoko.webp",
         "メメントモリ": "assets/game-art/mementomori.webp",
+        "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival.svg",
+        "東京ディバンカー": "assets/game-art/tokyo-debunker.svg",
+        "キングショット": "assets/game-art/kingshot.svg",
+        "放置少女": "assets/game-art/houchishojo.svg",
+        "エバーテイル": "assets/game-art/evertale.svg",
     }
 
     for game, image in approved_local.items():
         assert games[game]["image"] == image
         assert (output_dir / image).is_file(), f"missing approved image: {image}"
 
-    for row in games.values():
-        image = str(row.get("image") or "").strip()
-        if image:
-            assert not image.endswith(".svg"), f"temporary SVG returned: {image}"
+    published_local = {
+        str(row.get("image") or "").strip()
+        for row in games.values()
+        if str(row.get("image") or "").strip().startswith("assets/game-art/")
+    }
+    assert published_local == set(approved_local.values())
 
 
 def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
