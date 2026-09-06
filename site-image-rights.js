@@ -10,18 +10,16 @@
   });
 
   // Keep only artwork whose source file is still known-bad in quarantine.
-  // Township and Kinoko were re-imported from the user's intact uploads.
   const quarantinedImages = new Set([
     "assets/game-art/mementomori.webp"
   ]);
 
-  // These paths were previously served with corrupted binaries. Add a version
-  // only at render time so existing CSV/test contracts stay stable while
-  // browsers are forced to fetch the newly verified files instead of cache.
+  // Version the user-approved originals so browsers cannot reuse the earlier
+  // low-quality WebP responses from image repair attempts.
   const cacheBustImages = new Map([
-    ["assets/game-art/township.webp", "20260906-2150"],
-    ["assets/game-art/kinoko.webp", "20260906-2150"],
-    ["assets/game-art/whiteout-survival.svg", "20260906-2150"]
+    ["assets/game-art/township-original.jpeg", "20260906-2345"],
+    ["assets/game-art/kinoko-original.jpeg", "20260906-2345"],
+    ["assets/game-art/whiteout-survival-original.jpeg", "20260906-2345"]
   ]);
 
   const applyCacheBust = (img) => {
