@@ -15,6 +15,23 @@
     "assets/game-art/mementomori.webp"
   ]);
 
+  // These paths were previously served with corrupted binaries. Add a version
+  // only at render time so existing CSV/test contracts stay stable while
+  // browsers are forced to fetch the newly verified files instead of cache.
+  const cacheBustImages = new Map([
+    ["assets/game-art/township.webp", "20260906-2150"],
+    ["assets/game-art/kinoko.webp", "20260906-2150"],
+    ["assets/game-art/whiteout-survival.svg", "20260906-2150"]
+  ]);
+
+  const applyCacheBust = (img) => {
+    if (!(img instanceof HTMLImageElement)) return;
+    const rawSrc = String(img.getAttribute("src") || "").trim();
+    const version = cacheBustImages.get(rawSrc);
+    if (!version) return;
+    img.setAttribute("src", `${rawSrc}?v=${version}`);
+  };
+
   const gameNameFromAlt = (img) =>
     String(img.getAttribute("alt") || "ゲームイメージ").replace(/\s*イメージ\s*$/, "") || "ゲームイメージ";
 
@@ -64,10 +81,12 @@
   const inspectNode = (node) => {
     if (!(node instanceof Element)) return;
     if (node.matches("img")) {
+      applyCacheBust(node);
       const src = String(node.getAttribute("src") || "").trim();
       if (quarantinedImages.has(src)) replaceBrokenArtwork(node);
     }
     node.querySelectorAll?.("img").forEach((img) => {
+      applyCacheBust(img);
       const src = String(img.getAttribute("src") || "").trim();
       if (quarantinedImages.has(src)) replaceBrokenArtwork(img);
     });
@@ -87,6 +106,7 @@
 
   const startObserver = () => {
     document.querySelectorAll("img").forEach((img) => {
+      applyCacheBust(img);
       const src = String(img.getAttribute("src") || "").trim();
       if (quarantinedImages.has(src)) replaceBrokenArtwork(img);
     });
