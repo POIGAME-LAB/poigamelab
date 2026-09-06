@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import shutil
 from pathlib import Path
@@ -9,62 +10,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 ROOT_FILES = (
-    "index.html",
-    "game.html",
-    "guides.html",
-    "offers.html",
-    "kinoko-guide.html",
-    "mementomori-guide.html",
-    "township-lv60.html",
-    "township-lv70.html",
-    "whiteout-survival-guide.html",
-    "working-heroes-guide.html",
-    "tokyo-debunker-guide.html",
-    "puzzles-survival-guide.html",
-    "kingshot-guide.html",
-    "houchishojo-guide.html",
-    "evertale-guide.html",
-    "data-status.html",
-    "about.html",
-    "privacy.html",
-    "contact.html",
-    "404.html",
-    "games.csv",
-    "games.js",
-    "site-data.js",
-    "site-footer.js",
-    "site-referrals.js",
-    "site-guides.js",
-    "site-image-rights.js",
-    "site-header.js",
-    "poigamelab_hero.png",
-    "poigamelab_icon.png",
-    "poigamelab_logo_horizontal.png",
-    "robots.txt",
+    "index.html", "game.html", "guides.html", "offers.html",
+    "kinoko-guide.html", "mementomori-guide.html", "township-lv60.html",
+    "township-lv70.html", "whiteout-survival-guide.html",
+    "working-heroes-guide.html", "tokyo-debunker-guide.html",
+    "puzzles-survival-guide.html", "kingshot-guide.html",
+    "houchishojo-guide.html", "evertale-guide.html", "data-status.html",
+    "about.html", "privacy.html", "contact.html", "404.html", "games.csv",
+    "games.js", "site-data.js", "site-footer.js", "site-referrals.js",
+    "site-guides.js", "site-image-rights.js", "site-header.js",
+    "poigamelab_hero.png", "poigamelab_icon.png",
+    "poigamelab_logo_horizontal.png", "robots.txt",
 )
 
 DATA_FILES = (
-    "published_offers.csv",
-    "offer_history.csv",
-    "refresh_status.json",
+    "published_offers.csv", "offer_history.csv", "refresh_status.json",
     "exception_queue.json",
 )
+CONFIG_FILES = ("refresh_policy.json",)
+PUBLIC_DIRS = ("assets",)
+DATA_DIRS = ("guide-experiences",)
 
-CONFIG_FILES = (
-    "refresh_policy.json",
-)
-
-PUBLIC_DIRS = (
-    "assets",
-)
-
-DATA_DIRS = (
-    "guide-experiences",
-)
-
-# Large artwork binaries are stored as small private binary chunks so no
-# single connector upload is large enough to risk silent corruption. The
-# public builder reconstructs the exact, locally-decoded high-quality WebP.
+# High-quality artwork is transported as small ASCII base64 chunks because
+# larger binary connector writes have previously been corrupted. The public
+# build reconstructs the exact locally-verified WebP and refuses to publish if
+# its byte count or SHA-256 differs.
 RECONSTRUCTED_GAME_ART = {
     "township": {
         "sha256": "394f7007846848626167ad450c7ef00b50394a0bf8582f32bec00ae90e455068",
@@ -116,13 +86,18 @@ def _reconstruct_game_art(output: Path) -> None:
         if not source_dir.is_dir():
             raise ValueError(f"game_art_source_not_directory:{name}")
 
-        parts = sorted(source_dir.glob("*.part"))
+        parts = sorted(source_dir.glob("*.b64"))
         if not parts:
             raise ValueError(f"game_art_parts_missing:{name}")
         if any(part.is_symlink() or not part.is_file() for part in parts):
             raise ValueError(f"invalid_game_art_part:{name}")
 
-        data = b"".join(part.read_bytes() for part in parts)
+        encoded = "".join(part.read_text(encoding="ascii") for part in parts)
+        try:
+            data = base64.b64decode(encoded, validate=True)
+        except Exception as error:
+            raise ValueError(f"game_art_base64_invalid:{name}") from error
+
         if len(data) != expected["size"]:
             raise ValueError(
                 f"game_art_size_mismatch:{name}:{len(data)}:{expected['size']}"
@@ -141,8 +116,6 @@ def _reconstruct_game_art(output: Path) -> None:
 def build_public_site(output: Path) -> list[str]:
     output = output.resolve()
     if output == ROOT or ROOT not in output.parents:
-        # The builder is intended to write only into a disposable directory
-        # beneath the repository working tree.
         raise ValueError("unsafe_output_directory")
 
     if output.exists():
@@ -153,27 +126,22 @@ def build_public_site(output: Path) -> list[str]:
 
     for name in ROOT_FILES:
         _copy_file(ROOT / name, output / name)
-
     for name in DATA_FILES:
         _copy_file(ROOT / "data" / name, output / "data" / name)
-
     for name in CONFIG_FILES:
         _copy_file(ROOT / "config" / name, output / "config" / name)
-
     for name in DATA_DIRS:
         _copy_tree(ROOT / "data" / name, output / "data" / name)
-
     for name in PUBLIC_DIRS:
         _copy_tree(ROOT / name, output / name)
 
     _reconstruct_game_art(output)
 
-    copied = sorted(
+    return sorted(
         str(path.relative_to(output)).replace("\\", "/")
         for path in output.rglob("*")
         if path.is_file()
     )
-    return copied
 
 
 def parse_args(argv=None):
@@ -181,8 +149,7 @@ def parse_args(argv=None):
         description="Build the explicit POIGAME LAB public-site artifact."
     )
     parser.add_argument(
-        "--output",
-        default="_site",
+        "--output", default="_site",
         help="Disposable output directory beneath the repository root (default: _site).",
     )
     return parser.parse_args(argv)
