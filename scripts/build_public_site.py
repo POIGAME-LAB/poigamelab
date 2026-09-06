@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import hashlib
 import shutil
 from pathlib import Path
@@ -63,9 +62,9 @@ DATA_DIRS = (
     "guide-experiences",
 )
 
-# Large artwork binaries are kept as small, private base64 source chunks so a
-# single large connector upload cannot silently corrupt the binary. The public
-# builder reconstructs the exact, locally-decoded high-quality WebP bytes.
+# Large artwork binaries are stored as small private binary chunks so no
+# single connector upload is large enough to risk silent corruption. The
+# public builder reconstructs the exact, locally-decoded high-quality WebP.
 RECONSTRUCTED_GAME_ART = {
     "township": {
         "sha256": "394f7007846848626167ad450c7ef00b50394a0bf8582f32bec00ae90e455068",
@@ -117,20 +116,13 @@ def _reconstruct_game_art(output: Path) -> None:
         if not source_dir.is_dir():
             raise ValueError(f"game_art_source_not_directory:{name}")
 
-        parts = sorted(source_dir.glob("*.b64"))
+        parts = sorted(source_dir.glob("*.part"))
         if not parts:
             raise ValueError(f"game_art_parts_missing:{name}")
         if any(part.is_symlink() or not part.is_file() for part in parts):
             raise ValueError(f"invalid_game_art_part:{name}")
 
-        decoded_parts = []
-        for part in parts:
-            try:
-                decoded_parts.append(base64.b64decode(part.read_text(encoding="ascii"), validate=True))
-            except Exception as exc:
-                raise ValueError(f"invalid_game_art_base64:{name}:{part.name}") from exc
-        data = b"".join(decoded_parts)
-
+        data = b"".join(part.read_bytes() for part in parts)
         if len(data) != expected["size"]:
             raise ValueError(
                 f"game_art_size_mismatch:{name}:{len(data)}:{expected['size']}"
