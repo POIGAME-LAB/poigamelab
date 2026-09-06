@@ -3,5 +3,9 @@
 
   // Register only artwork that requires a visible rights notice.
   // User-approved or POIGAME LAB original artwork should not be added here.
-  window.POIGAME_IMAGE_RIGHTS = Object.freeze({});
+  window.POIGAME_IMAGE_RIGHTS = Object.freeze({
+    "ワーキングヒーロー": Object.freeze({
+      credit: "画像出典：ワーキングヒーローズ公式サイト"
+    })
+  });
 })();
