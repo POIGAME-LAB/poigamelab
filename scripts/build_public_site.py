@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import shutil
 from pathlib import Path
 
@@ -61,6 +62,24 @@ DATA_DIRS = (
     "guide-experiences",
 )
 
+# Large artwork binaries are kept as small private source chunks so the
+# connector transport cannot silently damage a single large binary upload.
+# The public builder reconstructs the exact verified WebP bytes only in _site.
+RECONSTRUCTED_GAME_ART = {
+    "township": {
+        "sha256": "394f7007846848626167ad450c7ef00b50394a0bf8582f32bec00ae90e455068",
+        "size": 356920,
+    },
+    "kinoko": {
+        "sha256": "89e207811bde0f3e14692cc24854799f2222b82b9b9ba53f18e9cbdfa72cbd5b",
+        "size": 364828,
+    },
+    "whiteout-survival": {
+        "sha256": "6777c8f3403d31eda027499562caeff4bb0953804e8b5c7f1090497600b4f710",
+        "size": 511874,
+    },
+}
+
 
 def _safe_source(path: Path) -> None:
     if not path.exists():
@@ -87,6 +106,36 @@ def _copy_tree(source: Path, destination: Path) -> None:
         if path.is_file():
             relative = path.relative_to(source)
             _copy_file(path, destination / relative)
+
+
+def _reconstruct_game_art(output: Path) -> None:
+    source_root = ROOT / ".asset-source" / "game-art"
+    for name, expected in RECONSTRUCTED_GAME_ART.items():
+        source_dir = source_root / name
+        _safe_source(source_dir)
+        if not source_dir.is_dir():
+            raise ValueError(f"game_art_source_not_directory:{name}")
+
+        parts = sorted(source_dir.glob("*.part"))
+        if not parts:
+            raise ValueError(f"game_art_parts_missing:{name}")
+        if any(part.is_symlink() or not part.is_file() for part in parts):
+            raise ValueError(f"invalid_game_art_part:{name}")
+
+        data = b"".join(part.read_bytes() for part in parts)
+        if len(data) != expected["size"]:
+            raise ValueError(
+                f"game_art_size_mismatch:{name}:{len(data)}:{expected['size']}"
+            )
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != expected["sha256"]:
+            raise ValueError(f"game_art_sha256_mismatch:{name}:{digest}")
+        if data[:4] != b"RIFF" or data[8:12] != b"WEBP":
+            raise ValueError(f"game_art_webp_signature_invalid:{name}")
+
+        destination = output / "assets" / "game-art" / f"{name}.webp"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
 
 
 def build_public_site(output: Path) -> list[str]:
@@ -116,6 +165,8 @@ def build_public_site(output: Path) -> list[str]:
 
     for name in PUBLIC_DIRS:
         _copy_tree(ROOT / name, output / name)
+
+    _reconstruct_game_art(output)
 
     copied = sorted(
         str(path.relative_to(output)).replace("\\", "/")
