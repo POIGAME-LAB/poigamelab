@@ -19,9 +19,9 @@
   // only at render time so existing CSV/test contracts stay stable while
   // browsers are forced to fetch the newly verified files instead of cache.
   const cacheBustImages = new Map([
-    ["assets/game-art/township.webp", "20260906-2150"],
-    ["assets/game-art/kinoko.webp", "20260906-2150"],
-    ["assets/game-art/whiteout-survival.svg", "20260906-2150"]
+    ["assets/game-art/township.webp", "20260906-2355"],
+    ["assets/game-art/kinoko.webp", "20260906-2355"],
+    ["assets/game-art/whiteout-survival.svg", "20260906-2355"]
   ]);
 
   const applyCacheBust = (img) => {
