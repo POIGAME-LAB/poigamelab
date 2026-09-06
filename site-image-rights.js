@@ -9,11 +9,9 @@
     })
   });
 
-  // These local files are preserved for forensic comparison, but production
-  // must not render them until their source images have been revalidated.
+  // Keep only artwork whose source file is still known-bad in quarantine.
+  // Township and Kinoko were re-imported from the user's intact uploads.
   const quarantinedImages = new Set([
-    "assets/game-art/township.webp",
-    "assets/game-art/kinoko.webp",
     "assets/game-art/mementomori.webp"
   ]);
 
