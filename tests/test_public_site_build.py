@@ -275,7 +275,7 @@ def test_approved_catalog_game_art_is_published(output_dir):
     approved_local = {
         "Township": "assets/game-art/township.webp",
         "きのこ伝説": "assets/game-art/kinoko.webp",
-        "メメントモリ": "assets/game-art/mementomori.webp",
+        "メメントモリ": "assets/game-art/mementomori-new.png.PNG",
         "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival.svg",
         "東京ディバンカー": "assets/game-art/tokyo-debunker.jpeg",
         "キングショット": "assets/game-art/kingshot.svg",
