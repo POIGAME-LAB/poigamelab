@@ -16,13 +16,12 @@
   ]);
 
   // These paths were previously served with corrupted binaries. Add a version
-  // only at render time so existing CSV/test contracts stay stable while
-  // browsers are forced to fetch the newly verified files instead of cache.
+  // only at render time so browsers are forced to fetch the newly verified files.
   const cacheBustImages = new Map([
     ["assets/game-art/township.webp", "20260906-2355"],
     ["assets/game-art/kinoko.webp", "20260906-2355"],
     ["assets/game-art/whiteout-survival.svg", "20260906-2355"],
-    ["assets/game-art/tokyo-debunker.svg", "20260907-1120"]
+    ["assets/game-art/tokyo-debunker.jpeg", "20260907-1208"]
   ]);
 
   const applyCacheBust = (img) => {
@@ -93,8 +92,6 @@
     });
   };
 
-  // Proactively replace quarantined images before users can see corrupted
-  // pixels. Also fall back for any future game artwork that fails to load.
   document.addEventListener("error", (event) => {
     if (event.target instanceof HTMLImageElement) replaceBrokenArtwork(event.target);
   }, true);
@@ -120,8 +117,6 @@
     startObserver();
   }
 
-  // Preserve the full official Working Heroes key visual instead of cropping it
-  // inside the site's fixed-ratio card/detail image frames.
   const style = document.createElement("style");
   style.textContent = `
     .game-thumbnail[src*="w-heroes.com/img/sp/key_visual.png"],
