@@ -272,6 +272,13 @@ def test_homepage_cards_offer_direct_compare_and_guide_actions(output_dir):
     assert "#comparison" in html
 
 
+def test_game_detail_uses_compact_offer_condition_formatter(output_dir):
+    builder.build_public_site(output_dir)
+    html = (output_dir / "game.html").read_text(encoding="utf-8")
+    assert html.count("POIGAME_DATA.summarizeOfferCondition(offer.condition, offer.type)") == 2
+    assert 'POIGAME_DATA.escapeHtml(offer.condition)' not in html
+
+
 def test_game_detail_exposes_guide_cta_near_top(output_dir):
     builder.build_public_site(output_dir)
     html = (output_dir / "game.html").read_text(encoding="utf-8")

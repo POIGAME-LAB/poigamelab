@@ -435,6 +435,44 @@
     };
   }
 
+  function summarizeOfferCondition(condition, type = "") {
+    const raw = String(condition || "").replace(/\s+/g, " ").trim();
+    if (!raw) return "指定条件クリア";
+
+    const levelMatches = [...raw.matchAll(/レベル(\d+)到達/g)].map((match) => Number(match[1]));
+    if (levelMatches.length) {
+      const maxLevel = Math.max(...levelMatches);
+      const playerLabel = raw.includes(`プレイヤーレベル${maxLevel}到達`);
+      return playerLabel ? `プレイヤーレベル${maxLevel}到達` : `レベル${maxLevel}到達`;
+    }
+
+    const ccMatch = raw.match(/(?:CC|コントロールセンター)(?:レベル)?([0-9/・]+)/i);
+    if (ccMatch) {
+      const levels = ccMatch[1].split(/[\/・]/).map(Number).filter(Number.isFinite);
+      if (levels.length) return `コントロールセンターレベル${Math.max(...levels)}到達`;
+    }
+
+    const rankMatch = raw.match(/ユーザーランク([0-9/・]+)/);
+    if (rankMatch) {
+      const ranks = rankMatch[1].split(/[\/・]/).map(Number).filter(Number.isFinite);
+      if (ranks.length) return `ユーザーランク${Math.max(...ranks)}到達`;
+    }
+
+    const consecutiveLogin = raw.match(/(\d+)日間連続(?:で)?ログインボーナス(?:を)?獲得/);
+    if (consecutiveLogin) return `${consecutiveLogin[1]}日間連続ログインボーナス獲得`;
+
+    const normalizedType = String(type || "").toLowerCase();
+    if (normalizedType === "stepup" && raw.length > 40) {
+      return "StepUpミッション最終Step達成";
+    }
+
+    return raw
+      .replace(/^新規アプリインストール後[、,]\s*/, "")
+      .replace(/^初回アプリインストール後[、,]\s*/, "")
+      .replace(/^新規インストール後[、,]\s*/, "")
+      .trim();
+  }
+
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -471,6 +509,7 @@
     loadOfferHistory,
     buildRewardTrends,
     buildGameRewardTrend,
+    summarizeOfferCondition,
     escapeHtml,
     safeHttpUrl
   };
