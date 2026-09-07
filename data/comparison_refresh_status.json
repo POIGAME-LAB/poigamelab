@@ -1,6 +1,6 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "checkedAt": "2026-09-06T22:53:47+00:00",
+  "checkedAt": "2026-09-07T23:30:12+00:00",
   "comparisonSources": [
     "moppy",
     "warau",
@@ -12,7 +12,7 @@
   "apiCalls": 0,
   "publishedRewardChanges": 0,
   "refreshedRows": 4,
-  "reviewCount": 79,
+  "reviewCount": 82,
   "games": [
     {
       "game": "メメントモリ",
@@ -31,12 +31,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 3,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 3,
           "state": "review_required"
         },
         {
@@ -191,12 +191,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 0,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 2,
+          "reviewRequired": 1,
           "state": "review_required"
         },
         {
@@ -469,12 +469,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 5,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 5,
+          "reviewRequired": 6,
           "state": "review_required"
         },
         {
@@ -618,12 +618,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 3,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 2,
+          "reviewRequired": 3,
           "state": "review_required"
         },
         {
