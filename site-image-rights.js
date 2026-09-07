@@ -21,7 +21,8 @@
   const cacheBustImages = new Map([
     ["assets/game-art/township.webp", "20260906-2355"],
     ["assets/game-art/kinoko.webp", "20260906-2355"],
-    ["assets/game-art/whiteout-survival.svg", "20260906-2355"]
+    ["assets/game-art/whiteout-survival.svg", "20260906-2355"],
+    ["assets/game-art/tokyo-debunker.svg", "20260907-1120"]
   ]);
 
   const applyCacheBust = (img) => {

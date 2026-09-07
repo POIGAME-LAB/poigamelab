@@ -9,3 +9,8 @@ def test_games_csv_uses_stable_tokyo_debunker_wrapper():
 def test_tokyo_debunker_wrapper_uses_approved_jpeg():
     svg = Path("assets/game-art/tokyo-debunker.svg").read_text(encoding="utf-8")
     assert 'href="tokyo-debunker.jpeg?v=20260907-1045"' in svg
+
+
+def test_tokyo_debunker_wrapper_is_cache_busted_at_render_time():
+    js = Path("site-image-rights.js").read_text(encoding="utf-8")
+    assert '["assets/game-art/tokyo-debunker.svg", "20260907-1120"]' in js
