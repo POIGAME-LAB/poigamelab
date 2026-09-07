@@ -273,8 +273,8 @@ def test_approved_catalog_game_art_is_published(output_dir):
     import csv
     games = {row["name"]: row for row in csv.DictReader((output_dir / "games.csv").open(encoding="utf-8", newline=""))}
     approved_local = {
-        "Township": "assets/game-art/township.webp",
-        "きのこ伝説": "assets/game-art/kinoko.webp",
+        "Township": "assets/game-art/township-original.jpeg",
+        "きのこ伝説": "assets/game-art/kinoko-original.png",
         "メメントモリ": "assets/game-art/mementomori-new.png.PNG",
         "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival-new.png.PNG",
         "東京ディバンカー": "assets/game-art/tokyo-debunker.jpeg",
