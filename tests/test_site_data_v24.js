@@ -108,6 +108,30 @@ function makeContext(fetchImpl) {
   assert.strictEqual(api.safeHttpUrl('javascript:alert(1)'), '');
   assert.ok(api.safeHttpUrl('https://example.com/path').startsWith('https://example.com/path'));
   assert.strictEqual(api.escapeHtml('<script>'), '&lt;script&gt;');
+  assert.strictEqual(
+    api.summarizeOfferCondition('新規インストール後、課金を含む11ステップを達成。30日以内：ステージ普通2-8クリア、月パス購入、プレイヤーレベル100到達。40日以内：プレイヤーレベル120到達。45日以内：プレイヤーレベル125到達。', 'StepUp'),
+    'プレイヤーレベル125到達'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('60日以内にレベル5到達 / 60日以内にレベル11到達 / 60日以内にレベル60到達 / 60日以内にレベル70到達 / 60日以内に初回課金', 'StepUp'),
+    'レベル70到達'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('初回アプリインストール後、CCレベル5/8/11/15/18/23/30、英雄育成、各種購入を含む', 'StepUp'),
+    'コントロールセンターレベル30到達'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後、3日間連続でログインボーナスを獲得', '通常'),
+    '3日間連続ログインボーナス獲得'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後60日以内にStepUp（★5ヒーロー11枠、ユーザーランク25/50、PVP500勝、チームメダル4000枚）', 'StepUp'),
+    'ユーザーランク50到達'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後、StepUpミッションをクリア', 'StepUp'),
+    'StepUpミッションをクリア'
+  );
 
   const actualPolicy = JSON.parse(fs.readFileSync('config/refresh_policy.json', 'utf8'));
   assert.strictEqual(actualPolicy.publication.allowLegacyFallback, false);
