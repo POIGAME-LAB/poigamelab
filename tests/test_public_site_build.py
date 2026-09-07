@@ -280,8 +280,8 @@ def test_approved_catalog_game_art_is_published(output_dir):
         "東京ディバンカー": "assets/game-art/tokyo-debunker.jpeg",
         "パズル＆サバイバル": "assets/game-art/puzzles-survival-new.png.PNG",
         "キングショット": "assets/game-art/kingshot.svg",
-        "放置少女": "assets/game-art/houchishojo.svg",
-        "エバーテイル": "assets/game-art/evertale.svg",
+        "放置少女": "assets/game-art/houchishojo-new.png.PNG",
+        "エバーテイル": "assets/game-art/evertale-new.png.PNG",
     }
     for game, image in approved_local.items():
         assert games[game]["image"] == image
