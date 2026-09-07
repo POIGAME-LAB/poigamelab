@@ -276,10 +276,10 @@ def test_approved_catalog_game_art_is_published(output_dir):
         "Township": "assets/game-art/township.webp",
         "きのこ伝説": "assets/game-art/kinoko.webp",
         "メメントモリ": "assets/game-art/mementomori-new.png.PNG",
-        "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival.svg",
+        "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival-new.png.PNG",
         "東京ディバンカー": "assets/game-art/tokyo-debunker.jpeg",
         "パズル＆サバイバル": "assets/game-art/puzzles-survival-new.png.PNG",
-        "キングショット": "assets/game-art/kingshot.svg",
+        "キングショット": "assets/game-art/kingshot-new.png.PNG",
         "放置少女": "assets/game-art/houchishojo-new.png.PNG",
         "エバーテイル": "assets/game-art/evertale-new.png.PNG",
     }
