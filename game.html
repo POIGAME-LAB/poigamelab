@@ -1190,7 +1190,7 @@
               row.innerHTML = `
                 <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
                 <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
-                <td>${POIGAME_DATA.escapeHtml(offer.condition)}</td>
+                <td>${POIGAME_DATA.escapeHtml(POIGAME_DATA.summarizeOfferCondition(offer.condition, offer.type))}</td>
                 <td>${POIGAME_DATA.escapeHtml(platformText)}</td>
                 <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
                 <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
@@ -1213,7 +1213,7 @@
                   <div class="mobile-offer-reward">${offer.reward.toLocaleString()}円</div>
                 </div>
                 <span class="platform-pill">${POIGAME_DATA.escapeHtml(platformText)}</span>
-                <p class="mobile-offer-condition">${POIGAME_DATA.escapeHtml(offer.condition)}</p>
+                <p class="mobile-offer-condition">${POIGAME_DATA.escapeHtml(POIGAME_DATA.summarizeOfferCondition(offer.condition, offer.type))}</p>
                 <div class="mobile-offer-meta">
                   <span>締切：${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</span>
                   <span>更新：${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
