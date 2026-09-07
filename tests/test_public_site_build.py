@@ -109,6 +109,19 @@ def test_public_artifact_is_self_contained_for_current_managed_games(output_dir)
     assert 'src="site-footer.js"' in not_found
 
 
+
+def test_mementomori_has_verified_published_reward(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+    rows = list(csv.DictReader((output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")))
+    matches = [row for row in rows if row["game"] == "メメントモリ" and row["verified"].lower() == "true"]
+    assert matches, "MementoMori must keep at least one verified published offer"
+    best = max(matches, key=lambda row: int(row["reward"]))
+    assert best["site"] == "warau"
+    assert best["platform"] == "Android"
+    assert best["reward"] == "6633"
+    assert "point_id=206037" in best["url"]
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
