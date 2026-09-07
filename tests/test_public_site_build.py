@@ -60,100 +60,50 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
     copied_set = set(copied)
 
     required = {
-        "index.html",
-        "game.html",
-        "offers.html",
-        "guides.html",
-        "404.html",
-        "about.html",
-        "privacy.html",
-        "contact.html",
-        "tokyo-debunker-guide.html",
-        "puzzles-survival-guide.html",
-        "kingshot-guide.html",
-        "houchishojo-guide.html",
-        "evertale-guide.html",
-        "site-data.js",
-        "site-footer.js",
-        "site-referrals.js",
-        "site-guides.js",
-        "site-image-rights.js",
-        "site-header.js",
-        "games.js",
-        "games.csv",
-        "robots.txt",
-        "poigamelab_icon.png",
-        "assets/guide-experience.css",
-        "assets/guide-experience.js",
-        "data/published_offers.csv",
-        "data/offer_history.csv",
-        "data/refresh_status.json",
-        "data/exception_queue.json",
-        "data/guide-experiences/kinoko.json",
-        "data/guide-experiences/mementomori.json",
+        "index.html", "game.html", "offers.html", "guides.html", "404.html",
+        "about.html", "privacy.html", "contact.html", "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
+        "evertale-guide.html", "site-data.js", "site-footer.js", "site-referrals.js",
+        "site-guides.js", "site-image-rights.js", "site-header.js", "games.js",
+        "games.csv", "robots.txt", "poigamelab_icon.png", "assets/guide-experience.css",
+        "assets/guide-experience.js", "data/published_offers.csv", "data/offer_history.csv",
+        "data/refresh_status.json", "data/exception_queue.json",
+        "data/guide-experiences/kinoko.json", "data/guide-experiences/mementomori.json",
         "data/guide-experiences/whiteout-survival.json",
-        "data/guide-experiences/working-heroes.json",
-        "config/refresh_policy.json",
+        "data/guide-experiences/working-heroes.json", "config/refresh_policy.json",
     }
     assert required <= copied_set
 
     forbidden = {
-        "offers.csv",
-        "sources.csv",
-        "trend_sources.csv",
-        "README.md",
-        "AGENTS.md",
-        "config/approved_offer_baselines.json",
-        "config/offerwall_providers.json",
-        "data/warau_baseline_candidates.json",
-        "data/trend_candidates.json",
+        "offers.csv", "sources.csv", "trend_sources.csv", "README.md", "AGENTS.md",
+        "config/approved_offer_baselines.json", "config/offerwall_providers.json",
+        "data/warau_baseline_candidates.json", "data/trend_candidates.json",
         "data/research_queue.json",
     }
     assert copied_set.isdisjoint(forbidden)
-
     for prefix in (".github/", "docs/", "scripts/", "tests/", "data/research_results/"):
         assert not any(path.startswith(prefix) for path in copied_set)
-
-    # The build should contain only explicitly published data/config subfiles.
     assert {p for p in copied_set if p.startswith("data/")} == {
-        "data/published_offers.csv",
-        "data/offer_history.csv",
-        "data/refresh_status.json",
-        "data/exception_queue.json",
-        "data/guide-experiences/kinoko.json",
-        "data/guide-experiences/mementomori.json",
-        "data/guide-experiences/whiteout-survival.json",
+        "data/published_offers.csv", "data/offer_history.csv", "data/refresh_status.json",
+        "data/exception_queue.json", "data/guide-experiences/kinoko.json",
+        "data/guide-experiences/mementomori.json", "data/guide-experiences/whiteout-survival.json",
         "data/guide-experiences/working-heroes.json",
     }
-    assert {p for p in copied_set if p.startswith("config/")} == {
-        "config/refresh_policy.json",
-    }
+    assert {p for p in copied_set if p.startswith("config/")} == {"config/refresh_policy.json"}
 
 
 def test_public_artifact_is_self_contained_for_current_managed_games(output_dir):
     builder.build_public_site(output_dir)
-
     policy = json.loads((output_dir / "config" / "refresh_policy.json").read_text())
     assert set(policy["games"]) == {
-        "Township",
-        "きのこ伝説",
-        "メメントモリ",
-        "ワーキングヒーロー",
-        "ホワイトアウト・サバイバル",
-        "東京ディバンカー",
-        "パズル＆サバイバル",
-        "キングショット",
-        "放置少女",
-        "エバーテイル",
+        "Township", "きのこ伝説", "メメントモリ", "ワーキングヒーロー",
+        "ホワイトアウト・サバイバル", "東京ディバンカー", "パズル＆サバイバル",
+        "キングショット", "放置少女", "エバーテイル",
     }
-
     site_data = (output_dir / "site-data.js").read_text()
     assert "data/published_offers.csv" in site_data
     assert "config/refresh_policy.json" in site_data
-
-    # Legacy placeholder offers are deliberately not deployed.
     assert not (output_dir / "offers.csv").exists()
-
     not_found = (output_dir / "404.html").read_text()
     assert 'name="robots" content="noindex,nofollow"' in not_found
     assert 'src="site-footer.js"' in not_found
@@ -170,7 +120,6 @@ def test_all_static_local_html_references_exist_in_public_artifact(output_dir):
     builder.build_public_site(output_dir)
     output_root = output_dir.resolve()
     failures = []
-
     for page in sorted(output_dir.rglob("*.html")):
         parser = LocalReferenceParser()
         parser.feed(page.read_text(encoding="utf-8"))
@@ -186,11 +135,7 @@ def test_all_static_local_html_references_exist_in_public_artifact(output_dir):
                 failures.append(f"reference escapes artifact: {page.name}: {reference}")
                 continue
             if not target.exists():
-                failures.append(
-                    f"missing local {tag}[{attribute}] target: "
-                    f"{page.relative_to(output_dir)} -> {reference}"
-                )
-
+                failures.append(f"missing local {tag}[{attribute}] target: {page.relative_to(output_dir)} -> {reference}")
     assert failures == []
 
 
@@ -198,110 +143,56 @@ def test_adsense_code_is_present_on_monetized_pages(output_dir):
     builder.build_public_site(output_dir)
     publisher_id = "ca-pub-2224207953863103"
     monetized_pages = {
-        "index.html",
-        "game.html",
-        "offers.html",
-        "guides.html",
-        "kinoko-guide.html",
-        "mementomori-guide.html",
-        "township-lv60.html",
-        "township-lv70.html",
-        "whiteout-survival-guide.html",
-        "working-heroes-guide.html",
-        "tokyo-debunker-guide.html",
-        "puzzles-survival-guide.html",
-        "kingshot-guide.html",
-        "houchishojo-guide.html",
+        "index.html", "game.html", "offers.html", "guides.html", "kinoko-guide.html",
+        "mementomori-guide.html", "township-lv60.html", "township-lv70.html",
+        "whiteout-survival-guide.html", "working-heroes-guide.html", "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
         "evertale-guide.html",
     }
-
     for filename in monetized_pages:
         html = (output_dir / filename).read_text(encoding="utf-8")
         assert html.count(publisher_id) == 1
         assert "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" in html
-        head = html.split("</head>", 1)[0]
-        assert publisher_id in head
-
+        assert publisher_id in html.split("</head>", 1)[0]
     for filename in {"404.html", "data-status.html"}:
-        html = (output_dir / filename).read_text(encoding="utf-8")
-        assert publisher_id not in html
-
-
+        assert publisher_id not in (output_dir / filename).read_text(encoding="utf-8")
 
 
 def test_every_catalog_game_has_published_guide_mapping(output_dir):
     builder.build_public_site(output_dir)
-
     import csv
     import re
-
-    games = list(csv.DictReader(
-        (output_dir / "games.csv").open(encoding="utf-8", newline="")
-    ))
+    games = list(csv.DictReader((output_dir / "games.csv").open(encoding="utf-8", newline="")))
     guide_text = (output_dir / "site-guides.js").read_text(encoding="utf-8")
-
-    mapped_games = set(re.findall(
-        r'^  "([^"]+)": \{$',
-        guide_text,
-        flags=re.MULTILINE,
-    ))
+    mapped_games = set(re.findall(r'^  "([^"]+)": \{$', guide_text, flags=re.MULTILINE))
     catalog_games = {row["name"] for row in games}
     assert mapped_games == catalog_games
-
     hrefs = re.findall(r'href: "([^"]+)"', guide_text)
     assert hrefs
     assert len(hrefs) == len(set(hrefs))
-
     guide_pages = {}
     for href in hrefs:
         assert not href.startswith("/")
         target = output_dir / href
         assert target.is_file(), f"missing guide target: {href}"
         guide_pages[href] = target.read_text(encoding="utf-8")
-
     for game in catalog_games:
         expected_backlink = f"game.html?game={game}"
-        assert any(
-            expected_backlink in html
-            for html in guide_pages.values()
-        ), f"no guide page links back to game detail: {game}"
-
-
+        assert any(expected_backlink in html for html in guide_pages.values()), f"no guide page links back to game detail: {game}"
 
 
 def test_ga4_uses_standard_gtag_snippet_once_on_public_pages(output_dir):
     builder.build_public_site(output_dir)
-
     measurement_id = "G-E4SF1QQDWB"
-    loader = (
-        '<script async src="https://www.googletagmanager.com/gtag/js?id='
-        + measurement_id
-        + '"></script>'
-    )
+    loader = '<script async src="https://www.googletagmanager.com/gtag/js?id=' + measurement_id + '"></script>'
     config = "gtag('config', 'G-E4SF1QQDWB');"
-
     tracked_pages = {
-        "index.html",
-        "game.html",
-        "offers.html",
-        "guides.html",
-        "kinoko-guide.html",
-        "mementomori-guide.html",
-        "township-lv60.html",
-        "township-lv70.html",
-        "whiteout-survival-guide.html",
-        "working-heroes-guide.html",
-        "tokyo-debunker-guide.html",
-        "puzzles-survival-guide.html",
-        "kingshot-guide.html",
-        "houchishojo-guide.html",
-        "evertale-guide.html",
-        "about.html",
-        "privacy.html",
-        "contact.html",
-        "404.html",
+        "index.html", "game.html", "offers.html", "guides.html", "kinoko-guide.html",
+        "mementomori-guide.html", "township-lv60.html", "township-lv70.html",
+        "whiteout-survival-guide.html", "working-heroes-guide.html", "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
+        "evertale-guide.html", "about.html", "privacy.html", "contact.html", "404.html",
     }
-
     for filename in tracked_pages:
         html = (output_dir / filename).read_text(encoding="utf-8")
         head = html.split("</head>", 1)[0]
@@ -312,7 +203,6 @@ def test_ga4_uses_standard_gtag_snippet_once_on_public_pages(output_dir):
         assert loader in head
         assert config in head
         assert head.index(loader) < head.index(config)
-
     internal_status = (output_dir / "data-status.html").read_text(encoding="utf-8")
     assert measurement_id not in internal_status
     assert "googletagmanager.com/gtag/js" not in internal_status
@@ -326,10 +216,8 @@ def test_privacy_policy_discloses_google_analytics(output_dir):
     assert "2026年9月5日" in html
 
 
-
 def test_shared_header_and_navigation_are_wired(output_dir):
     builder.build_public_site(output_dir)
-
     header_js = (output_dir / "site-header.js").read_text(encoding="utf-8")
     assert "poigamelab_logo_horizontal.png" in header_js
     assert '["ゲームを探す", "index.html#game-list"]' in header_js
@@ -339,48 +227,23 @@ def test_shared_header_and_navigation_are_wired(output_dir):
     assert '["お問い合わせ", "contact.html"]' in header_js
     assert "poigame-site-header__menu" in header_js
     assert "poigame-mobile-menu-dialog" in header_js
-
     shared_header_pages = {
-        "index.html",
-        "game.html",
-        "offers.html",
-        "guides.html",
-        "kinoko-guide.html",
-        "mementomori-guide.html",
-        "township-lv60.html",
-        "township-lv70.html",
-        "whiteout-survival-guide.html",
-        "working-heroes-guide.html",
-        "tokyo-debunker-guide.html",
-        "puzzles-survival-guide.html",
-        "kingshot-guide.html",
-        "houchishojo-guide.html",
-        "evertale-guide.html",
-        "about.html",
-        "privacy.html",
-        "contact.html",
+        "index.html", "game.html", "offers.html", "guides.html", "kinoko-guide.html",
+        "mementomori-guide.html", "township-lv60.html", "township-lv70.html",
+        "whiteout-survival-guide.html", "working-heroes-guide.html", "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
+        "evertale-guide.html", "about.html", "privacy.html", "contact.html",
     }
-
     for filename in shared_header_pages:
         html = (output_dir / filename).read_text(encoding="utf-8")
         assert html.count('src="site-header.js?v=20260905-0315"') == 1
         assert 'src="site-header.js"' not in html
-
     for filename in {
-        "kinoko-guide.html",
-        "mementomori-guide.html",
-        "township-lv60.html",
-        "township-lv70.html",
-        "whiteout-survival-guide.html",
-        "working-heroes-guide.html",
-        "tokyo-debunker-guide.html",
-        "puzzles-survival-guide.html",
-        "kingshot-guide.html",
-        "houchishojo-guide.html",
-        "evertale-guide.html",
+        "kinoko-guide.html", "mementomori-guide.html", "township-lv60.html", "township-lv70.html",
+        "whiteout-survival-guide.html", "working-heroes-guide.html", "tokyo-debunker-guide.html",
+        "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html", "evertale-guide.html",
     }:
-        html = (output_dir / filename).read_text(encoding="utf-8")
-        assert '<header class="topbar">' not in html
+        assert '<header class="topbar">' not in (output_dir / filename).read_text(encoding="utf-8")
 
 
 def test_homepage_cards_offer_direct_compare_and_guide_actions(output_dir):
@@ -405,35 +268,23 @@ def test_game_detail_exposes_guide_cta_near_top(output_dir):
     assert 'id="gameArtwork"' in html
 
 
-
-
 def test_approved_catalog_game_art_is_published(output_dir):
     builder.build_public_site(output_dir)
-
     import csv
-
-    games = {
-        row["name"]: row
-        for row in csv.DictReader(
-            (output_dir / "games.csv").open(encoding="utf-8", newline="")
-        )
-    }
-
+    games = {row["name"]: row for row in csv.DictReader((output_dir / "games.csv").open(encoding="utf-8", newline=""))}
     approved_local = {
         "Township": "assets/game-art/township.webp",
         "きのこ伝説": "assets/game-art/kinoko.webp",
         "メメントモリ": "assets/game-art/mementomori.webp",
         "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival.svg",
-        "東京ディバンカー": "assets/game-art/tokyo-debunker.svg",
+        "東京ディバンカー": "assets/game-art/tokyo-debunker.jpeg",
         "キングショット": "assets/game-art/kingshot.svg",
         "放置少女": "assets/game-art/houchishojo.svg",
         "エバーテイル": "assets/game-art/evertale.svg",
     }
-
     for game, image in approved_local.items():
         assert games[game]["image"] == image
         assert (output_dir / image).is_file(), f"missing approved image: {image}"
-
     published_local = {
         str(row.get("image") or "").strip()
         for row in games.values()
@@ -445,7 +296,6 @@ def test_approved_catalog_game_art_is_published(output_dir):
 def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
     builder.build_public_site(output_dir)
     header_js = (output_dir / "site-header.js").read_text(encoding="utf-8")
-
     assert 'document.createElement("dialog")' in header_js
     assert 'dialog.showModal();' in header_js
     assert 'dialog.close();' in header_js
@@ -463,35 +313,28 @@ def test_mobile_menu_uses_native_top_layer_dialog(output_dir):
     assert 'z-index: 2147483001' not in header_js
 
 
-
 def test_homepage_does_not_hide_shared_mobile_nav(output_dir):
     builder.build_public_site(output_dir)
     html = (output_dir / "index.html").read_text(encoding="utf-8")
-
     assert "\n    nav {\n" not in html
     assert "\n    nav a {\n" not in html
     assert "\n      nav {\n        display: none;\n      }" not in html
-
     assert "header nav {" in html
     assert "header nav a {" in html
     assert "header nav {\n        display: none;" in html
     assert 'src="site-header.js?v=20260905-0315"' in html
 
 
-
 def test_image_rights_framework_is_published_and_rendered(output_dir):
     builder.build_public_site(output_dir)
-
     rights = (output_dir / "site-image-rights.js").read_text(encoding="utf-8")
     assert "POIGAME_IMAGE_RIGHTS" in rights
     assert "メメントモリ" not in rights
     assert "BANK OF INNOVATION" not in rights
-
     for filename in {"index.html", "offers.html", "guides.html", "game.html"}:
         html = (output_dir / filename).read_text(encoding="utf-8")
         assert 'src="site-image-rights.js"' in html
         assert "POIGAME_IMAGE_RIGHTS" in html
         assert "image-rights-note" in html or "gameArtworkRights" in html
-
     game_html = (output_dir / "game.html").read_text(encoding="utf-8")
     assert 'id="gameArtworkRights"' in game_html
