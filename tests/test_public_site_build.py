@@ -278,6 +278,7 @@ def test_approved_catalog_game_art_is_published(output_dir):
         "メメントモリ": "assets/game-art/mementomori-new.png.PNG",
         "ホワイトアウト・サバイバル": "assets/game-art/whiteout-survival.svg",
         "東京ディバンカー": "assets/game-art/tokyo-debunker.jpeg",
+        "パズル＆サバイバル": "assets/game-art/puzzles-survival-new.png.PNG",
         "キングショット": "assets/game-art/kingshot.svg",
         "放置少女": "assets/game-art/houchishojo.svg",
         "エバーテイル": "assets/game-art/evertale.svg",
