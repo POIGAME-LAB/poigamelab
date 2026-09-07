@@ -18,8 +18,8 @@
   // These paths were previously served with corrupted binaries. Add a version
   // only at render time so browsers are forced to fetch the newly verified files.
   const cacheBustImages = new Map([
-    ["assets/game-art/township.webp", "20260906-2355"],
-    ["assets/game-art/kinoko.webp", "20260906-2355"],
+    ["assets/game-art/township-original.jpeg", "20260908-0120"],
+    ["assets/game-art/kinoko-original.png", "20260908-0120"],
     ["assets/game-art/whiteout-survival.svg", "20260906-2355"],
     ["assets/game-art/tokyo-debunker.jpeg", "20260907-1208"]
   ]);
