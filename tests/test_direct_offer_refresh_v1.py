@@ -1419,6 +1419,17 @@ def test_moppy_review_parser_binds_shell_identity_reward_os_and_terms(moppy_mark
     assert len(evidence['evidenceFingerprint']) == 64
 
 
+def test_moppy_ignores_pre_offer_navigation_reward(moppy_markup):
+    noisy = moppy_markup.replace(
+        '<main>',
+        '<div>ホーム 5000P 友達紹介</div><div>テストゲーム（StepUp）〖Android〗の詳細</div><main>'
+    ).replace('<div>600P</div>', '<div>13,354P</div>')
+    evidence = parse_moppy(noisy)
+    assert evidence['state'] == 'parsed'
+    assert evidence['displayedRewardPoints'] == 13354
+    assert '5000P' not in evidence['headerText']
+
+
 def test_moppy_site_id_and_s_id_are_same_offer_identity(moppy_markup):
     assert direct.moppy_offer_id(MOPPY_URL) == direct.moppy_offer_id(MOPPY_ALT_URL) == '12345'
     evidence = parse_moppy(moppy_markup, requested=MOPPY_URL, final=MOPPY_ALT_URL)
