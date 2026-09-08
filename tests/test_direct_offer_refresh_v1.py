@@ -2229,8 +2229,8 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/101454',
     }
     assert set(kinoko) == {
-        'https://hapitas.jp/item/detail/itemid/99850',
-        'https://hapitas.jp/item/detail/itemid/100403',
+        'https://hapitas.jp/item/detail/itemid/102450',
+        'https://hapitas.jp/item/detail/itemid/102451',
     }
     assert set(tokyo) == {
         'https://hapitas.jp/item/detail/itemid/91316',
@@ -2268,5 +2268,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('エバーテイル', 'iOS', '140'),
         ('パズル＆サバイバル', 'Android', '30612'),
         ('パズル＆サバイバル', 'iOS', '35015'),
+        ('きのこ伝説', 'Android', '14792'),
+        ('きのこ伝説', 'iOS', '18142'),
     }
-    assert not any(row['game'] in {'Township', 'きのこ伝説'} for row in hapitas_rows)
+    assert not any(row['game'] == 'Township' for row in hapitas_rows)

@@ -38,6 +38,18 @@ def test_config_restore_even_on_failure():
 
 
 
+def test_kinoko_known_sources_include_current_hapitas_pair():
+    data=json.loads((ROOT/'config/game_targets.json').read_text())
+    by_game={x['game']:x for x in data['games']}
+    kinoko=by_game['きのこ伝説']['known_urls_by_source']
+    assert set(kinoko['hapitas'])=={
+        'https://hapitas.jp/item/detail/itemid/102450',
+        'https://hapitas.jp/item/detail/itemid/102451',
+    }
+    assert 'https://hapitas.jp/item/detail/itemid/99850' not in kinoko['hapitas']
+    assert 'https://hapitas.jp/item/detail/itemid/100403' not in kinoko['hapitas']
+
+
 def test_mementomori_known_sources_include_current_hapitas_pair():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     by_game={x['game']:x for x in data['games']}

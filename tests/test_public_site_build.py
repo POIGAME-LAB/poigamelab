@@ -159,6 +159,28 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     assert all(row["deadline"] == "インストール後45日以内" for row in matches)
 
 
+def test_kinoko_has_current_hapitas_ios_android_pair(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "きのこ伝説" and row["site"] == "hapitas"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("iOS", "18142", "https://hapitas.jp/item/detail/itemid/102450"),
+        ("Android", "14792", "https://hapitas.jp/item/detail/itemid/102451"),
+    }
+    assert all(row["verified"].lower() == "true" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all("Lv100/120/125到達" in row["condition"] for row in matches)
+    assert all("Lv120は40日以内" in row["deadline"] for row in matches)
+    assert all("Lv125は45日以内" in row["deadline"] for row in matches)
+
+
 def test_puzzles_survival_has_current_hapitas_ios_android_pair(output_dir):
     builder.build_public_site(output_dir)
     import csv
