@@ -123,7 +123,10 @@ def test_v32_game_known_sources_are_isolated():
 
     evertale=by_game['エバーテイル']['known_urls_by_source']
     assert set(evertale)=={'moppy','hapitas','warau'}
-    assert evertale['moppy']==['https://pc.moppy.jp/ad/detail.php?site_id=158276']
+    assert set(evertale['moppy'])=={
+        'https://pc.moppy.jp/ad/detail.php?site_id=158276',
+        'https://pc.moppy.jp/ad/detail.php?site_id=158275',
+    }
     assert set(evertale['hapitas'])=={
         'https://hapitas.jp/item/detail/itemid/96066',
         'https://hapitas.jp/item/detail/itemid/91344',
