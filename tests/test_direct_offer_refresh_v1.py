@@ -2389,6 +2389,32 @@ def test_repository_ended_coincome_township_and_kinoko_are_not_published_or_targ
     assert coincome['scheduled_known_detail_fetch_enabled'] is False
 
 
+def test_repository_evertale_stale_hapitas_195_is_not_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    assert not any(
+        row['game'] == 'エバーテイル'
+        and row['site'] == 'hapitas'
+        and row['reward'] == '195'
+        for row in rows
+    )
+    ios140 = [
+        row for row in rows
+        if row['game'] == 'エバーテイル'
+        and row['site'] == 'hapitas'
+        and row['platform'] == 'iOS'
+        and row['reward'] == '140'
+    ]
+    assert len(ios140) == 1
+    assert ios140[0]['url'] == 'https://hapitas.jp/item/detail/itemid/91344'
+    assert ios140[0]['updatedAt'] == '2026-09-08'
+
+    targets = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))['games']
+    evertale = next(item for item in targets if item['game'] == 'エバーテイル')
+    assert 'https://hapitas.jp/item/detail/itemid/96066' not in evertale['known_urls_by_source']['hapitas']
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
@@ -2430,7 +2456,6 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/101354',
     }
     assert set(evertale) == {
-        'https://hapitas.jp/item/detail/itemid/96066',
         'https://hapitas.jp/item/detail/itemid/91344',
         'https://hapitas.jp/item/detail/itemid/91331',
         'https://hapitas.jp/item/detail/itemid/91345',
@@ -2460,7 +2485,6 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('キングショット', 'iOS', '16320'),
         ('メメントモリ', 'Android', '4815'),
         ('メメントモリ', 'iOS', '4815'),
-        ('エバーテイル', 'Android', '195'),
         ('エバーテイル', 'iOS', '140'),
         ('エバーテイル', 'Android', '182'),
         ('エバーテイル', 'iOS', '182'),

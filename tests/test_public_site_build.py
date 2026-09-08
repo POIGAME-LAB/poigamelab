@@ -624,6 +624,31 @@ def test_public_site_excludes_ended_coincome_township_and_kinoko(output_dir):
     )
 
 
+def test_evertale_public_site_excludes_stale_hapitas_195(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    assert not any(
+        row["game"] == "エバーテイル"
+        and row["site"] == "hapitas"
+        and row["reward"] == "195"
+        for row in rows
+    )
+    ios140 = [
+        row for row in rows
+        if row["game"] == "エバーテイル"
+        and row["site"] == "hapitas"
+        and row["platform"] == "iOS"
+        and row["reward"] == "140"
+    ]
+    assert len(ios140) == 1
+    assert ios140[0]["updatedAt"] == "2026-09-08"
+    assert ios140[0]["verified"].lower() == "true"
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)

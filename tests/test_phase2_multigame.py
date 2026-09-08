@@ -132,7 +132,6 @@ def test_v32_game_known_sources_are_isolated():
         'https://pc.moppy.jp/ad/detail.php?site_id=158275',
     }
     assert set(evertale['hapitas'])=={
-        'https://hapitas.jp/item/detail/itemid/96066',
         'https://hapitas.jp/item/detail/itemid/91344',
         'https://hapitas.jp/item/detail/itemid/91331',
         'https://hapitas.jp/item/detail/itemid/91345',
