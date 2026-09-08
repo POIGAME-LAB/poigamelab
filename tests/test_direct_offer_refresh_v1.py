@@ -2018,6 +2018,16 @@ def test_offerwall_provider_label_registry_rejects_duplicate_review_labels(tmp_p
         direct.load_offerwall_provider_label_registry(path, domains)
 
 
+def test_repository_offerwall_providers_have_first_party_display_labels():
+    payload = json.loads((ROOT/'config/offerwall_providers.json').read_text())
+    by_id = {item['id']: item for item in payload['providers']}
+    assert by_id['mychips']['firstPartyLabels'] == ['myChips', 'MyChips']
+    assert by_id['skyflag']['firstPartyLabels'] == ['SKYFLAG']
+    assert by_id['gf_rewards']['firstPartyLabels'] == ['GFRewards', 'GF Rewards']
+    assert by_id['smaad']['firstPartyLabels'] == ['SmaAD', 'GMO SmaAD']
+    assert by_id['zucks']['firstPartyLabels'] == ['Zucks']
+
+
 def test_repository_appdriver_has_reviewed_moppy_first_party_labels():
     payload = json.loads((ROOT/'config/offerwall_providers.json').read_text())
     appdriver = next(item for item in payload['providers'] if item['id'] == 'appdriver')
