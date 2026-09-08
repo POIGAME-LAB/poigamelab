@@ -473,6 +473,26 @@ def test_township_has_current_chobirich_reward(output_dir):
     assert row["verified"].lower() == "true"
 
 
+def test_kinoko_chobirich_rows_are_current_android(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "きのこ伝説" and row["site"] == "chobirich"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("Android", "3831", "https://www.chobirich.com/ad_details/1883822"),
+        ("Android", "17880", "https://www.chobirich.com/ad_details/1896200"),
+        ("Android", "13409", "https://www.chobirich.com/ad_details/1896275"),
+    }
+    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
