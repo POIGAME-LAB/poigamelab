@@ -164,7 +164,7 @@ def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir
         row = matches[0]
         evidence = evidence_by_id[offer_id]
         assert row["game"] == game == next(
-            item["game"] for item in review
+            item["game"] for item in review["items"]
             if str(item.get("sourceEvidence", {}).get("offerId")) == offer_id
         )
         assert row["platform"] == platform == evidence["platform"]
