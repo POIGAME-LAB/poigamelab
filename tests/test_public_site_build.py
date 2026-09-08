@@ -176,7 +176,7 @@ def test_kinoko_has_current_hapitas_ios_android_pair(output_dir):
     }
     assert all(row["verified"].lower() == "true" for row in matches)
     assert all(row["updatedAt"] == "2026-09-08" for row in matches)
-    assert all("Lv125到達" in row["condition"] for row in matches)
+    assert all("Lv100/120/125到達" in row["condition"] for row in matches)
     assert all("Lv120は40日以内" in row["deadline"] for row in matches)
     assert all("Lv125は45日以内" in row["deadline"] for row in matches)
 
