@@ -1532,9 +1532,10 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
         }
 
     assert ids('ホワイトアウト・サバイバル') == {'201872', '201862'}
-    assert ids('パズル＆サバイバル') == {'206425', '205361'}
+    assert ids('パズル＆サバイバル') == {'206425', '205361', '206488', '206460'}
     assert ids('キングショット') == {'204984', '204983'}
     assert ids('放置少女') == {'177971', '206411'}
+    assert ids('メメントモリ') == {'206501', '206500'}
     assert '205557' not in ids('パズル＆サバイバル')
 
 
