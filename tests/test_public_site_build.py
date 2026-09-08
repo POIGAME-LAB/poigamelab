@@ -518,6 +518,30 @@ def test_selected_moppy_verified_dates_are_current(output_dir):
             assert row["verified"].lower() == "true"
 
 
+def test_whiteout_and_houchi_selected_rows_are_current(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    expected = {
+        ("ホワイトアウト・サバイバル", "moppy", "Android", "6119", "https://pc.moppy.jp/ad/detail.php?site_id=160375"),
+        ("放置少女", "warau", "Android", "1600", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971"),
+    }
+    matches = {
+        (row["game"], row["site"], row["platform"], row["reward"], row["url"])
+        for row in rows
+        if (row["game"], row["site"], row["platform"], row["reward"], row["url"]) in expected
+    }
+    assert matches == expected
+    for row in rows:
+        key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
+        if key in expected:
+            assert row["updatedAt"] == "2026-09-08"
+            assert row["verified"].lower() == "true"
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
