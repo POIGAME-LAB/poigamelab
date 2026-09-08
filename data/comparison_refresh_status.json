@@ -1,6 +1,6 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "checkedAt": "2026-09-07T23:30:12+00:00",
+  "checkedAt": "2026-09-08T23:24:18+00:00",
   "comparisonSources": [
     "moppy",
     "warau",
@@ -12,7 +12,7 @@
   "apiCalls": 0,
   "publishedRewardChanges": 0,
   "refreshedRows": 4,
-  "reviewCount": 82,
+  "reviewCount": 83,
   "games": [
     {
       "game": "メメントモリ",
@@ -31,12 +31,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 3,
+          "knownOrDiscoveredUrls": 4,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 3,
+          "reviewRequired": 4,
           "state": "review_required"
         },
         {
@@ -51,12 +51,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 6,
           "state": "review_required"
         },
         {
@@ -101,12 +101,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 3,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 2,
           "updatedRows": 2,
-          "reviewRequired": 1,
+          "reviewRequired": 0,
           "state": "confirmed"
         },
         {
@@ -171,12 +171,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 3,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 2,
           "updatedRows": 2,
-          "reviewRequired": 1,
+          "reviewRequired": 0,
           "state": "confirmed"
         },
         {
@@ -320,12 +320,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 3,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 3,
+          "reviewRequired": 2,
           "state": "review_required"
         },
         {
@@ -469,12 +469,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 6,
+          "knownOrDiscoveredUrls": 5,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 6,
+          "reviewRequired": 5,
           "state": "review_required"
         },
         {
@@ -539,12 +539,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 3,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 3,
+          "reviewRequired": 2,
           "state": "review_required"
         },
         {
@@ -618,12 +618,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 3,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 3,
+          "reviewRequired": 2,
           "state": "review_required"
         },
         {
@@ -677,18 +677,18 @@
         {
           "source": "moppy",
           "standard": true,
-          "knownOrDiscoveredUrls": 1,
+          "knownOrDiscoveredUrls": 2,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 2,
           "state": "review_required"
         },
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 1,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
