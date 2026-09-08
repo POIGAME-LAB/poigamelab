@@ -10,7 +10,7 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from html.parser import HTMLParser
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import parse_qs, quote_plus, urljoin, urlparse
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -152,6 +152,34 @@ def detail_like(url, source):
     return any(h in (p.path or "").lower() for h in (
         "pointentrance", "/ad_details/", "/campaigns/details/", "/ad/detail", "/item/detail/"
     ))
+
+def target_listing_urls(source, aliases):
+    """Return bounded first-party listing URLs for one target game.
+
+    A source may provide a reviewed search template containing exactly one
+    {query} placeholder. Only the primary alias is used so scheduled checks stay
+    bounded and predictable. Generated URLs must still pass the first-party
+    HTTPS allowlist before any fetch occurs.
+    """
+    configured = [
+        str(x).strip() for x in (source.get("direct_listing_urls") or [])
+        if str(x).strip()
+    ]
+    template = source.get("direct_search_url_template")
+    if template is None:
+        return configured
+    if (not isinstance(template, str) or template.count("{query}") != 1
+            or "{" in template.replace("{query}", "")
+            or "}" in template.replace("{query}", "")):
+        return configured
+    primary = next((str(x).strip() for x in aliases if str(x).strip()), "")
+    if not primary:
+        return configured
+    candidate = template.replace("{query}", quote_plus(primary, safe=""))
+    if source_host_allowed(candidate, source):
+        return [candidate] + configured
+    return configured
+
 
 def discover_detail_links(raw, base_url, source, aliases, limit=8):
     found = []
@@ -1309,7 +1337,7 @@ def main():
             offerwall_presence = []
             listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
             detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
-            for listing_url in (source.get("direct_listing_urls") or [])[:listing_limit]:
+            for listing_url in target_listing_urls(source, aliases)[:listing_limit]:
                 try:
                     raw, final_url = fetch_once(listing_url, source)
                     if target_present(visible_text(raw), aliases):
