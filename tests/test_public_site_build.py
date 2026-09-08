@@ -323,7 +323,7 @@ def test_kingshot_has_current_hapitas_ios_android_pair(output_dir):
     }
     assert all(row["verified"].lower() == "true" for row in matches)
     assert {(row["platform"], row["updatedAt"]) for row in matches} == {
-        ("Android", "2026-09-04"),
+        ("Android", "2026-09-08"),
         ("iOS", "2026-09-08"),
     }
     assert all("10日／30日／70日以内" in row["deadline"] for row in matches)
@@ -573,6 +573,30 @@ def test_puzzles_warau_ios_and_evertale_moppy_are_current(output_dir):
     expected = {
         ("パズル＆サバイバル", "warau", "iOS", "15230", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361"),
         ("エバーテイル", "moppy", "不明", "360", "https://pc.moppy.jp/ad/detail.php?site_id=158276"),
+    }
+    matches = {
+        (row["game"], row["site"], row["platform"], row["reward"], row["url"])
+        for row in rows
+        if (row["game"], row["site"], row["platform"], row["reward"], row["url"]) in expected
+    }
+    assert matches == expected
+    for row in rows:
+        key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
+        if key in expected:
+            assert row["updatedAt"] == "2026-09-08"
+            assert row["verified"].lower() == "true"
+
+
+def test_kingshot_hapitas_and_houchi_moppy_are_current(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    expected = {
+        ("キングショット", "hapitas", "Android", "16320", "https://hapitas.jp/item/detail/itemid/101355"),
+        ("放置少女", "moppy", "不明", "2400", "https://pc.moppy.jp/ad/detail.php?site_id=147270"),
     }
     matches = {
         (row["game"], row["site"], row["platform"], row["reward"], row["url"])
