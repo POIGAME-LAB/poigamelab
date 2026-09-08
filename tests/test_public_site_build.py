@@ -256,6 +256,25 @@ def test_evertale_has_current_warau_ios_offer(output_dir):
     assert matches[0]["deadline"] == "インストール日から起算して10日以内"
 
 
+def test_tokyo_debunker_hapitas_ios_android_pair_is_published(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "東京ディバンカー" and row["site"] == "hapitas"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("iOS", "147", "https://hapitas.jp/item/detail/itemid/91316"),
+        ("Android", "147", "https://hapitas.jp/item/detail/itemid/91334"),
+    }
+    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
 def test_tokyo_debunker_current_verified_dates_are_fresh(output_dir):
     builder.build_public_site(output_dir)
     import csv
