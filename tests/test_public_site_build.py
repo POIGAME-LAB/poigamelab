@@ -159,6 +159,35 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     assert all(row["deadline"] == "インストール後45日以内" for row in matches)
 
 
+def test_current_warau_offerwall_amounts_are_published_with_provider_labels(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    expected = {
+        "206501": ("メメントモリ", "iOS", "4906", "SmaAD"),
+        "206500": ("メメントモリ", "Android", "4906", "SmaAD"),
+        "206488": ("パズル＆サバイバル", "Android", "8628", "SmaAD"),
+        "206460": ("パズル＆サバイバル", "Android", "13016", "GF Rewards"),
+    }
+    for offer_id, (game, platform, reward, provider) in expected.items():
+        matches = [
+            row for row in rows
+            if row["site"] == "warau" and f"point_id={offer_id}" in row["url"]
+        ]
+        assert len(matches) == 1
+        row = matches[0]
+        assert row["game"] == game
+        assert row["platform"] == platform
+        assert row["reward"] == reward
+        assert row["provider"] == provider
+        assert row["verified"].lower() == "true"
+        assert row["updatedAt"] == "2026-09-08"
+        assert "StepUpミッションをクリア" in row["condition"]
+
+
 def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir):
     builder.build_public_site(output_dir)
     import csv
