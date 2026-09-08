@@ -125,6 +125,10 @@ function makeContext(fetchImpl) {
     '3日間連続ログインボーナス獲得'
   );
   assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後、StepUp（ランク30到達、ランク60到達、ランク100到達、ランク140到達、累計10000円課金）', 'StepUp'),
+    'ランク140到達'
+  );
+  assert.strictEqual(
     api.summarizeOfferCondition('新規アプリインストール後60日以内にStepUp（★5ヒーロー11枠、ユーザーランク25/50、PVP500勝、チームメダル4000枚）', 'StepUp'),
     'ユーザーランク50到達'
   );
