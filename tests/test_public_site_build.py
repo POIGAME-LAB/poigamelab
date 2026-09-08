@@ -159,6 +159,25 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     assert all(row["deadline"] == "インストール後45日以内" for row in matches)
 
 
+def test_evertale_has_current_warau_ios_offer(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "エバーテイル" and row["site"] == "warau"
+    ]
+    assert [(row["platform"], row["reward"], row["url"]) for row in matches] == [
+        ("iOS", "310", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=188016")
+    ]
+    assert matches[0]["updatedAt"] == "2026-09-08"
+    assert matches[0]["verified"].lower() == "true"
+    assert matches[0]["deadline"] == "インストール日から起算して10日以内"
+
+
 def test_tokyo_debunker_current_verified_dates_are_fresh(output_dir):
     builder.build_public_site(output_dir)
     import csv
