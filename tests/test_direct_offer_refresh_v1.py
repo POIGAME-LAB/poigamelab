@@ -2234,6 +2234,25 @@ def test_repository_evertale_current_moppy_pair_is_published_without_guessing_os
     assert all(row['condition'] == '新規アプリインストール後、3日連続でログインボーナスを獲得' for row in matches)
 
 
+def test_repository_evertale_current_hapitas_182_pair_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'エバーテイル'
+        and row['site'] == 'hapitas'
+        and row['reward'] == '182'
+    ]
+    assert {(row['platform'], row['url']) for row in matches} == {
+        ('Android', 'https://hapitas.jp/item/detail/itemid/91331'),
+        ('iOS', 'https://hapitas.jp/item/detail/itemid/91345'),
+    }
+    assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得' for row in matches)
+    assert all(row['deadline'] == 'インストール日から起算して30日以内' for row in matches)
+    assert all(row['verified'] == 'true' for row in matches)
+
+
 def test_repository_evertale_current_warau_ios_offer_is_published():
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
@@ -2293,6 +2312,8 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     assert set(evertale) == {
         'https://hapitas.jp/item/detail/itemid/96066',
         'https://hapitas.jp/item/detail/itemid/91344',
+        'https://hapitas.jp/item/detail/itemid/91331',
+        'https://hapitas.jp/item/detail/itemid/91345',
     }
     assert set(memento) == {
         'https://hapitas.jp/item/detail/itemid/99420',
@@ -2317,6 +2338,8 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('メメントモリ', 'iOS', '4815'),
         ('エバーテイル', 'Android', '195'),
         ('エバーテイル', 'iOS', '140'),
+        ('エバーテイル', 'Android', '182'),
+        ('エバーテイル', 'iOS', '182'),
         ('パズル＆サバイバル', 'Android', '30612'),
         ('パズル＆サバイバル', 'iOS', '35015'),
         ('きのこ伝説', 'Android', '14792'),
