@@ -266,6 +266,7 @@ def test_tokyo_debunker_current_verified_dates_are_fresh(output_dir):
     by_key = {(row["site"], row["url"]): row for row in rows if row["game"] == "東京ディバンカー"}
     assert by_key[("moppy", "https://pc.moppy.jp/ad/detail.php?site_id=158270")]["updatedAt"] == "2026-09-08"
     assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["updatedAt"] == "2026-09-08"
+    assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["platform"] == "iOS"
 
 
 def test_tokyo_debunker_has_two_current_moppy_offers_without_os_guess(output_dir):

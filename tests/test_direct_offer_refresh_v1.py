@@ -2352,7 +2352,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     assert {(row['game'], row['platform'], row['reward']) for row in hapitas_rows} == {
         ('ワーキングヒーロー', 'Android', '11502'),
         ('ワーキングヒーロー', 'iOS', '11502'),
-        ('東京ディバンカー', '不明', '147'),
+        ('東京ディバンカー', 'iOS', '147'),
         ('キングショット', 'Android', '16320'),
         ('キングショット', 'iOS', '16320'),
         ('メメントモリ', 'Android', '4815'),
