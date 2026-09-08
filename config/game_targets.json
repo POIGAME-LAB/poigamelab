@@ -34,10 +34,6 @@
           "https://www.chobirich.com/ad_details/1896200",
           "https://www.chobirich.com/ad_details/1896275"
         ],
-        "coincome": [
-          "https://cimcome.jp/campaigns/details/10037",
-          "https://cimcome.jp/campaigns/details/10038"
-        ],
         "warau": [
           "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
           "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817"
@@ -57,10 +53,6 @@
       "known_urls_by_source": {
         "chobirich": [
           "https://www.chobirich.com/ad_details/1894712"
-        ],
-        "coincome": [
-          "https://cimcome.jp/campaigns/details/9857",
-          "https://cimcome.jp/campaigns/details/9856"
         ],
         "warau": [
           "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
