@@ -850,6 +850,104 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+
+def gendama_offer_id(url):
+    """Return the stable numeric Gendama service identity for supported URLs."""
+    try:
+        p = urlparse(str(url or ""))
+        port = p.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (p.scheme != "https" or p.hostname != "www.gendama.jp"
+            or p.username is not None or p.password is not None
+            or port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    m = re.fullmatch(r"/service/item/([0-9]+)", p.path or "")
+    if not m:
+        raise ValueError("unexpected_offer_url")
+    query = parse_qs(p.query, keep_blank_values=True)
+    if any(key != "frame" for key in query):
+        raise ValueError("unexpected_offer_url")
+    return m.group(1)
+
+
+def inspect_gendama_offer(raw, requested_url, final_url, aliases):
+    """Extract review-only evidence from a Gendama service detail page.
+
+    The parser never converts points to yen. It accepts only Gendama's own
+    adjacent "pt (円相当)" display and records both source values verbatim.
+    """
+    try:
+        offer_id = gendama_offer_id(requested_url)
+        if gendama_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        text = visible_text(raw)
+        if "ページが見つかりません" in text or "掲載終了" in text:
+            return {"state": "unavailable", "reason": "source_offer_unavailable",
+                    "offerId": offer_id}
+
+        title = evidence_text(one(doc.find(tag="h1")))
+        if not target_present(title, aliases):
+            raise ValueError("offer_title_mismatch")
+
+        pairs = {
+            (int(points.replace(",", "")), int(yen.replace(",", "")))
+            for points, yen in re.findall(
+                r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\s*[（(]\s*"
+                r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円相当\s*[）)]",
+                text, re.I
+            )
+        }
+        if len(pairs) != 1:
+            raise ValueError("missing_or_ambiguous_yen_equivalent")
+        reward_points, reward_yen = next(iter(pairs))
+        if not (0 < reward_points < 1_000_000 and 0 < reward_yen < 1_000_000):
+            raise ValueError("invalid_reward")
+
+        m = re.search(
+            r"獲得条件\s*[|｜]?\s*(.+?)\s*(?:[|｜]\s*)?判定ポイント",
+            text
+        )
+        if not m:
+            raise ValueError("missing_offer_condition")
+        condition = re.sub(r"\s+", " ", m.group(1)).strip()
+        if len(condition) < 4:
+            raise ValueError("missing_offer_condition")
+
+        marker = "ポイントを獲得するための注意事項"
+        start = text.find(marker)
+        end = text.find("サービスの詳細", start + len(marker)) if start >= 0 else -1
+        if start < 0 or end <= start:
+            raise ValueError("incomplete_offer_terms")
+        terms = re.sub(r"\s+", " ", text[start:end]).strip()
+        if len(terms) < 80:
+            raise ValueError("incomplete_offer_terms")
+
+        platform = platform_hint(" ".join((title, condition, terms)))
+        if platform not in {"iOS", "Android", "iOS|Android"}:
+            raise ValueError("ambiguous_offer_platform")
+
+        payload = {
+            "offerId": offer_id,
+            "name": title,
+            "platform": platform,
+            "displayedRewardPoints": reward_points,
+            "displayedRewardYen": reward_yen,
+            "rewardUnit": "JPY-equivalent",
+            "condition": condition,
+            "termsText": terms,
+        }
+        fingerprint = hashlib.sha256(json.dumps(
+            payload, ensure_ascii=False, sort_keys=True
+        ).encode("utf-8")).hexdigest()
+        return {"state": "parsed", "parserVersion": "gendama-detail-review-v1",
+                **payload, "evidenceFingerprint": fingerprint}
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
     structured_parsers = {
@@ -857,6 +955,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "chobirich": inspect_chobirich_offer,
         "coincome": inspect_coincome_offer,
         "moppy": inspect_moppy_offer,
+        "gendama": inspect_gendama_offer,
     }
     if source.get("id") in structured_parsers:
         evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
