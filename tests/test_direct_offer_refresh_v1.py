@@ -1684,7 +1684,7 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
     assert ids('パズル＆サバイバル') == {'206425', '205361', '206488', '206460', '205557'}
     assert ids('キングショット') == {'204984', '204983'}
     assert ids('放置少女') == {'177971', '206411'}
-    assert ids('メメントモリ') == {'206501', '206500', '206037'}
+    assert ids('メメントモリ') == {'206501', '206500', '206037', '205982'}
     assert ids('エバーテイル') == {'188016'}
 
 
@@ -2437,6 +2437,24 @@ def test_repository_memento_current_target_coverage_includes_public_warau_and_re
         and row['url'] == 'https://hapitas.jp/item/detail/itemid/101349'
         for row in rows
     )
+
+
+def test_repository_memento_current_warau_11500_pair_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'メメントモリ'
+        and row['site'] == 'warau'
+        and row['reward'] == '11500'
+    ]
+    assert {(row['platform'], direct.warau_offer_id(row['url'])) for row in matches} == {
+        ('iOS', '206037'),
+        ('Android', '205982'),
+    }
+    assert all(row['verified'] == 'true' for row in matches)
+    assert all(row['deadline'] == 'インストール日から起算して30日／45日以内（ステップ別）' for row in matches)
 
 
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
