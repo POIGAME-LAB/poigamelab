@@ -850,7 +850,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
-def inspect_detail(url, source, aliases, fetcher=None):
+def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
     structured_parsers = {
         "warau": inspect_warau_offer,
@@ -860,6 +860,18 @@ def inspect_detail(url, source, aliases, fetcher=None):
     }
     if source.get("id") in structured_parsers:
         evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
+        if (source.get("id") == "warau" and evidence.get("state") == "parsed"
+                and provider_label_registry):
+            provider_candidates = offerwall_provider_candidates_from_text(
+                evidence.get("name", ""), provider_label_registry
+            )
+            if len(provider_candidates) == 1:
+                evidence = dict(evidence)
+                evidence["providerId"] = provider_candidates[0]["providerId"]
+                evidence["provider"] = provider_candidates[0]["providerName"]
+            elif len(provider_candidates) > 1:
+                evidence = dict(evidence)
+                evidence["providerCandidates"] = provider_candidates
         return {"url": final_url, "sourceEvidence": evidence,
                 "targetPresent": evidence["state"] == "parsed",
                 "platform": evidence.get("platform", "")}
@@ -1287,7 +1299,10 @@ def main():
 
             for url in urls:
                 try:
-                    detail = inspect_detail(url, source, aliases, fetcher=fetch_once)
+                    detail = inspect_detail(
+                        url, source, aliases, fetcher=fetch_once,
+                        provider_label_registry=offerwall_provider_label_registry,
+                    )
                 except Exception as e:
                     review.append({
                         "game": game, "source": source_id, "url": url,

@@ -77,6 +77,14 @@
     return raw.split("|").map((item) => item.trim()).filter(Boolean);
   }
 
+  function formatOfferSourceLabel(siteName, provider) {
+    const site = String(siteName || "").trim();
+    const network = String(provider || "").trim();
+    if (!network) return site;
+    if (!site) return network;
+    return `${site} × ${network}`;
+  }
+
   function normalizeOffer(row, source) {
     return {
       offerKey: String(row.offerKey || "").trim(),
@@ -520,6 +528,7 @@
     fetchCsv,
     fetchJson,
     normalizePlatform,
+    formatOfferSourceLabel,
     loadOffersWithFallback,
     hoursSince,
     buildGameHealth,
