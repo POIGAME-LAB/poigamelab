@@ -475,7 +475,15 @@
       if (levels.length) return `コントロールセンターレベル${Math.max(...levels)}到達`;
     }
 
-    const genericRankMatches = [...raw.matchAll(/(?<!ユーザー)ランク(\d+)到達/g)].map((match) => Number(match[1]));
+    const genericRankMatches = [];
+    const genericRankPattern = /ランク(\d+)到達/g;
+    let genericRankMatch;
+    while ((genericRankMatch = genericRankPattern.exec(raw)) !== null) {
+      const prefix = raw.slice(Math.max(0, genericRankMatch.index - 4), genericRankMatch.index);
+      if (!prefix.endsWith("ユーザー")) {
+        genericRankMatches.push(Number(genericRankMatch[1]));
+      }
+    }
     if (genericRankMatches.length) {
       return `ランク${Math.max(...genericRankMatches)}到達`;
     }
