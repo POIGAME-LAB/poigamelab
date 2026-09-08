@@ -2201,6 +2201,22 @@ def test_repository_appdriver_has_reviewed_moppy_first_party_labels():
     assert appdriver['firstPartyLabels'] == ['アプリドライブ', 'AppDriver']
 
 
+def test_tokyo_debunker_current_moppy_pair_is_published_without_guessing_os():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == '東京ディバンカー' and row['site'] == 'moppy'
+    ]
+    assert {(direct.moppy_offer_id(row['url']), row['platform'], row['reward']) for row in matches} == {
+        ('158270', '不明', '228'),
+        ('158257', '不明', '199'),
+    }
+    assert all(row['verified'] == 'true' for row in matches)
+    assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得' for row in matches)
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
