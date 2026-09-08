@@ -452,6 +452,27 @@ def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir
     assert row["updatedAt"] == "2026-09-08"
 
 
+def test_township_has_current_chobirich_reward(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "Township"
+        and row["site"] == "chobirich"
+        and row["url"] == "https://www.chobirich.com/ad_details/1894712"
+    ]
+    assert len(matches) == 1
+    row = matches[0]
+    assert row["reward"] == "31030"
+    assert row["platform"] == "Android"
+    assert row["updatedAt"] == "2026-09-08"
+    assert row["verified"].lower() == "true"
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
