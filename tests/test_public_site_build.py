@@ -587,6 +587,30 @@ def test_puzzles_warau_ios_and_evertale_moppy_are_current(output_dir):
             assert row["verified"].lower() == "true"
 
 
+def test_kingshot_hapitas_and_houchi_moppy_are_current(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    expected = {
+        ("キングショット", "hapitas", "Android", "16320", "https://hapitas.jp/item/detail/itemid/101355"),
+        ("放置少女", "moppy", "不明", "2400", "https://pc.moppy.jp/ad/detail.php?site_id=147270"),
+    }
+    matches = {
+        (row["game"], row["site"], row["platform"], row["reward"], row["url"])
+        for row in rows
+        if (row["game"], row["site"], row["platform"], row["reward"], row["url"]) in expected
+    }
+    assert matches == expected
+    for row in rows:
+        key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
+        if key in expected:
+            assert row["updatedAt"] == "2026-09-08"
+            assert row["verified"].lower() == "true"
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
