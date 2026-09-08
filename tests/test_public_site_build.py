@@ -177,7 +177,7 @@ def test_puzzles_survival_has_current_hapitas_ios_android_pair(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
     assert all(row["updatedAt"] == "2026-09-08" for row in matches)
     assert all(row["deadline"] == "インストール後30日以内" for row in matches)
-    assert all("レベル30到達" in row["condition"] for row in matches)
+    assert all("レベル7/12/17/25/30到達" in row["condition"] for row in matches)
 
 
 
