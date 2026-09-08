@@ -2287,6 +2287,23 @@ def test_repository_evertale_current_warau_ios_offer_is_published():
     assert row['verified'] == 'true'
 
 
+def test_repository_tokyo_debunker_hapitas_ios_android_pair_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == '東京ディバンカー' and row['site'] == 'hapitas'
+    ]
+    assert {(row['platform'], row['reward'], row['url']) for row in matches} == {
+        ('iOS', '147', 'https://hapitas.jp/item/detail/itemid/91316'),
+        ('Android', '147', 'https://hapitas.jp/item/detail/itemid/91334'),
+    }
+    assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得' for row in matches)
+    assert all(row['deadline'] == 'インストール日から起算して30日以内' for row in matches)
+    assert all(row['verified'] == 'true' for row in matches)
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
@@ -2353,6 +2370,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('ワーキングヒーロー', 'Android', '11502'),
         ('ワーキングヒーロー', 'iOS', '11502'),
         ('東京ディバンカー', 'iOS', '147'),
+        ('東京ディバンカー', 'Android', '147'),
         ('キングショット', 'Android', '16320'),
         ('キングショット', 'iOS', '16320'),
         ('メメントモリ', 'Android', '4815'),
