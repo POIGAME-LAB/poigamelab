@@ -1493,6 +1493,23 @@ def test_repository_coincome_uses_listing_only_scheduled_discovery(monkeypatch):
     assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
 
 
+def test_repository_tracks_current_reviewed_warau_offer_ids():
+    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
+    by_game = {item['game']: item for item in targets}
+
+    def ids(game):
+        return {
+            direct.warau_offer_id(url)
+            for url in by_game[game]['known_urls_by_source']['warau']
+        }
+
+    assert ids('ホワイトアウト・サバイバル') == {'201872', '201862'}
+    assert ids('パズル＆サバイバル') == {'206425', '205361'}
+    assert ids('キングショット') == {'204984', '204983'}
+    assert ids('放置少女') == {'177971', '206411'}
+    assert '205557' not in ids('パズル＆サバイバル')
+
+
 def test_repository_mementomori_moppy_review_targets_use_current_45_day_pair():
     targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
     memo = next(item for item in targets if item['game'] == 'メメントモリ')
