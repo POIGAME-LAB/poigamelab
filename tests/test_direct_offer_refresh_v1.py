@@ -1684,7 +1684,7 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
     assert ids('パズル＆サバイバル') == {'206425', '205361', '206488', '206460', '205557'}
     assert ids('キングショット') == {'204984', '204983'}
     assert ids('放置少女') == {'177971', '206411'}
-    assert ids('メメントモリ') == {'206501', '206500'}
+    assert ids('メメントモリ') == {'206501', '206500', '206037'}
     assert ids('エバーテイル') == {'188016'}
 
 
@@ -2415,6 +2415,30 @@ def test_repository_evertale_stale_hapitas_195_is_not_published():
     assert 'https://hapitas.jp/item/detail/itemid/96066' not in evertale['known_urls_by_source']['hapitas']
 
 
+def test_repository_memento_current_target_coverage_includes_public_warau_and_review_only_hapitas():
+    payload = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))
+    memo = next(item for item in payload['games'] if item['game'] == 'メメントモリ')
+    assert 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037' in memo['known_urls_by_source']['warau']
+    assert 'https://hapitas.jp/item/detail/itemid/101349' in memo['known_urls_by_source']['hapitas']
+
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    assert any(
+        row['game'] == 'メメントモリ'
+        and row['site'] == 'warau'
+        and row['url'] == 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037'
+        and row['reward'] == '11500'
+        for row in rows
+    )
+    assert not any(
+        row['game'] == 'メメントモリ'
+        and row['site'] == 'hapitas'
+        and row['url'] == 'https://hapitas.jp/item/detail/itemid/101349'
+        for row in rows
+    )
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
@@ -2463,6 +2487,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     assert set(memento) == {
         'https://hapitas.jp/item/detail/itemid/99420',
         'https://hapitas.jp/item/detail/itemid/99421',
+        'https://hapitas.jp/item/detail/itemid/101349',
     }
     assert set(puzzles) == {
         'https://hapitas.jp/item/detail/itemid/98148',
