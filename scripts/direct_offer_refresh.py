@@ -182,18 +182,44 @@ def target_listing_urls(source, aliases):
 
 
 def discover_detail_links(raw, base_url, source, aliases, limit=8):
+    """Discover first-party detail links without leaking target context across cards."""
     found = []
     seen = set()
-    for m in re.finditer(r'(?is)<a\b[^>]*?href\s*=\s*(["\'])(.*?)\1[^>]*>(.*?)</a>', raw or ""):
-        href = html.unescape(m.group(2)).strip()
+    try:
+        anchors = EvidenceHTML(raw or "").root.find(tag="a")
+    except (TypeError, ValueError, RecursionError):
+        return found
+
+    for anchor in anchors:
+        href = html.unescape(anchor.attrs.get("href", "")).strip()
         absolute = urljoin(base_url, href)
         if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
             continue
-        start = max(0, m.start() - 650)
-        end = min(len(raw), m.end() + 650)
-        context = visible_text(raw[start:end])
-        label = visible_text(m.group(3))
-        if not (target_present(label, aliases) or target_present(context, aliases)):
+
+        matched = target_present(evidence_text(anchor), aliases)
+        node = anchor.parent
+        depth = 0
+        while not matched and node is not None and node.parent is not None and depth < 4:
+            marker = " ".join([
+                node.tag,
+                node.attrs.get("id", ""),
+                node.attrs.get("class", ""),
+            ]).casefold()
+            is_card_boundary = (
+                node.tag in {"article", "li", "tr"}
+                or any(token in marker for token in (
+                    "card", "offer", "campaign", "service-item", "result-item"
+                ))
+            )
+            if is_card_boundary:
+                context = evidence_text(node)
+                if len(context) <= 1400 and target_present(context, aliases):
+                    matched = True
+                break
+            node = node.parent
+            depth += 1
+
+        if not matched:
             continue
         key = absolute.split("#", 1)[0]
         if key in seen:
@@ -203,7 +229,6 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
         if len(found) >= limit:
             break
     return found
-
 
 def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
     """Detect same-card offerwall links without following or storing them.
