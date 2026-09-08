@@ -442,6 +442,34 @@ def parse_warau(markup, requested=WARAU_URL, final=WARAU_URL):
     return direct.inspect_warau_offer(markup, requested, final, ['テストゲーム'])
 
 
+def test_warau_review_evidence_carries_first_party_provider_label(warau_markup):
+    markup = warau_markup.replace(
+        'pointEntrance-Head_Title">テストゲーム（StepUp）',
+        'pointEntrance-Head_Title">【myChips】テストゲーム（StepUp）',
+    )
+    source = {
+        'id': 'warau',
+        'search_domains': ['www.warau.jp', 'ssl.warau.jp'],
+    }
+    registry = {
+        direct.normalized_text('myChips'): {
+            'providerId': 'mychips',
+            'providerName': 'MyChips',
+            'domain': 'cdn.mychips.io',
+            'retrievalMode': 'presence_only',
+        },
+    }
+    detail = direct.inspect_detail(
+        WARAU_URL, source, ['テストゲーム'],
+        fetcher=lambda url, _source: (markup, url),
+        provider_label_registry=registry,
+    )
+    evidence = detail['sourceEvidence']
+    assert evidence['state'] == 'parsed'
+    assert evidence['providerId'] == 'mychips'
+    assert evidence['provider'] == 'MyChips'
+
+
 def test_warau_scopes_points_os_and_steps_to_one_offer(warau_markup):
     evidence = parse_warau(warau_markup)
     assert evidence['state'] == 'parsed'
