@@ -159,6 +159,26 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     assert all(row["deadline"] == "インストール後45日以内" for row in matches)
 
 
+def test_kingshot_has_current_hapitas_ios_android_pair(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "キングショット" and row["site"] == "hapitas"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("Android", "16320", "https://hapitas.jp/item/detail/itemid/101355"),
+        ("iOS", "16320", "https://hapitas.jp/item/detail/itemid/101354"),
+    }
+    assert all(row["verified"].lower() == "true" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all("10日／30日／70日以内" in row["deadline"] for row in matches)
+
+
 def test_kinoko_has_current_hapitas_ios_android_pair(output_dir):
     builder.build_public_site(output_dir)
     import csv
