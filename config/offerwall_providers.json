@@ -18,7 +18,11 @@
       "privacyEvidenceUrl": "https://info.gf-rewards.com/privacy.html",
       "serviceEvidenceUrl": "https://info.gf-rewards.com/",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official GF Rewards privacy information states that CookieID is automatically acquired to identify users who satisfy reward conditions. POIGAME LAB therefore records only first-party-observed provider presence and does not fetch provider offerwall URLs."
+      "reviewNote": "Official GF Rewards privacy information states that CookieID is automatically acquired to identify users who satisfy reward conditions. POIGAME LAB therefore records only first-party-observed provider presence and does not fetch provider offerwall URLs.",
+      "firstPartyLabels": [
+        "GFRewards",
+        "GF Rewards"
+      ]
     },
     {
       "id": "appdriver",
@@ -62,7 +66,10 @@
       "serviceEvidenceUrl": "https://skyflag.info/monetize/",
       "caseEvidenceUrl": "https://skyflag.info/case-post/case-14/",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Current official materials describe SKYFLAG offerwalls, API integration, user-segment optimization and recommended rewards, but do not establish an anonymous public campaign catalog suitable for unattended evidence retrieval. POIGAME LAB therefore records passive provider presence only."
+      "reviewNote": "Current official materials describe SKYFLAG offerwalls, API integration, user-segment optimization and recommended rewards, but do not establish an anonymous public campaign catalog suitable for unattended evidence retrieval. POIGAME LAB therefore records passive provider presence only.",
+      "firstPartyLabels": [
+        "SKYFLAG"
+      ]
     },
     {
       "id": "mychips",
@@ -80,7 +87,11 @@
       "requiresUserTrackingContext": true,
       "integrationEvidenceUrl": "https://docs.mychips.io/webview-and-direct-link",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official MyChips WebView/direct-link documentation requires content_id, user_id and webview parameters and recommends GAID/IDFA. POIGAME LAB therefore maps passive provider presence only and does not request the discovered offerwall endpoint."
+      "reviewNote": "Official MyChips WebView/direct-link documentation requires content_id, user_id and webview parameters and recommends GAID/IDFA. POIGAME LAB therefore maps passive provider presence only and does not request the discovered offerwall endpoint.",
+      "firstPartyLabels": [
+        "myChips",
+        "MyChips"
+      ]
     },
     {
       "id": "zucks",
@@ -97,7 +108,10 @@
       "requiresUserTrackingContext": true,
       "serviceEvidenceUrl": "https://zucks.freshdesk.com/support/solutions/articles/157000368856--%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E6%96%B9%E6%B3%95",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official Zucks support documentation gives an offerwall inquiry URL example on ow.z.mobu.jp containing user_id. POIGAME LAB therefore treats the offerwall as user-contextual presence only."
+      "reviewNote": "Official Zucks support documentation gives an offerwall inquiry URL example on ow.z.mobu.jp containing user_id. POIGAME LAB therefore treats the offerwall as user-contextual presence only.",
+      "firstPartyLabels": [
+        "Zucks"
+      ]
     },
     {
       "id": "smaad",
@@ -115,7 +129,11 @@
       "anonymousPublicCatalogEstablished": false,
       "serviceEvidenceUrl": "https://smaad.net/media/",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official SmaAD materials describe SmaAD Wall as a dedicated offer list integrated into partner websites/apps and SDK-supported surfaces. No anonymous public campaign catalog suitable for unattended evidence retrieval was established."
+      "reviewNote": "Official SmaAD materials describe SmaAD Wall as a dedicated offer list integrated into partner websites/apps and SDK-supported surfaces. No anonymous public campaign catalog suitable for unattended evidence retrieval was established.",
+      "firstPartyLabels": [
+        "SmaAD",
+        "GMO SmaAD"
+      ]
     },
     {
       "id": "tyrads",
@@ -135,7 +153,10 @@
       "integrationEvidenceUrl": "https://sdk-doc.tyrads.com/web-iframe/initialization",
       "serviceEvidenceUrl": "https://tyrads.com/tyrsdk-terms-of-service/en",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official TyrAds SDK documentation shows offerwall initialization with publisher credentials and CUSTOMER_USER_ID, and other SDK docs describe device/user identifiers. POIGAME LAB therefore records passive provider presence only."
+      "reviewNote": "Official TyrAds SDK documentation shows offerwall initialization with publisher credentials and CUSTOMER_USER_ID, and other SDK docs describe device/user identifiers. POIGAME LAB therefore records passive provider presence only.",
+      "firstPartyLabels": [
+        "TyrAds"
+      ]
     },
     {
       "id": "adjoe_playtime",
@@ -153,7 +174,11 @@
       "requiresUserTrackingContext": true,
       "integrationEvidenceUrl": "https://docs.adjoe.io/rewarded-solutions/playtimeweb-for-ios/intro-to-playtimeweb/integrate-playtimeweb",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official PlaytimeWeb integration documentation requires user_id in the PlaytimeWeb redirect URL and recommends IDFA for attribution. POIGAME LAB therefore records only passive provider presence."
+      "reviewNote": "Official PlaytimeWeb integration documentation requires user_id in the PlaytimeWeb redirect URL and recommends IDFA for attribution. POIGAME LAB therefore records only passive provider presence.",
+      "firstPartyLabels": [
+        "Playtime",
+        "Playtime by adjoe"
+      ]
     },
     {
       "id": "ayet",
@@ -173,7 +198,11 @@
       "requiresUserTrackingContext": true,
       "integrationEvidenceUrl": "https://docs.ayetstudios.com/v/product-docs/offerwall/web-integrations/web-offerwall",
       "reviewedAt": "2026-09-03",
-      "reviewNote": "Official ayeT Web Offerwall documentation requires externalIdentifier in the offerwall URL. POIGAME LAB therefore maps passive provider presence only and does not request the offerwall."
+      "reviewNote": "Official ayeT Web Offerwall documentation requires externalIdentifier in the offerwall URL. POIGAME LAB therefore maps passive provider presence only and does not request the offerwall.",
+      "firstPartyLabels": [
+        "ayeT",
+        "ayeT-Studios"
+      ]
     }
   ]
 }
