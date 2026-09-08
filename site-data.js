@@ -452,6 +452,11 @@
       if (levels.length) return `コントロールセンターレベル${Math.max(...levels)}到達`;
     }
 
+    const genericRankMatches = [...raw.matchAll(/(?<!ユーザー)ランク(\d+)到達/g)].map((match) => Number(match[1]));
+    if (genericRankMatches.length) {
+      return `ランク${Math.max(...genericRankMatches)}到達`;
+    }
+
     const rankMatch = raw.match(/ユーザーランク([0-9/・]+)/);
     if (rankMatch) {
       const ranks = rankMatch[1].split(/[\/・]/).map(Number).filter(Number.isFinite);
