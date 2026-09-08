@@ -64,3 +64,75 @@
   `;
   document.body.appendChild(footer);
 })();
+
+(() => {
+  "use strict";
+  if (document.documentElement.hasAttribute("data-poigame-analytics-installed")) return;
+  document.documentElement.setAttribute("data-poigame-analytics-installed", "");
+
+  const send = (name, params = {}) => {
+    if (typeof window.gtag !== "function") return;
+    window.gtag("event", name, {
+      page_path: location.pathname + location.search,
+      ...params
+    });
+  };
+
+  const textOf = (el) => (el?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 120);
+  const gameFromPage = () => new URLSearchParams(location.search).get("game") || "";
+
+  document.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const a = target.closest("a[href]");
+    if (a) {
+      const href = a.getAttribute("href") || "";
+      let url;
+      try { url = new URL(a.href, location.href); } catch { url = null; }
+      const params = {
+        link_text: textOf(a),
+        link_url: url?.href || href,
+        game_name: gameFromPage()
+      };
+
+      if (a.matches(".offer-button,.offer-link,.referral-button,.referral-link")) {
+        send("affiliate_click", params);
+      } else if (a.matches(".card-action") || /#comparison(?:$|\?)/.test(href) || /game\.html\?game=/.test(href)) {
+        if (/comparison/.test(href) || textOf(a).includes("比較")) send("comparison_click", params);
+        else send("game_detail_click", params);
+      } else if (a.matches(".card-action--guide,.guide,.compare") || /-guide\.html/.test(href) || textOf(a).includes("攻略")) {
+        send("guide_click", params);
+      } else if (url && url.origin !== location.origin) {
+        send("outbound_click", {
+          ...params,
+          destination_host: url.hostname
+        });
+      } else {
+        send("internal_link_click", params);
+      }
+    }
+
+    const sort = target.closest(".sort-buttons button");
+    if (sort) send("sort_click", { sort_label: textOf(sort) });
+
+    const os = target.closest(".os-filter button");
+    if (os) send("os_filter_click", {
+      platform: os.getAttribute("data-platform") || textOf(os),
+      game_name: gameFromPage()
+    });
+
+    if (target.closest(".search-box button,#offerSearchButton")) {
+      const input = document.querySelector(".search-box input,#offerSearch");
+      send("site_search", { search_term: String(input?.value || "").trim().slice(0, 100) });
+    }
+  }, true);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    const el = event.target;
+    if (!(el instanceof HTMLInputElement)) return;
+    if (!el.matches(".search-box input,#offerSearch")) return;
+    send("site_search", { search_term: el.value.trim().slice(0, 100) });
+  }, true);
+})();
