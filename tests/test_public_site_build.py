@@ -177,6 +177,28 @@ def test_evertale_has_two_current_moppy_offers_without_os_guess(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
+def test_evertale_has_current_hapitas_182_pair(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "エバーテイル"
+        and row["site"] == "hapitas"
+        and row["reward"] == "182"
+    ]
+    assert {(row["platform"], row["url"]) for row in matches} == {
+        ("Android", "https://hapitas.jp/item/detail/itemid/91331"),
+        ("iOS", "https://hapitas.jp/item/detail/itemid/91345"),
+    }
+    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["verified"].lower() == "true" for row in matches)
+    assert all(row["deadline"] == "インストール日から起算して30日以内" for row in matches)
+
+
 def test_evertale_has_current_warau_ios_offer(output_dir):
     builder.build_public_site(output_dir)
     import csv
