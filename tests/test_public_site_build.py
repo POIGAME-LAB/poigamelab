@@ -611,6 +611,19 @@ def test_kingshot_hapitas_and_houchi_moppy_are_current(output_dir):
             assert row["verified"].lower() == "true"
 
 
+def test_public_site_excludes_ended_coincome_township_and_kinoko(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    assert not any(
+        row["site"] == "coincome" and row["game"] in {"Township", "きのこ伝説"}
+        for row in rows
+    )
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)

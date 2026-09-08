@@ -2368,6 +2368,27 @@ def test_repository_kinoko_chobirich_rows_are_current_android():
     assert all(row['verified'] == 'true' for row in matches)
 
 
+def test_repository_ended_coincome_township_and_kinoko_are_not_published_or_targeted():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    assert not any(
+        row['site'] == 'coincome' and row['game'] in {'Township', 'きのこ伝説'}
+        for row in rows
+    )
+
+    targets = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))['games']
+    by_game = {item['game']: item for item in targets}
+    for game in ('Township', 'きのこ伝説'):
+        urls = by_game[game].get('known_urls_by_source', {})
+        assert 'coincome' not in urls
+
+    sources = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))['sources']
+    coincome = next(source for source in sources if source['id'] == 'coincome')
+    assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
+    assert coincome['scheduled_known_detail_fetch_enabled'] is False
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
