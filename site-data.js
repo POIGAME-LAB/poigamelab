@@ -439,6 +439,21 @@
     const raw = String(condition || "").replace(/\s+/g, " ").trim();
     if (!raw) return "指定条件クリア";
 
+    const furnaceMatches = [...raw.matchAll(/大溶鉱炉レベル(\d+)(?:に)?到達/g)].map((match) => Number(match[1]));
+    if (furnaceMatches.length) {
+      return `大溶鉱炉レベル${Math.max(...furnaceMatches)}到達`;
+    }
+
+    const goldenMatches = [...raw.matchAll(/黄金レベル(\d+)(?:に)?到達/g)].map((match) => Number(match[1]));
+    if (goldenMatches.length) {
+      return `黄金レベル${Math.max(...goldenMatches)}到達`;
+    }
+
+    const townHallMatches = [...raw.matchAll(/役場レベル(\d+)(?:に)?到達/g)].map((match) => Number(match[1]));
+    if (townHallMatches.length) {
+      return `役場レベル${Math.max(...townHallMatches)}到達`;
+    }
+
     const levelMatches = [...raw.matchAll(/レベル(\d+)到達/g)].map((match) => Number(match[1]));
     if (levelMatches.length) {
       const maxLevel = Math.max(...levelMatches);
