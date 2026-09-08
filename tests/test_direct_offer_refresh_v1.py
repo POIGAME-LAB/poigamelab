@@ -2262,6 +2262,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('ワーキングヒーロー', 'iOS', '11502'),
         ('東京ディバンカー', '不明', '147'),
         ('キングショット', 'Android', '16320'),
+        ('キングショット', 'iOS', '16320'),
         ('メメントモリ', 'Android', '4815'),
         ('メメントモリ', 'iOS', '4815'),
         ('エバーテイル', 'Android', '195'),
