@@ -493,6 +493,31 @@ def test_kinoko_chobirich_rows_are_current_android(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
+def test_selected_moppy_verified_dates_are_current(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    expected = {
+        ("キングショット", "Android", "18523", "https://pc.moppy.jp/ad/detail.php?site_id=161855"),
+        ("キングショット", "iOS", "18523", "https://pc.moppy.jp/ad/detail.php?site_id=161854"),
+        ("パズル＆サバイバル", "iOS", "39740", "https://pc.moppy.jp/ad/detail.php?site_id=160366"),
+    }
+    matches = {
+        (row["game"], row["platform"], row["reward"], row["url"])
+        for row in rows
+        if (row["game"], row["platform"], row["reward"], row["url"]) in expected
+    }
+    assert matches == expected
+    for row in rows:
+        key = (row["game"], row["platform"], row["reward"], row["url"])
+        if key in expected:
+            assert row["updatedAt"] == "2026-09-08"
+            assert row["verified"].lower() == "true"
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
