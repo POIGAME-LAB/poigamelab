@@ -2218,6 +2218,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     kingshot = by_game['キングショット']['known_urls_by_source']['hapitas']
     evertale = by_game['エバーテイル']['known_urls_by_source']['hapitas']
     memento = by_game['メメントモリ']['known_urls_by_source']['hapitas']
+    puzzles = by_game['パズル＆サバイバル']['known_urls_by_source']['hapitas']
 
     assert set(working) == {
         'https://hapitas.jp/item/detail/itemid/101445',
@@ -2247,6 +2248,10 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/99420',
         'https://hapitas.jp/item/detail/itemid/99421',
     }
+    assert set(puzzles) == {
+        'https://hapitas.jp/item/detail/itemid/98148',
+        'https://hapitas.jp/item/detail/itemid/99158',
+    }
 
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
@@ -2261,5 +2266,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('メメントモリ', 'iOS', '4815'),
         ('エバーテイル', 'Android', '195'),
         ('エバーテイル', 'iOS', '140'),
+        ('パズル＆サバイバル', 'Android', '30612'),
+        ('パズル＆サバイバル', 'iOS', '35015'),
     }
     assert not any(row['game'] in {'Township', 'きのこ伝説'} for row in hapitas_rows)
