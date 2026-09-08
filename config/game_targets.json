@@ -89,6 +89,10 @@
         "moppy": [
           "https://pc.moppy.jp/ad/detail.php?site_id=160375",
           "https://pc.moppy.jp/ad/detail.php?site_id=160371"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862"
         ]
       }
     },
@@ -122,7 +126,7 @@
           "https://pc.moppy.jp/ad/detail.php?site_id=160366"
         ],
         "warau": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205557",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206425",
           "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361"
         ]
       }
@@ -141,6 +145,10 @@
         "hapitas": [
           "https://hapitas.jp/item/detail/itemid/101355",
           "https://hapitas.jp/item/detail/itemid/101354"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204984",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204983"
         ]
       }
     },
@@ -156,7 +164,8 @@
           "https://pc.moppy.jp/ad/detail.php?site_id=147270"
         ],
         "warau": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206411"
         ]
       }
     },

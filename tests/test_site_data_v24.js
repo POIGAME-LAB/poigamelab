@@ -129,6 +129,14 @@ function makeContext(fetchImpl) {
     'ランク140到達'
   );
   assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後、StepUp（大溶鉱炉レベル3到達、大溶鉱炉レベル10到達、大溶鉱炉レベル26到達、3200円以上一括課金）', 'StepUp'),
+    '大溶鉱炉レベル26到達'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後、StepUp（役場レベル4到達、役場レベル28到達、黄金レベル1到達）', 'StepUp'),
+    '黄金レベル1到達'
+  );
+  assert.strictEqual(
     api.summarizeOfferCondition('新規アプリインストール後60日以内にStepUp（★5ヒーロー11枠、ユーザーランク25/50、PVP500勝、チームメダル4000枚）', 'StepUp'),
     'ユーザーランク50到達'
   );
