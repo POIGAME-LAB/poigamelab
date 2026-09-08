@@ -3,6 +3,9 @@ const fs = require('fs');
 const vm = require('vm');
 
 const source = fs.readFileSync('site-data.js', 'utf8');
+assert.strictEqual(source.includes('(?<!'), false, 'legacy Safari cannot parse regex negative lookbehind');
+assert.strictEqual(source.includes('(?<='), false, 'legacy Safari cannot parse regex positive lookbehind');
+
 
 function makeContext(fetchImpl) {
   const context = {
@@ -130,6 +133,10 @@ function makeContext(fetchImpl) {
   assert.strictEqual(
     api.summarizeOfferCondition('新規アプリインストール後、StepUp（ランク30到達、ランク60到達、ランク100到達、ランク140到達、累計10000円課金）', 'StepUp'),
     'ランク140到達'
+  );
+  assert.strictEqual(
+    api.summarizeOfferCondition('新規アプリインストール後、ユーザーランク50到達、ランク20到達', 'StepUp'),
+    'ランク20到達'
   );
   assert.strictEqual(
     api.summarizeOfferCondition('新規アプリインストール後、StepUp（大溶鉱炉レベル3到達、大溶鉱炉レベル10到達、大溶鉱炉レベル26到達、3200円以上一括課金）', 'StepUp'),
