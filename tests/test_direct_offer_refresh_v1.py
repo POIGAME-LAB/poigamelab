@@ -1031,8 +1031,84 @@ def test_repository_gendama_uses_current_https_listing_and_service_item_identity
     assert direct.offer_identity_key(detail, 'gendama') == 'gendama:pathid:1426617'
 
 
+
+GENDAMA_URL = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+
+
+@pytest.fixture
+def gendama_markup():
+    return f'''<html><body>
+<h1>テストゲーム</h1>
+<div>3,218pt (321円相当)</div>
+<table><tr><th>獲得条件</th><td>新規アプリインストール後、Androidでレベル20到達</td><th>判定ポイント</th></tr></table>
+<section>
+<h2>ポイントを獲得するための注意事項</h2>
+<p>成果受付期限：広告クリックから30日以内。Android端末で同一ブラウザ・同一端末のまま条件達成してください。</p>
+<p>過去に本アプリを利用したことがある場合、重複利用、不正利用、国外アクセスは成果対象外です。</p>
+<p>ポイント数・ポイント付与条件等は予告なく変更される場合があります。</p>
+</section>
+<h2>サービスの詳細</h2>
+</body></html>'''
+
+
+def parse_gendama(raw, requested=GENDAMA_URL, final=GENDAMA_URL):
+    return direct.inspect_gendama_offer(raw, requested, final, ['テストゲーム'])
+
+
+def test_gendama_review_parser_uses_only_explicit_source_yen_equivalent(gendama_markup):
+    evidence = parse_gendama(gendama_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['offerId'] == '1426617'
+    assert evidence['platform'] == 'Android'
+    assert evidence['displayedRewardPoints'] == 3218
+    assert evidence['displayedRewardYen'] == 321
+    assert evidence['rewardUnit'] == 'JPY-equivalent'
+    assert evidence['condition'] == '新規アプリインストール後、Androidでレベル20到達'
+    assert evidence['parserVersion'] == 'gendama-detail-review-v1'
+    assert len(evidence['evidenceFingerprint']) == 64
+
+
+@pytest.mark.parametrize('old,new,reason', [
+    ('3,218pt (321円相当)', '最大3,218pt', 'missing_or_ambiguous_yen_equivalent'),
+    ('3,218pt (321円相当)', '3,218pt (321円相当) 4,000pt (400円相当)', 'missing_or_ambiguous_yen_equivalent'),
+    ('<h1>テストゲーム</h1>', '<h1>別ゲーム</h1>', 'offer_title_mismatch'),
+    ('獲得条件</th><td>新規アプリインストール後、Androidでレベル20到達</td><th>判定ポイント',
+     '条件</th><td>新規アプリインストール後、Androidでレベル20到達</td><th>判定ポイント',
+     'missing_offer_condition'),
+    ('<h2>サービスの詳細</h2>', '', 'incomplete_offer_terms'),
+    ('Androidでレベル20到達', 'レベル20到達', 'ambiguous_offer_platform'),
+])
+def test_gendama_rejects_ambiguous_or_incomplete_source_evidence(
+        gendama_markup, old, new, reason):
+    evidence = parse_gendama(gendama_markup.replace(old, new))
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == reason
+
+
+@pytest.mark.parametrize('url', [
+    'http://www.gendama.jp/service/item/1426617',
+    'https://gendama.jp/service/item/1426617',
+    'https://user@www.gendama.jp/service/item/1426617',
+    'https://www.gendama.jp:444/service/item/1426617',
+    'https://www.gendama.jp/service/item/1426617/extra',
+    'https://www.gendama.jp/service/item/1426617?unexpected=1',
+])
+def test_gendama_rejects_unsupported_identity_urls(gendama_markup, url):
+    evidence = parse_gendama(gendama_markup, requested=url)
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == 'unexpected_offer_url'
+
+
+def test_gendama_terms_change_invalidates_fingerprint(gendama_markup):
+    original = parse_gendama(gendama_markup)
+    changed = parse_gendama(gendama_markup.replace(
+        '広告クリックから30日以内', '広告クリックから45日以内'))
+    assert original['state'] == changed['state'] == 'parsed'
+    assert original['evidenceFingerprint'] != changed['evidenceFingerprint']
+
+
 def test_gendama_generic_points_never_become_yen_reward_candidates(monkeypatch):
-    detail = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+    detail = GENDAMA_URL
     direct.POLICY.write_text(json.dumps({
         'comparisonSources': ['gendama'],
         'minimumConfirmedSourcesForComparison': 2,
@@ -1072,17 +1148,16 @@ def test_gendama_generic_points_never_become_yen_reward_candidates(monkeypatch):
     assert direct.main() == 0
     assert direct.PUBLISHED.read_bytes() == before
 
-    status = json.loads(direct.STATUS.read_text())
+    status = json.loads(direct.STATUS.read_text()) 
     assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
     assert status['games'][0]['comparisonReady'] is False
 
     items = json.loads(direct.REVIEW.read_text())['items']
     assert len(items) == 1
     item = items[0]
-    assert item['reason'] == 'source_specific_reward_parser_required'
+    assert item['reason'] == 'missing_or_ambiguous_yen_equivalent'
     assert item['storedReward'] == '300'
     assert item['storedPlatform'] == 'Android'
-    assert item['platformHint'] == 'Android'
     assert 'detectedReward' not in item
     assert 'detectedStrongRewards' not in item
     assert 'detectedWeakRewards' not in item
