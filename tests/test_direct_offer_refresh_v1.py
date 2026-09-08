@@ -2351,6 +2351,23 @@ def test_repository_township_current_chobirich_reward_is_published():
     assert row['verified'] == 'true'
 
 
+def test_repository_kinoko_chobirich_rows_are_current_android():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'きのこ伝説' and row['site'] == 'chobirich'
+    ]
+    assert {(row['platform'], row['reward'], row['url']) for row in matches} == {
+        ('Android', '3831', 'https://www.chobirich.com/ad_details/1883822'),
+        ('Android', '17880', 'https://www.chobirich.com/ad_details/1896200'),
+        ('Android', '13409', 'https://www.chobirich.com/ad_details/1896275'),
+    }
+    assert all(row['updatedAt'] == '2026-09-08' for row in matches)
+    assert all(row['verified'] == 'true' for row in matches)
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
