@@ -439,10 +439,17 @@ def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir
         assert row["verified"].lower() == "true"
         assert row["updatedAt"] == "2026-09-08"
 
-    assert not any(
-        row["site"] == "warau" and "point_id=205557" in row["url"]
-        for row in rows
-    )
+    matches = [
+        row for row in rows
+        if row["site"] == "warau" and "point_id=205557" in row["url"]
+    ]
+    assert len(matches) == 1
+    row = matches[0]
+    assert row["game"] == "パズル＆サバイバル"
+    assert row["platform"] == "Android"
+    assert int(row["reward"]) == 29500
+    assert row["verified"].lower() == "true"
+    assert row["updatedAt"] == "2026-09-08"
 
 
 def test_builder_rejects_unsafe_output_locations(tmp_path):
