@@ -649,6 +649,27 @@ def test_evertale_public_site_excludes_stale_hapitas_195(output_dir):
     assert ios140[0]["verified"].lower() == "true"
 
 
+def test_memento_warau_11500_ios_android_pair_is_public(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "メメントモリ"
+        and row["site"] == "warau"
+        and row["reward"] == "11500"
+    ]
+    assert {(row["platform"], row["url"]) for row in matches} == {
+        ("iOS", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037"),
+        ("Android", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205982"),
+    }
+    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
