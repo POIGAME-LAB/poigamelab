@@ -118,9 +118,22 @@ def test_mementomori_has_verified_published_reward(output_dir):
     assert matches, "MementoMori must keep at least one verified published offer"
     best = max(matches, key=lambda row: int(row["reward"]))
     assert best["site"] == "warau"
-    assert best["platform"] == "Android"
-    assert best["reward"] == "6633"
+    assert best["platform"] == "iOS"
+    assert best["reward"] == "11500"
     assert "point_id=206037" in best["url"]
+    assert "ランク140到達" in best["condition"]
+    assert "累計10000円課金" in best["condition"]
+
+    review = json.loads((ROOT / "data" / "comparison_review_queue.json").read_text(encoding="utf-8"))
+    evidence = next(
+        item["sourceEvidence"] for item in review["items"]
+        if item["game"] == "メメントモリ"
+        and item["source"] == "warau"
+        and item.get("sourceEvidence", {}).get("state") == "parsed"
+        and item["sourceEvidence"].get("offerId") == "206037"
+    )
+    assert best["platform"] == evidence["platform"]
+    assert int(best["reward"]) == evidence["rewardPoints"]
 
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
