@@ -124,6 +124,9 @@ function makeContext(fetchImpl) {
     api.summarizeOfferCondition('新規アプリインストール後、3日間連続でログインボーナスを獲得', '通常'),
     '3日間連続ログインボーナス獲得'
   );
+  assert.strictEqual(api.formatOfferSourceLabel('モッピー', ''), 'モッピー');
+  assert.strictEqual(api.formatOfferSourceLabel('モッピー', 'MyChips'), 'モッピー × MyChips');
+  assert.strictEqual(api.formatOfferSourceLabel('ワラウ', 'SKYFLAG'), 'ワラウ × SKYFLAG');
   assert.strictEqual(
     api.summarizeOfferCondition('新規アプリインストール後、StepUp（ランク30到達、ランク60到達、ランク100到達、ランク140到達、累計10000円課金）', 'StepUp'),
     'ランク140到達'
