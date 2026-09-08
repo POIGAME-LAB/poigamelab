@@ -845,9 +845,18 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
         platform = platform_values[0]
 
         text = visible_text(raw)
-        start = text.find(title)
-        if start < 0:
+        boundary_candidates = [
+            pos for marker in ("ポイ活応援サービス", "ポイント獲得条件")
+            if (pos := text.find(marker)) >= 0
+        ]
+        if not boundary_candidates:
+            raise ValueError("missing_offer_header_boundary")
+        first_boundary = min(boundary_candidates)
+        title_positions = [m.start() for m in re.finditer(re.escape(title), text)]
+        title_positions = [pos for pos in title_positions if pos < first_boundary]
+        if not title_positions:
             raise ValueError("missing_offer_header")
+        start = max(title_positions)
         tail = text[start:start + 2200]
         boundaries = [
             tail.find(marker) for marker in ("ポイ活応援サービス", "ポイント獲得条件")
