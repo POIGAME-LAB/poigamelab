@@ -135,6 +135,30 @@ def test_mementomori_has_verified_published_reward(output_dir):
     assert best["platform"] == evidence["platform"]
     assert int(best["reward"]) == evidence["rewardPoints"]
 
+def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "メメントモリ" and row["site"] == "hapitas"
+    ]
+    assert {(row["platform"], row["reward"]) for row in matches} == {
+        ("iOS", "4815"),
+        ("Android", "4815"),
+    }
+    assert {row["url"] for row in matches} == {
+        "https://hapitas.jp/item/detail/itemid/99420",
+        "https://hapitas.jp/item/detail/itemid/99421",
+    }
+    assert all(row["verified"].lower() == "true" for row in matches)
+    assert all("ランク160到達" in row["condition"] for row in matches)
+    assert all(row["deadline"] == "インストール後45日以内" for row in matches)
+
+
 def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir):
     builder.build_public_site(output_dir)
     import csv

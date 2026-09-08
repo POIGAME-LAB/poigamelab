@@ -37,6 +37,22 @@ def test_config_restore_even_on_failure():
     assert 'finally:' in text and "CFG.write_text(original" in text
 
 
+
+def test_mementomori_known_sources_include_current_hapitas_pair():
+    data=json.loads((ROOT/'config/game_targets.json').read_text())
+    by_game={x['game']:x for x in data['games']}
+    memento=by_game['メメントモリ']['known_urls_by_source']
+    assert set(memento)=={'moppy','hapitas'}
+    assert set(memento['moppy'])=={
+        'https://pc.moppy.jp/ad/detail.php?site_id=160690',
+        'https://pc.moppy.jp/ad/detail.php?site_id=160688',
+    }
+    assert set(memento['hapitas'])=={
+        'https://hapitas.jp/item/detail/itemid/99420',
+        'https://hapitas.jp/item/detail/itemid/99421',
+    }
+
+
 def test_new_game_known_sources_are_isolated():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     by_game={x['game']:x for x in data['games']}
