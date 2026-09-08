@@ -159,6 +159,18 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     assert all(row["deadline"] == "インストール後45日以内" for row in matches)
 
 
+def test_tokyo_debunker_current_verified_dates_are_fresh(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    by_key = {(row["site"], row["url"]): row for row in rows if row["game"] == "東京ディバンカー"}
+    assert by_key[("moppy", "https://pc.moppy.jp/ad/detail.php?site_id=158270")]["updatedAt"] == "2026-09-08"
+    assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["updatedAt"] == "2026-09-08"
+
+
 def test_tokyo_debunker_has_two_current_moppy_offers_without_os_guess(output_dir):
     builder.build_public_site(output_dir)
     import csv
