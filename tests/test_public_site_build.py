@@ -541,7 +541,9 @@ def test_ga4_uses_standard_gtag_snippet_once_on_public_pages(output_dir):
         head = html.split("</head>", 1)[0]
         assert html.count(loader) == 1
         assert html.count(config) == 1
-        assert html.count(measurement_id) == 2
+        owner_disable = "ga-disable-" + measurement_id
+        assert html.count(owner_disable) == 1
+        assert html.count(measurement_id) == 3
         assert 'src="site-analytics.js"' not in html
         assert loader in head
         assert config in head
