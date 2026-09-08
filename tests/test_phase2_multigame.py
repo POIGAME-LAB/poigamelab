@@ -62,10 +62,12 @@ def test_mementomori_known_sources_include_current_hapitas_pair():
     assert set(memento['hapitas'])=={
         'https://hapitas.jp/item/detail/itemid/99420',
         'https://hapitas.jp/item/detail/itemid/99421',
+        'https://hapitas.jp/item/detail/itemid/101349',
     }
     assert set(memento['warau'])=={
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206501',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206500',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037',
     }
 
 
