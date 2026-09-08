@@ -87,6 +87,7 @@ def test_new_game_known_sources_are_isolated():
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206488',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206460',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205557',
     }
 
 
