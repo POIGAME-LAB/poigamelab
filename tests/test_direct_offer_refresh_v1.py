@@ -1013,14 +1013,21 @@ def test_repository_unattended_fetch_disables_only_unreliable_comparison_sources
     )
 
 
-def test_repository_gendama_uses_current_https_listing_and_service_item_identity():
+def test_repository_gendama_uses_target_specific_https_search_and_service_item_identity():
     payload = json.loads((ROOT/'config/point_sources.json').read_text())
     gendama = next(source for source in payload['sources'] if source['id'] == 'gendama')
-    listing = 'https://www.gendama.jp/welcome'
+    listing = (
+        'https://www.gendama.jp/sp/service_search/index/'
+        '?point_max=&point_min=&search_type=and&w=Township'
+    )
     detail = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
 
-    assert gendama['start_url'] == listing
-    assert gendama['direct_listing_urls'] == [listing]
+    assert gendama['start_url'] == 'https://www.gendama.jp/welcome'
+    assert gendama['direct_listing_urls'] == []
+    assert gendama['direct_search_url_template'].endswith(
+        'point_max=&point_min=&search_type=and&w={query}')
+    assert gendama['direct_listing_limit'] == 1
+    assert direct.target_listing_urls(gendama, ['Township', 'タウンシップ']) == [listing]
     assert '/service/item/' in gendama['direct_detail_url_hints']
     assert gendama.get('scheduled_fetch_enabled', True) is True
     assert gendama['generic_reward_detection_enabled'] is False
@@ -1030,6 +1037,62 @@ def test_repository_gendama_uses_current_https_listing_and_service_item_identity
     assert direct.detail_like(detail, gendama) is True
     assert direct.offer_identity_key(detail, 'gendama') == 'gendama:pathid:1426617'
 
+
+def test_gendama_target_search_encodes_primary_alias_only():
+    source = {
+        'id': 'gendama',
+        'search_domains': ['www.gendama.jp'],
+        'direct_listing_urls': ['https://www.gendama.jp/welcome'],
+        'direct_search_url_template': (
+            'https://www.gendama.jp/sp/service_search/index/'
+            '?point_max=&point_min=&search_type=and&w={query}'
+        ),
+    }
+    urls = direct.target_listing_urls(source, ['きのこ伝説', 'キノコ伝説'])
+    assert len(urls) == 2
+    assert urls[0].endswith('w=%E3%81%8D%E3%81%AE%E3%81%93%E4%BC%9D%E8%AA%AC')
+    assert urls[1] == 'https://www.gendama.jp/welcome'
+
+
+def test_invalid_search_template_fails_closed_to_configured_listings():
+    source = {
+        'id': 'gendama',
+        'search_domains': ['www.gendama.jp'],
+        'direct_listing_urls': ['https://www.gendama.jp/welcome'],
+        'direct_search_url_template': 'https://evil.example/search?q={query}',
+    }
+    assert direct.target_listing_urls(source, ['Township']) == [
+        'https://www.gendama.jp/welcome'
+    ]
+
+
+def test_gendama_search_listing_discovers_only_target_service_links():
+    source = {
+        'id': 'gendama',
+        'search_domains': ['www.gendama.jp'],
+        'direct_detail_url_hints': ['/service/item/'],
+    }
+    raw = '''
+    <main>
+      <article class="service-item">
+        <a href="/service/item/1426617?frame=pctopnewclient">
+          テストゲーム Android 3,218pt
+        </a>
+      </article>
+      <article class="service-item">
+        <a href="/service/item/9999999?frame=pctopnewclient">
+          別ゲーム iOS 9,999pt
+        </a>
+      </article>
+    </main>
+    '''
+    found = direct.discover_detail_links(
+        raw, 'https://www.gendama.jp/sp/service_search/index/?w=test',
+        source, ['テストゲーム'], limit=6
+    )
+    assert found == [
+        'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+    ]
 
 
 GENDAMA_URL = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'

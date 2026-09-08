@@ -138,16 +138,15 @@
       "enabled": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [
-        "https://www.gendama.jp/welcome"
-      ],
+      "direct_listing_urls": [],
       "direct_listing_limit": 1,
       "direct_detail_limit": 6,
       "direct_detail_url_hints": [
         "/service/item/"
       ],
       "generic_reward_detection_enabled": false,
-      "generic_reward_detection_reason": "Gendama displays points and yen at different scales; require a source-specific reviewed conversion/parser before comparing page numbers to published JPY rewards."
+      "generic_reward_detection_reason": "Gendama displays points and yen at different scales; require a source-specific reviewed conversion/parser before comparing page numbers to published JPY rewards.",
+      "direct_search_url_template": "https://www.gendama.jp/sp/service_search/index/?point_max=&point_min=&search_type=and&w={query}"
     },
     {
       "id": "hapitas",

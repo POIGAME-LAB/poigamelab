@@ -10,7 +10,7 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from html.parser import HTMLParser
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import parse_qs, quote_plus, urljoin, urlparse
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -153,19 +153,73 @@ def detail_like(url, source):
         "pointentrance", "/ad_details/", "/campaigns/details/", "/ad/detail", "/item/detail/"
     ))
 
+def target_listing_urls(source, aliases):
+    """Return bounded first-party listing URLs for one target game.
+
+    A source may provide a reviewed search template containing exactly one
+    {query} placeholder. Only the primary alias is used so scheduled checks stay
+    bounded and predictable. Generated URLs must still pass the first-party
+    HTTPS allowlist before any fetch occurs.
+    """
+    configured = [
+        str(x).strip() for x in (source.get("direct_listing_urls") or [])
+        if str(x).strip()
+    ]
+    template = source.get("direct_search_url_template")
+    if template is None:
+        return configured
+    if (not isinstance(template, str) or template.count("{query}") != 1
+            or "{" in template.replace("{query}", "")
+            or "}" in template.replace("{query}", "")):
+        return configured
+    primary = next((str(x).strip() for x in aliases if str(x).strip()), "")
+    if not primary:
+        return configured
+    candidate = template.replace("{query}", quote_plus(primary, safe=""))
+    if source_host_allowed(candidate, source):
+        return [candidate] + configured
+    return configured
+
+
 def discover_detail_links(raw, base_url, source, aliases, limit=8):
+    """Discover first-party detail links without leaking target context across cards."""
     found = []
     seen = set()
-    for m in re.finditer(r'(?is)<a\b[^>]*?href\s*=\s*(["\'])(.*?)\1[^>]*>(.*?)</a>', raw or ""):
-        href = html.unescape(m.group(2)).strip()
+    try:
+        anchors = EvidenceHTML(raw or "").root.find(tag="a")
+    except (TypeError, ValueError, RecursionError):
+        return found
+
+    for anchor in anchors:
+        href = html.unescape(anchor.attrs.get("href", "")).strip()
         absolute = urljoin(base_url, href)
         if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
             continue
-        start = max(0, m.start() - 650)
-        end = min(len(raw), m.end() + 650)
-        context = visible_text(raw[start:end])
-        label = visible_text(m.group(3))
-        if not (target_present(label, aliases) or target_present(context, aliases)):
+
+        matched = target_present(evidence_text(anchor), aliases)
+        node = anchor.parent
+        depth = 0
+        while not matched and node is not None and node.parent is not None and depth < 4:
+            marker = " ".join([
+                node.tag,
+                node.attrs.get("id", ""),
+                node.attrs.get("class", ""),
+            ]).casefold()
+            is_card_boundary = (
+                node.tag in {"article", "li", "tr"}
+                or any(token in marker for token in (
+                    "card", "offer", "campaign", "service-item", "result-item"
+                ))
+            )
+            if is_card_boundary:
+                context = evidence_text(node)
+                if len(context) <= 1400 and target_present(context, aliases):
+                    matched = True
+                break
+            node = node.parent
+            depth += 1
+
+        if not matched:
             continue
         key = absolute.split("#", 1)[0]
         if key in seen:
@@ -175,7 +229,6 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
         if len(found) >= limit:
             break
     return found
-
 
 def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
     """Detect same-card offerwall links without following or storing them.
@@ -1309,7 +1362,7 @@ def main():
             offerwall_presence = []
             listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
             detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
-            for listing_url in (source.get("direct_listing_urls") or [])[:listing_limit]:
+            for listing_url in target_listing_urls(source, aliases)[:listing_limit]:
                 try:
                     raw, final_url = fetch_once(listing_url, source)
                     if target_present(visible_text(raw), aliases):
