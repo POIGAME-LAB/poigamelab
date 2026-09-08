@@ -177,6 +177,25 @@ def test_evertale_has_two_current_moppy_offers_without_os_guess(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
+def test_houchi_has_current_hapitas_android_offer(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "放置少女" and row["site"] == "hapitas"
+    ]
+    assert [(row["platform"], row["reward"], row["url"]) for row in matches] == [
+        ("Android", "1501", "https://hapitas.jp/item/detail/itemid/91475")
+    ]
+    assert matches[0]["updatedAt"] == "2026-09-08"
+    assert matches[0]["verified"].lower() == "true"
+    assert matches[0]["deadline"] == "インストール日から起算して45日以内"
+
+
 def test_working_hero_hapitas_pair_is_current(output_dir):
     builder.build_public_site(output_dir)
     import csv

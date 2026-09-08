@@ -114,12 +114,15 @@ def test_v32_game_known_sources_are_isolated():
     by_game={x['game']:x for x in data['games']}
 
     houchi=by_game['放置少女']['known_urls_by_source']
-    assert set(houchi)=={'moppy','warau'}
+    assert set(houchi)=={'moppy','warau','hapitas'}
     assert houchi['moppy']==['https://pc.moppy.jp/ad/detail.php?site_id=147270']
     assert set(houchi['warau'])=={
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206411',
     }
+    assert houchi['hapitas']==[
+        'https://hapitas.jp/item/detail/itemid/91475',
+    ]
 
     evertale=by_game['エバーテイル']['known_urls_by_source']
     assert set(evertale)=={'moppy','hapitas','warau'}

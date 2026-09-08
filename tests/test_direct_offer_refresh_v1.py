@@ -2234,6 +2234,23 @@ def test_repository_evertale_current_moppy_pair_is_published_without_guessing_os
     assert all(row['condition'] == '新規アプリインストール後、3日連続でログインボーナスを獲得' for row in matches)
 
 
+def test_repository_houchi_current_hapitas_android_offer_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == '放置少女' and row['site'] == 'hapitas'
+    ]
+    assert [(row['platform'], row['reward'], row['url']) for row in matches] == [
+        ('Android', '1501', 'https://hapitas.jp/item/detail/itemid/91475')
+    ]
+    row = matches[0]
+    assert row['condition'] == '新規アプリインストール後、45日以内にプレイヤーレベル120到達（1転生Lv.20到達）'
+    assert row['deadline'] == 'インストール日から起算して45日以内'
+    assert row['verified'] == 'true'
+
+
 def test_repository_evertale_current_hapitas_182_pair_is_published():
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
@@ -2288,6 +2305,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     evertale = by_game['エバーテイル']['known_urls_by_source']['hapitas']
     memento = by_game['メメントモリ']['known_urls_by_source']['hapitas']
     puzzles = by_game['パズル＆サバイバル']['known_urls_by_source']['hapitas']
+    houchi = by_game['放置少女']['known_urls_by_source']['hapitas']
 
     assert set(working) == {
         'https://hapitas.jp/item/detail/itemid/101445',
@@ -2323,6 +2341,9 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/98148',
         'https://hapitas.jp/item/detail/itemid/99158',
     }
+    assert houchi == [
+        'https://hapitas.jp/item/detail/itemid/91475',
+    ]
 
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
@@ -2344,5 +2365,6 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('パズル＆サバイバル', 'iOS', '35015'),
         ('きのこ伝説', 'Android', '14792'),
         ('きのこ伝説', 'iOS', '18142'),
+        ('放置少女', 'Android', '1501'),
     }
     assert not any(row['game'] == 'Township' for row in hapitas_rows)
