@@ -786,7 +786,7 @@
       <table class="comparison-table">
         <thead>
           <tr>
-            <th>ポイントサイト</th>
+            <th>ポイントサイト / 掲載枠</th>
             <th>還元額</th>
             <th>条件</th>
             <th>対応OS</th>
@@ -1020,7 +1020,8 @@
             bestReward.textContent = `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
           }
           if (bestSite) {
-            bestSite.textContent = `ポイントサイト：${pointSites[bestOffer.site] || bestOffer.site}`;
+            const bestSiteName = pointSites[bestOffer.site] || bestOffer.site;
+            bestSite.textContent = `ポイントサイト：${POIGAME_DATA.formatOfferSourceLabel(bestSiteName, bestOffer.provider)}`;
           }
           if (bestVerified) {
             const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
@@ -1163,6 +1164,7 @@
 
           filteredOffers.forEach((offer) => {
             const siteName = pointSites[offer.site] || offer.site;
+            const sourceLabel = POIGAME_DATA.formatOfferSourceLabel(siteName, offer.provider);
             const safeUrl = POIGAME_DATA.safeHttpUrl(offer.url);
             const referral = window.POIGAME_REFERRALS?.get(offer.site) || null;
             const safeReferralUrl = referral
@@ -1188,7 +1190,7 @@
             if (tableBody) {
               const row = document.createElement("tr");
               row.innerHTML = `
-                <td>${POIGAME_DATA.escapeHtml(siteName)}</td>
+                <td>${POIGAME_DATA.escapeHtml(sourceLabel)}</td>
                 <td>${offer.reward.toLocaleString()}円${verifyLabel}</td>
                 <td>${POIGAME_DATA.escapeHtml(POIGAME_DATA.summarizeOfferCondition(offer.condition, offer.type))}</td>
                 <td>${POIGAME_DATA.escapeHtml(platformText)}</td>
@@ -1209,7 +1211,7 @@
               card.className = "mobile-offer-card";
               card.innerHTML = `
                 <div class="mobile-offer-head">
-                  <div class="mobile-offer-site">${POIGAME_DATA.escapeHtml(siteName)}</div>
+                  <div class="mobile-offer-site">${POIGAME_DATA.escapeHtml(sourceLabel)}</div>
                   <div class="mobile-offer-reward">${offer.reward.toLocaleString()}円</div>
                 </div>
                 <span class="platform-pill">${POIGAME_DATA.escapeHtml(platformText)}</span>
