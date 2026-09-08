@@ -46,14 +46,17 @@ def test_new_game_known_sources_are_isolated():
     assert set(puzzles)=={'moppy','warau'}
     assert all('15827' in u or '158257' in u for u in tokyo['moppy'])
     assert all('16036' in u for u in puzzles['moppy'])
-    assert all('point_id=205' in u for u in puzzles['warau'])
+    assert set(puzzles['warau']) == {
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206425',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361',
+    }
 
 
 def test_kingshot_known_sources_are_isolated():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     by_game={x['game']:x for x in data['games']}
     kingshot=by_game['キングショット']['known_urls_by_source']
-    assert set(kingshot)=={'moppy','hapitas'}
+    assert set(kingshot)=={'moppy','hapitas','warau'}
     assert set(kingshot['moppy']) == {
         'https://pc.moppy.jp/ad/detail.php?site_id=161855',
         'https://pc.moppy.jp/ad/detail.php?site_id=161854',
@@ -61,6 +64,10 @@ def test_kingshot_known_sources_are_isolated():
     assert set(kingshot['hapitas']) == {
         'https://hapitas.jp/item/detail/itemid/101355',
         'https://hapitas.jp/item/detail/itemid/101354',
+    }
+    assert set(kingshot['warau']) == {
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=204984',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=204983',
     }
 
 
@@ -71,9 +78,10 @@ def test_v32_game_known_sources_are_isolated():
     houchi=by_game['放置少女']['known_urls_by_source']
     assert set(houchi)=={'moppy','warau'}
     assert houchi['moppy']==['https://pc.moppy.jp/ad/detail.php?site_id=147270']
-    assert houchi['warau']==[
-        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971'
-    ]
+    assert set(houchi['warau'])=={
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206411',
+    }
 
     evertale=by_game['エバーテイル']['known_urls_by_source']
     assert set(evertale)=={'moppy','hapitas'}
