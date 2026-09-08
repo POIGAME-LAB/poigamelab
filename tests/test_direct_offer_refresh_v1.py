@@ -1674,6 +1674,7 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
     assert ids('キングショット') == {'204984', '204983'}
     assert ids('放置少女') == {'177971', '206411'}
     assert ids('メメントモリ') == {'206501', '206500'}
+    assert ids('エバーテイル') == {'188016'}
     assert '205557' not in ids('パズル＆サバイバル')
 
 
@@ -2215,6 +2216,23 @@ def test_tokyo_debunker_current_moppy_pair_is_published_without_guessing_os():
     }
     assert all(row['verified'] == 'true' for row in matches)
     assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得' for row in matches)
+
+
+def test_repository_evertale_current_warau_ios_offer_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'エバーテイル' and row['site'] == 'warau'
+    ]
+    assert [(row['platform'], row['reward'], direct.warau_offer_id(row['url'])) for row in matches] == [
+        ('iOS', '310', '188016')
+    ]
+    row = matches[0]
+    assert row['condition'] == '新規アプリインストール後、3日連続ログインボーナス獲得'
+    assert row['deadline'] == 'インストール日から起算して10日以内'
+    assert row['verified'] == 'true'
 
 
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
