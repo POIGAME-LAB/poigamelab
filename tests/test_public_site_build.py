@@ -135,6 +135,49 @@ def test_mementomori_has_verified_published_reward(output_dir):
     assert best["platform"] == evidence["platform"]
     assert int(best["reward"]) == evidence["rewardPoints"]
 
+def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    review = json.loads((ROOT / "data" / "comparison_review_queue.json").read_text(encoding="utf-8"))
+    evidence_by_id = {
+        str(item.get("sourceEvidence", {}).get("offerId")): item["sourceEvidence"]
+        for item in review["items"]
+        if item.get("source") == "warau"
+        and item.get("sourceEvidence", {}).get("state") == "parsed"
+        and item.get("sourceEvidence", {}).get("parserVersion") == "warau-stepup-v1"
+    }
+    expected = {
+        "201872": ("ホワイトアウト・サバイバル", "Android", 11500),
+        "201862": ("ホワイトアウト・サバイバル", "iOS", 11500),
+        "206425": ("パズル＆サバイバル", "Android", 24600),
+        "204984": ("キングショット", "Android", 16000),
+        "204983": ("キングショット", "iOS", 16000),
+        "206411": ("放置少女", "iOS", 2000),
+    }
+    for offer_id, (game, platform, reward) in expected.items():
+        matches = [row for row in rows if row["site"] == "warau" and f"point_id={offer_id}" in row["url"]]
+        assert len(matches) == 1
+        row = matches[0]
+        evidence = evidence_by_id[offer_id]
+        assert row["game"] == game == next(
+            item["game"] for item in review
+            if str(item.get("sourceEvidence", {}).get("offerId")) == offer_id
+        )
+        assert row["platform"] == platform == evidence["platform"]
+        assert int(row["reward"]) == reward == evidence["rewardPoints"]
+        assert row["verified"].lower() == "true"
+        assert row["updatedAt"] == "2026-09-08"
+
+    assert not any(
+        row["site"] == "warau" and "point_id=205557" in row["url"]
+        for row in rows
+    )
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
