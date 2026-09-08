@@ -2304,6 +2304,24 @@ def test_repository_tokyo_debunker_hapitas_ios_android_pair_is_published():
     assert all(row['verified'] == 'true' for row in matches)
 
 
+def test_repository_puzzles_current_warau_29500_offer_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'パズル＆サバイバル'
+        and row['site'] == 'warau'
+        and direct.warau_offer_id(row['url']) == '205557'
+    ]
+    assert len(matches) == 1
+    row = matches[0]
+    assert row['platform'] == 'Android'
+    assert row['reward'] == '29500'
+    assert row['deadline'] == 'インストール日から起算して30日以内'
+    assert row['verified'] == 'true'
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
