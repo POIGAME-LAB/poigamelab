@@ -2234,6 +2234,23 @@ def test_repository_evertale_current_moppy_pair_is_published_without_guessing_os
     assert all(row['condition'] == '新規アプリインストール後、3日連続でログインボーナスを獲得' for row in matches)
 
 
+def test_repository_houchi_current_hapitas_android_offer_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == '放置少女' and row['site'] == 'hapitas'
+    ]
+    assert [(row['platform'], row['reward'], row['url']) for row in matches] == [
+        ('Android', '1501', 'https://hapitas.jp/item/detail/itemid/91475')
+    ]
+    row = matches[0]
+    assert row['condition'] == '新規アプリインストール後、45日以内にプレイヤーレベル120到達（1転生Lv.20到達）'
+    assert row['deadline'] == 'インストール日から起算して45日以内'
+    assert row['verified'] == 'true'
+
+
 def test_repository_evertale_current_hapitas_182_pair_is_published():
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
