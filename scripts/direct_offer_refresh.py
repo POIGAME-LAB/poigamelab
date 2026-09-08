@@ -925,7 +925,9 @@ def inspect_gendama_offer(raw, requested_url, final_url, aliases):
         if len(terms) < 80:
             raise ValueError("incomplete_offer_terms")
 
-        # Gendama boilerplate contains generic iOS tracking notices even for\n        # Android-only offers. Bind OS only to the offer title/condition.\n        platform = platform_hint(" ".join((title, condition)))
+        # Gendama boilerplate contains generic iOS tracking notices even for
+        # Android-only offers. Bind OS only to the offer title/condition.
+        platform = platform_hint(" ".join((title, condition)))
         if platform not in {"iOS", "Android", "iOS|Android"}:
             raise ValueError("ambiguous_offer_platform")
 
