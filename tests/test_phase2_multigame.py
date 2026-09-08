@@ -42,7 +42,7 @@ def test_mementomori_known_sources_include_current_hapitas_pair():
     data=json.loads((ROOT/'config/game_targets.json').read_text())
     by_game={x['game']:x for x in data['games']}
     memento=by_game['メメントモリ']['known_urls_by_source']
-    assert set(memento)=={'moppy','hapitas'}
+    assert set(memento)=={'moppy','hapitas','warau'}
     assert set(memento['moppy'])=={
         'https://pc.moppy.jp/ad/detail.php?site_id=160690',
         'https://pc.moppy.jp/ad/detail.php?site_id=160688',
@@ -50,6 +50,10 @@ def test_mementomori_known_sources_include_current_hapitas_pair():
     assert set(memento['hapitas'])=={
         'https://hapitas.jp/item/detail/itemid/99420',
         'https://hapitas.jp/item/detail/itemid/99421',
+    }
+    assert set(memento['warau'])=={
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206501',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206500',
     }
 
 
@@ -65,6 +69,8 @@ def test_new_game_known_sources_are_isolated():
     assert set(puzzles['warau']) == {
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206425',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206488',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206460',
     }
 
 
