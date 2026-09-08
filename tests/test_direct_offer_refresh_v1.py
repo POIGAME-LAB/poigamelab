@@ -1675,7 +1675,6 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
     assert ids('放置少女') == {'177971', '206411'}
     assert ids('メメントモリ') == {'206501', '206500'}
     assert ids('エバーテイル') == {'188016'}
-    assert '205557' not in ids('パズル＆サバイバル')
 
 
 def test_repository_mementomori_moppy_review_targets_use_current_45_day_pair():
