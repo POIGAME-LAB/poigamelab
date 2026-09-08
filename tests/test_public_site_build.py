@@ -159,6 +159,24 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     assert all(row["deadline"] == "インストール後45日以内" for row in matches)
 
 
+def test_tokyo_debunker_has_two_current_moppy_offers_without_os_guess(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "東京ディバンカー" and row["site"] == "moppy"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("不明", "228", "https://pc.moppy.jp/ad/detail.php?site_id=158270"),
+        ("不明", "199", "https://pc.moppy.jp/ad/detail.php?site_id=158257"),
+    }
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
 def test_kingshot_has_current_hapitas_ios_android_pair(output_dir):
     builder.build_public_site(output_dir)
     import csv
