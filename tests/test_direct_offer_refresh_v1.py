@@ -2332,6 +2332,25 @@ def test_repository_puzzles_current_warau_29500_offer_is_published():
     assert row['verified'] == 'true'
 
 
+def test_repository_township_current_chobirich_reward_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'Township'
+        and row['site'] == 'chobirich'
+        and row['url'] == 'https://www.chobirich.com/ad_details/1894712'
+    ]
+    assert len(matches) == 1
+    row = matches[0]
+    assert row['platform'] == 'Android'
+    assert row['reward'] == '31030'
+    assert row['updatedAt'] == '2026-09-08'
+    assert row['deadline'] == 'インストール日から起算して60日以内'
+    assert row['verified'] == 'true'
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
