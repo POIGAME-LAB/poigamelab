@@ -2218,6 +2218,22 @@ def test_tokyo_debunker_current_moppy_pair_is_published_without_guessing_os():
     assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得' for row in matches)
 
 
+def test_repository_evertale_current_moppy_pair_is_published_without_guessing_os():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'エバーテイル' and row['site'] == 'moppy'
+    ]
+    assert {(direct.moppy_offer_id(row['url']), row['platform'], row['reward']) for row in matches} == {
+        ('158276', '不明', '360'),
+        ('158275', '不明', '360'),
+    }
+    assert all(row['verified'] == 'true' for row in matches)
+    assert all(row['condition'] == '新規アプリインストール後、3日連続でログインボーナスを獲得' for row in matches)
+
+
 def test_repository_evertale_current_warau_ios_offer_is_published():
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
