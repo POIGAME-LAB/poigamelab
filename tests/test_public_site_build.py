@@ -542,6 +542,27 @@ def test_whiteout_and_houchi_selected_rows_are_current(output_dir):
             assert row["verified"].lower() == "true"
 
 
+def test_puzzles_moppy_android_is_current(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "パズル＆サバイバル"
+        and row["site"] == "moppy"
+        and row["url"] == "https://pc.moppy.jp/ad/detail.php?site_id=160367"
+    ]
+    assert len(matches) == 1
+    row = matches[0]
+    assert row["platform"] == "Android"
+    assert row["reward"] == "39734"
+    assert row["updatedAt"] == "2026-09-08"
+    assert row["verified"].lower() == "true"
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
