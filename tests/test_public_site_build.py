@@ -175,7 +175,10 @@ def test_kingshot_has_current_hapitas_ios_android_pair(output_dir):
         ("iOS", "16320", "https://hapitas.jp/item/detail/itemid/101354"),
     }
     assert all(row["verified"].lower() == "true" for row in matches)
-    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert {(row["platform"], row["updatedAt"]) for row in matches} == {
+        ("Android", "2026-09-04"),
+        ("iOS", "2026-09-08"),
+    }
     assert all("10日／30日／70日以内" in row["deadline"] for row in matches)
 
 
