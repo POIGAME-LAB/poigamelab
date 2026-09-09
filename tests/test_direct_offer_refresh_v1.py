@@ -193,6 +193,11 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert by_id['kurashiru_reward']['discovery_only'] is True
     assert by_id['trima']['discovery_only'] is True
     assert by_id['kurashiru_reward']['scheduled_fetch_enabled'] is False
+    assert by_id['kurashiru_reward']['start_url'] == 'https://www.rewards.kurashiru.com/'
+    assert 'www.rewards.kurashiru.com' in by_id['kurashiru_reward']['search_domains']
+    assert by_id['kurashiru_reward']['direct_listing_urls'] == [
+        'https://www.rewards.kurashiru.com/categories/3'
+    ]
     assert by_id['trima']['scheduled_fetch_enabled'] is False
 
     policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))

@@ -172,23 +172,26 @@
     {
       "id": "kurashiru_reward",
       "name": "クラシルリワード（レシチャレ）",
-      "start_url": "https://rewards.kurashiru.com/",
+      "start_url": "https://www.rewards.kurashiru.com/",
       "search_domains": [
+        "www.rewards.kurashiru.com",
         "rewards.kurashiru.com",
-        "kurashiru.com",
-        "www.kurashiru.com"
+        "www.kurashiru.com",
+        "kurashiru.com"
       ],
       "mobile": true,
       "enabled": true,
       "discovery_only": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [],
+      "direct_listing_urls": [
+        "https://www.rewards.kurashiru.com/categories/3"
+      ],
       "direct_listing_limit": 0,
       "direct_detail_limit": 0,
       "direct_detail_url_hints": [],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Discovery-only source until a stable first-party campaign listing/detail route is validated."
+      "scheduled_fetch_reason": "Official web categories are anonymous and reachable, but Working Heroes currently appears to be provider-surface specific; keep discovery-only until a stable first-party campaign detail route is established."
     },
     {
       "id": "trima",
