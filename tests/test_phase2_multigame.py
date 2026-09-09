@@ -79,7 +79,7 @@ def test_new_game_known_sources_are_isolated():
     by_game={x['game']:x for x in data['games']}
     tokyo=by_game['東京ディバンカー']['known_urls_by_source']
     puzzles=by_game['パズル＆サバイバル']['known_urls_by_source']
-    assert set(tokyo)=={'moppy','hapitas'}
+    assert set(tokyo)=={'moppy','hapitas','warau'}
     assert set(puzzles)=={'moppy','warau','hapitas'}
     assert all('15827' in u or '158257' in u for u in tokyo['moppy'])
     assert set(tokyo['warau'])=={
