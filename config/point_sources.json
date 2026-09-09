@@ -313,6 +313,51 @@
       "direct_detail_url_hints": [],
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "Discovery-only source until a stable first-party app/game listing or detail route is validated."
+    },
+    {
+      "id": "gmo_point",
+      "name": "GMOポイ活",
+      "start_url": "https://colleee.net/",
+      "search_domains": [
+        "colleee.net",
+        "www.colleee.net",
+        "static.colleee.net"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "discovery_only": true,
+      "known_target_urls": [],
+      "prefer_known_pages": false,
+      "direct_listing_urls": [],
+      "direct_listing_limit": 0,
+      "direct_detail_limit": 0,
+      "direct_detail_url_hints": [],
+      "scheduled_fetch_enabled": false,
+      "scheduled_fetch_reason": "Discovery-only source until a stable anonymous first-party app/game search or detail route is validated."
+    },
+    {
+      "id": "powl",
+      "name": "Powl",
+      "start_url": "https://web.powl.jp/",
+      "search_domains": [
+        "web.powl.jp",
+        "powl.jp"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "discovery_only": true,
+      "known_target_urls": [],
+      "prefer_known_pages": false,
+      "direct_listing_urls": [
+        "https://web.powl.jp/search"
+      ],
+      "direct_listing_limit": 0,
+      "direct_detail_limit": 0,
+      "direct_detail_url_hints": [
+        "/reward/"
+      ],
+      "scheduled_fetch_enabled": false,
+      "scheduled_fetch_reason": "Official anonymous search surface exists, but the reviewed target-query parameter has not yet been established; keep discovery-only until query routing is validated."
     }
   ],
   "offerwall_domains_discovered": [
