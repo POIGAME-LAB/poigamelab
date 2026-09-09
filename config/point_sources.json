@@ -203,7 +203,8 @@
       "coverage_detail_review_enabled": true,
       "coverage_detail_review_limit_per_game": 3,
       "coverage_detail_review_mode": "candidate_only",
-      "coverage_detail_review_parser": "hapitas-detail-review-v1"
+      "coverage_detail_review_parser": "hapitas-detail-review-v1",
+      "discovery_only": true
     },
     {
       "id": "kurashiru_reward",
