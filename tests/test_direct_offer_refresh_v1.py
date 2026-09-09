@@ -504,6 +504,47 @@ def test_powl_reward_identity_ignores_navigation_query_variants():
     assert c != a
 
 
+def test_pointtown_partial_first_party_listing_discovers_target_items_only():
+    source = {
+        'id': 'point_town',
+        'name': 'ポイントタウン',
+        'start_url': 'https://www.pointtown.com/',
+        'search_domains': ['www.pointtown.com', 'pointtown.com'],
+        'direct_detail_url_hints': ['/item/'],
+    }
+    html = '''
+      <main>
+        <div class="service-item">
+          <a href="/item/9265">iOS_東京ディバンカー_3日間連続でログインボーナスを獲得</a>
+          <span>アプリインストールで 160</span>
+        </div>
+        <div class="service-item">
+          <a href="/item/9196?frame=category">エバーテイル（3日連続ログインボーナス獲得）（Android）</a>
+        </div>
+      </main>
+    '''
+    candidates = direct.discover_first_party_listing_candidates(
+        html,
+        'https://www.pointtown.com/action-point/app-install',
+        source,
+        ['東京ディバンカー', 'Tokyo Debunker'],
+    )
+    assert [x['firstPartyCandidateUrl'] for x in candidates] == [
+        'https://www.pointtown.com/item/9265'
+    ]
+    assert candidates[0]['source'] == 'point_town'
+    assert candidates[0]['rewardYenHint'] == ''
+    assert candidates[0]['platformHint'] == ''
+
+
+def test_pointtown_item_identity_ignores_navigation_query_variants():
+    a = direct.offer_identity_key('https://www.pointtown.com/item/9265?frame=category', 'point_town')
+    b = direct.offer_identity_key('https://pointtown.com/item/9265?from=search', 'point_town')
+    c = direct.offer_identity_key('https://www.pointtown.com/item/9196', 'point_town')
+    assert a == b == 'point_town:pathid:9265'
+    assert c != a
+
+
 def test_repository_has_two_candidate_only_coverage_radars():
     source_cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
     coverage = source_cfg['coverage_discovery']
@@ -570,11 +611,20 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
         'https://www.rewards.kurashiru.com/categories/3'
     ]
     assert by_id['trima']['scheduled_fetch_enabled'] is False
-    for source_id in ('point_income', 'amefuri', 'point_town', 'nifty_point'):
+    for source_id in ('point_income', 'amefuri', 'nifty_point'):
         assert by_id[source_id]['discovery_only'] is True
         assert by_id[source_id]['scheduled_fetch_enabled'] is False
         assert by_id[source_id]['direct_listing_limit'] == 0
         assert by_id[source_id]['direct_detail_limit'] == 0
+    assert by_id['point_town']['discovery_only'] is True
+    assert by_id['point_town']['scheduled_fetch_enabled'] is False
+    assert by_id['point_town']['coverage_first_party_listing_enabled'] is True
+    assert by_id['point_town']['coverage_scope'] == 'partial_web_app_install_listing'
+    assert by_id['point_town']['direct_listing_urls'] == [
+        'https://www.pointtown.com/action-point/app-install'
+    ]
+    assert by_id['point_town']['direct_listing_limit'] == 1
+    assert by_id['point_town']['direct_detail_limit'] == 0
     assert by_id['ec_navi']['discovery_only'] is True
     assert by_id['ec_navi']['scheduled_fetch_enabled'] is False
     assert by_id['ec_navi']['coverage_first_party_listing_enabled'] is True
