@@ -3269,3 +3269,20 @@ def test_coincome_shared_listing_reuses_unified_snapshot_path():
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
     assert 'get_listing_snapshot(listing_url, discovery_source, "new_game_discovery")' in script
     assert 'get_listing_snapshot(listing_url, source, "existing_game_refresh")' in script
+
+
+def test_moppy_shell_reward_change_is_explicit_candidate_only():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert '"moppy_shell_reward_change_candidate"' in script
+    assert 'item["shellDisplayedReward"] = displayed' in script
+    assert 'item["candidateOnly"] = True' in script
+    assert 'item["publicationAuthorized"] = False' in script
+    assert '"point_get_destination_reward"' in script
+    assert '"existingRewardChangeCandidateCount"' in script
+
+
+def test_moppy_shell_parser_still_requires_downstream_terms_review():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert '"downstreamTermsRequired": True' in script
+    assert 'source_id == "moppy"' in script
+    assert '"source_refresh_not_enabled"' in script
