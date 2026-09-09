@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>新着ゲーム監視 | POIGAME LAB</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f5f2ff;color:#241842;margin:0}
+    .wrap{max-width:1120px;margin:auto;padding:28px 18px 56px}
+    .back{color:#6a38d4;font-weight:800;text-decoration:none}
+    .hero{margin:18px 0 16px;padding:26px;border-radius:22px;background:linear-gradient(135deg,#30105f,#7344e7);color:#fff}
+    .hero small{color:#ffe66d;font-weight:900;letter-spacing:1.6px}
+    .hero h1{margin:8px 0 8px;font-size:30px}
+    .hero p{margin:0;color:#eee7ff;line-height:1.7}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 24px}
+    .stat{background:#fff;border-radius:16px;padding:18px;box-shadow:0 8px 28px #4f2b7d18}
+    .stat span{display:block;color:#766c87;font-size:12px;font-weight:800}
+    .stat strong{display:block;margin-top:7px;font-size:27px}
+    .section{margin:28px 0 0}
+    .section-head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:12px}
+    .section-head h2{margin:0;font-size:21px}
+    .muted{color:#756c84;font-size:12px}
+    .list{display:grid;gap:10px}
+    .item{background:#fff;border-radius:15px;padding:16px 18px;box-shadow:0 6px 22px #4f2b7d12}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .title{font-weight:900;font-size:16px}
+    .pill{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:900;background:#eee8ff;color:#5d35c9}
+    .pill.new{background:#fff0b9;color:#7d5700}
+    .pill.high{background:#e5f7ec;color:#1c7045}
+    .pill.low{background:#f3f0f7;color:#786f83}
+    .meta{margin-top:8px;color:#6d6478;font-size:12px;line-height:1.65}
+    .empty{padding:18px;background:#fff;border-radius:14px;color:#756c84}
+    .link{color:#6439d5;font-weight:800;text-decoration:none}
+    .link:hover{text-decoration:underline}
+    .warn{background:#fff8df;border:1px solid #f3d977;border-radius:14px;padding:13px 15px;color:#6f5610;font-size:12px;line-height:1.7}
+    @media(max-width:780px){.grid{grid-template-columns:1fr 1fr}.hero h1{font-size:25px}}
+    @media(max-width:480px){.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="data-status.html">← データ更新状況へ</a>
+  <section class="hero">
+    <small>NEW GAME MONITOR</small>
+    <h1>新着ゲーム監視</h1>
+    <p>毎日1:00 JSTの収集結果から、未登録ゲーム候補の初登場・継続・消失・複数サイト一致を確認する運営用ページです。</p>
+  </section>
+
+  <div class="warn">ここに表示される候補は未確認です。候補からゲーム登録・案件公開・最高還元への反映は自動では行いません。</div>
+
+  <section class="grid" aria-label="新着候補サマリー">
+    <div class="stat"><span>今日初登場</span><strong id="newCount">--</strong></div>
+    <div class="stat"><span>現在アクティブ</span><strong id="activeCount">--</strong></div>
+    <div class="stat"><span>高優先度レビュー</span><strong id="highCount">--</strong></div>
+    <div class="stat"><span>掲載から消失</span><strong id="inactiveCount">--</strong></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>✨ 今日のNEW</h2><span id="checkedAt" class="muted">読込中</span></div>
+    <div id="todayNew" class="list"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>🔥 優先レビュー</h2><span class="muted">ゲーム濃厚 + 複数サイト一致を優先</span></div>
+    <div id="priority" class="list"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>🕰 継続掲載</h2><span class="muted">以前から観測中</span></div>
+    <div id="continuing" class="list"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>🌫 消えた候補</h2><span class="muted">履歴は保持</span></div>
+    <div id="inactive" class="list"></div>
+  </section>
+</main>
+
+<script src="site-data.js"></script>
+<script>
+(async()=>{
+  const esc=(v)=>POIGAME_DATA.escapeHtml(String(v??''));
+  const empty=(text)=>'<div class="empty">'+esc(text)+'</div>';
+  const history=await POIGAME_DATA.fetchJson('data/new_game_candidate_history.json').catch(()=>({items:{}}));
+  const queue=await POIGAME_DATA.fetchJson('data/new_game_candidate_queue.json').catch(()=>({items:[],reviewPriority:[],checkedAt:null}));
+  const items=Array.isArray(queue.items)?queue.items:[];
+  const historyItems=history&&history.items&&typeof history.items==='object'?Object.values(history.items):[];
+  const priorities=Array.isArray(queue.reviewPriority)?queue.reviewPriority:[];
+
+  const today=items.filter(x=>x&&x.isNewToday===true);
+  const continuing=items.filter(x=>x&&x.isNewToday!==true);
+  const inactive=historyItems.filter(x=>x&&x.active===false);
+  const high=priorities.filter(x=>x&&x.reviewPriority==='high');
+
+  document.getElementById('newCount').textContent=today.length+'件';
+  document.getElementById('activeCount').textContent=items.length+'件';
+  document.getElementById('highCount').textContent=high.length+'件';
+  document.getElementById('inactiveCount').textContent=inactive.length+'件';
+  document.getElementById('checkedAt').textContent=queue.checkedAt?'最終収集 '+esc(queue.checkedAt):'収集履歴なし';
+
+  const candidateCard=(x)=>{
+    const safeCandidateUrl=POIGAME_DATA.safeHttpUrl(x.firstPartyCandidateUrl||'');
+    return `
+    <article class="item">
+      <div class="row">
+        <span class="title">${esc(x.titleHint||'タイトル確認中')}</span>
+        ${x.isNewToday===true?'<span class="pill new">NEW</span>':''}
+        <span class="pill">${esc(x.classification||'review')}</span>
+        <span class="pill">${esc(x.source||'unknown')}</span>
+      </div>
+      <div class="meta">
+        初回観測: ${esc(x.firstSeen||'--')}<br>
+        発見範囲: ${esc(x.discoveryScope||'unspecified')}
+        ${safeCandidateUrl?'<br><a class="link" rel="noopener noreferrer" target="_blank" href="'+esc(safeCandidateUrl)+'">一次候補ページを確認 ↗</a>':''}
+      </div>
+    </article>`;
+  };
+
+  document.getElementById('todayNew').innerHTML=today.length?today.map(candidateCard).join(''):empty('今日初登場の候補はありません。');
+  document.getElementById('continuing').innerHTML=continuing.length?continuing.map(candidateCard).join(''):empty('継続中の候補はありません。');
+
+  document.getElementById('priority').innerHTML=high.length?high.map(x=>`
+    <article class="item">
+      <div class="row">
+        <span class="title">${esc(x.titleHint||'タイトル確認中')}</span>
+        <span class="pill high">HIGH</span>
+        <span class="pill">${Number(x.sourceCount||0)}サイト一致</span>
+      </div>
+      <div class="meta">分類: ${esc(x.classification||'review')} / 優先度スコア: ${Number(x.reviewPriorityScore||0)} / 発見元: ${esc(x.source||'--')}</div>
+    </article>`).join(''):empty('高優先度の候補はありません。');
+
+  document.getElementById('inactive').innerHTML=inactive.length?inactive
+    .sort((a,b)=>String(b.lastMissingAt||'').localeCompare(String(a.lastMissingAt||'')))
+    .slice(0,100)
+    .map(x=>`
+      <article class="item">
+        <div class="row"><span class="title">${esc(x.titleHint||'タイトル確認中')}</span><span class="pill low">INACTIVE</span><span class="pill">${esc(x.source||'unknown')}</span></div>
+        <div class="meta">初回観測: ${esc(x.firstSeen||'--')} / 最終観測: ${esc(x.lastSeen||'--')} / 消失検知: ${esc(x.lastMissingAt||'--')}</div>
+      </article>`).join(''):empty('消えた候補はありません。');
+})().catch((e)=>{
+  console.error(e);
+  document.getElementById('todayNew').innerHTML='<div class="empty">データを読み込めませんでした。</div>';
+});
+</script>
+<script src="site-footer.js"></script>
+</body>
+</html>
