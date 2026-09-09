@@ -670,6 +670,29 @@ def test_memento_warau_11500_ios_android_pair_is_public(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
+def test_evertale_hapitas_140_ios_android_pair_is_public(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "エバーテイル"
+        and row["site"] == "hapitas"
+        and row["reward"] == "140"
+    ]
+    assert {(row["platform"], row["url"]) for row in matches} == {
+        ("iOS", "https://hapitas.jp/item/detail/itemid/91344"),
+        ("Android", "https://hapitas.jp/item/detail/itemid/91343"),
+    }
+    by_platform = {row["platform"]: row for row in matches}
+    assert by_platform["Android"]["updatedAt"] == "2026-09-09"
+    assert by_platform["iOS"]["updatedAt"] == "2026-09-08"
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
