@@ -1,0 +1,13 @@
+{
+  "phase": "DIRECT_EXISTING_GAME_CANDIDATE_QUEUE_V1",
+  "checkedAt": "2026-09-09T17:19:24+00:00",
+  "candidateOnly": true,
+  "firstPartyVerificationRequired": true,
+  "autoCreateAuthorized": false,
+  "publicationAuthorized": false,
+  "count": 0,
+  "rewardChangeCount": 0,
+  "newOfferCount": 0,
+  "verifiedSameRewardCount": 0,
+  "items": []
+}
