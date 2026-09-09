@@ -392,6 +392,13 @@ def test_coverage_discovery_query_is_bounded_and_https_allowlisted():
     assert direct.coverage_query_url(bad, ['ワーキングヒーローズ']) == ''
 
 
+def test_scheduled_refresh_persists_candidate_queue():
+    workflow = (ROOT/'.github/workflows/refresh-verified-offers.yml').read_text(encoding='utf-8')
+    assert 'python scripts/direct_offer_refresh.py' in workflow
+    assert 'data/comparison_candidate_queue.json' in workflow
+    assert 'git add data/comparison_candidate_queue.json' in workflow
+
+
 def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missing_sources():
     source_cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
     coverage = source_cfg['coverage_discovery']
