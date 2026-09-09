@@ -2804,7 +2804,12 @@ def main():
                     break
 
         candidate_limit_reached = remaining <= 0
-        if use_pagination and not source_complete and pages_attempted >= page_cap:
+        source_incomplete = (
+            content_guard_failed
+            or candidate_limit_reached
+            or (use_pagination and not source_complete)
+        )
+        if source_incomplete:
             new_game_discovery_summary["incompleteSources"] += 1
         else:
             new_game_discovery_summary["completeSources"] += 1
