@@ -308,6 +308,93 @@ def coverage_query_url(discovery_source, aliases):
     return candidate if source_host_allowed(candidate, discovery_source) else ""
 
 
+def _coverage_yen_hint(raw):
+    value = str(raw or "").replace(",", "").strip()
+    if not re.fullmatch(r"\d+(?:\.\d+)?", value):
+        return None
+    number = float(value)
+    return int(number) if number.is_integer() else round(number, 2)
+
+
+def discover_dokotoku_candidates(raw, aliases, discovery_source, limit=24):
+    """Extract review-only hints from Dokotoku's reward/source/os/title rows."""
+    text = visible_text(raw)
+    if not target_present(text, aliases):
+        return []
+
+    mappings = discovery_source.get("candidate_source_aliases") or []
+    candidates = []
+    occurrence = 0
+    for mapping in mappings:
+        source_id = str(mapping.get("source") or "").strip()
+        provider_hint = str(mapping.get("providerHint") or "").strip()
+        labels = sorted(
+            {str(x).strip() for x in (mapping.get("labels") or []) if str(x).strip()},
+            key=len,
+            reverse=True,
+        )
+        if not source_id or not labels:
+            continue
+
+        occupied = []
+        for label in labels:
+            start = 0
+            while True:
+                pos = text.find(label, start)
+                if pos < 0:
+                    break
+                start = pos + len(label)
+                if any(a <= pos < b for a, b in occupied):
+                    continue
+                occupied.append((pos, pos + len(label)))
+
+                left = text[max(0, pos - 90):pos]
+                reward_matches = list(re.finditer(r"([0-9][0-9,]*(?:\.[0-9]+)?)\s*円", left))
+                if not reward_matches:
+                    continue
+                reward_yen = _coverage_yen_hint(reward_matches[-1].group(1))
+                if reward_yen is None:
+                    continue
+
+                right = text[pos + len(label):pos + len(label) + 180]
+                alias_hits = []
+                for alias in aliases:
+                    alias_value = str(alias or "").strip()
+                    if not alias_value:
+                        continue
+                    alias_pos = right.find(alias_value)
+                    if alias_pos >= 0:
+                        alias_hits.append((alias_pos, alias_value))
+                if not alias_hits:
+                    continue
+                alias_pos, alias_value = min(alias_hits, key=lambda item: item[0])
+                if alias_pos > 90:
+                    continue
+
+                between = right[:alias_pos]
+                platform = ""
+                if re.search(r"(?:^|\s)a(?:\s|$)", between, flags=re.I):
+                    platform = "Android"
+                elif re.search(r"(?:^|\s)i(?:\s|$)", between, flags=re.I):
+                    platform = "iOS"
+                elif re.search(r"(?:^|\s)s(?:\s|$)", between, flags=re.I):
+                    platform = ""
+
+                occurrence += 1
+                candidates.append({
+                    "source": source_id,
+                    "sourceLabel": label,
+                    "providerHint": provider_hint,
+                    "gameLabel": alias_value,
+                    "platformHint": platform,
+                    "rewardYenHint": reward_yen,
+                    "occurrence": occurrence,
+                })
+                if len(candidates) >= max(1, min(int(limit or 24), 60)):
+                    return candidates
+    return candidates
+
+
 def discover_coverage_candidates(raw, aliases, discovery_source, limit=24):
     """Extract review-only source/platform/reward hints from a comparison page.
 
@@ -315,6 +402,9 @@ def discover_coverage_candidates(raw, aliases, discovery_source, limit=24):
     short windows around configured source labels so unrelated page-wide values
     cannot silently become candidates.
     """
+    if discovery_source.get("parser") == "dokotoku-row-v1":
+        return discover_dokotoku_candidates(raw, aliases, discovery_source, limit=limit)
+
     text = visible_text(raw)
     if not target_present(text, aliases):
         return []
