@@ -6,7 +6,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;bac
 <section class="hero"><small>VERIFIED DATA PIPELINE</small><h1>データ更新状況</h1><p>POIGAME LABは「公式ページ取得 → AI抽出 → 決定ルール検証 → 公開」の順で更新します。取得に失敗した日は、直前に検証済みのデータを保持します。</p></section>
 <div class="grid"><div class="card">検証済み案件<strong id="published">--</strong><span class="ok">公開中</span></div><div class="card">最終自動更新<strong id="updated">--</strong><span id="overall" class="status-pill">確認中</span></div><div class="card">確認待ち例外<strong id="exceptions">--</strong><span class="warn">自動公開しません</span></div></div>
 <h2>ゲーム別 自動更新</h2><table><thead><tr><th>ゲーム</th><th>掲載件数</th><th>取得状態</th><th>備考</th></tr></thead><tbody id="games"></tbody></table>
-<h2>安全設計</h2><div class="card"><p><b>公開条件:</b> 登録済み公式ドメイン・同一案件URL・報酬額・条件などの決定ルールをすべて通過した案件だけを公開します。</p><p><b>取得失敗時:</b> 一時的な429/通信障害などで全件確認できなかった場合、確認できた新情報だけをマージし、以前の検証済み案件を消しません。</p><p><b>完全取得時:</b> そのゲームの掲載スナップショットを入れ替えるため、終了した案件は次回の完全取得で掲載から外せます。</p><p class="muted">表示中の報酬・条件は変動することがあります。申込み前にリンク先のポイントサイトで最新条件をご確認ください。</p></div>
+<p><a class="back" href="new-game-status.html">→ 新着ゲーム監視を開く</a></p><h2>安全設計</h2><div class="card"><p><b>公開条件:</b> 登録済み公式ドメイン・同一案件URL・報酬額・条件などの決定ルールをすべて通過した案件だけを公開します。</p><p><b>取得失敗時:</b> 一時的な429/通信障害などで全件確認できなかった場合、確認できた新情報だけをマージし、以前の検証済み案件を消しません。</p><p><b>完全取得時:</b> そのゲームの掲載スナップショットを入れ替えるため、終了した案件は次回の完全取得で掲載から外せます。</p><p class="muted">表示中の報酬・条件は変動することがあります。申込み前にリンク先のポイントサイトで最新条件をご確認ください。</p></div>
 <script src="site-data.js"></script>
 <script>
 (async()=>{try{
