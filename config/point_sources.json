@@ -336,7 +336,7 @@
         "/item/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Coverage-only anonymous app-install listing is stable but not known to cover all PointTown app/game surfaces; detail retrieval and publication remain disabled.",
+      "scheduled_fetch_reason": "The anonymous app-install listing is partial but stable, and /item/<id> detail pages expose reward, conditions, and PointTown's 1 point = 1 yen conversion. Up to 3 matching known-game details per game may be review-fetched nightly. Publication remains disabled.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 6,
       "coverage_scope": "partial_web_app_install_listing",
@@ -344,7 +344,12 @@
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 1,
       "new_game_discovery_candidate_limit": 50,
-      "new_game_discovery_scope": "partial_web_app_install_listing"
+      "new_game_discovery_scope": "partial_web_app_install_listing",
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 3,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "pointtown-detail-review-v1",
+      "reviewedAt": "2026-09-09"
     },
     {
       "id": "ec_navi",

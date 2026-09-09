@@ -3541,3 +3541,79 @@ def test_ecnavi_known_game_detail_review_is_bounded_candidate_only():
     assert ec['coverage_detail_review_mode'] == 'candidate_only'
     assert ec['coverage_detail_review_parser'] == 'ecnavi-detail-review-v1'
     assert ec['scheduled_fetch_enabled'] is False
+
+
+def _pointtown_fixture(reward='160'):
+    return f'''
+    <html><head>
+      <link rel="canonical" href="https://www.pointtown.com/item/9265">
+    </head><body>
+      <h1>iOS_東京ディバンカー_3日間連続でログインボーナスを獲得</h1>
+      <div>
+        アプリインストール、新規アプリインストール後、〖3日間連続でログインボーナスを獲得する〗で
+        {reward}
+        初回利用限定
+        友達紹介：10%
+        ポイント獲得時期 １〜２日程度
+      </div>
+      <section>
+        ポイント獲得条件 必ずお読みください
+        〖ポイント獲得条件〗
+        新規アプリインストール後、〖3日間連続でログインボーナスを獲得する〗
+        獲得条件達成期限はインストール日から起算して30日以内まで
+        お問い合わせ受付期限はインストール日から起算して60日以内
+        ■注意事項
+      </section>
+      <h2>サービスの説明</h2>
+      <div>ポイントタウンのポイントは 1ポイント = 1円</div>
+    </body></html>
+    '''
+
+
+def test_pointtown_detail_parser_reads_exact_reward():
+    evidence = direct.inspect_pointtown_offer(
+        _pointtown_fixture(),
+        'https://www.pointtown.com/item/9265',
+        'https://www.pointtown.com/item/9265',
+        ['東京ディバンカー'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'pointtown-detail-review-v1'
+    assert evidence['platform'] == 'iOS'
+    assert evidence['verifiedCurrentRewardPoints'] == 160
+    assert evidence['verifiedCurrentRewardYen'] == 160
+    assert evidence['publicationAuthorized'] is False
+
+
+def test_pointtown_detail_parser_rejects_ambiguous_reward_region():
+    evidence = direct.inspect_pointtown_offer(
+        _pointtown_fixture(reward='160 200'),
+        'https://www.pointtown.com/item/9265',
+        'https://www.pointtown.com/item/9265',
+        ['東京ディバンカー'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'missing_or_ambiguous_displayed_reward',
+    }
+
+
+def test_pointtown_offer_identity_rejects_queries():
+    assert direct.pointtown_offer_id('https://www.pointtown.com/item/9265') == '9265'
+    try:
+        direct.pointtown_offer_id('https://www.pointtown.com/item/9265?user_id=secret')
+    except ValueError as error:
+        assert str(error) == 'ambiguous_offer_identity'
+    else:
+        raise AssertionError('query-bearing item URL must be rejected')
+
+
+def test_pointtown_known_game_detail_review_is_bounded_candidate_only():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    pointtown = next(item for item in cfg['sources'] if item['id'] == 'point_town')
+    assert pointtown['coverage_detail_review_enabled'] is True
+    assert pointtown['coverage_detail_review_limit_per_game'] == 3
+    assert pointtown['coverage_detail_review_mode'] == 'candidate_only'
+    assert pointtown['coverage_detail_review_parser'] == 'pointtown-detail-review-v1'
+    assert pointtown['scheduled_fetch_enabled'] is False
+    assert pointtown['full_catalog_discovery_enabled'] is False

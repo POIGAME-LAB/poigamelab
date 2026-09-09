@@ -1478,6 +1478,124 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def pointtown_offer_id(url):
+    try:
+        p = urlparse(str(url or ""))
+        port = p.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (p.scheme != "https" or p.hostname not in {"www.pointtown.com", "pointtown.com"}
+            or p.username is not None or p.password is not None
+            or port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/item/([0-9]+)/?", p.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    if parse_qs(p.query, keep_blank_values=True):
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
+    """Build review-only evidence from a PointTown first-party item detail page."""
+    try:
+        offer_id = pointtown_offer_id(requested_url)
+        if pointtown_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if pointtown_offer_id(canonical) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        title = evidence_text(one(doc.find(tag="h1")))
+        if not target_present(title, aliases):
+            raise ValueError("offer_title_mismatch")
+
+        text = visible_text(raw)
+        if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
+            raise ValueError("unit_conversion_review_required")
+
+        title_pos = text.find(title)
+        if title_pos < 0:
+            raise ValueError("missing_offer_header")
+        condition_pos = text.find("ポイント獲得条件", title_pos)
+        if condition_pos < 0:
+            raise ValueError("missing_offer_header_boundary")
+        header = text[title_pos:condition_pos]
+
+        boundary_positions = [
+            pos for token in ("初回利用限定", "友達紹介", "ポイント獲得時期", "予定ポイント反映")
+            if (pos := header.find(token)) >= 0
+        ]
+        reward_region = header[:min(boundary_positions)] if boundary_positions else header[:1200]
+        reward_matches = re.findall(
+            r"で\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*(?![%0-9])",
+            reward_region,
+        )
+        rewards = [
+            int(value.replace(",", ""))
+            for value in reward_matches
+            if 0 < int(value.replace(",", "")) <= 5_000_000
+        ]
+        unique_rewards = sorted(set(rewards))
+        if len(unique_rewards) != 1:
+            raise ValueError("missing_or_ambiguous_displayed_reward")
+        reward_points = unique_rewards[0]
+
+        terms_start = text.find("ポイント獲得条件", title_pos)
+        service_start = text.find("サービスの説明", terms_start)
+        if terms_start < 0 or service_start < 0 or service_start <= terms_start:
+            raise ValueError("incomplete_offer_terms")
+        terms = text[terms_start:service_start].strip()
+        if not any(marker in terms for marker in (
+            "獲得条件達成期限",
+            "ポイント獲得時期",
+            "ポイント獲得条件",
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        os_labels = re.findall(
+            r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
+            title + " " + terms[:1500],
+            re.I,
+        )
+        normalized_os = {"ios": "iOS", "android": "Android"}
+        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
+        platform = platforms[0] if len(platforms) == 1 else ""
+
+        payload = {
+            "offerId": offer_id,
+            "name": title,
+            "platform": platform,
+            "verifiedCurrentRewardPoints": reward_points,
+            "verifiedCurrentRewardYen": reward_points,
+            "rewardUnit": "PointTown-point",
+            "sourcePointRate": "1pt=1JPY",
+            "headerText": re.sub(r"\s+", " ", header).strip(),
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "pointtown-detail-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def ecnavi_offer_id(url):
     try:
         p = urlparse(str(url or ""))
@@ -1985,6 +2103,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "warau": inspect_warau_offer,
         "chobirich": inspect_chobirich_offer,
         "coincome": inspect_coincome_offer,
+        "point_town": inspect_pointtown_offer,
         "ec_navi": inspect_ecnavi_offer,
         "amefuri": inspect_amefuri_offer,
         "moppy": inspect_moppy_offer,
