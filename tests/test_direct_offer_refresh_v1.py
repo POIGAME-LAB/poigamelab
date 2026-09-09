@@ -3634,3 +3634,18 @@ def test_warau_paginated_discovery_is_reused_for_known_game_coverage():
     assert warau['new_game_discovery_enabled'] is True
     assert '{page}' in warau['new_game_discovery_page_url_template']
     assert warau['coverage_first_party_listing_enabled'] is True
+
+
+def test_hapitas_full_app_catalog_is_shared_for_discovery_and_coverage():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    hapitas = next(item for item in cfg['sources'] if item['id'] == 'hapitas')
+    assert hapitas['direct_listing_urls'] == [
+        'https://hapitas.jp/category/service_app/apn/navigation_category/'
+    ]
+    assert hapitas['new_game_discovery_enabled'] is True
+    assert hapitas['new_game_discovery_listing_limit'] == 1
+    assert hapitas['new_game_discovery_candidate_limit'] == 1200
+    assert hapitas['new_game_discovery_scope'] == 'full_current_app_category_listing'
+    assert hapitas['full_catalog_discovery_enabled'] is True
+    assert hapitas['coverage_first_party_listing_enabled'] is True
+    assert hapitas['coverage_scope'] == 'full_current_app_category_listing'
