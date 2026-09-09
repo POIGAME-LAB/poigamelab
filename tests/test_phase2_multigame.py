@@ -45,8 +45,8 @@ def test_kinoko_known_sources_include_current_hapitas_pair():
     assert set(kinoko['hapitas'])=={
         'https://hapitas.jp/item/detail/itemid/102450',
         'https://hapitas.jp/item/detail/itemid/102451',
+        'https://hapitas.jp/item/detail/itemid/99850',
     }
-    assert 'https://hapitas.jp/item/detail/itemid/99850' not in kinoko['hapitas']
     assert 'https://hapitas.jp/item/detail/itemid/100403' not in kinoko['hapitas']
 
 
