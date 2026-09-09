@@ -82,6 +82,10 @@ def test_new_game_known_sources_are_isolated():
     assert set(tokyo)=={'moppy','hapitas'}
     assert set(puzzles)=={'moppy','warau','hapitas'}
     assert all('15827' in u or '158257' in u for u in tokyo['moppy'])
+    assert set(tokyo['warau'])=={
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=191400',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=191401',
+    }
     assert all('16036' in u for u in puzzles['moppy'])
     assert set(puzzles['hapitas']) == {
         'https://hapitas.jp/item/detail/itemid/98148',
