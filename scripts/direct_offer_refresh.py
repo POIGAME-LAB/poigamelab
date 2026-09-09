@@ -24,6 +24,7 @@ STATUS = ROOT / "data" / "comparison_refresh_status.json"
 LEGACY_STATUS = ROOT / "data" / "refresh_status.json"
 REVIEW = ROOT / "data" / "comparison_review_queue.json"
 NEW_GAME_QUEUE = ROOT / "data" / "new_game_candidate_queue.json"
+NEW_GAME_HISTORY = ROOT / "data" / "new_game_candidate_history.json"
 
 FIELDS = [
     "offerKey", "game", "site", "provider", "reward", "condition", "platform",
@@ -363,6 +364,77 @@ def classify_new_game_candidate(item):
         "classificationReasons": reasons[:12],
         "classificationReviewOnly": True,
         "classificationAuthorized": False,
+    }
+
+
+def load_new_game_history(path):
+    if not path.exists():
+        return {"version": 1, "items": {}}
+    try:
+        value = load_json(path)
+    except (OSError, ValueError, TypeError):
+        return {"version": 1, "items": {}}
+    if not isinstance(value, dict) or not isinstance(value.get("items"), dict):
+        return {"version": 1, "items": {}}
+    return value
+
+
+def new_game_history_key(item):
+    source = str((item or {}).get("source") or "").strip()
+    identity = str((item or {}).get("offerIdentity") or "").strip()
+    if source and identity:
+        return source + "|" + identity
+    url = str((item or {}).get("firstPartyCandidateUrl") or "").strip()
+    return source + "|" + exact_url_key(url)
+
+
+def build_new_game_history(current_items, previous, checked_at):
+    """Track first/last seen without changing publication state."""
+    previous_items = (previous or {}).get("items") if isinstance(previous, dict) else {}
+    if not isinstance(previous_items, dict):
+        previous_items = {}
+
+    current_keys = set()
+    out = {}
+    for item in current_items or []:
+        key = new_game_history_key(item)
+        if not key:
+            continue
+        current_keys.add(key)
+        prior = previous_items.get(key) if isinstance(previous_items.get(key), dict) else {}
+        first_seen = str(prior.get("firstSeen") or checked_at)
+        seen_count = int(prior.get("seenCount") or 0) + 1
+        out[key] = {
+            "source": str(item.get("source") or ""),
+            "offerIdentity": str(item.get("offerIdentity") or ""),
+            "titleHint": str(item.get("titleHint") or ""),
+            "firstPartyCandidateUrl": str(item.get("firstPartyCandidateUrl") or ""),
+            "firstSeen": first_seen,
+            "lastSeen": checked_at,
+            "seenCount": seen_count,
+            "active": True,
+            "isNewToday": first_seen == checked_at,
+            "candidateOnly": True,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        }
+
+    for key, prior in previous_items.items():
+        if key in current_keys or not isinstance(prior, dict):
+            continue
+        stale = dict(prior)
+        stale["active"] = False
+        stale["isNewToday"] = False
+        stale["lastMissingAt"] = checked_at
+        stale["candidateOnly"] = True
+        stale["autoCreateAuthorized"] = False
+        stale["publicationAuthorized"] = False
+        out[key] = stale
+
+    return {
+        "version": 1,
+        "checkedAt": checked_at,
+        "items": out,
     }
 
 
@@ -1880,6 +1952,7 @@ def main():
         return 2
 
     original_published = PUBLISHED.read_bytes() if PUBLISHED.exists() else None
+    previous_new_game_history = load_new_game_history(NEW_GAME_HISTORY)
     rows = read_published()
     row_by_identity = {
         (
@@ -2477,6 +2550,19 @@ def main():
     new_game_review_priority = build_new_game_review_priority(
         new_game_candidate_queue, new_game_clusters
     )
+    new_game_history = build_new_game_history(
+        new_game_candidate_queue, previous_new_game_history, checked_at
+    )
+    new_today_keys = {
+        key for key, item in new_game_history["items"].items()
+        if item.get("active") is True and item.get("isNewToday") is True
+    }
+    for item in new_game_candidate_queue:
+        item["firstSeen"] = (
+            new_game_history["items"].get(new_game_history_key(item), {}).get("firstSeen")
+        )
+        item["isNewToday"] = new_game_history_key(item) in new_today_keys
+
     new_game_payload = {
         "phase": "DIRECT_NEW_GAME_CANDIDATE_QUEUE_V1",
         "checkedAt": checked_at,
@@ -2485,6 +2571,7 @@ def main():
         "autoCreateAuthorized": False,
         "publicationAuthorized": False,
         "count": len(new_game_candidate_queue),
+        "newTodayCount": len(new_today_keys),
         "likelyGameCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "likely_game"),
         "likelyNonGameCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "likely_non_game"),
         "reviewClassificationCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "review"),
@@ -2496,6 +2583,10 @@ def main():
     tmp4 = NEW_GAME_QUEUE.with_suffix(".json.tmp")
     tmp4.write_text(json.dumps(new_game_payload, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp4.replace(NEW_GAME_QUEUE)
+
+    tmp5 = NEW_GAME_HISTORY.with_suffix(".json.tmp")
+    tmp5.write_text(json.dumps(new_game_history, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp5.replace(NEW_GAME_HISTORY)
 
     print("Direct comparison refresh complete")
     print("API calls: 0")
