@@ -1994,6 +1994,37 @@ def main():
             raise error
         return result
 
+    listing_snapshots = {}
+    listing_snapshot_reuses = 0
+
+    def get_listing_snapshot(url, source, consumer):
+        """Fetch one listing URL once and reuse the same snapshot across consumers."""
+        nonlocal listing_snapshot_reuses
+        key = (str(source.get("id") or ""), exact_url_key(url))
+        if key in listing_snapshots:
+            listing_snapshot_reuses += 1
+            listing_snapshots[key]["consumers"].add(str(consumer or "unknown"))
+            result = listing_snapshots[key]["result"]
+            error = listing_snapshots[key]["error"]
+            if error is not None:
+                raise error
+            return result
+
+        try:
+            result = fetch_once(url, source)
+            error = None
+        except Exception as exc:
+            result = None
+            error = exc
+        listing_snapshots[key] = {
+            "result": result,
+            "error": error,
+            "consumers": {str(consumer or "unknown")},
+        }
+        if error is not None:
+            raise error
+        return result
+
     new_game_discovery_summary = {"sources": 0, "listingPages": 0, "fetchErrors": 0, "candidateCount": 0}
     for discovery_source in new_game_discovery_sources[:12]:
         new_game_discovery_summary["sources"] += 1
@@ -2021,7 +2052,7 @@ def main():
                 new_game_discovery_summary["fetchErrors"] += 1
                 continue
             try:
-                raw, final_url = fetch_once(listing_url, discovery_source)
+                raw, final_url = get_listing_snapshot(listing_url, discovery_source, "new_game_discovery")
                 candidates = discover_new_game_listing_candidates(
                     raw, final_url, discovery_source, targets, limit=remaining
                 )
@@ -2106,7 +2137,7 @@ def main():
             detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
             for listing_url in target_listing_urls(source, aliases)[:listing_limit]:
                 try:
-                    raw, final_url = fetch_once(listing_url, source)
+                    raw, final_url = get_listing_snapshot(listing_url, source, "existing_game_refresh")
                     if target_present(visible_text(raw), aliases):
                         discovered.extend(discover_detail_links(raw, final_url, source, aliases, limit=6))
                         if offerwall_presence_enabled:
@@ -2421,7 +2452,7 @@ def main():
                         })
                         continue
                     try:
-                        raw, final_url = fetch_once(listing_url, discovery_source)
+                        raw, final_url = get_listing_snapshot(listing_url, discovery_source, "known_game_coverage")
                         candidates = discover_first_party_listing_candidates(
                             raw, final_url, discovery_source, aliases,
                             limit=max(1, min(8, int(discovery_source.get("coverage_candidate_limit") or 4))),
@@ -2484,6 +2515,16 @@ def main():
         "coverageCandidateQueueCount": len(coverage_candidate_queue),
         "newGameCandidateQueueCount": len(new_game_candidate_queue),
         "newGameDiscovery": new_game_discovery_summary,
+        "listingSnapshot": {
+            "mode": "fetch_once_reuse_many",
+            "uniqueListings": len(listing_snapshots),
+            "reuseCount": listing_snapshot_reuses,
+            "consumers": sorted({
+                consumer
+                for snapshot in listing_snapshots.values()
+                for consumer in snapshot.get("consumers", set())
+            }),
+        },
         "games": results,
         "success": True,
     }
