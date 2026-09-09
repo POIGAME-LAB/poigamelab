@@ -215,7 +215,7 @@ def test_working_hero_hapitas_pair_is_current(output_dir):
         ("Android", "11502", "https://hapitas.jp/item/detail/itemid/101445"),
         ("iOS", "11502", "https://hapitas.jp/item/detail/itemid/101444"),
     }
-    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
