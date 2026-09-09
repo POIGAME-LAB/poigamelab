@@ -250,6 +250,57 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
         "firstPartyCandidateUrl": url,
     } for url in detail_urls]
 
+def new_game_title_cluster_key(value):
+    """Conservative review-only title key for clustering new-game candidates.
+
+    Only explicit OS decorations and whitespace are normalized. The key is not
+    an identity and never authorizes game creation or publication.
+    """
+    text = html.unescape(str(value or "")).strip()
+    text = re.sub(r"^(?:iOS|Android|And)[ _：:・-]+", "", text, flags=re.I)
+    text = re.sub(r"[（(](?:iOS|Android)[）)]$", "", text, flags=re.I)
+    text = re.sub(r"\s+", "", text).casefold()
+    return text[:180]
+
+
+def build_new_game_candidate_clusters(items):
+    """Build review-only multi-source clusters without changing raw candidates."""
+    buckets = {}
+    for item in items or []:
+        key = new_game_title_cluster_key(item.get("titleHint"))
+        if not key:
+            continue
+        buckets.setdefault(key, []).append(item)
+
+    clusters = []
+    for key, members in buckets.items():
+        sources = sorted({
+            str(item.get("source") or "").strip()
+            for item in members if str(item.get("source") or "").strip()
+        })
+        title_hints = []
+        for item in members:
+            title = str(item.get("titleHint") or "").strip()
+            if title and title not in title_hints:
+                title_hints.append(title)
+        clusters.append({
+            "clusterKey": key,
+            "sourceCount": len(sources),
+            "candidateCount": len(members),
+            "sources": sources,
+            "titleHints": title_hints[:12],
+            "reviewOnly": True,
+            "identityAuthorized": False,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        })
+
+    return sorted(
+        clusters,
+        key=lambda item: (-item["sourceCount"], -item["candidateCount"], item["clusterKey"])
+    )
+
+
 def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=500):
     """Discover first-party detail links that do not map to a known game.
 
@@ -2274,6 +2325,7 @@ def main():
     tmp3.write_text(json.dumps(candidate_payload, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp3.replace(candidate_path)
 
+    new_game_clusters = build_new_game_candidate_clusters(new_game_candidate_queue)
     new_game_payload = {
         "phase": "DIRECT_NEW_GAME_CANDIDATE_QUEUE_V1",
         "checkedAt": checked_at,
@@ -2282,6 +2334,8 @@ def main():
         "autoCreateAuthorized": False,
         "publicationAuthorized": False,
         "count": len(new_game_candidate_queue),
+        "clusterCount": len(new_game_clusters),
+        "clusters": new_game_clusters,
         "items": new_game_candidate_queue,
     }
     tmp4 = NEW_GAME_QUEUE.with_suffix(".json.tmp")
