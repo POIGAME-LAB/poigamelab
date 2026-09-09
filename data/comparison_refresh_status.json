@@ -1,6 +1,8 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "checkedAt": "2026-09-08T23:24:18+00:00",
+  "checkedAt": "2026-09-09T17:13:46+00:00",
+  "coverageDiscoveryVersion": 2,
+  "coverageDiscoveryMode": "candidate-only",
   "comparisonSources": [
     "moppy",
     "warau",
@@ -12,7 +14,128 @@
   "apiCalls": 0,
   "publishedRewardChanges": 0,
   "refreshedRows": 4,
-  "reviewCount": 83,
+  "reviewCount": 591,
+  "existingRewardChangeCandidateCount": 0,
+  "existingGameNewOfferCandidateCount": 0,
+  "existingGameVerifiedRewardCount": 0,
+  "coverageCandidateQueueCount": 443,
+  "newGameCandidateQueueCount": 1770,
+  "newGameDiscovery": {
+    "sources": 8,
+    "listingPages": 68,
+    "fetchErrors": 2,
+    "candidateCount": 1770,
+    "completeSources": 6,
+    "incompleteSources": 2,
+    "sourceResults": [
+      {
+        "source": "moppy",
+        "sourceLabel": "モッピー",
+        "scope": "paginated_first_party_app_listing",
+        "listingPagesAttempted": 1,
+        "fetchErrors": 1,
+        "candidateCount": 0,
+        "scanComplete": false,
+        "catalogComplete": false,
+        "candidateLimitReached": false,
+        "contentGuardFailed": true
+      },
+      {
+        "source": "warau",
+        "sourceLabel": "ワラウ",
+        "scope": "paginated_first_party_game_listing",
+        "listingPagesAttempted": 36,
+        "fetchErrors": 0,
+        "candidateCount": 1320,
+        "scanComplete": true,
+        "catalogComplete": true,
+        "candidateLimitReached": false,
+        "contentGuardFailed": false
+      },
+      {
+        "source": "coincome",
+        "sourceLabel": "COINCOME",
+        "scope": "partial_current_app_category_listing",
+        "listingPagesAttempted": 1,
+        "fetchErrors": 0,
+        "candidateCount": 20,
+        "scanComplete": true,
+        "catalogComplete": false,
+        "candidateLimitReached": false,
+        "contentGuardFailed": false
+      },
+      {
+        "source": "hapitas",
+        "sourceLabel": "ハピタス",
+        "scope": "full_current_app_category_listing",
+        "listingPagesAttempted": 1,
+        "fetchErrors": 1,
+        "candidateCount": 0,
+        "scanComplete": false,
+        "catalogComplete": true,
+        "candidateLimitReached": false,
+        "contentGuardFailed": false
+      },
+      {
+        "source": "amefuri",
+        "sourceLabel": "アメフリ",
+        "scope": "full_paginated_game_listing",
+        "listingPagesAttempted": 26,
+        "fetchErrors": 0,
+        "candidateCount": 292,
+        "scanComplete": true,
+        "catalogComplete": true,
+        "candidateLimitReached": false,
+        "contentGuardFailed": false
+      },
+      {
+        "source": "point_town",
+        "sourceLabel": "ポイントタウン",
+        "scope": "partial_web_app_install_listing",
+        "listingPagesAttempted": 1,
+        "fetchErrors": 0,
+        "candidateCount": 15,
+        "scanComplete": true,
+        "catalogComplete": false,
+        "candidateLimitReached": false,
+        "contentGuardFailed": false
+      },
+      {
+        "source": "ec_navi",
+        "sourceLabel": "ECナビ",
+        "scope": "full_current_category_listing",
+        "listingPagesAttempted": 1,
+        "fetchErrors": 0,
+        "candidateCount": 23,
+        "scanComplete": true,
+        "catalogComplete": true,
+        "candidateLimitReached": false,
+        "contentGuardFailed": false
+      },
+      {
+        "source": "powl",
+        "sourceLabel": "Powl",
+        "scope": "partial_ranked_app_listing",
+        "listingPagesAttempted": 1,
+        "fetchErrors": 0,
+        "candidateCount": 100,
+        "scanComplete": false,
+        "catalogComplete": false,
+        "candidateLimitReached": true,
+        "contentGuardFailed": false
+      }
+    ]
+  },
+  "listingSnapshot": {
+    "mode": "fetch_once_reuse_many",
+    "uniqueListings": 78,
+    "reuseCount": 680,
+    "consumers": [
+      "existing_game_refresh",
+      "known_game_coverage",
+      "new_game_discovery"
+    ]
+  },
   "games": [
     {
       "game": "メメントモリ",
@@ -31,12 +154,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 4,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 4,
+          "reviewRequired": 7,
           "state": "review_required"
         },
         {
@@ -51,12 +174,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 6,
+          "knownOrDiscoveredUrls": 0,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 6,
+          "reviewRequired": 1,
           "state": "review_required"
         },
         {
@@ -81,6 +204,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 66,
+        "gapCount": 63,
+        "coveredCount": 3,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -101,12 +233,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 2,
           "updatedRows": 2,
-          "reviewRequired": 0,
+          "reviewRequired": 4,
           "state": "confirmed"
         },
         {
@@ -151,6 +283,15 @@
         }
       ],
       "standardConfirmed": 1,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 69,
+        "gapCount": 58,
+        "coveredCount": 11,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -171,12 +312,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 4,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 2,
           "updatedRows": 2,
-          "reviewRequired": 0,
+          "reviewRequired": 2,
           "state": "confirmed"
         },
         {
@@ -221,6 +362,15 @@
         }
       ],
       "standardConfirmed": 1,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 1,
+        "gapCount": 1,
+        "coveredCount": 0,
+        "fetchErrors": 2,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -300,6 +450,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 19,
+        "gapCount": 10,
+        "coveredCount": 9,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -320,12 +479,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 4,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 2,
+          "reviewRequired": 4,
           "state": "review_required"
         },
         {
@@ -370,6 +529,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 66,
+        "gapCount": 63,
+        "coveredCount": 3,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -390,12 +558,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 4,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 4,
           "state": "review_required"
         },
         {
@@ -449,6 +617,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 61,
+        "gapCount": 54,
+        "coveredCount": 7,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -469,12 +646,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 5,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 5,
+          "reviewRequired": 7,
           "state": "review_required"
         },
         {
@@ -519,6 +696,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 75,
+        "gapCount": 56,
+        "coveredCount": 19,
+        "fetchErrors": 1,
+        "detailReviewCount": 1,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -539,12 +725,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 2,
+          "reviewRequired": 6,
           "state": "review_required"
         },
         {
@@ -598,6 +784,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 68,
+        "gapCount": 50,
+        "coveredCount": 18,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -618,12 +813,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 2,
+          "knownOrDiscoveredUrls": 4,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 2,
+          "reviewRequired": 4,
           "state": "review_required"
         },
         {
@@ -668,6 +863,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 60,
+        "gapCount": 56,
+        "coveredCount": 4,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     },
@@ -688,12 +892,12 @@
         {
           "source": "warau",
           "standard": true,
-          "knownOrDiscoveredUrls": 1,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 6,
           "state": "review_required"
         },
         {
@@ -747,6 +951,15 @@
         }
       ],
       "standardConfirmed": 0,
+      "coverageDiscovery": {
+        "enabled": true,
+        "candidateCount": 68,
+        "gapCount": 63,
+        "coveredCount": 5,
+        "fetchErrors": 1,
+        "detailReviewCount": 0,
+        "verifiedRewardCandidateCount": 0
+      },
       "standardTotal": 6,
       "comparisonReady": false
     }
