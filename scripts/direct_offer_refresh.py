@@ -23,6 +23,7 @@ PUBLISHED = ROOT / "data" / "published_offers.csv"
 STATUS = ROOT / "data" / "comparison_refresh_status.json"
 LEGACY_STATUS = ROOT / "data" / "refresh_status.json"
 REVIEW = ROOT / "data" / "comparison_review_queue.json"
+NEW_GAME_QUEUE = ROOT / "data" / "new_game_candidate_queue.json"
 
 FIELDS = [
     "offerKey", "game", "site", "provider", "reward", "condition", "platform",
@@ -248,6 +249,105 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
         "rewardYenHint": "",
         "firstPartyCandidateUrl": url,
     } for url in detail_urls]
+
+def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=500):
+    """Discover first-party detail links that do not map to a known game.
+
+    This is discovery-only. A result never creates a game, publishes an offer,
+    or trusts reward/condition text. Known games are suppressed by either a
+    reviewed alias in bounded listing context or a known first-party offer
+    identity.
+    """
+    known_identities = set()
+    for target in targets or []:
+        known_urls = (target.get("known_urls_by_source") or {}).get(str(source.get("id") or ""), [])
+        for known_url in known_urls or []:
+            identity = offer_identity_key(known_url, str(source.get("id") or ""))
+            if identity:
+                known_identities.add(identity)
+
+    known_aliases = []
+    for target in targets or []:
+        game = str(target.get("game") or "").strip()
+        if game:
+            known_aliases.append(game)
+        known_aliases.extend(
+            str(x).strip() for x in (target.get("aliases") or []) if str(x).strip()
+        )
+
+    found = []
+    seen = set()
+    try:
+        anchors = EvidenceHTML(raw or "").root.find(tag="a")
+    except (TypeError, ValueError, RecursionError):
+        return found
+
+    generic_labels = {
+        "詳細", "詳細を見る", "もっと見る", "案件を見る", "ポイントを貯める",
+        "参加する", "今すぐ参加", "こちら", "more", "detail"
+    }
+
+    for anchor in anchors:
+        href = html.unescape(anchor.attrs.get("href", "")).strip()
+        absolute = urljoin(base_url, href).split("#", 1)[0]
+        if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
+            continue
+
+        identity = offer_identity_key(absolute, str(source.get("id") or ""))
+        if not identity or identity in known_identities or identity in seen:
+            continue
+
+        context = evidence_text(anchor)
+        node = anchor.parent
+        depth = 0
+        while node is not None and node.parent is not None and depth < 4:
+            marker = " ".join([
+                node.tag,
+                node.attrs.get("id", ""),
+                node.attrs.get("class", ""),
+            ]).casefold()
+            bounded = (
+                node.tag in {"article", "li", "tr"}
+                or any(token in marker for token in (
+                    "card", "offer", "campaign", "service-item", "result-item", "item"
+                ))
+            )
+            candidate_context = evidence_text(node)
+            if candidate_context and len(candidate_context) <= 1400:
+                context = candidate_context
+            if bounded:
+                break
+            node = node.parent
+            depth += 1
+
+        if any(target_present(context, [alias]) for alias in known_aliases):
+            continue
+
+        anchor_label = evidence_text(anchor).strip()
+        title_hint = anchor_label
+        if (not title_hint or title_hint.casefold() in generic_labels
+                or len(title_hint) < 2 or len(title_hint) > 160):
+            title_hint = context[:160].strip()
+        if not title_hint:
+            title_hint = "(title review required)"
+
+        seen.add(identity)
+        found.append({
+            "source": str(source.get("id") or ""),
+            "sourceLabel": str(source.get("name") or source.get("id") or ""),
+            "titleHint": title_hint,
+            "firstPartyCandidateUrl": absolute,
+            "offerIdentity": identity,
+            "discoveryEvidence": "first_party_listing",
+            "candidateOnly": True,
+            "firstPartyVerificationRequired": True,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        })
+        if len(found) >= max(1, min(int(limit or 500), 2000)):
+            break
+    return found
+
 
 def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
     """Detect same-card offerwall links without following or storing them.
@@ -1541,6 +1641,13 @@ def main():
         and x.get("coverage_first_party_listing_enabled") is True
         and str(x.get("id") or "").strip()
     ]
+    new_game_discovery_sources = [
+        x for x in sources.values()
+        if isinstance(x, dict)
+        and x.get("new_game_discovery_enabled") is True
+        and x.get("full_catalog_discovery_enabled") is True
+        and str(x.get("id") or "").strip()
+    ]
     try:
         offerwall_provider_registry_path = SOURCES.with_name("offerwall_providers.json")
         offerwall_provider_registry = load_offerwall_provider_registry(
@@ -1587,6 +1694,8 @@ def main():
     review = []
     coverage_candidate_queue = []
     coverage_candidate_seen = set()
+    new_game_candidate_queue = []
+    new_game_candidate_seen = set()
     results = []
     checked_at = now_iso()
     refreshed = set()
@@ -1611,6 +1720,56 @@ def main():
         if error is not None:
             raise error
         return result
+
+    new_game_discovery_summary = {"sources": 0, "listingPages": 0, "fetchErrors": 0, "candidateCount": 0}
+    for discovery_source in new_game_discovery_sources[:12]:
+        new_game_discovery_summary["sources"] += 1
+        listing_limit = max(
+            0, min(
+                int(discovery_source.get("new_game_discovery_listing_limit")
+                    or discovery_source.get("direct_listing_limit") or 0),
+                100,
+            )
+        )
+        listing_urls = [
+            str(x).strip() for x in (discovery_source.get("direct_listing_urls") or [])
+            if str(x).strip()
+        ][:listing_limit]
+        per_source_limit = max(
+            1, min(int(discovery_source.get("new_game_discovery_candidate_limit") or 500), 2000)
+        )
+        remaining = per_source_limit
+
+        for listing_url in listing_urls:
+            if remaining <= 0:
+                break
+            new_game_discovery_summary["listingPages"] += 1
+            if not source_host_allowed(listing_url, discovery_source):
+                new_game_discovery_summary["fetchErrors"] += 1
+                continue
+            try:
+                raw, final_url = fetch_once(listing_url, discovery_source)
+                candidates = discover_new_game_listing_candidates(
+                    raw, final_url, discovery_source, targets, limit=remaining
+                )
+            except Exception:
+                new_game_discovery_summary["fetchErrors"] += 1
+                continue
+
+            for candidate in candidates:
+                key = (
+                    candidate.get("source"),
+                    candidate.get("offerIdentity"),
+                )
+                if key in new_game_candidate_seen:
+                    continue
+                new_game_candidate_seen.add(key)
+                candidate["checkedAt"] = checked_at
+                new_game_candidate_queue.append(candidate)
+                new_game_discovery_summary["candidateCount"] += 1
+                remaining -= 1
+                if remaining <= 0:
+                    break
 
     for target in targets:
         game = str(target.get("game") or "").strip()
@@ -2049,6 +2208,8 @@ def main():
         "refreshedRows": len(refreshed),
         "reviewCount": len(review),
         "coverageCandidateQueueCount": len(coverage_candidate_queue),
+        "newGameCandidateQueueCount": len(new_game_candidate_queue),
+        "newGameDiscovery": new_game_discovery_summary,
         "games": results,
         "success": True,
     }
@@ -2110,6 +2271,20 @@ def main():
     tmp3 = candidate_path.with_suffix(".json.tmp")
     tmp3.write_text(json.dumps(candidate_payload, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp3.replace(candidate_path)
+
+    new_game_payload = {
+        "phase": "DIRECT_NEW_GAME_CANDIDATE_QUEUE_V1",
+        "checkedAt": checked_at,
+        "candidateOnly": True,
+        "firstPartyVerificationRequired": True,
+        "autoCreateAuthorized": False,
+        "publicationAuthorized": False,
+        "count": len(new_game_candidate_queue),
+        "items": new_game_candidate_queue,
+    }
+    tmp4 = NEW_GAME_QUEUE.with_suffix(".json.tmp")
+    tmp4.write_text(json.dumps(new_game_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp4.replace(NEW_GAME_QUEUE)
 
     print("Direct comparison refresh complete")
     print("API calls: 0")
