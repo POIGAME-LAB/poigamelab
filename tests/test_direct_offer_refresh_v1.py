@@ -3649,3 +3649,99 @@ def test_hapitas_full_app_catalog_is_shared_for_discovery_and_coverage():
     assert hapitas['full_catalog_discovery_enabled'] is True
     assert hapitas['coverage_first_party_listing_enabled'] is True
     assert hapitas['coverage_scope'] == 'full_current_app_category_listing'
+
+
+def _hapitas_fixture(display='9,351', related='1,300', step7='5,393'):
+    return f'''
+    <html><head>
+      <link rel="canonical" href="https://hapitas.jp/item/detail/itemid/102497/">
+    </head><body>
+      <h1>Mistplay</h1>
+      <div>アプリ複数条件達成で {display} pt</div>
+      <div>Androidの方はこちら 関連案件 {related}pt</div>
+      <section>
+        ポイント対象条件
+        ポイント獲得条件
+        STEP1: 新規アプリインストール後、初回起動で0pt獲得
+        STEP2: プロフィールレベル3到達で105pt獲得
+        STEP3: プロフィールレベル5到達で175pt獲得
+        STEP4: プロフィールレベル8到達で269pt獲得
+        STEP5: プロフィールレベル10到達で538pt獲得
+        STEP6: ゲーム内で課金完了で175pt獲得
+        STEP7: ゲーム内で一括3200円以上の課金完了で2696pt獲得
+        STEP8: ゲーム内で一括16000円以上の課金完了で{step7}pt獲得
+        成果受付期限：広告クリックから30日以内
+        成果調査受付期限：広告クリックから41日以内
+      </section>
+      <div>ハピタスご利用前に必ずご確認ください</div>
+      <div>貯めたポイントは「1ポイント＝1円」で交換できます。</div>
+    </body></html>
+    '''
+
+
+def test_hapitas_multistep_parser_cross_checks_step_sum():
+    evidence = direct.inspect_hapitas_offer(
+        _hapitas_fixture(),
+        'https://hapitas.jp/item/detail/itemid/102497/apn/top_gemes',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v1'
+    assert evidence['displayedCurrentRewardPoints'] == 9351
+    assert evidence['stepRewardPoints'] == [0, 105, 175, 269, 538, 175, 2696, 5393]
+    assert evidence['verifiedCurrentRewardYen'] == 9351
+    assert evidence['publicationAuthorized'] is False
+
+
+def test_hapitas_parser_uses_first_header_reward_not_related_os_reward():
+    raw = _hapitas_fixture(display='9,351', related='12,000')
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['verifiedCurrentRewardPoints'] == 9351
+
+
+def test_hapitas_multistep_parser_rejects_step_sum_mismatch():
+    evidence = direct.inspect_hapitas_offer(
+        _hapitas_fixture(step7='5,000'),
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'step_total_not_displayed_current_reward',
+    }
+
+
+def test_hapitas_offer_identity_accepts_reviewed_apn_suffix_only():
+    assert direct.hapitas_offer_id(
+        'https://hapitas.jp/item/detail/itemid/92863/apn/top_gemes'
+    ) == '92863'
+    assert direct.hapitas_offer_id(
+        'https://hapitas.jp/item/detail/itemid/92863/'
+    ) == '92863'
+    try:
+        direct.hapitas_offer_id(
+            'https://hapitas.jp/item/detail/itemid/92863/?user_id=secret'
+        )
+    except ValueError as error:
+        assert str(error) == 'ambiguous_offer_identity'
+    else:
+        raise AssertionError('user-specific query must be rejected')
+
+
+def test_hapitas_known_game_detail_review_is_bounded_candidate_only():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    hapitas = next(item for item in cfg['sources'] if item['id'] == 'hapitas')
+    assert hapitas['discovery_only'] is True
+    assert hapitas['coverage_detail_review_enabled'] is True
+    assert hapitas['coverage_detail_review_limit_per_game'] == 3
+    assert hapitas['coverage_detail_review_mode'] == 'candidate_only'
+    assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v1'
+    assert hapitas['scheduled_fetch_enabled'] is False

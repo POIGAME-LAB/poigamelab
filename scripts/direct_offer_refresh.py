@@ -1478,6 +1478,145 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def hapitas_offer_id(url):
+    try:
+        p = urlparse(str(url or ""))
+        port = p.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (p.scheme != "https" or p.hostname not in {"hapitas.jp", "www.hapitas.jp"}
+            or p.username is not None or p.password is not None
+            or port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(
+        r"/item/detail/itemid/([0-9]+)(?:/apn(?:/[A-Za-z0-9_-]+)?)?/?",
+        p.path or "",
+    )
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    if parse_qs(p.query, keep_blank_values=True):
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
+    """Build review-only evidence from a Hapitas first-party app detail page.
+
+    The current offer reward is the first pt amount in the current item's header.
+    Related-OS cards can appear later on the same page, so choosing the largest
+    page-wide value would be unsafe. Multi-step offers must additionally satisfy
+    sum(STEP rewards) == displayed current reward.
+    """
+    try:
+        offer_id = hapitas_offer_id(requested_url)
+        if hapitas_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if hapitas_offer_id(canonical) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        title = evidence_text(one(doc.find(tag="h1")))
+        if not target_present(title, aliases):
+            raise ValueError("offer_title_mismatch")
+
+        text = visible_text(raw)
+        if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
+            raise ValueError("unit_conversion_review_required")
+
+        title_pos = text.find(title)
+        if title_pos < 0:
+            raise ValueError("missing_offer_header")
+        target_pos = text.find("ポイント対象条件", title_pos)
+        if target_pos < 0:
+            raise ValueError("missing_offer_header_boundary")
+        header = text[title_pos:target_pos]
+
+        displayed_matches = re.findall(
+            r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",
+            header,
+            re.I,
+        )
+        if not displayed_matches:
+            raise ValueError("missing_displayed_reward")
+        displayed_reward = int(displayed_matches[0].replace(",", ""))
+        if not (0 < displayed_reward <= 5_000_000):
+            raise ValueError("invalid_displayed_reward")
+
+        terms_start = text.find("ポイント対象条件", title_pos)
+        if terms_start < 0:
+            raise ValueError("incomplete_offer_terms")
+        terms_end_candidates = [
+            pos for marker in ("ハピタスご利用前に必ずご確認ください", "レビュー")
+            if (pos := text.find(marker, terms_start + 1)) >= 0
+        ]
+        terms_end = min(terms_end_candidates) if terms_end_candidates else min(len(text), terms_start + 18000)
+        terms = text[terms_start:terms_end].strip()
+        if not any(marker in terms for marker in (
+            "ポイント獲得条件",
+            "成果受付期限",
+            "成果調査受付期限",
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        step_pairs = re.findall(
+            r"STEP\s*([0-9]+)\s*[:：]?.*?で\s*([0-9][0-9,]*)\s*pt\s*獲得",
+            terms,
+            re.I,
+        )
+        step_rewards = []
+        if step_pairs:
+            step_numbers = [int(step) for step, _ in step_pairs]
+            if step_numbers != list(range(1, len(step_numbers) + 1)):
+                raise ValueError("incomplete_or_duplicate_steps")
+            step_rewards = [int(value.replace(",", "")) for _, value in step_pairs]
+            if sum(step_rewards) != displayed_reward:
+                raise ValueError("step_total_not_displayed_current_reward")
+
+        os_labels = re.findall(
+            r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
+            title + " " + terms[:1800],
+            re.I,
+        )
+        normalized_os = {"ios": "iOS", "android": "Android"}
+        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
+        platform = platforms[0] if len(platforms) == 1 else ""
+
+        payload = {
+            "offerId": offer_id,
+            "name": title,
+            "platform": platform,
+            "displayedCurrentRewardPoints": displayed_reward,
+            "stepRewardPoints": step_rewards,
+            "verifiedCurrentRewardPoints": displayed_reward,
+            "verifiedCurrentRewardYen": displayed_reward,
+            "rewardUnit": "Hapitas-pt",
+            "sourcePointRate": "1pt=1JPY",
+            "headerText": re.sub(r"\s+", " ", header).strip(),
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "hapitas-detail-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def pointtown_offer_id(url):
     try:
         p = urlparse(str(url or ""))
@@ -2103,6 +2242,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "warau": inspect_warau_offer,
         "chobirich": inspect_chobirich_offer,
         "coincome": inspect_coincome_offer,
+        "hapitas": inspect_hapitas_offer,
         "point_town": inspect_pointtown_offer,
         "ec_navi": inspect_ecnavi_offer,
         "amefuri": inspect_amefuri_offer,

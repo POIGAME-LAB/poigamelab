@@ -190,7 +190,7 @@
         "/item/detail/itemid/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Official anonymous app category currently exposes a full current app listing (631 items observed) with first-party detail links. Reuse the single listing snapshot for new-game discovery and known-game coverage. Detail review/publication remain separately gated.",
+      "scheduled_fetch_reason": "Official anonymous app catalog and first-party /item/detail/itemid/<id> pages expose current reward and terms. Reuse the one-page full catalog for discovery/coverage and review-fetch up to 3 matching known-game details per game. Publication remains disabled.",
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 1,
       "new_game_discovery_candidate_limit": 1200,
@@ -199,7 +199,12 @@
       "coverage_first_party_listing_enabled": true,
       "coverage_scope": "full_current_app_category_listing",
       "coverage_candidate_limit": 8,
-      "reviewedAt": "2026-09-10"
+      "reviewedAt": "2026-09-10",
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 3,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "hapitas-detail-review-v1",
+      "discovery_only": true
     },
     {
       "id": "kurashiru_reward",
