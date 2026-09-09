@@ -22,7 +22,10 @@
       "firstPartyLabels": [
         "GFRewards",
         "GF Rewards"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     },
     {
       "id": "appdriver",
@@ -41,12 +44,17 @@
       "serviceEvidenceUrl": "https://appdriver.jp/",
       "termsEvidenceUrl": "https://appdriver.jp/public/info/terms",
       "integrationEvidenceUrl": "https://appdriver.jp/static/file/Reward_for_publisher_ver1.4_English.pdf",
-      "reviewedAt": "2026-09-03",
-      "reviewNote": "The publicly accessible AppDriver web offerwall integration guide shows request URLs carrying identifier (UserID), media_id and digest. Because the production offerwall is therefore not treated as an anonymous catalog, POIGAME LAB records passive provider presence only and does not request offerwall URLs.",
+      "reviewedAt": "2026-09-09",
+      "reviewNote": "Current AppDriver official site explicitly states that an offer acquisition API is available for publishers. Access is publisher/media scoped, so POIGAME LAB should keep passive presence detection now and treat direct API collection as a future integration requiring publisher approval/credentials.",
       "firstPartyLabels": [
         "アプリドライブ",
         "AppDriver"
-      ]
+      ],
+      "collectionCapability": "publisher_api_available_credentials_required",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true,
+      "anonymousPublicCatalogEstablished": false,
+      "publisherApiAvailable": true
     },
     {
       "id": "skyflag",
@@ -65,17 +73,22 @@
       "anonymousPublicCatalogEstablished": false,
       "serviceEvidenceUrl": "https://skyflag.info/monetize/",
       "caseEvidenceUrl": "https://skyflag.info/case-post/case-14/",
-      "reviewedAt": "2026-09-03",
-      "reviewNote": "Current official materials describe SKYFLAG offerwalls, API integration, user-segment optimization and recommended rewards, but do not establish an anonymous public campaign catalog suitable for unattended evidence retrieval. POIGAME LAB therefore records passive provider presence only.",
+      "reviewedAt": "2026-09-09",
+      "reviewNote": "Current official SKYFLAG materials describe an offerwall embedded into partner apps/web services and personalized recommended rewards. No anonymous public inventory endpoint suitable for unattended POIGAME LAB collection was established in this review.",
       "firstPartyLabels": [
         "SKYFLAG"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     },
     {
       "id": "mychips",
       "name": "MyChips",
       "presenceDomains": [
-        "cdn.mychips.io"
+        "cdn.mychips.io",
+        "sdk.mychips.io",
+        "api.mychips.io"
       ],
       "informationDomains": [
         "docs.mychips.io",
@@ -86,12 +99,16 @@
       "persist": "provider_domain_only",
       "requiresUserTrackingContext": true,
       "integrationEvidenceUrl": "https://docs.mychips.io/webview-and-direct-link",
-      "reviewedAt": "2026-09-03",
-      "reviewNote": "Official MyChips WebView/direct-link documentation requires content_id, user_id and webview parameters and recommends GAID/IDFA. POIGAME LAB therefore maps passive provider presence only and does not request the discovered offerwall endpoint.",
+      "reviewedAt": "2026-09-09",
+      "reviewNote": "Current official MyChips WebView/direct-link documentation uses sdk.mychips.io/content and requires content_id plus user_id; GAID/IDFA are recommended. POIGAME LAB can detect provider presence but should not treat MyChips as an anonymous public catalog without publisher context.",
       "firstPartyLabels": [
         "myChips",
         "MyChips"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true,
+      "anonymousPublicCatalogEstablished": false
     },
     {
       "id": "zucks",
@@ -111,7 +128,10 @@
       "reviewNote": "Official Zucks support documentation gives an offerwall inquiry URL example on ow.z.mobu.jp containing user_id. POIGAME LAB therefore treats the offerwall as user-contextual presence only.",
       "firstPartyLabels": [
         "Zucks"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     },
     {
       "id": "smaad",
@@ -133,7 +153,10 @@
       "firstPartyLabels": [
         "SmaAD",
         "GMO SmaAD"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     },
     {
       "id": "tyrads",
@@ -156,7 +179,10 @@
       "reviewNote": "Official TyrAds SDK documentation shows offerwall initialization with publisher credentials and CUSTOMER_USER_ID, and other SDK docs describe device/user identifiers. POIGAME LAB therefore records passive provider presence only.",
       "firstPartyLabels": [
         "TyrAds"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     },
     {
       "id": "adjoe_playtime",
@@ -178,7 +204,10 @@
       "firstPartyLabels": [
         "Playtime",
         "Playtime by adjoe"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     },
     {
       "id": "ayet",
@@ -202,7 +231,19 @@
       "firstPartyLabels": [
         "ayeT",
         "ayeT-Studios"
-      ]
+      ],
+      "collectionCapability": "presence_only_without_publisher_context",
+      "directCatalogEligible": false,
+      "publisherIntegrationRequired": true
     }
-  ]
+  ],
+  "capabilityModel": {
+    "version": 1,
+    "reviewedAt": "2026-09-09",
+    "modes": {
+      "anonymous_catalog": "Can be collected unattended without publisher/user-specific credentials.",
+      "publisher_api_available_credentials_required": "Provider documents a publisher-side inventory API, but media approval/credentials are required before direct collection.",
+      "presence_only_without_publisher_context": "POIGAME LAB should only detect provider presence from first-party point-site pages; do not request the user-contextual offerwall."
+    }
+  }
 }
