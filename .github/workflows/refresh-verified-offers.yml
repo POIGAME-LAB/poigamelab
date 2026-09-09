@@ -3,7 +3,7 @@ name: Refresh comparison offers (API-free)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 21 * * *"
+    - cron: "0 16 * * *"
 
 permissions:
   contents: write
@@ -42,6 +42,7 @@ jobs:
           if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
           if [ -f data/comparison_review_queue.json ]; then git add data/comparison_review_queue.json; fi
           if [ -f data/comparison_candidate_queue.json ]; then git add data/comparison_candidate_queue.json; fi
+          if [ -f data/new_game_candidate_queue.json ]; then git add data/new_game_candidate_queue.json; fi
           git diff --cached --quiet || git commit -m "chore: check comparison offers"
           git pull --rebase
           git push
