@@ -429,7 +429,7 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert {x['id'] for x in coverage['sources']} == {'poikan', 'dokotoku'}
 
     source_ids = {x['id'] for x in source_cfg['sources']}
-    assert {'kurashiru_reward', 'trima', 'point_income', 'amefuri', 'point_town', 'ec_navi', 'nifty_point'} <= source_ids
+    assert {'kurashiru_reward', 'trima', 'point_income', 'amefuri', 'point_town', 'ec_navi', 'nifty_point', 'gmo_point', 'powl'} <= source_ids
     labels = {
         item['source']: item
         for item in coverage['sources'][0]['candidate_source_aliases']
@@ -457,6 +457,15 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert by_id['point_town']['start_url'] == 'https://www.pointtown.com/'
     assert by_id['ec_navi']['start_url'] == 'https://ecnavi.jp/'
     assert by_id['nifty_point']['start_url'] == 'https://api.point.nifty.com/'
+    for source_id in ('gmo_point', 'powl'):
+        assert by_id[source_id]['discovery_only'] is True
+        assert by_id[source_id]['scheduled_fetch_enabled'] is False
+        assert by_id[source_id]['direct_detail_limit'] == 0
+    assert by_id['gmo_point']['start_url'] == 'https://colleee.net/'
+    assert 'colleee.net' in by_id['gmo_point']['search_domains']
+    assert by_id['powl']['start_url'] == 'https://web.powl.jp/'
+    assert by_id['powl']['direct_listing_urls'] == ['https://web.powl.jp/search']
+    assert '/reward/' in by_id['powl']['direct_detail_url_hints']
 
     policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
     assert policy['coverageDiscovery']['mode'] == 'candidate-only'
