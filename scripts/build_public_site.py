@@ -44,6 +44,8 @@ ROOT_FILES = (
     "poigamelab_icon.png",
     "poigamelab_logo_horizontal.png",
     "robots.txt",
+    "sitemap.xml",
+    "CNAME",
 )
 
 DATA_FILES = (
