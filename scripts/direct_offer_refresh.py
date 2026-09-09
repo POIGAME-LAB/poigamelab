@@ -520,6 +520,40 @@ def build_new_game_candidate_clusters(items):
     )
 
 
+def listing_detail_identity_signature(raw, base_url, source, limit=5000):
+    """Return a stable signature of first-party detail identities on one listing page."""
+    identities = []
+    seen = set()
+    try:
+        anchors = EvidenceHTML(raw or "").root.find(tag="a")
+    except (TypeError, ValueError, RecursionError):
+        return tuple()
+    for anchor in anchors:
+        href = html.unescape(anchor.attrs.get("href", "")).strip()
+        absolute = urljoin(base_url, href).split("#", 1)[0]
+        if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
+            continue
+        identity = offer_identity_key(absolute, str(source.get("id") or ""))
+        if not identity or identity in seen:
+            continue
+        seen.add(identity)
+        identities.append(identity)
+        if len(identities) >= max(1, min(int(limit or 5000), 5000)):
+            break
+    return tuple(sorted(identities))
+
+
+def paginated_listing_url(source, page):
+    template = source.get("new_game_discovery_page_url_template")
+    if not isinstance(template, str) or template.count("{page}") != 1:
+        return ""
+    remainder = template.replace("{page}", "")
+    if "{" in remainder or "}" in remainder:
+        return ""
+    candidate = template.replace("{page}", str(int(page)))
+    return candidate if source_host_allowed(candidate, source) else ""
+
+
 def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=500):
     """Discover first-party detail links that do not map to a known game.
 
@@ -2025,7 +2059,10 @@ def main():
             raise error
         return result
 
-    new_game_discovery_summary = {"sources": 0, "listingPages": 0, "fetchErrors": 0, "candidateCount": 0}
+    new_game_discovery_summary = {
+        "sources": 0, "listingPages": 0, "fetchErrors": 0, "candidateCount": 0,
+        "completeSources": 0, "incompleteSources": 0,
+    }
     for discovery_source in new_game_discovery_sources[:12]:
         new_game_discovery_summary["sources"] += 1
         listing_limit = max(
@@ -2035,26 +2072,57 @@ def main():
                 100,
             )
         )
-        listing_urls = [
+        explicit_listing_urls = [
             str(x).strip() for x in (discovery_source.get("direct_listing_urls") or [])
             if str(x).strip()
         ][:listing_limit]
+        page_template = discovery_source.get("new_game_discovery_page_url_template")
+        page_cap = max(1, min(int(discovery_source.get("new_game_discovery_max_pages") or 60), 100))
+        use_pagination = isinstance(page_template, str) and "{page}" in page_template
+        listing_urls = explicit_listing_urls
+        if use_pagination:
+            listing_urls = [
+                paginated_listing_url(discovery_source, page)
+                for page in range(1, page_cap + 1)
+            ]
+            listing_urls = [url for url in listing_urls if url]
+
         per_source_limit = max(
             1, min(int(discovery_source.get("new_game_discovery_candidate_limit") or 500), 2000)
         )
         remaining = per_source_limit
+        seen_page_signatures = set()
+        source_complete = not use_pagination
+        pages_attempted = 0
 
         for listing_url in listing_urls:
             if remaining <= 0:
                 break
+            pages_attempted += 1
             new_game_discovery_summary["listingPages"] += 1
             if not source_host_allowed(listing_url, discovery_source):
                 new_game_discovery_summary["fetchErrors"] += 1
                 continue
             try:
                 raw, final_url = get_listing_snapshot(listing_url, discovery_source, "new_game_discovery")
+                signature = listing_detail_identity_signature(
+                    raw, final_url, discovery_source, limit=5000
+                )
+                if use_pagination:
+                    if not signature:
+                        source_complete = True
+                        break
+                    if signature in seen_page_signatures:
+                        source_complete = True
+                        break
+                    seen_page_signatures.add(signature)
+                runtime_source = dict(discovery_source)
+                runtime_source["full_catalog_discovery_enabled"] = (
+                    discovery_source.get("full_catalog_discovery_enabled") is True
+                    or (use_pagination and source_complete)
+                )
                 candidates = discover_new_game_listing_candidates(
-                    raw, final_url, discovery_source, targets, limit=remaining
+                    raw, final_url, runtime_source, targets, limit=remaining
                 )
             except Exception:
                 new_game_discovery_summary["fetchErrors"] += 1
@@ -2075,6 +2143,11 @@ def main():
                 remaining -= 1
                 if remaining <= 0:
                     break
+
+        if use_pagination and not source_complete and pages_attempted >= page_cap:
+            new_game_discovery_summary["incompleteSources"] += 1
+        else:
+            new_game_discovery_summary["completeSources"] += 1
 
     for target in targets:
         game = str(target.get("game") or "").strip()
