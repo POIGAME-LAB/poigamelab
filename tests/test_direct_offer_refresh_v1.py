@@ -3617,3 +3617,20 @@ def test_pointtown_known_game_detail_review_is_bounded_candidate_only():
     assert pointtown['coverage_detail_review_parser'] == 'pointtown-detail-review-v1'
     assert pointtown['scheduled_fetch_enabled'] is False
     assert pointtown['full_catalog_discovery_enabled'] is False
+
+
+def test_paginated_discovery_reuses_all_new_game_snapshots_for_known_game_coverage():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'def cached_listing_urls_for_source(source, consumer=None):' in script
+    assert 'consumer is None' in script
+    assert 'consumer="new_game_discovery"' in script
+    assert 'paginated_discovery = (' in script
+    assert '"{page}" in discovery_source.get("new_game_discovery_page_url_template", "")' in script
+
+
+def test_warau_paginated_discovery_is_reused_for_known_game_coverage():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    warau = next(item for item in cfg['sources'] if item['id'] == 'warau')
+    assert warau['new_game_discovery_enabled'] is True
+    assert '{page}' in warau['new_game_discovery_page_url_template']
+    assert warau['coverage_first_party_listing_enabled'] is True
