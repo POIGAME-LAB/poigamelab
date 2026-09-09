@@ -136,6 +136,7 @@ def test_v32_game_known_sources_are_isolated():
     }
     assert set(evertale['hapitas'])=={
         'https://hapitas.jp/item/detail/itemid/91344',
+        'https://hapitas.jp/item/detail/itemid/91343',
         'https://hapitas.jp/item/detail/itemid/91331',
         'https://hapitas.jp/item/detail/itemid/91345',
     }
