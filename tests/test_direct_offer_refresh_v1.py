@@ -1686,6 +1686,7 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
     assert ids('放置少女') == {'177971', '206411'}
     assert ids('メメントモリ') == {'206501', '206500', '206037', '205982', '206035', '205975'}
     assert ids('エバーテイル') == {'188016'}
+    assert ids('東京ディバンカー') == {'191400', '191401'}
 
 
 def test_repository_mementomori_moppy_review_targets_use_current_45_day_pair():
@@ -2536,6 +2537,24 @@ def test_repository_ended_whiteout_warau_android_is_not_published_or_targeted():
     assert target['known_urls_by_source']['warau'] == [
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862'
     ]
+
+
+def test_repository_tokyo_debunker_current_warau_210_pair_is_published():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == '東京ディバンカー'
+        and row['site'] == 'warau'
+    ]
+    assert {(row['platform'], row['reward'], direct.warau_offer_id(row['url'])) for row in matches} == {
+        ('iOS', '210', '191400'),
+        ('Android', '210', '191401'),
+    }
+    assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得する' for row in matches)
+    assert all(row['deadline'] == 'インストール日から起算して30日以内' for row in matches)
+    assert all(row['verified'] == 'true' for row in matches)
 
 
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
