@@ -58,6 +58,11 @@
   </section>
 
   <section class="section">
+    <div class="section-head"><h2>📡 収集ヘルス</h2><span class="muted">新着0件と収集失敗を区別</span></div>
+    <div id="sourceHealth" class="list"></div>
+  </section>
+
+  <section class="section">
     <div class="section-head"><h2>✨ 今日のNEW</h2><span id="checkedAt" class="muted">読込中</span></div>
     <div id="todayNew" class="list"></div>
   </section>
@@ -87,6 +92,7 @@
   const items=Array.isArray(monitor.items)?monitor.items:[];
   const historyItems=Array.isArray(monitor.historyItems)?monitor.historyItems:[];
   const priorities=Array.isArray(monitor.reviewPriority)?monitor.reviewPriority:[];
+  const sourceHealth=Array.isArray(monitor.sourceHealth)?monitor.sourceHealth:[];
 
   const today=items.filter(x=>x&&x.isNewToday===true);
   const continuing=items.filter(x=>x&&x.isNewToday!==true);
@@ -98,6 +104,27 @@
   document.getElementById('highCount').textContent=high.length+'件';
   document.getElementById('inactiveCount').textContent=inactive.length+'件';
   document.getElementById('checkedAt').textContent=monitor.checkedAt?'最終収集 '+esc(monitor.checkedAt):'収集履歴なし';
+
+  document.getElementById('sourceHealth').innerHTML=sourceHealth.length?sourceHealth.map(x=>{
+    const errors=Number(x.fetchErrors||0);
+    const pages=Number(x.listingPagesAttempted||0);
+    const candidates=Number(x.candidateCount||0);
+    const state=errors>0?'要確認':(x.catalogComplete===true?'全件観測':(x.scanComplete===true?'部分観測':'未完了'));
+    const pillClass=errors>0?'low':(x.catalogComplete===true?'high':'');
+    return `
+      <article class="item">
+        <div class="row">
+          <span class="title">${esc(x.sourceLabel||x.source||'unknown')}</span>
+          <span class="pill ${pillClass}">${esc(state)}</span>
+          <span class="pill">${pages}ページ</span>
+        </div>
+        <div class="meta">
+          取得エラー: ${errors} / 新着候補: ${candidates}<br>
+          観測範囲: ${esc(x.scope||'unspecified')}
+          ${x.candidateLimitReached===true?'<br>候補上限に到達したため全件確認とは扱いません。':''}
+        </div>
+      </article>`;
+  }).join(''):empty('サイト別収集ヘルスはまだありません。');
 
   const candidateCard=(x)=>{
     const safeCandidateUrl=POIGAME_DATA.safeHttpUrl(x.firstPartyCandidateUrl||'');
