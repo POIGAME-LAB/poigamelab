@@ -2,6 +2,9 @@ name: Validate direct comparison refresh
 
 on:
   pull_request:
+    types:
+      - opened
+      - ready_for_review
     paths:
       - ".github/workflows/refresh-verified-offers.yml"
       - ".github/workflows/validate-direct-refresh.yml"
@@ -38,6 +41,12 @@ permissions:
 
 jobs:
   validate:
+    # Draft PRs do not consume a runner. Run once when a normal PR opens,
+    # once when a draft is marked ready, or when explicitly dispatched.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.action == 'ready_for_review' ||
+      (github.event.action == 'opened' && github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
