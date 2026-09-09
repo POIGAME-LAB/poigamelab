@@ -49,7 +49,18 @@
       "direct_detail_limit": 6,
       "direct_detail_url_hints": [
         "pointEntrance.php"
-      ]
+      ],
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_page_url_template": "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page={page}&point_group=6&sort=new",
+      "new_game_discovery_max_pages": 60,
+      "new_game_discovery_candidate_limit": 2000,
+      "new_game_discovery_scope": "paginated_first_party_game_listing",
+      "full_catalog_discovery_enabled": false,
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "paginated_first_party_game_listing",
+      "coverage_candidate_limit": 8,
+      "reviewedAt": "2026-09-09",
+      "discoveryNote": "Official anonymous app-game listing is paginated. Nightly discovery walks page=1..N until an empty/repeated detail-identity page is observed, capped at 60 pages. If the cap is reached before exhaustion the source is explicitly reported incomplete."
     },
     {
       "id": "chobirich",
