@@ -324,6 +324,7 @@ def discover_coverage_candidates(raw, aliases, discovery_source, limit=24):
     occurrence = 0
     for mapping in mappings:
         source_id = str(mapping.get("source") or "").strip()
+        provider_hint = str(mapping.get("providerHint") or "").strip()
         labels = [str(x).strip() for x in (mapping.get("labels") or []) if str(x).strip()]
         if not source_id or not labels:
             continue
@@ -371,6 +372,7 @@ def discover_coverage_candidates(raw, aliases, discovery_source, limit=24):
                 candidates.append({
                     "source": source_id,
                     "sourceLabel": label,
+                    "providerHint": provider_hint,
                     "gameLabel": alias_value,
                     "platformHint": platform,
                     "rewardYenHint": reward_yen,
@@ -1791,6 +1793,7 @@ def main():
                         "discoverySource": str(discovery_source.get("id") or ""),
                         "discoveryUrl": final_url,
                         "sourceLabel": candidate.get("sourceLabel"),
+                        "providerHint": candidate.get("providerHint"),
                         "platformHint": candidate.get("platformHint"),
                         "rewardYenHint": candidate.get("rewardYenHint"),
                         "registeredSource": candidate_source in sources,
