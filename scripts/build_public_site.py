@@ -27,6 +27,7 @@ ROOT_FILES = (
     "evertale-guide.html",
     "data-status.html",
     "new-game-status.html",
+    "existing-game-status.html",
     "about.html",
     "privacy.html",
     "contact.html",
@@ -199,6 +200,51 @@ def _build_new_game_monitor_snapshot() -> dict:
     }
 
 
+def _build_existing_game_monitor_snapshot() -> dict:
+    queue = _load_optional_json(ROOT / "data" / "existing_game_candidate_queue.json", {})
+    raw_items = queue.get("items") if isinstance(queue, dict) else []
+    items = []
+    for item in raw_items or []:
+        if not isinstance(item, dict):
+            continue
+        items.append({
+            "game": str(item.get("game") or ""),
+            "source": str(item.get("source") or ""),
+            "url": _safe_monitor_url(item.get("url")),
+            "offerIdentity": str(item.get("offerIdentity") or ""),
+            "reason": str(item.get("reason") or ""),
+            "storedReward": item.get("storedReward"),
+            "detectedReward": item.get("detectedReward"),
+            "platformHint": str(item.get("platformHint") or ""),
+            "parserVersion": str(item.get("parserVersion") or ""),
+            "checkedAt": str(item.get("checkedAt") or ""),
+        })
+    return {
+        "phase": "PUBLIC_EXISTING_GAME_MONITOR_V1",
+        "checkedAt": queue.get("checkedAt") if isinstance(queue, dict) else None,
+        "candidateOnly": True,
+        "publicationAuthorized": False,
+        "count": len(items),
+        "rewardChangeCount": sum(
+            1 for item in items
+            if item["reason"] in {
+                "reward_change_candidate",
+                "moppy_shell_reward_change_candidate",
+                "first_party_existing_game_reward_change_candidate",
+            }
+        ),
+        "newOfferCount": sum(
+            1 for item in items
+            if item["reason"] == "first_party_existing_game_new_offer_candidate"
+        ),
+        "verifiedSameRewardCount": sum(
+            1 for item in items
+            if item["reason"] == "first_party_existing_game_reward_verified"
+        ),
+        "items": items,
+    }
+
+
 def build_public_site(output: Path) -> list[str]:
     output = output.resolve()
     if output == ROOT or ROOT not in output.parents:
@@ -225,6 +271,12 @@ def build_public_site(output: Path) -> list[str]:
     monitor_path.parent.mkdir(parents=True, exist_ok=True)
     monitor_path.write_text(
         json.dumps(_build_new_game_monitor_snapshot(), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+    existing_monitor_path = output / "data" / "existing_game_monitor.json"
+    existing_monitor_path.write_text(
+        json.dumps(_build_existing_game_monitor_snapshot(), ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
 
