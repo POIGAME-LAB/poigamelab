@@ -215,7 +215,7 @@ def test_working_hero_hapitas_pair_is_current(output_dir):
         ("Android", "11502", "https://hapitas.jp/item/detail/itemid/101445"),
         ("iOS", "11502", "https://hapitas.jp/item/detail/itemid/101444"),
     }
-    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
@@ -755,6 +755,26 @@ def test_tokyo_debunker_warau_210_ios_android_pair_is_public(output_dir):
     assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
         ("iOS", "210", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191400"),
         ("Android", "210", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191401"),
+    }
+    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
+def test_working_heroes_hapitas_pair_is_current_sep9(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "ワーキングヒーロー"
+        and row["site"] == "hapitas"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("Android", "11502", "https://hapitas.jp/item/detail/itemid/101445"),
+        ("iOS", "11502", "https://hapitas.jp/item/detail/itemid/101444"),
     }
     assert all(row["updatedAt"] == "2026-09-09" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
