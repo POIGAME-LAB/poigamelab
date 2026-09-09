@@ -3286,3 +3286,16 @@ def test_moppy_shell_parser_still_requires_downstream_terms_review():
     assert '"downstreamTermsRequired": True' in script
     assert 'source_id == "moppy"' in script
     assert '"source_refresh_not_enabled"' in script
+
+
+def test_full_catalog_coverage_reuses_all_cached_listing_snapshots():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'def cached_listing_urls_for_source(source):' in script
+    assert 'if discovery_source.get("full_catalog_discovery_enabled") is True:' in script
+    assert 'listing_urls = cached_listing_urls_for_source(discovery_source)' in script
+    assert 'min(100, int(discovery_source.get("direct_listing_limit", 1)))' in script
+
+
+def test_refresh_policy_schedule_label_matches_one_am_jst():
+    policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
+    assert policy['scheduleJST'] == '毎日 01:00 頃（GitHub Actions cron: 16:00 UTC）'
