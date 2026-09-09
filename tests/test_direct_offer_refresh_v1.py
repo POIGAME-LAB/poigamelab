@@ -408,7 +408,7 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert {x['id'] for x in coverage['sources']} == {'poikan', 'dokotoku'}
 
     source_ids = {x['id'] for x in source_cfg['sources']}
-    assert {'kurashiru_reward', 'trima'} <= source_ids
+    assert {'kurashiru_reward', 'trima', 'point_income', 'amefuri', 'point_town', 'ec_navi', 'nifty_point'} <= source_ids
     labels = {
         item['source']: item
         for item in coverage['sources'][0]['candidate_source_aliases']
@@ -426,6 +426,16 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
         'https://www.rewards.kurashiru.com/categories/3'
     ]
     assert by_id['trima']['scheduled_fetch_enabled'] is False
+    for source_id in ('point_income', 'amefuri', 'point_town', 'ec_navi', 'nifty_point'):
+        assert by_id[source_id]['discovery_only'] is True
+        assert by_id[source_id]['scheduled_fetch_enabled'] is False
+        assert by_id[source_id]['direct_listing_limit'] == 0
+        assert by_id[source_id]['direct_detail_limit'] == 0
+    assert by_id['point_income']['start_url'] == 'https://pointi.jp/'
+    assert by_id['amefuri']['start_url'] == 'https://www.amefri.net/'
+    assert by_id['point_town']['start_url'] == 'https://www.pointtown.com/'
+    assert by_id['ec_navi']['start_url'] == 'https://ecnavi.jp/'
+    assert by_id['nifty_point']['start_url'] == 'https://api.point.nifty.com/'
 
     policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
     assert policy['coverageDiscovery']['mode'] == 'candidate-only'
