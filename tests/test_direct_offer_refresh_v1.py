@@ -3390,7 +3390,9 @@ def test_amefuri_known_game_detail_review_is_bounded_and_candidate_only():
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
     assert 'detail_review_remaining = max(' in script
     assert 'min(' in script
-    assert '"first_party_existing_game_reward_candidate"' in script
+    assert '"first_party_existing_game_new_offer_candidate"' in script
+    assert '"first_party_existing_game_reward_verified"' in script
+    assert '"first_party_existing_game_reward_change_candidate"' in script
     assert '"candidateOnly": True' in script
     assert '"publicationAuthorized": False' in script
     assert '"verifiedRewardCandidateCount"' in script
@@ -3404,3 +3406,13 @@ def test_amefuri_detail_review_does_not_authorize_publication():
     assert '"publicationAuthorized": False' in block
     assert '"autoCreateAuthorized": False' in block
     assert 'write_published' not in block
+
+
+def test_first_party_reward_status_separates_new_verified_and_changed():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert '"existingRewardChangeCandidateCount"' in script
+    assert '"existingGameNewOfferCandidateCount"' in script
+    assert '"existingGameVerifiedRewardCount"' in script
+    change_block = script[script.index('"existingRewardChangeCandidateCount"'):]
+    assert '"first_party_existing_game_reward_change_candidate"' in change_block[:1000]
+    assert '"first_party_existing_game_new_offer_candidate"' not in change_block[:1000]
