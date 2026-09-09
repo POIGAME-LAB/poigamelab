@@ -1817,6 +1817,7 @@ def main():
             "enabled": coverage_enabled,
             "candidateCount": 0,
             "gapCount": 0,
+            "gapSightingCount": 0,
             "coveredCount": 0,
             "fetchErrors": 0,
             "corroboratedGapCount": 0,
@@ -1862,7 +1863,7 @@ def main():
                     if coverage_candidate_is_covered(candidate, rows, game):
                         coverage_summary["coveredCount"] += 1
                         continue
-                    coverage_summary["gapCount"] += 1
+                    coverage_summary["gapSightingCount"] += 1
                     candidate_source = str(candidate.get("source") or "")
                     fingerprint = "|".join([
                         candidate_source,
@@ -1878,6 +1879,7 @@ def main():
                         "url": final_url,
                     })
 
+            coverage_summary["gapCount"] = len(coverage_gap_sightings)
             for fingerprint, sighting in coverage_gap_sightings.items():
                 candidate = sighting["candidate"]
                 radars = sighting["radars"]
