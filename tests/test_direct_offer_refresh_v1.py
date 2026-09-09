@@ -328,7 +328,7 @@ def test_main_writes_deduplicated_candidate_queue_without_publishing(tmp_path, m
     assert status['coverageCandidateQueueCount'] == 3
 
 
-def test_dokotoku_coverage_parser_extracts_reverse_rows_safely():
+def test_dokotoku_coverage_parser_extracts_current_working_heroes_rows_safely():
     source = {
         'id': 'dokotoku',
         'parser': 'dokotoku-row-v1',
@@ -341,21 +341,42 @@ def test_dokotoku_coverage_parser_extracts_reverse_rows_safely():
     html = '''
       <main>
         <div>11,502 円 | ハピタス (AppDriver) | a | ワーキングヒーローズ</div>
+        <div>11,502 円 | ハピタス | a | ワーキングヒーローズ</div>
+        <div>11,502 円 | ハピタス (AppDriver) | i | ワーキングヒーローズ</div>
         <div>11,502 円 | ハピタス | i | ワーキングヒーローズ</div>
         <div>6,031.09 円 | クラシルリワード | a | ワーキングヒーローズ</div>
         <div>6,031.09 円 | クラシルリワード | i | ワーキングヒーローズ</div>
-        <div>7,481.25 円 | トリマ (ミッションB) | i | ワーキングヒーローズ</div>
+        <div>4,987.5 円 | トリマ (ミッションB) | i | ワーキングヒーローズ</div>
+        <div>4,581.82 円 | クラシルリワード | i | ワーキングヒーローズ</div>
       </main>
     '''
     candidates = direct.discover_coverage_candidates(
         html, ['ワーキングヒーロー', 'ワーキングヒーローズ'], source
     )
+    assert len(candidates) == 8
     assert {(x['source'], x['platformHint'], x['rewardYenHint']) for x in candidates} == {
         ('hapitas', 'Android', 11502),
         ('hapitas', 'iOS', 11502),
         ('kurashiru_reward', 'Android', 6031.09),
         ('kurashiru_reward', 'iOS', 6031.09),
-        ('trima', 'iOS', 7481.25),
+        ('trima', 'iOS', 4987.5),
+        ('kurashiru_reward', 'iOS', 4581.82),
+    }
+
+    published_rows = [
+        {'game': 'ワーキングヒーロー', 'site': 'hapitas', 'platform': 'Android', 'reward': '11502'},
+        {'game': 'ワーキングヒーロー', 'site': 'hapitas', 'platform': 'iOS', 'reward': '11502'},
+    ]
+    gaps = [
+        candidate for candidate in candidates
+        if not direct.coverage_candidate_is_covered(candidate, published_rows, 'ワーキングヒーロー')
+    ]
+    assert len(gaps) == 4
+    assert {(x['source'], x['platformHint'], x['rewardYenHint']) for x in gaps} == {
+        ('kurashiru_reward', 'Android', 6031.09),
+        ('kurashiru_reward', 'iOS', 6031.09),
+        ('trima', 'iOS', 4987.5),
+        ('kurashiru_reward', 'iOS', 4581.82),
     }
     assert all(x.get('publicationAuthorized') is None for x in candidates)
 
