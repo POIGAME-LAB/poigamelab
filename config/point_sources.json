@@ -181,14 +181,25 @@
       "enabled": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [],
+      "direct_listing_urls": [
+        "https://hapitas.jp/category/service_app/apn/navigation_category/"
+      ],
       "direct_listing_limit": 1,
       "direct_detail_limit": 4,
       "direct_detail_url_hints": [
         "/item/detail/itemid/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Unattended first-party detail/listing retrieval has not been demonstrated as reliable for this project; keep current Hapitas identities review-only until a stable permitted direct retrieval path is validated."
+      "scheduled_fetch_reason": "Official anonymous app category currently exposes a full current app listing (631 items observed) with first-party detail links. Reuse the single listing snapshot for new-game discovery and known-game coverage. Detail review/publication remain separately gated.",
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 1200,
+      "new_game_discovery_scope": "full_current_app_category_listing",
+      "full_catalog_discovery_enabled": true,
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "full_current_app_category_listing",
+      "coverage_candidate_limit": 8,
+      "reviewedAt": "2026-09-10"
     },
     {
       "id": "kurashiru_reward",
