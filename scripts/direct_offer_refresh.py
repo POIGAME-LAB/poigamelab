@@ -2331,6 +2331,25 @@ def main():
                         if evidence["state"] == "parsed":
                             item["platformMatches"] = evidence["platform"] == existing.get("platform")
                             item["requiredChecks"] = ["reward_unit_conversion", "complete_terms_vs_published_row"]
+                            if source_id == "moppy":
+                                displayed = evidence.get("displayedRewardPoints")
+                                try:
+                                    stored = int(str(existing.get("reward") or "").replace(",", ""))
+                                except (TypeError, ValueError):
+                                    stored = None
+                                item["shellDisplayedReward"] = displayed
+                                item["shellRewardMatchesStored"] = (
+                                    type(displayed) is int and stored is not None and displayed == stored
+                                )
+                                if type(displayed) is int and stored is not None and displayed != stored:
+                                    item["reason"] = "moppy_shell_reward_change_candidate"
+                                    item["detectedReward"] = displayed
+                                    item["candidateOnly"] = True
+                                    item["publicationAuthorized"] = False
+                                    item["requiredChecks"] = [
+                                        "point_get_destination_reward",
+                                        "complete_terms_vs_published_row",
+                                    ]
                             reason = (approved_refresh_reason(existing, evidence,
                                 approvals.get(existing.get("offerKey")), checked_at)
                                 if source_id == "warau" else "source_refresh_not_enabled")
@@ -2585,6 +2604,12 @@ def main():
         "publishedRewardChanges": changed,
         "refreshedRows": len(refreshed),
         "reviewCount": len(review),
+        "existingRewardChangeCandidateCount": sum(
+            1 for item in review
+            if str(item.get("reason") or "") in {
+                "reward_change_candidate", "moppy_shell_reward_change_candidate"
+            }
+        ),
         "coverageCandidateQueueCount": len(coverage_candidate_queue),
         "newGameCandidateQueueCount": len(new_game_candidate_queue),
         "newGameDiscovery": new_game_discovery_summary,
