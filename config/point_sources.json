@@ -369,14 +369,19 @@
         "/show/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Coverage-only first-party app/game listing is anonymous and stable; detail retrieval and publication remain disabled until detail-page verification is reviewed.",
+      "scheduled_fetch_reason": "The anonymous first-party app/game category and /ad/<id>/show detail pages are stable enough for bounded review. Up to 3 matching known-game details per game may be review-fetched nightly. Publication remains disabled.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 4,
       "full_catalog_discovery_enabled": true,
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 1,
       "new_game_discovery_candidate_limit": 200,
-      "new_game_discovery_scope": "full_current_category_listing"
+      "new_game_discovery_scope": "full_current_category_listing",
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 3,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "ecnavi-detail-review-v1",
+      "reviewedAt": "2026-09-09"
     },
     {
       "id": "nifty_point",

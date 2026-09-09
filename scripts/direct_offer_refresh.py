@@ -1478,6 +1478,151 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def ecnavi_offer_id(url):
+    try:
+        p = urlparse(str(url or ""))
+        port = p.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (p.scheme != "https" or p.hostname not in {"ecnavi.jp", "www.ecnavi.jp"}
+            or p.username is not None or p.password is not None
+            or port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/ad/([0-9]+)/show/?", p.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    query = parse_qs(p.query, keep_blank_values=True)
+    if any(key != "frame" for key in query):
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_ecnavi_offer(raw, requested_url, final_url, aliases):
+    """Build review-only evidence from an EC Navi first-party detail page.
+
+    EC Navi states 10pts=1JPY. The parser accepts a reward candidate only when
+    the largest displayed point amount maps exactly to the displayed yen
+    equivalent. This handles point-up pages that also show a lower former/base
+    point amount without guessing which total is current.
+    """
+    try:
+        offer_id = ecnavi_offer_id(requested_url)
+        if ecnavi_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if ecnavi_offer_id(canonical) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        title = evidence_text(one(doc.find(tag="h1")))
+        if not target_present(title, aliases):
+            raise ValueError("offer_title_mismatch")
+
+        text = visible_text(raw)
+        if not re.search(r"10\s*pts?\.?\s*[=＝]\s*1\s*円", text, re.I):
+            raise ValueError("unit_conversion_review_required")
+
+        title_positions = [m.start() for m in re.finditer(re.escape(title), text)]
+        if not title_positions:
+            raise ValueError("missing_offer_header")
+        start = title_positions[0]
+        condition_pos = text.find("加算条件", start)
+        if condition_pos < 0:
+            raise ValueError("missing_offer_header_boundary")
+        header = text[start:condition_pos]
+
+        yen_matches = [
+            int(value.replace(",", ""))
+            for value in re.findall(
+                r"[（(]\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円分\s*[）)]",
+                header,
+            )
+        ]
+        if len(set(yen_matches)) != 1:
+            raise ValueError("missing_or_ambiguous_yen_equivalent")
+        displayed_yen = yen_matches[0]
+
+        yen_marker = re.search(
+            r"[（(]\s*[1-9][0-9,]*\s*円分\s*[）)]",
+            header,
+        )
+        if yen_marker is None:
+            raise ValueError("missing_or_ambiguous_yen_equivalent")
+        point_header = header[:yen_marker.start()]
+        number_tokens = [
+            int(value.replace(",", ""))
+            for value in re.findall(
+                r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]{2,})(?![0-9,])",
+                point_header,
+            )
+        ]
+        point_candidates = sorted({
+            amount for amount in number_tokens
+            if amount >= 10 and amount <= 5_000_000 and amount != displayed_yen
+        })
+        if not point_candidates:
+            raise ValueError("missing_displayed_points")
+        current_points = max(point_candidates)
+        if current_points % 10 != 0 or current_points // 10 != displayed_yen:
+            raise ValueError("point_yen_conversion_mismatch")
+
+        condition_start = text.find("加算条件", start)
+        detail_start = text.find("加算条件詳細", condition_start)
+        if detail_start < 0:
+            raise ValueError("incomplete_offer_terms")
+        detail_end_candidates = [
+            pos for marker in ("注意事項", "共通の注意事項")
+            if (pos := text.find(marker, detail_start + 1)) >= 0
+        ]
+        if not detail_end_candidates:
+            raise ValueError("incomplete_offer_terms")
+        terms = text[condition_start:min(detail_end_candidates)].strip()
+        if "加算時期" not in terms:
+            raise ValueError("incomplete_offer_terms")
+
+        os_labels = re.findall(
+            r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
+            title + " " + terms[:1200],
+            re.I,
+        )
+        normalized_os = {"ios": "iOS", "android": "Android"}
+        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
+        platform = platforms[0] if len(platforms) == 1 else ""
+
+        payload = {
+            "offerId": offer_id,
+            "name": title,
+            "platform": platform,
+            "displayedPointCandidates": point_candidates,
+            "verifiedCurrentRewardPoints": current_points,
+            "verifiedCurrentRewardYen": displayed_yen,
+            "rewardUnit": "ECNavi-pt",
+            "sourcePointRate": "10pt=1JPY",
+            "headerText": re.sub(r"\s+", " ", header).strip(),
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "ecnavi-detail-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def amefuri_offer_id(url):
     try:
         p = urlparse(str(url or ""))
@@ -1840,6 +1985,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "warau": inspect_warau_offer,
         "chobirich": inspect_chobirich_offer,
         "coincome": inspect_coincome_offer,
+        "ec_navi": inspect_ecnavi_offer,
         "amefuri": inspect_amefuri_offer,
         "moppy": inspect_moppy_offer,
         "gendama": inspect_gendama_offer,

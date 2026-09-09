@@ -3471,3 +3471,73 @@ def test_existing_game_candidate_queue_is_candidate_only_and_bounded():
 def test_nightly_workflow_persists_existing_game_candidate_queue():
     workflow = (ROOT/'.github/workflows/refresh-verified-offers.yml').read_text(encoding='utf-8')
     assert 'data/existing_game_candidate_queue.json' in workflow
+
+
+def _ecnavi_fixture(points='20,000', yen='2,000', base='9,450'):
+    return f'''
+    <html><head>
+      <link rel="canonical" href="https://ecnavi.jp/ad/10721342/show/">
+    </head><body>
+      <p>ECナビを経由して利用すると、10pts.＝1円のポイントがもらえます。</p>
+      <h1>人気ソシャゲ〖NTE(Neverness to Everness)〗PC版無料登録</h1>
+      <div>{base} {points} ({yen}円分)（2026年09月30日までポイントアップ）</div>
+      <div>加算条件 | 新規無料アカウント登録</div>
+      <div>加算時期 | 条件達成後、10日間前後</div>
+      <div>加算条件詳細
+        ポイント加算条件 新規ゲームインストール＆起動後、ゲーム内アカウント無料登録完了
+      </div>
+      <h2>注意事項</h2>
+    </body></html>
+    '''
+
+
+def test_ecnavi_detail_parser_validates_point_yen_pair():
+    evidence = direct.inspect_ecnavi_offer(
+        _ecnavi_fixture(),
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['Neverness to Everness'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'ecnavi-detail-review-v1'
+    assert evidence['verifiedCurrentRewardPoints'] == 20000
+    assert evidence['verifiedCurrentRewardYen'] == 2000
+    assert evidence['displayedPointCandidates'] == [9450, 20000]
+    assert evidence['publicationAuthorized'] is False
+
+
+def test_ecnavi_detail_parser_rejects_point_yen_mismatch():
+    evidence = direct.inspect_ecnavi_offer(
+        _ecnavi_fixture(points='19,000', yen='2,000'),
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['Neverness to Everness'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'point_yen_conversion_mismatch',
+    }
+
+
+def test_ecnavi_offer_identity_rejects_user_queries():
+    assert direct.ecnavi_offer_id(
+        'https://ecnavi.jp/ad/10721822/show/?frame=category'
+    ) == '10721822'
+    try:
+        direct.ecnavi_offer_id(
+            'https://ecnavi.jp/ad/10721822/show/?user_id=secret'
+        )
+    except ValueError as error:
+        assert str(error) == 'ambiguous_offer_identity'
+    else:
+        raise AssertionError('user-specific query must be rejected')
+
+
+def test_ecnavi_known_game_detail_review_is_bounded_candidate_only():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    ec = next(item for item in cfg['sources'] if item['id'] == 'ec_navi')
+    assert ec['coverage_detail_review_enabled'] is True
+    assert ec['coverage_detail_review_limit_per_game'] == 3
+    assert ec['coverage_detail_review_mode'] == 'candidate_only'
+    assert ec['coverage_detail_review_parser'] == 'ecnavi-detail-review-v1'
+    assert ec['scheduled_fetch_enabled'] is False
