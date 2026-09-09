@@ -119,8 +119,8 @@ def test_mementomori_has_verified_published_reward(output_dir):
     best = max(matches, key=lambda row: int(row["reward"]))
     assert best["site"] == "warau"
     assert best["platform"] == "iOS"
-    assert best["reward"] == "11500"
-    assert "point_id=206037" in best["url"]
+    assert best["reward"] == "12050"
+    assert "point_id=206035" in best["url"]
     assert "ランク140到達" in best["condition"]
     assert "累計10000円課金" in best["condition"]
 
@@ -132,8 +132,12 @@ def test_mementomori_has_verified_published_reward(output_dir):
         and item.get("sourceEvidence", {}).get("state") == "parsed"
         and item["sourceEvidence"].get("offerId") == "206037"
     )
-    assert best["platform"] == evidence["platform"]
-    assert int(best["reward"]) == evidence["rewardPoints"]
+    published_11500 = next(
+        row for row in matches
+        if row["url"] == "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037"
+    )
+    assert published_11500["platform"] == evidence["platform"]
+    assert int(published_11500["reward"]) == evidence["rewardPoints"]
 
 def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
     builder.build_public_site(output_dir)
@@ -690,6 +694,27 @@ def test_evertale_hapitas_140_ios_android_pair_is_public(output_dir):
     by_platform = {row["platform"]: row for row in matches}
     assert by_platform["Android"]["updatedAt"] == "2026-09-09"
     assert by_platform["iOS"]["updatedAt"] == "2026-09-08"
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
+def test_memento_warau_12050_ios_android_pair_is_public(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "メメントモリ"
+        and row["site"] == "warau"
+        and row["reward"] == "12050"
+    ]
+    assert {(row["platform"], row["url"]) for row in matches} == {
+        ("iOS", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035"),
+        ("Android", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975"),
+    }
+    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
