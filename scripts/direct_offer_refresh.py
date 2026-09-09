@@ -1531,35 +1531,20 @@ def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
             raise ValueError("missing_offer_header_boundary")
         header = text[title_pos:condition_pos]
 
-        action_markers = (
-            "アプリインストールで",
-            "アプリインストール、新規アプリインストール後",
-            "サービス利用で",
-            "無料会員登録で",
-        )
-        marker_positions = [
-            (header.find(marker), marker)
-            for marker in action_markers
-            if header.find(marker) >= 0
-        ]
-        if not marker_positions:
-            raise ValueError("missing_reward_context")
-        marker_pos, marker = min(marker_positions, key=lambda item: item[0])
-        reward_tail = header[marker_pos + len(marker):]
         boundary_positions = [
             pos for token in ("初回利用限定", "友達紹介", "ポイント獲得時期", "予定ポイント反映")
-            if (pos := reward_tail.find(token)) >= 0
+            if (pos := header.find(token)) >= 0
         ]
-        reward_region = reward_tail[:min(boundary_positions)] if boundary_positions else reward_tail[:500]
-
+        reward_region = header[:min(boundary_positions)] if boundary_positions else header[:1200]
+        reward_matches = re.findall(
+            r"で\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*(?![%0-9])",
+            reward_region,
+        )
         rewards = [
             int(value.replace(",", ""))
-            for value in re.findall(
-                r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)(?![0-9,%])",
-                reward_region,
-            )
+            for value in reward_matches
+            if 0 < int(value.replace(",", "")) <= 5_000_000
         ]
-        rewards = [value for value in rewards if 0 < value <= 5_000_000]
         unique_rewards = sorted(set(rewards))
         if len(unique_rewards) != 1:
             raise ValueError("missing_or_ambiguous_displayed_reward")
