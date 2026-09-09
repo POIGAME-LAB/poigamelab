@@ -65,7 +65,7 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
         "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
         "evertale-guide.html", "site-data.js", "site-footer.js", "site-referrals.js",
         "site-guides.js", "site-image-rights.js", "site-header.js", "games.js",
-        "games.csv", "robots.txt", "poigamelab_icon.png", "assets/guide-experience.css",
+        "games.csv", "robots.txt", "sitemap.xml", "CNAME", "poigamelab_icon.png", "assets/guide-experience.css",
         "assets/guide-experience.js", "data/published_offers.csv", "data/offer_history.csv",
         "data/refresh_status.json", "data/exception_queue.json", "data/new_game_monitor.json", "data/existing_game_monitor.json",
         "data/guide-experiences/kinoko.json", "data/guide-experiences/mementomori.json",
