@@ -3770,3 +3770,11 @@ def test_existing_game_refresh_reuses_new_game_listing_snapshots():
     assert 'consumer="new_game_discovery"' in script
     assert 'existing_listing_urls = (' in script
     assert 'if cached_discovery_listing_urls' in script
+
+
+def test_discovery_summary_marks_guard_failure_incomplete():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'source_incomplete = (' in script
+    assert 'content_guard_failed' in script[script.index('source_incomplete = ('):script.index('source_incomplete = (') + 500]
+    assert 'candidate_limit_reached' in script[script.index('source_incomplete = ('):script.index('source_incomplete = (') + 500]
+    assert '(use_pagination and not source_complete)' in script
