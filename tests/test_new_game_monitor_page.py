@@ -27,3 +27,9 @@ def test_monitor_escapes_dynamic_candidate_text():
     assert "POIGAME_DATA.escapeHtml" in page
     assert "esc(x.titleHint" in page
     assert "esc(x.source" in page
+
+
+def test_monitor_revalidates_candidate_urls_before_rendering_links():
+    page = (ROOT / "new-game-status.html").read_text(encoding="utf-8")
+    assert "POIGAME_DATA.safeHttpUrl" in page
+    assert "safeCandidateUrl" in page
