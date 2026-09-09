@@ -3778,3 +3778,11 @@ def test_discovery_summary_marks_guard_failure_incomplete():
     assert 'content_guard_failed' in script[script.index('source_incomplete = ('):script.index('source_incomplete = (') + 500]
     assert 'candidate_limit_reached' in script[script.index('source_incomplete = ('):script.index('source_incomplete = (') + 500]
     assert '(use_pagination and not source_complete)' in script
+
+
+def test_nightly_schedule_avoids_top_of_hour():
+    workflow = (ROOT/'.github/workflows/refresh-verified-offers.yml').read_text(encoding='utf-8')
+    policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
+    assert 'cron: "17 16 * * *"' in workflow
+    assert 'cron: "0 16 * * *"' not in workflow
+    assert policy['scheduleJST'] == '毎日 01:17 頃（GitHub Actions cron: 16:17 UTC）'
