@@ -3299,3 +3299,80 @@ def test_full_catalog_coverage_reuses_all_cached_listing_snapshots():
 def test_refresh_policy_schedule_label_matches_one_am_jst():
     policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
     assert policy['scheduleJST'] == '毎日 01:00 頃（GitHub Actions cron: 16:00 UTC）'
+
+
+def _amefuri_fixture(display_current='4,737'):
+    return f'''
+    <html><head>
+      <link rel="canonical" href="https://www.amefri.net/detail/id/140198">
+    </head><body>
+      <h1>案件詳細：キングショット（多段階）〖Android〗でポイントが貯まる</h1>
+      <p>ポイントは10pt＝1円で交換できます。</p>
+      <section>
+        アメフリ経由で登録すると
+        2,890 円
+        {display_current} 円 分のポイントGET！
+        ※下記条件の合計
+      </section>
+      <section>
+        〖多段階〗
+        ステップ1 25日以内に役場レベル8到達 認証済 830 pt
+        ステップ2 25日以内に役場レベル16到達 認証済 900 pt
+        ステップ3 35日以内に一括800円以上1600円未満の課金 認証済 3,880 pt
+        ステップ4 25日以内に役場レベル20到達 認証済 2,910 pt
+        ステップ5 25日以内に役場レベル26到達 認証済 12,950 pt
+        ステップ6 35日以内に一括1600円以上3200円未満の課金 認証済 7,770 pt
+        ステップ7 35日以内に役場レベル30到達 認証済 18,130 pt
+        多段階案件は記載された各ステップの条件を満たした時点で付与されます。
+      </section>
+      <section>
+        ポイント獲得条件
+        新規アプリインストール後、各ミッションクリアで報酬獲得となります。
+        成果受付期限：広告クリックから35日以内
+        お問い合わせ受付期限：広告クリックから80日以内
+      </section>
+    </body></html>
+    '''
+
+
+def test_amefuri_multistep_parser_selects_verified_boosted_total():
+    evidence = direct.inspect_amefuri_offer(
+        _amefuri_fixture(),
+        'https://www.amefri.net/detail/id/140198',
+        'https://www.amefri.net/detail/id/140198',
+        ['キングショット'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'amefuri-multistep-review-v1'
+    assert evidence['platform'] == 'Android'
+    assert evidence['stepTotalPoints'] == 47370
+    assert evidence['verifiedCurrentRewardYen'] == 4737
+    assert evidence['displayedRewardYenCandidates'] == [2890, 4737]
+    assert evidence['publicationAuthorized'] is False
+
+
+def test_amefuri_multistep_parser_rejects_display_step_mismatch():
+    evidence = direct.inspect_amefuri_offer(
+        _amefuri_fixture(display_current='4,700'),
+        'https://www.amefri.net/detail/id/140198',
+        'https://www.amefri.net/detail/id/140198',
+        ['キングショット'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'step_total_not_displayed_current_reward',
+    }
+
+
+def test_amefuri_offer_identity_allows_only_tracking_query():
+    assert direct.amefuri_offer_id(
+        'https://www.amefri.net/detail/id/138860?tracking=app_area'
+    ) == '138860'
+    try:
+        direct.amefuri_offer_id(
+            'https://www.amefri.net/detail/id/138860?user_id=secret'
+        )
+    except ValueError as error:
+        assert str(error) == 'ambiguous_offer_identity'
+    else:
+        raise AssertionError('user-specific query must be rejected')
