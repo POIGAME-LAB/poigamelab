@@ -3206,3 +3206,47 @@ def test_listing_snapshot_does_not_replace_detail_fetch_cache():
     assert 'inspect_detail(\n                        url, source, aliases, fetcher=fetch_once,' in script
     assert 'listing_snapshots = {}' in script
     assert 'if key in listing_snapshots:' in script
+
+
+def test_warau_paginated_discovery_configuration_and_stop_guards():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    warau = next(item for item in cfg['sources'] if item['id'] == 'warau')
+    assert warau['new_game_discovery_enabled'] is True
+    assert '{page}' in warau['new_game_discovery_page_url_template']
+    assert warau['new_game_discovery_max_pages'] == 60
+    assert warau['new_game_discovery_candidate_limit'] == 2000
+    assert warau['new_game_discovery_scope'] == 'paginated_first_party_game_listing'
+
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'def listing_detail_identity_signature(' in script
+    assert 'def paginated_listing_url(source, page):' in script
+    assert 'if not signature:' in script
+    assert 'if signature in seen_page_signatures:' in script
+    assert '"incompleteSources"' in script
+    assert 'pages_attempted >= page_cap' in script
+
+
+def test_paginated_listing_url_rejects_bad_template(monkeypatch):
+    source = {
+        'id': 'warau',
+        'search_domains': ['www.warau.jp'],
+        'new_game_discovery_page_url_template': 'https://www.warau.jp/x?page={page}&bad={oops}',
+    }
+    assert direct.paginated_listing_url(source, 1) == ''
+
+
+def test_listing_detail_signature_dedupes_offer_identities():
+    source = {
+        'id': 'warau',
+        'search_domains': ['www.warau.jp'],
+        'direct_detail_url_hints': ['pointEntrance.php'],
+    }
+    raw = '''
+    <a href="/contents/point/pointEntrance.php?point_id=1">A</a>
+    <a href="/contents/point/pointEntrance.php?point_id=1">A2</a>
+    <a href="/contents/point/pointEntrance.php?point_id=2">B</a>
+    '''
+    sig = direct.listing_detail_identity_signature(
+        raw, 'https://www.warau.jp/contents/point/category', source
+    )
+    assert len(sig) == 2
