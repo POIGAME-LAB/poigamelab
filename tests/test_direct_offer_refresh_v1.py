@@ -2476,6 +2476,22 @@ def test_repository_evertale_hapitas_140_ios_android_pair_is_published():
     assert all(row['verified'] == 'true' for row in matches)
 
 
+def test_repository_kinoko_99850_is_current_review_only_target():
+    payload = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))
+    kinoko = next(item for item in payload['games'] if item['game'] == 'きのこ伝説')
+    assert 'https://hapitas.jp/item/detail/itemid/99850' in kinoko['known_urls_by_source']['hapitas']
+
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    assert not any(
+        row['game'] == 'きのこ伝説'
+        and row['site'] == 'hapitas'
+        and row['url'] == 'https://hapitas.jp/item/detail/itemid/99850'
+        for row in rows
+    )
+
+
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
@@ -2507,6 +2523,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
     assert set(kinoko) == {
         'https://hapitas.jp/item/detail/itemid/102450',
         'https://hapitas.jp/item/detail/itemid/102451',
+        'https://hapitas.jp/item/detail/itemid/99850',
     }
     assert set(tokyo) == {
         'https://hapitas.jp/item/detail/itemid/91316',
