@@ -2804,8 +2804,10 @@ def main():
                     break
 
         candidate_limit_reached = remaining <= 0
+        source_errors = new_game_discovery_summary["fetchErrors"] - source_error_start
         source_incomplete = (
-            content_guard_failed
+            source_errors > 0
+            or content_guard_failed
             or candidate_limit_reached
             or (use_pagination and not source_complete)
         )
@@ -2814,10 +2816,10 @@ def main():
         else:
             new_game_discovery_summary["completeSources"] += 1
 
-        source_errors = new_game_discovery_summary["fetchErrors"] - source_error_start
         source_candidates = new_game_discovery_summary["candidateCount"] - source_candidate_start
         catalog_complete = (
-            not candidate_limit_reached
+            source_errors == 0
+            and not candidate_limit_reached
             and not content_guard_failed
             and (
                 discovery_source.get("full_catalog_discovery_enabled") is True
