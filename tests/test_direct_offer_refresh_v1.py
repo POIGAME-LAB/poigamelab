@@ -110,6 +110,89 @@ def test_same_reward_requires_full_offer_verification(tmp_path, monkeypatch):
     review=json.loads(direct.REVIEW.read_text())['items']
     assert [x['reason'] for x in review] == ['offer_terms_review_required']
 
+def test_coverage_discovery_extracts_working_heroes_eight_candidates_and_four_gaps():
+    source = {
+        'id': 'poikan',
+        'search_domains': ['poikan.com'],
+        'query_url_template': 'https://poikan.com/q/{query}',
+        'candidate_source_aliases': [
+            {'source': 'hapitas', 'labels': ['ハピタス（AppDriver）', 'ハピタス']},
+            {'source': 'kurashiru_reward', 'labels': ['クラシルリワード（レシチャレ）']},
+            {'source': 'trima', 'labels': ['トリマ （ミッションB）']},
+        ],
+    }
+    html = '''
+    <main>
+      <div>ワーキングヒーローズ 11,502円 <a>ハピタス</a></div>
+      <div>ワーキングヒーローズ 11,502円 <a>ハピタス</a></div>
+      <div>ワーキングヒーローズ〖Android〗 11,502円 <a>ハピタス（AppDriver）</a></div>
+      <div>ワーキングヒーローズ〖iOS〗 11,502円 <a>ハピタス（AppDriver）</a></div>
+      <div>ワーキングヒーローズ〖iOS〗 6,031円 <a>クラシルリワード（レシチャレ）</a></div>
+      <div>ワーキングヒーローズ〖Android〗 6,031円 <a>クラシルリワード（レシチャレ）</a></div>
+      <div>ワーキングヒーローズ〖iOS・Android〗 4,987円 <a>トリマ （ミッションB）</a></div>
+      <div>ワーキングヒーローズ〖iOS〗 4,582円 <a>クラシルリワード（レシチャレ）</a></div>
+    </main>
+    '''
+    candidates = direct.discover_coverage_candidates(
+        html, ['ワーキングヒーロー', 'ワーキングヒーローズ'], source
+    )
+    assert len(candidates) == 8
+    assert sum(x['source'] == 'hapitas' for x in candidates) == 4
+    assert sum(x['source'] == 'kurashiru_reward' for x in candidates) == 3
+    assert sum(x['source'] == 'trima' for x in candidates) == 1
+
+    rows = [
+        {'game': 'ワーキングヒーロー', 'site': 'hapitas', 'platform': 'Android', 'reward': '11502'},
+        {'game': 'ワーキングヒーロー', 'site': 'hapitas', 'platform': 'iOS', 'reward': '11502'},
+    ]
+    gaps = [
+        x for x in candidates
+        if not direct.coverage_candidate_is_covered(x, rows, 'ワーキングヒーロー')
+    ]
+    assert len(gaps) == 4
+    assert {(x['source'], x['platformHint'], x['rewardYenHint']) for x in gaps} == {
+        ('kurashiru_reward', 'iOS', 6031),
+        ('kurashiru_reward', 'Android', 6031),
+        ('trima', 'iOS|Android', 4987),
+        ('kurashiru_reward', 'iOS', 4582),
+    }
+
+
+def test_coverage_discovery_query_is_bounded_and_https_allowlisted():
+    source = {
+        'search_domains': ['poikan.com'],
+        'query_url_template': 'https://poikan.com/q/{query}',
+    }
+    url = direct.coverage_query_url(source, ['ワーキングヒーローズ'])
+    assert url.startswith('https://poikan.com/q/')
+    assert '%E3%83%AF' in url
+    bad = dict(source, query_url_template='http://poikan.com/q/{query}')
+    assert direct.coverage_query_url(bad, ['ワーキングヒーローズ']) == ''
+
+
+def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missing_sources():
+    source_cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    coverage = source_cfg['coverage_discovery']
+    assert coverage['enabled'] is True
+    assert coverage['candidate_only'] is True
+    assert coverage['never_publish'] is True
+    assert {x['id'] for x in coverage['sources']} == {'poikan'}
+
+    source_ids = {x['id'] for x in source_cfg['sources']}
+    assert {'kurashiru_reward', 'trima'} <= source_ids
+    by_id = {x['id']: x for x in source_cfg['sources']}
+    assert by_id['kurashiru_reward']['discovery_only'] is True
+    assert by_id['trima']['discovery_only'] is True
+    assert by_id['kurashiru_reward']['scheduled_fetch_enabled'] is False
+    assert by_id['trima']['scheduled_fetch_enabled'] is False
+
+    policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
+    assert policy['coverageDiscovery']['mode'] == 'candidate-only'
+    assert policy['coverageDiscovery']['publishFromDiscovery'] is False
+    assert policy['coverageDiscovery']['requireFirstPartyVerificationBeforePublication'] is True
+    assert policy['publication']['directRefreshNeverCreatesNewPublishedRows'] is True
+
+
 def test_offer_identity_ignores_warau_host_and_navigation_params():
     a=direct.offer_identity_key(
         'https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=205975',
