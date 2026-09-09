@@ -60,14 +60,14 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
     copied_set = set(copied)
 
     required = {
-        "index.html", "game.html", "offers.html", "guides.html", "404.html",
+        "index.html", "game.html", "offers.html", "guides.html", "404.html", "new-game-status.html",
         "about.html", "privacy.html", "contact.html", "tokyo-debunker-guide.html",
         "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
         "evertale-guide.html", "site-data.js", "site-footer.js", "site-referrals.js",
         "site-guides.js", "site-image-rights.js", "site-header.js", "games.js",
         "games.csv", "robots.txt", "poigamelab_icon.png", "assets/guide-experience.css",
         "assets/guide-experience.js", "data/published_offers.csv", "data/offer_history.csv",
-        "data/refresh_status.json", "data/exception_queue.json",
+        "data/refresh_status.json", "data/exception_queue.json", "data/new_game_monitor.json",
         "data/guide-experiences/kinoko.json", "data/guide-experiences/mementomori.json",
         "data/guide-experiences/whiteout-survival.json",
         "data/guide-experiences/working-heroes.json", "config/refresh_policy.json",
@@ -1028,3 +1028,17 @@ def test_image_rights_framework_is_published_and_rendered(output_dir):
         assert "image-rights-note" in html or "gameArtworkRights" in html
     game_html = (output_dir / "game.html").read_text(encoding="utf-8")
     assert 'id="gameArtworkRights"' in game_html
+
+
+def test_public_new_game_monitor_is_sanitized(output_dir):
+    builder.build_public_site(output_dir)
+    monitor = json.loads((output_dir / "data" / "new_game_monitor.json").read_text(encoding="utf-8"))
+    assert monitor["phase"] == "PUBLIC_NEW_GAME_MONITOR_V1"
+    assert monitor["candidateOnly"] is True
+    assert monitor["publicationAuthorized"] is False
+    assert not (output_dir / "data" / "new_game_candidate_queue.json").exists()
+    assert not (output_dir / "data" / "new_game_candidate_history.json").exists()
+    page = (output_dir / "new-game-status.html").read_text(encoding="utf-8")
+    assert "data/new_game_monitor.json" in page
+    assert "data/new_game_candidate_queue.json" not in page
+    assert "data/new_game_candidate_history.json" not in page
