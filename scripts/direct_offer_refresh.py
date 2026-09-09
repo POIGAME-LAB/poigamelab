@@ -230,6 +230,25 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
             break
     return found
 
+def discover_first_party_listing_candidates(raw, base_url, source, aliases, limit=8):
+    """Return non-publishable first-party detail URL candidates from one listing.
+
+    This only proves that a target-linked detail URL was present on an official
+    listing page. Reward, platform, conditions, and publication eligibility
+    remain unverified until the detail is independently reviewed.
+    """
+    detail_urls = discover_detail_links(raw, base_url, source, aliases, limit=limit)
+    game_label = next((str(x).strip() for x in aliases if str(x).strip()), "")
+    return [{
+        "source": str(source.get("id") or ""),
+        "sourceLabel": str(source.get("name") or source.get("id") or ""),
+        "providerHint": "",
+        "gameLabel": game_label,
+        "platformHint": "",
+        "rewardYenHint": "",
+        "firstPartyCandidateUrl": url,
+    } for url in detail_urls]
+
 def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
     """Detect same-card offerwall links without following or storing them.
 
@@ -478,13 +497,21 @@ def coverage_candidate_is_covered(candidate, rows, game):
 
     Reward/platform hints from comparison pages are not trusted as facts; they
     are used only to decide whether first-party verification work is missing.
+    First-party listing candidates are matched by exact offer identity so two
+    distinct detail URLs cannot collapse into one generic source-level match.
     """
     source_id = str(candidate.get("source") or "")
     reward = str(candidate.get("rewardYenHint") or "")
     platform = str(candidate.get("platformHint") or "")
+    candidate_url = str(candidate.get("firstPartyCandidateUrl") or "")
+    candidate_identity = offer_identity_key(candidate_url, source_id) if candidate_url else ""
     for row in rows:
         if str(row.get("game") or "") != game or str(row.get("site") or "") != source_id:
             continue
+        if candidate_identity:
+            row_identity = offer_identity_key(str(row.get("url") or ""), source_id)
+            if not row_identity or row_identity != candidate_identity:
+                continue
         if reward and str(row.get("reward") or "") != reward:
             continue
         stored_platform = str(row.get("platform") or "")
@@ -502,6 +529,7 @@ def coverage_candidate_key(game, candidate, discovery_source_id=""):
         str(candidate.get("providerHint") or ""),
         str(candidate.get("platformHint") or ""),
         str(candidate.get("rewardYenHint") or ""),
+        str(candidate.get("firstPartyCandidateUrl") or ""),
         str(discovery_source_id or ""),
     )
 
@@ -509,11 +537,12 @@ def coverage_candidate_key(game, candidate, discovery_source_id=""):
 def coverage_candidate_queue_item(game, candidate, discovery_source_id, discovery_url, checked_at, sources):
     """Build one non-publishable coverage-gap queue item.
 
-    Third-party comparison data is a discovery hint only. The explicit safety
-    flags below are intentionally redundant so downstream tooling cannot treat
-    this file as publication evidence by accident.
+    Third-party comparison data or a first-party listing presence is discovery
+    evidence only. The explicit safety flags below are intentionally redundant
+    so downstream tooling cannot treat this file as publication evidence.
     """
     candidate_source = str(candidate.get("source") or "")
+    first_party_candidate_url = str(candidate.get("firstPartyCandidateUrl") or "")
     return {
         "game": str(game or ""),
         "source": candidate_source,
@@ -521,10 +550,13 @@ def coverage_candidate_queue_item(game, candidate, discovery_source_id, discover
         "providerHint": candidate.get("providerHint"),
         "platformHint": candidate.get("platformHint"),
         "rewardYenHint": candidate.get("rewardYenHint"),
+        "firstPartyCandidateUrl": first_party_candidate_url,
         "discoverySource": str(discovery_source_id or ""),
         "discoveryUrl": str(discovery_url or ""),
         "registeredSource": candidate_source in sources,
-        "verificationState": "first_party_required",
+        "verificationState": (
+            "first_party_detail_required" if first_party_candidate_url else "first_party_required"
+        ),
         "firstPartyVerificationRequired": True,
         "publicationAuthorized": False,
         "candidateOnly": True,
@@ -1498,6 +1530,13 @@ def main():
         x for x in (coverage_cfg.get("sources") or [])
         if isinstance(x, dict) and str(x.get("id") or "").strip()
     ]
+    first_party_coverage_sources = [
+        x for x in sources.values()
+        if isinstance(x, dict)
+        and x.get("discovery_only") is True
+        and x.get("coverage_first_party_listing_enabled") is True
+        and str(x.get("id") or "").strip()
+    ]
     try:
         offerwall_provider_registry_path = SOURCES.with_name("offerwall_providers.json")
         offerwall_provider_registry = load_offerwall_provider_registry(
@@ -1927,6 +1966,59 @@ def main():
                         **queue_item,
                         "reason": "external_coverage_gap_candidate",
                     })
+
+            for discovery_source in first_party_coverage_sources[:6]:
+                listing_urls = [
+                    str(x).strip() for x in (discovery_source.get("direct_listing_urls") or [])
+                    if str(x).strip()
+                ][:max(0, min(2, int(discovery_source.get("direct_listing_limit", 1))))]
+                for listing_url in listing_urls:
+                    if not source_host_allowed(listing_url, discovery_source):
+                        coverage_summary["fetchErrors"] += 1
+                        review.append({
+                            "game": game,
+                            "source": str(discovery_source.get("id") or ""),
+                            "url": listing_url,
+                            "reason": "first_party_coverage_config_invalid",
+                            "checkedAt": checked_at,
+                        })
+                        continue
+                    try:
+                        raw, final_url = fetch_once(listing_url, discovery_source)
+                        candidates = discover_first_party_listing_candidates(
+                            raw, final_url, discovery_source, aliases,
+                            limit=max(1, min(8, int(discovery_source.get("coverage_candidate_limit") or 4))),
+                        )
+                    except Exception as error:
+                        coverage_summary["fetchErrors"] += 1
+                        review.append({
+                            "game": game,
+                            "source": str(discovery_source.get("id") or ""),
+                            "url": listing_url,
+                            "reason": "first_party_coverage_fetch_failed",
+                            "error": summarize_fetch_error(error),
+                            "checkedAt": checked_at,
+                        })
+                        continue
+
+                    coverage_summary["candidateCount"] += len(candidates)
+                    for candidate in candidates:
+                        if coverage_candidate_is_covered(candidate, rows, game):
+                            coverage_summary["coveredCount"] += 1
+                            continue
+                        coverage_summary["gapCount"] += 1
+                        discovery_source_id = str(discovery_source.get("id") or "")
+                        queue_item = coverage_candidate_queue_item(
+                            game, candidate, discovery_source_id, final_url, checked_at, sources
+                        )
+                        queue_key = coverage_candidate_key(game, candidate, discovery_source_id)
+                        if queue_key not in coverage_candidate_seen:
+                            coverage_candidate_seen.add(queue_key)
+                            coverage_candidate_queue.append(queue_item)
+                        review.append({
+                            **queue_item,
+                            "reason": "first_party_coverage_gap_candidate",
+                        })
         game_result["coverageDiscovery"] = coverage_summary
 
         game_result["standardTotal"] = len(comparison_sources)
