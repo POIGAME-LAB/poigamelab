@@ -460,6 +460,50 @@ def test_first_party_candidate_coverage_requires_exact_offer_identity():
     assert direct.coverage_candidate_is_covered(candidate, rows, 'ワーキングヒーロー') is True
 
 
+def test_powl_first_party_app_listing_discovers_target_reward_links_only():
+    source = {
+        'id': 'powl',
+        'name': 'Powl',
+        'start_url': 'https://web.powl.jp/',
+        'search_domains': ['web.powl.jp'],
+        'direct_detail_url_hints': ['/reward/'],
+    }
+    html = '''
+      <main>
+        <article class="offer-card">
+          <a href="/reward/16322">iOS_東京ディバンカー_3日間連続でログインボーナスを獲得する</a>
+        </article>
+        <article class="offer-card">
+          <a href="/reward/17777?from=genre">Android_東京ディバンカー_3日間連続でログインボーナスを獲得する</a>
+        </article>
+        <article class="offer-card">
+          <a href="/reward/99999">iOS_エバーテイル_3日間連続でログインボーナスを獲得する</a>
+        </article>
+      </main>
+    '''
+    candidates = direct.discover_first_party_listing_candidates(
+        html,
+        'https://web.powl.jp/genre/2',
+        source,
+        ['東京ディバンカー', 'Tokyo Debunker'],
+    )
+    assert [x['firstPartyCandidateUrl'] for x in candidates] == [
+        'https://web.powl.jp/reward/16322',
+        'https://web.powl.jp/reward/17777?from=genre',
+    ]
+    assert all(x['source'] == 'powl' for x in candidates)
+    assert all(x['rewardYenHint'] == '' for x in candidates)
+    assert all(x['platformHint'] == '' for x in candidates)
+
+
+def test_powl_reward_identity_ignores_navigation_query_variants():
+    a = direct.offer_identity_key('https://web.powl.jp/reward/16322?from=genre', 'powl')
+    b = direct.offer_identity_key('https://web.powl.jp/reward/16322?ref=search', 'powl')
+    c = direct.offer_identity_key('https://web.powl.jp/reward/16323', 'powl')
+    assert a == b == 'powl:pathid:16322'
+    assert c != a
+
+
 def test_repository_has_two_candidate_only_coverage_radars():
     source_cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
     coverage = source_cfg['coverage_discovery']
@@ -550,7 +594,10 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert by_id['gmo_point']['start_url'] == 'https://colleee.net/'
     assert 'colleee.net' in by_id['gmo_point']['search_domains']
     assert by_id['powl']['start_url'] == 'https://web.powl.jp/'
-    assert by_id['powl']['direct_listing_urls'] == ['https://web.powl.jp/search']
+    assert by_id['powl']['coverage_first_party_listing_enabled'] is True
+    assert by_id['powl']['direct_listing_urls'] == ['https://web.powl.jp/genre/2']
+    assert by_id['powl']['direct_listing_limit'] == 1
+    assert by_id['powl']['direct_detail_limit'] == 0
     assert '/reward/' in by_id['powl']['direct_detail_url_hints']
 
     policy = json.loads((ROOT/'config/refresh_policy.json').read_text(encoding='utf-8'))
