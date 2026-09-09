@@ -2750,12 +2750,31 @@ def main():
                                         and type(evidence.get("verifiedCurrentRewardYen")) is int
                                     ):
                                         coverage_summary["verifiedRewardCandidateCount"] += 1
-                                        review.append({
+                                        source_id = str(discovery_source.get("id") or "")
+                                        detected_reward = evidence["verifiedCurrentRewardYen"]
+                                        identity = offer_identity_key(candidate_url, source_id)
+                                        existing = row_by_identity.get((game, source_id, identity))
+                                        reason = "first_party_existing_game_new_offer_candidate"
+                                        stored_reward = None
+                                        reward_matches_stored = None
+                                        if existing is not None:
+                                            try:
+                                                stored_reward = int(str(existing.get("reward") or "").replace(",", ""))
+                                            except (TypeError, ValueError):
+                                                stored_reward = None
+                                            if stored_reward is not None:
+                                                reward_matches_stored = detected_reward == stored_reward
+                                                reason = (
+                                                    "first_party_existing_game_reward_verified"
+                                                    if reward_matches_stored
+                                                    else "first_party_existing_game_reward_change_candidate"
+                                                )
+                                        item = {
                                             "game": game,
-                                            "source": str(discovery_source.get("id") or ""),
+                                            "source": source_id,
                                             "url": detail.get("url") or candidate_url,
-                                            "reason": "first_party_existing_game_reward_candidate",
-                                            "detectedReward": evidence["verifiedCurrentRewardYen"],
+                                            "reason": reason,
+                                            "detectedReward": detected_reward,
                                             "platformHint": evidence.get("platform") or "",
                                             "sourceEvidence": evidence,
                                             "candidateOnly": True,
@@ -2763,7 +2782,11 @@ def main():
                                             "autoCreateAuthorized": False,
                                             "publicationAuthorized": False,
                                             "checkedAt": checked_at,
-                                        })
+                                        }
+                                        if stored_reward is not None:
+                                            item["storedReward"] = stored_reward
+                                            item["rewardMatchesStored"] = reward_matches_stored
+                                        review.append(item)
                                     else:
                                         review.append({
                                             "game": game,
@@ -2834,8 +2857,16 @@ def main():
             if str(item.get("reason") or "") in {
                 "reward_change_candidate",
                 "moppy_shell_reward_change_candidate",
-                "first_party_existing_game_reward_candidate",
+                "first_party_existing_game_reward_change_candidate",
             }
+        ),
+        "existingGameNewOfferCandidateCount": sum(
+            1 for item in review
+            if str(item.get("reason") or "") == "first_party_existing_game_new_offer_candidate"
+        ),
+        "existingGameVerifiedRewardCount": sum(
+            1 for item in review
+            if str(item.get("reason") or "") == "first_party_existing_game_reward_verified"
         ),
         "coverageCandidateQueueCount": len(coverage_candidate_queue),
         "newGameCandidateQueueCount": len(new_game_candidate_queue),
