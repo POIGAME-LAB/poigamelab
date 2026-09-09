@@ -132,6 +132,7 @@ def _public_candidate(item):
 def _build_new_game_monitor_snapshot() -> dict:
     queue = _load_optional_json(ROOT / "data" / "new_game_candidate_queue.json", {})
     history = _load_optional_json(ROOT / "data" / "new_game_candidate_history.json", {})
+    refresh = _load_optional_json(ROOT / "data" / "comparison_refresh_status.json", {})
 
     raw_items = queue.get("items") if isinstance(queue, dict) else []
     candidates = [
@@ -168,6 +169,24 @@ def _build_new_game_monitor_snapshot() -> dict:
                 "active": item.get("active") is True,
             })
 
+    source_health = []
+    discovery = refresh.get("newGameDiscovery") if isinstance(refresh, dict) else {}
+    raw_source_health = discovery.get("sourceResults") if isinstance(discovery, dict) else []
+    for item in raw_source_health or []:
+        if not isinstance(item, dict):
+            continue
+        source_health.append({
+            "source": str(item.get("source") or ""),
+            "sourceLabel": str(item.get("sourceLabel") or item.get("source") or ""),
+            "scope": str(item.get("scope") or "unspecified"),
+            "listingPagesAttempted": int(item.get("listingPagesAttempted") or 0),
+            "fetchErrors": int(item.get("fetchErrors") or 0),
+            "candidateCount": int(item.get("candidateCount") or 0),
+            "scanComplete": item.get("scanComplete") is True,
+            "catalogComplete": item.get("catalogComplete") is True,
+            "candidateLimitReached": item.get("candidateLimitReached") is True,
+        })
+
     return {
         "phase": "PUBLIC_NEW_GAME_MONITOR_V1",
         "checkedAt": queue.get("checkedAt") if isinstance(queue, dict) else None,
@@ -176,6 +195,7 @@ def _build_new_game_monitor_snapshot() -> dict:
         "items": candidates,
         "reviewPriority": priority,
         "historyItems": history_items,
+        "sourceHealth": source_health,
     }
 
 
