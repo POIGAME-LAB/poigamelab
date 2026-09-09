@@ -25,6 +25,7 @@ LEGACY_STATUS = ROOT / "data" / "refresh_status.json"
 REVIEW = ROOT / "data" / "comparison_review_queue.json"
 NEW_GAME_QUEUE = ROOT / "data" / "new_game_candidate_queue.json"
 NEW_GAME_HISTORY = ROOT / "data" / "new_game_candidate_history.json"
+EXISTING_GAME_QUEUE = ROOT / "data" / "existing_game_candidate_queue.json"
 
 FIELDS = [
     "offerKey", "game", "site", "provider", "reward", "condition", "platform",
@@ -2050,6 +2051,93 @@ def offerwall_provider_candidates_from_text(text, label_registry):
     return candidates
 
 
+def build_existing_game_candidate_queue(review_items, checked_at):
+    """Persist only bounded, review-safe existing-game price/offer candidates."""
+    allowed_reasons = {
+        "reward_change_candidate",
+        "moppy_shell_reward_change_candidate",
+        "first_party_existing_game_new_offer_candidate",
+        "first_party_existing_game_reward_change_candidate",
+        "first_party_existing_game_reward_verified",
+    }
+    items = []
+    seen = set()
+    for raw in review_items or []:
+        if not isinstance(raw, dict):
+            continue
+        reason = str(raw.get("reason") or "")
+        if reason not in allowed_reasons:
+            continue
+        source = str(raw.get("source") or "")
+        game = str(raw.get("game") or "")
+        url = str(raw.get("url") or "")
+        identity = offer_identity_key(url, source) if url else ""
+        key = (game, source, identity or exact_url_key(url), reason)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        evidence = raw.get("sourceEvidence") if isinstance(raw.get("sourceEvidence"), dict) else {}
+        item = {
+            "game": game,
+            "source": source,
+            "url": url,
+            "offerIdentity": identity,
+            "reason": reason,
+            "storedReward": raw.get("storedReward"),
+            "detectedReward": raw.get("detectedReward"),
+            "platformHint": raw.get("platformHint") or evidence.get("platform") or "",
+            "parserVersion": str(evidence.get("parserVersion") or ""),
+            "evidenceFingerprint": str(evidence.get("evidenceFingerprint") or ""),
+            "checkedAt": str(raw.get("checkedAt") or checked_at),
+            "candidateOnly": True,
+            "firstPartyVerificationRequired": True,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        }
+        items.append(item)
+
+    priority = {
+        "first_party_existing_game_reward_change_candidate": 0,
+        "moppy_shell_reward_change_candidate": 1,
+        "reward_change_candidate": 2,
+        "first_party_existing_game_new_offer_candidate": 3,
+        "first_party_existing_game_reward_verified": 4,
+    }
+    items.sort(key=lambda item: (
+        priority.get(item["reason"], 99),
+        item["game"],
+        item["source"],
+        item["offerIdentity"],
+    ))
+    return {
+        "phase": "DIRECT_EXISTING_GAME_CANDIDATE_QUEUE_V1",
+        "checkedAt": checked_at,
+        "candidateOnly": True,
+        "firstPartyVerificationRequired": True,
+        "autoCreateAuthorized": False,
+        "publicationAuthorized": False,
+        "count": len(items),
+        "rewardChangeCount": sum(
+            1 for item in items
+            if item["reason"] in {
+                "reward_change_candidate",
+                "moppy_shell_reward_change_candidate",
+                "first_party_existing_game_reward_change_candidate",
+            }
+        ),
+        "newOfferCount": sum(
+            1 for item in items
+            if item["reason"] == "first_party_existing_game_new_offer_candidate"
+        ),
+        "verifiedSameRewardCount": sum(
+            1 for item in items
+            if item["reason"] == "first_party_existing_game_reward_verified"
+        ),
+        "items": items,
+    }
+
+
 def main():
     try:
         approvals = load_refresh_approvals()
@@ -2984,6 +3072,14 @@ def main():
     tmp5 = NEW_GAME_HISTORY.with_suffix(".json.tmp")
     tmp5.write_text(json.dumps(new_game_history, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp5.replace(NEW_GAME_HISTORY)
+
+    existing_game_payload = build_existing_game_candidate_queue(review, checked_at)
+    tmp6 = EXISTING_GAME_QUEUE.with_suffix(".json.tmp")
+    tmp6.write_text(
+        json.dumps(existing_game_payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    tmp6.replace(EXISTING_GAME_QUEUE)
 
     print("Direct comparison refresh complete")
     print("API calls: 0")
