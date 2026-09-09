@@ -100,7 +100,9 @@
   document.getElementById('inactiveCount').textContent=inactive.length+'件';
   document.getElementById('checkedAt').textContent=queue.checkedAt?'最終収集 '+esc(queue.checkedAt):'収集履歴なし';
 
-  const candidateCard=(x)=>`
+  const candidateCard=(x)=>{
+    const safeCandidateUrl=POIGAME_DATA.safeHttpUrl(x.firstPartyCandidateUrl||'');
+    return `
     <article class="item">
       <div class="row">
         <span class="title">${esc(x.titleHint||'タイトル確認中')}</span>
@@ -111,9 +113,10 @@
       <div class="meta">
         初回観測: ${esc(x.firstSeen||'--')}<br>
         発見範囲: ${esc(x.discoveryScope||'unspecified')}
-        ${x.firstPartyCandidateUrl?'<br><a class="link" rel="noopener noreferrer" target="_blank" href="'+esc(x.firstPartyCandidateUrl)+'">一次候補ページを確認 ↗</a>':''}
+        ${safeCandidateUrl?'<br><a class="link" rel="noopener noreferrer" target="_blank" href="'+esc(safeCandidateUrl)+'">一次候補ページを確認 ↗</a>':''}
       </div>
     </article>`;
+  };
 
   document.getElementById('todayNew').innerHTML=today.length?today.map(candidateCard).join(''):empty('今日初登場の候補はありません。');
   document.getElementById('continuing').innerHTML=continuing.length?continuing.map(candidateCard).join(''):empty('継続中の候補はありません。');
