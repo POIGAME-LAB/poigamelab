@@ -243,19 +243,64 @@
           "poikan.com"
         ],
         "mobile": false,
-        "max_candidates_per_game": 24,
+        "max_candidates_per_game": 48,
         "candidate_source_aliases": [
+          {
+            "source": "moppy",
+            "labels": [
+              "モッピー（AppDriver）",
+              "モッピー(AppDriver)",
+              "モッピー"
+            ]
+          },
+          {
+            "source": "warau",
+            "labels": [
+              "ワラウ"
+            ]
+          },
+          {
+            "source": "chobirich",
+            "labels": [
+              "ちょびリッチ"
+            ]
+          },
+          {
+            "source": "coincome",
+            "labels": [
+              "COINCOME（AppDriver）",
+              "COINCOME(AppDriver)",
+              "COINCOME"
+            ]
+          },
+          {
+            "source": "mikoshi",
+            "labels": [
+              "MIKOSHI"
+            ]
+          },
+          {
+            "source": "gendama",
+            "labels": [
+              "げん玉（AppDriver）",
+              "げん玉(AppDriver)",
+              "げん玉"
+            ]
+          },
           {
             "source": "hapitas",
             "labels": [
               "ハピタス（AppDriver）",
+              "ハピタス(AppDriver)",
               "ハピタス"
             ]
           },
           {
             "source": "kurashiru_reward",
+            "providerHint": "gf_rewards",
             "labels": [
               "クラシルリワード（レシチャレ）",
+              "クラシルリワード(レシチャレ)",
               "クラシルリワード",
               "レシチャレ"
             ]
@@ -265,7 +310,71 @@
             "labels": [
               "トリマ （ミッションB）",
               "トリマ（ミッションB）",
+              "トリマ(ミッションB)",
               "トリマ"
+            ]
+          },
+          {
+            "source": "point_income",
+            "labels": [
+              "ポイントインカム"
+            ]
+          },
+          {
+            "source": "amefuri",
+            "labels": [
+              "アメフリ"
+            ]
+          },
+          {
+            "source": "gmo_point",
+            "labels": [
+              "GMOポイ活（AppDriver）",
+              "GMOポイ活(AppDriver)",
+              "GMOポイ活"
+            ]
+          },
+          {
+            "source": "powl",
+            "labels": [
+              "Powl",
+              "ポール"
+            ]
+          },
+          {
+            "source": "point_town",
+            "labels": [
+              "ポイントタウン"
+            ]
+          },
+          {
+            "source": "ec_navi",
+            "labels": [
+              "ECナビ"
+            ]
+          },
+          {
+            "source": "nifty_point",
+            "labels": [
+              "ニフティポイントクラブ"
+            ]
+          },
+          {
+            "source": "point_land",
+            "labels": [
+              "ポイントランド"
+            ]
+          },
+          {
+            "source": "chance",
+            "labels": [
+              "チャンスイット"
+            ]
+          },
+          {
+            "source": "waku_waku",
+            "labels": [
+              "ワクワクメール"
             ]
           }
         ]
