@@ -3188,3 +3188,21 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         ('放置少女', 'Android', '1501'),
     }
     assert not any(row['game'] == 'Township' for row in hapitas_rows)
+
+
+def test_unified_listing_snapshot_reuses_one_fetch_for_multiple_consumers():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'def get_listing_snapshot(url, source, consumer):' in script
+    assert '"new_game_discovery"' in script
+    assert '"existing_game_refresh"' in script
+    assert '"known_game_coverage"' in script
+    assert '"mode": "fetch_once_reuse_many"' in script
+    assert '"uniqueListings": len(listing_snapshots)' in script
+    assert '"reuseCount": listing_snapshot_reuses' in script
+
+
+def test_listing_snapshot_does_not_replace_detail_fetch_cache():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'inspect_detail(\n                        url, source, aliases, fetcher=fetch_once,' in script
+    assert 'listing_snapshots = {}' in script
+    assert 'if key in listing_snapshots:' in script
