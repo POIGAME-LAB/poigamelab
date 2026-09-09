@@ -1814,8 +1814,9 @@ def main():
 
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     status = {
-        "phase": "DIRECT_COMPARISON_REFRESH_V2",
+        "phase": "DIRECT_COMPARISON_REFRESH_V1",
         "checkedAt": checked_at,
+        "coverageDiscoveryVersion": 2,
         "coverageDiscoveryMode": "candidate-only" if coverage_enabled else "disabled",
         "comparisonSources": comparison_sources,
         "apiCalls": 0,
@@ -1860,8 +1861,9 @@ def main():
     tmp_legacy.replace(LEGACY_STATUS)
 
     review_payload = {
-        "phase": "DIRECT_COMPARISON_REVIEW_V2",
+        "phase": "DIRECT_COMPARISON_REVIEW_V1",
         "checkedAt": checked_at,
+        "coverageDiscoveryVersion": 2,
         "items": review,
     }
     tmp2 = REVIEW.with_suffix(".json.tmp")
