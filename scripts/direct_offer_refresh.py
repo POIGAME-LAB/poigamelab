@@ -2059,6 +2059,13 @@ def main():
             raise error
         return result
 
+    def cached_listing_urls_for_source(source):
+        source_id = str(source.get("id") or "")
+        return [
+            url for (sid, url), snapshot in listing_snapshots.items()
+            if sid == source_id and snapshot.get("result") is not None
+        ]
+
     new_game_discovery_summary = {
         "sources": 0, "listingPages": 0, "fetchErrors": 0, "candidateCount": 0,
         "completeSources": 0, "incompleteSources": 0,
@@ -2528,10 +2535,20 @@ def main():
                     })
 
             for discovery_source in first_party_coverage_sources[:6]:
-                listing_urls = [
+                configured_listing_urls = [
                     str(x).strip() for x in (discovery_source.get("direct_listing_urls") or [])
                     if str(x).strip()
-                ][:max(0, min(2, int(discovery_source.get("direct_listing_limit", 1))))]
+                ]
+                if discovery_source.get("full_catalog_discovery_enabled") is True:
+                    listing_urls = cached_listing_urls_for_source(discovery_source)
+                    if not listing_urls:
+                        listing_urls = configured_listing_urls[
+                            :max(0, min(100, int(discovery_source.get("direct_listing_limit", 1))))
+                        ]
+                else:
+                    listing_urls = configured_listing_urls[
+                        :max(0, min(2, int(discovery_source.get("direct_listing_limit", 1))))
+                    ]
                 for listing_url in listing_urls:
                     if not source_host_allowed(listing_url, discovery_source):
                         coverage_summary["fetchErrors"] += 1
