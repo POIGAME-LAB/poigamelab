@@ -117,7 +117,7 @@ def test_coverage_discovery_extracts_working_heroes_eight_candidates_and_four_ga
         'query_url_template': 'https://poikan.com/q/{query}',
         'candidate_source_aliases': [
             {'source': 'hapitas', 'labels': ['ハピタス（AppDriver）', 'ハピタス']},
-            {'source': 'kurashiru_reward', 'labels': ['クラシルリワード（レシチャレ）']},
+            {'source': 'kurashiru_reward', 'providerHint': 'gf_rewards', 'labels': ['クラシルリワード（レシチャレ）']},
             {'source': 'trima', 'labels': ['トリマ （ミッションB）']},
         ],
     }
