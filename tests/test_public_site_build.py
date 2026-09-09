@@ -422,7 +422,6 @@ def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir
         and item.get("sourceEvidence", {}).get("parserVersion") == "warau-stepup-v1"
     }
     expected = {
-        "201872": ("ホワイトアウト・サバイバル", "Android", 11500),
         "201862": ("ホワイトアウト・サバイバル", "iOS", 11500),
         "206425": ("パズル＆サバイバル", "Android", 24600),
         "204984": ("キングショット", "Android", 16000),
@@ -716,6 +715,30 @@ def test_memento_warau_12050_ios_android_pair_is_public(output_dir):
     }
     assert all(row["updatedAt"] == "2026-09-09" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
+
+
+def test_public_site_excludes_ended_whiteout_warau_android(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    assert not any(
+        row["game"] == "ホワイトアウト・サバイバル"
+        and row["site"] == "warau"
+        and row["url"] == "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872"
+        for row in rows
+    )
+    ios = [
+        row for row in rows
+        if row["game"] == "ホワイトアウト・サバイバル"
+        and row["site"] == "warau"
+        and row["url"] == "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862"
+    ]
+    assert len(ios) == 1
+    assert ios[0]["platform"] == "iOS"
+    assert ios[0]["reward"] == "11500"
 
 
 def test_builder_rejects_unsafe_output_locations(tmp_path):
