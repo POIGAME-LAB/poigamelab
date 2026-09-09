@@ -60,14 +60,14 @@ def test_public_site_builder_copies_only_launch_allowlist(output_dir):
     copied_set = set(copied)
 
     required = {
-        "index.html", "game.html", "offers.html", "guides.html", "404.html", "new-game-status.html",
+        "index.html", "game.html", "offers.html", "guides.html", "404.html", "new-game-status.html", "existing-game-status.html",
         "about.html", "privacy.html", "contact.html", "tokyo-debunker-guide.html",
         "puzzles-survival-guide.html", "kingshot-guide.html", "houchishojo-guide.html",
         "evertale-guide.html", "site-data.js", "site-footer.js", "site-referrals.js",
         "site-guides.js", "site-image-rights.js", "site-header.js", "games.js",
         "games.csv", "robots.txt", "poigamelab_icon.png", "assets/guide-experience.css",
         "assets/guide-experience.js", "data/published_offers.csv", "data/offer_history.csv",
-        "data/refresh_status.json", "data/exception_queue.json", "data/new_game_monitor.json",
+        "data/refresh_status.json", "data/exception_queue.json", "data/new_game_monitor.json", "data/existing_game_monitor.json",
         "data/guide-experiences/kinoko.json", "data/guide-experiences/mementomori.json",
         "data/guide-experiences/whiteout-survival.json",
         "data/guide-experiences/working-heroes.json", "config/refresh_policy.json",
@@ -1043,3 +1043,18 @@ def test_public_new_game_monitor_is_sanitized(output_dir):
     assert "data/new_game_monitor.json" in page
     assert "data/new_game_candidate_queue.json" not in page
     assert "data/new_game_candidate_history.json" not in page
+
+
+def test_public_existing_game_monitor_is_sanitized(output_dir):
+    builder.build_public_site(output_dir)
+    monitor = json.loads((output_dir / "data" / "existing_game_monitor.json").read_text(encoding="utf-8"))
+    assert monitor["phase"] == "PUBLIC_EXISTING_GAME_MONITOR_V1"
+    assert monitor["candidateOnly"] is True
+    assert monitor["publicationAuthorized"] is False
+    assert not (output_dir / "data" / "existing_game_candidate_queue.json").exists()
+    page = (output_dir / "existing-game-status.html").read_text(encoding="utf-8")
+    assert 'name="robots" content="noindex,nofollow"' in page
+    assert "data/existing_game_monitor.json" in page
+    assert "data/existing_game_candidate_queue.json" not in page
+    assert "rewardYenHint" not in page
+    assert "POIGAME_DATA.safeHttpUrl" in page
