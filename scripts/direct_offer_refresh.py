@@ -2297,10 +2297,12 @@ def main():
 
     new_game_discovery_summary = {
         "sources": 0, "listingPages": 0, "fetchErrors": 0, "candidateCount": 0,
-        "completeSources": 0, "incompleteSources": 0,
+        "completeSources": 0, "incompleteSources": 0, "sourceResults": [],
     }
     for discovery_source in new_game_discovery_sources[:12]:
         new_game_discovery_summary["sources"] += 1
+        source_error_start = new_game_discovery_summary["fetchErrors"]
+        source_candidate_start = new_game_discovery_summary["candidateCount"]
         listing_limit = max(
             0, min(
                 int(discovery_source.get("new_game_discovery_listing_limit")
@@ -2380,10 +2382,41 @@ def main():
                 if remaining <= 0:
                     break
 
+        candidate_limit_reached = remaining <= 0
         if use_pagination and not source_complete and pages_attempted >= page_cap:
             new_game_discovery_summary["incompleteSources"] += 1
         else:
             new_game_discovery_summary["completeSources"] += 1
+
+        source_errors = new_game_discovery_summary["fetchErrors"] - source_error_start
+        source_candidates = new_game_discovery_summary["candidateCount"] - source_candidate_start
+        catalog_complete = (
+            not candidate_limit_reached
+            and (
+                discovery_source.get("full_catalog_discovery_enabled") is True
+                or (use_pagination and source_complete)
+            )
+        )
+        scan_complete = (
+            source_errors == 0
+            and not candidate_limit_reached
+            and (not use_pagination or source_complete)
+        )
+        new_game_discovery_summary["sourceResults"].append({
+            "source": str(discovery_source.get("id") or ""),
+            "sourceLabel": str(discovery_source.get("name") or discovery_source.get("id") or ""),
+            "scope": str(
+                discovery_source.get("new_game_discovery_scope")
+                or discovery_source.get("coverage_scope")
+                or "unspecified"
+            ),
+            "listingPagesAttempted": pages_attempted,
+            "fetchErrors": source_errors,
+            "candidateCount": source_candidates,
+            "scanComplete": scan_complete,
+            "catalogComplete": catalog_complete,
+            "candidateLimitReached": candidate_limit_reached,
+        })
 
     for target in targets:
         game = str(target.get("game") or "").strip()

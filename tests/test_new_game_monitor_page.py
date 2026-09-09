@@ -34,3 +34,14 @@ def test_monitor_revalidates_candidate_urls_before_rendering_links():
     page = (ROOT / "new-game-status.html").read_text(encoding="utf-8")
     assert "POIGAME_DATA.safeHttpUrl" in page
     assert "safeCandidateUrl" in page
+
+
+def test_monitor_shows_source_collection_health():
+    page = (ROOT / "new-game-status.html").read_text(encoding="utf-8")
+    assert "収集ヘルス" in page
+    assert 'id="sourceHealth"' in page
+    assert "monitor.sourceHealth" in page
+    assert "catalogComplete===true" in page
+    assert "scanComplete===true" in page
+    assert "candidateLimitReached===true" in page
+    assert "取得エラー" in page
