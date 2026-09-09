@@ -404,6 +404,44 @@ def coverage_candidate_is_covered(candidate, rows, game):
     return False
 
 
+def coverage_candidate_key(game, candidate, discovery_source_id=""):
+    """Stable key for deduplicating review-only coverage gaps."""
+    return (
+        str(game or ""),
+        str(candidate.get("source") or ""),
+        str(candidate.get("providerHint") or ""),
+        str(candidate.get("platformHint") or ""),
+        str(candidate.get("rewardYenHint") or ""),
+        str(discovery_source_id or ""),
+    )
+
+
+def coverage_candidate_queue_item(game, candidate, discovery_source_id, discovery_url, checked_at, sources):
+    """Build one non-publishable coverage-gap queue item.
+
+    Third-party comparison data is a discovery hint only. The explicit safety
+    flags below are intentionally redundant so downstream tooling cannot treat
+    this file as publication evidence by accident.
+    """
+    candidate_source = str(candidate.get("source") or "")
+    return {
+        "game": str(game or ""),
+        "source": candidate_source,
+        "sourceLabel": candidate.get("sourceLabel"),
+        "providerHint": candidate.get("providerHint"),
+        "platformHint": candidate.get("platformHint"),
+        "rewardYenHint": candidate.get("rewardYenHint"),
+        "discoverySource": str(discovery_source_id or ""),
+        "discoveryUrl": str(discovery_url or ""),
+        "registeredSource": candidate_source in sources,
+        "verificationState": "first_party_required",
+        "firstPartyVerificationRequired": True,
+        "publicationAuthorized": False,
+        "candidateOnly": True,
+        "checkedAt": checked_at,
+    }
+
+
 def _to_int(raw):
     digits = re.sub(r"[^\d]", "", str(raw or ""))
     if not digits:
@@ -1414,6 +1452,8 @@ def main():
     }
     changed = 0  # kept for status compatibility; scheduled mode never changes reward values
     review = []
+    coverage_candidate_queue = []
+    coverage_candidate_seen = set()
     results = []
     checked_at = now_iso()
     refreshed = set()
@@ -1785,21 +1825,17 @@ def main():
                         coverage_summary["coveredCount"] += 1
                         continue
                     coverage_summary["gapCount"] += 1
-                    candidate_source = str(candidate.get("source") or "")
+                    discovery_source_id = str(discovery_source.get("id") or "")
+                    queue_item = coverage_candidate_queue_item(
+                        game, candidate, discovery_source_id, final_url, checked_at, sources
+                    )
+                    queue_key = coverage_candidate_key(game, candidate, discovery_source_id)
+                    if queue_key not in coverage_candidate_seen:
+                        coverage_candidate_seen.add(queue_key)
+                        coverage_candidate_queue.append(queue_item)
                     review.append({
-                        "game": game,
-                        "source": candidate_source,
+                        **queue_item,
                         "reason": "external_coverage_gap_candidate",
-                        "discoverySource": str(discovery_source.get("id") or ""),
-                        "discoveryUrl": final_url,
-                        "sourceLabel": candidate.get("sourceLabel"),
-                        "providerHint": candidate.get("providerHint"),
-                        "platformHint": candidate.get("platformHint"),
-                        "rewardYenHint": candidate.get("rewardYenHint"),
-                        "registeredSource": candidate_source in sources,
-                        "firstPartyVerificationRequired": True,
-                        "publicationAuthorized": False,
-                        "checkedAt": checked_at,
                     })
         game_result["coverageDiscovery"] = coverage_summary
 
@@ -1826,6 +1862,7 @@ def main():
         "publishedRewardChanges": changed,
         "refreshedRows": len(refreshed),
         "reviewCount": len(review),
+        "coverageCandidateQueueCount": len(coverage_candidate_queue),
         "games": results,
         "success": True,
     }
@@ -1872,6 +1909,21 @@ def main():
     tmp2 = REVIEW.with_suffix(".json.tmp")
     tmp2.write_text(json.dumps(review_payload, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp2.replace(REVIEW)
+
+    candidate_path = REVIEW.with_name("comparison_candidate_queue.json")
+    candidate_payload = {
+        "phase": "DIRECT_COMPARISON_CANDIDATE_QUEUE_V1",
+        "checkedAt": checked_at,
+        "coverageDiscoveryVersion": 2,
+        "candidateOnly": True,
+        "firstPartyVerificationRequired": True,
+        "publicationAuthorized": False,
+        "count": len(coverage_candidate_queue),
+        "items": coverage_candidate_queue,
+    }
+    tmp3 = candidate_path.with_suffix(".json.tmp")
+    tmp3.write_text(json.dumps(candidate_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp3.replace(candidate_path)
 
     print("Direct comparison refresh complete")
     print("API calls: 0")
