@@ -314,7 +314,12 @@
       "scheduled_fetch_reason": "Coverage-only anonymous app-install listing is stable but not known to cover all PointTown app/game surfaces; detail retrieval and publication remain disabled.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 6,
-      "coverage_scope": "partial_web_app_install_listing"
+      "coverage_scope": "partial_web_app_install_listing",
+      "full_catalog_discovery_enabled": false,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 50,
+      "new_game_discovery_scope": "partial_web_app_install_listing"
     },
     {
       "id": "ec_navi",
@@ -341,7 +346,12 @@
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "Coverage-only first-party app/game listing is anonymous and stable; detail retrieval and publication remain disabled until detail-page verification is reviewed.",
       "coverage_first_party_listing_enabled": true,
-      "coverage_candidate_limit": 4
+      "coverage_candidate_limit": 4,
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 200,
+      "new_game_discovery_scope": "full_current_category_listing"
     },
     {
       "id": "nifty_point",
@@ -409,7 +419,12 @@
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "Coverage-only first-party app listing is anonymous and stable; reward-detail retrieval and publication remain disabled until detail-page evidence is reviewed.",
       "coverage_first_party_listing_enabled": true,
-      "coverage_candidate_limit": 6
+      "coverage_candidate_limit": 6,
+      "full_catalog_discovery_enabled": false,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 100,
+      "new_game_discovery_scope": "partial_ranked_app_listing"
     }
   ],
   "offerwall_domains_discovered": [
