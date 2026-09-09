@@ -381,6 +381,85 @@ def test_dokotoku_coverage_parser_extracts_current_working_heroes_rows_safely():
     assert all(x.get('publicationAuthorized') is None for x in candidates)
 
 
+def test_first_party_listing_candidates_keep_distinct_detail_urls_and_never_publish():
+    source = {
+        'id': 'ec_navi',
+        'name': 'ECナビ',
+        'start_url': 'https://ecnavi.jp/',
+        'search_domains': ['ecnavi.jp'],
+        'direct_detail_url_hints': ['/ad/', '/show/'],
+    }
+    html = '''
+      <ul>
+        <li class="service-item">
+          <a href="/ad/111111/show/?frame=category">ワーキングヒーローズ Android</a>
+        </li>
+        <li class="service-item">
+          <a href="/ad/222222/show/?frame=category">ワーキングヒーローズ iOS</a>
+        </li>
+        <li class="service-item">
+          <a href="/ad/333333/show/?frame=category">別ゲーム</a>
+        </li>
+      </ul>
+    '''
+    candidates = direct.discover_first_party_listing_candidates(
+        html,
+        'https://ecnavi.jp/search/category/16/',
+        source,
+        ['ワーキングヒーロー', 'ワーキングヒーローズ'],
+    )
+    assert [x['firstPartyCandidateUrl'] for x in candidates] == [
+        'https://ecnavi.jp/ad/111111/show/?frame=category',
+        'https://ecnavi.jp/ad/222222/show/?frame=category',
+    ]
+    assert all(x['source'] == 'ec_navi' for x in candidates)
+    assert all(x['rewardYenHint'] == '' for x in candidates)
+    assert all(x['platformHint'] == '' for x in candidates)
+
+    key1 = direct.coverage_candidate_key('ワーキングヒーロー', candidates[0], 'ec_navi')
+    key2 = direct.coverage_candidate_key('ワーキングヒーロー', candidates[1], 'ec_navi')
+    assert key1 != key2
+
+    item = direct.coverage_candidate_queue_item(
+        'ワーキングヒーロー',
+        candidates[0],
+        'ec_navi',
+        'https://ecnavi.jp/search/category/16/',
+        '2026-09-09T00:00:00+00:00',
+        {'ec_navi': source},
+    )
+    assert item['firstPartyCandidateUrl'] == 'https://ecnavi.jp/ad/111111/show/?frame=category'
+    assert item['verificationState'] == 'first_party_detail_required'
+    assert item['firstPartyVerificationRequired'] is True
+    assert item['publicationAuthorized'] is False
+    assert item['candidateOnly'] is True
+
+
+def test_first_party_candidate_coverage_requires_exact_offer_identity():
+    candidate = {
+        'source': 'ec_navi',
+        'firstPartyCandidateUrl': 'https://ecnavi.jp/ad/111111/show/?frame=category',
+        'rewardYenHint': '',
+        'platformHint': '',
+    }
+    rows = [{
+        'game': 'ワーキングヒーロー',
+        'site': 'ec_navi',
+        'url': 'https://ecnavi.jp/ad/222222/show/?frame=category',
+        'reward': '100',
+        'platform': 'Android',
+    }]
+    assert direct.coverage_candidate_is_covered(candidate, rows, 'ワーキングヒーロー') is False
+    rows.append({
+        'game': 'ワーキングヒーロー',
+        'site': 'ec_navi',
+        'url': 'https://ecnavi.jp/ad/111111/show/?frame=other',
+        'reward': '200',
+        'platform': 'iOS',
+    })
+    assert direct.coverage_candidate_is_covered(candidate, rows, 'ワーキングヒーロー') is True
+
+
 def test_repository_has_two_candidate_only_coverage_radars():
     source_cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
     coverage = source_cfg['coverage_discovery']
@@ -447,11 +526,18 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
         'https://www.rewards.kurashiru.com/categories/3'
     ]
     assert by_id['trima']['scheduled_fetch_enabled'] is False
-    for source_id in ('point_income', 'amefuri', 'point_town', 'ec_navi', 'nifty_point'):
+    for source_id in ('point_income', 'amefuri', 'point_town', 'nifty_point'):
         assert by_id[source_id]['discovery_only'] is True
         assert by_id[source_id]['scheduled_fetch_enabled'] is False
         assert by_id[source_id]['direct_listing_limit'] == 0
         assert by_id[source_id]['direct_detail_limit'] == 0
+    assert by_id['ec_navi']['discovery_only'] is True
+    assert by_id['ec_navi']['scheduled_fetch_enabled'] is False
+    assert by_id['ec_navi']['coverage_first_party_listing_enabled'] is True
+    assert by_id['ec_navi']['direct_listing_urls'] == ['https://ecnavi.jp/search/category/16/']
+    assert by_id['ec_navi']['direct_listing_limit'] == 1
+    assert by_id['ec_navi']['direct_detail_limit'] == 0
+    assert '/ad/' in by_id['ec_navi']['direct_detail_url_hints']
     assert by_id['point_income']['start_url'] == 'https://pointi.jp/'
     assert by_id['amefuri']['start_url'] == 'https://www.amefri.net/'
     assert by_id['point_town']['start_url'] == 'https://www.pointtown.com/'
