@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,6 +26,7 @@ ROOT_FILES = (
     "houchishojo-guide.html",
     "evertale-guide.html",
     "data-status.html",
+    "new-game-status.html",
     "about.html",
     "privacy.html",
     "contact.html",
@@ -89,6 +92,93 @@ def _copy_tree(source: Path, destination: Path) -> None:
             _copy_file(path, destination / relative)
 
 
+def _safe_monitor_url(value: str) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    try:
+        parsed = urlsplit(raw)
+    except ValueError:
+        return ""
+    if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+        return ""
+    return raw
+
+
+def _load_optional_json(path: Path, default):
+    if not path.exists() or path.is_symlink():
+        return default
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return default
+    return value
+
+
+def _public_candidate(item):
+    if not isinstance(item, dict):
+        return None
+    return {
+        "titleHint": str(item.get("titleHint") or ""),
+        "source": str(item.get("source") or ""),
+        "classification": str(item.get("classification") or "review"),
+        "discoveryScope": str(item.get("discoveryScope") or ""),
+        "firstSeen": item.get("firstSeen"),
+        "isNewToday": item.get("isNewToday") is True,
+        "firstPartyCandidateUrl": _safe_monitor_url(item.get("firstPartyCandidateUrl")),
+    }
+
+
+def _build_new_game_monitor_snapshot() -> dict:
+    queue = _load_optional_json(ROOT / "data" / "new_game_candidate_queue.json", {})
+    history = _load_optional_json(ROOT / "data" / "new_game_candidate_history.json", {})
+
+    raw_items = queue.get("items") if isinstance(queue, dict) else []
+    candidates = [
+        value for value in (_public_candidate(item) for item in (raw_items or []))
+        if value is not None
+    ]
+
+    raw_priority = queue.get("reviewPriority") if isinstance(queue, dict) else []
+    priority = []
+    for item in raw_priority or []:
+        if not isinstance(item, dict):
+            continue
+        priority.append({
+            "titleHint": str(item.get("titleHint") or ""),
+            "source": str(item.get("source") or ""),
+            "classification": str(item.get("classification") or "review"),
+            "sourceCount": int(item.get("sourceCount") or 0),
+            "reviewPriorityScore": int(item.get("reviewPriorityScore") or 0),
+            "reviewPriority": str(item.get("reviewPriority") or "low"),
+        })
+
+    history_items = []
+    raw_history = history.get("items") if isinstance(history, dict) else {}
+    if isinstance(raw_history, dict):
+        for item in raw_history.values():
+            if not isinstance(item, dict):
+                continue
+            history_items.append({
+                "titleHint": str(item.get("titleHint") or ""),
+                "source": str(item.get("source") or ""),
+                "firstSeen": item.get("firstSeen"),
+                "lastSeen": item.get("lastSeen"),
+                "lastMissingAt": item.get("lastMissingAt"),
+                "active": item.get("active") is True,
+            })
+
+    return {
+        "phase": "PUBLIC_NEW_GAME_MONITOR_V1",
+        "checkedAt": queue.get("checkedAt") if isinstance(queue, dict) else None,
+        "candidateOnly": True,
+        "publicationAuthorized": False,
+        "items": candidates,
+        "reviewPriority": priority,
+        "historyItems": history_items,
+    }
+
+
 def build_public_site(output: Path) -> list[str]:
     output = output.resolve()
     if output == ROOT or ROOT not in output.parents:
@@ -110,6 +200,13 @@ def build_public_site(output: Path) -> list[str]:
 
     for name in CONFIG_FILES:
         _copy_file(ROOT / "config" / name, output / "config" / name)
+
+    monitor_path = output / "data" / "new_game_monitor.json"
+    monitor_path.parent.mkdir(parents=True, exist_ok=True)
+    monitor_path.write_text(
+        json.dumps(_build_new_game_monitor_snapshot(), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
 
     for name in DATA_DIRS:
         _copy_tree(ROOT / "data" / name, output / "data" / name)

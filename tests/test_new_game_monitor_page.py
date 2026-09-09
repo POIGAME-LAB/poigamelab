@@ -6,8 +6,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_new_game_monitor_is_noindex_and_candidate_only():
     page = (ROOT / "new-game-status.html").read_text(encoding="utf-8")
     assert '<meta name="robots" content="noindex,nofollow">' in page
-    assert "data/new_game_candidate_queue.json" in page
-    assert "data/new_game_candidate_history.json" in page
+    assert "data/new_game_monitor.json" in page
+    assert "data/new_game_candidate_queue.json" not in page
+    assert "data/new_game_candidate_history.json" not in page
     assert "ここに表示される候補は未確認です" in page
     assert "案件公開" in page
     assert "最高還元" in page
