@@ -2625,6 +2625,8 @@ def main():
             "gapCount": 0,
             "coveredCount": 0,
             "fetchErrors": 0,
+            "detailReviewCount": 0,
+            "verifiedRewardCandidateCount": 0,
         }
         if coverage_enabled:
             for discovery_source in coverage_sources[:3]:
@@ -2676,6 +2678,13 @@ def main():
                     })
 
             for discovery_source in first_party_coverage_sources[:6]:
+                detail_review_enabled = discovery_source.get("coverage_detail_review_enabled") is True
+                detail_review_remaining = max(
+                    0, min(
+                        int(discovery_source.get("coverage_detail_review_limit_per_game") or 0),
+                        8,
+                    )
+                )
                 configured_listing_urls = [
                     str(x).strip() for x in (discovery_source.get("direct_listing_urls") or [])
                     if str(x).strip()
@@ -2721,6 +2730,87 @@ def main():
 
                     coverage_summary["candidateCount"] += len(candidates)
                     for candidate in candidates:
+                        if detail_review_enabled and detail_review_remaining > 0:
+                            candidate_url = str(candidate.get("firstPartyCandidateUrl") or "").strip()
+                            if candidate_url and source_host_allowed(candidate_url, discovery_source):
+                                detail_review_remaining -= 1
+                                try:
+                                    detail = inspect_detail(
+                                        candidate_url,
+                                        discovery_source,
+                                        aliases,
+                                        fetcher=fetch_once,
+                                        provider_label_registry=offerwall_provider_label_registry,
+                                    )
+                                    evidence = detail.get("sourceEvidence")
+                                    coverage_summary["detailReviewCount"] += 1
+                                    if (
+                                        isinstance(evidence, dict)
+                                        and evidence.get("state") == "parsed"
+                                        and type(evidence.get("verifiedCurrentRewardYen")) is int
+                                    ):
+                                        coverage_summary["verifiedRewardCandidateCount"] += 1
+                                        source_id = str(discovery_source.get("id") or "")
+                                        detected_reward = evidence["verifiedCurrentRewardYen"]
+                                        identity = offer_identity_key(candidate_url, source_id)
+                                        existing = row_by_identity.get((game, source_id, identity))
+                                        reason = "first_party_existing_game_new_offer_candidate"
+                                        stored_reward = None
+                                        reward_matches_stored = None
+                                        if existing is not None:
+                                            try:
+                                                stored_reward = int(str(existing.get("reward") or "").replace(",", ""))
+                                            except (TypeError, ValueError):
+                                                stored_reward = None
+                                            if stored_reward is not None:
+                                                reward_matches_stored = detected_reward == stored_reward
+                                                reason = (
+                                                    "first_party_existing_game_reward_verified"
+                                                    if reward_matches_stored
+                                                    else "first_party_existing_game_reward_change_candidate"
+                                                )
+                                        item = {
+                                            "game": game,
+                                            "source": source_id,
+                                            "url": detail.get("url") or candidate_url,
+                                            "reason": reason,
+                                            "detectedReward": detected_reward,
+                                            "platformHint": evidence.get("platform") or "",
+                                            "sourceEvidence": evidence,
+                                            "candidateOnly": True,
+                                            "firstPartyVerificationRequired": True,
+                                            "autoCreateAuthorized": False,
+                                            "publicationAuthorized": False,
+                                            "checkedAt": checked_at,
+                                        }
+                                        if stored_reward is not None:
+                                            item["storedReward"] = stored_reward
+                                            item["rewardMatchesStored"] = reward_matches_stored
+                                        review.append(item)
+                                    else:
+                                        review.append({
+                                            "game": game,
+                                            "source": str(discovery_source.get("id") or ""),
+                                            "url": detail.get("url") or candidate_url,
+                                            "reason": "first_party_existing_game_detail_review_required",
+                                            "sourceEvidence": evidence or {},
+                                            "candidateOnly": True,
+                                            "publicationAuthorized": False,
+                                            "checkedAt": checked_at,
+                                        })
+                                except Exception as error:
+                                    coverage_summary["fetchErrors"] += 1
+                                    review.append({
+                                        "game": game,
+                                        "source": str(discovery_source.get("id") or ""),
+                                        "url": candidate_url,
+                                        "reason": "first_party_existing_game_detail_fetch_failed",
+                                        "error": summarize_fetch_error(error),
+                                        "candidateOnly": True,
+                                        "publicationAuthorized": False,
+                                        "checkedAt": checked_at,
+                                    })
+
                         if coverage_candidate_is_covered(candidate, rows, game):
                             coverage_summary["coveredCount"] += 1
                             continue
@@ -2765,8 +2855,18 @@ def main():
         "existingRewardChangeCandidateCount": sum(
             1 for item in review
             if str(item.get("reason") or "") in {
-                "reward_change_candidate", "moppy_shell_reward_change_candidate"
+                "reward_change_candidate",
+                "moppy_shell_reward_change_candidate",
+                "first_party_existing_game_reward_change_candidate",
             }
+        ),
+        "existingGameNewOfferCandidateCount": sum(
+            1 for item in review
+            if str(item.get("reason") or "") == "first_party_existing_game_new_offer_candidate"
+        ),
+        "existingGameVerifiedRewardCount": sum(
+            1 for item in review
+            if str(item.get("reason") or "") == "first_party_existing_game_reward_verified"
         ),
         "coverageCandidateQueueCount": len(coverage_candidate_queue),
         "newGameCandidateQueueCount": len(new_game_candidate_queue),

@@ -301,14 +301,18 @@
         "/detail/id/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Coverage-only anonymous first-party game listing spans 26 reviewed pages. Shared fetch caching keeps each listing URL to at most one request per run; detail parsing/publication remain disabled until source-specific validation is complete.",
+      "scheduled_fetch_reason": "Full 26-page first-party game catalog is reused for discovery and known-game coverage. Up to 3 matching known-game detail pages per game are review-fetched nightly with the strict Amefuri parser. Publication remains disabled pending reviewed promotion rules.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 12,
       "coverage_scope": "full_paginated_game_listing",
       "full_catalog_discovery_enabled": true,
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 26,
-      "new_game_discovery_candidate_limit": 500
+      "new_game_discovery_candidate_limit": 500,
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 3,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "amefuri-multistep-review-v1"
     },
     {
       "id": "point_town",

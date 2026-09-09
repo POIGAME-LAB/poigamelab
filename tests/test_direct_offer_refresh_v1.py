@@ -3376,3 +3376,43 @@ def test_amefuri_offer_identity_allows_only_tracking_query():
         assert str(error) == 'ambiguous_offer_identity'
     else:
         raise AssertionError('user-specific query must be rejected')
+
+
+def test_amefuri_known_game_detail_review_is_bounded_and_candidate_only():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    amefuri = next(item for item in cfg['sources'] if item['id'] == 'amefuri')
+    assert amefuri['coverage_detail_review_enabled'] is True
+    assert amefuri['coverage_detail_review_limit_per_game'] == 3
+    assert amefuri['coverage_detail_review_mode'] == 'candidate_only'
+    assert amefuri['coverage_detail_review_parser'] == 'amefuri-multistep-review-v1'
+    assert amefuri['scheduled_fetch_enabled'] is False
+
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'detail_review_remaining = max(' in script
+    assert 'min(' in script
+    assert '"first_party_existing_game_new_offer_candidate"' in script
+    assert '"first_party_existing_game_reward_verified"' in script
+    assert '"first_party_existing_game_reward_change_candidate"' in script
+    assert '"candidateOnly": True' in script
+    assert '"publicationAuthorized": False' in script
+    assert '"verifiedRewardCandidateCount"' in script
+
+
+def test_amefuri_detail_review_does_not_authorize_publication():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    marker = '"reason": reason'
+    idx = script.index(marker, script.index('"first_party_existing_game_new_offer_candidate"'))
+    block = script[idx:idx + 1800]
+    assert '"publicationAuthorized": False' in block
+    assert '"autoCreateAuthorized": False' in block
+    assert 'write_published' not in block
+
+
+def test_first_party_reward_status_separates_new_verified_and_changed():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert '"existingRewardChangeCandidateCount"' in script
+    assert '"existingGameNewOfferCandidateCount"' in script
+    assert '"existingGameVerifiedRewardCount"' in script
+    change_block = script[script.index('"existingRewardChangeCandidateCount"'):]
+    assert '"first_party_existing_game_reward_change_candidate"' in change_block[:1000]
+    assert '"first_party_existing_game_new_offer_candidate"' not in change_block[:1000]
