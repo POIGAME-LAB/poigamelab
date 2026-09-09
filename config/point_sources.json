@@ -246,12 +246,19 @@
       "discovery_only": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [],
-      "direct_listing_limit": 0,
+      "direct_listing_urls": [
+        "https://www.amefri.net/item_list?slug=app_game"
+      ],
+      "direct_listing_limit": 1,
       "direct_detail_limit": 0,
-      "direct_detail_url_hints": [],
+      "direct_detail_url_hints": [
+        "/detail/id/"
+      ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Discovery-only source until a stable first-party app/game listing or detail route is validated."
+      "scheduled_fetch_reason": "Coverage-only anonymous first-party game listing is public and stable, but the first page is not exhaustive and detail parsing/publication remain disabled until source-specific validation is complete.",
+      "coverage_first_party_listing_enabled": true,
+      "coverage_candidate_limit": 8,
+      "coverage_scope": "partial_first_page_game_listing"
     },
     {
       "id": "point_town",
