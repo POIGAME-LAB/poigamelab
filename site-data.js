@@ -509,6 +509,60 @@
       .trim();
   }
 
+  async function loadCoverageCandidates() {
+    try {
+      const payload = await fetchJson("data/comparison_candidate_queue.json");
+      const safeEnvelope = payload?.candidateOnly === true
+        && payload?.firstPartyVerificationRequired === true
+        && payload?.publicationAuthorized === false;
+      if (!safeEnvelope) {
+        console.info("候補案件キューの安全フラグを確認できないため表示しません。");
+        return { available: false, checkedAt: "", items: [] };
+      }
+
+      const rawItems = Array.isArray(payload.items) ? payload.items : [];
+      const seen = new Set();
+      const items = rawItems
+        .filter((item) =>
+          item?.candidateOnly === true
+          && item?.firstPartyVerificationRequired === true
+          && item?.publicationAuthorized === false
+        )
+        .map((item) => ({
+          gameName: String(item.game || "").trim(),
+          source: String(item.source || "").trim(),
+          sourceLabel: String(item.sourceLabel || "").trim(),
+          providerHint: String(item.providerHint || "").trim(),
+          platformHint: String(item.platformHint || "").trim(),
+          verificationState: String(item.verificationState || "").trim(),
+          firstPartyCandidateUrl: safeHttpUrl(item.firstPartyCandidateUrl),
+          checkedAt: String(item.checkedAt || payload.checkedAt || "").trim()
+        }))
+        .filter((item) => item.gameName && item.source)
+        .filter((item) => {
+          const key = [
+            item.gameName,
+            item.source,
+            item.providerHint,
+            item.platformHint,
+            item.firstPartyCandidateUrl
+          ].join("|");
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+      return {
+        available: true,
+        checkedAt: String(payload.checkedAt || "").trim(),
+        items
+      };
+    } catch (error) {
+      console.info("候補案件キューはまだ利用できません。", error.message);
+      return { available: false, checkedAt: "", items: [] };
+    }
+  }
+
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -544,6 +598,7 @@
     getOfferHealthLabel,
     formatHealthUpdatedAt,
     loadOfferHistory,
+    loadCoverageCandidates,
     buildRewardTrends,
     buildGameRewardTrend,
     summarizeOfferCondition,
