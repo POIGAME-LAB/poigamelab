@@ -685,6 +685,7 @@ def offer_identity_key(url, source_id):
         r"/item/detail/itemid/(\d+)",
         r"/shopping/(\d+)",
         r"/service/item/(\d+)",
+        r"/ad/(\d+)/show/",
     ):
         m = re.search(pattern, path, re.I)
         if m:
