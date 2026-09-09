@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>既存ゲーム価格監視 | POIGAME LAB</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f5f2ff;color:#241842;margin:0}
+    .wrap{max-width:1120px;margin:auto;padding:28px 18px 56px}.back{color:#6a38d4;font-weight:800;text-decoration:none}
+    .hero{margin:18px 0 16px;padding:26px;border-radius:22px;background:linear-gradient(135deg,#2d145d,#7250db);color:#fff}
+    .hero small{color:#ffe66d;font-weight:900;letter-spacing:1.5px}.hero h1{margin:8px 0;font-size:30px}.hero p{margin:0;line-height:1.7;color:#eee8ff}
+    .warn{background:#fff8df;border:1px solid #f3d977;border-radius:14px;padding:13px 15px;color:#6f5610;font-size:12px;line-height:1.7}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 24px}.stat,.item{background:#fff;border-radius:16px;padding:18px;box-shadow:0 8px 28px #4f2b7d18}
+    .stat span{display:block;color:#766c87;font-size:12px;font-weight:800}.stat strong{display:block;margin-top:7px;font-size:27px}
+    .section{margin-top:28px}.section h2{font-size:21px}.list{display:grid;gap:10px}
+    .row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.title{font-weight:900}.pill{padding:4px 9px;border-radius:999px;background:#eee8ff;color:#5d35c9;font-size:11px;font-weight:900}
+    .pill.hot{background:#ffe7df;color:#a43d1d}.pill.new{background:#fff1b8;color:#805b00}.pill.ok{background:#e5f7ec;color:#1c7045}
+    .meta{margin-top:8px;color:#6d6478;font-size:12px;line-height:1.7}.link{color:#6439d5;font-weight:800;text-decoration:none}.empty{padding:18px;background:#fff;border-radius:14px;color:#756c84}
+    @media(max-width:760px){.grid{grid-template-columns:1fr}.hero h1{font-size:25px}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="data-status.html">← データ更新状況へ</a>
+  <section class="hero">
+    <small>EXISTING GAME MONITOR</small>
+    <h1>既存ゲーム価格監視</h1>
+    <p>毎日1:00 JSTの巡回で、POIGAME LAB掲載ゲームに対する金額変更・新規案件・一致確認済み候補を確認します。</p>
+  </section>
+  <div class="warn">ここは確認待ちの運営用候補です。候補だけでは最高還元や公開価格へ自動反映しません。</div>
+  <section class="grid">
+    <div class="stat"><span>金額変更候補</span><strong id="rewardChanges">--</strong></div>
+    <div class="stat"><span>新規掲載候補</span><strong id="newOffers">--</strong></div>
+    <div class="stat"><span>金額一致確認済み</span><strong id="verifiedSame">--</strong></div>
+  </section>
+  <section class="section"><h2>🔥 金額変更候補</h2><div id="changes" class="list"></div></section>
+  <section class="section"><h2>✨ 新規掲載候補</h2><div id="new" class="list"></div></section>
+  <section class="section"><h2>✅ 金額一致確認済み</h2><div id="verified" class="list"></div></section>
+</main>
+<script src="site-data.js"></script>
+<script>
+(async()=>{
+  const esc=(v)=>POIGAME_DATA.escapeHtml(String(v??''));
+  const empty=(t)=>'<div class="empty">'+esc(t)+'</div>';
+  const monitor=await POIGAME_DATA.fetchJson('data/existing_game_monitor.json').catch(()=>({items:[]}));
+  const items=Array.isArray(monitor.items)?monitor.items:[];
+  const changeReasons=new Set(['reward_change_candidate','moppy_shell_reward_change_candidate','first_party_existing_game_reward_change_candidate']);
+  const changes=items.filter(x=>changeReasons.has(String(x.reason||'')));
+  const news=items.filter(x=>x.reason==='first_party_existing_game_new_offer_candidate');
+  const verified=items.filter(x=>x.reason==='first_party_existing_game_reward_verified');
+  document.getElementById('rewardChanges').textContent=changes.length+'件';
+  document.getElementById('newOffers').textContent=news.length+'件';
+  document.getElementById('verifiedSame').textContent=verified.length+'件';
+
+  const card=(x,kind)=>{
+    const safe=POIGAME_DATA.safeHttpUrl(x.url||'');
+    const cls=kind==='change'?'hot':(kind==='new'?'new':'ok');
+    const label=kind==='change'?'PRICE CHANGE':(kind==='new'?'NEW OFFER':'VERIFIED');
+    const stored=x.storedReward==null?'--':Number(x.storedReward).toLocaleString('ja-JP')+'円';
+    const detected=x.detectedReward==null?'--':Number(x.detectedReward).toLocaleString('ja-JP')+'円';
+    return '<article class="item"><div class="row"><span class="title">'+esc(x.game||'ゲーム名不明')+'</span><span class="pill '+cls+'">'+label+'</span><span class="pill">'+esc(x.source||'unknown')+'</span><span class="pill">'+esc(x.platformHint||'OS確認中')+'</span></div><div class="meta">保存額: '+esc(stored)+' / 検知額: '+esc(detected)+'<br>判定: '+esc(x.reason||'')+'<br>確認: '+esc(x.checkedAt||'--')+(safe?'<br><a class="link" target="_blank" rel="noopener noreferrer" href="'+esc(safe)+'">一次ページを確認 ↗</a>':'')+'</div></article>';
+  };
+  document.getElementById('changes').innerHTML=changes.length?changes.map(x=>card(x,'change')).join(''):empty('金額変更候補はありません。');
+  document.getElementById('new').innerHTML=news.length?news.map(x=>card(x,'new')).join(''):empty('新規掲載候補はありません。');
+  document.getElementById('verified').innerHTML=verified.length?verified.map(x=>card(x,'verified')).join(''):empty('金額一致確認済み候補はありません。');
+})().catch((e)=>{console.error(e);document.getElementById('changes').innerHTML='<div class="empty">データを読み込めませんでした。</div>';});
+</script>
+<script src="site-footer.js"></script>
+</body></html>
