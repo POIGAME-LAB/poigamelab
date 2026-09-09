@@ -160,6 +160,174 @@ def test_coverage_discovery_extracts_working_heroes_eight_candidates_and_four_ga
     }
 
 
+def test_coverage_candidate_queue_item_is_deduplicable_and_never_publishable():
+    candidate = {
+        'source': 'kurashiru_reward',
+        'sourceLabel': 'クラシルリワード（レシチャレ）',
+        'providerHint': 'gf_rewards',
+        'platformHint': 'iOS',
+        'rewardYenHint': 6031,
+    }
+    sources = {'kurashiru_reward': {'id': 'kurashiru_reward'}}
+    key1 = direct.coverage_candidate_key('ワーキングヒーロー', candidate, 'poikan')
+    key2 = direct.coverage_candidate_key('ワーキングヒーロー', dict(candidate), 'poikan')
+    assert key1 == key2
+
+    item = direct.coverage_candidate_queue_item(
+        'ワーキングヒーロー',
+        candidate,
+        'poikan',
+        'https://poikan.com/q/%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0',
+        '2026-09-09T01:00:00+00:00',
+        sources,
+    )
+    assert item['source'] == 'kurashiru_reward'
+    assert item['providerHint'] == 'gf_rewards'
+    assert item['platformHint'] == 'iOS'
+    assert item['rewardYenHint'] == 6031
+    assert item['registeredSource'] is True
+    assert item['verificationState'] == 'first_party_required'
+    assert item['firstPartyVerificationRequired'] is True
+    assert item['publicationAuthorized'] is False
+    assert item['candidateOnly'] is True
+
+
+def test_main_writes_deduplicated_candidate_queue_without_publishing(tmp_path, monkeypatch):
+    (tmp_path/'config').mkdir()
+    (tmp_path/'data').mkdir()
+
+    monkeypatch.setattr(direct, 'ROOT', tmp_path)
+    monkeypatch.setattr(direct, 'POLICY', tmp_path/'config/refresh_policy.json')
+    monkeypatch.setattr(direct, 'TARGETS', tmp_path/'config/game_targets.json')
+    monkeypatch.setattr(direct, 'SOURCES', tmp_path/'config/point_sources.json')
+    monkeypatch.setattr(direct, 'PUBLISHED', tmp_path/'data/published_offers.csv')
+    monkeypatch.setattr(direct, 'STATUS', tmp_path/'data/comparison_refresh_status.json')
+    monkeypatch.setattr(direct, 'LEGACY_STATUS', tmp_path/'data/refresh_status.json')
+    monkeypatch.setattr(direct, 'REVIEW', tmp_path/'data/comparison_review_queue.json')
+
+    direct.POLICY.write_text(json.dumps({
+        'comparisonSources': ['testsite'],
+        'minimumConfirmedSourcesForComparison': 1,
+        'games': {'ワーキングヒーロー': {'enabled': True, 'supplementalSources': []}},
+        'publication': {'directRefreshNeverCreatesNewPublishedRows': True},
+        'coverageDiscovery': {
+            'enabled': True,
+            'mode': 'candidate-only',
+            'requireFirstPartyVerificationBeforePublication': True,
+            'publishFromDiscovery': False,
+        },
+    }, ensure_ascii=False), encoding='utf-8')
+    direct.TARGETS.write_text(json.dumps({'games': [{
+        'game': 'ワーキングヒーロー',
+        'aliases': ['ワーキングヒーロー', 'ワーキングヒーローズ'],
+        'known_urls_by_source': {},
+    }]}, ensure_ascii=False), encoding='utf-8')
+    direct.SOURCES.write_text(json.dumps({
+        'sources': [
+            {
+                'id': 'testsite',
+                'search_domains': ['testsite.jp'],
+                'mobile': True,
+                'direct_listing_urls': [],
+                'direct_detail_url_hints': [],
+            },
+            {
+                'id': 'kurashiru_reward',
+                'search_domains': ['www.rewards.kurashiru.com'],
+                'discovery_only': True,
+                'scheduled_fetch_enabled': False,
+            },
+            {
+                'id': 'trima',
+                'search_domains': ['www.trip-mile.com'],
+                'discovery_only': True,
+                'scheduled_fetch_enabled': False,
+            },
+        ],
+        'coverage_discovery': {
+            'enabled': True,
+            'candidate_only': True,
+            'never_publish': True,
+            'sources': [{
+                'id': 'poikan',
+                'search_domains': ['poikan.com'],
+                'query_url_template': 'https://poikan.com/q/{query}',
+                'max_candidates_per_game': 24,
+                'candidate_source_aliases': [
+                    {
+                        'source': 'kurashiru_reward',
+                        'providerHint': 'gf_rewards',
+                        'labels': ['クラシルリワード（レシチャレ）'],
+                    },
+                    {
+                        'source': 'trima',
+                        'labels': ['トリマ （ミッションB）'],
+                    },
+                ],
+            }],
+        },
+    }, ensure_ascii=False), encoding='utf-8')
+
+    with direct.PUBLISHED.open('w', encoding='utf-8', newline='') as handle:
+        writer = csv.DictWriter(handle, fieldnames=direct.FIELDS, lineterminator='\n')
+        writer.writeheader()
+        writer.writerow({
+            'offerKey': 'existing',
+            'game': 'ワーキングヒーロー',
+            'site': 'hapitas',
+            'provider': '',
+            'reward': '11502',
+            'condition': '既存の検証済み案件',
+            'platform': 'iOS',
+            'type': 'StepUp',
+            'deadline': '60日以内',
+            'updatedAt': '2026-09-09',
+            'url': 'https://hapitas.jp/item/detail/itemid/101444',
+            'sourceUrl': 'https://hapitas.jp/item/detail/itemid/101444',
+            'verified': 'true',
+        })
+    before = direct.PUBLISHED.read_bytes()
+
+    comparison_html = '''
+      <main>
+        <div>ワーキングヒーローズ〖iOS〗 6,031円 クラシルリワード（レシチャレ）</div>
+        <div>ワーキングヒーローズ〖iOS〗 6,031円 クラシルリワード（レシチャレ）</div>
+        <div>ワーキングヒーローズ〖Android〗 6,031円 クラシルリワード（レシチャレ）</div>
+        <div>ワーキングヒーローズ〖iOS・Android〗 4,987円 トリマ （ミッションB）</div>
+      </main>
+    '''
+
+    def fake_fetch(url, source, timeout=15, max_bytes=1200000):
+        if source.get('id') == 'poikan':
+            return comparison_html, url
+        return '<html><body>no matching offer</body></html>', url
+
+    monkeypatch.setattr(direct, 'fetch_first_party', fake_fetch)
+
+    assert direct.main() == 0
+    assert direct.PUBLISHED.read_bytes() == before
+
+    queue_path = direct.REVIEW.with_name('comparison_candidate_queue.json')
+    payload = json.loads(queue_path.read_text(encoding='utf-8'))
+    assert payload['phase'] == 'DIRECT_COMPARISON_CANDIDATE_QUEUE_V1'
+    assert payload['candidateOnly'] is True
+    assert payload['firstPartyVerificationRequired'] is True
+    assert payload['publicationAuthorized'] is False
+    assert payload['count'] == 3
+    assert {
+        (item['source'], item['platformHint'], item['rewardYenHint'])
+        for item in payload['items']
+    } == {
+        ('kurashiru_reward', 'iOS', 6031),
+        ('kurashiru_reward', 'Android', 6031),
+        ('trima', 'iOS|Android', 4987),
+    }
+    assert all(item['publicationAuthorized'] is False for item in payload['items'])
+
+    status = json.loads(direct.STATUS.read_text(encoding='utf-8'))
+    assert status['coverageCandidateQueueCount'] == 3
+
+
 def test_coverage_discovery_query_is_bounded_and_https_allowlisted():
     source = {
         'search_domains': ['poikan.com'],
