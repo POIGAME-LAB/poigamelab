@@ -250,6 +250,54 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
         "firstPartyCandidateUrl": url,
     } for url in detail_urls]
 
+def normalized_game_title_key(value):
+    """Conservative key for matching known game titles and aliases.
+
+    This removes presentation punctuation/spacing and common platform suffixes
+    but intentionally keeps substantive words and numbers.
+    """
+    text = html.unescape(str(value or "")).strip().casefold()
+    text = re.sub(r"^(?:ios|android|and)[ _：:・\-]+", "", text, flags=re.I)
+    text = re.sub(r"[（(](?:ios|android)[）)]$", "", text, flags=re.I)
+    text = text.replace("＆", "&")
+    text = re.sub(r"[\s・･·／/｜|：:‐‑‒–—―_\-]+", "", text)
+    text = re.sub(r"[【】\[\]（）()「」『』〈〉《》]", "", text)
+    return text[:220]
+
+
+def known_game_title_keys(targets):
+    keys = set()
+    for target in targets or []:
+        values = [target.get("game")] + list(target.get("aliases") or [])
+        for value in values:
+            key = normalized_game_title_key(value)
+            if key:
+                keys.add(key)
+    return keys
+
+
+def context_matches_known_game(context, targets):
+    """Match known games using reviewed aliases plus conservative title keys."""
+    text = str(context or "")
+    aliases = []
+    for target in targets or []:
+        game = str(target.get("game") or "").strip()
+        if game:
+            aliases.append(game)
+        aliases.extend(str(x).strip() for x in (target.get("aliases") or []) if str(x).strip())
+
+    if target_present(text, aliases):
+        return True
+
+    context_key = normalized_game_title_key(text)
+    if not context_key:
+        return False
+    for key in known_game_title_keys(targets):
+        if len(key) >= 4 and key in context_key:
+            return True
+    return False
+
+
 def new_game_title_cluster_key(value):
     """Conservative review-only title key for clustering new-game candidates.
 
@@ -470,7 +518,7 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
             node = node.parent
             depth += 1
 
-        if any(target_present(context, [alias]) for alias in known_aliases):
+        if context_matches_known_game(context, targets):
             continue
 
         anchor_label = evidence_text(anchor).strip()
