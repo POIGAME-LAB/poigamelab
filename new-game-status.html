@@ -83,11 +83,10 @@
 (async()=>{
   const esc=(v)=>POIGAME_DATA.escapeHtml(String(v??''));
   const empty=(text)=>'<div class="empty">'+esc(text)+'</div>';
-  const history=await POIGAME_DATA.fetchJson('data/new_game_candidate_history.json').catch(()=>({items:{}}));
-  const queue=await POIGAME_DATA.fetchJson('data/new_game_candidate_queue.json').catch(()=>({items:[],reviewPriority:[],checkedAt:null}));
-  const items=Array.isArray(queue.items)?queue.items:[];
-  const historyItems=history&&history.items&&typeof history.items==='object'?Object.values(history.items):[];
-  const priorities=Array.isArray(queue.reviewPriority)?queue.reviewPriority:[];
+  const monitor=await POIGAME_DATA.fetchJson('data/new_game_monitor.json').catch(()=>({items:[],reviewPriority:[],historyItems:[],checkedAt:null}));
+  const items=Array.isArray(monitor.items)?monitor.items:[];
+  const historyItems=Array.isArray(monitor.historyItems)?monitor.historyItems:[];
+  const priorities=Array.isArray(monitor.reviewPriority)?monitor.reviewPriority:[];
 
   const today=items.filter(x=>x&&x.isNewToday===true);
   const continuing=items.filter(x=>x&&x.isNewToday!==true);
@@ -98,7 +97,7 @@
   document.getElementById('activeCount').textContent=items.length+'件';
   document.getElementById('highCount').textContent=high.length+'件';
   document.getElementById('inactiveCount').textContent=inactive.length+'件';
-  document.getElementById('checkedAt').textContent=queue.checkedAt?'最終収集 '+esc(queue.checkedAt):'収集履歴なし';
+  document.getElementById('checkedAt').textContent=monitor.checkedAt?'最終収集 '+esc(monitor.checkedAt):'収集履歴なし';
 
   const candidateCard=(x)=>{
     const safeCandidateUrl=POIGAME_DATA.safeHttpUrl(x.firstPartyCandidateUrl||'');
