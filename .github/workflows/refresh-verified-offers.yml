@@ -3,7 +3,7 @@ name: Refresh comparison offers (API-free)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 16 * * *"
+    - cron: "17 16 * * *"
 
 permissions:
   contents: write
