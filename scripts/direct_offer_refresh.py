@@ -339,6 +339,9 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
             "firstPartyCandidateUrl": absolute,
             "offerIdentity": identity,
             "discoveryEvidence": "first_party_listing",
+            "discoveryScope": str(source.get("new_game_discovery_scope")
+                                  or source.get("coverage_scope") or "unspecified"),
+            "fullCatalogObserved": source.get("full_catalog_discovery_enabled") is True,
             "candidateOnly": True,
             "firstPartyVerificationRequired": True,
             "autoCreateAuthorized": False,
@@ -1645,7 +1648,6 @@ def main():
         x for x in sources.values()
         if isinstance(x, dict)
         and x.get("new_game_discovery_enabled") is True
-        and x.get("full_catalog_discovery_enabled") is True
         and str(x.get("id") or "").strip()
     ]
     try:
