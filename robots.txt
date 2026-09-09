@@ -6,3 +6,4 @@ Disallow: /docs/
 Disallow: /scripts/
 Disallow: /tests/
 Disallow: /data-status.html
+Sitemap: https://poigamelab.com/sitemap.xml
