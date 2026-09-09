@@ -3416,3 +3416,58 @@ def test_first_party_reward_status_separates_new_verified_and_changed():
     change_block = script[script.index('"existingRewardChangeCandidateCount"'):]
     assert '"first_party_existing_game_reward_change_candidate"' in change_block[:1000]
     assert '"first_party_existing_game_new_offer_candidate"' not in change_block[:1000]
+
+
+def test_existing_game_candidate_queue_is_candidate_only_and_bounded():
+    checked = '2026-09-09T23:30:00+09:00'
+    payload = direct.build_existing_game_candidate_queue([
+        {
+            'game': 'キングショット',
+            'source': 'amefuri',
+            'url': 'https://www.amefri.net/detail/id/140198',
+            'reason': 'first_party_existing_game_reward_change_candidate',
+            'storedReward': 4500,
+            'detectedReward': 4737,
+            'platformHint': 'Android',
+            'sourceEvidence': {
+                'parserVersion': 'amefuri-multistep-review-v1',
+                'evidenceFingerprint': 'abc123',
+                'termsText': 'do not persist this long terms block',
+            },
+            'checkedAt': checked,
+        },
+        {
+            'game': 'キングショット',
+            'source': 'amefuri',
+            'url': 'https://www.amefri.net/detail/id/140198',
+            'reason': 'first_party_existing_game_reward_change_candidate',
+            'storedReward': 4500,
+            'detectedReward': 4737,
+            'platformHint': 'Android',
+            'checkedAt': checked,
+        },
+        {
+            'game': '新作',
+            'source': 'amefuri',
+            'url': 'https://www.amefri.net/detail/id/999999',
+            'reason': 'unrelated_review_reason',
+            'checkedAt': checked,
+        },
+    ], checked)
+    assert payload['phase'] == 'DIRECT_EXISTING_GAME_CANDIDATE_QUEUE_V1'
+    assert payload['candidateOnly'] is True
+    assert payload['publicationAuthorized'] is False
+    assert payload['count'] == 1
+    assert payload['rewardChangeCount'] == 1
+    item = payload['items'][0]
+    assert item['game'] == 'キングショット'
+    assert item['detectedReward'] == 4737
+    assert item['parserVersion'] == 'amefuri-multistep-review-v1'
+    assert item['evidenceFingerprint'] == 'abc123'
+    assert 'sourceEvidence' not in item
+    assert 'termsText' not in item
+
+
+def test_nightly_workflow_persists_existing_game_candidate_queue():
+    workflow = (ROOT/'.github/workflows/refresh-verified-offers.yml').read_text(encoding='utf-8')
+    assert 'data/existing_game_candidate_queue.json' in workflow
