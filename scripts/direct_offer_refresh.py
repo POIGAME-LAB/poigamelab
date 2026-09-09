@@ -1550,11 +1550,18 @@ def inspect_ecnavi_offer(raw, requested_url, final_url, aliases):
             raise ValueError("missing_or_ambiguous_yen_equivalent")
         displayed_yen = yen_matches[0]
 
+        yen_marker = re.search(
+            r"[（(]\s*[1-9][0-9,]*\s*円分\s*[）)]",
+            header,
+        )
+        if yen_marker is None:
+            raise ValueError("missing_or_ambiguous_yen_equivalent")
+        point_header = header[:yen_marker.start()]
         number_tokens = [
             int(value.replace(",", ""))
             for value in re.findall(
                 r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]{2,})(?![0-9,])",
-                header,
+                point_header,
             )
         ]
         point_candidates = sorted({
