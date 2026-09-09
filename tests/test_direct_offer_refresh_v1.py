@@ -140,6 +140,8 @@ def test_coverage_discovery_extracts_working_heroes_eight_candidates_and_four_ga
     assert sum(x['source'] == 'hapitas' for x in candidates) == 4
     assert sum(x['source'] == 'kurashiru_reward' for x in candidates) == 3
     assert sum(x['source'] == 'trima' for x in candidates) == 1
+    kurashiru = [x for x in candidates if x['source'] == 'kurashiru_reward']
+    assert all(x['providerHint'] == 'gf_rewards' for x in kurashiru)
 
     rows = [
         {'game': 'ワーキングヒーロー', 'site': 'hapitas', 'platform': 'Android', 'reward': '11502'},
@@ -180,6 +182,13 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
 
     source_ids = {x['id'] for x in source_cfg['sources']}
     assert {'kurashiru_reward', 'trima'} <= source_ids
+    labels = {
+        item['source']: item
+        for item in coverage['sources'][0]['candidate_source_aliases']
+    }
+    assert {'moppy','warau','chobirich','coincome','gendama','hapitas','kurashiru_reward','trima',
+            'point_income','amefuri','gmo_point','powl','point_town','ec_navi','nifty_point'} <= set(labels)
+    assert labels['kurashiru_reward']['providerHint'] == 'gf_rewards'
     by_id = {x['id']: x for x in source_cfg['sources']}
     assert by_id['kurashiru_reward']['discovery_only'] is True
     assert by_id['trima']['discovery_only'] is True
