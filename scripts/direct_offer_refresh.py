@@ -383,6 +383,77 @@ def discover_coverage_candidates(raw, aliases, discovery_source, limit=24):
     return candidates
 
 
+def discover_dokotoku_coverage_candidates(raw, aliases, discovery_source, limit=48):
+    """Extract candidate-only hints from bounded Dokotoku result rows."""
+    try:
+        tree = EvidenceHTML(raw or "")
+    except (TypeError, ValueError, RecursionError):
+        return []
+
+    mappings = discovery_source.get("candidate_source_aliases") or []
+    candidates = []
+    seen = set()
+    nodes = tree.root.find(tag="tr") + tree.root.find(tag="li")
+    for node in nodes:
+        row_text = evidence_text(node)
+        if not row_text or len(row_text) > 700 or not target_present(row_text, aliases):
+            continue
+
+        mapping_hit = None
+        label_hit = ""
+        for mapping in mappings:
+            labels = sorted(
+                {str(x).strip() for x in (mapping.get("labels") or []) if str(x).strip()},
+                key=len, reverse=True
+            )
+            for label in labels:
+                if label in row_text:
+                    mapping_hit = mapping
+                    label_hit = label
+                    break
+            if mapping_hit is not None:
+                break
+        if mapping_hit is None:
+            continue
+
+        reward_match = re.search(r"([0-9][0-9,]*(?:\.[0-9]+)?)\s*円", row_text)
+        if not reward_match:
+            continue
+        try:
+            reward_yen = int(float(reward_match.group(1).replace(",", "")))
+        except (TypeError, ValueError):
+            continue
+        if reward_yen <= 0 or reward_yen >= 1_000_000:
+            continue
+
+        # Dokotoku documents a=Android, i=iOS, s=smartphone.
+        # Only a/i are precise enough for platform hints.
+        tokens = re.split(r"\s+", row_text)
+        platform = ""
+        if "a" in tokens and "i" not in tokens:
+            platform = "Android"
+        elif "i" in tokens and "a" not in tokens:
+            platform = "iOS"
+
+        source_id = str(mapping_hit.get("source") or "").strip()
+        key = (source_id, platform, reward_yen, label_hit)
+        if not source_id or key in seen:
+            continue
+        seen.add(key)
+        candidates.append({
+            "source": source_id,
+            "sourceLabel": label_hit,
+            "providerHint": str(mapping_hit.get("providerHint") or "").strip(),
+            "gameLabel": next((a for a in aliases if normalized_text(a) in normalized_text(row_text)), aliases[0]),
+            "platformHint": platform,
+            "rewardYenHint": reward_yen,
+            "occurrence": len(candidates) + 1,
+        })
+        if len(candidates) >= max(1, min(int(limit or 48), 60)):
+            break
+    return candidates
+
+
 def coverage_candidate_is_covered(candidate, rows, game):
     """Return True only when a current public row already covers the hint.
 
@@ -1748,7 +1819,9 @@ def main():
             "gapCount": 0,
             "coveredCount": 0,
             "fetchErrors": 0,
+            "corroboratedGapCount": 0,
         }
+        coverage_gap_sightings = {}
         if coverage_enabled:
             for discovery_source in coverage_sources[:3]:
                 query_url = coverage_query_url(discovery_source, aliases)
@@ -1764,9 +1837,14 @@ def main():
                 try:
                     raw, final_url = fetch_once(query_url, discovery_source)
                     max_candidates = int(discovery_source.get("max_candidates_per_game") or 24)
-                    candidates = discover_coverage_candidates(
-                        raw, aliases, discovery_source, limit=max_candidates
-                    )
+                    if discovery_source.get("parser") == "dokotoku_rows":
+                        candidates = discover_dokotoku_coverage_candidates(
+                            raw, aliases, discovery_source, limit=max_candidates
+                        )
+                    else:
+                        candidates = discover_coverage_candidates(
+                            raw, aliases, discovery_source, limit=max_candidates
+                        )
                 except Exception as error:
                     coverage_summary["fetchErrors"] += 1
                     review.append({
@@ -1786,21 +1864,44 @@ def main():
                         continue
                     coverage_summary["gapCount"] += 1
                     candidate_source = str(candidate.get("source") or "")
-                    review.append({
-                        "game": game,
-                        "source": candidate_source,
-                        "reason": "external_coverage_gap_candidate",
-                        "discoverySource": str(discovery_source.get("id") or ""),
-                        "discoveryUrl": final_url,
-                        "sourceLabel": candidate.get("sourceLabel"),
-                        "providerHint": candidate.get("providerHint"),
-                        "platformHint": candidate.get("platformHint"),
-                        "rewardYenHint": candidate.get("rewardYenHint"),
-                        "registeredSource": candidate_source in sources,
-                        "firstPartyVerificationRequired": True,
-                        "publicationAuthorized": False,
-                        "checkedAt": checked_at,
+                    fingerprint = "|".join([
+                        candidate_source,
+                        str(candidate.get("platformHint") or ""),
+                        str(candidate.get("rewardYenHint") or ""),
+                    ])
+                    sighting = coverage_gap_sightings.setdefault(fingerprint, {
+                        "candidate": candidate,
+                        "radars": [],
                     })
+                    sighting["radars"].append({
+                        "id": str(discovery_source.get("id") or ""),
+                        "url": final_url,
+                    })
+
+            for fingerprint, sighting in coverage_gap_sightings.items():
+                candidate = sighting["candidate"]
+                radars = sighting["radars"]
+                radar_ids = list(dict.fromkeys(x["id"] for x in radars))
+                if len(radar_ids) >= 2:
+                    coverage_summary["corroboratedGapCount"] += 1
+                candidate_source = str(candidate.get("source") or "")
+                review.append({
+                    "game": game,
+                    "source": candidate_source,
+                    "reason": "external_coverage_gap_candidate",
+                    "candidateFingerprint": fingerprint,
+                    "discoverySources": radar_ids,
+                    "discoveryUrls": list(dict.fromkeys(x["url"] for x in radars)),
+                    "corroborationCount": len(radar_ids),
+                    "sourceLabel": candidate.get("sourceLabel"),
+                    "providerHint": candidate.get("providerHint"),
+                    "platformHint": candidate.get("platformHint"),
+                    "rewardYenHint": candidate.get("rewardYenHint"),
+                    "registeredSource": candidate_source in sources,
+                    "firstPartyVerificationRequired": True,
+                    "publicationAuthorized": False,
+                    "checkedAt": checked_at,
+                })
         game_result["coverageDiscovery"] = coverage_summary
 
         game_result["standardTotal"] = len(comparison_sources)
