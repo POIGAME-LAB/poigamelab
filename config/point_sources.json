@@ -283,7 +283,11 @@
       "scheduled_fetch_reason": "Coverage-only anonymous first-party game listing spans 26 reviewed pages. Shared fetch caching keeps each listing URL to at most one request per run; detail parsing/publication remain disabled until source-specific validation is complete.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 12,
-      "coverage_scope": "full_paginated_game_listing"
+      "coverage_scope": "full_paginated_game_listing",
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 26,
+      "new_game_discovery_candidate_limit": 500
     },
     {
       "id": "point_town",
