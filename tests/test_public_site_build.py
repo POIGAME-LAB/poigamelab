@@ -1036,6 +1036,7 @@ def test_public_new_game_monitor_is_sanitized(output_dir):
     assert monitor["phase"] == "PUBLIC_NEW_GAME_MONITOR_V1"
     assert monitor["candidateOnly"] is True
     assert monitor["publicationAuthorized"] is False
+    assert isinstance(monitor["sourceHealth"], list)
     assert not (output_dir / "data" / "new_game_candidate_queue.json").exists()
     assert not (output_dir / "data" / "new_game_candidate_history.json").exists()
     page = (output_dir / "new-game-status.html").read_text(encoding="utf-8")
