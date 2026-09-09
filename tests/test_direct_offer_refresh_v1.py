@@ -3745,3 +3745,36 @@ def test_hapitas_known_game_detail_review_is_bounded_candidate_only():
     assert hapitas['coverage_detail_review_mode'] == 'candidate_only'
     assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v1'
     assert hapitas['scheduled_fetch_enabled'] is False
+
+
+def test_moppy_paginated_discovery_requires_nonempty_first_page():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    moppy = next(item for item in cfg['sources'] if item['id'] == 'moppy')
+    assert moppy['new_game_discovery_enabled'] is True
+    assert '{page}' in moppy['new_game_discovery_page_url_template']
+    assert moppy['new_game_discovery_max_pages'] == 60
+    assert moppy['new_game_discovery_candidate_limit'] == 2000
+    assert moppy['new_game_discovery_min_detail_identities_first_page'] == 1
+    assert moppy['full_catalog_discovery_enabled'] is False
+
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'min_first_page_identities = max(' in script
+    assert 'pages_attempted == 1 and len(signature) < min_first_page_identities' in script
+    assert 'content_guard_failed = True' in script
+    assert '"contentGuardFailed": content_guard_failed' in script
+
+
+def test_existing_game_refresh_reuses_new_game_listing_snapshots():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'cached_discovery_listing_urls = cached_listing_urls_for_source(' in script
+    assert 'consumer="new_game_discovery"' in script
+    assert 'existing_listing_urls = (' in script
+    assert 'if cached_discovery_listing_urls' in script
+
+
+def test_discovery_summary_marks_guard_failure_incomplete():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'source_incomplete = (' in script
+    assert 'content_guard_failed' in script[script.index('source_incomplete = ('):script.index('source_incomplete = (') + 500]
+    assert 'candidate_limit_reached' in script[script.index('source_incomplete = ('):script.index('source_incomplete = (') + 500]
+    assert '(use_pagination and not source_complete)' in script

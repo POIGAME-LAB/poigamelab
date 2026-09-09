@@ -2742,6 +2742,13 @@ def main():
         seen_page_signatures = set()
         source_complete = not use_pagination
         pages_attempted = 0
+        content_guard_failed = False
+        min_first_page_identities = max(
+            0, min(
+                int(discovery_source.get("new_game_discovery_min_detail_identities_first_page") or 0),
+                100,
+            )
+        )
 
         for listing_url in listing_urls:
             if remaining <= 0:
@@ -2757,6 +2764,10 @@ def main():
                     raw, final_url, discovery_source, limit=5000
                 )
                 if use_pagination:
+                    if pages_attempted == 1 and len(signature) < min_first_page_identities:
+                        content_guard_failed = True
+                        new_game_discovery_summary["fetchErrors"] += 1
+                        break
                     if not signature:
                         source_complete = True
                         break
@@ -2793,7 +2804,12 @@ def main():
                     break
 
         candidate_limit_reached = remaining <= 0
-        if use_pagination and not source_complete and pages_attempted >= page_cap:
+        source_incomplete = (
+            content_guard_failed
+            or candidate_limit_reached
+            or (use_pagination and not source_complete)
+        )
+        if source_incomplete:
             new_game_discovery_summary["incompleteSources"] += 1
         else:
             new_game_discovery_summary["completeSources"] += 1
@@ -2802,6 +2818,7 @@ def main():
         source_candidates = new_game_discovery_summary["candidateCount"] - source_candidate_start
         catalog_complete = (
             not candidate_limit_reached
+            and not content_guard_failed
             and (
                 discovery_source.get("full_catalog_discovery_enabled") is True
                 or (use_pagination and source_complete)
@@ -2809,6 +2826,7 @@ def main():
         )
         scan_complete = (
             source_errors == 0
+            and not content_guard_failed
             and not candidate_limit_reached
             and (not use_pagination or source_complete)
         )
@@ -2826,6 +2844,7 @@ def main():
             "scanComplete": scan_complete,
             "catalogComplete": catalog_complete,
             "candidateLimitReached": candidate_limit_reached,
+            "contentGuardFailed": content_guard_failed,
         })
 
     for target in targets:
@@ -2887,7 +2906,15 @@ def main():
             offerwall_presence = []
             listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
             detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
-            for listing_url in target_listing_urls(source, aliases)[:listing_limit]:
+            cached_discovery_listing_urls = cached_listing_urls_for_source(
+                source, consumer="new_game_discovery"
+            )
+            existing_listing_urls = (
+                cached_discovery_listing_urls
+                if cached_discovery_listing_urls
+                else target_listing_urls(source, aliases)[:listing_limit]
+            )
+            for listing_url in existing_listing_urls:
                 try:
                     raw, final_url = get_listing_snapshot(listing_url, source, "existing_game_refresh")
                     if target_present(visible_text(raw), aliases):

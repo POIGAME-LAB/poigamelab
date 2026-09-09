@@ -26,7 +26,16 @@
       "direct_detail_limit": 6,
       "direct_detail_url_hints": [
         "ad/detail.php"
-      ]
+      ],
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_page_url_template": "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page={page}",
+      "new_game_discovery_max_pages": 60,
+      "new_game_discovery_candidate_limit": 2000,
+      "new_game_discovery_min_detail_identities_first_page": 1,
+      "new_game_discovery_scope": "paginated_first_party_app_listing",
+      "full_catalog_discovery_enabled": false,
+      "reviewedAt": "2026-09-10",
+      "discoveryNote": "Official Moppy help links to the smartphone-browser app advertising list. The reviewed list URL is paginated. Nightly discovery starts only if page 1 exposes at least one first-party detail identity; otherwise it is reported as a collection failure, never as an empty catalog. Fetched pages are reused for existing-game refresh."
     },
     {
       "id": "warau",
