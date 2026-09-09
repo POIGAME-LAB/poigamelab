@@ -741,6 +741,25 @@ def test_public_site_excludes_ended_whiteout_warau_android(output_dir):
     assert ios[0]["reward"] == "11500"
 
 
+def test_tokyo_debunker_warau_210_ios_android_pair_is_public(output_dir):
+    builder.build_public_site(output_dir)
+    import csv
+
+    rows = list(csv.DictReader(
+        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
+    ))
+    matches = [
+        row for row in rows
+        if row["game"] == "東京ディバンカー" and row["site"] == "warau"
+    ]
+    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
+        ("iOS", "210", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191400"),
+        ("Android", "210", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191401"),
+    }
+    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
+    assert all(row["verified"].lower() == "true" for row in matches)
+
+
 def test_builder_rejects_unsafe_output_locations(tmp_path):
     with pytest.raises(ValueError, match="unsafe_output_directory"):
         builder.build_public_site(ROOT)
