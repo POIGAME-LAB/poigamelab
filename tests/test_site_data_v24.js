@@ -161,10 +161,20 @@ function makeContext(fetchImpl) {
   // The real revised CSV must survive the same reader used by game.html.
   const actualCsv = fs.readFileSync('data/published_offers.csv', 'utf8');
   const actualRows = api.rowsToObjects(api.parseCsv(actualCsv));
-  const endedWarauIds = new Set(['205975', '206035', '205389', '205390']);
+  const endedWarauIds = new Set(['205389', '205390']);
   assert.strictEqual(actualRows.some(row =>
     row.site === 'warau' && [...endedWarauIds].some(id => String(row.url || '').includes(`point_id=${id}`))
   ), false);
+
+  const currentMemento12050 = actualRows.filter(row =>
+    row.game === 'メメントモリ' &&
+    row.site === 'warau' &&
+    row.reward === '12050'
+  );
+  assert.deepStrictEqual(
+    new Set(currentMemento12050.map(row => String(row.url || '').match(/point_id=(\d+)/)?.[1])),
+    new Set(['205975', '206035'])
+  );
 
   const targets = JSON.parse(fs.readFileSync('config/game_targets.json', 'utf8')).games;
   for (const gameName of ['メメントモリ', 'ホワイトアウト・サバイバル']) {

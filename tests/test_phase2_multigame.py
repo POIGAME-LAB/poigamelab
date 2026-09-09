@@ -69,6 +69,8 @@ def test_mementomori_known_sources_include_current_hapitas_pair():
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206500',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205982',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035',
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975',
     }
 
 
