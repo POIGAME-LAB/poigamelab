@@ -1,6 +1,6 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "checkedAt": "2026-09-09T17:19:24+00:00",
+  "checkedAt": "2026-09-09T17:32:51+00:00",
   "coverageDiscoveryVersion": 2,
   "coverageDiscoveryMode": "candidate-only",
   "comparisonSources": [
@@ -14,11 +14,11 @@
   "apiCalls": 0,
   "publishedRewardChanges": 0,
   "refreshedRows": 4,
-  "reviewCount": 594,
+  "reviewCount": 260,
   "existingRewardChangeCandidateCount": 0,
   "existingGameNewOfferCandidateCount": 0,
   "existingGameVerifiedRewardCount": 0,
-  "coverageCandidateQueueCount": 446,
+  "coverageCandidateQueueCount": 128,
   "newGameCandidateQueueCount": 1768,
   "newGameDiscovery": {
     "sources": 8,
@@ -206,10 +206,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 67,
-        "gapCount": 64,
-        "coveredCount": 3,
-        "fetchErrors": 1,
+        "candidateCount": 17,
+        "gapCount": 17,
+        "coveredCount": 0,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -285,10 +285,10 @@
       "standardConfirmed": 1,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 70,
-        "gapCount": 59,
-        "coveredCount": 11,
-        "fetchErrors": 1,
+        "candidateCount": 19,
+        "gapCount": 16,
+        "coveredCount": 3,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -452,10 +452,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 19,
-        "gapCount": 10,
-        "coveredCount": 9,
-        "fetchErrors": 1,
+        "candidateCount": 11,
+        "gapCount": 6,
+        "coveredCount": 5,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -531,10 +531,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 67,
-        "gapCount": 64,
-        "coveredCount": 3,
-        "fetchErrors": 1,
+        "candidateCount": 18,
+        "gapCount": 17,
+        "coveredCount": 1,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -619,10 +619,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 61,
-        "gapCount": 54,
-        "coveredCount": 7,
-        "fetchErrors": 1,
+        "candidateCount": 18,
+        "gapCount": 15,
+        "coveredCount": 3,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -698,10 +698,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 75,
-        "gapCount": 56,
-        "coveredCount": 19,
-        "fetchErrors": 1,
+        "candidateCount": 27,
+        "gapCount": 19,
+        "coveredCount": 8,
+        "fetchErrors": 2,
         "detailReviewCount": 1,
         "verifiedRewardCandidateCount": 0
       },
@@ -786,10 +786,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 68,
-        "gapCount": 50,
-        "coveredCount": 18,
-        "fetchErrors": 1,
+        "candidateCount": 19,
+        "gapCount": 11,
+        "coveredCount": 8,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -865,10 +865,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 60,
-        "gapCount": 56,
-        "coveredCount": 4,
-        "fetchErrors": 1,
+        "candidateCount": 17,
+        "gapCount": 15,
+        "coveredCount": 2,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -953,10 +953,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 68,
-        "gapCount": 63,
-        "coveredCount": 5,
-        "fetchErrors": 1,
+        "candidateCount": 19,
+        "gapCount": 17,
+        "coveredCount": 2,
+        "fetchErrors": 2,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
