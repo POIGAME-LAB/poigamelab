@@ -168,6 +168,47 @@
       ],
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "Unattended first-party detail/listing retrieval has not been demonstrated as reliable for this project; keep current Hapitas identities review-only until a stable permitted direct retrieval path is validated."
+    },
+    {
+      "id": "kurashiru_reward",
+      "name": "クラシルリワード（レシチャレ）",
+      "start_url": "https://rewards.kurashiru.com/",
+      "search_domains": [
+        "rewards.kurashiru.com",
+        "kurashiru.com",
+        "www.kurashiru.com"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "discovery_only": true,
+      "known_target_urls": [],
+      "prefer_known_pages": false,
+      "direct_listing_urls": [],
+      "direct_listing_limit": 0,
+      "direct_detail_limit": 0,
+      "direct_detail_url_hints": [],
+      "scheduled_fetch_enabled": false,
+      "scheduled_fetch_reason": "Discovery-only source until a stable first-party campaign listing/detail route is validated."
+    },
+    {
+      "id": "trima",
+      "name": "トリマ",
+      "start_url": "https://www.trip-mile.com/",
+      "search_domains": [
+        "trip-mile.com",
+        "www.trip-mile.com"
+      ],
+      "mobile": true,
+      "enabled": true,
+      "discovery_only": true,
+      "known_target_urls": [],
+      "prefer_known_pages": false,
+      "direct_listing_urls": [],
+      "direct_listing_limit": 0,
+      "direct_detail_limit": 0,
+      "direct_detail_url_hints": [],
+      "scheduled_fetch_enabled": false,
+      "scheduled_fetch_reason": "Discovery-only source until a stable first-party mission listing/detail route is validated."
     }
   ],
   "offerwall_domains_discovered": [
@@ -187,5 +228,48 @@
     "follow_external_links": false,
     "persist": "provider_domain_only",
     "require_target_context": true
+  },
+  "coverage_discovery": {
+    "enabled": true,
+    "candidate_only": true,
+    "never_publish": true,
+    "description": "Third-party comparison pages are used only to discover likely missing source/platform/reward candidates. Every candidate still requires independent first-party verification before publication.",
+    "sources": [
+      {
+        "id": "poikan",
+        "name": "ポイカン",
+        "query_url_template": "https://poikan.com/q/{query}",
+        "search_domains": [
+          "poikan.com"
+        ],
+        "mobile": false,
+        "max_candidates_per_game": 24,
+        "candidate_source_aliases": [
+          {
+            "source": "hapitas",
+            "labels": [
+              "ハピタス（AppDriver）",
+              "ハピタス"
+            ]
+          },
+          {
+            "source": "kurashiru_reward",
+            "labels": [
+              "クラシルリワード（レシチャレ）",
+              "クラシルリワード",
+              "レシチャレ"
+            ]
+          },
+          {
+            "source": "trima",
+            "labels": [
+              "トリマ （ミッションB）",
+              "トリマ（ミッションB）",
+              "トリマ"
+            ]
+          }
+        ]
+      }
+    ]
   }
 }
