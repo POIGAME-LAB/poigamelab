@@ -294,6 +294,114 @@ def discover_offerwall_presence(raw, base_url, aliases, known_domains, limit=6):
             break
     return found
 
+def coverage_query_url(discovery_source, aliases):
+    """Build one bounded external comparison query URL for candidate discovery only."""
+    template = discovery_source.get("query_url_template")
+    if (not isinstance(template, str) or template.count("{query}") != 1
+            or "{" in template.replace("{query}", "")
+            or "}" in template.replace("{query}", "")):
+        return ""
+    primary = next((str(x).strip() for x in aliases if str(x).strip()), "")
+    if not primary:
+        return ""
+    candidate = template.replace("{query}", quote_plus(primary, safe=""))
+    return candidate if source_host_allowed(candidate, discovery_source) else ""
+
+
+def discover_coverage_candidates(raw, aliases, discovery_source, limit=24):
+    """Extract review-only source/platform/reward hints from a comparison page.
+
+    Third-party comparison data is never publication evidence. The parser uses
+    short windows around configured source labels so unrelated page-wide values
+    cannot silently become candidates.
+    """
+    text = visible_text(raw)
+    if not target_present(text, aliases):
+        return []
+
+    mappings = discovery_source.get("candidate_source_aliases") or []
+    candidates = []
+    occurrence = 0
+    for mapping in mappings:
+        source_id = str(mapping.get("source") or "").strip()
+        labels = [str(x).strip() for x in (mapping.get("labels") or []) if str(x).strip()]
+        if not source_id or not labels:
+            continue
+        # Longest labels first prevents "ハピタス" from shadowing
+        # "ハピタス（AppDriver）" at the same location.
+        labels = sorted(set(labels), key=len, reverse=True)
+        occupied = []
+        for label in labels:
+            start = 0
+            while True:
+                pos = text.find(label, start)
+                if pos < 0:
+                    break
+                start = pos + len(label)
+                if any(a <= pos < b for a, b in occupied):
+                    continue
+                occupied.append((pos, pos + len(label)))
+
+                left = text[max(0, pos - 260):pos]
+                # The candidate title and reward must be close to the source
+                # label. A page-wide target mention is intentionally insufficient.
+                alias_positions = []
+                for alias in aliases:
+                    alias_norm = str(alias or "").strip()
+                    if not alias_norm:
+                        continue
+                    p = left.rfind(alias_norm)
+                    if p >= 0:
+                        alias_positions.append((p, alias_norm))
+                if not alias_positions:
+                    continue
+                alias_pos, alias_value = max(alias_positions, key=lambda item: item[0])
+                segment = left[alias_pos:] + " " + label
+                if len(segment) > 300:
+                    continue
+                reward_matches = list(re.finditer(r"([0-9][0-9,]*)\s*円", segment))
+                if not reward_matches:
+                    continue
+                reward_yen = _to_int(reward_matches[-1].group(1))
+                if reward_yen is None:
+                    continue
+
+                platform = platform_hint(segment)
+                occurrence += 1
+                candidates.append({
+                    "source": source_id,
+                    "sourceLabel": label,
+                    "gameLabel": alias_value,
+                    "platformHint": platform,
+                    "rewardYenHint": reward_yen,
+                    "occurrence": occurrence,
+                })
+                if len(candidates) >= max(1, min(int(limit or 24), 60)):
+                    return candidates
+    return candidates
+
+
+def coverage_candidate_is_covered(candidate, rows, game):
+    """Return True only when a current public row already covers the hint.
+
+    Reward/platform hints from comparison pages are not trusted as facts; they
+    are used only to decide whether first-party verification work is missing.
+    """
+    source_id = str(candidate.get("source") or "")
+    reward = str(candidate.get("rewardYenHint") or "")
+    platform = str(candidate.get("platformHint") or "")
+    for row in rows:
+        if str(row.get("game") or "") != game or str(row.get("site") or "") != source_id:
+            continue
+        if reward and str(row.get("reward") or "") != reward:
+            continue
+        stored_platform = str(row.get("platform") or "")
+        if platform and platform != "iOS|Android" and stored_platform != platform:
+            continue
+        return True
+    return False
+
+
 def _to_int(raw):
     digits = re.sub(r"[^\d]", "", str(raw or ""))
     if not digits:
@@ -1243,6 +1351,23 @@ def main():
         if str(x).strip()
     ]
     offerwall_presence_cfg = source_cfg.get("offerwall_presence_detection") or {}
+    coverage_cfg = source_cfg.get("coverage_discovery") or {}
+    policy_coverage_cfg = policy.get("coverageDiscovery") or {}
+    coverage_enabled = (
+        isinstance(coverage_cfg, dict)
+        and coverage_cfg.get("enabled") is True
+        and coverage_cfg.get("candidate_only") is True
+        and coverage_cfg.get("never_publish") is True
+        and isinstance(policy_coverage_cfg, dict)
+        and policy_coverage_cfg.get("enabled") is True
+        and policy_coverage_cfg.get("mode") == "candidate-only"
+        and policy_coverage_cfg.get("requireFirstPartyVerificationBeforePublication") is True
+        and policy_coverage_cfg.get("publishFromDiscovery") is False
+    )
+    coverage_sources = [
+        x for x in (coverage_cfg.get("sources") or [])
+        if isinstance(x, dict) and str(x.get("id") or "").strip()
+    ]
     try:
         offerwall_provider_registry_path = SOURCES.with_name("offerwall_providers.json")
         offerwall_provider_registry = load_offerwall_provider_registry(
@@ -1615,6 +1740,66 @@ def main():
                 source_result["state"] = "not_confirmed"
             game_result["sources"].append(source_result)
 
+        coverage_summary = {
+            "enabled": coverage_enabled,
+            "candidateCount": 0,
+            "gapCount": 0,
+            "coveredCount": 0,
+            "fetchErrors": 0,
+        }
+        if coverage_enabled:
+            for discovery_source in coverage_sources[:3]:
+                query_url = coverage_query_url(discovery_source, aliases)
+                if not query_url:
+                    coverage_summary["fetchErrors"] += 1
+                    review.append({
+                        "game": game,
+                        "source": str(discovery_source.get("id") or ""),
+                        "reason": "coverage_discovery_config_invalid",
+                        "checkedAt": checked_at,
+                    })
+                    continue
+                try:
+                    raw, final_url = fetch_once(query_url, discovery_source)
+                    max_candidates = int(discovery_source.get("max_candidates_per_game") or 24)
+                    candidates = discover_coverage_candidates(
+                        raw, aliases, discovery_source, limit=max_candidates
+                    )
+                except Exception as error:
+                    coverage_summary["fetchErrors"] += 1
+                    review.append({
+                        "game": game,
+                        "source": str(discovery_source.get("id") or ""),
+                        "url": query_url,
+                        "reason": "coverage_discovery_fetch_failed",
+                        "error": summarize_fetch_error(error),
+                        "checkedAt": checked_at,
+                    })
+                    continue
+
+                coverage_summary["candidateCount"] += len(candidates)
+                for candidate in candidates:
+                    if coverage_candidate_is_covered(candidate, rows, game):
+                        coverage_summary["coveredCount"] += 1
+                        continue
+                    coverage_summary["gapCount"] += 1
+                    candidate_source = str(candidate.get("source") or "")
+                    review.append({
+                        "game": game,
+                        "source": candidate_source,
+                        "reason": "external_coverage_gap_candidate",
+                        "discoverySource": str(discovery_source.get("id") or ""),
+                        "discoveryUrl": final_url,
+                        "sourceLabel": candidate.get("sourceLabel"),
+                        "platformHint": candidate.get("platformHint"),
+                        "rewardYenHint": candidate.get("rewardYenHint"),
+                        "registeredSource": candidate_source in sources,
+                        "firstPartyVerificationRequired": True,
+                        "publicationAuthorized": False,
+                        "checkedAt": checked_at,
+                    })
+        game_result["coverageDiscovery"] = coverage_summary
+
         game_result["standardTotal"] = len(comparison_sources)
         game_result["comparisonReady"] = (
             game_result["standardConfirmed"] >= int(policy.get("minimumConfirmedSourcesForComparison") or 2)
@@ -1629,8 +1814,9 @@ def main():
 
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     status = {
-        "phase": "DIRECT_COMPARISON_REFRESH_V1",
+        "phase": "DIRECT_COMPARISON_REFRESH_V2",
         "checkedAt": checked_at,
+        "coverageDiscoveryMode": "candidate-only" if coverage_enabled else "disabled",
         "comparisonSources": comparison_sources,
         "apiCalls": 0,
         "publishedRewardChanges": changed,
@@ -1674,7 +1860,7 @@ def main():
     tmp_legacy.replace(LEGACY_STATUS)
 
     review_payload = {
-        "phase": "DIRECT_COMPARISON_REVIEW_V1",
+        "phase": "DIRECT_COMPARISON_REVIEW_V2",
         "checkedAt": checked_at,
         "items": review,
     }
