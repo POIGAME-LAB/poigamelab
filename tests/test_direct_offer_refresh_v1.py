@@ -3400,9 +3400,9 @@ def test_amefuri_known_game_detail_review_is_bounded_and_candidate_only():
 
 def test_amefuri_detail_review_does_not_authorize_publication():
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
-    marker = '"reason": "first_party_existing_game_reward_candidate"'
-    idx = script.index(marker)
-    block = script[idx:idx + 1400]
+    marker = '"reason": reason'
+    idx = script.index(marker, script.index('"first_party_existing_game_new_offer_candidate"'))
+    block = script[idx:idx + 1800]
     assert '"publicationAuthorized": False' in block
     assert '"autoCreateAuthorized": False' in block
     assert 'write_published' not in block
