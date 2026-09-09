@@ -1477,6 +1477,146 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def amefuri_offer_id(url):
+    try:
+        p = urlparse(str(url or ""))
+        port = p.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (p.scheme != "https" or p.hostname not in {"www.amefri.net", "amefri.net"}
+            or p.username is not None or p.password is not None
+            or port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/detail/id/([0-9]+)", p.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    query = parse_qs(p.query, keep_blank_values=True)
+    if any(key != "tracking" for key in query):
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
+    """Build review-only evidence for an Amefuri multi-step game offer.
+
+    The current yen-equivalent reward is accepted only when the summed step
+    points convert exactly at Amefuri's displayed 10pt=1yen rate and equal the
+    largest displayed total in the offer header. This distinguishes a boosted
+    current total from a lower pre-boost/base total without guessing.
+    """
+    try:
+        offer_id = amefuri_offer_id(requested_url)
+        if amefuri_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if amefuri_offer_id(canonical) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        title = evidence_text(one(doc.find(tag="h1")))
+        if not target_present(title, aliases):
+            raise ValueError("offer_title_mismatch")
+
+        os_labels = re.findall(r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])", title, re.I)
+        normalized_os = {"ios": "iOS", "android": "Android"}
+        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
+        if len(platforms) != 1:
+            raise ValueError("ambiguous_offer_platform")
+        platform = platforms[0]
+
+        text = visible_text(raw)
+        if not re.search(r"10\s*pt\s*[=＝]\s*1\s*円", text, re.I):
+            raise ValueError("unit_conversion_review_required")
+
+        header_start = text.find("アメフリ経由で登録すると")
+        header_end = text.find("※下記条件の合計", header_start)
+        if header_start < 0 or header_end < 0 or header_end <= header_start:
+            raise ValueError("missing_offer_header_boundary")
+        header = text[header_start:header_end]
+
+        displayed_yen = sorted({
+            int(value.replace(",", ""))
+            for value in re.findall(
+                r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円",
+                header,
+            )
+        })
+        if not displayed_yen or len(displayed_yen) > 3:
+            raise ValueError("ambiguous_displayed_reward")
+
+        multi_start = text.find("多段階", header_end)
+        if multi_start < 0:
+            raise ValueError("multistep_structure_required")
+        end_candidates = [
+            pos for marker in ("多段階案件は", "この案件は「スマホ専用案件」", "ポイント獲得条件")
+            if (pos := text.find(marker, multi_start + 1)) >= 0
+        ]
+        multi_end = min(end_candidates) if end_candidates else len(text)
+        step_text = text[multi_start:multi_end]
+
+        step_points = [
+            int(value.replace(",", ""))
+            for value in re.findall(
+                r"ステップ\s*[0-9]+.*?([0-9][0-9,]*)\s*pt\b",
+                step_text,
+                re.I,
+            )
+        ]
+        if len(step_points) < 2:
+            raise ValueError("incomplete_multistep_rewards")
+        total_points = sum(step_points)
+        if total_points <= 0 or total_points % 10 != 0:
+            raise ValueError("step_total_conversion_mismatch")
+        current_reward_yen = total_points // 10
+        if current_reward_yen not in displayed_yen:
+            raise ValueError("step_total_not_displayed_current_reward")
+        if current_reward_yen != max(displayed_yen):
+            raise ValueError("boosted_reward_selection_ambiguous")
+
+        terms_start = text.find("ポイント獲得条件", multi_end)
+        if terms_start < 0:
+            raise ValueError("incomplete_offer_terms")
+        terms = text[terms_start:]
+        if "成果受付期限" not in terms:
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in ("成果調査受付期限", "お問い合わせ受付期限")):
+            raise ValueError("incomplete_offer_terms")
+
+        payload = {
+            "offerId": offer_id,
+            "name": title,
+            "platform": platform,
+            "displayedRewardYenCandidates": displayed_yen,
+            "stepRewardPoints": step_points,
+            "stepTotalPoints": total_points,
+            "verifiedCurrentRewardYen": current_reward_yen,
+            "rewardUnit": "JPY-equivalent",
+            "sourcePointRate": "10pt=1JPY",
+            "headerText": re.sub(r"\s+", " ", header).strip(),
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "amefuri-multistep-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def moppy_offer_id(url):
     p = urlparse(url)
     if (p.scheme != "https" or p.hostname != "pc.moppy.jp"
@@ -1699,6 +1839,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "warau": inspect_warau_offer,
         "chobirich": inspect_chobirich_offer,
         "coincome": inspect_coincome_offer,
+        "amefuri": inspect_amefuri_offer,
         "moppy": inspect_moppy_offer,
         "gendama": inspect_gendama_offer,
     }
