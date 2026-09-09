@@ -3786,3 +3786,12 @@ def test_nightly_schedule_avoids_top_of_hour():
     assert 'cron: "17 16 * * *"' in workflow
     assert 'cron: "0 16 * * *"' not in workflow
     assert policy['scheduleJST'] == '毎日 01:17 頃（GitHub Actions cron: 16:17 UTC）'
+
+
+def test_source_health_fetch_errors_never_count_complete():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    block = script[script.index('source_errors = new_game_discovery_summary["fetchErrors"] - source_error_start'):]
+    assert 'source_incomplete = (' in block[:800]
+    assert 'source_errors > 0' in block[:800]
+    assert 'catalog_complete = (' in block[:1200]
+    assert 'source_errors == 0' in block[:1200]
