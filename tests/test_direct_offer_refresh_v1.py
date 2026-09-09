@@ -3739,6 +3739,7 @@ def test_hapitas_offer_identity_accepts_reviewed_apn_suffix_only():
 def test_hapitas_known_game_detail_review_is_bounded_candidate_only():
     cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
     hapitas = next(item for item in cfg['sources'] if item['id'] == 'hapitas')
+    assert hapitas['discovery_only'] is True
     assert hapitas['coverage_detail_review_enabled'] is True
     assert hapitas['coverage_detail_review_limit_per_game'] == 3
     assert hapitas['coverage_detail_review_mode'] == 'candidate_only'
