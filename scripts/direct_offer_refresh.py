@@ -318,6 +318,50 @@ def classify_new_game_candidate(item):
     }
 
 
+def build_new_game_review_priority(items, clusters):
+    """Create review-only priorities from classification and source corroboration."""
+    source_counts = {}
+    candidate_counts = {}
+    for cluster in clusters or []:
+        key = str(cluster.get("clusterKey") or "")
+        source_counts[key] = int(cluster.get("sourceCount") or 0)
+        candidate_counts[key] = int(cluster.get("candidateCount") or 0)
+
+    ranked = []
+    for item in items or []:
+        key = new_game_title_cluster_key(item.get("titleHint"))
+        classification = str(item.get("classification") or "review")
+        base = {"likely_game": 30, "review": 10, "likely_non_game": -20}.get(classification, 0)
+        corroboration = min(source_counts.get(key, 0), 5) * 15
+        duplicates = min(max(candidate_counts.get(key, 0) - 1, 0), 5) * 2
+        total = base + corroboration + duplicates
+
+        if total >= 55:
+            band = "high"
+        elif total >= 25:
+            band = "medium"
+        else:
+            band = "low"
+
+        ranked.append({
+            "clusterKey": key,
+            "titleHint": str(item.get("titleHint") or ""),
+            "source": str(item.get("source") or ""),
+            "classification": classification,
+            "sourceCount": source_counts.get(key, 0),
+            "reviewPriorityScore": total,
+            "reviewPriority": band,
+            "reviewOnly": True,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        })
+
+    ranked.sort(
+        key=lambda x: (-x["reviewPriorityScore"], -x["sourceCount"], x["titleHint"])
+    )
+    return ranked
+
+
 def build_new_game_candidate_clusters(items):
     """Build review-only multi-source clusters without changing raw candidates."""
     buckets = {}
@@ -2382,6 +2426,9 @@ def main():
     tmp3.replace(candidate_path)
 
     new_game_clusters = build_new_game_candidate_clusters(new_game_candidate_queue)
+    new_game_review_priority = build_new_game_review_priority(
+        new_game_candidate_queue, new_game_clusters
+    )
     new_game_payload = {
         "phase": "DIRECT_NEW_GAME_CANDIDATE_QUEUE_V1",
         "checkedAt": checked_at,
@@ -2395,6 +2442,7 @@ def main():
         "reviewClassificationCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "review"),
         "clusterCount": len(new_game_clusters),
         "clusters": new_game_clusters,
+        "reviewPriority": new_game_review_priority,
         "items": new_game_candidate_queue,
     }
     tmp4 = NEW_GAME_QUEUE.with_suffix(".json.tmp")
