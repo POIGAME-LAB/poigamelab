@@ -263,6 +263,61 @@ def new_game_title_cluster_key(value):
     return text[:180]
 
 
+def classify_new_game_candidate(item):
+    """Assign a conservative review score for whether a new candidate is a game.
+
+    This classifier never deletes candidates and never authorizes publication.
+    It only prioritizes review by explicit positive/negative title signals.
+    """
+    title = str((item or {}).get("titleHint") or "").strip()
+    normalized = normalized_text(title)
+    score = 0
+    reasons = []
+
+    positive_markers = (
+        "ゲーム", "rpg", "パズル", "シミュレーション", "ストラテジー",
+        "放置", "育成", "バトル", "サバイバル", "冒険", "クエスト",
+        "アプリゲーム", "game"
+    )
+    negative_markers = (
+        "クレジットカード", "カード発行", "証券", "fx", "銀行口座",
+        "口座開設", "保険", "ローン", "不動産", "電気", "ガス",
+        "宅配", "サブスク", "会員登録", "無料登録", "資料請求",
+        "アンケート", "モニター", "ショッピング"
+    )
+
+    for marker in positive_markers:
+        if normalized_text(marker) in normalized:
+            score += 2
+            reasons.append("positive:" + marker)
+    for marker in negative_markers:
+        if normalized_text(marker) in normalized:
+            score -= 3
+            reasons.append("negative:" + marker)
+
+    if re.search(r"(?:lv|level|レベル)\s*\d+", title, re.I):
+        score += 2
+        reasons.append("positive:level")
+    if re.search(r"(?:城|本部|司令部|ランク|ステージ)\s*\d+", title):
+        score += 1
+        reasons.append("positive:progress_condition")
+
+    if score >= 2:
+        bucket = "likely_game"
+    elif score <= -2:
+        bucket = "likely_non_game"
+    else:
+        bucket = "review"
+
+    return {
+        "classification": bucket,
+        "classificationScore": score,
+        "classificationReasons": reasons[:12],
+        "classificationReviewOnly": True,
+        "classificationAuthorized": False,
+    }
+
+
 def build_new_game_candidate_clusters(items):
     """Build review-only multi-source clusters without changing raw candidates."""
     buckets = {}
@@ -1818,6 +1873,7 @@ def main():
                     continue
                 new_game_candidate_seen.add(key)
                 candidate["checkedAt"] = checked_at
+                candidate.update(classify_new_game_candidate(candidate))
                 new_game_candidate_queue.append(candidate)
                 new_game_discovery_summary["candidateCount"] += 1
                 remaining -= 1
@@ -2334,6 +2390,9 @@ def main():
         "autoCreateAuthorized": False,
         "publicationAuthorized": False,
         "count": len(new_game_candidate_queue),
+        "likelyGameCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "likely_game"),
+        "likelyNonGameCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "likely_non_game"),
+        "reviewClassificationCount": sum(1 for x in new_game_candidate_queue if x.get("classification") == "review"),
         "clusterCount": len(new_game_clusters),
         "clusters": new_game_clusters,
         "items": new_game_candidate_queue,
