@@ -2553,11 +2553,16 @@ def main():
             raise error
         return result
 
-    def cached_listing_urls_for_source(source):
+    def cached_listing_urls_for_source(source, consumer=None):
         source_id = str(source.get("id") or "")
         return [
             url for (sid, url), snapshot in listing_snapshots.items()
-            if sid == source_id and snapshot.get("result") is not None
+            if sid == source_id
+            and snapshot.get("result") is not None
+            and (
+                consumer is None
+                or str(consumer) in snapshot.get("consumers", set())
+            )
         ]
 
     new_game_discovery_summary = {
@@ -3075,11 +3080,24 @@ def main():
                     str(x).strip() for x in (discovery_source.get("direct_listing_urls") or [])
                     if str(x).strip()
                 ]
-                if discovery_source.get("full_catalog_discovery_enabled") is True:
-                    listing_urls = cached_listing_urls_for_source(discovery_source)
-                    if not listing_urls:
+                paginated_discovery = (
+                    isinstance(discovery_source.get("new_game_discovery_page_url_template"), str)
+                    and "{page}" in discovery_source.get("new_game_discovery_page_url_template", "")
+                )
+                if (
+                    discovery_source.get("full_catalog_discovery_enabled") is True
+                    or paginated_discovery
+                ):
+                    listing_urls = cached_listing_urls_for_source(
+                        discovery_source, consumer="new_game_discovery"
+                    )
+                    if not listing_urls and discovery_source.get("full_catalog_discovery_enabled") is True:
                         listing_urls = configured_listing_urls[
                             :max(0, min(100, int(discovery_source.get("direct_listing_limit", 1))))
+                        ]
+                    elif not listing_urls:
+                        listing_urls = configured_listing_urls[
+                            :max(0, min(2, int(discovery_source.get("direct_listing_limit", 1))))
                         ]
                 else:
                     listing_urls = configured_listing_urls[
