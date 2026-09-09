@@ -592,6 +592,93 @@
       text-align: center;
     }
 
+    .coverage-candidate-section {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #e2dcf5;
+      border-radius: 18px;
+      background: #fbfaff;
+    }
+
+    .coverage-candidate-section[hidden] {
+      display: none !important;
+    }
+
+    .coverage-candidate-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 14px;
+      margin-bottom: 8px;
+    }
+
+    .coverage-candidate-head strong {
+      color: #3c286f;
+      font-size: 16px;
+    }
+
+    .coverage-candidate-count {
+      color: #7047ff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .coverage-candidate-note {
+      margin: 0 0 12px;
+      color: #746b82;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .coverage-candidate-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .coverage-candidate-card {
+      padding: 13px 14px;
+      border: 1px solid #e8e2f6;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .coverage-candidate-site {
+      margin-bottom: 7px;
+      color: #2d1c58;
+      font-weight: 900;
+    }
+
+    .coverage-candidate-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .coverage-candidate-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f1edff;
+      color: #5d46a0;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .coverage-candidate-status {
+      background: #fff6d8;
+      color: #785d00;
+    }
+
+    @media (max-width: 700px) {
+      .coverage-candidate-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .trend-note {
       margin: 0 0 14px;
       color: #82798f;
@@ -812,6 +899,17 @@
 
       <div id="offerCards" class="offer-card-list" aria-live="polite"></div>
 
+      <div id="coverageCandidateSection" class="coverage-candidate-section" hidden>
+        <div class="coverage-candidate-head">
+          <strong>🔎 ほかにも掲載候補を検知しています</strong>
+          <span id="coverageCandidateCount" class="coverage-candidate-count"></span>
+        </div>
+        <p class="coverage-candidate-note">
+          比較サイトやポイントサイトの一覧で掲載の可能性を検知した案件です。まだ一次情報の確認が完了していないため、最高還元やランキングには含めていません。
+        </p>
+        <div id="coverageCandidateList" class="coverage-candidate-list"></div>
+      </div>
+
     </section>
 
     <details class="section collapsible-section" open>
@@ -897,12 +995,15 @@
           offers: []
         };
 
-        const [offerResult, dataHealth, offerHistory] = await Promise.all([
+        const [offerResult, dataHealth, offerHistory, coverageCandidateResult] = await Promise.all([
           POIGAME_DATA.loadOffersWithFallback(),
           POIGAME_DATA.loadDataHealth(),
-          POIGAME_DATA.loadOfferHistory()
+          POIGAME_DATA.loadOfferHistory(),
+          POIGAME_DATA.loadCoverageCandidates()
         ]);
         game.offers = offerResult.offers.filter((offer) => offer.gameName === game.name);
+        const coverageCandidates = (coverageCandidateResult.items || [])
+          .filter((item) => item.gameName === game.name);
         const gameHealth = dataHealth.games?.[game.name];
         const rewardTrends = POIGAME_DATA.buildRewardTrends(
           offerHistory,
@@ -1004,6 +1105,42 @@
             dataHealthBox.classList.add("health-warning");
           }
         }
+
+        function renderCoverageCandidates() {
+          const section = document.getElementById("coverageCandidateSection");
+          const list = document.getElementById("coverageCandidateList");
+          const count = document.getElementById("coverageCandidateCount");
+          if (!section || !list || !count) return;
+
+          list.replaceChildren();
+          if (!coverageCandidates.length) {
+            section.hidden = true;
+            count.textContent = "";
+            return;
+          }
+
+          coverageCandidates.forEach((candidate) => {
+            const card = document.createElement("article");
+            card.className = "coverage-candidate-card";
+            const fallbackSite = pointSites[candidate.source] || candidate.source;
+            const siteLabel = candidate.sourceLabel || fallbackSite;
+            const platformLabel = candidate.platformHint || "OS確認中";
+
+            card.innerHTML = `
+              <div class="coverage-candidate-site">${POIGAME_DATA.escapeHtml(siteLabel)}</div>
+              <div class="coverage-candidate-meta">
+                <span class="coverage-candidate-pill">${POIGAME_DATA.escapeHtml(platformLabel)}</span>
+                <span class="coverage-candidate-pill coverage-candidate-status">一次情報を確認中</span>
+              </div>
+            `;
+            list.appendChild(card);
+          });
+
+          count.textContent = `${coverageCandidates.length}件`;
+          section.hidden = false;
+        }
+
+        renderCoverageCandidates();
 
         function matchesPlatform(offer, platform) {
           const values = Array.isArray(offer.platform) ? offer.platform : [];
