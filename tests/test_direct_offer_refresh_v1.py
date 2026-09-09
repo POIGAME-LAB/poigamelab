@@ -1680,7 +1680,7 @@ def test_repository_tracks_current_reviewed_warau_offer_ids():
             for url in by_game[game]['known_urls_by_source']['warau']
         }
 
-    assert ids('ホワイトアウト・サバイバル') == {'201872', '201862'}
+    assert ids('ホワイトアウト・サバイバル') == {'201862'}
     assert ids('パズル＆サバイバル') == {'206425', '205361', '206488', '206460', '205557'}
     assert ids('キングショット') == {'204984', '204983'}
     assert ids('放置少女') == {'177971', '206411'}
@@ -2509,6 +2509,33 @@ def test_repository_memento_current_warau_12050_pair_is_published():
     assert all(row['verified'] == 'true' for row in matches)
     assert all('ランク140到達' in row['condition'] for row in matches)
     assert all('累計10000円課金' in row['condition'] for row in matches)
+
+
+def test_repository_ended_whiteout_warau_android_is_not_published_or_targeted():
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    assert not any(
+        row['game'] == 'ホワイトアウト・サバイバル'
+        and row['site'] == 'warau'
+        and row['url'] == 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872'
+        for row in rows
+    )
+    ios = [
+        row for row in rows
+        if row['game'] == 'ホワイトアウト・サバイバル'
+        and row['site'] == 'warau'
+        and row['url'] == 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862'
+    ]
+    assert len(ios) == 1
+    assert ios[0]['platform'] == 'iOS'
+    assert ios[0]['reward'] == '11500'
+
+    payload = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))
+    target = next(item for item in payload['games'] if item['game'] == 'ホワイトアウト・サバイバル')
+    assert target['known_urls_by_source']['warau'] == [
+        'https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862'
+    ]
 
 
 def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
