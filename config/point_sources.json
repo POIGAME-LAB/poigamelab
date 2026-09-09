@@ -113,7 +113,17 @@
         "/campaigns/details/"
       ],
       "scheduled_known_detail_fetch_enabled": false,
-      "scheduled_known_detail_fetch_reason": "Repository game detail IDs may be stale; scheduled runs should discover current offers from the first-party listing before fetching details."
+      "scheduled_known_detail_fetch_reason": "Repository game detail IDs may be stale; scheduled runs should discover current offers from the first-party listing before fetching details.",
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 200,
+      "new_game_discovery_scope": "partial_current_app_category_listing",
+      "full_catalog_discovery_enabled": false,
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "partial_current_app_category_listing",
+      "coverage_candidate_limit": 8,
+      "reviewedAt": "2026-09-09",
+      "discoveryNote": "Official anonymous app category currently exposes first-party campaign detail links and game offers. Treat as positive-detection coverage only; absence must not imply no COINCOME offer. The same listing snapshot is reused for existing-game refresh and new-game discovery."
     },
     {
       "id": "mikoshi",

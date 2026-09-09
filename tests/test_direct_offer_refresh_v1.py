@@ -3250,3 +3250,22 @@ def test_listing_detail_signature_dedupes_offer_identities():
         raw, 'https://www.warau.jp/contents/point/category', source
     )
     assert len(sig) == 2
+
+
+def test_coincome_app_listing_is_shared_positive_detection_only():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    coin = next(item for item in cfg['sources'] if item['id'] == 'coincome')
+    assert coin['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
+    assert coin['new_game_discovery_enabled'] is True
+    assert coin['new_game_discovery_listing_limit'] == 1
+    assert coin['new_game_discovery_scope'] == 'partial_current_app_category_listing'
+    assert coin['full_catalog_discovery_enabled'] is False
+    assert coin['coverage_first_party_listing_enabled'] is True
+    assert coin['scheduled_known_detail_fetch_enabled'] is False
+    assert 'absence must not imply no coincome offer' in coin['discoveryNote'].lower()
+
+
+def test_coincome_shared_listing_reuses_unified_snapshot_path():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert 'get_listing_snapshot(listing_url, discovery_source, "new_game_discovery")' in script
+    assert 'get_listing_snapshot(listing_url, source, "existing_game_refresh")' in script
