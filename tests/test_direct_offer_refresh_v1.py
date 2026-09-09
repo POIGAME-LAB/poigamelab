@@ -328,6 +328,58 @@ def test_main_writes_deduplicated_candidate_queue_without_publishing(tmp_path, m
     assert status['coverageCandidateQueueCount'] == 3
 
 
+def test_dokotoku_coverage_parser_extracts_reverse_rows_safely():
+    source = {
+        'id': 'dokotoku',
+        'parser': 'dokotoku-row-v1',
+        'candidate_source_aliases': [
+            {'source': 'hapitas', 'labels': ['ハピタス (AppDriver)', 'ハピタス']},
+            {'source': 'kurashiru_reward', 'providerHint': 'gf_rewards', 'labels': ['クラシルリワード']},
+            {'source': 'trima', 'labels': ['トリマ (ミッションB)']},
+        ],
+    }
+    html = '''
+      <main>
+        <div>11,502 円 | ハピタス (AppDriver) | a | ワーキングヒーローズ</div>
+        <div>11,502 円 | ハピタス | i | ワーキングヒーローズ</div>
+        <div>6,031.09 円 | クラシルリワード | a | ワーキングヒーローズ</div>
+        <div>6,031.09 円 | クラシルリワード | i | ワーキングヒーローズ</div>
+        <div>7,481.25 円 | トリマ (ミッションB) | i | ワーキングヒーローズ</div>
+      </main>
+    '''
+    candidates = direct.discover_coverage_candidates(
+        html, ['ワーキングヒーロー', 'ワーキングヒーローズ'], source
+    )
+    assert {(x['source'], x['platformHint'], x['rewardYenHint']) for x in candidates} == {
+        ('hapitas', 'Android', 11502),
+        ('hapitas', 'iOS', 11502),
+        ('kurashiru_reward', 'Android', 6031.09),
+        ('kurashiru_reward', 'iOS', 6031.09),
+        ('trima', 'iOS', 7481.25),
+    }
+    assert all(x.get('publicationAuthorized') is None for x in candidates)
+
+
+def test_repository_has_two_candidate_only_coverage_radars():
+    source_cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    coverage = source_cfg['coverage_discovery']
+    by_id = {item['id']: item for item in coverage['sources']}
+    assert {'poikan', 'dokotoku'} <= set(by_id)
+    assert by_id['dokotoku']['parser'] == 'dokotoku-row-v1'
+    assert by_id['dokotoku']['query_url_template'] == 'https://dokotoku.jp/{query}'
+    assert by_id['dokotoku']['search_domains'] == ['dokotoku.jp']
+    assert any(
+        item['source'] == 'kurashiru_reward'
+        for item in by_id['dokotoku']['candidate_source_aliases']
+    )
+    assert any(
+        item['source'] == 'trima'
+        for item in by_id['dokotoku']['candidate_source_aliases']
+    )
+    assert coverage['candidate_only'] is True
+    assert coverage['never_publish'] is True
+
+
 def test_coverage_discovery_query_is_bounded_and_https_allowlisted():
     source = {
         'search_domains': ['poikan.com'],
@@ -346,7 +398,7 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert coverage['enabled'] is True
     assert coverage['candidate_only'] is True
     assert coverage['never_publish'] is True
-    assert {x['id'] for x in coverage['sources']} == {'poikan'}
+    assert {x['id'] for x in coverage['sources']} == {'poikan', 'dokotoku'}
 
     source_ids = {x['id'] for x in source_cfg['sources']}
     assert {'kurashiru_reward', 'trima'} <= source_ids
