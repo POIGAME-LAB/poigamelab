@@ -1,0 +1,27 @@
+name: Validate R2 archive integration
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/refresh-verified-offers.yml"
+      - ".github/workflows/validate-r2-archive.yml"
+      - "tests/test_r2_archive_workflow.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-r2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Syntax check focused test
+        run: python -m py_compile tests/test_r2_archive_workflow.py
+      - name: Run focused R2 workflow tests
+        run: python -m pytest -q tests/test_r2_archive_workflow.py
