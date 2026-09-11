@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 from urllib.error import HTTPError, URLError
+from urllib.parse import urljoin, urlparse
 from urllib.request import Request, build_opener
 
 ROUTES = {
@@ -35,27 +36,75 @@ PATTERNS = {
     "hapitas": re.compile(r"/item/detail/itemid/\d+", re.I),
 }
 
+MOPPY_HOSTS = {"pc.moppy.jp", "moppy.jp"}
 
-def probe(source: str, url: str, ua_name: str, ua: str) -> None:
+
+def request_text(url: str, ua: str, limit: int = 2_000_000):
     req = Request(url, headers={
         "User-Agent": ua,
-        "Accept": "text/html,application/xhtml+xml",
+        "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
         "Cache-Control": "no-cache",
     })
+    with build_opener().open(req, timeout=20) as response:
+        data = response.read(limit)
+        text = data.decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+        return response, data, text
+
+
+def probe_moppy_scripts(page_url: str, html: str, ua: str) -> None:
+    srcs = []
+    for raw in re.findall(r"<script[^>]+src=[\"']([^\"']+)[\"']", html, re.I):
+        absolute = urljoin(page_url, raw)
+        if urlparse(absolute).hostname in MOPPY_HOSTS and absolute not in srcs:
+            srcs.append(absolute)
+    print(f"MOPPY_JS same_origin_scripts={len(srcs)}")
+
+    hints = set()
+    for script_url in srcs[:30]:
+        try:
+            response, data, text = request_text(script_url, ua, limit=750_000)
+        except Exception as error:
+            if isinstance(error, HTTPError):
+                try:
+                    error.close()
+                except OSError:
+                    pass
+            print(f"MOPPY_JS_FETCH error={type(error).__name__} path={urlparse(script_url).path}")
+            continue
+
+        path = urlparse(response.geturl()).path
+        print(f"MOPPY_JS_FETCH status={getattr(response, 'status', 200)} bytes={len(data)} path={path}")
+        for token in re.findall(r"[\"']([^\"']{1,220})[\"']", text):
+            low = token.lower()
+            if not any(marker in low for marker in ("ajax", "api", "category", "list.php", "site_id", "advert", "search")):
+                continue
+            if token.startswith(("http://", "https://")):
+                parsed = urlparse(token)
+                if parsed.hostname not in MOPPY_HOSTS:
+                    continue
+            if any(ch in token for ch in ("\n", "\r", "<", ">")):
+                continue
+            hints.add(token)
+
+    for hint in sorted(hints)[:80]:
+        print("MOPPY_HINT", hint)
+
+
+def probe(source: str, url: str, ua_name: str, ua: str) -> None:
     try:
-        with build_opener().open(req, timeout=20) as response:
-            data = response.read(2_000_000)
-            text = data.decode(response.headers.get_content_charset() or "utf-8", errors="replace")
-            matches = sorted(set(PATTERNS[source].findall(text)))
-            print(
-                f"RESULT source={source} ua={ua_name} status={getattr(response, 'status', 200)} "
-                f"bytes={len(data)} detail_ids={len(matches)} final={response.geturl()}"
-            )
-            if source == "moppy":
-                print(f"MARKER source=moppy ua={ua_name} searching={'検索中' in text} scripts={text.lower().count('<script')}")
-            else:
-                print(f"MARKER source=hapitas ua={ua_name} app_count_marker={'全' in text and '件' in text} scripts={text.lower().count('<script')}")
+        response, data, text = request_text(url, ua)
+        matches = sorted(set(PATTERNS[source].findall(text)))
+        print(
+            f"RESULT source={source} ua={ua_name} status={getattr(response, 'status', 200)} "
+            f"bytes={len(data)} detail_ids={len(matches)} final={response.geturl()}"
+        )
+        if source == "moppy":
+            print(f"MARKER source=moppy ua={ua_name} searching={'検索中' in text} scripts={text.lower().count('<script')}")
+            if ua_name == "desktop" and "af_sorter=1" in url:
+                probe_moppy_scripts(response.geturl(), text, ua)
+        else:
+            print(f"MARKER source=hapitas ua={ua_name} app_count_marker={'全' in text and '件' in text} scripts={text.lower().count('<script')}")
     except HTTPError as error:
         print(f"RESULT source={source} ua={ua_name} status={error.code} http_error=true url={url}")
         error.close()
