@@ -1,0 +1,34 @@
+name: Apply Moppy AJAX discovery config
+
+on:
+  push:
+    branches:
+      - fix/moppy-ajax-discovery
+    paths:
+      - "scripts/apply_moppy_ajax_config.py"
+      - ".github/workflows/apply-moppy-ajax-config.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/moppy-ajax-discovery
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Apply reviewed runtime config
+        run: python scripts/apply_moppy_ajax_config.py
+      - name: Commit generated config change
+        run: |
+          set -euo pipefail
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add config/point_sources.json
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: use Moppy public AJAX listing"
+          git push
