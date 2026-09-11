@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-09T17:32:51+00:00",
-  "finishedAt": "2026-09-09T17:32:51+00:00",
+  "startedAt": "2026-09-11T03:51:48+00:00",
+  "finishedAt": "2026-09-11T03:51:48+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -29,23 +29,23 @@
     {
       "game": "きのこ伝説",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 6
     },
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 6
     },
     {

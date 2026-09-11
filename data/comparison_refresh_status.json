@@ -1,6 +1,6 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "checkedAt": "2026-09-09T17:32:51+00:00",
+  "checkedAt": "2026-09-11T03:51:48+00:00",
   "coverageDiscoveryVersion": 2,
   "coverageDiscoveryMode": "candidate-only",
   "comparisonSources": [
@@ -13,20 +13,20 @@
   ],
   "apiCalls": 0,
   "publishedRewardChanges": 0,
-  "refreshedRows": 4,
-  "reviewCount": 260,
+  "refreshedRows": 0,
+  "reviewCount": 608,
   "existingRewardChangeCandidateCount": 0,
   "existingGameNewOfferCandidateCount": 0,
   "existingGameVerifiedRewardCount": 0,
-  "coverageCandidateQueueCount": 128,
-  "newGameCandidateQueueCount": 1768,
+  "coverageCandidateQueueCount": 444,
+  "newGameCandidateQueueCount": 1750,
   "newGameDiscovery": {
     "sources": 8,
     "listingPages": 68,
     "fetchErrors": 2,
-    "candidateCount": 1768,
-    "completeSources": 6,
-    "incompleteSources": 2,
+    "candidateCount": 1750,
+    "completeSources": 5,
+    "incompleteSources": 3,
     "sourceResults": [
       {
         "source": "moppy",
@@ -46,7 +46,7 @@
         "scope": "paginated_first_party_game_listing",
         "listingPagesAttempted": 36,
         "fetchErrors": 0,
-        "candidateCount": 1318,
+        "candidateCount": 1312,
         "scanComplete": true,
         "catalogComplete": true,
         "candidateLimitReached": false,
@@ -58,7 +58,7 @@
         "scope": "partial_current_app_category_listing",
         "listingPagesAttempted": 1,
         "fetchErrors": 0,
-        "candidateCount": 20,
+        "candidateCount": 0,
         "scanComplete": true,
         "catalogComplete": false,
         "candidateLimitReached": false,
@@ -72,7 +72,7 @@
         "fetchErrors": 1,
         "candidateCount": 0,
         "scanComplete": false,
-        "catalogComplete": true,
+        "catalogComplete": false,
         "candidateLimitReached": false,
         "contentGuardFailed": false
       },
@@ -82,7 +82,7 @@
         "scope": "full_paginated_game_listing",
         "listingPagesAttempted": 26,
         "fetchErrors": 0,
-        "candidateCount": 292,
+        "candidateCount": 300,
         "scanComplete": true,
         "catalogComplete": true,
         "candidateLimitReached": false,
@@ -206,10 +206,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 17,
-        "gapCount": 17,
-        "coveredCount": 0,
-        "fetchErrors": 2,
+        "candidateCount": 63,
+        "gapCount": 61,
+        "coveredCount": 2,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -236,10 +236,10 @@
           "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
-          "confirmedOffers": 2,
-          "updatedRows": 2,
-          "reviewRequired": 4,
-          "state": "confirmed"
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 6,
+          "state": "review_required"
         },
         {
           "source": "chobirich",
@@ -282,13 +282,13 @@
           "state": "review_required"
         }
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 19,
-        "gapCount": 16,
-        "coveredCount": 3,
-        "fetchErrors": 2,
+        "candidateCount": 69,
+        "gapCount": 58,
+        "coveredCount": 11,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -315,10 +315,10 @@
           "knownOrDiscoveredUrls": 4,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
-          "confirmedOffers": 2,
-          "updatedRows": 2,
-          "reviewRequired": 2,
-          "state": "confirmed"
+          "confirmedOffers": 0,
+          "updatedRows": 0,
+          "reviewRequired": 4,
+          "state": "review_required"
         },
         {
           "source": "chobirich",
@@ -332,12 +332,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 6,
           "state": "review_required"
         },
         {
@@ -361,7 +361,7 @@
           "state": "review_required"
         }
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
         "candidateCount": 1,
@@ -452,10 +452,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 11,
-        "gapCount": 6,
-        "coveredCount": 5,
-        "fetchErrors": 2,
+        "candidateCount": 21,
+        "gapCount": 11,
+        "coveredCount": 10,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -531,10 +531,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 18,
-        "gapCount": 17,
-        "coveredCount": 1,
-        "fetchErrors": 2,
+        "candidateCount": 64,
+        "gapCount": 61,
+        "coveredCount": 3,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -619,10 +619,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 18,
-        "gapCount": 15,
-        "coveredCount": 3,
-        "fetchErrors": 2,
+        "candidateCount": 64,
+        "gapCount": 57,
+        "coveredCount": 7,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -698,10 +698,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 27,
-        "gapCount": 19,
-        "coveredCount": 8,
-        "fetchErrors": 2,
+        "candidateCount": 71,
+        "gapCount": 52,
+        "coveredCount": 19,
+        "fetchErrors": 1,
         "detailReviewCount": 1,
         "verifiedRewardCandidateCount": 0
       },
@@ -730,7 +730,7 @@
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 6,
+          "reviewRequired": 7,
           "state": "review_required"
         },
         {
@@ -745,12 +745,12 @@
         {
           "source": "coincome",
           "standard": true,
-          "knownOrDiscoveredUrls": 0,
+          "knownOrDiscoveredUrls": 6,
           "offerwallPresenceDomains": 0,
           "offerwallReviewedProviders": 0,
           "confirmedOffers": 0,
           "updatedRows": 0,
-          "reviewRequired": 1,
+          "reviewRequired": 6,
           "state": "review_required"
         },
         {
@@ -786,10 +786,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 19,
-        "gapCount": 11,
-        "coveredCount": 8,
-        "fetchErrors": 2,
+        "candidateCount": 61,
+        "gapCount": 54,
+        "coveredCount": 7,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -865,10 +865,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 17,
-        "gapCount": 15,
-        "coveredCount": 2,
-        "fetchErrors": 2,
+        "candidateCount": 61,
+        "gapCount": 57,
+        "coveredCount": 4,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
@@ -953,10 +953,10 @@
       "standardConfirmed": 0,
       "coverageDiscovery": {
         "enabled": true,
-        "candidateCount": 19,
-        "gapCount": 17,
-        "coveredCount": 2,
-        "fetchErrors": 2,
+        "candidateCount": 69,
+        "gapCount": 64,
+        "coveredCount": 5,
+        "fetchErrors": 1,
         "detailReviewCount": 0,
         "verifiedRewardCandidateCount": 0
       },
