@@ -1,0 +1,26 @@
+name: Validate Pages deploy after refresh
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/deploy-pages.yml"
+      - ".github/workflows/validate-pages-after-refresh.yml"
+      - "tests/test_pages_deploy_after_refresh.py"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-pages-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Syntax check focused test
+        run: python -m py_compile tests/test_pages_deploy_after_refresh.py
+      - name: Run focused Pages trigger tests
+        run: python -m pytest -q tests/test_pages_deploy_after_refresh.py
