@@ -22,6 +22,48 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore high-growth refresh state from Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          command -v aws >/dev/null 2>&1 || {
+            echo "AWS CLI is unavailable on this runner."
+            exit 1
+          }
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+
+          restore_dir="$(mktemp -d)"
+          trap 'rm -rf "${restore_dir}"' EXIT
+          if aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${restore_dir}/" \
+            --recursive \
+            --endpoint-url "${R2_ENDPOINT}" \
+            --only-show-errors; then
+            for name in \
+              new_game_candidate_queue.json \
+              new_game_candidate_history.json \
+              existing_game_candidate_queue.json \
+              comparison_candidate_queue.json \
+              comparison_review_queue.json \
+              comparison_refresh_status.json
+            do
+              if [ -f "${restore_dir}/${name}.gz" ]; then
+                gzip -dc "${restore_dir}/${name}.gz" > "data/${name}.r2tmp"
+                mv "data/${name}.r2tmp" "data/${name}"
+              fi
+            done
+            echo "Restored available high-growth state from R2."
+          else
+            echo "No R2 latest state available yet; using repository baseline for this run."
+          fi
+
       - name: Check first-party comparison pages
         id: refresh
         continue-on-error: true
@@ -31,21 +73,97 @@ jobs:
         if: steps.refresh.outcome == 'success'
         run: python scripts/append_offer_history.py
 
-      - name: Commit safe direct-refresh outputs
+      - name: Build compact public monitor snapshots
+        if: steps.refresh.outcome == 'success'
+        run: python scripts/write_public_monitors.py
+
+      - name: Archive refresh outputs to Cloudflare R2
+        if: steps.refresh.outcome == 'success'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          command -v aws >/dev/null 2>&1 || {
+            echo "AWS CLI is unavailable on this runner."
+            exit 1
+          }
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+
+          stamp="$(date -u +'%Y/%m/%d/%H%M%SZ')"
+          archive_dir="$(mktemp -d)"
+          trap 'rm -rf "${archive_dir}"' EXIT
+
+          files=(
+            data/new_game_candidate_queue.json
+            data/new_game_candidate_history.json
+            data/existing_game_candidate_queue.json
+            data/comparison_candidate_queue.json
+            data/comparison_review_queue.json
+            data/comparison_refresh_status.json
+            data/published_offers.csv
+            data/offer_history.csv
+          )
+
+          archived=0
+          for path in "${files[@]}"; do
+            if [ -f "${path}" ]; then
+              base="$(basename "${path}")"
+              gzip -9 -c "${path}" > "${archive_dir}/${base}.gz"
+              archived=$((archived + 1))
+            fi
+          done
+
+          test "${archived}" -gt 0
+          (
+            cd "${archive_dir}"
+            sha256sum *.gz > SHA256SUMS
+          )
+
+          aws s3 cp "${archive_dir}/" "s3://${R2_BUCKET}/daily/${stamp}/" \
+            --recursive \
+            --endpoint-url "${R2_ENDPOINT}" \
+            --only-show-errors
+
+          aws s3 cp "${archive_dir}/" "s3://${R2_BUCKET}/state/latest/" \
+            --recursive \
+            --endpoint-url "${R2_ENDPOINT}" \
+            --only-show-errors
+
+      - name: Commit compact public outputs only
         if: steps.refresh.outcome == 'success'
         run: |
+          set -euo pipefail
           git config user.name "poigamelab-bot"
           git config user.email "actions@users.noreply.github.com"
+
           git add data/published_offers.csv
           git add data/offer_history.csv
-          if [ -f data/comparison_refresh_status.json ]; then git add data/comparison_refresh_status.json; fi
           if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
-          if [ -f data/comparison_review_queue.json ]; then git add data/comparison_review_queue.json; fi
-          if [ -f data/comparison_candidate_queue.json ]; then git add data/comparison_candidate_queue.json; fi
-          if [ -f data/new_game_candidate_queue.json ]; then git add data/new_game_candidate_queue.json; fi
-          if [ -f data/new_game_candidate_history.json ]; then git add data/new_game_candidate_history.json; fi
-          if [ -f data/existing_game_candidate_queue.json ]; then git add data/existing_game_candidate_queue.json; fi
-          git diff --cached --quiet || git commit -m "chore: check comparison offers"
+          git add data/new_game_monitor.json data/existing_game_monitor.json
+
+          for path in \
+            data/new_game_candidate_queue.json \
+            data/new_game_candidate_history.json \
+            data/existing_game_candidate_queue.json \
+            data/comparison_candidate_queue.json \
+            data/comparison_review_queue.json \
+            data/comparison_refresh_status.json
+          do
+            if git ls-files --error-unmatch "${path}" >/dev/null 2>&1; then
+              git restore --worktree -- "${path}"
+            else
+              rm -f "${path}"
+            fi
+          done
+
+          git diff --cached --quiet || git commit -m "chore: refresh compact public offer data"
           git pull --rebase
           git push
 
