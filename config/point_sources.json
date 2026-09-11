@@ -15,7 +15,7 @@
         "moppy.jp",
         "pc.moppy.jp"
       ],
-      "mobile": true,
+      "mobile": false,
       "enabled": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
@@ -28,14 +28,14 @@
         "ad/detail.php"
       ],
       "new_game_discovery_enabled": true,
-      "new_game_discovery_page_url_template": "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page={page}",
+      "new_game_discovery_page_url_template": "https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=&current_page={page}&af_sorter=1&exclude_purchased=",
       "new_game_discovery_max_pages": 60,
       "new_game_discovery_candidate_limit": 2000,
       "new_game_discovery_min_detail_identities_first_page": 1,
-      "new_game_discovery_scope": "paginated_first_party_app_listing",
+      "new_game_discovery_scope": "paginated_first_party_ajax_app_listing",
       "full_catalog_discovery_enabled": false,
-      "reviewedAt": "2026-09-10",
-      "discoveryNote": "Official Moppy help links to the smartphone-browser app advertising list. The reviewed list URL is paginated. Nightly discovery starts only if page 1 exposes at least one first-party detail identity; otherwise it is reported as a collection failure, never as an empty catalog. Fetched pages are reused for existing-game refresh."
+      "reviewedAt": "2026-09-11",
+      "discoveryNote": "GitHub-hosted runner diagnostics confirmed the public category shell loads offers via GET /ajax/category/get_list.php using parent_category, child_category, objective_category, current_page, af_sorter and exclude_purchased. The reviewed app category returned 5 first-party ad/detail.php identities on current_page=1 and an empty page on current_page=2. Scheduled discovery uses that anonymous first-party AJAX route; publication remains gated."
     },
     {
       "id": "warau",
