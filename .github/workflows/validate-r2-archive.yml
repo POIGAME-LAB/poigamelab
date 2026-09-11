@@ -8,7 +8,7 @@ on:
       - "scripts/build_public_site.py"
       - "scripts/write_public_monitors.py"
       - "tests/test_r2_archive_workflow.py"
-      - "tests/test_public_site_build.py"
+      - "tests/test_r2_public_builder.py"
   workflow_dispatch:
 
 permissions:
@@ -29,9 +29,9 @@ jobs:
           python -m py_compile scripts/build_public_site.py
           python -m py_compile scripts/write_public_monitors.py
           python -m py_compile tests/test_r2_archive_workflow.py
-          python -m py_compile tests/test_public_site_build.py
+          python -m py_compile tests/test_r2_public_builder.py
       - name: Run focused R2 and public-build tests
         run: |
           python -m pytest -q \
             tests/test_r2_archive_workflow.py \
-            tests/test_public_site_build.py
+            tests/test_r2_public_builder.py
