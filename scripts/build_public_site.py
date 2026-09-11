@@ -247,11 +247,26 @@ def _build_existing_game_monitor_snapshot() -> dict:
     }
 
 
+def _write_or_copy_monitor(source_name: str, destination: Path, builder) -> None:
+    source = ROOT / "data" / source_name
+    if source.exists() and not source.is_symlink():
+        try:
+            payload = json.loads(source.read_text(encoding="utf-8"))
+        except (OSError, ValueError, TypeError):
+            payload = None
+        if isinstance(payload, dict) and str(payload.get("phase") or "").startswith("PUBLIC_"):
+            _copy_file(source, destination)
+            return
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        json.dumps(builder(), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
 def build_public_site(output: Path) -> list[str]:
     output = output.resolve()
     if output == ROOT or ROOT not in output.parents:
-        # The builder is intended to write only into a disposable directory
-        # beneath the repository working tree.
         raise ValueError("unsafe_output_directory")
 
     if output.exists():
@@ -269,17 +284,15 @@ def build_public_site(output: Path) -> list[str]:
     for name in CONFIG_FILES:
         _copy_file(ROOT / "config" / name, output / "config" / name)
 
-    monitor_path = output / "data" / "new_game_monitor.json"
-    monitor_path.parent.mkdir(parents=True, exist_ok=True)
-    monitor_path.write_text(
-        json.dumps(_build_new_game_monitor_snapshot(), ensure_ascii=False, indent=2),
-        encoding="utf-8",
+    _write_or_copy_monitor(
+        "new_game_monitor.json",
+        output / "data" / "new_game_monitor.json",
+        _build_new_game_monitor_snapshot,
     )
-
-    existing_monitor_path = output / "data" / "existing_game_monitor.json"
-    existing_monitor_path.write_text(
-        json.dumps(_build_existing_game_monitor_snapshot(), ensure_ascii=False, indent=2),
-        encoding="utf-8",
+    _write_or_copy_monitor(
+        "existing_game_monitor.json",
+        output / "data" / "existing_game_monitor.json",
+        _build_existing_game_monitor_snapshot,
     )
 
     for name in DATA_DIRS:
