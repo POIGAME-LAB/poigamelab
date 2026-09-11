@@ -15,16 +15,116 @@
     "エバーテイル"
   ],
   "results": [
-    {"game":"メメントモリ","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"きのこ伝説","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"Township","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"ワーキングヒーロー","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"ホワイトアウト・サバイバル","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"東京ディバンカー","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"パズル＆サバイバル","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"キングショット","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"放置少女","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6},
-    {"game":"エバーテイル","returncode":0,"publishableCount":0,"collectionComplete":false,"degradedReasons":["comparison_sources_below_minimum"],"standardConfirmed":0,"standardTotal":6}
+    {
+      "game": "メメントモリ",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "きのこ伝説",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "Township",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "ワーキングヒーロー",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "東京ディバンカー",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "パズル＆サバイバル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "キングショット",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "放置少女",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "エバーテイル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    }
   ],
   "success": true
 }
