@@ -186,7 +186,7 @@
         "hapitas.jp",
         "www.hapitas.jp"
       ],
-      "mobile": true,
+      "mobile": false,
       "enabled": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
@@ -208,12 +208,13 @@
       "coverage_first_party_listing_enabled": true,
       "coverage_scope": "full_current_app_category_listing",
       "coverage_candidate_limit": 8,
-      "reviewedAt": "2026-09-10",
+      "reviewedAt": "2026-09-11",
       "coverage_detail_review_enabled": true,
       "coverage_detail_review_limit_per_game": 3,
       "coverage_detail_review_mode": "candidate_only",
       "coverage_detail_review_parser": "hapitas-detail-review-v1",
-      "discovery_only": true
+      "discovery_only": true,
+      "discoveryNote": "GitHub-hosted runner probe confirmed the mobile UA redirects the public app catalog to sp.hapitas.jp with no offer identities, while a normal desktop browser UA returns the anonymous app catalog with first-party /item/detail/itemid/<id> links. Scheduled discovery therefore uses desktop UA; publication remains disabled."
     },
     {
       "id": "kurashiru_reward",
