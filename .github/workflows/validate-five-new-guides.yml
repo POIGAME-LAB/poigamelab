@@ -11,6 +11,9 @@ on:
       - "site-guides.js"
       - "site-researched-guides.js"
       - "guides.html"
+      - "games.csv"
+      - "games.js"
+      - "config/refresh_policy.json"
       - "sitemap.xml"
       - "scripts/build_public_site.py"
       - "tests/test_five_new_guides.py"
@@ -29,5 +32,10 @@ jobs:
           python-version: "3.12"
       - name: Install pytest
         run: python -m pip install --disable-pip-version-check pytest
+      - name: Check catalog JavaScript syntax
+        run: |
+          node --check games.js
+          node --check site-guides.js
+          node --check site-researched-guides.js
       - name: Run focused guide tests
         run: python -m pytest -q tests/test_five_new_guides.py

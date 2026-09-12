@@ -48,9 +48,10 @@
 <script>
 (async () => {
   const grid = document.getElementById("guideGrid");
+  const rendered = new Set();
 
   function renderCard(name, guide, image = "", inCatalog = false) {
-    if (!name || !guide || !Array.isArray(guide.links) || !guide.links.length) return;
+    if (!name || !guide || !Array.isArray(guide.links) || !guide.links.length || rendered.has(name)) return;
     const imageRights = window.POIGAME_IMAGE_RIGHTS?.[name] || null;
     const card = document.createElement("article");
     card.className = "card";
@@ -74,6 +75,7 @@
       </div>
     `;
     grid.appendChild(card);
+    rendered.add(name);
   }
 
   try {
