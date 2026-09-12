@@ -64,6 +64,31 @@
         "hapitas"
       ],
       "adoptedBy": "V32"
+    },
+    "ATLAS: EARTH": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_09_12"
+    },
+    "ファミリーファームの冒険": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_09_12"
+    },
+    "クロンダイクの冒険": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_09_12"
+    },
+    "Merge Help: ホームデザインパズル": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_09_12"
+    },
+    "マジックジグソーパズル": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_09_12"
     }
   },
   "publication": {
