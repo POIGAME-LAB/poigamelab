@@ -1,0 +1,31 @@
+name: Validate five new guides
+
+on:
+  pull_request:
+    paths:
+      - "atlas-earth-guide.html"
+      - "family-farm-adventure-guide.html"
+      - "klondike-adventures-guide.html"
+      - "merge-help-guide.html"
+      - "magic-jigsaw-puzzles-guide.html"
+      - "site-guides.js"
+      - "guides.html"
+      - "sitemap.xml"
+      - "tests/test_five_new_guides.py"
+      - ".github/workflows/validate-five-new-guides.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-guides:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Run focused guide tests
+        run: python -m pytest -q tests/test_five_new_guides.py
