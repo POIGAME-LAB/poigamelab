@@ -18,7 +18,9 @@ permissions:
 
 concurrency:
   group: poigamelab-pages
-  cancel-in-progress: false
+  # If another main push arrives while deployment is still running,
+  # discard the stale run and deploy only the newest state.
+  cancel-in-progress: true
 
 jobs:
   deploy:
