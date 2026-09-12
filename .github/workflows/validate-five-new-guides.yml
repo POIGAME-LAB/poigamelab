@@ -9,8 +9,10 @@ on:
       - "merge-help-guide.html"
       - "magic-jigsaw-puzzles-guide.html"
       - "site-guides.js"
+      - "site-researched-guides.js"
       - "guides.html"
       - "sitemap.xml"
+      - "scripts/build_public_site.py"
       - "tests/test_five_new_guides.py"
       - ".github/workflows/validate-five-new-guides.yml"
 
