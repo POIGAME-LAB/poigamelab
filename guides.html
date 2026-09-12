@@ -43,11 +43,11 @@
 </main>
 <script src="site-data.js"></script>
 <script src="site-guides.js"></script>
+<script src="site-researched-guides.js"></script>
 <script src="site-image-rights.js"></script>
 <script>
 (async () => {
   const grid = document.getElementById("guideGrid");
-  const rendered = new Set();
 
   function renderCard(name, guide, image = "", inCatalog = false) {
     if (!name || !guide || !Array.isArray(guide.links) || !guide.links.length) return;
@@ -74,7 +74,6 @@
       </div>
     `;
     grid.appendChild(card);
-    rendered.add(name);
   }
 
   try {
@@ -85,15 +84,13 @@
       if (!guide) return;
       renderCard(name, guide, String(row.image || "").trim(), true);
     });
-
-    Object.entries(window.POIGAME_GUIDES || {}).forEach(([name, guide]) => {
-      if (rendered.has(name)) return;
-      renderCard(name, guide, "", false);
-    });
   } catch (error) {
     console.error(error);
-    Object.entries(window.POIGAME_GUIDES || {}).forEach(([name, guide]) => renderCard(name, guide, "", false));
   }
+
+  Object.entries(window.POIGAME_RESEARCHED_GUIDES || {}).forEach(([name, guide]) => {
+    renderCard(name, guide, "", false);
+  });
 })();
 </script>
 <script src="site-footer.js"></script>
