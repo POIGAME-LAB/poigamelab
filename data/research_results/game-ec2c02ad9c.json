@@ -1,0 +1,1171 @@
+{
+  "game": "パズル＆コンクエスト",
+  "researchedAt": "2026-09-13T23:50:48+00:00",
+  "sourceQueue": {
+    "game": "パズル＆コンクエスト",
+    "aliases": [
+      "パズル＆コンクエスト"
+    ],
+    "maxRewardPt": 14600,
+    "sources": [
+      "warau"
+    ],
+    "sourceCandidates": [
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206368&pl=pc_categoryService",
+        "titleHint": "パズル＆コンクエスト（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 10,700 pt 3.7 （ 72件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+        "rewardPt": 10700
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206366&pl=pc_categoryService",
+        "titleHint": "パズル＆コンクエスト（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 14,600 pt 3.7 （ 72件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
+        "rewardPt": 14600
+      }
+    ],
+    "collectorReady": true,
+    "status": "collector_ready",
+    "origin": "high_reward_monitor",
+    "researchLogicVersion": "high-reward-v1"
+  },
+  "collectorResult": {
+    "phase": "PHASE2_AUTO_REFRESH_V23",
+    "runAt": "2026-09-13T23:50:48+00:00",
+    "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
+    "candidateCount": 9,
+    "geminiModel": "gemini-3.5-flash-lite",
+    "verified": {
+      "game": "パズル＆コンクエスト",
+      "offers": [
+        {
+          "site": "モッピー",
+          "reward_yen": 80800,
+          "condition": "新規アプリインストール後、30日以内に各成果地点クリア",
+          "platform": "",
+          "deadline": "",
+          "url": "https://pc.moppy.jp/ad/detail.php?site_id=160374",
+          "evidence_urls": [
+            "https://pc.moppy.jp/ad/detail.php?site_id=160374"
+          ],
+          "confidence": 0.9,
+          "publishable": true,
+          "reason": "モッピーの「パズル＆コンクエスト（StepUp）」案件詳細ページより、報酬額（29,689P＝29,689円）、達成条件（新規アプリインストール後、30日以内に各成果地点クリア）、案件URLが正確に確認できたため。",
+          "registered_source": "moppy",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "ハピタス",
+          "reward_yen": 23354,
+          "condition": "新規アプリインストール後、30日以内に各成果地点（ログイン、城レベル7/10/14/18/23/25/30/32到達、永久建築隊列購入、成長基金購入、ルシファーギフト到達）に到達",
+          "platform": "",
+          "deadline": "",
+          "url": "https://hapitas.jp/item/detail/itemid/97150/apn/navigation_category",
+          "evidence_urls": [
+            "https://hapitas.jp/item/detail/itemid/97150/apn/navigation_category"
+          ],
+          "confidence": 5,
+          "publishable": true,
+          "reason": "ハピタスの詳細ページより、対象ゲーム「パズル＆コンクエスト」の案件情報、還元ポイント数（23,354pt＝23,354円）、達成条件が明確に確認できるため。",
+          "registered_source": "hapitas",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "ハピタス",
+          "reward_yen": 1,
+          "condition": "新規アプリインストール後、30日以内に各成果地点（ログイン、城レベル5/8/14/18/23/30/32到達、☆5英雄初獲得、ログインギフト、ルシファーギフト到達、サバンナ購入）に到達",
+          "platform": "",
+          "deadline": "",
+          "url": "https://hapitas.jp/item/detail/itemid/98600/apn/navigation_category",
+          "evidence_urls": [
+            "https://hapitas.jp/item/detail/itemid/98600/apn/navigation_category"
+          ],
+          "confidence": 5,
+          "publishable": true,
+          "reason": "ハピタスの別URL詳細ページより、同一サイト内でも案件IDや報酬額、条件が異なる「パズル＆コンクエスト」の別案件として正確に確認できるため。",
+          "registered_source": "hapitas",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "アメフリ",
+          "reward_yen": 3200,
+          "condition": "30日以内に城レベル7到達、30日以内に★5英雄「サバンナ」を購入、30日以内に城レベル17到達、30日以内にルシファーギフトを購入、30日以内に城レベル22到達、30日以内に城レベル30到達",
+          "platform": "Android",
+          "deadline": "インストール日から起算して30日以内",
+          "url": "https://www.amefri.net/detail/id/129450",
+          "evidence_urls": [
+            "https://www.amefri.net/detail/id/129450"
+          ],
+          "confidence": 5,
+          "publishable": false,
+          "reason": "円換算できる明確な報酬額（日本円）が記載されていないため（10,000pt以上とあるが円換算レートが不明）、publishable=falseとしています。",
+          "registered_source": "amefuri",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "アメフリ",
+          "reward_yen": 2990,
+          "condition": "城レベルLv.7に到達、城レベルLv.12に到達、初めて星5英雄の欠片を10個を集めて英雄をアンロックする（ルシファーは対象外）、城レベルLv.17に到達、城レベルLv.22に到達、ルシファーギフト（2990円）購入",
+          "platform": "Android",
+          "deadline": "30日以内",
+          "url": "https://www.amefri.net/detail/id/129741",
+          "evidence_urls": [
+            "https://www.amefri.net/detail/id/129741"
+          ],
+          "confidence": 5,
+          "publishable": false,
+          "reason": "円換算できる明確な報酬額（日本円）が記載されていないため、publishable=falseとしています。",
+          "registered_source": "amefuri",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "アメフリ",
+          "reward_yen": null,
+          "condition": "インストール通知、城レベル5到達、城レベル7到達、城レベル12到達、城レベル17到達、城レベル22到達、城レベル30到達、★5英雄を初獲得、「シルバー週パス」を購入",
+          "platform": "iOS",
+          "deadline": "広告クリックから30日以内",
+          "url": "https://www.amefri.net/detail/id/126253",
+          "evidence_urls": [
+            "https://www.amefri.net/detail/id/126253"
+          ],
+          "confidence": 5,
+          "publishable": false,
+          "reason": "円換算できる明確な報酬額（日本円）が記載されていないため、publishable=falseとしています。",
+          "registered_source": "amefuri",
+          "reward_source": "unresolved",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": false,
+            "reward_consistent": false,
+            "condition_present": true
+          },
+          "auto_publish_ready": false
+        },
+        {
+          "site": "アメフリ",
+          "reward_yen": null,
+          "condition": "インストール通知、城レベル5到達、城レベル7到達、城レベル12到達、城レベル17到達、城レベル22到達、城レベル30到達、★5英雄を初獲得、「シルバー週パス」を購入",
+          "platform": "Android",
+          "deadline": "広告クリックから30日以内",
+          "url": "https://www.amefri.net/detail/id/126252",
+          "evidence_urls": [
+            "https://www.amefri.net/detail/id/126252"
+          ],
+          "confidence": 5,
+          "publishable": false,
+          "reason": "円換算できる明確な報酬額（日本円）が記載されていないため、publishable=falseとしています。",
+          "registered_source": "amefuri",
+          "reward_source": "unresolved",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": false,
+            "reward_consistent": false,
+            "condition_present": true
+          },
+          "auto_publish_ready": false
+        },
+        {
+          "site": "Powl",
+          "reward_yen": 3200,
+          "condition": "新規アプリインストール後、【StepUpミッション!!】クリア（30日以内に城レベル7～30到達、成長基金購入、ルシファーギフト購入など）",
+          "platform": "Android",
+          "deadline": "30日以内にクリア",
+          "url": "https://web.powl.jp/reward/33010",
+          "evidence_urls": [
+            "https://web.powl.jp/reward/33010"
+          ],
+          "confidence": 5,
+          "publishable": true,
+          "reason": "Powlの公式詳細ページより、Android向けのパズル＆コンクエストのステップアップ案件情報を明確に取得できたため。",
+          "registered_source": "powl",
+          "reward_source": "python_same_identity_explicit_yen",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": true,
+            "reward_consistent": true,
+            "condition_present": true
+          },
+          "auto_publish_ready": true
+        },
+        {
+          "site": "Powl",
+          "reward_yen": null,
+          "condition": "新規アプリインストール後、14日以内に城レベル17到達+マイクロ購入",
+          "platform": "iOS",
+          "deadline": "14日以内",
+          "url": "https://web.powl.jp/reward/29455",
+          "evidence_urls": [
+            "https://web.powl.jp/reward/29455"
+          ],
+          "confidence": 5,
+          "publishable": true,
+          "reason": "Powlの公式詳細ページより、iOS向けのパズル＆コンクエスト（城レベル17到達+マイクロ購入）の案件情報を明確に取得できたため。",
+          "registered_source": "powl",
+          "reward_source": "unresolved",
+          "deterministic_checks": {
+            "registered_domain": true,
+            "first_party_registered_source": true,
+            "url_present": true,
+            "evidence_present": true,
+            "evidence_domains_registered": true,
+            "evidence_same_offer_identity": true,
+            "exact_identity_candidate_present": true,
+            "reward_valid": false,
+            "reward_consistent": false,
+            "condition_present": true
+          },
+          "auto_publish_ready": false
+        }
+      ],
+      "verdict": "モッピーの「パズル＆コンクエスト（StepUp）」案件情報を正常に抽出しました。 / ハピタスの「パズル＆コンクエスト」に関する2つの異なる案件詳細ページを正常に抽出・検証しました。 / 対象ゲーム「パズル＆コンクエスト」に関連するアメフリの4つの案件ページ（Android/iOS、複数バージョン）を正常に抽出しました。いずれも獲得ポイント数（pt）の記載はあるものの、日本円への換算レートが明記されていないため reward_yen は null とし、規程に基づき publishable=false としています。 / 対象ゲーム「パズル＆コンクエスト」のAndroid版ステップアップ案件およびiOS版案件をそれぞれ正常に抽出しました。",
+      "needs_human_review": false
+    },
+    "diagnostics": [
+      {
+        "source_id": "moppy",
+        "source_name": "モッピー",
+        "mode": "indexed_official_fast_path",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 83319,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 2,
+          "eligibleUrls": 1,
+          "confirmed": 1,
+          "details": [
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160374",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 204689,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed official detail pages directly verified"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.4
+      },
+      {
+        "source_id": "warau",
+        "source_name": "ワラウ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 284061,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 367916,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 1,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 5.5
+      },
+      {
+        "source_id": "chobirich",
+        "source_name": "ちょびリッチ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": false,
+              "error": "HTTP Error 403: Forbidden"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": false
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 1,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 1.5
+      },
+      {
+        "source_id": "coincome",
+        "source_name": "COINCOME",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 107469,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 1,
+          "eligibleUrls": 1,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://cimcome.jp/campaigns/details/10201",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.6
+      },
+      {
+        "source_id": "mikoshi",
+        "source_name": "MIKOSHI",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 1332,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 1.6
+      },
+      {
+        "source_id": "gendama",
+        "source_name": "げん玉",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 212501,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.2
+      },
+      {
+        "source_id": "hapitas",
+        "source_name": "ハピタス",
+        "mode": "direct_official_fast_path",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": true,
+              "detailLinks": 2,
+              "bytes": 208518,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
+          "details": [
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98600/apn/navigation_category",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 112875,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/97150/apn/navigation_category",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 112886,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
+          "candidateCount": 2,
+          "allListingsFetched": true
+        },
+        "indexed_official": null,
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "direct first-party detail pages succeeded"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 3.5
+      },
+      {
+        "source_id": "kurashiru_reward",
+        "source_name": "クラシルリワード（レシチャレ）",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 64053,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 2.2
+      },
+      {
+        "source_id": "trima",
+        "source_name": "トリマ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 1200000,
+              "truncated": true,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 2.5
+      },
+      {
+        "source_id": "point_income",
+        "source_name": "ポイントインカム",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 5635,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 1,
+          "eligibleUrls": 1,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://sp.pointi.jp/mnt_corn/store_detail.php?id=112441",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 5635,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.8
+      },
+      {
+        "source_id": "amefuri",
+        "source_name": "アメフリ",
+        "mode": "indexed_official_fast_path",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 100905,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 101109,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 101650,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
+          "confirmed": 4,
+          "details": [
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/129450",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 100833,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/129741",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 95697,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/126252",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 88642,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/126253",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 92244,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed official detail pages directly verified"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 9.8
+      },
+      {
+        "source_id": "point_town",
+        "source_name": "ポイントタウン",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 94350,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 2.4
+      },
+      {
+        "source_id": "ec_navi",
+        "source_name": "ECナビ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 914730,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10123023/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 909785,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10716613/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 905624,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10716612/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 904571,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10164963/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 907711,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 5.9
+      },
+      {
+        "source_id": "nifty_point",
+        "source_name": "ニフティポイントクラブ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 121589,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 3.8
+      },
+      {
+        "source_id": "gmo_point",
+        "source_name": "GMOポイ活",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 146883,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 3.8
+      },
+      {
+        "source_id": "powl",
+        "source_name": "Powl",
+        "mode": "direct_official_fast_path",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": true,
+              "detailLinks": 2,
+              "bytes": 694674,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [
+            {
+              "identityUrl": "https://web.powl.jp/reward/29455",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 62031,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://web.powl.jp/reward/33010",
+              "ok": true,
+              "targetFound": true,
+              "bytes": 71199,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "candidateCount": 2,
+          "allListingsFetched": true
+        },
+        "indexed_official": null,
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "direct first-party detail pages succeeded"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.0
+      }
+    ],
+    "health": {
+      "publishableCount": 6,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "coincome:search_failed"
+      ],
+      "publishableBySource": {
+        "moppy": 1,
+        "warau": 0,
+        "chobirich": 0,
+        "coincome": 0,
+        "mikoshi": 0,
+        "gendama": 0,
+        "hapitas": 2,
+        "kurashiru_reward": 0,
+        "trima": 0,
+        "point_income": 0,
+        "amefuri": 2,
+        "point_town": 0,
+        "ec_navi": 0,
+        "nifty_point": 0,
+        "gmo_point": 0,
+        "powl": 1
+      },
+      "exceptionCount": 3
+    },
+    "policy": {
+      "autoPublish": "Python deterministic gate only: same first-party registered source URL/evidence + valid reward + condition",
+      "offerwalls": "親サイトから自動発見。個人識別子付きURLは実行中だけ使用し、保存時はqueryを除去",
+      "publishMode": "quarantine"
+    }
+  },
+  "quarantine": true,
+  "autoPublish": false
+}

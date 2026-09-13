@@ -1,77 +1,311 @@
 {
   "schemaVersion": 1,
-  "phase": "PHASE3_ADOPTION_GATE_V29",
-  "generatedAt": "2026-09-01T02:36:27+00:00",
-  "apiCalls": 0,
+  "phase": "PHASE3_HIGH_REWARD_V29_GATE",
+  "generatedAt": "2026-09-13T23:50:48+00:00",
   "autoPublish": false,
   "autoAddGame": false,
   "summary": {
-    "researchedGames": 1,
+    "researchedGames": 15,
     "adoptionReady": 1,
-    "held": 0
+    "held": 14
   },
   "items": [
     {
-      "game": "ホワイトアウト・サバイバル",
-      "eligible": true,
-      "status": "adopted",
-      "reasons": [],
-      "strictOfferCount": 3,
-      "verifiedSourceCount": 2,
+      "game": "【SKYFLAG】天地英雄伝",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "Swipe It: Board Wooden Puzzle",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "collection_incomplete",
+        "degraded_collection",
+        "insufficient_verified_sources"
+      ],
+      "strictOfferCount": 2,
+      "verifiedSourceCount": 1,
       "verifiedSources": [
-        "moppy",
+        "powl"
+      ],
+      "coverageOverrideApplied": false,
+      "coverageWarnings": [],
+      "researchedAt": "2026-09-13T23:41:48+00:00",
+      "sourceQueue": {
+        "game": "Swipe It: Board Wooden Puzzle",
+        "aliases": [
+          "Swipe It: Board Wooden Puzzle"
+        ],
+        "maxRewardPt": 70000,
+        "sources": [
+          "powl"
+        ],
+        "sourceCandidates": [
+          {
+            "source": "powl",
+            "url": "https://web.powl.jp/reward/38970",
+            "titleHint": "Swipe It: Board Wooden Puzzle（多段階）（Android） - レベル4000到達 新規アプリインストール後、【StepUpミッション!!】クリア 70,000pt",
+            "rewardPt": 70000
+          },
+          {
+            "source": "powl",
+            "url": "https://web.powl.jp/reward/38980",
+            "titleHint": "Swipe It: Board Wooden Puzzle（多段階）（iOS） - レベル4000到達 新規アプリインストール後、【StepUpミッション!!】クリア 70,000pt",
+            "rewardPt": 70000
+          }
+        ],
+        "collectorReady": true,
+        "status": "collector_ready",
+        "origin": "high_reward_monitor",
+        "researchLogicVersion": "high-reward-v1"
+      }
+    },
+    {
+      "game": "【SKYFLAG】ザ・グランドマフィア",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "All in Holeマルチミッション",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "間違い探し 江戸時代の文化 - 累計28,000 ポイントを獲得",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "【SmaAD】Heroes vs Crazy Wiggler",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "【SKYFLAG】パズル＆コンクエスト",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "【SKYFLAG】ヒーローウォーズアライアンス -- 放置系ロールプレイング",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "トップウォー",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "collection_incomplete",
+        "degraded_collection",
+        "insufficient_strict_offers",
+        "insufficient_verified_sources"
+      ],
+      "strictOfferCount": 0,
+      "verifiedSourceCount": 0,
+      "verifiedSources": [],
+      "coverageOverrideApplied": false,
+      "coverageWarnings": [],
+      "researchedAt": "2026-09-13T23:46:32+00:00",
+      "sourceQueue": {
+        "game": "トップウォー",
+        "aliases": [
+          "トップウォー"
+        ],
+        "maxRewardPt": 17430,
+        "sources": [
+          "warau"
+        ],
+        "sourceCandidates": [
+          {
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031&pl=pc_categoryService",
+            "titleHint": "トップウォー（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 17,430 pt 3.8 （ 29件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
+            "rewardPt": 17430
+          }
+        ],
+        "collectorReady": true,
+        "status": "collector_ready",
+        "origin": "high_reward_monitor",
+        "researchLogicVersion": "high-reward-v1"
+      }
+    },
+    {
+      "game": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "【SKYFLAG】War of Towers",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "ヒーローウォーズ：アライアンス - 放置系RPG",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "War of Towers",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "collection_incomplete",
+        "degraded_collection",
+        "insufficient_strict_offers",
+        "insufficient_verified_sources"
+      ],
+      "strictOfferCount": 1,
+      "verifiedSourceCount": 1,
+      "verifiedSources": [
         "warau"
+      ],
+      "coverageOverrideApplied": false,
+      "coverageWarnings": [],
+      "researchedAt": "2026-09-13T23:49:25+00:00",
+      "sourceQueue": {
+        "game": "War of Towers",
+        "aliases": [
+          "War of Towers"
+        ],
+        "maxRewardPt": 16000,
+        "sources": [
+          "warau"
+        ],
+        "sourceCandidates": [
+          {
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463&pl=pc_categoryService",
+            "titleHint": "War of Towers（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 16,000 pt 2.0 （ 1件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+            "rewardPt": 16000
+          }
+        ],
+        "collectorReady": true,
+        "status": "collector_ready",
+        "origin": "high_reward_monitor",
+        "researchLogicVersion": "high-reward-v1"
+      }
+    },
+    {
+      "game": "アローズ - パズルエスケープ (Arrows)",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "insufficient_verified_sources"
+      ],
+      "strictOfferCount": 2,
+      "verifiedSourceCount": 1,
+      "verifiedSources": [
+        "warau"
+      ],
+      "coverageOverrideApplied": false,
+      "coverageWarnings": [],
+      "researchedAt": "2026-09-13T23:50:05+00:00",
+      "sourceQueue": {
+        "game": "アローズ - パズルエスケープ (Arrows)",
+        "aliases": [
+          "アローズ - パズルエスケープ (Arrows)"
+        ],
+        "maxRewardPt": 15210,
+        "sources": [
+          "warau"
+        ],
+        "sourceCandidates": [
+          {
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206651&pl=pc_categoryService",
+            "titleHint": "アローズ - パズルエスケープ (Arrows)（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 15,210 pt 3.6 （ 74件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+            "rewardPt": 15210
+          },
+          {
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206650&pl=pc_categoryService",
+            "titleHint": "アローズ - パズルエスケープ (Arrows)（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 15,200 pt 3.6 （ 74件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
+            "rewardPt": 15200
+          }
+        ],
+        "collectorReady": true,
+        "status": "collector_ready",
+        "origin": "high_reward_monitor",
+        "researchLogicVersion": "high-reward-v1"
+      }
+    },
+    {
+      "game": "パズル＆コンクエスト",
+      "eligible": true,
+      "status": "adoption_ready",
+      "reasons": [],
+      "strictOfferCount": 6,
+      "verifiedSourceCount": 4,
+      "verifiedSources": [
+        "amefuri",
+        "hapitas",
+        "moppy",
+        "powl"
       ],
       "coverageOverrideApplied": true,
       "coverageWarnings": [
-        "chobirich:optional_firecrawl_402",
         "coincome:optional_firecrawl_402"
       ],
-      "researchedAt": "2026-09-01T02:36:27+00:00",
+      "researchedAt": "2026-09-13T23:50:48+00:00",
       "sourceQueue": {
-        "game": "ホワイトアウト・サバイバル",
-        "aliases": [],
-        "status": "collector_ready",
-        "collectorReady": true,
-        "candidateFingerprint": "1e645f2735838241",
-        "researchLogicVersion": "V48-moppy-indexed-query-diversity",
-        "lastResearchLogicVersion": "V47-optional-firecrawl-coverage",
-        "recheckReason": null,
-        "lastResearchAt": "2026-09-01T02:23:08+00:00",
-        "researchSummary": {
-          "game": "ホワイトアウト・サバイバル",
-          "returncode": 0,
-          "resultSaved": true,
-          "publishableCount": 2,
-          "collectionComplete": false,
-          "degradedReasons": [
-            "chobirich:search_failed",
-            "coincome:search_failed"
-          ]
-        },
-        "firstPromotedAt": "2026-08-31T17:07:34+00:00",
-        "lastConfirmedAt": "2026-09-01T02:36:07+00:00",
-        "score": 75,
-        "confidence": 80,
-        "sourceCount": 2,
-        "sourceTypeCount": 1,
-        "evidence": [
+        "game": "パズル＆コンクエスト",
+        "aliases": [
+          "パズル＆コンクエスト"
+        ],
+        "maxRewardPt": 14600,
+        "sources": [
+          "warau"
+        ],
+        "sourceCandidates": [
           {
-            "sourceId": "warau-new",
-            "sourceType": "point_site",
-            "title": "サービスのポイント情報一覧｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
-            "url": "https://www.warau.jp/contents/point/category?point_group=2"
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206368&pl=pc_categoryService",
+            "titleHint": "パズル＆コンクエスト（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 10,700 pt 3.7 （ 72件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+            "rewardPt": 10700
           },
           {
-            "sourceId": "moppy-official-games",
-            "sourceType": "point_site",
-            "title": "【2026年8月最新】おすすめポイ活ゲーム徹底解説！ポイント比較＆クリアしやすいのはどれ!? | ポイ活ラボ - オトクなポイ活情報を発信！",
-            "url": "https://pc.moppy.jp/poikatsu-lab/4753-1/"
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206366&pl=pc_categoryService",
+            "titleHint": "パズル＆コンクエスト（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 14,600 pt 3.7 （ 72件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
+            "rewardPt": 14600
           }
-        ]
-      },
-      "adoptedAt": "2026-09-01T02:36:27+00:00",
-      "publishedOfferCount": 3
+        ],
+        "collectorReady": true,
+        "status": "collector_ready",
+        "origin": "high_reward_monitor",
+        "researchLogicVersion": "high-reward-v1"
+      }
     }
   ]
 }
