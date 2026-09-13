@@ -1,10 +1,12 @@
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'scripts'))
 spec=importlib.util.spec_from_file_location('high_reward_bridge',ROOT/'scripts/high_reward_adoption_bridge.py')
 mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
 
@@ -39,11 +41,15 @@ class HighRewardBridgeTests(unittest.TestCase):
         ]}
         calls=[]
         original_results=mod.research.RESULTS
+        original_candidates=mod.ADOPTION_CANDIDATES
+        original_status=mod.ADOPTION_STATUS
+        original_bridge_status=mod.BRIDGE_STATUS
         with tempfile.TemporaryDirectory() as d:
             d=Path(d); games=d/'games.csv'; games.write_text('name,image,condition,days,difficulty,overview,tips,featured,addedDate\n',encoding='utf-8')
             monitor_path=d/'monitor.json'; monitor_path.write_text(json.dumps(monitor),encoding='utf-8')
             cfg=d/'cfg.json'; cfg.write_text(json.dumps({'minimumVerifiedOffersForAdoption':2,'minimumVerifiedSourcesForAdoption':2}),encoding='utf-8')
             results=d/'results'; results.mkdir(); mod.research.RESULTS=results
+            mod.ADOPTION_CANDIDATES=d/'adoption_candidates.json'; mod.ADOPTION_STATUS=d/'adoption_status.json'; mod.BRIDGE_STATUS=d/'bridge_status.json'
             def research_one(item,env=None):
                 calls.append(item['game'])
                 slug=mod.research.stable_slug(item['game'])
@@ -55,7 +61,7 @@ class HighRewardBridgeTests(unittest.TestCase):
             def adopt_one(decision,*args):
                 return {'game':decision['game'],'adopted':True}
             out=mod.run(monitor_path=monitor_path,games_path=games,config_path=cfg,max_candidates=15,target_adoptions=1,research_one=research_one,evaluate=evaluate,adopt_one=adopt_one)
-            mod.research.RESULTS=original_results
+        mod.research.RESULTS=original_results; mod.ADOPTION_CANDIDATES=original_candidates; mod.ADOPTION_STATUS=original_status; mod.BRIDGE_STATUS=original_bridge_status
         self.assertEqual(calls,['Game A','Game B'])
         self.assertEqual(out['adopted'],1)
         self.assertEqual(out['held'],1)
