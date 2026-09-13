@@ -12,6 +12,14 @@ GUIDES = {
     "マジックジグソーパズル": "magic-jigsaw-puzzles-guide.html",
 }
 
+GAME_IMAGES = {
+    "ATLAS: EARTH": "assets/game-art/atlas-earth.PNG",
+    "ファミリーファームの冒険": "assets/game-art/family-farm-adventure.PNG",
+    "クロンダイクの冒険": "assets/game-art/klondike-adventures.PNG",
+    "Merge Help: ホームデザインパズル": "assets/game-art/merge-help.PNG",
+    "マジックジグソーパズル": "assets/game-art/magic-jigsaw-puzzles.PNG",
+}
+
 
 def test_new_guides_exist_and_disclose_research_status():
     for name, filename in GUIDES.items():
@@ -53,14 +61,17 @@ def test_public_builder_includes_new_guides_and_registry():
     assert '"site-researched-guides.js"' in builder
 
 
-def test_all_five_are_formal_catalog_games_with_temporary_image_and_reference_reward():
+def test_all_five_are_formal_catalog_games_with_uploaded_image_and_reference_reward():
     with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
         rows = {row["name"]: row for row in csv.DictReader(handle)}
 
     for name in GUIDES:
         assert name in rows
         row = rows[name]
-        assert row["image"] == "poigamelab_hero.png"
+        assert row["image"] == GAME_IMAGES[name]
+        image_path = ROOT / GAME_IMAGES[name]
+        assert image_path.is_file()
+        assert image_path.stat().st_size > 100_000
         assert int(row["provisionalReward"]) > 0
         assert row["provisionalSource"].strip()
         assert row["addedDate"] == "2026-09-12"
