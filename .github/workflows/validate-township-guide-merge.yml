@@ -1,0 +1,28 @@
+name: Validate Township guide merge
+
+on:
+  pull_request:
+    paths:
+      - 'township-lv60.html'
+      - 'township-lv70.html'
+      - 'site-guides.js'
+      - 'sitemap.xml'
+      - 'tests/test_township_guide_merge.py'
+      - '.github/workflows/validate-township-guide-merge.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-township-guide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pytest
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Run focused Township guide tests
+        run: python -m pytest -q tests/test_township_guide_merge.py

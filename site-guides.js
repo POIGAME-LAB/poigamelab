@@ -1,10 +1,9 @@
 window.POIGAME_GUIDES = Object.freeze({
   "Township": {
     title: "Township ポイ活攻略",
-    description: "Lv60・Lv70を目標別に、実際の進捗データと攻略の優先ポイントで整理しています。",
+    description: "Lv60までの基礎攻略とLv70実プレイを1ページにまとめています。",
     links: [
-      { label: "Lv60攻略を読む →", href: "township-lv60.html" },
-      { label: "Lv70攻略を読む →", href: "township-lv70.html" }
+      { label: "攻略を見る →", href: "township-lv70.html" }
     ]
   },
   "きのこ伝説": {
