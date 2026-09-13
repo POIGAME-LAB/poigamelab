@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "game": "Township",
+  "updatedAt": "2026-09-14",
+  "title": "実例：Townshipプレイヤーの進捗記録",
+  "intro": "POIGAME LAB運営の実プレイと、公開されているX・攻略記事の進捗を同一人物ごとに整理しています。案件条件や課金状況は同一ではないため、平均ではなく実例として見てください。",
+  "notice": "※Lv70到達後もポイント反映待ち・問い合わせ中の例があります。ゲーム内での到達とポイント付与は分けて記録しています。",
+  "initialVisible": 4,
+  "footnote": "到達日数はプレイ時間・課金・イベント・開始時期で変わります。新しい公開記録が確認できた場合は、同一人物の投稿を統合しながら追加します。",
+  "players": [
+    {
+      "id": "A",
+      "label": "POIGAME LAB運営",
+      "status": "completed",
+      "summary": "約49日でLv70達成",
+      "milestones": [
+        {"dayLabel": "8/31", "level": 60, "label": "Lv60"},
+        {"dayLabel": "9/10", "level": 67, "label": "Lv67", "detail": "16時"},
+        {"dayLabel": "9/11", "level": 68, "label": "Lv68", "detail": "2時"},
+        {"dayLabel": "9/11", "level": 69, "label": "Lv69", "detail": "15時"},
+        {"dayLabel": "9/11", "level": 70, "label": "Lv70達成"}
+      ],
+      "note": "7月24日ごろ開始。課金は800円のパスを2回、合計1,600円。後半はヘリ注文・市場・研究所ブースト・桜の木で加速しました。",
+      "sources": ["https://poigamelab.com/township-lv70.html"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "46日目にLv70達成",
+      "milestones": [
+        {"day": 3, "level": 20, "label": "Lv20"},
+        {"day": 26, "level": 54, "label": "Lv54"},
+        {"day": 46, "level": 70, "label": "Lv70達成"}
+      ],
+      "note": "Lv70到達時はパズル1802、納屋825（635）、市場枠66。終盤は桜の木も使って追い込み。レガッタのコイン系タスクも活用した公開記録です。",
+      "sources": ["https://x.com/nyanreimama"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "55日目にLv70到達",
+      "milestones": [
+        {"day": 1, "level": 9, "label": "Lv9"},
+        {"day": 55, "level": 70, "label": "Lv70到達", "detail": "ポイント反映問い合わせ中"}
+      ],
+      "note": "ゲーム内ではLv70へ到達。公開投稿時点ではポイント反映について問い合わせ中と報告されています。",
+      "sources": ["https://x.com/rer1rc"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "ongoing",
+      "summary": "1日目にLv11",
+      "milestones": [
+        {"day": 1, "level": 11, "label": "Lv11"}
+      ],
+      "note": "旧Lv60攻略記事で掲載していた公開進捗例。序盤の比較用として復元しました。",
+      "sources": ["https://x.com/amane_poi/status/1930612017179799693"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "ongoing",
+      "summary": "10日目にLv22",
+      "milestones": [
+        {"day": 10, "level": 22, "label": "Lv22"}
+      ],
+      "note": "旧Lv60攻略記事で掲載していた別プレイヤーの公開進捗例です。",
+      "sources": ["https://x.com/onozaki_lala/status/1974019328598065282"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "ongoing",
+      "summary": "23日目にLv35・無課金",
+      "milestones": [
+        {"day": 23, "level": 35, "label": "Lv35", "detail": "無課金"}
+      ],
+      "note": "旧Lv60攻略記事で掲載していた公開体験。飛行機イベントを無理に追わない進め方も記録されています。",
+      "sources": ["https://ameblo.jp/gohobi-tabi/entry-12967056925.html"]
+    }
+  ]
+}
