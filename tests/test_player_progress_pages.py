@@ -4,6 +4,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def _guide_block(catalog: str, name: str, next_name: str) -> str:
+    return catalog.split(f'"{name}": {{', 1)[1].split(f'  "{next_name}": {{', 1)[0]
+
+
 def test_township_card_removes_old_description_and_has_two_links():
     catalog = (ROOT / "site-guides.js").read_text(encoding="utf-8")
     block = catalog.split('"Township": {', 1)[1].split('  "きのこ伝説": {', 1)[0]
@@ -13,10 +17,17 @@ def test_township_card_removes_old_description_and_has_two_links():
     assert 'label: "みんなの進捗を見る →"' in block
 
 
-def test_every_catalog_game_has_progress_link():
+def test_progress_links_follow_page_type_instead_of_every_game():
     catalog = (ROOT / "site-guides.js").read_text(encoding="utf-8")
-    assert catalog.count('label: "みんなの進捗を見る →"') == 15
-    assert catalog.count('href: "progress.html?game=') == 15
+
+    township = _guide_block(catalog, "Township", "きのこ伝説")
+    tokyo = _guide_block(catalog, "東京ディバンカー", "パズル＆サバイバル")
+    puzzles = _guide_block(catalog, "パズル＆サバイバル", "キングショット")
+
+    assert 'progress.html?game=Township' in township
+    assert 'progress.html?game=東京ディバンカー' not in tokyo
+    assert 'progress.html?game=パズル＆サバイバル' not in puzzles
+    assert 'href: "puzzles-survival-guide.html"' in puzzles
 
 
 def test_township_progress_restores_old_examples_and_new_lv70_examples():
@@ -34,7 +45,7 @@ def test_township_progress_restores_old_examples_and_new_lv70_examples():
     assert "ポイント反映問い合わせ中" in milestone_text
 
 
-def test_progress_page_maps_existing_datasets_and_has_safe_empty_state():
+def test_progress_page_maps_existing_separate_datasets_and_has_safe_empty_state():
     page = (ROOT / "progress.html").read_text(encoding="utf-8")
     for path in (
         "township.json",
@@ -48,7 +59,7 @@ def test_progress_page_maps_existing_datasets_and_has_safe_empty_state():
     assert "推測の進捗は作りません" in page
 
 
-def test_public_builder_includes_progress_page_and_township_data():
+def test_public_builder_includes_progress_page_and_guide_experience_data():
     builder = (ROOT / "scripts" / "build_public_site.py").read_text(encoding="utf-8")
     assert '"progress.html"' in builder
     assert '"guide-experiences"' in builder
