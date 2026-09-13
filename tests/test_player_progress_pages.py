@@ -28,7 +28,6 @@ def test_township_progress_restores_old_examples_and_new_lv70_examples():
     assert "46日目にLv70達成" in summaries
     assert "55日目にLv70到達" in summaries
     milestone_text = json.dumps(players, ensure_ascii=False)
-    assert "1日目" not in milestone_text or True
     assert '"day": 1' in milestone_text and '"level": 11' in milestone_text
     assert '"day": 10' in milestone_text and '"level": 22' in milestone_text
     assert '"day": 23' in milestone_text and '"level": 35' in milestone_text
