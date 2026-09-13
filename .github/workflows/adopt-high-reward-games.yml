@@ -1,0 +1,61 @@
+name: Adopt high-reward games
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/high_reward_adoption_bridge.py"
+      - "tests/test_high_reward_adoption_bridge.py"
+      - ".github/workflows/adopt-high-reward-games.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: poigamelab-production-writer-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run high-reward and V29/V30 regression tests
+        run: |
+          python -m unittest tests.test_high_reward_adoption_bridge tests.test_phase3_adoption_gate_v29 tests.test_phase3_production_adoption_v30
+
+  adopt-high-reward:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Research high-reward candidates through strict V29/V30 gates
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+          HIGH_REWARD_MAX_CANDIDATES: "15"
+          HIGH_REWARD_TARGET_ADOPTIONS: "5"
+        run: python scripts/high_reward_adoption_bridge.py
+      - name: Audit Phase 3 production handoff (API-free, fail-closed)
+        run: python scripts/audit_phase3_pipeline.py
+      - name: Re-run adoption regression tests after production handoff
+        run: |
+          python -m unittest tests.test_phase3_adoption_gate_v29 tests.test_phase3_production_adoption_v30 tests.test_high_reward_adoption_bridge
+      - name: Commit research and strict adoptions
+        run: |
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/high_reward_adoption_status.json data/adoption_candidates.json data/adoption_status.json data/phase3_pipeline_audit.json games.csv config/game_targets.json config/refresh_policy.json data/published_offers.csv
+          if [ -d data/research_results ]; then git add data/research_results/; fi
+          git diff --cached --quiet || git commit -m "chore: adopt verified high-reward games"
+          git pull --rebase
+          git push
