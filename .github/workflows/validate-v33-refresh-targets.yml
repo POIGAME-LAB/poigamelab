@@ -1,0 +1,25 @@
+name: Validate V33 refresh targets
+
+on:
+  pull_request:
+    paths:
+      - "config/game_targets.json"
+      - "config/refresh_policy.json"
+      - "tests/test_v33_refresh_targets.py"
+      - ".github/workflows/validate-v33-refresh-targets.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-v33-targets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Validate V33 refresh target coverage
+        run: python -m pytest -q tests/test_v33_refresh_targets.py
