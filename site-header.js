@@ -144,6 +144,47 @@
         text-decoration: none;
       }
 
+      .poigame-township-progress-cta {
+        width: min(940px, calc(100% - 44px));
+        margin: 18px auto 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px;
+        border: 1px solid #dfd5ff;
+        border-radius: 16px;
+        background: linear-gradient(135deg,#f6f1ff,#fff9d9);
+        box-shadow: 0 10px 26px rgba(69,39,137,.08);
+        text-decoration: none;
+      }
+
+      .poigame-township-progress-cta__copy strong {
+        display: block;
+        color: #2f136d;
+        font-size: 15px;
+        line-height: 1.45;
+      }
+
+      .poigame-township-progress-cta__copy span {
+        display: block;
+        margin-top: 3px;
+        color: #746887;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .poigame-township-progress-cta__button {
+        flex: 0 0 auto;
+        padding: 10px 14px;
+        border-radius: 11px;
+        background: linear-gradient(135deg,#4d20c4,#7047ff);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
       .poigame-mobile-menu-dialog {
         width: 100vw;
         height: 100dvh;
@@ -231,6 +272,17 @@
           width: calc(100% - 28px);
           min-height: 40px;
         }
+
+        .poigame-township-progress-cta {
+          width: calc(100% - 28px);
+          margin-top: 14px;
+          padding: 14px;
+          align-items: flex-start;
+        }
+
+        .poigame-township-progress-cta__copy span {
+          font-size: 11px;
+        }
       }
 
       @media (min-width: 821px) {
@@ -287,6 +339,32 @@
     </nav>
   `;
   document.body.appendChild(dialog);
+
+  const addTownshipProgressCta = () => {
+    if (filename !== "township-lv70.html" || document.getElementById("poigame-township-progress-cta")) return;
+
+    const link = document.createElement("a");
+    link.id = "poigame-township-progress-cta";
+    link.className = "poigame-township-progress-cta";
+    link.href = "progress.html?game=Township";
+    link.innerHTML = `
+      <span class="poigame-township-progress-cta__copy">
+        <strong>ほかのプレイヤーはどれくらいで進んだ？</strong>
+        <span>Lv70達成者や途中経過を、プレイヤーごとの時系列で確認できます。</span>
+      </span>
+      <span class="poigame-township-progress-cta__button">みんなの進捗を見る →</span>
+    `;
+
+    const contextBar = document.querySelector(".poigame-context-bar");
+    if (contextBar) contextBar.insertAdjacentElement("afterend", link);
+    else root.insertAdjacentElement("afterend", link);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addTownshipProgressCta, { once: true });
+  } else {
+    addTownshipProgressCta();
+  }
 
   const button = root.querySelector(".poigame-site-header__menu");
 
