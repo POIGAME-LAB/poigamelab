@@ -43,16 +43,14 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "東京ディバンカー ポイ活攻略",
     description: "3日連続ログイン案件で、判定事故を避けて確実に成果条件を取る手順をまとめています。",
     links: [
-      { label: "3日ログイン攻略を読む →", href: "tokyo-debunker-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=東京ディバンカー" }
+      { label: "3日ログイン攻略を読む →", href: "tokyo-debunker-guide.html" }
     ]
   },
   "パズル＆サバイバル": {
     title: "パズル＆サバイバル ポイ活攻略",
     description: "CC育成、5日以内の英雄Step、第二建設列、資源・ギルドと撤退ラインをまとめています。",
     links: [
-      { label: "CC・StepUp攻略を読む →", href: "puzzles-survival-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=パズル＆サバイバル" }
+      { label: "CC・StepUp攻略を読む →", href: "puzzles-survival-guide.html" }
     ]
   },
   "キングショット": {
