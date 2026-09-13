@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-12T18:27:17+00:00",
-  "finishedAt": "2026-09-12T18:27:17+00:00",
+  "startedAt": "2026-09-13T18:49:25+00:00",
+  "finishedAt": "2026-09-13T18:49:25+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -12,7 +12,12 @@
     "パズル＆サバイバル",
     "キングショット",
     "放置少女",
-    "エバーテイル"
+    "エバーテイル",
+    "ATLAS: EARTH",
+    "ファミリーファームの冒険",
+    "クロンダイクの冒険",
+    "Merge Help: ホームデザインパズル",
+    "マジックジグソーパズル"
   ],
   "results": [
     {
@@ -116,6 +121,61 @@
     },
     {
       "game": "エバーテイル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "ATLAS: EARTH",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "ファミリーファームの冒険",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "クロンダイクの冒険",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "Merge Help: ホームデザインパズル",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 6
+    },
+    {
+      "game": "マジックジグソーパズル",
       "returncode": 0,
       "publishableCount": 0,
       "collectionComplete": false,
