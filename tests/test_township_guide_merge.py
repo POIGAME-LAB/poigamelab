@@ -23,7 +23,16 @@ def test_unified_article_contains_lv60_and_lv70_content():
     assert "8月31日" in page
     assert "9月11日" in page
     assert "helicopter-order.jpg" in page
-    assert "lv70-achieved.jpg" in page
+    assert "lv70-achieved.png" in page
+
+
+def test_township_article_uses_distinct_context_images():
+    page = (ROOT / "township-lv70.html").read_text(encoding="utf-8")
+    assert "research-boosts.jpg" in page
+    assert "sakura-price.png" in page
+    assert "sakura-exp.png" in page
+    assert page.count("card-collection.jpg") == 1
+    assert "card-exchange-redacted" not in page
 
 
 def test_legacy_lv60_url_redirects_to_unified_article():
