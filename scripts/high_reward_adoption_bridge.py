@@ -72,7 +72,9 @@ def existing_games(path=GAMES):
 def parse_reward_pt(text):
     text = str(text or '').replace('，', ',')
     values = []
-    for m in re.finditer(r'(\d[\d,\s]*)\s*pt\b', text, flags=re.I):
+    # Do not allow whitespace inside the numeric token: otherwise strings such as
+    # "LEVEL4000 70,000pt" can be misread as 400070000pt.
+    for m in re.finditer(r'(?<!\d)(\d[\d,]*)\s*pt\b', text, flags=re.I):
         digits = re.sub(r'\D', '', m.group(1))
         if digits:
             values.append(int(digits))
@@ -81,10 +83,8 @@ def parse_reward_pt(text):
 
 def clean_game_name(title):
     s = str(title or '').strip()
-    # Remove platform / campaign labels without erasing a legitimate title.
     s = re.sub(r'（\s*(?:iOS|Android|多段階|StepUp)\s*）', '', s, flags=re.I)
     s = re.sub(r'\(\s*(?:iOS|Android|multi[- ]?stage|stepup)\s*\)', '', s, flags=re.I)
-    # Common separators between title and condition copy.
     markers = [
         ' - レベル', ' - LEVEL', ' 新規アプリ', ' 新規インストール', ' 初回アプリ',
         ' アプリDL', ' アプリダウンロード', ' マルチミッション', '（レベル', '（LEVEL',
@@ -98,7 +98,6 @@ def clean_game_name(title):
             cuts.append(i)
     if cuts:
         s = s[:min(cuts)]
-    # Strip remaining terminal platform/campaign parentheses and punctuation.
     s = re.sub(r'[\s\-–—:：]+$', '', s).strip()
     return s
 
