@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,13 +27,19 @@ def test_unified_article_contains_lv60_and_lv70_content():
     assert "lv70-achieved.png" in page
 
 
-def test_township_article_uses_distinct_context_images():
+def test_township_article_uses_each_image_only_once():
     page = (ROOT / "township-lv70.html").read_text(encoding="utf-8")
-    assert "research-boosts.jpg" in page
-    assert "sakura-price.png" in page
-    assert "sakura-exp.png" in page
-    assert page.count("card-collection.jpg") == 1
-    assert "card-exchange-redacted" not in page
+    srcs = re.findall(r'<img[^>]+src="([^"]+)"', page)
+    paths = [src.split("?", 1)[0] for src in srcs]
+
+    assert paths == [
+        "assets/township-experience/lv70-achieved.png",
+        "assets/township-experience/stepup-conditions.jpg",
+        "assets/township-experience/helicopter-order.jpg",
+        "assets/township-experience/puzzle-2000-reward.jpg",
+        "assets/township-experience/card-collection.jpg",
+    ]
+    assert len(paths) == len(set(paths))
 
 
 def test_legacy_lv60_url_redirects_to_unified_article():
