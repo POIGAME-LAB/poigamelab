@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "game": "パズル＆サバイバル",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜プレイヤー別の到達例",
+  "intro": "公開されている攻略記事・ポイントサイトの口コミを、同じプレイヤーごとに1件として整理しています。案件条件、課金額、プレイ時間、開始時期が違うため、平均ではなく実例として見てください。",
+  "notice": "※2026年の現行例を先に掲載し、比較用に過去のCC22到達例も載せています。古い記録は現在と案件条件やゲーム仕様が異なる可能性があります。",
+  "footnote": "到達日数は課金、ギルド、資源確保、サーバー、イベントなどで大きく変わります。CC23・30など後半ほど差が広がるため、自分の残日数と資源量を優先して判断してください。",
+  "initialVisible": 4,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年・CC17を7日で達成",
+      "milestones": [
+        {"day": 7, "label": "CC17達成"}
+      ],
+      "note": "2026年7月の公開記録。CC17案件を7日で完了した短期達成例。",
+      "sources": ["https://note.com/doto_yatowarenai/n/n15d75107d8a5"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "ongoing",
+      "summary": "2026年・7日目でCC13、CC14建設へ",
+      "milestones": [
+        {"day": 7, "label": "CC13", "detail": "翌日にCC14到達見込み"}
+      ],
+      "note": "約8,000円課金でCC23以上を目標にした挑戦中記録。課金ありの進行例として掲載。",
+      "sources": ["https://note.com/tomitsukasa/n/n78b6828fdc48"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "ongoing",
+      "summary": "2026年・5日目で探索第15章まで進行",
+      "milestones": [
+        {"day": 5, "label": "探索第15章", "detail": "複数Stepの報酬を受取"}
+      ],
+      "note": "無課金で進行し、5日目時点で約5,000円分の報酬を受け取ったというワラウ口コミ。CCだけでなく短期限Stepの比較用。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206425"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "2026年・CC23まで到達",
+      "milestones": [
+        {"dayLabel": "最終", "label": "CC23達成"}
+      ],
+      "note": "CC18までは進めやすく、CC23は前知識が必要だったという2026年の達成例。任意英雄Lv131の5日期限にも言及。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=205361"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "2025年・CC22を13日で達成",
+      "milestones": [
+        {"day": 13, "label": "CC22達成"}
+      ],
+      "note": "最短を意識して進めた公開記録。現在とは案件条件が異なる可能性があるため、速度比較用の過去例。",
+      "sources": ["https://hinatawrite.com/puzz%3D"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "CC10→22を24日で達成",
+      "milestones": [
+        {"day": 1, "label": "CC10"},
+        {"day": 7, "label": "CC15"},
+        {"day": 11, "label": "CC17"},
+        {"day": 24, "label": "CC22達成"}
+      ],
+      "note": "R1建築装備への610円課金あり。序盤は長めに操作し、終盤は採集やデイリー中心で進めた記録。",
+      "sources": ["https://www.yakipanblog.com/pazzsuv_poikatsu/"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "CC10→22を26日で達成",
+      "milestones": [
+        {"day": 2, "label": "CC10"},
+        {"day": 4, "label": "CC12"},
+        {"day": 7, "label": "CC15"},
+        {"day": 10, "label": "CC17"},
+        {"day": 26, "label": "CC22達成"}
+      ],
+      "note": "CC22までの細かい到達日を公開している例。後半ほど1レベルにかかる日数が伸びる比較データとして掲載。",
+      "sources": ["https://ameblo.jp/muu-family/entry-12778590981.html"]
+    }
+  ]
+}
