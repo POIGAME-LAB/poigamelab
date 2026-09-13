@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="ポイ活ゲームの実際のプレイヤー進捗を、同一人物ごとの時系列で整理。平均ではなく公開されている実例として比較できます。">
+  <title>みんなの進捗 | POIGAME LAB</title>
+  <link rel="stylesheet" href="assets/guide-experience.css?v=20260914-1">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.8}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{padding:30px;border-radius:24px;background:linear-gradient(135deg,#28105f,#7047ff 68%,#8f62ff);color:#fff;box-shadow:0 18px 45px rgba(65,35,145,.20)}.eyebrow{color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.4px}.hero h1{margin:6px 0 8px;font-size:34px;line-height:1.35}.hero p{margin:0;color:#eee8ff}.navrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.navrow a{display:inline-flex;padding:9px 13px;border-radius:11px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);color:#fff;text-decoration:none;font-size:12px;font-weight:900}.empty{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.empty h2{margin:0 0 8px;color:#28125f;font-size:22px}.empty p{margin:0;color:#706780}.empty-note{margin-top:12px;padding:12px 14px;border-radius:12px;background:#f5f1ff;color:#5b3ba6;font-size:12px;font-weight:800}.back{display:inline-flex;margin-top:18px;color:#7047ff;font-weight:900;text-decoration:none}@media(max-width:700px){.page{padding:20px 14px 65px}.hero{padding:24px 20px;border-radius:20px}.hero h1{font-size:27px}}
+  </style>
+</head>
+<body>
+<div data-poigame-header></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<main class="page">
+  <section class="hero">
+    <div class="eyebrow">PLAYER PROGRESS</div>
+    <h1 id="pageTitle">みんなの進捗</h1>
+    <p>公開されているプレイヤーの記録を、同じ人の投稿は1人分として時系列でまとめます。平均値ではなく、実際の進み方を比べるためのページです。</p>
+    <div class="navrow">
+      <a id="detailLink" href="index.html">案件を見る</a>
+      <a id="guideLink" href="guides.html">攻略を見る</a>
+    </div>
+  </section>
+
+  <section id="experience" class="experience-panel" aria-live="polite"></section>
+  <section id="emptyState" class="empty" hidden>
+    <h2>公開プレイ記録を収集中です</h2>
+    <p id="emptyText">このゲームは、同一プレイヤーとして追える公開記録をまだ十分に確認できていません。</p>
+    <div class="empty-note">記録が見つかり次第、到達日数・途中レベル・課金有無など、確認できた範囲だけを追加します。推測の進捗は作りません。</div>
+  </section>
+  <a class="back" href="guides.html">← 攻略一覧へ戻る</a>
+</main>
+
+<script src="site-guides.js?v=20260914-progress"></script>
+<script src="assets/guide-experience.js?v=20260914-1"></script>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const game = (params.get('game') || '').trim();
+  const datasets = Object.freeze({
+    'Township': 'data/guide-experiences/township.json',
+    'きのこ伝説': 'data/guide-experiences/kinoko.json',
+    'メメントモリ': 'data/guide-experiences/mementomori.json',
+    'ワーキングヒーロー': 'data/guide-experiences/working-heroes.json',
+    'ホワイトアウト・サバイバル': 'data/guide-experiences/whiteout-survival.json'
+  });
+
+  const title = document.getElementById('pageTitle');
+  const root = document.getElementById('experience');
+  const empty = document.getElementById('emptyState');
+  const detail = document.getElementById('detailLink');
+  const guideLink = document.getElementById('guideLink');
+
+  document.title = game ? `${game}｜みんなの進捗 | POIGAME LAB` : 'みんなの進捗 | POIGAME LAB';
+  title.textContent = game ? `${game}｜みんなの進捗` : 'みんなの進捗';
+  detail.href = game ? `game.html?game=${encodeURIComponent(game)}` : 'index.html';
+
+  const guide = window.POIGAME_GUIDES?.[game];
+  const primaryGuide = guide?.links?.find((item) => item && item.href && !item.href.startsWith('progress.html'));
+  if (primaryGuide) guideLink.href = primaryGuide.href;
+  else guideLink.href = 'guides.html';
+
+  const src = datasets[game];
+  if (!src) {
+    root.hidden = true;
+    empty.hidden = false;
+    return;
+  }
+
+  root.dataset.experienceSrc = src;
+  if (window.POIGAME_EXPERIENCE_BOOT) window.POIGAME_EXPERIENCE_BOOT(root);
+})();
+</script>
+<script src="site-footer.js"></script>
+</body>
+</html>
