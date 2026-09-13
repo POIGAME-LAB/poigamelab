@@ -8,6 +8,8 @@ on:
       - "klondike-adventures-guide.html"
       - "merge-help-guide.html"
       - "magic-jigsaw-puzzles-guide.html"
+      - "puzzles-survival-guide.html"
+      - "data/guide-experiences/puzzles-survival.json"
       - "site-guides.js"
       - "site-researched-guides.js"
       - "guides.html"
@@ -17,6 +19,7 @@ on:
       - "sitemap.xml"
       - "scripts/build_public_site.py"
       - "tests/test_five_new_guides.py"
+      - "tests/test_puzzles_survival_progress.py"
       - ".github/workflows/validate-five-new-guides.yml"
 
 permissions:
@@ -38,4 +41,4 @@ jobs:
           node --check site-guides.js
           node --check site-researched-guides.js
       - name: Run focused guide tests
-        run: python -m pytest -q tests/test_five_new_guides.py
+        run: python -m pytest -q tests/test_five_new_guides.py tests/test_puzzles_survival_progress.py
