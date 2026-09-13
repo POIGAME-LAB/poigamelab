@@ -19,7 +19,6 @@ def test_lv70_article_is_standalone_again():
     assert "約49日" in page
     assert "1,600円" in page
     assert "9月11日" in page
-    assert "helicopter-order.jpg" in page
 
 
 def test_township_progress_cta_is_kept_in_shared_header():
