@@ -14,6 +14,7 @@ ROOT_FILES = (
     "game.html",
     "guides.html",
     "offers.html",
+    "progress.html",
     "kinoko-guide.html",
     "mementomori-guide.html",
     "township-lv60.html",
