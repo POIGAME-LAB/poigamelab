@@ -1,55 +1,29 @@
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_township_catalog_points_only_to_unified_lv70_guide():
+def test_township_catalog_points_to_lv70_guide():
     catalog = (ROOT / "site-guides.js").read_text(encoding="utf-8")
     township_block = catalog.split('"Township": {', 1)[1].split('  "きのこ伝説": {', 1)[0]
     assert 'href: "township-lv70.html"' in township_block
-    assert 'township-lv60.html' not in township_block
     assert 'label: "攻略を見る →"' in township_block
 
 
-def test_unified_article_contains_lv60_and_lv70_content():
+def test_lv70_article_is_standalone_again():
     page = (ROOT / "township-lv70.html").read_text(encoding="utf-8")
-    assert "Township Lv60〜Lv70 ポイ活攻略" in page
-    assert 'id="lv60"' in page
-    assert 'id="heli"' in page
-    assert 'id="barn"' in page
-    assert 'id="tracking"' in page
+    assert "Township Lv70を実際に約49日でクリア" in page
+    assert "Township Lv60〜Lv70 ポイ活攻略" not in page
+    assert 'id="lv60"' not in page
+    assert "Lv60までの基礎攻略" not in page
     assert "約49日" in page
     assert "1,600円" in page
-    assert "8月31日" in page
     assert "9月11日" in page
     assert "helicopter-order.jpg" in page
-    assert "lv70-achieved.png" in page
 
 
-def test_township_article_uses_each_image_only_once():
-    page = (ROOT / "township-lv70.html").read_text(encoding="utf-8")
-    srcs = re.findall(r'<img[^>]+src="([^"]+)"', page)
-    paths = [src.split("?", 1)[0] for src in srcs]
-
-    assert paths == [
-        "assets/township-experience/lv70-achieved.png",
-        "assets/township-experience/stepup-conditions.jpg",
-        "assets/township-experience/helicopter-order.jpg",
-        "assets/township-experience/puzzle-2000-reward.jpg",
-        "assets/township-experience/card-collection.jpg",
-    ]
-    assert len(paths) == len(set(paths))
-
-
-def test_legacy_lv60_url_redirects_to_unified_article():
-    legacy = (ROOT / "township-lv60.html").read_text(encoding="utf-8")
-    assert "township-lv70.html#lv60" in legacy
-    assert 'rel="canonical" href="https://poigamelab.com/township-lv70.html"' in legacy
-    assert 'content="noindex,follow"' in legacy
-
-
-def test_sitemap_only_indexes_unified_township_article():
-    sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
-    assert "https://poigamelab.com/township-lv70.html" in sitemap
-    assert "https://poigamelab.com/township-lv60.html" not in sitemap
+def test_township_progress_cta_is_kept_in_shared_header():
+    header = (ROOT / "site-header.js").read_text(encoding="utf-8")
+    assert 'filename !== "township-lv70.html"' in header
+    assert 'progress.html?game=Township' in header
+    assert 'みんなの進捗を見る →' in header
