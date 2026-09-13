@@ -136,3 +136,90 @@
     send("site_search", { search_term: el.value.trim().slice(0, 100) });
   }, true);
 })();
+
+(() => {
+  "use strict";
+  if (!/\/township-lv70\.html$/.test(location.pathname)) return;
+  if (document.documentElement.hasAttribute("data-township-hq-images")) return;
+  document.documentElement.setAttribute("data-township-hq-images", "");
+
+  const v = "20260914-0053";
+  const base = "assets/township-experience/";
+
+  const makeFigure = (src, alt, caption, extraClass = "") => {
+    const figure = document.createElement("figure");
+    figure.className = `figure ${extraClass}`.trim();
+    figure.setAttribute("data-township-hq", "");
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = alt;
+    img.loading = "lazy";
+    const cap = document.createElement("figcaption");
+    cap.textContent = caption;
+    figure.append(img, cap);
+    return figure;
+  };
+
+  const replaceSrc = (match, src) => {
+    const img = [...document.images].find((el) => (el.getAttribute("src") || "").includes(match));
+    if (img) img.src = src;
+  };
+
+  replaceSrc("lv70-achieved.jpg", `${base}lv70-achieved.png?v=${v}`);
+  replaceSrc("card-exchange-redacted.jpg", `${base}card-exchange-redacted.png?v=${v}`);
+
+  const result = document.querySelector("#result");
+  if (result && !result.querySelector('[data-township-hq="result-town"]')) {
+    const fig = makeFigure(`${base}lv70-town.png?v=${v}`, "TownshipでLv70到達後の街の実プレイ画面", "Lv70到達後の街。後半はヘリコプター注文と桜の木を中心に経験値を伸ばしました。");
+    fig.setAttribute("data-township-hq", "result-town");
+    result.appendChild(fig);
+  }
+
+  const heli = document.querySelector("#heli");
+  if (heli && !heli.querySelector('[data-township-hq="heli"]')) {
+    const fig = makeFigure(`${base}helicopter-order.jpg?v=${v}`, "Townshipのヘリコプター注文の実プレイ画面", "後半のレベル上げで中心に回したヘリコプター注文。");
+    fig.setAttribute("data-township-hq", "heli");
+    heli.appendChild(fig);
+  }
+
+  const boost = document.querySelector("#boost");
+  if (boost && !boost.querySelector('[data-township-hq="boost"]')) {
+    const fig = makeFigure(`${base}research-boosts.jpg?v=${v}`, "Township研究所の活気ある市場と気前のいい顧客", "研究所では「活気ある市場」と「気前のいい顧客」を使ってヘリ周回を加速しました。");
+    fig.setAttribute("data-township-hq", "boost");
+    boost.appendChild(fig);
+  }
+
+  const cherry = document.querySelector("#cherry");
+  if (cherry && !cherry.querySelector('[data-township-hq="cherry"]')) {
+    const wrap = document.createElement("div");
+    wrap.className = "grid2";
+    wrap.setAttribute("data-township-hq", "cherry");
+    wrap.append(
+      makeFigure(`${base}sakura-price.png?v=${v}`, "Townshipの桜の木が9000コインで購入できる画面", "桜の木はプレイ時点で1本9,000コインでした。"),
+      makeFigure(`${base}sakura-exp.png?v=${v}`, "Townshipで桜の木購入時に990EXPを獲得した画面", "桜の木の購入時に990EXPを獲得できました。")
+    );
+    const note = cherry.querySelector(".mini-note");
+    if (note) cherry.insertBefore(wrap, note); else cherry.appendChild(wrap);
+  }
+
+  const pass = document.querySelector("#pass");
+  if (pass && !pass.querySelector('[data-township-hq="pass"]')) {
+    const src = `${base}harvest-pass.heic?v=${v}`;
+    const probe = new Image();
+    probe.onload = () => {
+      if (pass.querySelector('[data-township-hq="pass"]')) return;
+      const fig = makeFigure(src, "Townshipハーベストパスの実プレイ画面", "実際に購入したハーベストパス。市場の商品×2や納屋の広さ+30%が後半のまとめプレイで役立ちました。");
+      fig.setAttribute("data-township-hq", "pass");
+      const warning = pass.querySelector(".warning");
+      if (warning) pass.insertBefore(fig, warning); else pass.appendChild(fig);
+    };
+    probe.src = src;
+  }
+
+  const puzzle = document.querySelector("#puzzle");
+  if (puzzle && !puzzle.querySelector('[data-township-hq="puzzle"]')) {
+    const fig = makeFigure(`${base}puzzle-2000-reward.jpg?v=${v}`, "Townshipパズル2000到達時の実プレイ報酬画面", "パズル2000到達時の報酬画面。Lv70目的ならここまで進める必要はありませんでした。");
+    fig.setAttribute("data-township-hq", "puzzle");
+    puzzle.appendChild(fig);
+  }
+})();
