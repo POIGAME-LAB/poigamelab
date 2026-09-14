@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "game": "ファミリーファームの冒険",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜Lv26・30・40の到達例",
+  "intro": "公開攻略記事とポイントサイト口コミで確認できたプレイヤー記録を、同じプレイヤーごとに1件として整理しています。案件期限、課金、探索ポイント、生産頻度、イベント参加で速度が大きく変わるため、平均ではなく実例として見てください。",
+  "notice": "※2026年の記録を優先し、Lv40未達例も含めています。案件条件は20日・24日など複数あるため、開始時の条件を必ず優先してください。",
+  "footnote": "Lv26〜30は複数の完走例がありますが、Lv40は必要経験値の増加が大きく、20日でLv35までだった例もあります。序盤3日間の進みと直近のレベル上昇速度を見て続行判断してください。",
+  "initialVisible": 6,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年1月・7日でLv26達成",
+      "milestones": [
+        {"day": 7, "label": "Lv26達成"}
+      ],
+      "note": "探索ポイントを抑え、ヤギ系・ガラス系など重い注文を避ける高速攻略。イベント経験値も活用し、期限18日に対して7日で完走。",
+      "sources": ["https://note.com/doto_yatowarenai/n/nc5b8e3982866"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "2026年1月・11日でLv26達成",
+      "milestones": [
+        {"day": 3, "label": "Lv19"},
+        {"day": 4, "label": "Lv20"},
+        {"day": 5, "label": "Lv21"},
+        {"day": 6, "label": "Lv22"},
+        {"day": 8, "label": "Lv24"},
+        {"day": 10, "label": "Lv25"},
+        {"day": 11, "label": "Lv26達成"}
+      ],
+      "note": "総プレイ約37.3時間。6日目に課金ミッションを利用し、8日目にイベントステージで一気にLv24まで進行。3日目以降も1日2〜4時間ほどプレイ。",
+      "sources": ["https://note.com/nekopoi/n/ne9f3610c2860"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "無課金・14日でLv22達成",
+      "milestones": [
+        {"day": 2, "label": "Lv8"},
+        {"day": 8, "label": "Lv18"},
+        {"day": 14, "label": "Lv22達成"}
+      ],
+      "note": "毎日こまめにプレイした無課金例。掲示板注文を最優先し、作物・家畜・工場を並行して回した記録。",
+      "sources": ["https://kochalog.com/family-farm/"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "2026年7月・9日でLv30達成",
+      "milestones": [
+        {"day": 9, "label": "Lv30達成"}
+      ],
+      "note": "探索ポイントをLv29付近まで1500未満に抑え、ヤギミルク注文や重い家具系を避けた高速例。序盤3日ほどは張り付きが多め。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=198346"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "2026年・10日でLv30達成",
+      "milestones": [
+        {"day": 10, "label": "Lv30達成"}
+      ],
+      "note": "Lv30までは10日で到達。その後Lv40を狙うと必要経験値の伸びが急で、期限内完走は厳しいと判断した例。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=198347"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "無課金・20日でLv30達成",
+      "milestones": [
+        {"day": 1, "label": "Lv11"},
+        {"day": 2, "label": "Lv14"},
+        {"day": 3, "label": "Lv16"},
+        {"day": 7, "label": "Lv20"},
+        {"day": 8, "label": "Lv22"},
+        {"day": 10, "label": "Lv23"},
+        {"day": 13, "label": "Lv26"},
+        {"day": 16, "label": "Lv28"},
+        {"day": 18, "label": "Lv29"},
+        {"day": 20, "label": "Lv30達成"}
+      ],
+      "note": "序盤はイベント中心、3日目以降は掲示板を優先。生産待ち中にイベントマップを進め、20日目ぎりぎりでLv30に到達。",
+      "sources": ["https://marumassa.com/archives/36675080.html"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "無課金・24日でLv30達成",
+      "milestones": [
+        {"day": 2, "label": "Lv12"},
+        {"day": 7, "label": "Lv18"},
+        {"day": 13, "label": "Lv22"},
+        {"day": 16, "label": "Lv26"},
+        {"day": 24, "label": "Lv30達成"}
+      ],
+      "note": "Lv26まで約40時間、Lv30まで約59時間のプレイ例。無課金でもLv30に届いたが、20日期限ならLv30は間に合わないペース。",
+      "sources": ["https://wakupen.com/family-farm/", "https://wakupen.com/family-farm_review/"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "retired",
+      "summary": "2026年・20日でLv35、Lv40未達",
+      "milestones": [
+        {"day": 20, "label": "Lv35で終了"}
+      ],
+      "note": "Lv40に挑戦したが期限20日でLv35。過去イベントマップの切り替えに気付くのが遅れ、経験値稼ぎを逃したと振り返っている例。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=198346"]
+    }
+  ]
+}
