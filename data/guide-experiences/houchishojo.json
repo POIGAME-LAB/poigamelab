@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "game": "放置少女",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜Lv120（1転生Lv20）の到達例",
+  "intro": "公開攻略記事とポイントサイトの口コミで確認できたプレイヤー記録を、同じプレイヤーごとに1件として整理しています。課金、開始時期、放置経験値、イベント参加、プレイ頻度が違うため、平均ではなく実例として見てください。",
+  "notice": "※2026年の記録を優先し、無課金の細かなレベル推移も比較用に掲載しています。案件期限やゲーム仕様は時期によって変わるため、開始時の条件を優先してください。",
+  "footnote": "到達日数は160円課金による放置経験値ボーナス、高速戦闘券の使い方、戦場進度、毎日の取りこぼしで大きく変わります。期限直前まで届かない例もあるため、後半は残日数と直近のレベル上昇速度を確認してください。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年1月・160円課金で14日クリア",
+      "milestones": [
+        {"day": 14, "label": "Lv120（1転生Lv20）達成"}
+      ],
+      "note": "160円課金。元宝は高速戦闘などに使い、経験値2.5倍の日・木曜日やボス挑戦券の使い方を意識した高速例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=177971"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "2026年7月・最小課金で18日クリア",
+      "milestones": [
+        {"day": 18, "label": "Lv120達成"}
+      ],
+      "note": "経験値補助ユニットを入手する最小課金あり。星嵐へ育成資源を集中し、高速戦闘券を序盤から上限まで使った例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=177971"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "2026年1月・160円課金で21日クリア",
+      "milestones": [
+        {"day": 21, "label": "Lv120（1転生Lv20）達成"}
+      ],
+      "note": "開始1〜2日目は多めにプレイし、その後は通勤中に触る程度。160円課金で放置経験値アップを確保し、ボス挑戦と高速戦闘を中心に進めた記録。",
+      "sources": ["https://note.com/yukidrm_grbr/n/n06aa3f7ae133"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "2026年7月・160円課金で21日クリア",
+      "milestones": [
+        {"day": 21, "label": "Lv120達成"}
+      ],
+      "note": "初日に160円課金。放置経験値を軸にしつつ、ある程度は複数キャラも育成した例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=177971"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "2026年3月・160円課金で24日クリア",
+      "milestones": [
+        {"day": 24, "label": "Lv120達成"}
+      ],
+      "note": "160円課金で経験値アップ系キャラを取得。無課金なら自分のペースでは厳しかったと振り返っている例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?page=3&pl=pc_categoryService&point_id=177971&sort=relation"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "2026年1月・160円課金で25日クリア",
+      "milestones": [
+        {"day": 25, "label": "Lv120達成"}
+      ],
+      "note": "上位同盟に入り、朝・昼・晩に短時間プレイ。デイリー、高速戦闘、訓練所、封憶の塔を毎日消化した例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=177971"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "無課金・36日でLv120達成",
+      "milestones": [
+        {"day": 1, "label": "Lv72"},
+        {"day": 5, "label": "Lv91"},
+        {"day": 10, "label": "Lv100"},
+        {"day": 20, "label": "Lv110"},
+        {"day": 30, "label": "Lv116"},
+        {"day": 35, "label": "Lv119"},
+        {"day": 36, "label": "Lv120達成"}
+      ],
+      "note": "無課金の詳細な時系列。初日は約3時間30分プレイし、その後は徐々に短時間化。終盤は1レベル上げるのに複数日かかっている。",
+      "sources": ["https://okanega-naiyo.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E6%94%BE%E7%BD%AE%E5%B0%91%E5%A5%B3-%E3%83%AC%E3%83%99%E3%83%AB80%EF%BC%889%E6%97%A5%E3%81%A7%E9%81%94%E6%88%90%EF%BC%89%E3%83%AC%E3%83%99%E3%83%AB100/"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "retired",
+      "summary": "期限内に1転生Lv19で終了",
+      "milestones": [
+        {"dayLabel": "期限最終時点", "label": "1転生Lv19"}
+      ],
+      "note": "微課金あり。夜イベントの時間が合わず参加できない日があり、あと1レベル届かなかった例。成功例だけでなく期限リスクの比較用。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=177971"]
+    }
+  ]
+}
