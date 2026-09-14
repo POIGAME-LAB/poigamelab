@@ -23,11 +23,44 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     township = _guide_block(catalog, "Township", "きのこ伝説")
     tokyo = _guide_block(catalog, "東京ディバンカー", "パズル＆サバイバル")
     puzzles = _guide_block(catalog, "パズル＆サバイバル", "キングショット")
+    kingshot = _guide_block(catalog, "キングショット", "放置少女")
 
     assert 'progress.html?game=Township' in township
     assert 'progress.html?game=東京ディバンカー' not in tokyo
     assert 'progress.html?game=パズル＆サバイバル' not in puzzles
+    assert 'progress.html?game=キングショット' not in kingshot
     assert 'href: "puzzles-survival-guide.html"' in puzzles
+    assert 'href: "kingshot-guide.html"' in kingshot
+
+
+def test_inline_progress_is_embedded_in_research_guides_without_new_button():
+    for filename, datafile in (
+        ("puzzles-survival-guide.html", "puzzles-survival.json"),
+        ("kingshot-guide.html", "kingshot.json"),
+    ):
+        page = (ROOT / filename).read_text(encoding="utf-8")
+        assert 'id="progress"' in page
+        assert f'data-experience-src="data/guide-experiences/{datafile}"' in page
+        assert 'href="#progress">みんなの進捗</a>' in page
+        assert 'src="assets/guide-experience.js"' in page
+        assert 'href="assets/guide-experience.css"' in page
+
+
+def test_kingshot_progress_has_sourced_completed_and_retired_examples():
+    data = json.loads((ROOT / "data" / "guide-experiences" / "kingshot.json").read_text(encoding="utf-8"))
+    assert data["game"] == "キングショット"
+    players = data["players"]
+    assert len(players) >= 8
+    assert any(player.get("status") == "completed" for player in players)
+    assert any(player.get("status") == "retired" for player in players)
+    text = json.dumps(players, ensure_ascii=False)
+    assert "役場Lv28" in text
+    assert "役場Lv24" in text
+    assert "役場Lv20" in text
+    assert "x.com/rinpointgame" in text
+    for player in players:
+        assert player.get("sources")
+        assert all(str(url).startswith("https://") for url in player["sources"])
 
 
 def test_township_progress_restores_old_examples_and_new_lv70_examples():
