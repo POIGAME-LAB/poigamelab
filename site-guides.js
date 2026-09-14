@@ -64,8 +64,7 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "放置少女 ポイ活攻略",
     description: "Lv120（1転生Lv20）へ向けて、初日進行・高速放置・主力育成・毎日の経験値回収をまとめています。",
     links: [
-      { label: "Lv120攻略を読む →", href: "houchishojo-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=放置少女" }
+      { label: "Lv120攻略を読む →", href: "houchishojo-guide.html" }
     ]
   },
   "エバーテイル": {

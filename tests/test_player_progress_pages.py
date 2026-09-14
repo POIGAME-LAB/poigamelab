@@ -24,19 +24,23 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     tokyo = _guide_block(catalog, "東京ディバンカー", "パズル＆サバイバル")
     puzzles = _guide_block(catalog, "パズル＆サバイバル", "キングショット")
     kingshot = _guide_block(catalog, "キングショット", "放置少女")
+    houchishojo = _guide_block(catalog, "放置少女", "エバーテイル")
 
     assert 'progress.html?game=Township' in township
     assert 'progress.html?game=東京ディバンカー' not in tokyo
     assert 'progress.html?game=パズル＆サバイバル' not in puzzles
     assert 'progress.html?game=キングショット' not in kingshot
+    assert 'progress.html?game=放置少女' not in houchishojo
     assert 'href: "puzzles-survival-guide.html"' in puzzles
     assert 'href: "kingshot-guide.html"' in kingshot
+    assert 'href: "houchishojo-guide.html"' in houchishojo
 
 
 def test_inline_progress_is_embedded_in_research_guides_without_new_button():
     for filename, datafile in (
         ("puzzles-survival-guide.html", "puzzles-survival.json"),
         ("kingshot-guide.html", "kingshot.json"),
+        ("houchishojo-guide.html", "houchishojo.json"),
     ):
         page = (ROOT / filename).read_text(encoding="utf-8")
         assert 'id="progress"' in page
@@ -58,6 +62,25 @@ def test_kingshot_progress_has_sourced_completed_and_retired_examples():
     assert "役場Lv24" in text
     assert "役場Lv20" in text
     assert "x.com/rinpointgame" in text
+    for player in players:
+        assert player.get("sources")
+        assert all(str(url).startswith("https://") for url in player["sources"])
+
+
+def test_houchishojo_progress_has_paid_unpaid_and_deadline_examples():
+    data = json.loads((ROOT / "data" / "guide-experiences" / "houchishojo.json").read_text(encoding="utf-8"))
+    assert data["game"] == "放置少女"
+    players = data["players"]
+    assert len(players) >= 8
+    assert any(player.get("status") == "completed" for player in players)
+    assert any(player.get("status") == "retired" for player in players)
+    text = json.dumps(players, ensure_ascii=False)
+    assert "14日" in text
+    assert "36日" in text
+    assert "1転生Lv19" in text
+    assert "Lv72" in text and "Lv100" in text and "Lv119" in text and "Lv120" in text
+    assert "note.com/yukidrm_grbr" in text
+    assert "warau.jp" in text
     for player in players:
         assert player.get("sources")
         assert all(str(url).startswith("https://") for url in player["sources"])
