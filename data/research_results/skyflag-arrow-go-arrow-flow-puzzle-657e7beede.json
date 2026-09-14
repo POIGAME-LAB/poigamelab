@@ -1,6 +1,6 @@
 {
   "game": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle",
-  "researchedAt": "2026-09-13T23:47:11+00:00",
+  "researchedAt": "2026-09-14T20:34:36+00:00",
   "sourceQueue": {
     "game": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle",
     "aliases": [
@@ -25,7 +25,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-13T23:47:11+00:00",
+    "runAt": "2026-09-14T20:34:36+00:00",
     "status": "no_township_candidates",
     "diagnostics": [
       {
@@ -40,7 +40,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 83319,
+              "bytes": 83349,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -57,18 +57,18 @@
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160842",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=159710",
               "ok": true,
               "targetFound": false,
-              "bytes": 80187,
+              "bytes": 80217,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160939",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160842",
               "ok": true,
               "targetFound": false,
-              "bytes": 80187,
+              "bytes": 80217,
               "truncated": false,
               "deviceMode": "desktop"
             },
@@ -76,7 +76,7 @@
               "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=104549",
               "ok": true,
               "targetFound": false,
-              "bytes": 80187,
+              "bytes": 80217,
               "truncated": false,
               "deviceMode": "desktop"
             },
@@ -84,7 +84,7 @@
               "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161354",
               "ok": true,
               "targetFound": false,
-              "bytes": 225232,
+              "bytes": 224939,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -103,7 +103,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 12.9
+        "elapsedSeconds": 8.9
       },
       {
         "source_id": "warau",
@@ -117,7 +117,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 284061,
+              "bytes": 283965,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -125,115 +125,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 367916,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 6,
-          "eligibleUrls": 0,
-          "confirmed": 0,
-          "details": [],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 5.7
-      },
-      {
-        "source_id": "chobirich",
-        "source_name": "ちょびリッチ",
-        "mode": "discovery",
-        "direct": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
-        },
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": false
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 8,
-          "eligibleUrls": 4,
-          "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1809382",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1666385",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1852792",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1711164",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            }
-          ],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 4.6
-      },
-      {
-        "source_id": "coincome",
-        "source_name": "COINCOME",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": true,
-              "targetFound": false,
-              "detailLinks": 0,
-              "bytes": 107469,
+              "bytes": 365200,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -263,7 +155,121 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.5
+        "elapsedSeconds": 6.0
+      },
+      {
+        "source_id": "chobirich",
+        "source_name": "ちょびリッチ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": false,
+              "error": "HTTP Error 403: Forbidden"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": false
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 1,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 1.9
+      },
+      {
+        "source_id": "coincome",
+        "source_name": "COINCOME",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 110429,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://cimcome.jp/campaigns/details/51",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 58984,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://cimcome.jp/campaigns/details/8862",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 93182,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://cimcome.jp/campaigns/details/3729",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "identityUrl": "https://cimcome.jp/campaigns/details/7450",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 8.0
       },
       {
         "source_id": "mikoshi",
@@ -307,7 +313,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.7
+        "elapsedSeconds": 2.7
       },
       {
         "source_id": "gendama",
@@ -321,7 +327,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 212501,
+              "bytes": 212458,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -351,7 +357,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.0
+        "elapsedSeconds": 3.9
       },
       {
         "source_id": "hapitas",
@@ -365,7 +371,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 208518,
+              "bytes": 208490,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -395,7 +401,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.7
+        "elapsedSeconds": 3.8
       },
       {
         "source_id": "kurashiru_reward",
@@ -409,7 +415,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 64053,
+              "bytes": 63423,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -439,7 +445,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.5
+        "elapsedSeconds": 2.8
       },
       {
         "source_id": "trima",
@@ -483,7 +489,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.5
+        "elapsedSeconds": 2.0
       },
       {
         "source_id": "point_income",
@@ -527,7 +533,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.4
+        "elapsedSeconds": 3.8
       },
       {
         "source_id": "amefuri",
@@ -541,7 +547,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 100896,
+              "bytes": 101166,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -549,7 +555,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101190,
+              "bytes": 100793,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -557,7 +563,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101151,
+              "bytes": 101345,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -569,7 +575,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
+          "resultUrls": 2,
           "eligibleUrls": 1,
           "confirmed": 0,
           "details": [
@@ -577,7 +583,7 @@
               "identityUrl": "https://www.amefri.net/detail/id/139363",
               "ok": true,
               "targetFound": false,
-              "bytes": 97934,
+              "bytes": 98048,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -596,7 +602,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.6
+        "elapsedSeconds": 6.2
       },
       {
         "source_id": "point_town",
@@ -610,189 +616,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 94350,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 6,
-          "eligibleUrls": 3,
-          "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://www.pointtown.com/item/10380",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 102544,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://www.pointtown.com/item/10078",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 89340,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://www.pointtown.com/item/8180",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 103469,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 4.2
-      },
-      {
-        "source_id": "ec_navi",
-        "source_name": "ECナビ",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": true,
-              "targetFound": false,
-              "detailLinks": 0,
-              "bytes": 914730,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 8,
-          "eligibleUrls": 3,
-          "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://ecnavi.jp/ad/10123023/show",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 909785,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://ecnavi.jp/ad/10716613/show",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 905624,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://ecnavi.jp/ad/10716612/show",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 904571,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 6.8
-      },
-      {
-        "source_id": "nifty_point",
-        "source_name": "ニフティポイントクラブ",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": true,
-              "targetFound": false,
-              "detailLinks": 0,
-              "bytes": 121580,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 8,
-          "eligibleUrls": 0,
-          "confirmed": 0,
-          "details": [],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 3.5
-      },
-      {
-        "source_id": "gmo_point",
-        "source_name": "GMOポイ活",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": true,
-              "targetFound": false,
-              "detailLinks": 0,
-              "bytes": 146883,
+              "bytes": 94373,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -822,11 +646,11 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.6
+        "elapsedSeconds": 2.6
       },
       {
-        "source_id": "powl",
-        "source_name": "Powl",
+        "source_id": "ec_navi",
+        "source_name": "ECナビ",
         "mode": "indexed_official_no_match",
         "direct": null,
         "direct_http": {
@@ -836,7 +660,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 694674,
+              "bytes": 915399,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -848,7 +672,68 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 6,
+          "resultUrls": 8,
+          "eligibleUrls": 2,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10123023/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 909785,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10164963/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 907711,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.5
+      },
+      {
+        "source_id": "nifty_point",
+        "source_name": "ニフティポイントクラブ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 123192,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -866,7 +751,122 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.7
+        "elapsedSeconds": 3.9
+      },
+      {
+        "source_id": "gmo_point",
+        "source_name": "GMOポイ活",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 146979,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.2
+      },
+      {
+        "source_id": "powl",
+        "source_name": "Powl",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 694186,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 5,
+          "eligibleUrls": 4,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://web.powl.jp/reward/1794",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "identityUrl": "https://web.powl.jp/reward/21151",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 66645,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://web.powl.jp/reward/34615",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "identityUrl": "https://web.powl.jp/reward/32769",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 7.5
       }
     ],
     "candidateFile": "data/skyflag-arrow-go-arrow-flow-puzzle-657e7beede_firecrawl_candidates.json"

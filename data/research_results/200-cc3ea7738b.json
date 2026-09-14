@@ -1,21 +1,27 @@
 {
-  "game": "War of Towers",
-  "researchedAt": "2026-09-14T20:36:29+00:00",
+  "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
+  "researchedAt": "2026-09-14T20:30:42+00:00",
   "sourceQueue": {
-    "game": "War of Towers",
+    "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
     "aliases": [
-      "War of Towers"
+      "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了"
     ],
-    "maxRewardPt": 16000,
+    "maxRewardPt": 57000,
     "sources": [
-      "warau"
+      "powl"
     ],
     "sourceCandidates": [
       {
-        "source": "warau",
-        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463&pl=pc_categoryService",
-        "titleHint": "War of Towers（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 16,000 pt 2.0 （ 1件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
-        "rewardPt": 16000
+        "source": "powl",
+        "url": "https://web.powl.jp/reward/40126",
+        "titleHint": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム（多段階）（iOS） - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了 新規アプリインストール後、【StepUpミッション!!】クリア 57,000pt",
+        "rewardPt": 57000
+      },
+      {
+        "source": "powl",
+        "url": "https://web.powl.jp/reward/40133",
+        "titleHint": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム（多段階）（Android） - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了 新規アプリインストール後、【StepUpミッション!!】クリア 57,000pt",
+        "rewardPt": 57000
       }
     ],
     "collectorReady": true,
@@ -25,75 +31,8 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-14T20:36:29+00:00",
-    "collector": "Phase3 Research V38: direct-first first-party research + Firecrawl best-effort fallback + strict verifier",
-    "candidateCount": 2,
-    "geminiModel": "gemini-3.5-flash-lite",
-    "verified": {
-      "game": "War of Towers",
-      "offers": [
-        {
-          "site": "ワラウ",
-          "reward_yen": 16000,
-          "condition": "新規アプリインストール後、インストール日から起算して30日以内にStepUpミッション（ステージクリアおよび課金条件）をクリア（最大16,000 pt）",
-          "platform": "Android",
-          "deadline": "2026-10-14",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463&pl=pc_categoryService",
-          "evidence_urls": [
-            "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463&pl=pc_categoryService"
-          ],
-          "confidence": 100,
-          "publishable": true,
-          "reason": "ワラウの公式詳細ページより、対象ゲーム「War of Towers（StepUp）」のAndroid向け案件、最大16,000pt（1pt=1円換算で16,000円）、達成条件、URLが明確に確認できたため。",
-          "registered_source": "warau",
-          "reward_source": "python_warau_same_identity",
-          "deterministic_checks": {
-            "registered_domain": true,
-            "first_party_registered_source": true,
-            "url_present": true,
-            "evidence_present": true,
-            "evidence_domains_registered": true,
-            "evidence_same_offer_identity": true,
-            "exact_identity_candidate_present": true,
-            "reward_valid": true,
-            "reward_consistent": true,
-            "condition_present": true
-          },
-          "auto_publish_ready": true
-        },
-        {
-          "site": "アメフリ",
-          "reward_yen": 3427,
-          "condition": "新規アプリインストール後、多段階条件（ステージ1 ウェーブ10～999クリア、各種ジェム・武器パック・デイリー基金・VIP購入）",
-          "platform": "Android",
-          "deadline": "",
-          "url": "https://www.amefri.net/detail/id/138290",
-          "evidence_urls": [
-            "https://www.amefri.net/detail/id/138290"
-          ],
-          "confidence": 0.9,
-          "publishable": true,
-          "reason": "アメフリにおける「War of Towers【Android】」の案件詳細ページを確認でき、報酬ポイントや多段階の達成条件、OS、URLが明確に記載されているため。",
-          "registered_source": "amefuri",
-          "reward_source": "python_same_identity_explicit_yen",
-          "deterministic_checks": {
-            "registered_domain": true,
-            "first_party_registered_source": true,
-            "url_present": true,
-            "evidence_present": true,
-            "evidence_domains_registered": true,
-            "evidence_same_offer_identity": true,
-            "exact_identity_candidate_present": true,
-            "reward_valid": true,
-            "reward_consistent": true,
-            "condition_present": true
-          },
-          "auto_publish_ready": true
-        }
-      ],
-      "verdict": "valid / アメフリにて「War of Towers（Android）」の案件を確認しました。多段階クリアおよび課金条件が設定されています。",
-      "needs_human_review": false
-    },
+    "runAt": "2026-09-14T20:30:42+00:00",
+    "status": "no_township_candidates",
     "diagnostics": [
       {
         "source_id": "moppy",
@@ -132,7 +71,7 @@
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=104549",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=159796",
               "ok": true,
               "targetFound": false,
               "bytes": 80217,
@@ -140,18 +79,18 @@
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161354",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=150595",
               "ok": true,
               "targetFound": false,
-              "bytes": 224939,
+              "bytes": 221316,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160842",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=158654",
               "ok": true,
               "targetFound": false,
-              "bytes": 80217,
+              "bytes": 208749,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -170,20 +109,20 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 9.3
+        "elapsedSeconds": 9.9
       },
       {
         "source_id": "warau",
         "source_name": "ワラウ",
-        "mode": "direct_official_fast_path",
+        "mode": "indexed_official_no_match",
         "direct": null,
         "direct_http": {
           "attempted": true,
           "listings": [
             {
               "ok": true,
-              "targetFound": true,
-              "detailLinks": 1,
+              "targetFound": false,
+              "detailLinks": 0,
               "bytes": 283965,
               "truncated": false,
               "deviceMode": "mobile"
@@ -197,30 +136,65 @@
               "deviceMode": "mobile"
             }
           ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
+          "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463",
+              "identityUrl": "https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=197589",
               "ok": true,
-              "targetFound": true,
-              "bytes": 311139,
+              "targetFound": false,
+              "bytes": 255087,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=193244",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 255049,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=197847",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 255079,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=193243",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 255071,
               "truncated": false,
               "deviceMode": "mobile"
             }
           ],
-          "candidateCount": 1,
-          "allListingsFetched": true
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
         },
-        "indexed_official": null,
         "offerwalls": [],
         "provider_hubs": [],
         "known_pages": [],
         "search": {
           "skipped": true,
-          "reason": "direct first-party detail pages succeeded"
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.6
+        "elapsedSeconds": 10.1
       },
       {
         "source_id": "chobirich",
@@ -245,17 +219,17 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 6,
+          "resultUrls": 8,
           "eligibleUrls": 2,
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1898585",
+              "identityUrl": "https://www.chobirich.com/ad_details/1029292",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             },
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1893261",
+              "identityUrl": "https://www.chobirich.com/ad_details/1675300",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             }
@@ -274,16 +248,13 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.2
+        "elapsedSeconds": 5.8
       },
       {
         "source_id": "coincome",
         "source_name": "COINCOME",
-        "mode": "discovery",
-        "direct": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
-        },
+        "mode": "indexed_official_no_match",
+        "direct": null,
         "direct_http": {
           "attempted": true,
           "listings": [
@@ -303,21 +274,10 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 4,
-          "eligibleUrls": 2,
+          "resultUrls": 1,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://cimcome.jp/campaigns/details/9677",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "identityUrl": "https://cimcome.jp/campaigns/details/10227",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -327,12 +287,12 @@
         "provider_hubs": [],
         "known_pages": [],
         "search": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.7
+        "elapsedSeconds": 4.7
       },
       {
         "source_id": "mikoshi",
@@ -376,7 +336,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.9
+        "elapsedSeconds": 2.3
       },
       {
         "source_id": "gendama",
@@ -402,7 +362,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -420,7 +380,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.6
+        "elapsedSeconds": 4.7
       },
       {
         "source_id": "hapitas",
@@ -446,10 +406,43 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
-          "eligibleUrls": 0,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/89309/apn/navigation_category",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 110988,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/89310/apn/navigation_category",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 111032,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98248/apn/attention_word/page/3",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 121488,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98248/apn/attention_word/page/4",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 121488,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -464,7 +457,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.5
+        "elapsedSeconds": 7.6
       },
       {
         "source_id": "kurashiru_reward",
@@ -490,7 +483,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -508,7 +501,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.9
+        "elapsedSeconds": 3.4
       },
       {
         "source_id": "trima",
@@ -552,7 +545,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.3
+        "elapsedSeconds": 3.8
       },
       {
         "source_id": "point_income",
@@ -578,19 +571,10 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 7,
-          "eligibleUrls": 1,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://sp.pointi.jp/mnt_corn/store_detail.php?id=119493",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 5635,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -605,12 +589,12 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.7
+        "elapsedSeconds": 3.6
       },
       {
         "source_id": "amefuri",
         "source_name": "アメフリ",
-        "mode": "indexed_official_fast_path",
+        "mode": "indexed_official_no_match",
         "direct": null,
         "direct_http": {
           "attempted": true,
@@ -648,62 +632,42 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 1,
-          "confirmed": 1,
+          "eligibleUrls": 4,
+          "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://www.amefri.net/detail/id/138290",
-              "ok": true,
-              "targetFound": true,
-              "bytes": 111807,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed official detail pages directly verified"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 6.2
-      },
-      {
-        "source_id": "point_town",
-        "source_name": "ポイントタウン",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
+              "identityUrl": "https://www.amefri.net/detail/id/136233",
               "ok": true,
               "targetFound": false,
-              "detailLinks": 0,
-              "bytes": 94373,
+              "bytes": 90074,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/133487",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 100271,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/1046",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 104673,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/138100",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 98862,
               "truncated": false,
               "deviceMode": "mobile"
             }
           ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 2,
-          "eligibleUrls": 0,
-          "confirmed": 0,
-          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -718,7 +682,68 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.7
+        "elapsedSeconds": 9.5
+      },
+      {
+        "source_id": "point_town",
+        "source_name": "ポイントタウン",
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 94507,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 8,
+          "eligibleUrls": 2,
+          "confirmed": 0,
+          "details": [
+            {
+              "identityUrl": "https://www.pointtown.com/item/2034/bonus",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "identityUrl": "https://www.pointtown.com/item/8868",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 100694,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 4.8
       },
       {
         "source_id": "ec_navi",
@@ -744,10 +769,43 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
-          "eligibleUrls": 0,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10173515/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 903087,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10716479/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 905933,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10705712/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 904046,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/55424/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 906530,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -762,7 +820,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.3
+        "elapsedSeconds": 9.0
       },
       {
         "source_id": "nifty_point",
@@ -788,7 +846,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -806,7 +864,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.3
+        "elapsedSeconds": 4.2
       },
       {
         "source_id": "gmo_point",
@@ -832,7 +890,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 1,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -850,16 +908,13 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.3
+        "elapsedSeconds": 4.6
       },
       {
         "source_id": "powl",
         "source_name": "Powl",
-        "mode": "discovery",
-        "direct": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
-        },
+        "mode": "indexed_official_no_match",
+        "direct": null,
         "direct_http": {
           "attempted": true,
           "listings": [
@@ -879,24 +934,41 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
-          "eligibleUrls": 3,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://web.powl.jp/reward/33437",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
+              "identityUrl": "https://web.powl.jp/reward/26137",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 67202,
+              "truncated": false,
+              "deviceMode": "mobile"
             },
             {
-              "identityUrl": "https://web.powl.jp/reward/32769",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
+              "identityUrl": "https://web.powl.jp/reward/30877",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 68354,
+              "truncated": false,
+              "deviceMode": "mobile"
             },
             {
-              "identityUrl": "https://web.powl.jp/reward/34615",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
+              "identityUrl": "https://web.powl.jp/reward/26138",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 67178,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://web.powl.jp/reward/17206",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 65996,
+              "truncated": false,
+              "deviceMode": "mobile"
             }
           ],
           "absenceAuthoritative": false,
@@ -908,47 +980,15 @@
         "provider_hubs": [],
         "known_pages": [],
         "search": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 7.1
+        "elapsedSeconds": 7.4
       }
     ],
-    "health": {
-      "publishableCount": 2,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "chobirich:search_failed",
-        "coincome:search_failed",
-        "powl:search_failed"
-      ],
-      "publishableBySource": {
-        "moppy": 0,
-        "warau": 1,
-        "chobirich": 0,
-        "coincome": 0,
-        "mikoshi": 0,
-        "gendama": 0,
-        "hapitas": 0,
-        "kurashiru_reward": 0,
-        "trima": 0,
-        "point_income": 0,
-        "amefuri": 1,
-        "point_town": 0,
-        "ec_navi": 0,
-        "nifty_point": 0,
-        "gmo_point": 0,
-        "powl": 0
-      },
-      "exceptionCount": 0
-    },
-    "policy": {
-      "autoPublish": "Python deterministic gate only: same first-party registered source URL/evidence + valid reward + condition",
-      "offerwalls": "親サイトから自動発見。個人識別子付きURLは実行中だけ使用し、保存時はqueryを除去",
-      "publishMode": "quarantine"
-    }
+    "candidateFile": "data/200-cc3ea7738b_firecrawl_candidates.json"
   },
   "quarantine": true,
   "autoPublish": false

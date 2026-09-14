@@ -1,6 +1,6 @@
 {
   "phase": "PHASE3_HIGH_REWARD_ADOPTION_BRIDGE_V1",
-  "runAt": "2026-09-13T23:50:48+00:00",
+  "runAt": "2026-09-14T20:38:18+00:00",
   "candidateLimit": 15,
   "targetAdoptions": 5,
   "candidatesPrepared": 15,
@@ -26,72 +26,6 @@
       ]
     },
     {
-      "game": "Swipe It: Board Wooden Puzzle",
-      "maxRewardPt": 70000,
-      "research": {
-        "game": "Swipe It: Board Wooden Puzzle",
-        "returncode": 0,
-        "resultSaved": true,
-        "publishableCount": 2,
-        "collectionComplete": false,
-        "degradedReasons": [
-          "chobirich:search_failed"
-        ]
-      },
-      "v29": {
-        "game": "Swipe It: Board Wooden Puzzle",
-        "eligible": false,
-        "status": "hold",
-        "reasons": [
-          "collection_incomplete",
-          "degraded_collection",
-          "insufficient_verified_sources"
-        ],
-        "strictOfferCount": 2,
-        "verifiedSourceCount": 1,
-        "verifiedSources": [
-          "powl"
-        ],
-        "coverageOverrideApplied": false,
-        "coverageWarnings": [],
-        "researchedAt": "2026-09-13T23:41:48+00:00",
-        "sourceQueue": {
-          "game": "Swipe It: Board Wooden Puzzle",
-          "aliases": [
-            "Swipe It: Board Wooden Puzzle"
-          ],
-          "maxRewardPt": 70000,
-          "sources": [
-            "powl"
-          ],
-          "sourceCandidates": [
-            {
-              "source": "powl",
-              "url": "https://web.powl.jp/reward/38970",
-              "titleHint": "Swipe It: Board Wooden Puzzle（多段階）（Android） - レベル4000到達 新規アプリインストール後、【StepUpミッション!!】クリア 70,000pt",
-              "rewardPt": 70000
-            },
-            {
-              "source": "powl",
-              "url": "https://web.powl.jp/reward/38980",
-              "titleHint": "Swipe It: Board Wooden Puzzle（多段階）（iOS） - レベル4000到達 新規アプリインストール後、【StepUpミッション!!】クリア 70,000pt",
-              "rewardPt": 70000
-            }
-          ],
-          "collectorReady": true,
-          "status": "collector_ready",
-          "origin": "high_reward_monitor",
-          "researchLogicVersion": "high-reward-v1"
-        }
-      },
-      "status": "hold",
-      "reasons": [
-        "collection_incomplete",
-        "degraded_collection",
-        "insufficient_verified_sources"
-      ]
-    },
-    {
       "game": "【SKYFLAG】ザ・グランドマフィア",
       "maxRewardPt": 65237,
       "research": {
@@ -108,10 +42,10 @@
       ]
     },
     {
-      "game": "All in Holeマルチミッション",
-      "maxRewardPt": 64000,
+      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
+      "maxRewardPt": 57000,
       "research": {
-        "game": "All in Holeマルチミッション",
+        "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
         "returncode": 1,
         "resultSaved": true,
         "publishableCount": 0,
@@ -197,8 +131,7 @@
         "publishableCount": 0,
         "collectionComplete": false,
         "degradedReasons": [
-          "coincome:search_failed",
-          "powl:search_failed"
+          "coincome:search_failed"
         ]
       },
       "v29": {
@@ -216,7 +149,7 @@
         "verifiedSources": [],
         "coverageOverrideApplied": false,
         "coverageWarnings": [],
-        "researchedAt": "2026-09-13T23:46:32+00:00",
+        "researchedAt": "2026-09-14T20:33:58+00:00",
         "sourceQueue": {
           "game": "トップウォー",
           "aliases": [
@@ -303,7 +236,7 @@
         "game": "War of Towers",
         "returncode": 0,
         "resultSaved": true,
-        "publishableCount": 1,
+        "publishableCount": 2,
         "collectionComplete": false,
         "degradedReasons": [
           "chobirich:search_failed",
@@ -313,22 +246,22 @@
       },
       "v29": {
         "game": "War of Towers",
-        "eligible": false,
-        "status": "hold",
-        "reasons": [
-          "collection_incomplete",
-          "degraded_collection",
-          "insufficient_strict_offers",
-          "insufficient_verified_sources"
-        ],
-        "strictOfferCount": 1,
-        "verifiedSourceCount": 1,
+        "eligible": true,
+        "status": "adoption_ready",
+        "reasons": [],
+        "strictOfferCount": 2,
+        "verifiedSourceCount": 2,
         "verifiedSources": [
+          "amefuri",
           "warau"
         ],
-        "coverageOverrideApplied": false,
-        "coverageWarnings": [],
-        "researchedAt": "2026-09-13T23:49:25+00:00",
+        "coverageOverrideApplied": true,
+        "coverageWarnings": [
+          "chobirich:optional_firecrawl_402",
+          "coincome:optional_firecrawl_402",
+          "powl:optional_firecrawl_402"
+        ],
+        "researchedAt": "2026-09-14T20:36:29+00:00",
         "sourceQueue": {
           "game": "War of Towers",
           "aliases": [
@@ -352,12 +285,17 @@
           "researchLogicVersion": "high-reward-v1"
         }
       },
+      "v30": {
+        "game": "War of Towers",
+        "adopted": false,
+        "reasons": [
+          "v30_adoption_error"
+        ],
+        "error": "ValueError"
+      },
       "status": "hold",
       "reasons": [
-        "collection_incomplete",
-        "degraded_collection",
-        "insufficient_strict_offers",
-        "insufficient_verified_sources"
+        "v30_adoption_error"
       ]
     },
     {
@@ -365,59 +303,15 @@
       "maxRewardPt": 15210,
       "research": {
         "game": "アローズ - パズルエスケープ (Arrows)",
-        "returncode": 0,
+        "returncode": 1,
         "resultSaved": true,
-        "publishableCount": 2,
-        "collectionComplete": true,
+        "publishableCount": 0,
+        "collectionComplete": false,
         "degradedReasons": []
-      },
-      "v29": {
-        "game": "アローズ - パズルエスケープ (Arrows)",
-        "eligible": false,
-        "status": "hold",
-        "reasons": [
-          "insufficient_verified_sources"
-        ],
-        "strictOfferCount": 2,
-        "verifiedSourceCount": 1,
-        "verifiedSources": [
-          "warau"
-        ],
-        "coverageOverrideApplied": false,
-        "coverageWarnings": [],
-        "researchedAt": "2026-09-13T23:50:05+00:00",
-        "sourceQueue": {
-          "game": "アローズ - パズルエスケープ (Arrows)",
-          "aliases": [
-            "アローズ - パズルエスケープ (Arrows)"
-          ],
-          "maxRewardPt": 15210,
-          "sources": [
-            "warau"
-          ],
-          "sourceCandidates": [
-            {
-              "source": "warau",
-              "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206651&pl=pc_categoryService",
-              "titleHint": "アローズ - パズルエスケープ (Arrows)（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 15,210 pt 3.6 （ 74件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
-              "rewardPt": 15210
-            },
-            {
-              "source": "warau",
-              "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206650&pl=pc_categoryService",
-              "titleHint": "アローズ - パズルエスケープ (Arrows)（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 15,200 pt 3.6 （ 74件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
-              "rewardPt": 15200
-            }
-          ],
-          "collectorReady": true,
-          "status": "collector_ready",
-          "origin": "high_reward_monitor",
-          "researchLogicVersion": "high-reward-v1"
-        }
       },
       "status": "hold",
       "reasons": [
-        "insufficient_verified_sources"
+        "research_failed_or_missing"
       ]
     },
     {
@@ -427,18 +321,16 @@
         "game": "パズル＆コンクエスト",
         "returncode": 0,
         "resultSaved": true,
-        "publishableCount": 6,
-        "collectionComplete": false,
-        "degradedReasons": [
-          "coincome:search_failed"
-        ]
+        "publishableCount": 5,
+        "collectionComplete": true,
+        "degradedReasons": []
       },
       "v29": {
         "game": "パズル＆コンクエスト",
         "eligible": true,
         "status": "adoption_ready",
         "reasons": [],
-        "strictOfferCount": 6,
+        "strictOfferCount": 5,
         "verifiedSourceCount": 4,
         "verifiedSources": [
           "amefuri",
@@ -446,11 +338,9 @@
           "moppy",
           "powl"
         ],
-        "coverageOverrideApplied": true,
-        "coverageWarnings": [
-          "coincome:optional_firecrawl_402"
-        ],
-        "researchedAt": "2026-09-13T23:50:48+00:00",
+        "coverageOverrideApplied": false,
+        "coverageWarnings": [],
+        "researchedAt": "2026-09-14T20:37:44+00:00",
         "sourceQueue": {
           "game": "パズル＆コンクエスト",
           "aliases": [
@@ -491,6 +381,22 @@
       "status": "hold",
       "reasons": [
         "v30_adoption_error"
+      ]
+    },
+    {
+      "game": "【SKYFLAG】ドゥームズデイ：ラストサバイバー",
+      "maxRewardPt": 14535,
+      "research": {
+        "game": "【SKYFLAG】ドゥームズデイ：ラストサバイバー",
+        "returncode": 1,
+        "resultSaved": true,
+        "publishableCount": 0,
+        "collectionComplete": false,
+        "degradedReasons": []
+      },
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
       ]
     }
   ]

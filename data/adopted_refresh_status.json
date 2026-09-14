@@ -1,0 +1,10 @@
+{
+  "phase": "POST_ADOPTION_REFRESH_V1",
+  "runAt": "2026-09-14T20:38:18+00:00",
+  "apiCalls": 0,
+  "eligibleAdoptions": 0,
+  "enabledNow": 0,
+  "alreadyEnabled": 0,
+  "held": 0,
+  "results": []
+}

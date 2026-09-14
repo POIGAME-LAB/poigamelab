@@ -1,6 +1,6 @@
 {
   "game": "【SKYFLAG】パズル＆コンクエスト",
-  "researchedAt": "2026-09-13T23:45:10+00:00",
+  "researchedAt": "2026-09-14T20:32:43+00:00",
   "sourceQueue": {
     "game": "【SKYFLAG】パズル＆コンクエスト",
     "aliases": [
@@ -31,7 +31,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-13T23:45:10+00:00",
+    "runAt": "2026-09-14T20:32:43+00:00",
     "status": "no_township_candidates",
     "diagnostics": [
       {
@@ -46,7 +46,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 83319,
+              "bytes": 83349,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -58,13 +58,46 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
-          "eligibleUrls": 0,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=159554",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 80217,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161342",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 80217,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161343",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 80217,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?s_id=159767",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 80217,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
-          "queryAttempts": 3,
+          "queryAttempts": 2,
           "queryErrors": []
         },
         "offerwalls": [],
@@ -76,7 +109,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.1
+        "elapsedSeconds": 11.6
       },
       {
         "source_id": "warau",
@@ -90,7 +123,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 284061,
+              "bytes": 283965,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -98,7 +131,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 367916,
+              "bytes": 365200,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -128,7 +161,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.9
+        "elapsedSeconds": 5.7
       },
       {
         "source_id": "chobirich",
@@ -168,7 +201,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.4
+        "elapsedSeconds": 1.9
       },
       {
         "source_id": "coincome",
@@ -185,7 +218,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 107469,
+              "bytes": 110429,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -221,7 +254,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.8
+        "elapsedSeconds": 4.7
       },
       {
         "source_id": "mikoshi",
@@ -265,7 +298,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.9
+        "elapsedSeconds": 2.3
       },
       {
         "source_id": "gendama",
@@ -279,7 +312,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 212501,
+              "bytes": 212458,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -309,7 +342,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.7
+        "elapsedSeconds": 4.5
       },
       {
         "source_id": "hapitas",
@@ -323,7 +356,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 208518,
+              "bytes": 208490,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -336,14 +369,22 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 1,
+          "eligibleUrls": 2,
           "confirmed": 0,
           "details": [
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/92863/apn/navigation_category",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 111320,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
             {
               "identityUrl": "https://hapitas.jp/item/detail/itemid/84786/apn/navigation_category",
               "ok": true,
               "targetFound": false,
-              "bytes": 110511,
+              "bytes": 110495,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -362,7 +403,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.2
+        "elapsedSeconds": 5.8
       },
       {
         "source_id": "kurashiru_reward",
@@ -376,7 +417,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 64053,
+              "bytes": 63423,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -406,7 +447,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 2.4
       },
       {
         "source_id": "trima",
@@ -450,7 +491,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.1
+        "elapsedSeconds": 3.0
       },
       {
         "source_id": "point_income",
@@ -476,7 +517,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -494,7 +535,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.4
+        "elapsedSeconds": 4.0
       },
       {
         "source_id": "amefuri",
@@ -508,7 +549,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 100896,
+              "bytes": 101166,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -516,7 +557,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101190,
+              "bytes": 100793,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -524,7 +565,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101151,
+              "bytes": 101345,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -544,15 +585,15 @@
               "identityUrl": "https://www.amefri.net/detail/id/129450",
               "ok": true,
               "targetFound": false,
-              "bytes": 100833,
+              "bytes": 100947,
               "truncated": false,
               "deviceMode": "mobile"
             },
             {
-              "identityUrl": "https://www.amefri.net/detail/id/136858",
+              "identityUrl": "https://www.amefri.net/detail/id/136859",
               "ok": true,
               "targetFound": false,
-              "bytes": 100258,
+              "bytes": 100416,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -571,7 +612,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 8.1
+        "elapsedSeconds": 6.7
       },
       {
         "source_id": "point_town",
@@ -585,7 +626,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 94350,
+              "bytes": 94373,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -640,7 +681,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.1
+        "elapsedSeconds": 4.6
       },
       {
         "source_id": "ec_navi",
@@ -654,7 +695,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 914730,
+              "bytes": 915399,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -666,10 +707,27 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
-          "eligibleUrls": 0,
+          "resultUrls": 8,
+          "eligibleUrls": 2,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10123023/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 909785,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10716613/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 905624,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -684,7 +742,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.9
+        "elapsedSeconds": 5.7
       },
       {
         "source_id": "nifty_point",
@@ -698,51 +756,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 121575,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 8,
-          "eligibleUrls": 0,
-          "confirmed": 0,
-          "details": [],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 4.1
-      },
-      {
-        "source_id": "gmo_point",
-        "source_name": "GMOポイ活",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": true,
-              "targetFound": false,
-              "detailLinks": 0,
-              "bytes": 146856,
+              "bytes": 123178,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -772,7 +786,51 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.9
+        "elapsedSeconds": 4.0
+      },
+      {
+        "source_id": "gmo_point",
+        "source_name": "GMOポイ活",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": true,
+              "targetFound": false,
+              "detailLinks": 0,
+              "bytes": 146979,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": true
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 3.7
       },
       {
         "source_id": "powl",
@@ -789,7 +847,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 694674,
+              "bytes": 694186,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -801,7 +859,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 7,
+          "resultUrls": 8,
           "eligibleUrls": 4,
           "confirmed": 0,
           "details": [
@@ -811,15 +869,12 @@
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "identityUrl": "https://web.powl.jp/reward/15570",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 62763,
-              "truncated": false,
-              "deviceMode": "mobile"
+              "identityUrl": "https://web.powl.jp/reward/1794",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
             },
             {
-              "identityUrl": "https://web.powl.jp/reward/1794",
+              "identityUrl": "https://web.powl.jp/reward/25657",
               "ok": false,
               "error": "HTTP Error 404: Not Found"
             },
@@ -827,7 +882,7 @@
               "identityUrl": "https://web.powl.jp/reward/26138",
               "ok": true,
               "targetFound": false,
-              "bytes": 67104,
+              "bytes": 67190,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -846,7 +901,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.8
+        "elapsedSeconds": 7.1
       }
     ],
     "candidateFile": "data/skyflag-23ebedfdc0_firecrawl_candidates.json"
