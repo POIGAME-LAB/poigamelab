@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "game": "クロンダイクの冒険",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜Lv20〜40の到達例",
+  "intro": "公開攻略記事とポイントサイト口コミで確認できたプレイヤー記録を、同じプレイヤーごとに1件として整理しています。案件条件・イベント時期・ログイン頻度で差が大きいため、平均ではなく実例として見てください。",
+  "notice": "※2026年のLv40案件と、Lv20〜24の過去案件は条件が違います。Lv40の記録は現行StepUpの重さを見る参考、Lv20〜24は序盤〜中盤の進行速度を見る参考として分けて掲載しています。",
+  "footnote": "Lv40クリアについて、2026年の口コミではLv40到達だけでは付与されずLv41到達が必要と案内された例があります。最終Stepを狙う場合は自分の案件条件を優先してください。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年・約45日でLv40クリア",
+      "milestones": [
+        {"day": 45, "label": "Lv40クリア相当"}
+      ],
+      "note": "ストーリー完走より素材集めを優先し、注文ボードの広告視聴を主な経験値源にした例。街の発展と住人増加も進めた。口コミではLv40クリアはLv41到達で判定される旨も記載。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=205043"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "ongoing",
+      "summary": "2026年・期限最終日にLv40到達、付与されず",
+      "milestones": [
+        {"dayLabel": "期限最終日", "label": "Lv40到達"}
+      ],
+      "note": "あんしん保証への問い合わせで『Lv40クリア＝Lv41にならないと対象にならない』と案内された例。卵・綿・生クリームが不足しやすく、掲示板・船・メインストーリーを経験値源にしていた。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?point_id=205042"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "2026年・10日でLv24達成",
+      "milestones": [
+        {"day": 6, "label": "Lv20"},
+        {"day": 8, "label": "Lv22"},
+        {"day": 10, "label": "Lv24達成"}
+      ],
+      "note": "1日約3時間、こまめにプレイした高速例。注文ボード中心で経験値を稼いだ。",
+      "sources": ["https://kochalog.com/klondike-adventures/"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "2026年・15日でLv22達成",
+      "milestones": [
+        {"day": 15, "label": "Lv22達成"}
+      ],
+      "note": "無課金で達成。注文ボード、タスク、生産、広告を使い、島の開拓は必要以上に進めなかった例。",
+      "sources": ["https://moreisblog.com/point-klondike-adventures/"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "12日でLv22達成・総プレイ約15時間",
+      "milestones": [
+        {"day": 7, "label": "Lv14"},
+        {"day": 8, "label": "Lv17"},
+        {"day": 9, "label": "Lv19"},
+        {"day": 10, "label": "Lv20"},
+        {"day": 11, "label": "Lv21"},
+        {"day": 12, "label": "Lv22達成"}
+      ],
+      "note": "序盤は長めに触り、中盤以降は待ち時間が増えて1日1時間未満。パン工場2、乳製品工場3を回せるよう労働者施設を増やした例。",
+      "sources": ["https://ameblo.jp/cocha-0157/entry-12887552250.html"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "12日でLv24達成",
+      "milestones": [
+        {"day": 12, "label": "Lv24達成"}
+      ],
+      "note": "注文ボードを1〜2件に絞り、重い注文を捨てて更新。動画視聴だけで完了するラリーの注文を積極的に回した例。",
+      "sources": ["https://hatomame2019.doorblog.jp/archives/23664845.html"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "8日でLv22達成",
+      "milestones": [
+        {"day": 8, "label": "Lv22達成"}
+      ],
+      "note": "掲示板の注文を主軸にし、チェイニー卿、乳製品・パン、動画視聴を活用した高速例。",
+      "sources": ["https://yuri98765.com/20240123-2/"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "18日でLv22達成",
+      "milestones": [
+        {"day": 18, "label": "Lv22達成"}
+      ],
+      "note": "1日3〜4回、1回10〜15分程度のプレイ。頻繁に張り付かず進めた比較用のゆっくり例。",
+      "sources": ["https://www.pokopoi.com/entry/klondike"]
+    },
+    {
+      "id": "I",
+      "label": "プレイヤーI",
+      "status": "retired",
+      "summary": "2026年・Lv9で早期撤退",
+      "milestones": [
+        {"dayLabel": "途中終了時", "label": "Lv9"}
+      ],
+      "note": "イベントがない時期で序盤から進みが遅く、Lv9で離脱した例。開始時期による進行差を見る参考。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=201835"]
+    }
+  ]
+}
