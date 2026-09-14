@@ -15,9 +15,9 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
   },
   "クロンダイクの冒険": {
     title: "クロンダイクの冒険 ポイ活攻略",
-    description: "注文ボード・工場・エネルギー・建築の優先順位をLv22〜24系案件向けに整理しています。",
+    description: "Lv20〜40の実際の到達ペースと、注文ボード・動画注文・船・工場・宝石の使い方をまとめています。",
     links: [
-      { label: "注文ボード攻略を読む →", href: "klondike-adventures-guide.html" }
+      { label: "Lv20〜40攻略を読む →", href: "klondike-adventures-guide.html" }
     ]
   },
   "Merge Help: ホームデザインパズル": {
