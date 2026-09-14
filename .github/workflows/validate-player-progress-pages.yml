@@ -8,6 +8,7 @@ on:
       - "puzzles-survival-guide.html"
       - "kingshot-guide.html"
       - "houchishojo-guide.html"
+      - "evertale-guide.html"
       - "data/guide-experiences/**"
       - "scripts/build_public_site.py"
       - "tests/test_player_progress_pages.py"
