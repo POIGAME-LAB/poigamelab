@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "game": "キングショット",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜プレイヤー別の役場到達例",
+  "intro": "Twitter（X）・公開攻略記事・ポイントサイトの口コミで確認できたプレイヤー記録を、同じプレイヤーごとに1件として整理しています。案件条件、課金額、同盟、開始サーバー、プレイ時間が違うため、平均ではなく実例として見てください。",
+  "notice": "※2026年の公開記録を中心に掲載しています。役場Lv20だけを狙う10日案件と、Lv24・28まで含む現行StepUpでは条件が違うため、日数だけをそのまま比較しないでください。",
+  "footnote": "到達日数は開始サーバー、同盟イベント、巨熊狩猟、課金、資源・加速の残量で大きく変わります。特にLv24以降は資源と加速の差が広がります。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年8月・役場Lv24を21日で達成",
+      "milestones": [
+        {"day": 1, "label": "役場Lv9"},
+        {"day": 4, "label": "役場Lv16"},
+        {"day": 9, "label": "役場Lv20"},
+        {"day": 21, "label": "役場Lv24達成"}
+      ],
+      "note": "150円課金、1日約1時間のプレイ例。Lv24で終了し、さらに上は狙わなかった記録。",
+      "sources": ["https://growth-route.com/poikatsu-king-shot/"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "2026年8月・役場Lv28を29日で達成",
+      "milestones": [
+        {"day": 14, "label": "役場Lv24"},
+        {"day": 29, "label": "役場Lv28達成"}
+      ],
+      "note": "トップ同盟所属。800円・1,600円・3,200円の課金Stepに加えて約950円を課金し、熊罠やイベントにも継続参加した例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "2026年8月・役場Lv28を30日目に達成",
+      "milestones": [
+        {"day": 27, "label": "役場Lv27"},
+        {"day": 30, "label": "役場Lv28達成"}
+      ],
+      "note": "上位5位前後の同盟に所属。終盤は加速不足となり、ドレットウルフ討伐と資源回収を続けて期限ぎりぎりで達成した例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "2026年8月・17日目Lv24、Lv28は撤退",
+      "milestones": [
+        {"day": 4, "label": "役場Lv16"},
+        {"day": 8, "label": "役場Lv20"},
+        {"day": 17, "label": "役場Lv24達成"},
+        {"day": 20, "label": "役場Lv25建設開始"}
+      ],
+      "note": "800円課金。20日目時点でLv26に必要な建設時間が長く、30日以内Lv28は厳しいと判断して撤退した例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "X公開記録・8日目に役場Lv20着工",
+      "milestones": [
+        {"day": 7, "label": "役場Lv19 / 20", "detail": "Lv20前提施設を建設中"},
+        {"day": 8, "label": "役場Lv20着工"}
+      ],
+      "note": "新サーバーで進行。7日目には資源が足りており、加速を使い切った状態から8日目午前にLv20を着工した公開記録。",
+      "sources": ["https://x.com/rinpointgame"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "2026年・役場Lv20を6日で達成",
+      "milestones": [
+        {"day": 1, "label": "役場Lv11"},
+        {"day": 2, "label": "役場Lv13"},
+        {"day": 3, "label": "役場Lv15"},
+        {"day": 4, "label": "役場Lv16"},
+        {"day": 5, "label": "役場Lv19"},
+        {"day": 6, "label": "役場Lv20着工"}
+      ],
+      "note": "予備知識なしで総プレイ時間約12時間。途中で高レベル同盟へ移籍し、巨熊狩猟後は資源問題が改善した例。",
+      "sources": ["https://poikatsu.monster/king-shot/"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "2026年4月・役場Lv20を4日で達成",
+      "milestones": [
+        {"day": 3, "label": "役場Lv16"},
+        {"day": 4, "label": "役場Lv20達成"}
+      ],
+      "note": "当時の10日案件。第二建造隊列付きパックなど2回課金した高速例で、現行StepUp全体の所要日数ではありません。",
+      "sources": ["https://kochalog.com/kingshot/"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "2026年7月・1週間で役場Lv20到達",
+      "milestones": [
+        {"day": 7, "label": "役場Lv20到達"}
+      ],
+      "note": "新規サーバーでサーバー1位の日本人同盟に所属。巨熊狩猟に参加し、終盤はダイヤを加速へ使った例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
+    },
+    {
+      "id": "I",
+      "label": "プレイヤーI",
+      "status": "retired",
+      "summary": "2026年5月・8日目Lv16で撤退",
+      "milestones": [
+        {"day": 1, "label": "役場Lv10"},
+        {"day": 6, "label": "役場Lv14"},
+        {"day": 8, "label": "役場Lv16"}
+      ],
+      "note": "150円課金で建築枠を開放したものの、古いサーバーへの移動を逃して強い同盟・イベントの恩恵を得られず、Lv20は厳しいと判断した撤退例。",
+      "sources": ["https://nomoney-poilog.com/posts/2026/0527-kingshot-level20/"]
+    }
+  ]
+}
