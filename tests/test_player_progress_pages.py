@@ -28,6 +28,7 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     evertale = _guide_block(catalog, "エバーテイル", "ATLAS: EARTH")
     atlas = _guide_block(catalog, "ATLAS: EARTH", "ファミリーファームの冒険")
     family = _guide_block(catalog, "ファミリーファームの冒険", "クロンダイクの冒険")
+    klondike = _guide_block(catalog, "クロンダイクの冒険", "Merge Help: ホームデザインパズル")
 
     assert 'progress.html?game=Township' in township
     assert 'progress.html?game=東京ディバンカー' not in tokyo
@@ -37,12 +38,14 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     assert 'progress.html?game=エバーテイル' not in evertale
     assert 'progress.html?game=ATLAS' not in atlas
     assert 'progress.html?game=ファミリーファームの冒険' not in family
+    assert 'progress.html?game=クロンダイクの冒険' not in klondike
     assert 'href: "puzzles-survival-guide.html"' in puzzles
     assert 'href: "kingshot-guide.html"' in kingshot
     assert 'href: "houchishojo-guide.html"' in houchishojo
     assert 'href: "evertale-guide.html"' in evertale
     assert 'href: "atlas-earth-guide.html"' in atlas
     assert 'href: "family-farm-adventure-guide.html"' in family
+    assert 'href: "klondike-adventures-guide.html"' in klondike
 
 
 def test_inline_progress_is_embedded_in_research_guides_without_new_button():
@@ -53,6 +56,7 @@ def test_inline_progress_is_embedded_in_research_guides_without_new_button():
         ("evertale-guide.html", "evertale.json"),
         ("atlas-earth-guide.html", "atlas-earth.json"),
         ("family-farm-adventure-guide.html", "family-farm-adventure.json"),
+        ("klondike-adventures-guide.html", "klondike-adventures.json"),
     ):
         page = (ROOT / filename).read_text(encoding="utf-8")
         assert 'id="progress"' in page
@@ -177,6 +181,40 @@ def test_family_farm_guide_matches_full_guide_structure_and_core_strategy():
     assert "掲示板注文" in page
     assert "Lv40" in page
     assert "X（Twitter）・Instagram" in page
+
+
+def test_klondike_progress_has_fast_slow_lv40_and_credit_warning_examples():
+    data = json.loads((ROOT / "data" / "guide-experiences" / "klondike-adventures.json").read_text(encoding="utf-8"))
+    assert data["game"] == "クロンダイクの冒険"
+    players = data["players"]
+    assert len(players) >= 9
+    assert any(player.get("status") == "completed" for player in players)
+    assert any(player.get("status") == "retired" for player in players)
+    text = json.dumps(players, ensure_ascii=False)
+    assert "約45日" in text and "Lv40" in text
+    assert "Lv41" in text
+    assert "10日でLv24" in text
+    assert "15日でLv22" in text
+    assert "18日でLv22" in text
+    assert "Lv9で早期撤退" in text
+    assert "kochalog.com" in text
+    assert "warau.jp" in text
+    for player in players:
+        assert player.get("sources")
+        assert all(str(url).startswith("https://") for url in player["sources"])
+
+
+def test_klondike_guide_matches_full_guide_structure_and_core_strategy():
+    page = (ROOT / "klondike-adventures-guide.html").read_text(encoding="utf-8")
+    assert '<div class="eyebrow">POIGAME LAB 攻略データ</div>' in page
+    assert page.count('class="stat"') == 3
+    for anchor in ("condition", "progress", "route", "board", "video", "production", "ship", "energy", "gem", "daily", "target", "summary"):
+        assert f'href="#{anchor}"' in page
+    assert "注文ボード" in page
+    assert "ラリー" in page
+    assert "乳製品工場" in page
+    assert "Lv41" in page
+    assert "X（Twitter）・Instagram・Web検索・YouTube" in page
 
 
 def test_township_progress_restores_old_examples_and_new_lv70_examples():
