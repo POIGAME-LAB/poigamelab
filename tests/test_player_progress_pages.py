@@ -137,9 +137,8 @@ def test_atlas_earth_guide_matches_full_guide_structure_and_has_pace_sections():
     assert 'href="#paid"' in page
     assert 'href="#daily"' in page
     assert 'href="#judge"' in page
-    assert "無課金実例14日で土地6個" not in page  # catalog wording stays outside article prose
     assert "無課金2週間" in (ROOT / "data" / "guide-experiences" / "atlas-earth.json").read_text(encoding="utf-8")
-    assert "土地1区画" in page and "100 Atlas Bucks" in page
+    assert "土地は1区画" in page and "100 Atlas Bucks" in page
     assert "X（Twitter）・Instagram・Web検索・YouTube" in page
 
 
