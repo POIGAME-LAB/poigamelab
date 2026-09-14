@@ -97,10 +97,9 @@ window.POIGAME_GUIDES = Object.freeze({
   },
   "Merge Help: ホームデザインパズル": {
     title: "Merge Help ポイ活攻略",
-    description: "盤面の空き・エネルギー・注文を管理し、StepUpを詰まらせない進め方を整理しています。",
+    description: "Lv10・20・28の実際の進捗例と、四季盛・エネルギー・盤面・注文の回し方をまとめています。",
     links: [
-      { label: "マージ攻略を読む →", href: "merge-help-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=Merge%20Help%3A%20ホームデザインパズル" }
+      { label: "Lv28攻略を読む →", href: "merge-help-guide.html" }
     ]
   },
   "マジックジグソーパズル": {

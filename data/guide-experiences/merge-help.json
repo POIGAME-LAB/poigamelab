@@ -1,0 +1,53 @@
+{
+  "game": "Merge Help: ホームデザインパズル",
+  "title": "みんなの進捗｜実際のプレイヤー記録",
+  "intro": "公開されているプレイヤー記録を、同一人物ごとに時系列で整理しています。案件条件や課金状況は人によって違うため、平均ではなく実例として見てください。",
+  "notice": "2026年9月の現行案件は30日でLv10・20・28が中心。過去案件にはLv35など別条件もあるため、開始前に自分の案件画面を確認してください。",
+  "initialVisible": 4,
+  "players": [
+    {
+      "label": "プレイヤーA｜Lv28完走",
+      "status": "completed",
+      "summary": "22日でLv28達成。Lv20は11日、Lv22は13日。",
+      "milestones": [
+        {"day": 1, "label": "Lv7", "detail": "開始初日"},
+        {"day": 2, "label": "Lv8"},
+        {"day": 3, "label": "Lv11"},
+        {"day": 4, "label": "Lv13"},
+        {"day": 6, "label": "Lv15"},
+        {"day": 8, "label": "Lv17"},
+        {"day": 11, "label": "Lv20"},
+        {"day": 13, "label": "Lv22"},
+        {"day": 18, "label": "Lv25"},
+        {"day": 22, "label": "Lv28", "detail": "Step達成"}
+      ],
+      "note": "2025年10月挑戦。Lv28までおおむね1日1レベルを維持。四季盛ジェネレーターの注文を優先し、広告エネルギーとダイヤ補充も利用。",
+      "sources": ["https://ameblo.jp/pointo-sora/entry-12950903928.html"]
+    },
+    {
+      "label": "プレイヤーB｜FreeCash案件",
+      "status": "ongoing",
+      "summary": "1日目Lv7 → 4日目Lv12 → 7日目Lv15。",
+      "milestones": [
+        {"day": 1, "label": "Lv7"},
+        {"day": 4, "label": "Lv12", "detail": "VIP月カードとスノーパスへ課金"},
+        {"day": 7, "label": "Lv15", "detail": "10日以内Lv15条件を達成"}
+      ],
+      "note": "最終条件は30日以内Lv35の別案件。序盤時点では約1日1レベルの感触と記録。現在のLv28案件とは条件が異なるため、速度比較用の参考例。",
+      "sources": ["https://miyunoma.com/poimemo/?mode=around3&postid=54"]
+    },
+    {
+      "label": "プレイヤーC｜2026年ワラウ口コミ",
+      "status": "ongoing",
+      "summary": "1日目Lv5、4日でLv10。その後は頻繁に触っても約1日1レベル。",
+      "milestones": [
+        {"day": 1, "label": "Lv5"},
+        {"day": 4, "label": "Lv10"},
+        {"dayLabel": "Lv10以降", "label": "約1日1Lv", "detail": "頻繁に触った場合の体感"}
+      ],
+      "note": "2026年9月投稿。パワーブーストがなく、注文後の強制広告もありスローペースと評価。現行30日Lv28案件に近い条件の参考例。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206081"]
+    }
+  ],
+  "footnote": "X（Twitter）でも検索しましたが、今回の検索では日数と到達レベルを同一投稿内で十分確認できる日本語投稿を採用できませんでした。推測の進捗は追加していません。"
+}

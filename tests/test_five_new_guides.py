@@ -31,6 +31,9 @@ def test_new_guides_exist_and_disclose_research_status():
         elif name in {"ファミリーファームの冒険", "クロンダイクの冒険"}:
             assert "実際のプレイヤー記録" in page
             assert "調査更新：2026-09-14" in page
+        elif name == "Merge Help: ホームデザインパズル":
+            assert "実際のプレイヤー記録" in page
+            assert "調査更新：2026-09-15" in page
         else:
             assert "未プレイ・公開情報を調査" in page
             assert "調査更新：2026-09-12" in page
@@ -114,6 +117,18 @@ def test_klondike_catalog_has_researched_pace_instead_of_placeholder_values():
     assert "Lv24実例10〜12日" in game["days"]
     assert "Lv40実例約45日" in game["days"]
     assert "Lv40は高難度" in game["difficulty"]
+    assert "調査中" not in game["difficulty"]
+
+
+def test_merge_help_catalog_has_researched_pace_instead_of_placeholder_values():
+    with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+        rows = {row["name"]: row for row in csv.DictReader(handle)}
+    game = rows["Merge Help: ホームデザインパズル"]
+    assert "Lv10実例4日" in game["days"]
+    assert "Lv20実例11日" in game["days"]
+    assert "Lv28実例22日" in game["days"]
+    assert "期限30日" in game["days"]
+    assert "普通〜やや難" in game["difficulty"]
     assert "調査中" not in game["difficulty"]
 
 
