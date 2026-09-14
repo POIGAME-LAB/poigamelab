@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "game": "ATLAS: EARTH",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜土地数と到達ペースの実例",
+  "intro": "X（Twitter）・公開ブログ・App Storeレビューなどで確認できたプレイヤー記録を、同じプレイヤーごとに1件として整理しています。ATLAS: EARTHは課金有無、広告を見る頻度、Atlas Arcadeの利用、地域差で進み方が大きく変わるため、平均ではなく実例として見てください。",
+  "notice": "※2026年の日本向け記録を優先しています。ポイントサイト側の『5個=1日、10個=3日、20個=10日、50個=15日』は案件ページ上の目安であり、プレイヤー実測ではありません。",
+  "footnote": "土地1区画には100 Atlas Bucksが必要です。日本では広告1回あたり1ABのため、無課金で広告中心に進める場合は土地の増加がゆっくりになりやすいです。課金Stepを使う場合は支払額とポイント還元額を必ず別計算してください。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年8月・課金Stepを使い約30分で完了した例",
+      "milestones": [
+        {"dayLabel": "開始直後", "label": "1個目の土地を取得"},
+        {"dayLabel": "約30分", "label": "ATLAS BUCK 900購入＋土地Stepを処理"}
+      ],
+      "note": "X公開記録。6000円のATLAS BUCK 900購入を含む黒字型案件で、インストールから約30分で完了した例。無課金の到達ペースとは別物です。",
+      "sources": ["https://search.yahoo.co.jp/realtime/search?ei=UTF-8&mtype=image&p=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9+%E6%A1%88%E4%BB%B6&rkf=1&styl=now"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "in_progress",
+      "summary": "2026年8月・9269円課金で土地14個まで進行",
+      "milestones": [
+        {"dayLabel": "公開時点", "label": "土地14個"}
+      ],
+      "note": "X公開記録。9269円課金で土地14個、11355ポイント獲得と報告。さらに広告視聴や追加課金で土地20個も狙えるという進行例。",
+      "sources": ["https://search.yahoo.co.jp/realtime/search?ei=UTF-8&mtype=image&p=%E3%82%A2%E3%83%88%E3%83%A9%E3%82%B9+%E6%A1%88%E4%BB%B6&rkf=1&styl=now"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "in_progress",
+      "summary": "800円課金あり・7日で土地5個、22日で14個",
+      "milestones": [
+        {"day": 7, "label": "土地5個"},
+        {"day": 22, "label": "土地14個"}
+      ],
+      "note": "App Storeの日本レビュー。800円を1回課金し、広告やブーストをコツコツ利用。仕事が忙しくブーストを切らした日もある実生活寄りのペース。",
+      "sources": ["https://apps.apple.com/jp/app/atlas-earth-%E3%81%8A%E5%BE%97%E3%81%AA%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%83%90%E3%83%83%E3%82%AF/id1567636697?see-all=reviews"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "in_progress",
+      "summary": "2026年6月・無課金2週間で土地6個",
+      "milestones": [
+        {"day": 14, "label": "土地6個"}
+      ],
+      "note": "無課金プレイの公開記録。2週間で土地6個、当時は『1か月で20個も難しそう、10個を目指したい』と振り返っている例。",
+      "sources": ["https://www.hitoiki-blog.net/entry/2026/06/22/231117"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "in_progress",
+      "summary": "2026年・広告中心なら3日で土地1個ほどという実測感",
+      "milestones": [
+        {"dayLabel": "日常運用", "label": "広告を1時間3回×約10時間で30AB前後"},
+        {"dayLabel": "約3日", "label": "土地1個分の100ABが目安"}
+      ],
+      "note": "公開攻略ブログの運用例。広告視聴だけで進める場合のペース感で、Atlas Arcade・アンケート・イベント報酬を使えば短縮できます。",
+      "sources": ["https://poikatu-houkoku.com/entry/2026/03/19/221710"]
+    }
+  ]
+}

@@ -76,10 +76,9 @@ window.POIGAME_GUIDES = Object.freeze({
   },
   "ATLAS: EARTH": {
     title: "ATLAS: EARTH ポイ活攻略",
-    description: "土地・Atlas Bucks・広告ブースト・バッジ・ラダーの優先順位を、公開情報調査として整理しています。",
+    description: "土地1〜50個の実際の進捗例と、Atlas Bucks・広告・Atlas Arcade・課金Stepの進め方をまとめています。",
     links: [
-      { label: "土地・AB攻略を読む →", href: "atlas-earth-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=ATLAS%3A%20EARTH" }
+      { label: "土地・AB攻略を読む →", href: "atlas-earth-guide.html" }
     ]
   },
   "ファミリーファームの冒険": {

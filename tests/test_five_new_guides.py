@@ -25,8 +25,12 @@ def test_new_guides_exist_and_disclose_research_status():
     for name, filename in GUIDES.items():
         page = (ROOT / filename).read_text(encoding="utf-8")
         assert name.split(":")[0] in page
-        assert "未プレイ・公開情報を調査" in page
-        assert "調査更新：2026-09-12" in page
+        if name == "ATLAS: EARTH":
+            assert "実際のプレイヤー記録" in page
+            assert "2026年9月14日時点" in page
+        else:
+            assert "未プレイ・公開情報を調査" in page
+            assert "調査更新：2026-09-12" in page
         assert f"https://poigamelab.com/{filename}" in page
         assert "site-header.js" in page
         assert "site-footer.js" in page
@@ -75,6 +79,16 @@ def test_all_five_are_formal_catalog_games_with_uploaded_image_and_reference_rew
         assert int(row["provisionalReward"]) > 0
         assert row["provisionalSource"].strip()
         assert row["addedDate"] == "2026-09-12"
+
+
+def test_atlas_catalog_has_researched_pace_instead_of_placeholder_values():
+    with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+        rows = {row["name"]: row for row in csv.DictReader(handle)}
+    atlas = rows["ATLAS: EARTH"]
+    assert "30日StepUp" in atlas["days"]
+    assert "14日で土地6個" in atlas["days"]
+    assert "課金有無で差大" in atlas["difficulty"]
+    assert "調査中" not in atlas["difficulty"]
 
 
 def test_daily_refresh_enrolls_all_five_without_relaxing_publication_guard():
