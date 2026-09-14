@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "game": "エバーテイル",
+  "updatedAt": "2026-09-14",
+  "title": "みんなの進捗｜3日連続ログインの実例",
+  "intro": "公開されているポイントサイト口コミを、同じプレイヤーごとに1件として整理しています。現行案件は育成レベルではなく『3日連続でログインボーナスを受け取る』ことが進捗なので、Day1〜Day3の受取状況とポイント反映までを比較してください。",
+  "notice": "※X（Twitter）・Instagram・Web検索・YouTubeも横断して確認し、今回は具体的なDay進行を確認できた公開記録を中心に掲載しています。公式条件は『3日連続』なので、途中でログインを忘れた場合は連続カウントをやり直す前提で進めるのが安全です。",
+  "footnote": "ポイント反映のタイミングには個人差があります。Day3の受取画面を保存し、すぐ反映されなくてもアプリを削除せず、案件元の案内に従ってください。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2026年6月・約25時間で3回目のログインボーナスまで到達",
+      "milestones": [
+        {"dayLabel": "開始日", "label": "23:30ごろ開始・Day1受取"},
+        {"dayLabel": "日付変更後", "label": "Day2受取"},
+        {"dayLabel": "次の日付変更後", "label": "Day3受取"}
+      ],
+      "note": "0時前に開始し、日付変更をまたいで連続3回のログインボーナスを受け取った例。開始時刻によっては実時間が短くなるが、毎日の受取確認が必要。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=192047"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "2026年8月・2日目を忘れ、Day1からやり直して達成",
+      "milestones": [
+        {"day": 1, "label": "Day1受取"},
+        {"day": 2, "label": "ログイン忘れ"},
+        {"dayLabel": "再開後", "label": "連続カウントをDay1からやり直し"},
+        {"dayLabel": "再開3日目", "label": "3日連続を完了"}
+      ],
+      "note": "途中で1日抜けたため、連続ログインを最初からやり直して期限内に達成した例。『3日連続』条件なので忘れた日は飛ばさず、再カウントするのが安全。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=188016"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "2026年7月・合計起動時間約15分で完了",
+      "milestones": [
+        {"day": 1, "label": "チュートリアル→Day1受取"},
+        {"day": 2, "label": "Day2受取"},
+        {"day": 3, "label": "Day3受取・条件達成"}
+      ],
+      "note": "チュートリアル後は1日1回ログインするだけで、3日間の合計起動時間が約15分だったという例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=188016"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "2026年7月・Day3で反映せず、Day4ログイン後に反映",
+      "milestones": [
+        {"day": 1, "label": "Day1受取"},
+        {"day": 2, "label": "Day2受取"},
+        {"day": 3, "label": "Day3受取・ポイント未反映"},
+        {"day": 4, "label": "追加ログイン後に反映"}
+      ],
+      "note": "3日連続の受取自体は完了したが、その時点でポイントが付かず、4日目のログインボーナス受取後に反映された例。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?page=2&pl=endEntrance&point_id=188016&sort=relation"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "2026年3月・Day3後に未承認、Day4画面を保存して保証申請",
+      "milestones": [
+        {"day": 1, "label": "チュートリアル後に再起動してDay1受取"},
+        {"day": 2, "label": "Day2受取"},
+        {"day": 3, "label": "Day3受取・未承認"},
+        {"day": 4, "label": "ログイン画面を保存し保証申請"}
+      ],
+      "note": "初回ボーナスはチュートリアル後にアプリを再起動して受け取った例。Day3後も承認されなかったため、Day4の受取画面を保存してポイント保証で承認された。",
+      "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?page=2&pl=endEntrance&point_id=188016&sort=relation"]
+    }
+  ]
+}

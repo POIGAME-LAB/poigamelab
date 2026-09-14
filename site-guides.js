@@ -71,8 +71,7 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "エバーテイル ポイ活攻略",
     description: "3日連続ログイン案件を、判定中確認・チュートリアル・Day1〜3の手順で安全に進めます。",
     links: [
-      { label: "3日ログイン攻略を読む →", href: "evertale-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=エバーテイル" }
+      { label: "3日ログイン攻略を読む →", href: "evertale-guide.html" }
     ]
   },
   "ATLAS: EARTH": {

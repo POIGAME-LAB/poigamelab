@@ -25,15 +25,18 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     puzzles = _guide_block(catalog, "パズル＆サバイバル", "キングショット")
     kingshot = _guide_block(catalog, "キングショット", "放置少女")
     houchishojo = _guide_block(catalog, "放置少女", "エバーテイル")
+    evertale = _guide_block(catalog, "エバーテイル", "ATLAS: EARTH")
 
     assert 'progress.html?game=Township' in township
     assert 'progress.html?game=東京ディバンカー' not in tokyo
     assert 'progress.html?game=パズル＆サバイバル' not in puzzles
     assert 'progress.html?game=キングショット' not in kingshot
     assert 'progress.html?game=放置少女' not in houchishojo
+    assert 'progress.html?game=エバーテイル' not in evertale
     assert 'href: "puzzles-survival-guide.html"' in puzzles
     assert 'href: "kingshot-guide.html"' in kingshot
     assert 'href: "houchishojo-guide.html"' in houchishojo
+    assert 'href: "evertale-guide.html"' in evertale
 
 
 def test_inline_progress_is_embedded_in_research_guides_without_new_button():
@@ -41,6 +44,7 @@ def test_inline_progress_is_embedded_in_research_guides_without_new_button():
         ("puzzles-survival-guide.html", "puzzles-survival.json"),
         ("kingshot-guide.html", "kingshot.json"),
         ("houchishojo-guide.html", "houchishojo.json"),
+        ("evertale-guide.html", "evertale.json"),
     ):
         page = (ROOT / filename).read_text(encoding="utf-8")
         assert 'id="progress"' in page
@@ -81,6 +85,22 @@ def test_houchishojo_progress_has_paid_unpaid_and_deadline_examples():
     assert "Lv72" in text and "Lv100" in text and "Lv119" in text and "Lv120" in text
     assert "note.com/yukidrm_grbr" in text
     assert "warau.jp" in text
+    for player in players:
+        assert player.get("sources")
+        assert all(str(url).startswith("https://") for url in player["sources"])
+
+
+def test_evertale_progress_tracks_consecutive_logins_and_reflection_cases():
+    data = json.loads((ROOT / "data" / "guide-experiences" / "evertale.json").read_text(encoding="utf-8"))
+    assert data["game"] == "エバーテイル"
+    players = data["players"]
+    assert len(players) >= 5
+    text = json.dumps(players, ensure_ascii=False)
+    assert "25時間" in text
+    assert "15分" in text
+    assert "ログイン忘れ" in text
+    assert "Day4" in text
+    assert "保証申請" in text
     for player in players:
         assert player.get("sources")
         assert all(str(url).startswith("https://") for url in player["sources"])
