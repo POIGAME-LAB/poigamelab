@@ -28,6 +28,9 @@ def test_new_guides_exist_and_disclose_research_status():
         if name == "ATLAS: EARTH":
             assert "実際のプレイヤー記録" in page
             assert "2026年9月14日時点" in page
+        elif name == "ファミリーファームの冒険":
+            assert "実際のプレイヤー記録" in page
+            assert "調査更新：2026-09-14" in page
         else:
             assert "未プレイ・公開情報を調査" in page
             assert "調査更新：2026-09-12" in page
@@ -89,6 +92,17 @@ def test_atlas_catalog_has_researched_pace_instead_of_placeholder_values():
     assert "14日で土地6個" in atlas["days"]
     assert "課金有無で差大" in atlas["difficulty"]
     assert "調査中" not in atlas["difficulty"]
+
+
+def test_family_farm_catalog_has_researched_pace_instead_of_placeholder_values():
+    with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+        rows = {row["name"]: row for row in csv.DictReader(handle)}
+    game = rows["ファミリーファームの冒険"]
+    assert "Lv26実例7〜16日" in game["days"]
+    assert "Lv30実例9〜24日" in game["days"]
+    assert "Lv40未達例20日Lv35" in game["days"]
+    assert "Lv40は高難度" in game["difficulty"]
+    assert "調査中" not in game["difficulty"]
 
 
 def test_daily_refresh_enrolls_all_five_without_relaxing_publication_guard():

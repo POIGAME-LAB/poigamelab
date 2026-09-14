@@ -83,10 +83,9 @@ window.POIGAME_GUIDES = Object.freeze({
   },
   "ファミリーファームの冒険": {
     title: "ファミリーファームの冒険 ポイ活攻略",
-    description: "注文・生産・エネルギー・探索ポイントの管理を中心に、レベル上げの優先順位を整理しています。",
+    description: "Lv26・30の実際の進捗例と、掲示板注文・探索ポイント・ヤギミルク・イベントの回し方をまとめています。",
     links: [
-      { label: "注文中心の攻略を読む →", href: "family-farm-adventure-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=ファミリーファームの冒険" }
+      { label: "Lv26・30攻略を読む →", href: "family-farm-adventure-guide.html" }
     ]
   },
   "クロンダイクの冒険": {
