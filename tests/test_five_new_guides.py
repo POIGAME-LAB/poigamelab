@@ -25,9 +25,12 @@ def test_new_guides_exist_and_disclose_research_status():
     for name, filename in GUIDES.items():
         page = (ROOT / filename).read_text(encoding="utf-8")
         assert name.split(":")[0] in page
-        if name in {"ATLAS: EARTH", "ファミリーファームの冒険"}:
+        if name == "ATLAS: EARTH":
             assert "実際のプレイヤー記録" in page
-            assert "2026-09-14" in page
+            assert "2026年9月14日時点" in page
+        elif name == "ファミリーファームの冒険":
+            assert "実際のプレイヤー記録" in page
+            assert "調査更新：2026-09-14" in page
         else:
             assert "未プレイ・公開情報を調査" in page
             assert "調査更新：2026-09-12" in page
