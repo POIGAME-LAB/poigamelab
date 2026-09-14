@@ -27,6 +27,7 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     houchishojo = _guide_block(catalog, "放置少女", "エバーテイル")
     evertale = _guide_block(catalog, "エバーテイル", "ATLAS: EARTH")
     atlas = _guide_block(catalog, "ATLAS: EARTH", "ファミリーファームの冒険")
+    family = _guide_block(catalog, "ファミリーファームの冒険", "クロンダイクの冒険")
 
     assert 'progress.html?game=Township' in township
     assert 'progress.html?game=東京ディバンカー' not in tokyo
@@ -35,11 +36,13 @@ def test_progress_links_follow_page_type_instead_of_every_game():
     assert 'progress.html?game=放置少女' not in houchishojo
     assert 'progress.html?game=エバーテイル' not in evertale
     assert 'progress.html?game=ATLAS' not in atlas
+    assert 'progress.html?game=ファミリーファームの冒険' not in family
     assert 'href: "puzzles-survival-guide.html"' in puzzles
     assert 'href: "kingshot-guide.html"' in kingshot
     assert 'href: "houchishojo-guide.html"' in houchishojo
     assert 'href: "evertale-guide.html"' in evertale
     assert 'href: "atlas-earth-guide.html"' in atlas
+    assert 'href: "family-farm-adventure-guide.html"' in family
 
 
 def test_inline_progress_is_embedded_in_research_guides_without_new_button():
@@ -49,6 +52,7 @@ def test_inline_progress_is_embedded_in_research_guides_without_new_button():
         ("houchishojo-guide.html", "houchishojo.json"),
         ("evertale-guide.html", "evertale.json"),
         ("atlas-earth-guide.html", "atlas-earth.json"),
+        ("family-farm-adventure-guide.html", "family-farm-adventure.json"),
     ):
         page = (ROOT / filename).read_text(encoding="utf-8")
         assert 'id="progress"' in page
@@ -140,6 +144,39 @@ def test_atlas_earth_guide_matches_full_guide_structure_and_has_pace_sections():
     assert "無課金2週間" in (ROOT / "data" / "guide-experiences" / "atlas-earth.json").read_text(encoding="utf-8")
     assert "土地は1区画" in page and "100 Atlas Bucks" in page
     assert "X（Twitter）・Instagram・Web検索・YouTube" in page
+
+
+def test_family_farm_progress_has_fast_slow_and_lv40_failure_examples():
+    data = json.loads((ROOT / "data" / "guide-experiences" / "family-farm-adventure.json").read_text(encoding="utf-8"))
+    assert data["game"] == "ファミリーファームの冒険"
+    players = data["players"]
+    assert len(players) >= 8
+    assert any(player.get("status") == "completed" for player in players)
+    assert any(player.get("status") == "retired" for player in players)
+    text = json.dumps(players, ensure_ascii=False)
+    assert "7日でLv26" in text
+    assert "9日でLv30" in text
+    assert "24日でLv30" in text
+    assert "20日でLv35" in text
+    assert "Lv40未達" in text
+    assert "note.com/doto_yatowarenai" in text
+    assert "warau.jp" in text
+    for player in players:
+        assert player.get("sources")
+        assert all(str(url).startswith("https://") for url in player["sources"])
+
+
+def test_family_farm_guide_matches_full_guide_structure_and_core_strategy():
+    page = (ROOT / "family-farm-adventure-guide.html").read_text(encoding="utf-8")
+    assert '<div class="eyebrow">POIGAME LAB 攻略データ</div>' in page
+    assert page.count('class="stat"') == 3
+    for anchor in ("condition", "progress", "route", "orders", "explore", "energy", "bottleneck", "factory", "daily", "target", "summary"):
+        assert f'href="#{anchor}"' in page
+    assert "ヤギミルク" in page
+    assert "探索ポイント" in page
+    assert "掲示板注文" in page
+    assert "Lv40" in page
+    assert "X（Twitter）・Instagram" in page
 
 
 def test_township_progress_restores_old_examples_and_new_lv70_examples():
