@@ -57,8 +57,7 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "キングショット ポイ活攻略",
     description: "役場レベル上げ、前提施設、研究、資源、同盟・巨熊狩猟の優先順位をまとめています。",
     links: [
-      { label: "役場攻略を読む →", href: "kingshot-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=キングショット" }
+      { label: "役場攻略を読む →", href: "kingshot-guide.html" }
     ]
   },
   "放置少女": {
