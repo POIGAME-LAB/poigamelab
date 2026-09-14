@@ -11,6 +11,7 @@ on:
       - "evertale-guide.html"
       - "atlas-earth-guide.html"
       - "family-farm-adventure-guide.html"
+      - "klondike-adventures-guide.html"
       - "data/guide-experiences/**"
       - "scripts/build_public_site.py"
       - "tests/test_player_progress_pages.py"
