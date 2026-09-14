@@ -5,6 +5,8 @@ on:
     paths:
       - "site-guides.js"
       - "progress.html"
+      - "puzzles-survival-guide.html"
+      - "kingshot-guide.html"
       - "data/guide-experiences/**"
       - "scripts/build_public_site.py"
       - "tests/test_player_progress_pages.py"
