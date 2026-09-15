@@ -1,0 +1,143 @@
+name: Publish researched top-five new games
+
+on:
+  workflow_run:
+    workflows:
+      - "Research top-five new games (quarantine)"
+    types:
+      - completed
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: poigamelab-production-writer
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      vars.ENABLE_NEW_GAME_AUTO_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Preserve publication baseline and main identity
+        run: |
+          cp data/published_offers.csv "${RUNNER_TEMP}/published-before-new-games.csv"
+          git rev-parse HEAD > "${RUNNER_TEMP}/main-before-new-games.txt"
+
+      - name: Download the exact successful research bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: top-five-new-game-content-bundle
+          path: ${{ runner.temp }}/new-game-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Verify and restore quarantined bundle
+        run: |
+          set -euo pipefail
+          artifact="${RUNNER_TEMP}/new-game-artifact"
+          (cd "${artifact}" && sha256sum -c new-game-content-bundle.sha256)
+          bundle="$(mktemp -d)"
+          echo "BUNDLE_DIR=${bundle}" >> "$GITHUB_ENV"
+          tar -xzf "${artifact}/new-game-content-bundle.tgz" -C "${bundle}"
+          test -f "${bundle}/data/new_game_content_queue.json"
+          test -f "${bundle}/data/top_five_adoption_candidates.json"
+          cmp data/new_game_content_queue.json "${bundle}/data/new_game_content_queue.json"
+          mkdir -p data/new_game_content_packages data/research_results assets/game-art
+          cp -R "${bundle}/data/new_game_content_packages/." data/new_game_content_packages/
+          cp -R "${bundle}/data/research_results/." data/research_results/
+          cp "${bundle}/data/top_five_adoption_candidates.json" data/top_five_adoption_candidates.json
+          cp "${bundle}/data/top_five_offer_research_status.json" data/top_five_offer_research_status.json
+          cp -R "${bundle}/assets/game-art/." assets/game-art/
+          find "${bundle}/guides" -maxdepth 1 -type f -name '*-guide.html' -exec cp {} . \;
+
+      - name: Deterministically adopt only content-ready V29 games
+        run: |
+          python scripts/publish_top_five_content.py
+          python scripts/append_offer_history.py
+
+      - name: Build and validate the exact Pages artifact
+        run: |
+          python scripts/build_public_site.py
+          python scripts/include_generated_guides.py --artifact _site
+          python scripts/validate_daily_publication.py --baseline "${RUNNER_TEMP}/published-before-new-games.csv"
+          node tests/test_site_data_v24.js
+          node tests/test_site_health_v25.js
+
+      - name: Install local test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Run publication regressions without external APIs
+        run: |
+          python -m pytest -q \
+            tests/test_publish_top_five_content.py \
+            tests/test_generated_guide_registry.py \
+            tests/test_render_generated_guides.py \
+            tests/test_phase3_production_adoption_v30.py \
+            tests/test_v30_real_research_fixtures.py \
+            tests/test_daily_publication_gate.py
+
+      - name: Reject a stale main before commit
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(cat "${RUNNER_TEMP}/main-before-new-games.txt")" = "$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+
+      - name: Stage only compact production outputs
+        run: |
+          set -euo pipefail
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            games.csv \
+            config/game_targets.json \
+            config/refresh_policy.json \
+            data/published_offers.csv \
+            data/offer_history.csv \
+            data/generated_guides_registry.json \
+            data/top_five_publication_status.json \
+            site-guides.js \
+            sitemap.xml
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          registry=json.loads(Path('data/generated_guides_registry.json').read_text(encoding='utf-8'))
+          paths=[]
+          for row in (registry.get('guides') or {}).values():
+              for key in ('guidePath','imagePath'):
+                  raw=str(row.get(key) or '').replace('\\','/')
+                  path=Path(raw)
+                  if not raw or raw.startswith('/') or '..' in path.parts or not path.is_file():
+                      raise SystemExit('unsafe generated publication path: '+raw)
+                  paths.append(raw)
+          if paths:
+              subprocess.run(['git','add','--',*sorted(set(paths))],check=True)
+          PY
+          git diff --cached --check
+
+      - name: Commit and push production changes
+        run: |
+          set -euo pipefail
+          if git diff --cached --quiet; then
+            echo "No new content-ready games to publish."
+            exit 0
+          fi
+          git commit -m "feat: publish researched POIGAME LAB games"
+          git fetch origin main
+          test "$(git rev-parse HEAD^)" = "$(git rev-parse origin/main)"
+          git push origin HEAD:main
