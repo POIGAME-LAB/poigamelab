@@ -2,9 +2,9 @@
 """Build publication-gated new-game guide packages from quarantined research.
 
 Gemini is used only for bounded synthesis. Python re-validates every source
-reference and every numeric token in guide/progress text against the directly
-fetched source evidence. A neutral POIGAME LAB title-card SVG is generated
-locally, so unattended runs do not need a third-party image-generation API or
+reference and every numeric token in guide/progress/catalog text against the
+directly fetched source evidence. A neutral POIGAME LAB title-card SVG is
+generated locally, so unattended runs do not need a third-party image API or
 unlicensed game artwork. Nothing is published or committed here.
 """
 from __future__ import annotations
@@ -85,18 +85,21 @@ def synthesis_prompt(game, rows):
 以下のsourcesだけを根拠にする。一般知識・推測・検索スニペット・別ゲーム情報は禁止。
 事実を含む文には必ずsourceRefsを付ける。数字・レベル・日数・金額を出す場合、その数字が参照元text内に存在するものだけ使う。
 「みんなの進捗」は x / youtube / instagram の公開プレイヤー記録だけから作り、同一URLを重複させない。
-根拠が足りない項目は捏造せず空にする。
+根拠が足りない項目は捏造せず空にする。difficulty も根拠がある表現だけにする。
 
 JSONのみ返す。
 形式:
 {{
  "days":"例: 7〜14日",
+ "daysSourceRefs":["sourceId"],
  "difficulty":"例: 普通〜やや難",
+ "difficultySourceRefs":["sourceId"],
  "guide":{{
    "title":"... ポイ活攻略",
-   "intro":"...",
    "overview":"...",
+   "overviewSourceRefs":["sourceId"],
    "tips":"...",
+   "tipsSourceRefs":["sourceId"],
    "sections":[
      {{"heading":"案件条件","text":"20文字以上","sourceRefs":["sourceId"]}},
      {{"heading":"達成ペース","text":"20文字以上","sourceRefs":["sourceId"]}},
@@ -110,6 +113,12 @@ sources:
 ''' + json.dumps(compact, ensure_ascii=False)
 
 
+def evidence_for_refs(rows, refs, error):
+    if not isinstance(refs, list) or not refs or any(str(ref) not in rows for ref in refs):
+        raise gate.ContentHold(error)
+    return " ".join(rows[str(ref)]["evidenceText"] for ref in refs)
+
+
 def validate_synthesis(game, research, proposal):
     rows = source_rows(research)
     if not isinstance(proposal, dict):
@@ -119,9 +128,33 @@ def validate_synthesis(game, research, proposal):
     guide = proposal.get("guide")
     if not days or days == "調査中" or not difficulty or difficulty == "調査中" or not isinstance(guide, dict):
         raise gate.ContentHold("synthesis_catalog_incomplete")
-    for key in ("title", "intro", "overview", "tips"):
-        if len(str(guide.get(key) or "").strip()) < 8:
-            raise gate.ContentHold(f"synthesis_guide_missing:{key}")
+
+    days_evidence = evidence_for_refs(rows, proposal.get("daysSourceRefs"), "synthesis_days_evidence_invalid")
+    difficulty_evidence = evidence_for_refs(rows, proposal.get("difficultySourceRefs"), "synthesis_difficulty_evidence_invalid")
+    if not numeric_grounded(days, days_evidence):
+        raise gate.ContentHold("synthesis_days_numeric_ungrounded")
+    if not numeric_grounded(difficulty, difficulty_evidence):
+        raise gate.ContentHold("synthesis_difficulty_numeric_ungrounded")
+
+    title = str(guide.get("title") or "").strip()
+    overview = str(guide.get("overview") or "").strip()
+    tips = str(guide.get("tips") or "").strip()
+    if len(title) < 8 or len(overview) < 8 or len(tips) < 8:
+        raise gate.ContentHold("synthesis_guide_summary_missing")
+    overview_evidence = evidence_for_refs(rows, guide.get("overviewSourceRefs"), "synthesis_overview_evidence_invalid")
+    tips_evidence = evidence_for_refs(rows, guide.get("tipsSourceRefs"), "synthesis_tips_evidence_invalid")
+    if not numeric_grounded(overview, overview_evidence):
+        raise gate.ContentHold("synthesis_overview_numeric_ungrounded")
+    if not numeric_grounded(tips, tips_evidence):
+        raise gate.ContentHold("synthesis_tips_numeric_ungrounded")
+
+    # The intro is deliberately deterministic instead of free-form AI prose.
+    normalized_guide = dict(guide)
+    normalized_guide["title"] = title
+    normalized_guide["intro"] = "ポイントサイトの案件情報と、直接確認できた公開攻略・進捗記録を根拠付きで整理しています。"
+    normalized_guide["overview"] = overview
+    normalized_guide["tips"] = tips
+
     sections = guide.get("sections")
     if not isinstance(sections, list) or len(sections) < 3:
         raise gate.ContentHold("synthesis_sections_incomplete")
@@ -129,10 +162,9 @@ def validate_synthesis(game, research, proposal):
         if not isinstance(section, dict):
             raise gate.ContentHold("synthesis_section_invalid")
         text = str(section.get("text") or "").strip()
-        refs = section.get("sourceRefs")
-        if len(text) < 20 or not isinstance(refs, list) or not refs or any(ref not in rows for ref in refs):
+        evidence = evidence_for_refs(rows, section.get("sourceRefs"), "synthesis_section_evidence_invalid")
+        if len(text) < 20:
             raise gate.ContentHold("synthesis_section_evidence_invalid")
-        evidence = " ".join(rows[ref]["evidenceText"] for ref in refs)
         if not numeric_grounded(text, evidence):
             raise gate.ContentHold("synthesis_section_numeric_ungrounded")
 
@@ -156,14 +188,10 @@ def validate_synthesis(game, research, proposal):
     if not progress_out:
         raise gate.ContentHold("synthesis_progress_missing")
 
-    all_evidence = " ".join(row["evidenceText"] for row in rows.values())
-    if not numeric_grounded(days, all_evidence):
-        raise gate.ContentHold("synthesis_days_numeric_ungrounded")
-
     return {
         "days": days,
         "difficulty": difficulty,
-        "guide": guide,
+        "guide": normalized_guide,
         "progress": progress_out,
         "rows": rows,
     }
@@ -213,7 +241,6 @@ def build_package(research, proposal, root=ROOT):
         "difficulty": checked["difficulty"],
         "sourceResearchPhase": research.get("phase"),
     }
-    # Pre-render validation deliberately allows the HTML to be absent here.
     gate.validate(package, game, root=root, require_guide_file=False)
     return package
 
