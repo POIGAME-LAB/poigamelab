@@ -7,7 +7,7 @@ def offer(site,url,platform='iOS'):
  return {'site':site,'url':url,'evidence_urls':[url],'platform':platform,'reward_yen':1000,'condition':'達成','deadline':'30日','registered_source':site,'auto_publish_ready':True,'deterministic_checks':{k:True for k in REQ}}
 def make_fixture(td):
  td=Path(td); (td/'results').mkdir();
- (td/'games.csv').write_text('name,image,condition,days,difficulty,overview,tips,featured,addedDate\nTownship,,指定条件クリア,調査中,調査中,,,true,2026-08-29\n')
+ (td/'games.csv').write_text('name,image,condition,days,difficulty,overview,tips,featured,addedDate,provisionalReward,provisionalSource\nTownship,,指定条件クリア,調査中,調査中,,,true,2026-08-29,12345,seed\n')
  (td/'targets.json').write_text(json.dumps({'games':[{'game':'Township','aliases':['Township']}]}))
  (td/'refresh.json').write_text(json.dumps({'games':{'Township':{'enabled':True}}}))
  (td/'published.csv').write_text(','.join(a.FIELDS)+'\n')
@@ -27,6 +27,14 @@ class T(unittest.TestCase):
    rows=list(csv.DictReader((td/'published.csv').open())); self.assertEqual(len(rows),2)
    self.assertFalse(json.loads((td/'refresh.json').read_text())['games']['新作ゲーム']['enabled'])
    self.assertEqual(json.loads((td/'adopt.json').read_text())['items'][0]['status'],'adopted')
+ def test_preserves_extended_games_schema_and_values(self):
+  with tempfile.TemporaryDirectory() as x:
+   td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
+   self.runx(td)
+   rows=list(csv.DictReader((td/'games.csv').open()))
+   self.assertEqual(list(rows[0].keys()),['name','image','condition','days','difficulty','overview','tips','featured','addedDate','provisionalReward','provisionalSource'])
+   self.assertEqual(rows[0]['provisionalReward'],'12345'); self.assertEqual(rows[0]['provisionalSource'],'seed')
+   new=next(r for r in rows if r['name']=='新作ゲーム'); self.assertEqual(new['provisionalReward'],''); self.assertEqual(new['provisionalSource'],'')
  def test_idempotent_no_duplicate_game_or_offer(self):
   with tempfile.TemporaryDirectory() as x:
    td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
