@@ -16,9 +16,29 @@ def make_fixture(td):
 def payload(game='新作ゲーム'):
  offs=[offer('warau','https://www.warau.jp/contents/point/pointEntrance.php?point_id=1'),offer('coincome','https://cimcome.jp/campaigns/details/2','Android')]
  return {'game':game,'researchedAt':'2026-08-31','sourceQueue':{'aliases':[game,'New Game']},'quarantine':True,'autoPublish':False,'collectorResult':{'runAt':'2026-08-31T00:00:00+00:00','health':{'collectionComplete':True,'degradedReasons':[]},'verified':{'game':game,'offers':offs}}}
+def content_package(game='新作ゲーム'):
+ return {'schemaVersion':1,'game':game,'publicationReady':True,
+  'research':{
+   'web':{'searched':True,'complete':True,'sources':[{'id':'web1','url':'https://example.com/g','claim':'攻略情報を確認'}]},
+   'x':{'searched':True,'complete':True,'sources':[{'id':'x1','url':'https://x.com/u/status/1','claim':'進捗情報を確認'}]},
+   'youtube':{'searched':True,'complete':True,'sources':[]},
+   'instagram':{'searched':True,'complete':True,'sources':[]},
+   'pointSites':{'searched':True,'complete':True,'sources':[{'id':'p1','url':'https://www.warau.jp/example','claim':'案件条件を確認'}]}},
+  'guide':{'title':'新作ゲーム ポイ活攻略まとめ','intro':'案件達成のために確認済み情報を整理した攻略です。','overview':'育成とステージ進行を組み合わせて目標到達を目指すゲームです。','tips':'毎日の日課と資源管理を優先して効率よく進めます。','sections':[
+   {'heading':'序盤','text':'序盤は日課を開放しつつ目標レベルまで育成を進めます。','sourceRefs':['web1','p1']},
+   {'heading':'中盤','text':'中盤は資源を温存しながら詰まりやすい条件を先回りします。','sourceRefs':['web1']},
+   {'heading':'進捗','text':'公開された進捗例は個人差のある参考値として分離して扱います。','sourceRefs':['x1']}]},
+  'progress':[{'identityKey':'x:u','sourceRef':'x1','summary':'10日目付近の公開進捗記録'}],
+  'image':{'path':'assets/game-art/new-game.png','provenance':'generated','rightsConfirmed':True},
+  'guidePath':'new-game-guide.html','days':'10〜14日目安','difficulty':'普通'}
+def install_content(td):
+ td=Path(td); (td/'assets/game-art').mkdir(parents=True,exist_ok=True); (td/'assets/game-art/new-game.png').write_bytes(b'x'); (td/'new-game-guide.html').write_text('<html>guide</html>'); d=td/'content'; d.mkdir(); (d/'p.json').write_text(json.dumps(content_package(),ensure_ascii=False)); return d
 class T(unittest.TestCase):
- def runx(self,td):
-  return a.run(td/'adopt.json',td/'results',td/'games.csv',td/'targets.json',td/'refresh.json',td/'published.csv',td/'status.json',td/'cfg.json')
+ def runx(self,td,content_dir=None,content_root=None):
+  kwargs={}
+  if content_dir is not None: kwargs['content_dir']=content_dir
+  if content_root is not None: kwargs['content_root']=content_root
+  return a.run(td/'adopt.json',td/'results',td/'games.csv',td/'targets.json',td/'refresh.json',td/'published.csv',td/'status.json',td/'cfg.json',**kwargs)
  def test_adopts_strict_game_and_offers(self):
   with tempfile.TemporaryDirectory() as x:
    td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
@@ -41,6 +61,14 @@ class T(unittest.TestCase):
    (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(p))
    out=self.runx(td); self.assertEqual(out['adopted'],1)
    rows=list(csv.DictReader((td/'published.csv').open())); self.assertIn('amefuri',{r['site'] for r in rows}); self.assertNotIn('unknown',{r['site'] for r in rows})
+ def test_required_content_package_blocks_blank_adoption(self):
+  with tempfile.TemporaryDirectory() as x:
+   td=make_fixture(x); cfg=json.loads((td/'cfg.json').read_text()); cfg['productionAdoption']={'requiresContentPackage':True}; (td/'cfg.json').write_text(json.dumps(cfg)); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload())); empty=td/'content'; empty.mkdir()
+   out=self.runx(td,empty,td); self.assertEqual(out['adopted'],0); self.assertIn('content_gate:content_package_missing',out['results'][0]['reasons']); self.assertNotIn('新作ゲーム',(td/'games.csv').read_text())
+ def test_complete_content_package_populates_catalog(self):
+  with tempfile.TemporaryDirectory() as x:
+   td=make_fixture(x); cfg=json.loads((td/'cfg.json').read_text()); cfg['productionAdoption']={'requiresContentPackage':True}; (td/'cfg.json').write_text(json.dumps(cfg)); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload())); content=install_content(td)
+   out=self.runx(td,content,td); self.assertEqual(out['adopted'],1); self.assertTrue(out['results'][0]['contentPackageValidated']); rows=list(csv.DictReader((td/'games.csv').open())); new=next(r for r in rows if r['name']=='新作ゲーム'); self.assertEqual(new['image'],'assets/game-art/new-game.png'); self.assertEqual(new['difficulty'],'普通'); self.assertNotEqual(new['overview'],'')
  def test_idempotent_no_duplicate_game_or_offer(self):
   with tempfile.TemporaryDirectory() as x:
    td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
@@ -58,6 +86,6 @@ class T(unittest.TestCase):
  def test_workflow_orders_gate_before_adoption_and_commits_production(self):
   s=(ROOT/'.github/workflows/discover-trending-games.yml').read_text(); self.assertLess(s.index('evaluate_research_adoption.py'),s.index('adopt_verified_games.py'))
   self.assertIn('data/published_offers.csv',s); self.assertIn('config/game_targets.json',s)
- def test_config_keeps_new_refresh_disabled(self):
-  c=json.loads((ROOT/'config/trend_discovery.json').read_text())['productionAdoption']; self.assertTrue(c['revalidateBeforeWrite']); self.assertFalse(c['initialRefreshEnabled']); self.assertEqual(c['apiCalls'],0)
+ def test_config_keeps_new_refresh_disabled_and_requires_content(self):
+  c=json.loads((ROOT/'config/trend_discovery.json').read_text())['productionAdoption']; self.assertTrue(c['revalidateBeforeWrite']); self.assertTrue(c['requiresContentPackage']); self.assertFalse(c['initialRefreshEnabled']); self.assertEqual(c['apiCalls'],0)
 if __name__=='__main__': unittest.main()
