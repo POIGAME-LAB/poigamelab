@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "PHASE3_HIGH_REWARD_V29_GATE",
-  "generatedAt": "2026-09-14T20:38:18+00:00",
+  "generatedAt": "2026-09-15T20:03:16+00:00",
   "autoPublish": false,
   "autoAddGame": false,
   "summary": {
@@ -20,22 +20,6 @@
     },
     {
       "game": "【SKYFLAG】ザ・グランドマフィア",
-      "eligible": false,
-      "status": "hold",
-      "reasons": [
-        "research_failed_or_missing"
-      ]
-    },
-    {
-      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
-      "eligible": false,
-      "status": "hold",
-      "reasons": [
-        "research_failed_or_missing"
-      ]
-    },
-    {
-      "game": "間違い探し 江戸時代の文化 - 累計28,000 ポイントを獲得",
       "eligible": false,
       "status": "hold",
       "reasons": [
@@ -67,6 +51,14 @@
       ]
     },
     {
+      "game": "【SKYFLAG】Treasure Push Party",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
       "game": "トップウォー",
       "eligible": false,
       "status": "hold",
@@ -81,7 +73,7 @@
       "verifiedSources": [],
       "coverageOverrideApplied": false,
       "coverageWarnings": [],
-      "researchedAt": "2026-09-14T20:33:58+00:00",
+      "researchedAt": "2026-09-15T19:56:58+00:00",
       "sourceQueue": {
         "game": "トップウォー",
         "aliases": [
@@ -134,7 +126,7 @@
       "eligible": true,
       "status": "adoption_ready",
       "reasons": [],
-      "strictOfferCount": 2,
+      "strictOfferCount": 3,
       "verifiedSourceCount": 2,
       "verifiedSources": [
         "amefuri",
@@ -143,10 +135,9 @@
       "coverageOverrideApplied": true,
       "coverageWarnings": [
         "chobirich:optional_firecrawl_402",
-        "coincome:optional_firecrawl_402",
-        "powl:optional_firecrawl_402"
+        "coincome:optional_firecrawl_402"
       ],
-      "researchedAt": "2026-09-14T20:36:29+00:00",
+      "researchedAt": "2026-09-15T19:59:51+00:00",
       "sourceQueue": {
         "game": "War of Towers",
         "aliases": [
@@ -160,7 +151,7 @@
           {
             "source": "warau",
             "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463&pl=pc_categoryService",
-            "titleHint": "War of Towers（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 16,000 pt 2.0 （ 1件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+            "titleHint": "War of Towers（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 16,000 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
             "rewardPt": 16000
           }
         ],
@@ -191,9 +182,11 @@
         "moppy",
         "powl"
       ],
-      "coverageOverrideApplied": false,
-      "coverageWarnings": [],
-      "researchedAt": "2026-09-14T20:37:44+00:00",
+      "coverageOverrideApplied": true,
+      "coverageWarnings": [
+        "coincome:optional_firecrawl_402"
+      ],
+      "researchedAt": "2026-09-15T20:01:46+00:00",
       "sourceQueue": {
         "game": "パズル＆コンクエスト",
         "aliases": [
@@ -230,6 +223,45 @@
       "reasons": [
         "research_failed_or_missing"
       ]
+    },
+    {
+      "game": "Arrow GO! Arrow Flow Puzzle",
+      "eligible": false,
+      "status": "hold",
+      "reasons": [
+        "collection_incomplete",
+        "degraded_collection",
+        "insufficient_strict_offers",
+        "insufficient_verified_sources"
+      ],
+      "strictOfferCount": 0,
+      "verifiedSourceCount": 0,
+      "verifiedSources": [],
+      "coverageOverrideApplied": false,
+      "coverageWarnings": [],
+      "researchedAt": "2026-09-15T20:03:16+00:00",
+      "sourceQueue": {
+        "game": "Arrow GO! Arrow Flow Puzzle",
+        "aliases": [
+          "Arrow GO! Arrow Flow Puzzle"
+        ],
+        "maxRewardPt": 11720,
+        "sources": [
+          "warau"
+        ],
+        "sourceCandidates": [
+          {
+            "source": "warau",
+            "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206456&pl=pc_categoryService",
+            "titleHint": "Arrow GO! Arrow Flow Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 11,720 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+            "rewardPt": 11720
+          }
+        ],
+        "collectorReady": true,
+        "status": "collector_ready",
+        "origin": "high_reward_monitor",
+        "researchLogicVersion": "high-reward-v1"
+      }
     }
   ]
 }

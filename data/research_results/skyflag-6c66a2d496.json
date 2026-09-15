@@ -1,6 +1,6 @@
 {
   "game": "【SKYFLAG】ドゥームズデイ：ラストサバイバー",
-  "researchedAt": "2026-09-14T20:38:18+00:00",
+  "researchedAt": "2026-09-15T20:02:22+00:00",
   "sourceQueue": {
     "game": "【SKYFLAG】ドゥームズデイ：ラストサバイバー",
     "aliases": [
@@ -25,7 +25,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-14T20:38:18+00:00",
+    "runAt": "2026-09-15T20:02:22+00:00",
     "status": "no_township_candidates",
     "diagnostics": [
       {
@@ -57,34 +57,34 @@
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=150779",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160720",
               "ok": true,
               "targetFound": false,
-              "bytes": 208787,
+              "bytes": 210028,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161354",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=110011",
               "ok": true,
               "targetFound": false,
-              "bytes": 224939,
+              "bytes": 204246,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=146059",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?s_id=161767",
               "ok": true,
               "targetFound": false,
-              "bytes": 200470,
+              "bytes": 205514,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=155462",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=154906",
               "ok": true,
               "targetFound": false,
-              "bytes": 211350,
+              "bytes": 202857,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -103,7 +103,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.7
+        "elapsedSeconds": 10.3
       },
       {
         "source_id": "warau",
@@ -117,7 +117,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 283965,
+              "bytes": 284050,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -125,7 +125,7 @@
               "ok": true,
               "targetFound": true,
               "detailLinks": 1,
-              "bytes": 365200,
+              "bytes": 331713,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -142,46 +142,6 @@
           ],
           "candidateCount": 0,
           "allListingsFetched": true
-        },
-        "indexed_official": {
-          "attempted": true,
-          "searchCompleted": true,
-          "resultUrls": 0,
-          "eligibleUrls": 0,
-          "confirmed": 0,
-          "details": [],
-          "absenceAuthoritative": false,
-          "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
-          "queryErrors": []
-        },
-        "offerwalls": [],
-        "provider_hubs": [],
-        "known_pages": [],
-        "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
-        },
-        "search_verified": [],
-        "followed_details": [],
-        "elapsedSeconds": 6.0
-      },
-      {
-        "source_id": "chobirich",
-        "source_name": "ちょびリッチ",
-        "mode": "indexed_official_no_match",
-        "direct": null,
-        "direct_http": {
-          "attempted": true,
-          "listings": [
-            {
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            }
-          ],
-          "details": [],
-          "candidateCount": 0,
-          "allListingsFetched": false
         },
         "indexed_official": {
           "attempted": true,
@@ -204,7 +164,47 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 1.9
+        "elapsedSeconds": 7.1
+      },
+      {
+        "source_id": "chobirich",
+        "source_name": "ちょびリッチ",
+        "mode": "indexed_official_no_match",
+        "direct": null,
+        "direct_http": {
+          "attempted": true,
+          "listings": [
+            {
+              "ok": false,
+              "error": "HTTP Error 403: Forbidden"
+            }
+          ],
+          "details": [],
+          "candidateCount": 0,
+          "allListingsFetched": false
+        },
+        "indexed_official": {
+          "attempted": true,
+          "searchCompleted": true,
+          "resultUrls": 1,
+          "eligibleUrls": 0,
+          "confirmed": 0,
+          "details": [],
+          "absenceAuthoritative": false,
+          "coverage": "indexed_public_official_details",
+          "queryAttempts": 1,
+          "queryErrors": []
+        },
+        "offerwalls": [],
+        "provider_hubs": [],
+        "known_pages": [],
+        "search": {
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+        },
+        "search_verified": [],
+        "followed_details": [],
+        "elapsedSeconds": 1.8
       },
       {
         "source_id": "coincome",
@@ -218,7 +218,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 110429,
+              "bytes": 110537,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -248,7 +248,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 3.3
       },
       {
         "source_id": "mikoshi",
@@ -292,7 +292,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.7
+        "elapsedSeconds": 2.0
       },
       {
         "source_id": "gendama",
@@ -306,7 +306,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 212458,
+              "bytes": 212298,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -336,7 +336,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 3.8
       },
       {
         "source_id": "hapitas",
@@ -350,7 +350,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 208490,
+              "bytes": 208462,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -362,10 +362,27 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
-          "eligibleUrls": 0,
+          "resultUrls": 8,
+          "eligibleUrls": 2,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98248/apn/attention_word/page/28",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 121440,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98248/apn/attention_word/page/3",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 121440,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -380,7 +397,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.1
+        "elapsedSeconds": 4.7
       },
       {
         "source_id": "kurashiru_reward",
@@ -394,7 +411,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 63423,
+              "bytes": 62943,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -406,7 +423,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 2,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -424,7 +441,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.1
+        "elapsedSeconds": 3.2
       },
       {
         "source_id": "trima",
@@ -468,7 +485,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.1
+        "elapsedSeconds": 2.4
       },
       {
         "source_id": "point_income",
@@ -482,7 +499,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 5629,
+              "bytes": 5630,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -512,7 +529,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.8
+        "elapsedSeconds": 2.6
       },
       {
         "source_id": "amefuri",
@@ -526,7 +543,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101166,
+              "bytes": 100798,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -534,7 +551,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 100793,
+              "bytes": 100752,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -542,7 +559,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101345,
+              "bytes": 101226,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -554,15 +571,15 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 2,
-          "eligibleUrls": 2,
+          "resultUrls": 8,
+          "eligibleUrls": 4,
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://www.amefri.net/detail/id/129048",
+              "identityUrl": "https://www.amefri.net/detail/id/118296",
               "ok": true,
               "targetFound": false,
-              "bytes": 94320,
+              "bytes": 94759,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -570,7 +587,23 @@
               "identityUrl": "https://www.amefri.net/detail/id/125560",
               "ok": true,
               "targetFound": false,
-              "bytes": 96479,
+              "bytes": 96527,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/126652",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 92582,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.amefri.net/detail/id/135308",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 98521,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -589,7 +622,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.2
+        "elapsedSeconds": 7.8
       },
       {
         "source_id": "point_town",
@@ -603,7 +636,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 94373,
+              "bytes": 94350,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -615,7 +648,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 5,
+          "resultUrls": 6,
           "eligibleUrls": 3,
           "confirmed": 0,
           "details": [
@@ -623,7 +656,7 @@
               "identityUrl": "https://www.pointtown.com/item/10380",
               "ok": true,
               "targetFound": false,
-              "bytes": 102544,
+              "bytes": 102465,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -631,7 +664,7 @@
               "identityUrl": "https://www.pointtown.com/item/8180",
               "ok": true,
               "targetFound": false,
-              "bytes": 103469,
+              "bytes": 103390,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -639,7 +672,7 @@
               "identityUrl": "https://www.pointtown.com/item/10078",
               "ok": true,
               "targetFound": false,
-              "bytes": 89340,
+              "bytes": 89261,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -658,7 +691,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.5
+        "elapsedSeconds": 3.9
       },
       {
         "source_id": "ec_navi",
@@ -672,7 +705,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 915399,
+              "bytes": 915322,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -700,7 +733,7 @@
               "identityUrl": "https://ecnavi.jp/ad/10716613/show",
               "ok": true,
               "targetFound": false,
-              "bytes": 905624,
+              "bytes": 905621,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -727,7 +760,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.1
+        "elapsedSeconds": 5.9
       },
       {
         "source_id": "nifty_point",
@@ -741,7 +774,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 123183,
+              "bytes": 124467,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -771,7 +804,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.0
+        "elapsedSeconds": 3.7
       },
       {
         "source_id": "gmo_point",
@@ -785,7 +818,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 146979,
+              "bytes": 147280,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -815,16 +848,13 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.0
+        "elapsedSeconds": 3.4
       },
       {
         "source_id": "powl",
         "source_name": "Powl",
-        "mode": "discovery",
-        "direct": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
-        },
+        "mode": "indexed_official_no_match",
+        "direct": null,
         "direct_http": {
           "attempted": true,
           "listings": [
@@ -832,7 +862,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 694186,
+              "bytes": 694023,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -844,26 +874,10 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 3,
-          "eligibleUrls": 3,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://web.powl.jp/reward/33437",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "identityUrl": "https://web.powl.jp/reward/34615",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "identityUrl": "https://web.powl.jp/reward/32769",
-              "ok": false,
-              "error": "HTTP Error 404: Not Found"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -873,12 +887,12 @@
         "provider_hubs": [],
         "known_pages": [],
         "search": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.8
+        "elapsedSeconds": 4.3
       }
     ],
     "candidateFile": "data/skyflag-6c66a2d496_firecrawl_candidates.json"

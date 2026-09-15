@@ -1,6 +1,6 @@
 {
   "game": "ヒーローウォーズ：アライアンス - 放置系RPG",
-  "researchedAt": "2026-09-14T20:35:51+00:00",
+  "researchedAt": "2026-09-15T19:58:43+00:00",
   "sourceQueue": {
     "game": "ヒーローウォーズ：アライアンス - 放置系RPG",
     "aliases": [
@@ -31,7 +31,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-14T20:35:50+00:00",
+    "runAt": "2026-09-15T19:58:43+00:00",
     "status": "no_township_candidates",
     "diagnostics": [
       {
@@ -66,7 +66,7 @@
               "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=159696",
               "ok": true,
               "targetFound": false,
-              "bytes": 215764,
+              "bytes": 215939,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -85,7 +85,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.8
+        "elapsedSeconds": 6.1
       },
       {
         "source_id": "warau",
@@ -99,7 +99,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 283965,
+              "bytes": 284050,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -107,7 +107,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 365200,
+              "bytes": 331713,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -119,7 +119,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -137,7 +137,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.7
+        "elapsedSeconds": 5.2
       },
       {
         "source_id": "chobirich",
@@ -167,12 +167,12 @@
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1809382",
+              "identityUrl": "https://www.chobirich.com/ad_details/1666385",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             },
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1666385",
+              "identityUrl": "https://www.chobirich.com/ad_details/1809382",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             },
@@ -182,7 +182,7 @@
               "error": "HTTP Error 403: Forbidden"
             },
             {
-              "identityUrl": "https://www.chobirich.com/ad_details/1029292",
+              "identityUrl": "https://www.chobirich.com/ad_details/1828424",
               "ok": false,
               "error": "HTTP Error 403: Forbidden"
             }
@@ -201,7 +201,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.9
+        "elapsedSeconds": 4.6
       },
       {
         "source_id": "coincome",
@@ -218,7 +218,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 110429,
+              "bytes": 110537,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -259,7 +259,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 6.4
+        "elapsedSeconds": 6.8
       },
       {
         "source_id": "mikoshi",
@@ -303,7 +303,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.5
+        "elapsedSeconds": 2.0
       },
       {
         "source_id": "gendama",
@@ -317,7 +317,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 212458,
+              "bytes": 212298,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -361,7 +361,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 208490,
+              "bytes": 208462,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -374,14 +374,22 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 2,
+          "eligibleUrls": 3,
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://hapitas.jp/item/detail/itemid/83568/apn/navigation_category",
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/97718",
               "ok": true,
               "targetFound": false,
-              "bytes": 94382,
+              "bytes": 100491,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/94531/apn",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 102740,
               "truncated": false,
               "deviceMode": "desktop"
             },
@@ -389,7 +397,7 @@
               "identityUrl": "https://hapitas.jp/item/detail/itemid/31341/apn/navigation_category",
               "ok": true,
               "targetFound": false,
-              "bytes": 122489,
+              "bytes": 122441,
               "truncated": false,
               "deviceMode": "desktop"
             }
@@ -408,7 +416,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.9
+        "elapsedSeconds": 6.2
       },
       {
         "source_id": "kurashiru_reward",
@@ -422,7 +430,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 63423,
+              "bytes": 62943,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -452,7 +460,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.7
+        "elapsedSeconds": 2.8
       },
       {
         "source_id": "trima",
@@ -522,7 +530,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -540,7 +548,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.3
+        "elapsedSeconds": 3.0
       },
       {
         "source_id": "amefuri",
@@ -554,7 +562,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101166,
+              "bytes": 100798,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -562,7 +570,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 100793,
+              "bytes": 100752,
               "truncated": false,
               "deviceMode": "mobile"
             },
@@ -570,7 +578,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 101345,
+              "bytes": 101226,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -582,43 +590,10 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 6,
-          "eligibleUrls": 4,
+          "resultUrls": 8,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://www.amefri.net/detail/id/137612",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 116421,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://www.amefri.net/detail/id/137992",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 114959,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://www.amefri.net/detail/id/131511",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 99806,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://www.amefri.net/detail/id/137041",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 95048,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -633,7 +608,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 8.5
+        "elapsedSeconds": 5.0
       },
       {
         "source_id": "point_town",
@@ -647,7 +622,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 94373,
+              "bytes": 94350,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -667,7 +642,7 @@
               "identityUrl": "https://www.pointtown.com/item/10078",
               "ok": true,
               "targetFound": false,
-              "bytes": 89340,
+              "bytes": 89261,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -686,7 +661,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.8
+        "elapsedSeconds": 2.9
       },
       {
         "source_id": "ec_navi",
@@ -700,7 +675,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 915399,
+              "bytes": 915322,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -712,7 +687,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -730,7 +705,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.9
+        "elapsedSeconds": 3.4
       },
       {
         "source_id": "nifty_point",
@@ -744,7 +719,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 123183,
+              "bytes": 124467,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -756,7 +731,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
+          "resultUrls": 8,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -774,7 +749,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.4
+        "elapsedSeconds": 4.0
       },
       {
         "source_id": "gmo_point",
@@ -788,7 +763,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 146979,
+              "bytes": 147280,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -818,7 +793,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.7
+        "elapsedSeconds": 3.4
       },
       {
         "source_id": "powl",
@@ -832,7 +807,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 694186,
+              "bytes": 694023,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -862,7 +837,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.1
+        "elapsedSeconds": 3.1
       }
     ],
     "candidateFile": "data/rpg-21bdc53217_firecrawl_candidates.json"

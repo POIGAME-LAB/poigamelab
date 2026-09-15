@@ -1,6 +1,6 @@
 {
   "phase": "PHASE3_HIGH_REWARD_ADOPTION_BRIDGE_V1",
-  "runAt": "2026-09-14T20:38:18+00:00",
+  "runAt": "2026-09-15T20:03:16+00:00",
   "candidateLimit": 15,
   "targetAdoptions": 5,
   "candidatesPrepared": 15,
@@ -30,38 +30,6 @@
       "maxRewardPt": 65237,
       "research": {
         "game": "【SKYFLAG】ザ・グランドマフィア",
-        "returncode": 1,
-        "resultSaved": true,
-        "publishableCount": 0,
-        "collectionComplete": false,
-        "degradedReasons": []
-      },
-      "status": "hold",
-      "reasons": [
-        "research_failed_or_missing"
-      ]
-    },
-    {
-      "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
-      "maxRewardPt": 57000,
-      "research": {
-        "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム - ユーザーレベル200到達後、「メイン」クエストで報酬受取完了",
-        "returncode": 1,
-        "resultSaved": true,
-        "publishableCount": 0,
-        "collectionComplete": false,
-        "degradedReasons": []
-      },
-      "status": "hold",
-      "reasons": [
-        "research_failed_or_missing"
-      ]
-    },
-    {
-      "game": "間違い探し 江戸時代の文化 - 累計28,000 ポイントを獲得",
-      "maxRewardPt": 33700,
-      "research": {
-        "game": "間違い探し 江戸時代の文化 - 累計28,000 ポイントを獲得",
         "returncode": 1,
         "resultSaved": true,
         "publishableCount": 0,
@@ -122,6 +90,22 @@
       ]
     },
     {
+      "game": "【SKYFLAG】Treasure Push Party",
+      "maxRewardPt": 17655,
+      "research": {
+        "game": "【SKYFLAG】Treasure Push Party",
+        "returncode": 1,
+        "resultSaved": true,
+        "publishableCount": 0,
+        "collectionComplete": false,
+        "degradedReasons": []
+      },
+      "status": "hold",
+      "reasons": [
+        "research_failed_or_missing"
+      ]
+    },
+    {
       "game": "トップウォー",
       "maxRewardPt": 17430,
       "research": {
@@ -131,7 +115,8 @@
         "publishableCount": 0,
         "collectionComplete": false,
         "degradedReasons": [
-          "coincome:search_failed"
+          "coincome:search_failed",
+          "powl:search_failed"
         ]
       },
       "v29": {
@@ -149,7 +134,7 @@
         "verifiedSources": [],
         "coverageOverrideApplied": false,
         "coverageWarnings": [],
-        "researchedAt": "2026-09-14T20:33:58+00:00",
+        "researchedAt": "2026-09-15T19:56:58+00:00",
         "sourceQueue": {
           "game": "トップウォー",
           "aliases": [
@@ -236,12 +221,11 @@
         "game": "War of Towers",
         "returncode": 0,
         "resultSaved": true,
-        "publishableCount": 2,
+        "publishableCount": 3,
         "collectionComplete": false,
         "degradedReasons": [
           "chobirich:search_failed",
-          "coincome:search_failed",
-          "powl:search_failed"
+          "coincome:search_failed"
         ]
       },
       "v29": {
@@ -249,7 +233,7 @@
         "eligible": true,
         "status": "adoption_ready",
         "reasons": [],
-        "strictOfferCount": 2,
+        "strictOfferCount": 3,
         "verifiedSourceCount": 2,
         "verifiedSources": [
           "amefuri",
@@ -258,10 +242,9 @@
         "coverageOverrideApplied": true,
         "coverageWarnings": [
           "chobirich:optional_firecrawl_402",
-          "coincome:optional_firecrawl_402",
-          "powl:optional_firecrawl_402"
+          "coincome:optional_firecrawl_402"
         ],
-        "researchedAt": "2026-09-14T20:36:29+00:00",
+        "researchedAt": "2026-09-15T19:59:51+00:00",
         "sourceQueue": {
           "game": "War of Towers",
           "aliases": [
@@ -275,7 +258,7 @@
             {
               "source": "warau",
               "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206463&pl=pc_categoryService",
-              "titleHint": "War of Towers（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 16,000 pt 2.0 （ 1件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+              "titleHint": "War of Towers（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 16,000 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
               "rewardPt": 16000
             }
           ],
@@ -322,8 +305,10 @@
         "returncode": 0,
         "resultSaved": true,
         "publishableCount": 5,
-        "collectionComplete": true,
-        "degradedReasons": []
+        "collectionComplete": false,
+        "degradedReasons": [
+          "coincome:search_failed"
+        ]
       },
       "v29": {
         "game": "パズル＆コンクエスト",
@@ -338,9 +323,11 @@
           "moppy",
           "powl"
         ],
-        "coverageOverrideApplied": false,
-        "coverageWarnings": [],
-        "researchedAt": "2026-09-14T20:37:44+00:00",
+        "coverageOverrideApplied": true,
+        "coverageWarnings": [
+          "coincome:optional_firecrawl_402"
+        ],
+        "researchedAt": "2026-09-15T20:01:46+00:00",
         "sourceQueue": {
           "game": "パズル＆コンクエスト",
           "aliases": [
@@ -397,6 +384,67 @@
       "status": "hold",
       "reasons": [
         "research_failed_or_missing"
+      ]
+    },
+    {
+      "game": "Arrow GO! Arrow Flow Puzzle",
+      "maxRewardPt": 11720,
+      "research": {
+        "game": "Arrow GO! Arrow Flow Puzzle",
+        "returncode": 0,
+        "resultSaved": true,
+        "publishableCount": 0,
+        "collectionComplete": false,
+        "degradedReasons": [
+          "chobirich:search_failed",
+          "coincome:search_failed"
+        ]
+      },
+      "v29": {
+        "game": "Arrow GO! Arrow Flow Puzzle",
+        "eligible": false,
+        "status": "hold",
+        "reasons": [
+          "collection_incomplete",
+          "degraded_collection",
+          "insufficient_strict_offers",
+          "insufficient_verified_sources"
+        ],
+        "strictOfferCount": 0,
+        "verifiedSourceCount": 0,
+        "verifiedSources": [],
+        "coverageOverrideApplied": false,
+        "coverageWarnings": [],
+        "researchedAt": "2026-09-15T20:03:16+00:00",
+        "sourceQueue": {
+          "game": "Arrow GO! Arrow Flow Puzzle",
+          "aliases": [
+            "Arrow GO! Arrow Flow Puzzle"
+          ],
+          "maxRewardPt": 11720,
+          "sources": [
+            "warau"
+          ],
+          "sourceCandidates": [
+            {
+              "source": "warau",
+              "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206456&pl=pc_categoryService",
+              "titleHint": "Arrow GO! Arrow Flow Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 11,720 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+              "rewardPt": 11720
+            }
+          ],
+          "collectorReady": true,
+          "status": "collector_ready",
+          "origin": "high_reward_monitor",
+          "researchLogicVersion": "high-reward-v1"
+        }
+      },
+      "status": "hold",
+      "reasons": [
+        "collection_incomplete",
+        "degraded_collection",
+        "insufficient_strict_offers",
+        "insufficient_verified_sources"
       ]
     }
   ]

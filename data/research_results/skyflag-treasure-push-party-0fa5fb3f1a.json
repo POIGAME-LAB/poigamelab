@@ -1,21 +1,21 @@
 {
-  "game": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle",
-  "researchedAt": "2026-09-15T19:57:35+00:00",
+  "game": "【SKYFLAG】Treasure Push Party",
+  "researchedAt": "2026-09-15T19:55:35+00:00",
   "sourceQueue": {
-    "game": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle",
+    "game": "【SKYFLAG】Treasure Push Party",
     "aliases": [
-      "【SKYFLAG】Arrow GO! Arrow Flow Puzzle"
+      "【SKYFLAG】Treasure Push Party"
     ],
-    "maxRewardPt": 17290,
+    "maxRewardPt": 17655,
     "sources": [
       "warau"
     ],
     "sourceCandidates": [
       {
         "source": "warau",
-        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206448&pl=pc_categoryService",
-        "titleHint": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 17,290 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
-        "rewardPt": 17290
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206832&pl=pc_categoryService",
+        "titleHint": "【SKYFLAG】Treasure Push Party（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 17,655 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+        "rewardPt": 17655
       }
     ],
     "collectorReady": true,
@@ -25,7 +25,7 @@
   },
   "collectorResult": {
     "phase": "PHASE2_AUTO_REFRESH_V23",
-    "runAt": "2026-09-15T19:57:35+00:00",
+    "runAt": "2026-09-15T19:55:35+00:00",
     "status": "no_township_candidates",
     "diagnostics": [
       {
@@ -57,41 +57,41 @@
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161785",
+              "identityUrl": "https://pc.moppy.jp/campaign/special/event.php?id=236",
               "ok": true,
               "targetFound": false,
-              "bytes": 209578,
+              "bytes": 92711,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161090",
+              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161985",
               "ok": true,
               "targetFound": false,
-              "bytes": 214241,
+              "bytes": 204689,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=160931",
+              "identityUrl": "https://pc.moppy.jp/campaign/special/event.php?id=208",
               "ok": true,
               "targetFound": false,
-              "bytes": 203015,
+              "bytes": 90527,
               "truncated": false,
               "deviceMode": "desktop"
             },
             {
-              "identityUrl": "https://pc.moppy.jp/ad/detail.php?site_id=161257",
+              "identityUrl": "https://pc.moppy.jp/campaign/special/event.php?id=3",
               "ok": true,
               "targetFound": false,
-              "bytes": 80217,
+              "bytes": 88448,
               "truncated": false,
               "deviceMode": "desktop"
             }
           ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
-          "queryAttempts": 1,
+          "queryAttempts": 3,
           "queryErrors": []
         },
         "offerwalls": [],
@@ -103,7 +103,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 7.9
+        "elapsedSeconds": 9.5
       },
       {
         "source_id": "warau",
@@ -123,21 +123,30 @@
             },
             {
               "ok": true,
-              "targetFound": false,
-              "detailLinks": 0,
+              "targetFound": true,
+              "detailLinks": 1,
               "bytes": 331713,
               "truncated": false,
               "deviceMode": "mobile"
             }
           ],
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206832",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 154191,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
           "candidateCount": 0,
           "allListingsFetched": true
         },
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 5,
+          "resultUrls": 0,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -155,16 +164,13 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.4
+        "elapsedSeconds": 6.0
       },
       {
         "source_id": "chobirich",
         "source_name": "ちょびリッチ",
-        "mode": "discovery",
-        "direct": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
-        },
+        "mode": "indexed_official_no_match",
+        "direct": null,
         "direct_http": {
           "attempted": true,
           "listings": [
@@ -180,31 +186,10 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 8,
-          "eligibleUrls": 4,
+          "resultUrls": 2,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1666385",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1809382",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1894136",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            },
-            {
-              "identityUrl": "https://www.chobirich.com/ad_details/1794310",
-              "ok": false,
-              "error": "HTTP Error 403: Forbidden"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -214,12 +199,12 @@
         "provider_hubs": [],
         "known_pages": [],
         "search": {
-          "ok": false,
-          "error": "HTTP Error 402: Payment Required"
+          "skipped": true,
+          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 4.8
+        "elapsedSeconds": 1.6
       },
       {
         "source_id": "coincome",
@@ -245,43 +230,10 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 8,
-          "eligibleUrls": 4,
+          "resultUrls": 0,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://cimcome.jp/campaigns/details/4350",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 64063,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://cimcome.jp/campaigns/details/6376",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 92102,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://cimcome.jp/campaigns/details/5463",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 61414,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
-              "identityUrl": "https://cimcome.jp/campaigns/details/8862",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 93182,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -296,7 +248,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 8.0
+        "elapsedSeconds": 4.6
       },
       {
         "source_id": "mikoshi",
@@ -340,7 +292,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.3
+        "elapsedSeconds": 2.1
       },
       {
         "source_id": "gendama",
@@ -384,7 +336,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.1
+        "elapsedSeconds": 3.4
       },
       {
         "source_id": "hapitas",
@@ -410,10 +362,27 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 0,
-          "eligibleUrls": 0,
+          "resultUrls": 8,
+          "eligibleUrls": 2,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98248/apn/attention_word/page/3",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 121440,
+              "truncated": false,
+              "deviceMode": "desktop"
+            },
+            {
+              "identityUrl": "https://hapitas.jp/item/detail/itemid/98248/apn/attention_word/page/2",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 121440,
+              "truncated": false,
+              "deviceMode": "desktop"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -428,7 +397,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.3
+        "elapsedSeconds": 4.7
       },
       {
         "source_id": "kurashiru_reward",
@@ -454,7 +423,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 4,
+          "resultUrls": 1,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -472,7 +441,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 2.0
       },
       {
         "source_id": "trima",
@@ -530,7 +499,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 5635,
+              "bytes": 5629,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -543,9 +512,26 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 0,
+          "eligibleUrls": 2,
           "confirmed": 0,
-          "details": [],
+          "details": [
+            {
+              "identityUrl": "https://sp.pointi.jp/mnt_corn/store_detail.php?id=66503",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 5635,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://sp.pointi.jp/mnt_corn/store_detail.php?id=80087",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 5635,
+              "truncated": false,
+              "deviceMode": "mobile"
+            }
+          ],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -560,7 +546,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 5.4
       },
       {
         "source_id": "amefuri",
@@ -603,18 +589,9 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 2,
-          "eligibleUrls": 1,
+          "eligibleUrls": 0,
           "confirmed": 0,
-          "details": [
-            {
-              "identityUrl": "https://www.amefri.net/detail/id/139363",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 98096,
-              "truncated": false,
-              "deviceMode": "mobile"
-            }
-          ],
+          "details": [],
           "absenceAuthoritative": false,
           "coverage": "indexed_public_official_details",
           "queryAttempts": 1,
@@ -629,7 +606,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.1
+        "elapsedSeconds": 5.0
       },
       {
         "source_id": "point_town",
@@ -655,7 +632,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 8,
+          "resultUrls": 6,
           "eligibleUrls": 3,
           "confirmed": 0,
           "details": [
@@ -668,18 +645,18 @@
               "deviceMode": "mobile"
             },
             {
-              "identityUrl": "https://www.pointtown.com/item/10078",
-              "ok": true,
-              "targetFound": false,
-              "bytes": 89261,
-              "truncated": false,
-              "deviceMode": "mobile"
-            },
-            {
               "identityUrl": "https://www.pointtown.com/item/8180",
               "ok": true,
               "targetFound": false,
               "bytes": 103390,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://www.pointtown.com/item/10078",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 89261,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -698,7 +675,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.2
+        "elapsedSeconds": 3.7
       },
       {
         "source_id": "ec_navi",
@@ -725,14 +702,30 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 1,
+          "eligibleUrls": 3,
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://ecnavi.jp/ad/10716277/show",
+              "identityUrl": "https://ecnavi.jp/ad/10123023/show",
               "ok": true,
               "targetFound": false,
-              "bytes": 906208,
+              "bytes": 909785,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10716613/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 905621,
+              "truncated": false,
+              "deviceMode": "mobile"
+            },
+            {
+              "identityUrl": "https://ecnavi.jp/ad/10716612/show",
+              "ok": true,
+              "targetFound": false,
+              "bytes": 904571,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -751,7 +744,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 2.9
+        "elapsedSeconds": 10.0
       },
       {
         "source_id": "nifty_point",
@@ -765,7 +758,7 @@
               "ok": true,
               "targetFound": false,
               "detailLinks": 0,
-              "bytes": 124467,
+              "bytes": 124458,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -777,7 +770,7 @@
         "indexed_official": {
           "attempted": true,
           "searchCompleted": true,
-          "resultUrls": 8,
+          "resultUrls": 0,
           "eligibleUrls": 0,
           "confirmed": 0,
           "details": [],
@@ -795,7 +788,7 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 3.8
       },
       {
         "source_id": "gmo_point",
@@ -839,13 +832,16 @@
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 3.6
+        "elapsedSeconds": 3.9
       },
       {
         "source_id": "powl",
         "source_name": "Powl",
-        "mode": "indexed_official_no_match",
-        "direct": null,
+        "mode": "discovery",
+        "direct": {
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
+        },
         "direct_http": {
           "attempted": true,
           "listings": [
@@ -866,14 +862,19 @@
           "attempted": true,
           "searchCompleted": true,
           "resultUrls": 8,
-          "eligibleUrls": 1,
+          "eligibleUrls": 2,
           "confirmed": 0,
           "details": [
             {
-              "identityUrl": "https://web.powl.jp/reward/21151",
+              "identityUrl": "https://web.powl.jp/reward/32769",
+              "ok": false,
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "identityUrl": "https://web.powl.jp/reward/12352",
               "ok": true,
               "targetFound": false,
-              "bytes": 66103,
+              "bytes": 62688,
               "truncated": false,
               "deviceMode": "mobile"
             }
@@ -887,15 +888,15 @@
         "provider_hubs": [],
         "known_pages": [],
         "search": {
-          "skipped": true,
-          "reason": "indexed public official-detail discovery completed with no verified target; absence not authoritative"
+          "ok": false,
+          "error": "HTTP Error 402: Payment Required"
         },
         "search_verified": [],
         "followed_details": [],
-        "elapsedSeconds": 5.6
+        "elapsedSeconds": 5.4
       }
     ],
-    "candidateFile": "data/skyflag-arrow-go-arrow-flow-puzzle-657e7beede_firecrawl_candidates.json"
+    "candidateFile": "data/skyflag-treasure-push-party-0fa5fb3f1a_firecrawl_candidates.json"
   },
   "quarantine": true,
   "autoPublish": false
