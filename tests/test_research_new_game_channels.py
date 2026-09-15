@@ -1,6 +1,7 @@
 import json
 import sys
 import tempfile
+import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,61 +47,62 @@ def fetcher(url):
     return "新作ゲーム のポイ活案件を10日で達成。レベル20まで進めた記録。", {"httpStatus": 200}
 
 
-def test_researches_all_channels_without_publication():
-    item = queue()["items"][0]
-    out = r.research_item(item, "dummy", searcher=searcher, fetcher=fetcher)
-    assert out["complete"] is True
-    assert out["publicationAuthorized"] is False
-    assert out["apiCalls"] == 4
-    assert set(out["research"]) == {"web", "x", "youtube", "instagram", "pointSites"}
-    assert len(out["research"]["pointSites"]["sources"]) == 2
-    for channel in ("web", "x", "youtube", "instagram"):
-        assert out["research"][channel]["complete"] is True
-        assert out["research"][channel]["sources"][0]["targetConfirmed"] is True
+class TestResearchNewGameChannels(unittest.TestCase):
+    def test_researches_all_channels_without_publication(self):
+        item = queue()["items"][0]
+        out = r.research_item(item, "dummy", searcher=searcher, fetcher=fetcher)
+        self.assertTrue(out["complete"])
+        self.assertFalse(out["publicationAuthorized"])
+        self.assertEqual(out["apiCalls"], 4)
+        self.assertEqual(set(out["research"]), {"web", "x", "youtube", "instagram", "pointSites"})
+        self.assertEqual(len(out["research"]["pointSites"]["sources"]), 2)
+        for channel in ("web", "x", "youtube", "instagram"):
+            self.assertTrue(out["research"][channel]["complete"])
+            self.assertTrue(out["research"][channel]["sources"][0]["targetConfirmed"])
+
+    def test_search_error_is_visible_and_incomplete(self):
+        def broken(query, key, max_results):
+            raise RuntimeError("nope")
+        lane = r.research_channel("新作ゲーム", "web", "q", "dummy", searcher=broken, fetcher=fetcher)
+        self.assertTrue(lane["searched"])
+        self.assertFalse(lane["complete"])
+        self.assertEqual(lane["searchErrors"], 1)
+        self.assertEqual(lane["sources"], [])
+
+    def test_snippet_only_never_becomes_source(self):
+        def search(query, key, max_results):
+            return {"results": [{"url": "https://example.com/x", "content": "新作ゲーム 7日達成"}]}
+        def other_page(url):
+            return "まったく別のゲーム", {"httpStatus": 200}
+        lane = r.research_channel("新作ゲーム", "web", "q", "dummy", searcher=search, fetcher=other_page)
+        self.assertTrue(lane["complete"])
+        self.assertEqual(lane["sources"], [])
+
+    def test_social_domain_filter_rejects_wrong_host(self):
+        def search(query, key, max_results):
+            return {"results": [{"url": "https://example.com/fake-x"}]}
+        lane = r.research_channel("新作ゲーム", "x", "q", "dummy", searcher=search, fetcher=fetcher)
+        self.assertTrue(lane["complete"])
+        self.assertEqual(lane["directFetches"], 0)
+        self.assertEqual(lane["sources"], [])
+
+    def test_run_writes_quarantine_artifact_only(self):
+        with tempfile.TemporaryDirectory() as td:
+            old_status = r.STATUS
+            r.STATUS = Path(td) / "status.json"
+            try:
+                status = r.run(queue=queue(), api_key="dummy", searcher=searcher, fetcher=fetcher,
+                               out_dir=Path(td) / "research")
+                self.assertTrue(status["success"])
+                self.assertEqual(status["games"], 1)
+                self.assertEqual(status["publicationWrites"], 0)
+                files = list((Path(td) / "research").glob("*.json"))
+                self.assertEqual(len(files), 1)
+                payload = json.loads(files[0].read_text())
+                self.assertFalse(payload["publicationAuthorized"])
+            finally:
+                r.STATUS = old_status
 
 
-def test_search_error_is_visible_and_incomplete():
-    def broken(query, key, max_results):
-        raise RuntimeError("nope")
-    lane = r.research_channel("新作ゲーム", "web", "q", "dummy", searcher=broken, fetcher=fetcher)
-    assert lane["searched"] is True
-    assert lane["complete"] is False
-    assert lane["searchErrors"] == 1
-    assert lane["sources"] == []
-
-
-def test_snippet_only_never_becomes_source():
-    def search(query, key, max_results):
-        return {"results": [{"url": "https://example.com/x", "content": "新作ゲーム 7日達成"}]}
-    def other_page(url):
-        return "まったく別のゲーム", {"httpStatus": 200}
-    lane = r.research_channel("新作ゲーム", "web", "q", "dummy", searcher=search, fetcher=other_page)
-    assert lane["complete"] is True
-    assert lane["sources"] == []
-
-
-def test_social_domain_filter_rejects_wrong_host():
-    def search(query, key, max_results):
-        return {"results": [{"url": "https://example.com/fake-x"}]}
-    lane = r.research_channel("新作ゲーム", "x", "q", "dummy", searcher=search, fetcher=fetcher)
-    assert lane["complete"] is True
-    assert lane["directFetches"] == 0
-    assert lane["sources"] == []
-
-
-def test_run_writes_quarantine_artifact_only():
-    with tempfile.TemporaryDirectory() as td:
-        old_status = r.STATUS
-        r.STATUS = Path(td) / "status.json"
-        try:
-            status = r.run(queue=queue(), api_key="dummy", searcher=searcher, fetcher=fetcher,
-                           out_dir=Path(td) / "research")
-            assert status["success"] is True
-            assert status["games"] == 1
-            assert status["publicationWrites"] == 0
-            files = list((Path(td) / "research").glob("*.json"))
-            assert len(files) == 1
-            payload = json.loads(files[0].read_text())
-            assert payload["publicationAuthorized"] is False
-        finally:
-            r.STATUS = old_status
+if __name__ == "__main__":
+    unittest.main()
