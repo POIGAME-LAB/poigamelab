@@ -1,20 +1,8 @@
-/* POIGAME LAB compact mobile index v2
-   Goal: keep the index faithful to the dense reference layout and show about
-   four game cards in one phone viewport while preserving desktop/detail pages. */
-
+/* POIGAME LAB compact mobile index v3 */
 @media (max-width: 800px) {
-  html.poigame-index-compact .featured-games {
-    padding: 16px 10px 48px !important;
-  }
-
-  html.poigame-index-compact .section-heading {
-    margin-bottom: 10px !important;
-  }
-
-  html.poigame-index-compact .section-heading h2 {
-    font-size: 19px !important;
-  }
-
+  html.poigame-index-compact .featured-games { padding: 16px 10px 48px !important; }
+  html.poigame-index-compact .section-heading { margin-bottom: 10px !important; }
+  html.poigame-index-compact .section-heading h2 { font-size: 19px !important; }
   html.poigame-index-compact .sort-buttons {
     gap: 6px !important;
     margin-bottom: 10px !important;
@@ -22,27 +10,21 @@
     overflow-x: auto !important;
     scrollbar-width: none;
   }
-
-  html.poigame-index-compact .sort-buttons::-webkit-scrollbar {
-    display: none;
-  }
-
+  html.poigame-index-compact .sort-buttons::-webkit-scrollbar { display: none; }
   html.poigame-index-compact .sort-buttons button {
     flex: 0 0 auto !important;
     min-height: 34px !important;
     padding: 6px 11px !important;
     font-size: 10.5px !important;
   }
-
   html.poigame-index-compact .game-grid {
     grid-template-columns: 1fr !important;
     gap: 8px !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 {
     display: grid !important;
-    grid-template-columns: 58px minmax(0, 1fr) 112px !important;
-    grid-template-rows: auto auto auto auto auto auto !important;
+    grid-template-columns: 58px minmax(0,1fr) 112px !important;
+    grid-template-rows: auto auto auto auto auto auto auto !important;
     column-gap: 8px !important;
     row-gap: 1px !important;
     padding: 9px !important;
@@ -50,15 +32,8 @@
     overflow: hidden !important;
     box-shadow: 0 5px 16px rgba(73,40,145,.08) !important;
   }
-
-  html.poigame-index-compact .game-card.is-dense-v2:hover {
-    transform: none !important;
-  }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .game-info {
-    display: contents !important;
-  }
-
+  html.poigame-index-compact .game-card.is-dense-v2:hover { transform: none !important; }
+  html.poigame-index-compact .game-card.is-dense-v2 .game-info { display: contents !important; }
   html.poigame-index-compact .game-card.is-dense-v2 .game-image {
     display: block !important;
     grid-column: 1 !important;
@@ -67,7 +42,6 @@
     width: 58px !important;
     padding: 0 !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .game-thumbnail,
   html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder {
     display: flex !important;
@@ -78,37 +52,21 @@
     border-radius: 12px !important;
     box-shadow: 0 3px 9px rgba(48,22,108,.10) !important;
   }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder {
-    padding: 5px !important;
-  }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder small {
-    font-size: 5px !important;
-  }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder strong {
-    font-size: 8px !important;
-    line-height: 1.1 !important;
-  }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .image-rights-note {
-    display: none !important;
-  }
-
+  html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder { padding: 5px !important; }
+  html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder small { font-size: 5px !important; }
+  html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder strong { font-size: 8px !important; line-height: 1.1 !important; }
+  html.poigame-index-compact .game-card.is-dense-v2 .image-rights-note { display: none !important; }
   html.poigame-index-compact .game-card.is-dense-v2 .card-rank-row {
     grid-column: 2 !important;
     grid-row: 1 !important;
     min-height: 0 !important;
     margin: 0 0 2px !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .rank-badge {
     padding: 3px 8px !important;
     font-size: 9px !important;
     line-height: 1.25 !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .game-info h3 {
     grid-column: 2 !important;
     grid-row: 2 !important;
@@ -120,7 +78,6 @@
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .game-condition {
     grid-column: 2 !important;
     grid-row: 3 !important;
@@ -132,7 +89,6 @@
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .point-site {
     grid-column: 2 !important;
     grid-row: 4 !important;
@@ -145,7 +101,6 @@
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .reward-box {
     grid-column: 3 !important;
     grid-row: 1 / span 4 !important;
@@ -160,23 +115,14 @@
     padding: 7px 8px !important;
     border-radius: 11px !important;
   }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .reward-box span {
-    font-size: 8.5px !important;
-    line-height: 1.1 !important;
-  }
-
+  html.poigame-index-compact .game-card.is-dense-v2 .reward-box span { font-size: 8.5px !important; line-height: 1.1 !important; }
   html.poigame-index-compact .game-card.is-dense-v2 .reward-box strong {
     margin-top: 2px !important;
     font-size: 18px !important;
     line-height: 1.05 !important;
     white-space: nowrap !important;
   }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .verification-line {
-    display: none !important;
-  }
-
+  html.poigame-index-compact .game-card.is-dense-v2 .verification-line { display: none !important; }
   html.poigame-index-compact .game-card.is-dense-v2 .game-meta {
     grid-column: 1 / -1 !important;
     grid-row: 5 !important;
@@ -185,51 +131,87 @@
     gap: 5px !important;
     margin: 5px 0 0 !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .game-meta span {
     min-width: 0 !important;
-    padding: 5px 6px !important;
+    padding: 4px 6px !important;
     border-radius: 8px !important;
     font-size: 9px !important;
-    line-height: 1.15 !important;
+    line-height: 1.1 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .card-actions {
     grid-column: 1 / -1 !important;
     grid-row: 6 !important;
     display: grid !important;
     grid-template-columns: .9fr .9fr 1.35fr !important;
     gap: 5px !important;
-    margin: 6px 0 0 !important;
+    margin: 5px 0 0 !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .card-action,
   html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button {
     min-width: 0 !important;
-    min-height: 32px !important;
-    height: 32px !important;
+    min-height: 29px !important;
+    height: 29px !important;
     margin: 0 !important;
-    padding: 5px 4px !important;
+    padding: 4px 4px !important;
     border-radius: 8px !important;
-    font-size: 9.5px !important;
+    font-size: 9.2px !important;
     line-height: 1.05 !important;
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button {
     background: linear-gradient(145deg,#ffe56a,#ffd23f) !important;
     color: #33165e !important;
   }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .referral-button,
-  html.poigame-index-compact .game-card.is-dense-v2 .referral-code {
-    display: none !important;
+  html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button.disabled {
+    background: #ececec !important;
+    color: #888 !important;
+  }
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip {
+    grid-column: 1 / -1 !important;
+    grid-row: 7 !important;
+    display: grid !important;
+    grid-template-columns: 1.45fr 1fr !important;
+    gap: 4px !important;
+    margin: 4px 0 0 !important;
+  }
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip.no-code {
+    grid-template-columns: 1fr !important;
+  }
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip .referral-button,
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip .referral-code {
+    min-width: 0 !important;
+    min-height: 23px !important;
+    height: 23px !important;
+    margin: 0 !important;
+    padding: 3px 6px !important;
+    border-radius: 7px !important;
+    font-size: 8.2px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip .referral-button {
+    border: 1px solid #7047ff !important;
+    background: #fff !important;
+    color: #5d34da !important;
+    font-weight: 900 !important;
+    text-decoration: none !important;
+  }
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip .referral-code {
+    border: 1px solid #eee9fe !important;
+    background: #faf8ff !important;
+    color: #746d80 !important;
+    font-weight: 700 !important;
   }
 }
 
@@ -239,24 +221,16 @@
     padding: 8px !important;
     column-gap: 7px !important;
   }
-
   html.poigame-index-compact .game-card.is-dense-v2 .game-image,
   html.poigame-index-compact .game-card.is-dense-v2 .game-thumbnail,
   html.poigame-index-compact .game-card.is-dense-v2 .image-placeholder {
     width: 54px !important;
     height: 54px !important;
   }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .game-info h3 {
-    font-size: 14px !important;
-  }
-
-  html.poigame-index-compact .game-card.is-dense-v2 .reward-box strong {
-    font-size: 16px !important;
-  }
-
+  html.poigame-index-compact .game-card.is-dense-v2 .game-info h3 { font-size: 14px !important; }
+  html.poigame-index-compact .game-card.is-dense-v2 .reward-box strong { font-size: 16px !important; }
   html.poigame-index-compact .game-card.is-dense-v2 .card-action,
-  html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button {
-    font-size: 8.5px !important;
-  }
+  html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button { font-size: 8.2px !important; }
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip .referral-button,
+  html.poigame-index-compact .game-card.is-dense-v2 .referral-strip .referral-code { font-size: 7.5px !important; }
 }

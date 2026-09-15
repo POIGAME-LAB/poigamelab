@@ -26,9 +26,32 @@
     if (!(card instanceof HTMLElement) || !card.classList.contains("game-card")) return;
 
     const actions = card.querySelector(".card-actions");
-    const offer = card.querySelector(":scope > .game-info > .offer-button, :scope > .offer-button");
-    if (actions && offer && offer.parentElement !== actions) {
+    const offer = card.querySelector(".offer-button");
+    if (actions && offer && !actions.contains(offer)) {
       actions.appendChild(offer);
+    }
+
+    const referralButton = card.querySelector(".referral-button");
+    const referralCode = card.querySelector(".referral-code");
+    if (referralButton) {
+      let strip = card.querySelector(".referral-strip");
+      if (!strip) {
+        strip = document.createElement("div");
+        strip.className = "referral-strip";
+        if (actions) {
+          actions.insertAdjacentElement("afterend", strip);
+        } else {
+          card.appendChild(strip);
+        }
+      }
+      referralButton.textContent = "このサイトに登録［PR］";
+      strip.appendChild(referralButton);
+      if (referralCode) {
+        strip.appendChild(referralCode);
+        strip.classList.remove("no-code");
+      } else {
+        strip.classList.add("no-code");
+      }
     }
 
     const meta = card.querySelectorAll(".game-meta span");
