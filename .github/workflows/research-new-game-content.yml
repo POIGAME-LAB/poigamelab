@@ -77,11 +77,11 @@ jobs:
           cp -R data/new_game_channel_research "${archive_dir}/data/"
           cp -R data/new_game_content_packages "${archive_dir}/data/"
           find assets/game-art -maxdepth 1 -type f -name '*-auto.svg' -exec cp {} "${archive_dir}/assets/game-art/" \;
-          python - <<'PY'
-          import json
+          ARCHIVE_DIR="${archive_dir}" python - <<'PY'
+          import json, os
           from pathlib import Path
           src=Path('data/new_game_content_packages')
-          dst=Path('${archive_dir}')/'guides'
+          dst=Path(os.environ['ARCHIVE_DIR'])/'guides'
           for p in src.glob('*.json'):
               data=json.loads(p.read_text(encoding='utf-8'))
               guide=Path(str(data.get('guidePath') or ''))
