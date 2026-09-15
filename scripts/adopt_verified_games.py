@@ -3,6 +3,8 @@
 
 No API calls. Only `adoption_ready` games are eligible. The script re-validates the
 quarantined research result with the V29 strict gate before changing production files.
+When configured, a complete content package is also mandatory so an empty catalog
+row can never be published before its image, guide, research and progress evidence.
 It is idempotent and rolls back all touched files if any write fails.
 """
 from __future__ import annotations
@@ -13,6 +15,7 @@ from pathlib import Path
 
 from evaluate_research_adoption import evaluate, offer_is_strict
 from publish_verified_offers import build_outputs, FIELDS
+import new_game_content_gate as content_gate
 
 ROOT=Path(__file__).resolve().parents[1]
 ADOPTIONS=ROOT/'data/adoption_candidates.json'
@@ -23,6 +26,7 @@ REFRESH=ROOT/'config/refresh_policy.json'
 PUBLISHED=ROOT/'data/published_offers.csv'
 STATUS=ROOT/'data/adoption_status.json'
 TREND_CONFIG=ROOT/'config/trend_discovery.json'
+CONTENT_PACKAGES=ROOT/'data/new_game_content_packages'
 GAME_FIELDS=['name','image','condition','days','difficulty','overview','tips','featured','addedDate']
 
 def now_iso(): return datetime.now(timezone.utc).astimezone().isoformat(timespec='seconds')
@@ -51,7 +55,8 @@ def research_for_game(game,results_dir=RESULTS):
         except Exception: pass
     return None
 
-def prepare(adoptions, results_dir, games_path, targets_path, refresh_path, published_path, cfg):
+def prepare(adoptions, results_dir, games_path, targets_path, refresh_path, published_path, cfg,
+            content_dir=CONTENT_PACKAGES, content_root=ROOT):
     game_rows=read_csv(games_path); targets=load_json(targets_path); refresh=load_json(refresh_path)
     pub_rows=read_csv(published_path)
     known={norm(r.get('name')) for r in game_rows}
@@ -59,9 +64,11 @@ def prepare(adoptions, results_dir, games_path, targets_path, refresh_path, publ
     pub={r.get('offerKey'):r for r in pub_rows if r.get('offerKey')}
     decisions=[]
     today=datetime.now().date().isoformat()
+    production_cfg=cfg.get('productionAdoption') if isinstance(cfg,dict) else {}
+    require_content=isinstance(production_cfg,dict) and production_cfg.get('requiresContentPackage') is True
     for item in adoptions.get('items',[]):
         if item.get('status')!='adoption_ready' or item.get('eligible') is not True: continue
-        game=(item.get('game') or '').strip(); reasons=[]
+        game=(item.get('game') or '').strip(); reasons=[]; content=None
         payload=research_for_game(game,results_dir)
         if not game: reasons.append('missing_game')
         if not payload: reasons.append('research_result_missing')
@@ -69,6 +76,11 @@ def prepare(adoptions, results_dir, games_path, targets_path, refresh_path, publ
             fresh=evaluate(payload,cfg)
             if not fresh.get('eligible'): reasons.append('v29_revalidation_failed')
         else: fresh={}
+        if require_content and game:
+            try:
+                content=content_gate.validate_for_game(game,content_dir=content_dir,root=content_root)
+            except content_gate.ContentHold as exc:
+                reasons.append('content_gate:' + str(exc))
         if reasons:
             decisions.append({'game':game,'adopted':False,'reasons':reasons}); continue
         verified=deepcopy((payload.get('collectorResult',{}).get('verified') or {}))
@@ -78,24 +90,38 @@ def prepare(adoptions, results_dir, games_path, targets_path, refresh_path, publ
         if len(rows) < int(cfg.get('minimumVerifiedOffersForAdoption',2)):
             decisions.append({'game':game,'adopted':False,'reasons':['strict_offer_count_changed']}); continue
         if norm(game) not in known:
-            game_rows.append({'name':game,'image':'','condition':'指定条件クリア','days':'調査中','difficulty':'調査中','overview':'','tips':'','featured':'false','addedDate':today}); known.add(norm(game))
+            if content:
+                new_row={'name':game,'image':content['image'],'condition':'指定条件クリア','days':content['days'],
+                         'difficulty':content['difficulty'],'overview':content['overview'],'tips':content['tips'],
+                         'featured':'false','addedDate':today}
+            else:
+                new_row={'name':game,'image':'','condition':'指定条件クリア','days':'調査中','difficulty':'調査中',
+                         'overview':'','tips':'','featured':'false','addedDate':today}
+            game_rows.append(new_row); known.add(norm(game))
         aliases=((payload.get('sourceQueue') or {}).get('aliases') or [game])
         if norm(game) not in target_known:
             targets.setdefault('games',[]).append({'game':game,'aliases':list(dict.fromkeys([game]+aliases))}); target_known.add(norm(game))
         refresh.setdefault('games',{}).setdefault(game,{'enabled':False,'adoptedBy':'V30','reason':'new-game refresh remains disabled until controlled refresh policy is enabled'})
         for row in rows: pub[row['offerKey']]=row
         item['status']='adopted'; item['adoptedAt']=now_iso(); item['publishedOfferCount']=len(rows)
-        decisions.append({'game':game,'adopted':True,'publishedOfferCount':len(rows),'refreshEnabled':bool(refresh['games'][game].get('enabled'))})
+        if content:
+            item['guidePath']=content['guidePath']; item['contentPackageValidated']=True
+        decisions.append({'game':game,'adopted':True,'publishedOfferCount':len(rows),
+                          'contentPackageValidated':bool(content),
+                          'guidePath':content.get('guidePath') if content else None,
+                          'refreshEnabled':bool(refresh['games'][game].get('enabled'))})
     return game_rows,targets,refresh,list(pub.values()),decisions
 
-def run(adoptions_path=ADOPTIONS,results_dir=RESULTS,games_path=GAMES,targets_path=TARGETS,refresh_path=REFRESH,published_path=PUBLISHED,status_path=STATUS,config_path=TREND_CONFIG):
+def run(adoptions_path=ADOPTIONS,results_dir=RESULTS,games_path=GAMES,targets_path=TARGETS,refresh_path=REFRESH,
+        published_path=PUBLISHED,status_path=STATUS,config_path=TREND_CONFIG,
+        content_dir=CONTENT_PACKAGES,content_root=ROOT):
     adoptions=load_json(adoptions_path) if Path(adoptions_path).exists() else {'items':[]}
     cfg=load_json(config_path)
     game_fields=read_csv_fields(games_path,GAME_FIELDS)
     paths=[Path(games_path),Path(targets_path),Path(refresh_path),Path(published_path),Path(adoptions_path)]
     backups={p:(p.read_bytes() if p.exists() else None) for p in paths}
     try:
-        game_rows,targets,refresh,pub_rows,decisions=prepare(adoptions,Path(results_dir),Path(games_path),Path(targets_path),Path(refresh_path),Path(published_path),cfg)
+        game_rows,targets,refresh,pub_rows,decisions=prepare(adoptions,Path(results_dir),Path(games_path),Path(targets_path),Path(refresh_path),Path(published_path),cfg,Path(content_dir),Path(content_root))
         atomic_text(games_path,csv_text(game_fields,game_rows))
         atomic_text(targets_path,json_text(targets)); atomic_text(refresh_path,json_text(refresh))
         atomic_text(published_path,csv_text(FIELDS,sorted(pub_rows,key=lambda x:x.get('offerKey',''))))
