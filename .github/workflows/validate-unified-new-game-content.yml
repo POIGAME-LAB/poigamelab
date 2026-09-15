@@ -1,0 +1,40 @@
+name: Validate unified new-game content pipeline
+
+on:
+  push:
+    branches:
+      - feat/unified-daily-free-pipeline
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Syntax checks
+        run: |
+          python -m py_compile \
+            scripts/research_new_game_channels.py \
+            scripts/build_new_game_content_packages.py \
+            scripts/new_game_content_gate.py \
+            scripts/render_new_game_guide.py \
+            scripts/write_new_game_content_queue.py \
+            scripts/adopt_verified_games.py \
+            scripts/publish_verified_offers.py
+      - name: Offline regression suite
+        run: |
+          python -m unittest \
+            tests.test_research_new_game_channels \
+            tests.test_new_game_research_workflow \
+            tests.test_build_new_game_content_packages \
+            tests.test_new_game_content_queue \
+            tests.test_new_game_content_gate \
+            tests.test_render_generated_guides \
+            tests.test_phase3_production_adoption_v30 \
+            tests.test_v30_real_research_fixtures
