@@ -40,6 +40,12 @@ def atomic_text(path, text):
     tmp.replace(path)
 
 
+def safe_guide_path(value):
+    raw = str(value or "").strip().replace("\\", "/")
+    return bool(raw and not raw.startswith("/") and "/" not in raw
+                and ".." not in Path(raw).parts and raw.endswith("-guide.html"))
+
+
 def catalog(root=ROOT):
     with (Path(root) / "games.csv").open(encoding="utf-8", newline="") as handle:
         return {str(row.get("name") or "").strip() for row in csv.DictReader(handle) if str(row.get("name") or "").strip()}
@@ -77,10 +83,13 @@ def patch_guides_js(registry, path=GUIDES_JS):
     base = target.read_text(encoding="utf-8").split(JS_MARKER, 1)[0].rstrip() + "\n"
     entries = {}
     for game, row in (registry.get("guides") or {}).items():
+        guide_path = str(row.get("guidePath") or "")
+        if not safe_guide_path(guide_path):
+            raise ValueError("generated_guide_path_invalid")
         entries[game] = {
             "title": str(row.get("title") or f"{game} ポイ活攻略"),
             "description": str(row.get("description") or ""),
-            "links": [{"label": "攻略を読む →", "href": str(row.get("guidePath") or "")}],
+            "links": [{"label": "攻略を読む →", "href": guide_path}],
         }
     if entries:
         encoded = json.dumps(entries, ensure_ascii=False, separators=(",", ":"))
@@ -104,7 +113,7 @@ def patch_sitemap(registry, path=SITEMAP):
     seen = set()
     for row in (registry.get("guides") or {}).values():
         guide = str(row.get("guidePath") or "")
-        if not gate.safe_guide_path(guide) or guide in seen:
+        if not safe_guide_path(guide) or guide in seen:
             raise ValueError("generated_guide_path_invalid")
         seen.add(guide)
         rows.append(f"  <url><loc>https://poigamelab.com/{guide}</loc></url>")
