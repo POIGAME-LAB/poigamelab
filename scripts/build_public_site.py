@@ -40,6 +40,8 @@ ROOT_FILES = (
     "404.html",
     "games.csv",
     "games.js",
+    "index-compact-v2.css",
+    "index-compact-v2.js",
     "site-data.js",
     "site-footer.js",
     "site-referrals.js",
