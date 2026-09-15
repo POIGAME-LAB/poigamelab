@@ -1,6 +1,7 @@
 name: Validate unified new-game content pipeline
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - feat/unified-daily-free-pipeline
