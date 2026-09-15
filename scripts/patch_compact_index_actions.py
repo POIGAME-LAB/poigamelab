@@ -4,24 +4,120 @@ from __future__ import annotations
 from pathlib import Path
 
 TARGET = Path("_site/index.html")
-MARKER = "POIGAME_COMPACT_ACTIONS_V3"
+MARKER = "POIGAME_COMPACT_ACTIONS_V4"
+
+OLD_ACTIONS = r'''
+    <div class="card-actions">
+      <a href="game.html?game=${encodeURIComponent(game.name)}#comparison" class="card-action">
+        比較を見る
+      </a>
+      ${guideHref
+        ? `<a href="${guideHref}" class="card-action card-action--guide">攻略を見る</a>`
+        : `<span class="card-action is-disabled">攻略準備中</span>`
+      }
+    </div>
+
+    ${
+      bestOffer && bestOffer.url
+        ? `
+          <a
+            href="${POIGAME_DATA.safeHttpUrl(bestOffer.url)}"
+            class="offer-button"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            💰 最高還元サイトへ
+          </a>
+        `
+        : `
+          <span class="offer-button disabled">
+            💰 案件リンク準備中
+          </span>
+        `
+    }
+
+    ${safeReferralUrl
+      ? `
+        <a
+          href="${safeReferralUrl}"
+          class="referral-button"
+          target="_blank"
+          rel="sponsored noopener noreferrer"
+        >
+          このポイントサイトに登録［PR］
+        </a>
+        <small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referral.code)}</small>
+      `
+      : ""
+    }
+'''.strip()
+
+NEW_ACTIONS = r'''
+    <div class="card-actions">
+      <a href="game.html?game=${encodeURIComponent(game.name)}#comparison" class="card-action">
+        比較を見る
+      </a>
+      ${guideHref
+        ? `<a href="${guideHref}" class="card-action card-action--guide">攻略を見る</a>`
+        : `<span class="card-action is-disabled">攻略準備中</span>`
+      }
+      ${
+        bestOffer && bestOffer.url
+          ? `
+            <a
+              href="${POIGAME_DATA.safeHttpUrl(bestOffer.url)}"
+              class="offer-button"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              💰 最高還元サイトへ
+            </a>
+          `
+          : `
+            <span class="offer-button disabled">
+              💰 案件リンク準備中
+            </span>
+          `
+      }
+    </div>
+
+    ${safeReferralUrl
+      ? `
+        <div class="referral-strip${referral.code ? "" : " no-code"}">
+          <a
+            href="${safeReferralUrl}"
+            class="referral-button"
+            target="_blank"
+            rel="sponsored noopener noreferrer"
+          >
+            このサイトに登録［PR］
+          </a>
+          ${referral.code
+            ? `<small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referral.code)}</small>`
+            : ""
+          }
+        </div>
+      `
+      : ""
+    }
+'''.strip()
 
 PATCH = r'''
-<!-- POIGAME_COMPACT_ACTIONS_V3 -->
-<style id="poigame-compact-actions-v3">
+<!-- POIGAME_COMPACT_ACTIONS_V4 -->
+<style id="poigame-compact-actions-v4">
 @media (max-width: 800px) {
   html.poigame-index-compact .game-card.is-dense-v2 .card-actions,
   .game-card.is-dense-v2 .card-actions {
+    display: grid !important;
     grid-template-columns: .9fr .9fr 1.35fr !important;
     gap: 5px !important;
     margin-top: 5px !important;
   }
 
+  html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .card-action,
   html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button,
+  .game-card.is-dense-v2 .card-actions > .card-action,
   .game-card.is-dense-v2 .card-actions > .offer-button {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
     min-width: 0 !important;
     min-height: 29px !important;
     height: 29px !important;
@@ -31,6 +127,15 @@ PATCH = r'''
     font-size: 9.2px !important;
     line-height: 1.05 !important;
     white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  html.poigame-index-compact .game-card.is-dense-v2 .card-actions > .offer-button,
+  .game-card.is-dense-v2 .card-actions > .offer-button {
+    background: linear-gradient(145deg,#ffe56a,#ffd23f) !important;
+    color: #33165e !important;
   }
 
   html.poigame-index-compact .game-card.is-dense-v2 .referral-strip,
@@ -86,55 +191,6 @@ PATCH = r'''
   }
 }
 </style>
-<script>
-(() => {
-  "use strict";
-
-  const fixCard = (card) => {
-    if (!(card instanceof HTMLElement) || !card.classList.contains("game-card")) return;
-
-    const actions = card.querySelector(".card-actions");
-    const offer = card.querySelector(".offer-button");
-    if (actions && offer && !actions.contains(offer)) actions.appendChild(offer);
-
-    const referralButton = card.querySelector(".referral-button");
-    const referralCode = card.querySelector(".referral-code");
-    if (!referralButton) return;
-
-    let strip = card.querySelector(".referral-strip");
-    if (!strip) {
-      strip = document.createElement("div");
-      strip.className = "referral-strip";
-      if (actions) actions.insertAdjacentElement("afterend", strip);
-      else card.appendChild(strip);
-    }
-
-    referralButton.textContent = "このサイトに登録［PR］";
-    if (referralButton.parentElement !== strip) strip.appendChild(referralButton);
-    if (referralCode && referralCode.parentElement !== strip) strip.appendChild(referralCode);
-    strip.classList.toggle("no-code", !referralCode);
-  };
-
-  const scan = (root = document) => root.querySelectorAll?.(".game-card").forEach(fixCard);
-
-  const start = () => {
-    scan();
-    const target = document.querySelector(".game-grid") || document.body;
-    new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        mutation.addedNodes.forEach((node) => {
-          if (!(node instanceof Element)) return;
-          if (node.matches(".game-card")) fixCard(node);
-          scan(node);
-        });
-      }
-    }).observe(target, { childList: true, subtree: true });
-  };
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
-  else start();
-})();
-</script>
 '''.strip()
 
 
@@ -143,14 +199,22 @@ def main() -> int:
         raise SystemExit(f"missing target: {TARGET}")
 
     html = TARGET.read_text(encoding="utf-8")
-    if MARKER in html:
-        print("compact index actions patch already present")
-        return 0
-    if "</body>" not in html:
-        raise SystemExit("index.html missing </body>")
 
-    TARGET.write_text(html.replace("</body>", f"{PATCH}\n</body>", 1), encoding="utf-8")
-    print("patched compact index actions into _site/index.html")
+    if OLD_ACTIONS in html:
+        html = html.replace(OLD_ACTIONS, NEW_ACTIONS, 1)
+        print("rewrote card template to native three-column actions")
+    elif NEW_ACTIONS in html:
+        print("three-column card template already present")
+    else:
+        raise SystemExit("card action template not found; refusing partial patch")
+
+    if MARKER not in html:
+        if "</body>" not in html:
+            raise SystemExit("index.html missing </body>")
+        html = html.replace("</body>", f"{PATCH}\n</body>", 1)
+
+    TARGET.write_text(html, encoding="utf-8")
+    print("patched compact actions into _site/index.html")
     return 0
 
 
