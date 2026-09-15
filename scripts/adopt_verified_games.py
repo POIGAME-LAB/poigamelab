@@ -37,6 +37,12 @@ def csv_text(fields,rows):
 def read_csv(path):
     if not Path(path).exists(): return []
     with Path(path).open(encoding='utf-8',newline='') as f: return list(csv.DictReader(f))
+def read_csv_fields(path,fallback):
+    if not Path(path).exists(): return list(fallback)
+    with Path(path).open(encoding='utf-8',newline='') as f:
+        fields=next(csv.reader(f),[])
+    fields=[str(x).strip() for x in fields if str(x).strip()]
+    return fields or list(fallback)
 def research_for_game(game,results_dir=RESULTS):
     for p in sorted(Path(results_dir).glob('*.json')) if Path(results_dir).exists() else []:
         try:
@@ -85,11 +91,12 @@ def prepare(adoptions, results_dir, games_path, targets_path, refresh_path, publ
 def run(adoptions_path=ADOPTIONS,results_dir=RESULTS,games_path=GAMES,targets_path=TARGETS,refresh_path=REFRESH,published_path=PUBLISHED,status_path=STATUS,config_path=TREND_CONFIG):
     adoptions=load_json(adoptions_path) if Path(adoptions_path).exists() else {'items':[]}
     cfg=load_json(config_path)
+    game_fields=read_csv_fields(games_path,GAME_FIELDS)
     paths=[Path(games_path),Path(targets_path),Path(refresh_path),Path(published_path),Path(adoptions_path)]
     backups={p:(p.read_bytes() if p.exists() else None) for p in paths}
     try:
         game_rows,targets,refresh,pub_rows,decisions=prepare(adoptions,Path(results_dir),Path(games_path),Path(targets_path),Path(refresh_path),Path(published_path),cfg)
-        atomic_text(games_path,csv_text(GAME_FIELDS,game_rows))
+        atomic_text(games_path,csv_text(game_fields,game_rows))
         atomic_text(targets_path,json_text(targets)); atomic_text(refresh_path,json_text(refresh))
         atomic_text(published_path,csv_text(FIELDS,sorted(pub_rows,key=lambda x:x.get('offerKey',''))))
         atomic_text(adoptions_path,json_text(adoptions))
