@@ -35,6 +35,12 @@ class T(unittest.TestCase):
    self.assertEqual(list(rows[0].keys()),['name','image','condition','days','difficulty','overview','tips','featured','addedDate','provisionalReward','provisionalSource'])
    self.assertEqual(rows[0]['provisionalReward'],'12345'); self.assertEqual(rows[0]['provisionalSource'],'seed')
    new=next(r for r in rows if r['name']=='新作ゲーム'); self.assertEqual(new['provisionalReward'],''); self.assertEqual(new['provisionalSource'],'')
+ def test_registered_source_id_wins_over_display_label(self):
+  with tempfile.TemporaryDirectory() as x:
+   td=make_fixture(x); p=payload(); p['collectorResult']['verified']['offers'][1]=offer('アメフリ','https://www.amefri.net/detail/id/2','Android'); p['collectorResult']['verified']['offers'][1]['registered_source']='amefuri'
+   (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(p))
+   out=self.runx(td); self.assertEqual(out['adopted'],1)
+   rows=list(csv.DictReader((td/'published.csv').open())); self.assertIn('amefuri',{r['site'] for r in rows}); self.assertNotIn('unknown',{r['site'] for r in rows})
  def test_idempotent_no_duplicate_game_or_offer(self):
   with tempfile.TemporaryDirectory() as x:
    td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
