@@ -36,7 +36,7 @@ const pointSites = {
     const isIndexPage = pathname === "/" || /\/index\.html$/.test(pathname);
 
     if (isIndexPage) {
-      const styleHref = "assets/index-compact-v2.css?v=20260915-1805";
+      const styleHref = "assets/index-compact-v2.css?v=20260915-1815";
       if (!document.querySelector('link[data-poigame-compact-v2="1"]')) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
@@ -47,7 +47,7 @@ const pointSites = {
 
       if (!document.querySelector('script[data-poigame-compact-v2="1"]')) {
         const script = document.createElement("script");
-        script.src = "assets/index-compact-v2.js?v=20260915-1805";
+        script.src = "assets/index-compact-v2.js?v=20260915-1815";
         script.async = false;
         script.dataset.poigameCompactV2 = "1";
         document.head.appendChild(script);
