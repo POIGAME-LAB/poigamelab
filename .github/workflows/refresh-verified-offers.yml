@@ -74,6 +74,10 @@ jobs:
         continue-on-error: true
         run: python scripts/daily_scan_review.py
 
+      - name: Write top-five content research handoff queue
+        if: steps.refresh.outcome == 'success'
+        run: python scripts/write_new_game_content_queue.py
+
       - name: Append reward history when values changed
         if: steps.refresh.outcome == 'success'
         run: python scripts/append_offer_history.py
@@ -123,6 +127,7 @@ jobs:
 
           files=(
             data/daily_scan_review.json
+            data/new_game_content_queue.json
             data/new_game_candidate_queue.json
             data/new_game_candidate_history.json
             data/existing_game_candidate_queue.json
@@ -167,6 +172,7 @@ jobs:
 
           git add data/published_offers.csv
           git add data/offer_history.csv
+          git add data/new_game_content_queue.json
           if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
           git add data/new_game_monitor.json data/existing_game_monitor.json
 
