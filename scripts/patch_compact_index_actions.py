@@ -4,12 +4,17 @@ from __future__ import annotations
 from pathlib import Path
 
 TARGET = Path("_site/index.html")
-MARKER = "POIGAME_COMPACT_ACTIONS_V6"
+MARKER = "POIGAME_COMPACT_ACTIONS_V7"
 
 PATCH = r'''
-<!-- POIGAME_COMPACT_ACTIONS_V6 -->
-<style id="poigame-compact-actions-v6">
+<!-- POIGAME_COMPACT_ACTIONS_V7 -->
+<style id="poigame-compact-actions-v7">
 @media (max-width: 800px) {
+  html.poigame-index-compact .game-card.is-dense-v2 {
+    grid-template-rows: auto auto auto auto auto auto minmax(18px, auto) !important;
+    padding-bottom: 10px !important;
+  }
+
   body .game-card .card-actions {
     display: grid !important;
     grid-template-columns: minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) !important;
@@ -58,17 +63,18 @@ PATCH = r'''
   body .game-card .referral-strip {
     grid-column: 1 / -1 !important;
     grid-row: 7 !important;
+    align-self: end !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
+    gap: 7px !important;
     width: 100% !important;
-    min-height: 20px !important;
-    height: 20px !important;
-    margin: 4px 0 0 !important;
-    padding: 2px 8px !important;
-    border: 1px solid #e3dcfb !important;
-    border-radius: 7px !important;
+    min-height: 16px !important;
+    height: 16px !important;
+    margin: 3px 0 0 !important;
+    padding: 1px 7px !important;
+    border: 1px solid #e5dffd !important;
+    border-radius: 6px !important;
     background: #fbfaff !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
@@ -94,14 +100,14 @@ PATCH = r'''
 
   body .game-card .referral-strip .referral-button {
     color: #5d34da !important;
-    font-size: 8.2px !important;
+    font-size: 7.7px !important;
     font-weight: 900 !important;
     text-decoration: none !important;
   }
 
   body .game-card .referral-strip .referral-code {
     color: #81788e !important;
-    font-size: 7.8px !important;
+    font-size: 7.4px !important;
     font-weight: 700 !important;
   }
 }
@@ -170,13 +176,13 @@ def main() -> int:
 
     html = TARGET.read_text(encoding="utf-8")
     if MARKER in html:
-        print("compact action V6 patch already present")
+        print("compact action V7 patch already present")
         return 0
     if "</body>" not in html:
         raise SystemExit("index.html missing </body>")
 
     TARGET.write_text(html.replace("</body>", f"{PATCH}\n</body>", 1), encoding="utf-8")
-    print("patched explicit action order and compact referral bar into _site/index.html")
+    print("patched action order and unclipped compact referral bar into _site/index.html")
     return 0
 
 
