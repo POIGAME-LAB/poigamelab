@@ -75,21 +75,26 @@ def bridge_rows(adoptions, v30_status):
 
 
 def run(queue_path=QUEUE, adoptions_path=ADOPTIONS, results_dir=RESULTS, content_dir=CONTENT,
-        root=ROOT, status_path=STATUS):
+        root=ROOT, status_path=STATUS, v30_status_path=V30_STATUS, bridge_path=BRIDGE,
+        refresh_status_path=REFRESH_STATUS, registry_path=None, guides_js=None, sitemap=None):
+    root = Path(root)
+    registry_path = Path(registry_path) if registry_path else root / "data/generated_guides_registry.json"
+    guides_js = Path(guides_js) if guides_js else root / "site-guides.js"
+    sitemap = Path(sitemap) if sitemap else root / "sitemap.xml"
     queue = load(queue_path)
     adoptions = load(adoptions_path)
     ranked = validate_handoff(queue, adoptions)
-    before = {str(x.get("name") or "").strip() for x in v30.read_csv(Path(root) / "games.csv")}
+    before = {str(x.get("name") or "").strip() for x in v30.read_csv(root / "games.csv")}
 
     v30_status = v30.run(
         adoptions_path=adoptions_path,
         results_dir=results_dir,
-        games_path=Path(root) / "games.csv",
-        targets_path=Path(root) / "config/game_targets.json",
-        refresh_path=Path(root) / "config/refresh_policy.json",
-        published_path=Path(root) / "data/published_offers.csv",
-        status_path=V30_STATUS,
-        config_path=Path(root) / "config/trend_discovery.json",
+        games_path=root / "games.csv",
+        targets_path=root / "config/game_targets.json",
+        refresh_path=root / "config/refresh_policy.json",
+        published_path=root / "data/published_offers.csv",
+        status_path=v30_status_path,
+        config_path=root / "config/trend_discovery.json",
         content_dir=content_dir,
         content_root=root,
     )
@@ -98,22 +103,22 @@ def run(queue_path=QUEUE, adoptions_path=ADOPTIONS, results_dir=RESULTS, content
         "sourceQueueCheckedAt": queue.get("checkedAt"),
         "results": bridge_rows(adoptions, v30_status),
     }
-    atomic_json(BRIDGE, bridge)
+    atomic_json(bridge_path, bridge)
     refresh_status = enable_refresh.run(
-        bridge_status_path=BRIDGE,
-        refresh_policy_path=Path(root) / "config/refresh_policy.json",
-        published_path=Path(root) / "data/published_offers.csv",
-        games_path=Path(root) / "games.csv",
-        status_path=REFRESH_STATUS,
+        bridge_status_path=bridge_path,
+        refresh_policy_path=root / "config/refresh_policy.json",
+        published_path=root / "data/published_offers.csv",
+        games_path=root / "games.csv",
+        status_path=refresh_status_path,
     )
     guide_status = registry.run(
         root=root,
         content_dir=content_dir,
-        registry_path=Path(root) / "data/generated_guides_registry.json",
-        guides_js=Path(root) / "site-guides.js",
-        sitemap=Path(root) / "sitemap.xml",
+        registry_path=registry_path,
+        guides_js=guides_js,
+        sitemap=sitemap,
     )
-    after = {str(x.get("name") or "").strip() for x in v30.read_csv(Path(root) / "games.csv")}
+    after = {str(x.get("name") or "").strip() for x in v30.read_csv(root / "games.csv")}
     added = [game for game in ranked if game in after and game not in before]
     status = {
         "phase": "TOP_FIVE_CONTENT_PUBLICATION_V1",
