@@ -52,6 +52,7 @@ jobs:
       - name: Build explicit public artifact
         run: |
           python scripts/build_public_site.py
+          python scripts/include_generated_guides.py --artifact _site
           python scripts/generate_index_thumbnails.py --output _site/assets/game-thumbs
           python scripts/patch_compact_index_actions.py
 
