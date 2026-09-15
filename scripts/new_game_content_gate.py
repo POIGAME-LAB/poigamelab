@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Deterministic publication gate for a fully researched new-game content package.
 
-This module makes no network/API calls.  It validates an already prepared package
-before V30 is allowed to add a new game.  Discovery queries or AI prose alone are
+This module makes no network/API calls. It validates an already prepared package
+before V30 is allowed to add a new game. Discovery queries or AI prose alone are
 never enough: research lanes must record completion, factual guide text must point
 to concrete source records, progress identities must be deduplicated, and an image
-with explicit provenance/rights plus a guide HTML file must already exist.
+with explicit provenance/rights plus a guide HTML file must be present before final
+publication. The same validator can be used in pre-render mode to create that HTML.
 """
 from __future__ import annotations
 
@@ -81,7 +82,7 @@ def load_for_game(game, content_dir=CONTENT_DIR):
     return payload, path
 
 
-def validate(payload, game, root=ROOT):
+def validate(payload, game, root=ROOT, require_guide_file=True):
     if not isinstance(payload, dict) or payload.get("schemaVersion") != 1:
         raise ContentHold("content_package_schema_invalid")
     if norm(payload.get("game")) != norm(game):
@@ -110,7 +111,6 @@ def validate(payload, game, root=ROOT):
                 raise ContentHold(f"research_source_identity_invalid:{channel}")
             source_ids.add(source_id)
             all_sources[source_id] = source
-    # Publication needs factual evidence even if one social/video lane had no usable hit.
     factual = [s for s in all_sources.values() if str(s.get("claim") or "").strip() and safe_https(s.get("url"))]
     if len(factual) < 2:
         raise ContentHold("insufficient_factual_research")
@@ -165,8 +165,9 @@ def validate(payload, game, root=ROOT):
 
     guide_path = str(payload.get("guidePath") or "").strip().replace("\\", "/")
     if (not guide_path or guide_path.startswith("/") or ".." in Path(guide_path).parts
-            or not guide_path.endswith("-guide.html") or "/" in guide_path
-            or not (Path(root) / guide_path).is_file()):
+            or not guide_path.endswith("-guide.html") or "/" in guide_path):
+        raise ContentHold("guide_path_invalid")
+    if require_guide_file and not (Path(root) / guide_path).is_file():
         raise ContentHold("guide_html_missing")
 
     days = str(payload.get("days") or "").strip()
@@ -187,8 +188,8 @@ def validate(payload, game, root=ROOT):
     }
 
 
-def validate_for_game(game, content_dir=CONTENT_DIR, root=ROOT):
+def validate_for_game(game, content_dir=CONTENT_DIR, root=ROOT, require_guide_file=True):
     payload, path = load_for_game(game, content_dir)
-    result = validate(payload, game, root=root)
+    result = validate(payload, game, root=root, require_guide_file=require_guide_file)
     result["packagePath"] = str(path)
     return result
