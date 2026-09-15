@@ -19,13 +19,15 @@ class TestNewGameResearchWorkflow(unittest.TestCase):
         self.assertNotIn("git push", text)
         self.assertNotIn("contents: write", text)
         self.assertNotIn("adopt_verified_games.py", text)
-        self.assertNotIn("render_new_game_guide.py", text)
+        self.assertNotIn("git commit", text)
 
-    def test_research_and_r2_archive_are_bounded_handoffs(self):
+    def test_research_build_render_and_r2_archive_are_bounded_handoffs(self):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("python scripts/research_new_game_channels.py", text)
+        self.assertIn("python scripts/build_new_game_content_packages.py", text)
+        self.assertIn("python scripts/render_new_game_guide.py", text)
         self.assertIn("new-game-research/latest.tgz", text)
-        self.assertIn("top-five-new-game-channel-research", text)
+        self.assertIn("top-five-new-game-content-bundle", text)
         self.assertIn("timeout-minutes: 45", text)
 
 
