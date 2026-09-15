@@ -98,7 +98,7 @@ jobs:
                   shutil.copy2(guide, archive/'guides'/guide.name)
           PY
           tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-content-bundle.tgz" .
-          sha256sum "${RUNNER_TEMP}/new-game-content-bundle.tgz" > "${RUNNER_TEMP}/new-game-content-bundle.sha256"
+          (cd "${RUNNER_TEMP}" && sha256sum new-game-content-bundle.tgz > new-game-content-bundle.sha256)
 
       - name: Archive quarantined content bundle to Cloudflare R2
         env:
