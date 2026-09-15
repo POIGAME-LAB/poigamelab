@@ -32,6 +32,29 @@ const pointSites = {
       "hapitas": "hapitas"
     };
 
+    const pathname = String(window.location.pathname || "");
+    const isIndexPage = pathname === "/" || /\/index\.html$/.test(pathname);
+    const indexImageOverrides = Object.freeze({
+      "ワーキングヒーロー": "assets/game-art/working-heroes.svg"
+    });
+
+    const indexThumbnailFor = (gameName, imageValue) => {
+      const override = indexImageOverrides[String(gameName || "").trim()];
+      if (override) return override;
+
+      const raw = String(imageValue || "").trim();
+      if (!raw.startsWith("assets/game-art/")) return raw;
+
+      const filename = raw.split("?", 1)[0].split("/").pop() || "";
+      if (!/(?:\.(?:png|jpe?g))+$/i.test(filename)) return raw;
+
+      let stem = filename;
+      while (/\.(?:png|jpe?g)$/i.test(stem)) {
+        stem = stem.replace(/\.(?:png|jpe?g)$/i, "");
+      }
+      return `assets/game-thumbs/${stem.toLowerCase()}.jpg`;
+    };
+
     Object.defineProperty(window, "POIGAME_DATA", {
       configurable: true,
       get() {
@@ -39,6 +62,26 @@ const pointSites = {
       },
       set(value) {
         if (value && typeof value.loadOffersWithFallback === "function" && typeof value.fetchCsv === "function") {
+          if (isIndexPage && value.__poigameIndexThumbsPatched !== true) {
+            const originalFetchCsv = value.fetchCsv.bind(value);
+            value.fetchCsv = async function fetchCsvWithIndexThumbnails(path, ...args) {
+              const rows = await originalFetchCsv(path, ...args);
+              if (!Array.isArray(rows) || String(path || "").split("?", 1)[0] !== "games.csv") {
+                return rows;
+              }
+              return rows.map((row) => ({
+                ...row,
+                image: indexThumbnailFor(row.name, row.image)
+              }));
+            };
+            Object.defineProperty(value, "__poigameIndexThumbsPatched", {
+              value: true,
+              configurable: false,
+              enumerable: false,
+              writable: false
+            });
+          }
+
           const originalLoadOffersWithFallback = value.loadOffersWithFallback.bind(value);
           value.loadOffersWithFallback = async function loadOffersWithCatalogProvisionalFallback() {
             const result = await originalLoadOffersWithFallback();
