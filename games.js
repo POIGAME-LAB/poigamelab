@@ -35,6 +35,25 @@ const pointSites = {
     const pathname = String(window.location.pathname || "");
     const isIndexPage = pathname === "/" || /\/index\.html$/.test(pathname);
 
+    if (isIndexPage) {
+      const styleHref = "index-compact-v2.css?v=20260915-1745";
+      if (!document.querySelector('link[data-poigame-compact-v2="1"]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = styleHref;
+        link.dataset.poigameCompactV2 = "1";
+        document.head.appendChild(link);
+      }
+
+      if (!document.querySelector('script[data-poigame-compact-v2="1"]')) {
+        const script = document.createElement("script");
+        script.src = "index-compact-v2.js?v=20260915-1745";
+        script.async = false;
+        script.dataset.poigameCompactV2 = "1";
+        document.head.appendChild(script);
+      }
+    }
+
     const indexThumbnailFor = (gameName, imageValue) => {
       const raw = String(imageValue || "").trim();
       if (!raw.startsWith("assets/game-art/")) return raw;
