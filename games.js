@@ -34,14 +34,8 @@ const pointSites = {
 
     const pathname = String(window.location.pathname || "");
     const isIndexPage = pathname === "/" || /\/index\.html$/.test(pathname);
-    const indexImageOverrides = Object.freeze({
-      "ワーキングヒーロー": "assets/game-art/working-heroes.svg"
-    });
 
     const indexThumbnailFor = (gameName, imageValue) => {
-      const override = indexImageOverrides[String(gameName || "").trim()];
-      if (override) return override;
-
       const raw = String(imageValue || "").trim();
       if (!raw.startsWith("assets/game-art/")) return raw;
 
