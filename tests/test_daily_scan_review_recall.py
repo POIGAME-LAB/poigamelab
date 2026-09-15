@@ -26,3 +26,46 @@ def test_default_review_budget_was_expanded_for_reward_ranking():
     import daily_scan_review as daily
     assert daily.MAX_GROUPS == 30
     assert daily.MAX_DETAILS == 120
+
+
+def test_transient_first_party_scan_failure_holds_ranking(monkeypatch):
+    import daily_scan_review as daily
+    result = scan(candidates("Quiet Kingdom"), monkeypatch)
+    discovery = {
+        "sourceResults": [
+            {"source": "warau", "scanComplete": True, "catalogComplete": True},
+            {"source": "amefuri", "scanComplete": False, "catalogComplete": False,
+             "fetchErrors": 1},
+        ]
+    }
+    out = daily.apply_discovery_completeness(result, discovery)
+    assert out["rankingComplete"] is False
+    assert out["sourceScanIncomplete"] is True
+    assert out["incompleteDiscoverySources"] == ["amefuri"]
+    assert "first_party_discovery_scan_incomplete" in out["rankingHoldReasons"]
+
+
+def test_intentionally_partial_but_successful_surface_does_not_hold_ranking(monkeypatch):
+    import daily_scan_review as daily
+    result = scan(candidates("Quiet Kingdom"), monkeypatch)
+    discovery = {
+        "sourceResults": [
+            {"source": "coincome", "scanComplete": True, "catalogComplete": False,
+             "fetchErrors": 0},
+            {"source": "warau", "scanComplete": True, "catalogComplete": True,
+             "fetchErrors": 0},
+        ]
+    }
+    out = daily.apply_discovery_completeness(result, discovery)
+    assert out["rankingComplete"] is True
+    assert out["sourceScanIncomplete"] is False
+    assert out["incompleteDiscoverySources"] == []
+    assert out["rankingScope"] == "supported_scanned_first_party_surfaces"
+
+
+def test_missing_discovery_summary_fails_closed(monkeypatch):
+    import daily_scan_review as daily
+    import pytest
+    result = scan(candidates("Quiet Kingdom"), monkeypatch)
+    with pytest.raises(ValueError, match="discovery_summary_missing"):
+        daily.apply_discovery_completeness(result, None)

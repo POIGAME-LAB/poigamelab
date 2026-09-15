@@ -176,12 +176,62 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
             "groupLimitReached": group_limit,
             "detailLimitReached": detail_limit,
+            "sourceScanIncomplete": False,
+            "incompleteDiscoverySources": [],
             "rankingComplete": not group_limit and not detail_limit,
-            "rankingScope": "reviewed_confirmed_candidates_only",
+            "rankingScope": "supported_scanned_first_party_surfaces",
             "topFiveReviewCandidates": [g["game"] for g in ranked[:5]], "results": results}
 
 
+def apply_discovery_completeness(report, discovery_summary):
+    """Hold top-five handoff when a configured first-party scan failed mid-run.
+
+    `catalogComplete` is intentionally not required: some sources expose only a
+    reviewed partial surface by design. `scanComplete` instead captures transient
+    failures, content guards, pagination that did not finish, or candidate caps in
+    the exact run whose candidates are being ranked.
+    """
+    if not isinstance(report, dict):
+        raise ValueError("daily_review_invalid")
+    source_results = (
+        discovery_summary.get("sourceResults")
+        if isinstance(discovery_summary, dict) else None
+    )
+    if not isinstance(source_results, list):
+        raise ValueError("discovery_summary_missing")
+    incomplete = []
+    for row in source_results:
+        if not isinstance(row, dict):
+            raise ValueError("discovery_source_result_invalid")
+        if row.get("scanComplete") is not True:
+            incomplete.append(str(row.get("source") or row.get("sourceLabel") or "unknown"))
+    report["sourceScanIncomplete"] = bool(incomplete)
+    report["incompleteDiscoverySources"] = sorted(set(incomplete))
+    report["discoverySourceCount"] = len(source_results)
+    report["rankingComplete"] = bool(report.get("rankingComplete")) and not incomplete
+    report["rankingScope"] = "supported_scanned_first_party_surfaces"
+    holds = []
+    if report.get("groupLimitReached") is True:
+        holds.append("ranking_group_budget_reached")
+    if report.get("detailLimitReached") is True:
+        holds.append("ranking_detail_budget_reached")
+    if incomplete:
+        holds.append("first_party_discovery_scan_incomplete")
+    report["rankingHoldReasons"] = holds
+    return report
+
+
+def _write_report(path, report):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
 def main():
+    review_path = ROOT / "data/daily_scan_review.json"
+
     def consume(**kwargs):
         from structured_publication import prepare
         evidence_items = kwargs.pop("review_items")
@@ -191,14 +241,23 @@ def main():
             kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
         report["existingPublication"] = publication
         kwargs["rows"][:] = updated_rows
-        path = ROOT / "data/daily_scan_review.json"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = path.with_suffix(".json.tmp")
-        temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        temporary.replace(path)
+        _write_report(review_path, report)
         return {"confirmedOfferKeys": [d["offerKey"] for d in publication["decisions"]
                                       if "holdReason" not in d]}
-    return direct.main(after_scan=consume)
+
+    result = direct.main(after_scan=consume)
+    if result != 0:
+        return result
+    try:
+        report = json.loads(review_path.read_text(encoding="utf-8"))
+        refresh = json.loads((ROOT / "data/comparison_refresh_status.json").read_text(encoding="utf-8"))
+        discovery = refresh.get("newGameDiscovery")
+        apply_discovery_completeness(report, discovery)
+        _write_report(review_path, report)
+    except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+        print(f"ERROR: failed to bind discovery completeness to daily ranking: {type(exc).__name__}")
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
