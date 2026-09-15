@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Persist compact public metadata for adopted generated guides.
 
-Full research/content packages remain quarantined. Only title, description and
-reachable guide path are kept in the repository registry. The source guide
-registry and sitemap are regenerated from this compact state so later builds do
-not need private research artifacts.
+Full research/content packages remain quarantined. Only title, description,
+reachable paths and content hashes are kept in the repository registry. The
+source guide registry and sitemap are regenerated from this compact state so
+later builds do not need private research artifacts.
 """
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -40,6 +41,10 @@ def atomic_text(path, text):
     tmp.replace(path)
 
 
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
 def safe_guide_path(value):
     raw = str(value or "").strip().replace("\\", "/")
     return bool(raw and not raw.startswith("/") and "/" not in raw
@@ -48,7 +53,8 @@ def safe_guide_path(value):
 
 def catalog(root=ROOT):
     with (Path(root) / "games.csv").open(encoding="utf-8", newline="") as handle:
-        return {str(row.get("name") or "").strip() for row in csv.DictReader(handle) if str(row.get("name") or "").strip()}
+        return {str(row.get("name") or "").strip(): row for row in csv.DictReader(handle)
+                if str(row.get("name") or "").strip()}
 
 
 def merge_registry(root=ROOT, content_dir=CONTENT, registry_path=REGISTRY):
@@ -65,10 +71,17 @@ def merge_registry(root=ROOT, content_dir=CONTENT, registry_path=REGISTRY):
             continue
         validated = gate.validate(payload, game, root=root, require_guide_file=True)
         guide = payload.get("guide") or {}
+        guide_path = validated["guidePath"]
+        image_path = validated["image"]
+        if str(games[game].get("image") or "") != image_path:
+            raise ValueError("catalog_generated_image_mismatch:" + game)
         entry = {
             "title": str(guide.get("title") or f"{game} ポイ活攻略"),
             "description": str(guide.get("overview") or ""),
-            "guidePath": validated["guidePath"],
+            "guidePath": guide_path,
+            "guideSha256": sha256(root / guide_path),
+            "imagePath": image_path,
+            "imageSha256": sha256(root / image_path),
         }
         if guides.get(game) != entry:
             guides[game] = entry
