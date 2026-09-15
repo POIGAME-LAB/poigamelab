@@ -23,7 +23,7 @@ jobs:
        github.event.workflow_run.head_branch == 'main' &&
        vars.ENABLE_NEW_GAME_CONTENT_RESEARCH == 'true')
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,6 +45,14 @@ jobs:
           python scripts/build_new_game_content_packages.py
           python scripts/render_new_game_guide.py
 
+      - name: Research strict point-site offers in quarantine
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+        run: python scripts/research_top_five_offers.py
+
       - name: Install local test dependency
         run: python -m pip install --disable-pip-version-check pytest
 
@@ -54,8 +62,43 @@ jobs:
             tests/test_research_new_game_channels.py \
             tests/test_new_game_research_workflow.py \
             tests/test_build_new_game_content_packages.py \
+            tests/test_research_top_five_offers.py \
             tests/test_new_game_content_queue.py \
             tests/test_new_game_content_gate.py
+
+      - name: Assemble exact quarantined bundle
+        run: |
+          set -euo pipefail
+          archive_dir="$(mktemp -d)"
+          echo "ARCHIVE_DIR=${archive_dir}" >> "$GITHUB_ENV"
+          mkdir -p "${archive_dir}/data/research_results" "${archive_dir}/assets/game-art" "${archive_dir}/guides"
+          cp data/new_game_content_queue.json "${archive_dir}/data/"
+          cp data/new_game_channel_research_status.json "${archive_dir}/data/"
+          cp data/new_game_content_package_status.json "${archive_dir}/data/"
+          cp data/top_five_offer_research_status.json "${archive_dir}/data/"
+          cp data/top_five_adoption_candidates.json "${archive_dir}/data/"
+          cp -R data/new_game_channel_research "${archive_dir}/data/"
+          cp -R data/new_game_content_packages "${archive_dir}/data/"
+          find assets/game-art -maxdepth 1 -type f -name '*-auto.svg' -exec cp {} "${archive_dir}/assets/game-art/" \;
+          ARCHIVE_DIR="${archive_dir}" python - <<'PY'
+          import json, os, shutil
+          from pathlib import Path
+          root=Path('.')
+          archive=Path(os.environ['ARCHIVE_DIR'])
+          status=json.loads(Path('data/top_five_offer_research_status.json').read_text(encoding='utf-8'))
+          for row in status.get('results') or []:
+              rel=str(row.get('resultPath') or '')
+              source=root/rel
+              if rel.startswith('data/research_results/') and source.is_file() and source.name == Path(rel).name:
+                  shutil.copy2(source, archive/'data/research_results'/source.name)
+          for p in Path('data/new_game_content_packages').glob('*.json'):
+              data=json.loads(p.read_text(encoding='utf-8'))
+              guide=Path(str(data.get('guidePath') or ''))
+              if guide.name == str(guide) and guide.suffix == '.html' and guide.is_file():
+                  shutil.copy2(guide, archive/'guides'/guide.name)
+          PY
+          tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-content-bundle.tgz" .
+          sha256sum "${RUNNER_TEMP}/new-game-content-bundle.tgz" > "${RUNNER_TEMP}/new-game-content-bundle.sha256"
 
       - name: Archive quarantined content bundle to Cloudflare R2
         env:
@@ -72,26 +115,6 @@ jobs:
           test -n "${R2_ENDPOINT}"
           test -n "${R2_BUCKET}"
           stamp="$(date -u +'%Y/%m/%d/%H%M%SZ')"
-          archive_dir="$(mktemp -d)"
-          trap 'rm -rf "${archive_dir}"' EXIT
-          mkdir -p "${archive_dir}/data" "${archive_dir}/assets/game-art" "${archive_dir}/guides"
-          cp data/new_game_channel_research_status.json "${archive_dir}/data/"
-          cp data/new_game_content_package_status.json "${archive_dir}/data/"
-          cp -R data/new_game_channel_research "${archive_dir}/data/"
-          cp -R data/new_game_content_packages "${archive_dir}/data/"
-          find assets/game-art -maxdepth 1 -type f -name '*-auto.svg' -exec cp {} "${archive_dir}/assets/game-art/" \;
-          ARCHIVE_DIR="${archive_dir}" python - <<'PY'
-          import json, os
-          from pathlib import Path
-          src=Path('data/new_game_content_packages')
-          dst=Path(os.environ['ARCHIVE_DIR'])/'guides'
-          for p in src.glob('*.json'):
-              data=json.loads(p.read_text(encoding='utf-8'))
-              guide=Path(str(data.get('guidePath') or ''))
-              if guide.name == str(guide) and guide.suffix == '.html' and guide.is_file():
-                  (dst/guide.name).write_bytes(guide.read_bytes())
-          PY
-          tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-content-bundle.tgz" .
           aws s3 cp "${RUNNER_TEMP}/new-game-content-bundle.tgz" \
             "s3://${R2_BUCKET}/new-game-research/daily/${stamp}.tgz" \
             --endpoint-url "${R2_ENDPOINT}" --only-show-errors
@@ -99,16 +122,11 @@ jobs:
             "s3://${R2_BUCKET}/new-game-research/latest.tgz" \
             --endpoint-url "${R2_ENDPOINT}" --only-show-errors
 
-      - name: Upload quarantined content artifact
-        if: always()
+      - name: Upload exact quarantined bundle
         uses: actions/upload-artifact@v4
         with:
           name: top-five-new-game-content-bundle
           path: |
-            data/new_game_channel_research_status.json
-            data/new_game_channel_research/
-            data/new_game_content_package_status.json
-            data/new_game_content_packages/
-            assets/game-art/*-auto.svg
-            *-guide.html
+            ${{ runner.temp }}/new-game-content-bundle.tgz
+            ${{ runner.temp }}/new-game-content-bundle.sha256
           retention-days: 7
