@@ -45,14 +45,17 @@ jobs:
           python scripts/build_new_game_content_packages.py
           python scripts/render_new_game_guide.py
 
+      - name: Install local test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
       - name: Verify research and content contracts without network calls
         run: |
-          python -m unittest \
-            tests.test_research_new_game_channels \
-            tests.test_new_game_research_workflow \
-            tests.test_build_new_game_content_packages \
-            tests.test_new_game_content_queue \
-            tests.test_new_game_content_gate
+          python -m pytest -q \
+            tests/test_research_new_game_channels.py \
+            tests/test_new_game_research_workflow.py \
+            tests/test_build_new_game_content_packages.py \
+            tests/test_new_game_content_queue.py \
+            tests/test_new_game_content_gate.py
 
       - name: Archive quarantined content bundle to Cloudflare R2
         env:
