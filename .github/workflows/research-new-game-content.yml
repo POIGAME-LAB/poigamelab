@@ -38,10 +38,23 @@ jobs:
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
         run: python scripts/research_new_game_channels.py
 
-      - name: Verify research contracts without network calls
-        run: python -m unittest discover -s tests -p 'test_research_new_game_channels.py'
+      - name: Build grounded guide packages and local title-card images
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/build_new_game_content_packages.py
+          python scripts/render_new_game_guide.py
 
-      - name: Archive quarantined research to Cloudflare R2
+      - name: Verify research and content contracts without network calls
+        run: |
+          python -m unittest \
+            tests.test_research_new_game_channels \
+            tests.test_new_game_research_workflow \
+            tests.test_build_new_game_content_packages \
+            tests.test_new_game_content_queue \
+            tests.test_new_game_content_gate
+
+      - name: Archive quarantined content bundle to Cloudflare R2
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -58,22 +71,41 @@ jobs:
           stamp="$(date -u +'%Y/%m/%d/%H%M%SZ')"
           archive_dir="$(mktemp -d)"
           trap 'rm -rf "${archive_dir}"' EXIT
-          cp data/new_game_channel_research_status.json "${archive_dir}/"
-          cp -R data/new_game_channel_research "${archive_dir}/"
-          tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-channel-research.tgz" .
-          aws s3 cp "${RUNNER_TEMP}/new-game-channel-research.tgz" \
+          mkdir -p "${archive_dir}/data" "${archive_dir}/assets/game-art" "${archive_dir}/guides"
+          cp data/new_game_channel_research_status.json "${archive_dir}/data/"
+          cp data/new_game_content_package_status.json "${archive_dir}/data/"
+          cp -R data/new_game_channel_research "${archive_dir}/data/"
+          cp -R data/new_game_content_packages "${archive_dir}/data/"
+          find assets/game-art -maxdepth 1 -type f -name '*-auto.svg' -exec cp {} "${archive_dir}/assets/game-art/" \;
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          src=Path('data/new_game_content_packages')
+          dst=Path('${archive_dir}')/'guides'
+          for p in src.glob('*.json'):
+              data=json.loads(p.read_text(encoding='utf-8'))
+              guide=Path(str(data.get('guidePath') or ''))
+              if guide.name == str(guide) and guide.suffix == '.html' and guide.is_file():
+                  (dst/guide.name).write_bytes(guide.read_bytes())
+          PY
+          tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-content-bundle.tgz" .
+          aws s3 cp "${RUNNER_TEMP}/new-game-content-bundle.tgz" \
             "s3://${R2_BUCKET}/new-game-research/daily/${stamp}.tgz" \
             --endpoint-url "${R2_ENDPOINT}" --only-show-errors
-          aws s3 cp "${RUNNER_TEMP}/new-game-channel-research.tgz" \
+          aws s3 cp "${RUNNER_TEMP}/new-game-content-bundle.tgz" \
             "s3://${R2_BUCKET}/new-game-research/latest.tgz" \
             --endpoint-url "${R2_ENDPOINT}" --only-show-errors
 
-      - name: Upload quarantined research artifact
+      - name: Upload quarantined content artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: top-five-new-game-channel-research
+          name: top-five-new-game-content-bundle
           path: |
             data/new_game_channel_research_status.json
             data/new_game_channel_research/
+            data/new_game_content_package_status.json
+            data/new_game_content_packages/
+            assets/game-art/*-auto.svg
+            *-guide.html
           retention-days: 7
