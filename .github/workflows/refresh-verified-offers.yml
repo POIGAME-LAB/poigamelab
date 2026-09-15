@@ -14,9 +14,14 @@ concurrency:
 
 jobs:
   refresh:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+
+      - name: Preserve publication baseline
+        run: cp data/published_offers.csv "${RUNNER_TEMP}/published-before.csv"
 
       - uses: actions/setup-python@v5
         with:
@@ -67,7 +72,7 @@ jobs:
       - name: Check first-party comparison pages
         id: refresh
         continue-on-error: true
-        run: python scripts/direct_offer_refresh.py
+        run: python scripts/daily_scan_review.py
 
       - name: Append reward history when values changed
         if: steps.refresh.outcome == 'success'
@@ -76,6 +81,22 @@ jobs:
       - name: Build compact public monitor snapshots
         if: steps.refresh.outcome == 'success'
         run: python scripts/write_public_monitors.py
+
+      - name: Build Pages artifact and run frontend regressions before archive or commit
+        if: steps.refresh.outcome == 'success'
+        run: |
+          python scripts/build_public_site.py
+          python scripts/validate_daily_publication.py --baseline "${RUNNER_TEMP}/published-before.csv"
+          node tests/test_site_data_v24.js
+          node tests/test_site_health_v25.js
+
+      - name: Reject stale or non-main publication
+        if: steps.refresh.outcome == 'success'
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = "refs/heads/main"
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
 
       - name: Archive refresh outputs to Cloudflare R2
         if: steps.refresh.outcome == 'success'
@@ -101,6 +122,7 @@ jobs:
           trap 'rm -rf "${archive_dir}"' EXIT
 
           files=(
+            data/daily_scan_review.json
             data/new_game_candidate_queue.json
             data/new_game_candidate_history.json
             data/existing_game_candidate_queue.json
@@ -149,6 +171,7 @@ jobs:
           git add data/new_game_monitor.json data/existing_game_monitor.json
 
           for path in \
+            data/daily_scan_review.json \
             data/new_game_candidate_queue.json \
             data/new_game_candidate_history.json \
             data/existing_game_candidate_queue.json \
@@ -164,8 +187,7 @@ jobs:
           done
 
           git diff --cached --quiet || git commit -m "chore: refresh compact public offer data"
-          git pull --rebase
-          git push
+          git push origin HEAD:main
 
       - name: Surface direct-refresh system failure
         if: steps.refresh.outcome == 'failure'

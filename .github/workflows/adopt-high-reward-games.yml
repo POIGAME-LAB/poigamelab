@@ -1,12 +1,9 @@
 name: Adopt high-reward games
 
+# Automatic adoption is held until full terms, guide, progress and image gates
+# are complete. The daily API-free scan now prepares same-run review evidence.
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - "Refresh comparison offers (API-free)"
-    types:
-      - completed
   pull_request:
     paths:
       - "scripts/high_reward_adoption_bridge.py"
@@ -24,9 +21,6 @@ concurrency:
 
 jobs:
   validate:
-    if: >-
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,9 +32,7 @@ jobs:
           python -m unittest tests.test_high_reward_adoption_bridge tests.test_enable_adopted_refresh tests.test_phase3_adoption_gate_v29 tests.test_phase3_production_adoption_v30
 
   adopt-high-reward:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    if: github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 45

@@ -111,5 +111,11 @@
     "publishFromDiscovery": false,
     "baselineGame": "ワーキングヒーロー",
     "purpose": "Detect campaigns visible on comparison services but missing from POIGAME LAB; discovery hints never authorize publication."
+  },
+  "structuredPublication": {
+    "enabled": true,
+    "sources": ["warau", "chobirich"],
+    "mode": "complete-stepup-snapshot",
+    "preserveRowsOnHold": true
   }
 }
