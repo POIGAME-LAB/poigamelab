@@ -1,0 +1,79 @@
+name: Research top-five new games (quarantine)
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "Refresh comparison offers (API-free)"
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: poigamelab-new-game-research
+  cancel-in-progress: false
+
+jobs:
+  research:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       vars.ENABLE_NEW_GAME_CONTENT_RESEARCH == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Research Web, X, YouTube, Instagram and point-site lanes
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Verify research contracts without network calls
+        run: python -m unittest discover -s tests -p 'test_research_new_game_channels.py'
+
+      - name: Archive quarantined research to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          command -v aws >/dev/null 2>&1
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+          stamp="$(date -u +'%Y/%m/%d/%H%M%SZ')"
+          archive_dir="$(mktemp -d)"
+          trap 'rm -rf "${archive_dir}"' EXIT
+          cp data/new_game_channel_research_status.json "${archive_dir}/"
+          cp -R data/new_game_channel_research "${archive_dir}/"
+          tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-channel-research.tgz" .
+          aws s3 cp "${RUNNER_TEMP}/new-game-channel-research.tgz" \
+            "s3://${R2_BUCKET}/new-game-research/daily/${stamp}.tgz" \
+            --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          aws s3 cp "${RUNNER_TEMP}/new-game-channel-research.tgz" \
+            "s3://${R2_BUCKET}/new-game-research/latest.tgz" \
+            --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+
+      - name: Upload quarantined research artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: top-five-new-game-channel-research
+          path: |
+            data/new_game_channel_research_status.json
+            data/new_game_channel_research/
+          retention-days: 7
