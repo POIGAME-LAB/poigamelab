@@ -33,6 +33,18 @@ class TestNewGameResearchWorkflow(unittest.TestCase):
         self.assertIn("top-five-new-game-content-bundle", text)
         self.assertIn("timeout-minutes: 60", text)
 
+    def test_zero_candidate_queue_skips_paid_research_and_r2(self):
+        text = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("id: queue", text)
+        self.assertIn("steps.queue.outputs.has_items == 'true'", text)
+        self.assertGreaterEqual(text.count("steps.queue.outputs.has_items == 'true'"), 4)
+        self.assertIn("Prepare zero-candidate quarantine outputs without API calls", text)
+        self.assertIn("steps.queue.outputs.has_items != 'true'", text)
+        zero = text.split("- name: Prepare zero-candidate quarantine outputs without API calls", 1)[1]
+        self.assertIn("'apiCalls':0", zero)
+        r2 = text.split("- name: Archive quarantined content bundle to Cloudflare R2", 1)[1]
+        self.assertIn("if: steps.queue.outputs.has_items == 'true'", r2)
+
 
 if __name__ == "__main__":
     unittest.main()

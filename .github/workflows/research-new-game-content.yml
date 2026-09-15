@@ -33,12 +33,29 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Inspect new-game handoff
+        id: queue
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          queue=json.loads(Path('data/new_game_content_queue.json').read_text(encoding='utf-8'))
+          count=int(queue.get('count') or 0)
+          if count != len(queue.get('items') or []):
+              raise SystemExit('new-game queue count mismatch')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as handle:
+              handle.write(f"has_items={'true' if count > 0 else 'false'}\n")
+              handle.write(f"count={count}\n")
+          PY
+
       - name: Research Web, X, YouTube, Instagram and point-site lanes
+        if: steps.queue.outputs.has_items == 'true'
         env:
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
         run: python scripts/research_new_game_channels.py
 
       - name: Build grounded guide packages and local title-card images
+        if: steps.queue.outputs.has_items == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
@@ -46,12 +63,46 @@ jobs:
           python scripts/render_new_game_guide.py
 
       - name: Research strict point-site offers in quarantine
+        if: steps.queue.outputs.has_items == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
           FIRECRAWL_CALL_LIMIT: "2"
         run: python scripts/research_top_five_offers.py
+
+      - name: Prepare zero-candidate quarantine outputs without API calls
+        if: steps.queue.outputs.has_items != 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          queue=json.loads(Path('data/new_game_content_queue.json').read_text(encoding='utf-8'))
+          checked=queue.get('checkedAt')
+          for directory in ('data/new_game_channel_research','data/new_game_content_packages','data/research_results'):
+              Path(directory).mkdir(parents=True,exist_ok=True)
+          docs={
+              'data/new_game_channel_research_status.json': {
+                  'phase':'NEW_GAME_MULTI_CHANNEL_RESEARCH_V1','success':True,'games':0,
+                  'completeGames':0,'apiCalls':0,'publicationWrites':0,
+              },
+              'data/new_game_content_package_status.json': {
+                  'phase':'NEW_GAME_CONTENT_PACKAGE_V1','success':True,'games':0,
+                  'failed':0,'failures':[],'apiCalls':0,'publicationWrites':0,
+              },
+              'data/top_five_offer_research_status.json': {
+                  'phase':'TOP_FIVE_STRICT_OFFER_RESEARCH_V1','sourceQueueCheckedAt':checked,
+                  'selected':0,'researched':0,'adoptionReady':0,'held':0,
+                  'publicationWrites':0,'results':[],
+              },
+              'data/top_five_adoption_candidates.json': {
+                  'schemaVersion':1,'phase':'TOP_FIVE_CONTENT_ADOPTION_GATE_V1',
+                  'sourceQueueCheckedAt':checked,'autoPublish':False,'autoAddGame':False,'items':[],
+              },
+          }
+          for name,payload in docs.items():
+              Path(name).write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
 
       - name: Install local test dependency
         run: python -m pip install --disable-pip-version-check pytest
@@ -72,6 +123,7 @@ jobs:
           archive_dir="$(mktemp -d)"
           echo "ARCHIVE_DIR=${archive_dir}" >> "$GITHUB_ENV"
           mkdir -p "${archive_dir}/data/research_results" "${archive_dir}/assets/game-art" "${archive_dir}/guides"
+          mkdir -p data/new_game_channel_research data/new_game_content_packages data/research_results
           cp data/new_game_content_queue.json "${archive_dir}/data/"
           cp data/new_game_channel_research_status.json "${archive_dir}/data/"
           cp data/new_game_content_package_status.json "${archive_dir}/data/"
@@ -101,6 +153,7 @@ jobs:
           (cd "${RUNNER_TEMP}" && sha256sum new-game-content-bundle.tgz > new-game-content-bundle.sha256)
 
       - name: Archive quarantined content bundle to Cloudflare R2
+        if: steps.queue.outputs.has_items == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}

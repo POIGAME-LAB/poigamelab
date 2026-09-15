@@ -44,6 +44,20 @@ class TestPublishNewGameWorkflow(unittest.TestCase):
         self.assertIn("git push origin HEAD:main", text)
         self.assertIn("group: poigamelab-production-writer", text)
 
+    def test_empty_queue_cannot_enter_production_write_steps(self):
+        text = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("id: bundle", text)
+        for name in (
+            "Deterministically adopt only content-ready V29 games",
+            "Build and validate the exact Pages artifact",
+            "Stage only compact production outputs",
+            "Commit and push production changes",
+        ):
+            block = text.split(f"- name: {name}", 1)[1]
+            self.assertIn("if: steps.bundle.outputs.has_items == 'true'", block.split("- name:", 1)[0])
+        self.assertIn("No-op publication for an empty safe queue", text)
+        self.assertIn("steps.bundle.outputs.has_items != 'true'", text)
+
 
 if __name__ == "__main__":
     unittest.main()
