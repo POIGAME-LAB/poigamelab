@@ -53,6 +53,7 @@ jobs:
         run: |
           python scripts/build_public_site.py
           python scripts/generate_index_thumbnails.py --output _site/assets/game-thumbs
+          python scripts/patch_compact_index_actions.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
