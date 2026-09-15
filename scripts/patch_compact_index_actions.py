@@ -4,18 +4,18 @@ from __future__ import annotations
 from pathlib import Path
 
 TARGET = Path("_site/index.html")
-MARKER = "POIGAME_COMPACT_ACTIONS_V7"
+MARKER = "POIGAME_COMPACT_ACTIONS_V8"
 
 PATCH = r'''
-<!-- POIGAME_COMPACT_ACTIONS_V7 -->
-<style id="poigame-compact-actions-v7">
+<!-- POIGAME_COMPACT_ACTIONS_V8 -->
+<style id="poigame-compact-actions-v8">
 @media (max-width: 800px) {
-  html.poigame-index-compact .game-card.is-dense-v2 {
-    grid-template-rows: auto auto auto auto auto auto minmax(18px, auto) !important;
-    padding-bottom: 10px !important;
+  html.poigame-index-compact body .game-card.is-dense-v2 {
+    grid-template-rows: auto auto auto auto auto auto minmax(16px, auto) !important;
+    padding-bottom: 9px !important;
   }
 
-  body .game-card .card-actions {
+  html.poigame-index-compact body .game-card.is-dense-v2 .card-actions {
     display: grid !important;
     grid-template-columns: minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.35fr) !important;
     gap: 5px !important;
@@ -23,8 +23,8 @@ PATCH = r'''
     margin: 5px 0 0 !important;
   }
 
-  body .game-card .card-actions > .card-action,
-  body .game-card .card-actions > .offer-button {
+  html.poigame-index-compact body .game-card.is-dense-v2 .card-actions > .card-action,
+  html.poigame-index-compact body .game-card.is-dense-v2 .card-actions > .offer-button {
     grid-row: 1 !important;
     min-width: 0 !important;
     width: 100% !important;
@@ -43,36 +43,37 @@ PATCH = r'''
     text-overflow: ellipsis !important;
   }
 
-  body .game-card .card-actions > :first-child {
+  html.poigame-index-compact body .game-card.is-dense-v2 .card-actions > :first-child {
     grid-column: 1 !important;
     order: 1 !important;
   }
 
-  body .game-card .card-actions > :nth-child(2) {
+  html.poigame-index-compact body .game-card.is-dense-v2 .card-actions > :nth-child(2) {
     grid-column: 2 !important;
     order: 2 !important;
   }
 
-  body .game-card .card-actions > .offer-button {
+  html.poigame-index-compact body .game-card.is-dense-v2 .card-actions > .offer-button {
     grid-column: 3 !important;
     order: 3 !important;
     background: linear-gradient(145deg,#ffe56a,#ffd23f) !important;
     color: #33165e !important;
   }
 
-  body .game-card .referral-strip {
+  html.poigame-index-compact body .game-card.is-dense-v2 .referral-strip {
     grid-column: 1 / -1 !important;
     grid-row: 7 !important;
-    align-self: end !important;
+    align-self: center !important;
     display: flex !important;
+    flex-direction: row !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 7px !important;
     width: 100% !important;
-    min-height: 16px !important;
-    height: 16px !important;
+    min-height: 15px !important;
+    height: 15px !important;
     margin: 3px 0 0 !important;
-    padding: 1px 7px !important;
+    padding: 0 7px !important;
     border: 1px solid #e5dffd !important;
     border-radius: 6px !important;
     background: #fbfaff !important;
@@ -80,9 +81,10 @@ PATCH = r'''
     overflow: hidden !important;
   }
 
-  body .game-card .referral-strip .referral-button,
-  body .game-card .referral-strip .referral-code {
+  html.poigame-index-compact body .game-card.is-dense-v2 .referral-strip .referral-button,
+  html.poigame-index-compact body .game-card.is-dense-v2 .referral-strip .referral-code {
     display: inline !important;
+    flex: 0 1 auto !important;
     grid-column: auto !important;
     grid-row: auto !important;
     min-width: 0 !important;
@@ -96,18 +98,20 @@ PATCH = r'''
     background: transparent !important;
     line-height: 1 !important;
     white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
   }
 
-  body .game-card .referral-strip .referral-button {
+  html.poigame-index-compact body .game-card.is-dense-v2 .referral-strip .referral-button {
     color: #5d34da !important;
-    font-size: 7.7px !important;
+    font-size: 7.5px !important;
     font-weight: 900 !important;
     text-decoration: none !important;
   }
 
-  body .game-card .referral-strip .referral-code {
+  html.poigame-index-compact body .game-card.is-dense-v2 .referral-strip .referral-code {
     color: #81788e !important;
-    font-size: 7.4px !important;
+    font-size: 7.2px !important;
     font-weight: 700 !important;
   }
 }
@@ -176,13 +180,13 @@ def main() -> int:
 
     html = TARGET.read_text(encoding="utf-8")
     if MARKER in html:
-        print("compact action V7 patch already present")
+        print("compact action V8 patch already present")
         return 0
     if "</body>" not in html:
         raise SystemExit("index.html missing </body>")
 
     TARGET.write_text(html.replace("</body>", f"{PATCH}\n</body>", 1), encoding="utf-8")
-    print("patched action order and unclipped compact referral bar into _site/index.html")
+    print("patched V8 action order and high-specificity referral bar into _site/index.html")
     return 0
 
 
