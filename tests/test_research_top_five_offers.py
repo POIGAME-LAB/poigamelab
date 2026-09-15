@@ -50,8 +50,8 @@ class TestResearchTopFiveOffers(unittest.TestCase):
             cfg = td / "cfg.json"; cfg.write_text(json.dumps(config()), encoding="utf-8")
             results = td / "results"; results.mkdir()
             adoptions = td / "adoptions.json"; status = td / "status.json"
-            old_results, old_adoptions, old_status = r.RESULTS, r.ADOPTIONS, r.STATUS
-            r.RESULTS, r.ADOPTIONS, r.STATUS = results, adoptions, status
+            old_root, old_results, old_adoptions, old_status = r.ROOT, r.RESULTS, r.ADOPTIONS, r.STATUS
+            r.ROOT, r.RESULTS, r.ADOPTIONS, r.STATUS = td, results, adoptions, status
             calls = []
             def research_one(item, env=None):
                 calls.append(item["game"])
@@ -71,7 +71,7 @@ class TestResearchTopFiveOffers(unittest.TestCase):
                 self.assertFalse(doc["autoAddGame"])
                 self.assertEqual(len(doc["items"]), 5)
             finally:
-                r.RESULTS, r.ADOPTIONS, r.STATUS = old_results, old_adoptions, old_status
+                r.ROOT, r.RESULTS, r.ADOPTIONS, r.STATUS = old_root, old_results, old_adoptions, old_status
 
     def test_content_gate_failure_skips_external_research(self):
         with tempfile.TemporaryDirectory() as td:
