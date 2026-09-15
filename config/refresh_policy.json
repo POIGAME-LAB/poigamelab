@@ -114,8 +114,8 @@
   },
   "structuredPublication": {
     "enabled": true,
-    "sources": ["warau", "chobirich"],
-    "mode": "complete-stepup-snapshot",
+    "sources": ["warau", "chobirich", "hapitas"],
+    "mode": "complete-stepup-or-verified-reward-snapshot",
     "preserveRowsOnHold": true
   }
 }
