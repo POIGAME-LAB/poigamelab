@@ -16,13 +16,12 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_GROUPS = 15
-MAX_DETAILS = 60
+MAX_GROUPS = 30
+MAX_DETAILS = 120
 
 
 def discovery_name(title):
     value = direct.html.unescape(str(title or "")).strip()
-    # Never merge different sequels, subtitles, or broadly matching names.
     value = re.sub(r"^(?:iOS|Android|And)[ _：:・-]+", "", value, flags=re.I)
     value = re.sub(r"^(?:【(?:SKYFLAG|SmaAD|MyChips|M)】)+", "", value, flags=re.I)
     value = re.sub(r"^【(?:レベル|ゲームゴール|累計)[^】]+】", "", value)
@@ -69,7 +68,6 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
 
 
 def research_queries(game):
-    # A plan is explicitly not a completed search or verified progress record.
     return {"web": f'"{game}" ポイ活 攻略 達成 撤退',
             "x": f'site:x.com "{game}" ポイ活 日目',
             "instagram": f'site:instagram.com "{game}" ポイ活',
@@ -82,7 +80,9 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     families = source_families(sources)
     groups = {}
     for item in items:
-        if item.get("classification") != "likely_game":
+        # Ambiguous titles stay eligible for strict two-site verification.
+        # Only an explicit non-game classification is dropped at this stage.
+        if item.get("classification") == "likely_non_game":
             continue
         name = discovery_name(item.get("titleHint"))
         if not name or direct.context_matches_known_game(name, targets):
@@ -102,7 +102,6 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         bucket = groups.setdefault(key, {"game": name, "offers": {}})
         bucket["offers"].setdefault((families[sid], identity), (sid, url))
 
-    # An offer URL appearing under conflicting names is not two new games.
     owners = {}
     for key, group in groups.items():
         for identity in group["offers"]:
@@ -122,7 +121,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             warau_rate_confirmed = bool(final_url == rate_url and re.search(
                 r"原則として\s*1ポイント\s*[=＝]\s*1円", direct.visible_text(raw)))
         except Exception:
-            pass  # Unknown conversion keeps the candidate out of the ranking.
+            pass
     detail_calls, results = 0, []
     for group in eligible[:max_groups]:
         details = []
@@ -136,8 +135,6 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
                 evidence = parsed.get("sourceEvidence") or {}
                 item["evidence"] = evidence
                 item["finalUrl"] = parsed.get("url")
-                # The parser binds canonical offer identity. Retain the host
-                # check even when a fixture/custom fetcher is supplied.
                 item["detailConfirmed"] = bool(
                     direct.source_host_allowed(item["finalUrl"], sources[sid])
                     and evidence.get("state") == "parsed"
@@ -170,13 +167,16 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
               and "yen_conversion_incomplete" not in g["holdReasons"]
               and "detail_budget_reached" not in g["holdReasons"]]
     ranked.sort(key=lambda g: (-g["maxObservedRewardYen"], g["game"]))
+    group_limit = len(eligible) > max_groups
+    detail_limit = any("detail_budget_reached" in r["holdReasons"] for r in results)
     return {"phase": "DAILY_SAME_SCAN_REVIEW_V1", "checkedAt": checked_at,
             "apiCalls": 0, "publicationWrites": 0, "publishedGames": 0,
             "warauBaseRate": {"confirmed": warau_rate_confirmed, "sourceUrl": rate_url},
             "listingGroups": len(groups), "twoSiteListingGroups": len(eligible),
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
-            "groupLimitReached": len(eligible) > max_groups,
-            "detailLimitReached": any("detail_budget_reached" in r["holdReasons"] for r in results),
+            "groupLimitReached": group_limit,
+            "detailLimitReached": detail_limit,
+            "rankingComplete": not group_limit and not detail_limit,
             "rankingScope": "reviewed_confirmed_candidates_only",
             "topFiveReviewCandidates": [g["game"] for g in ranked[:5]], "results": results}
 
@@ -190,8 +190,6 @@ def main():
         updated_rows, publication = prepare(kwargs["rows"], evidence_items, kwargs["sources"],
             kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
         report["existingPublication"] = publication
-        # Mutate only after all candidates have been evaluated; the direct
-        # collector owns the final concurrent-write check and atomic CSV write.
         kwargs["rows"][:] = updated_rows
         path = ROOT / "data/daily_scan_review.json"
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -199,7 +197,7 @@ def main():
         temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         temporary.replace(path)
         return {"confirmedOfferKeys": [d["offerKey"] for d in publication["decisions"]
-                                       if "holdReason" not in d]}
+                                      if "holdReason" not in d]}
     return direct.main(after_scan=consume)
 
 

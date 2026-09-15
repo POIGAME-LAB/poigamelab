@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Write a compact handoff queue for the five new games selected by the 01:17 scan.
 
-The queue contains no publication permission.  It exposes only the reviewed game
+The queue contains no publication permission. It exposes only the reviewed game
 identity, verified point-site reward ranking metadata, first-party detail URLs and
-research queries needed by the later content-research stage.
+research queries needed by the later content-research stage. If the bounded
+ranking scan is incomplete, the handoff is deliberately empty so an unreviewed
+candidate cannot be mislabeled as a daily top-five game.
 """
 from __future__ import annotations
 
@@ -31,6 +33,21 @@ def safe_https(value):
     return str(value).strip()
 
 
+def empty_handoff(report, reason):
+    return {
+        "schemaVersion": 1,
+        "phase": "NEW_GAME_CONTENT_QUEUE_V1",
+        "checkedAt": report.get("checkedAt"),
+        "sourcePhase": report.get("phase"),
+        "candidateOnly": True,
+        "publicationAuthorized": False,
+        "rankingComplete": False,
+        "holdReason": reason,
+        "count": 0,
+        "items": [],
+    }
+
+
 def build(report):
     if not isinstance(report, dict) or report.get("phase") != "DAILY_SAME_SCAN_REVIEW_V1":
         raise ValueError("daily_review_phase_mismatch")
@@ -38,6 +55,13 @@ def build(report):
     results = report.get("results")
     if not isinstance(top, list) or not isinstance(results, list):
         raise ValueError("daily_review_shape_invalid")
+    if report.get("groupLimitReached") is True:
+        return empty_handoff(report, "ranking_group_budget_reached")
+    if report.get("detailLimitReached") is True:
+        return empty_handoff(report, "ranking_detail_budget_reached")
+    if report.get("rankingComplete") is False:
+        return empty_handoff(report, "ranking_incomplete")
+
     by_game = {str(row.get("game") or ""): row for row in results if isinstance(row, dict)}
     items = []
     for rank, game in enumerate(top[:5], 1):
@@ -91,6 +115,8 @@ def build(report):
         "sourcePhase": report.get("phase"),
         "candidateOnly": True,
         "publicationAuthorized": False,
+        "rankingComplete": True,
+        "holdReason": None,
         "count": len(items),
         "items": items,
     }
@@ -108,7 +134,12 @@ def write(input_path=INPUT, output_path=OUTPUT):
 
 def main():
     out = write()
-    print(json.dumps({"phase": out["phase"], "count": out["count"], "publicationAuthorized": False}, ensure_ascii=False))
+    print(json.dumps({
+        "phase": out["phase"],
+        "count": out["count"],
+        "rankingComplete": out["rankingComplete"],
+        "publicationAuthorized": False,
+    }, ensure_ascii=False))
     return 0
 
 

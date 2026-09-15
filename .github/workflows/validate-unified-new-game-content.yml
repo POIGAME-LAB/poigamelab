@@ -30,6 +30,7 @@ jobs:
             scripts/render_new_game_guide.py \
             scripts/register_generated_guides.py \
             scripts/include_generated_guides.py \
+            scripts/daily_scan_review.py \
             scripts/write_new_game_content_queue.py \
             scripts/publish_top_five_content.py \
             scripts/adopt_verified_games.py \
@@ -43,7 +44,10 @@ jobs:
             tests/test_build_new_game_content_packages.py \
             tests/test_research_top_five_offers.py \
             tests/test_new_game_content_queue.py \
+            tests/test_new_game_queue_ranking_gate.py \
             tests/test_new_game_content_gate.py \
+            tests/test_daily_scan_review.py \
+            tests/test_daily_scan_review_recall.py \
             tests/test_publish_top_five_content.py \
             tests/test_publish_new_game_workflow.py \
             tests/test_generated_guide_registry.py \
