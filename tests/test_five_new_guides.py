@@ -31,12 +31,9 @@ def test_new_guides_exist_and_disclose_research_status():
         elif name in {"ファミリーファームの冒険", "クロンダイクの冒険"}:
             assert "実際のプレイヤー記録" in page
             assert "調査更新：2026-09-14" in page
-        elif name == "Merge Help: ホームデザインパズル":
+        elif name in {"Merge Help: ホームデザインパズル", "マジックジグソーパズル"}:
             assert "実際のプレイヤー記録" in page
             assert "調査更新：2026-09-15" in page
-        else:
-            assert "未プレイ・公開情報を調査" in page
-            assert "調査更新：2026-09-12" in page
         assert f"https://poigamelab.com/{filename}" in page
         assert "site-header.js" in page
         assert "site-footer.js" in page
@@ -129,6 +126,17 @@ def test_merge_help_catalog_has_researched_pace_instead_of_placeholder_values():
     assert "Lv28実例22日" in game["days"]
     assert "期限30日" in game["days"]
     assert "普通〜やや難" in game["difficulty"]
+    assert "調査中" not in game["difficulty"]
+
+
+def test_magic_jigsaw_catalog_has_researched_pace_instead_of_placeholder_values():
+    with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+        rows = {row["name"]: row for row in csv.DictReader(handle)}
+    game = rows["マジックジグソーパズル"]
+    assert "7,000コイン実例9日" in game["days"]
+    assert "11,000コイン実例4〜7日" in game["days"]
+    assert "15,000コイン期限22日" in game["days"]
+    assert "広告視聴時間が必要" in game["difficulty"]
     assert "調査中" not in game["difficulty"]
 
 

@@ -1,0 +1,52 @@
+{
+  "game": "マジックジグソーパズル",
+  "title": "みんなの進捗｜実際のコイン到達ペース",
+  "intro": "公開されている攻略記録を、同一人物ごとに整理しています。必要コイン数や広告報酬は時期で変わるため、条件別に見比べてください。",
+  "notice": "POIGAME LAB運営者本人の実プレイではありません。X（Twitter）・Instagram・Web・YouTubeも検索し、日数と到達条件を確認できた公開記録だけを掲載しています。",
+  "initialVisible": 4,
+  "players": [
+    {
+      "label": "プレイヤーA（2026年）",
+      "status": "completed",
+      "summary": "7,000コインを9日で達成、総プレイ12時間20分",
+      "milestones": [
+        {"day": 1, "label": "開始", "detail": "1日目のプレイ約1時間5分"},
+        {"day": 5, "label": "継続", "detail": "5日目は約2時間54分プレイ"},
+        {"day": 9, "label": "7,000コイン達成", "detail": "総プレイ12時間20分で完走"}
+      ],
+      "note": "35〜70ピースの短いパズルと、パズル完成後のエキストラボーナス広告を併用。2026年6月の記録。",
+      "sources": ["https://www.shimopoi.com/magic-puzzle/"]
+    },
+    {
+      "label": "プレイヤーB（2025年更新記録）",
+      "status": "completed",
+      "summary": "3,500コインを約3時間・1日で達成",
+      "milestones": [
+        {"dayLabel": "約3時間", "label": "3,500コイン達成", "detail": "広告視聴中心で完走"}
+      ],
+      "note": "パズル報酬より広告視聴を主軸にした攻略記録。条件や広告単価は現在と異なる可能性があります。",
+      "sources": ["https://www.yumatti.com/2021-12-04-093008/"]
+    },
+    {
+      "label": "プレイヤーC（2024年）",
+      "status": "completed",
+      "summary": "11,000コインを約4日で達成",
+      "milestones": [
+        {"day": 4, "label": "11,000コイン達成", "detail": "パズルを多く解いて完走"}
+      ],
+      "note": "ハピタス経由の過去案件記録。広告だけでなくジグソーパズルを継続して進めた例です。",
+      "sources": ["https://note.com/sai_en/n/n5d13f00f5023"]
+    },
+    {
+      "label": "プレイヤーD（2025年攻略記録）",
+      "status": "completed",
+      "summary": "11,000コインを7日・約11時間の攻略記録",
+      "milestones": [
+        {"day": 7, "label": "11,000コイン到達", "detail": "記事内の到達目安は約11時間"}
+      ],
+      "note": "35ピースを1回完成させた後、完成後ボーナス広告を連続視聴する方法を中心にした記録。",
+      "sources": ["https://wakupen.com/magic-jigsaw-puzzle/"]
+    }
+  ],
+  "footnote": "広告報酬・必要コイン数・期限は変更されます。開始時に自分のポイントサイト条件を保存し、古い記録のコイン効率をそのまま当てはめないでください。"
+}
