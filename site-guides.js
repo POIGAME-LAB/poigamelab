@@ -104,10 +104,9 @@ window.POIGAME_GUIDES = Object.freeze({
   },
   "マジックジグソーパズル": {
     title: "マジックジグソーパズル ポイ活攻略",
-    description: "コイン回収・広告視聴・短時間パズル・日割りノルマで効率よく進める方法を整理しています。",
+    description: "3,500〜15,000コイン系案件の実際の到達ペースと、広告・35〜70ピース・ミッションの回し方をまとめています。",
     links: [
-      { label: "コイン攻略を読む →", href: "magic-jigsaw-puzzles-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=マジックジグソーパズル" }
+      { label: "コイン攻略を読む →", href: "magic-jigsaw-puzzles-guide.html" }
     ]
   }
 });
