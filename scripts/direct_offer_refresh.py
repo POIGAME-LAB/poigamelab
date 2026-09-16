@@ -2619,6 +2619,28 @@ def main(after_scan=None):
         print("ERROR: unregistered comparison sources: " + ", ".join(unknown), file=sys.stderr)
         return 2
 
+    unified_daily_sources = [
+        str(x).strip() for x in (policy.get("unifiedDailySources") or []) if str(x).strip()
+    ]
+    unified_sources_declared = "unifiedDailySources" in policy
+    if unified_sources_declared and not unified_daily_sources:
+        print("ERROR: unifiedDailySources is empty", file=sys.stderr)
+        return 2
+    if not unified_sources_declared:
+        unified_daily_sources = list(comparison_sources)
+    unknown_unified = [x for x in unified_daily_sources if x not in sources]
+    if unknown_unified:
+        print("ERROR: unregistered unified daily sources: " + ", ".join(unknown_unified), file=sys.stderr)
+        return 2
+    invalid_unified = [] if not unified_sources_declared else [
+        x for x in unified_daily_sources
+        if sources[x].get("new_game_discovery_enabled") is not True
+    ]
+    if invalid_unified:
+        print("ERROR: unified source is not enabled for the shared discovery crawl: "
+              + ", ".join(invalid_unified), file=sys.stderr)
+        return 2
+
     original_published = PUBLISHED.read_bytes() if PUBLISHED.exists() else None
     previous_new_game_history = load_new_game_history(NEW_GAME_HISTORY)
     rows = read_published()
@@ -2860,7 +2882,7 @@ def main(after_scan=None):
         ]
         published_sources = [str(r.get("site") or "") for r in rows
                              if r.get("game") == game and r.get("site")]
-        requested = list(dict.fromkeys(comparison_sources + supplemental + published_sources))
+        requested = list(dict.fromkeys(unified_daily_sources + comparison_sources + supplemental + published_sources))
         game_result = {"game": game, "sources": [], "standardConfirmed": 0}
 
         for source_id in requested:
@@ -2871,12 +2893,18 @@ def main(after_scan=None):
                 })
                 continue
             source = sources[source_id]
-            is_standard = source_id in comparison_sources
+            is_standard = source_id in unified_daily_sources
             current_rows = [
                 r for r in rows
                 if str(r.get("game") or "") == game and str(r.get("site") or "") == source_id
             ]
-            if source.get("scheduled_fetch_enabled", True) is not True:
+            reuse_unified_listing = (
+                unified_sources_declared
+                and source_id in unified_daily_sources
+                and source.get("new_game_discovery_enabled") is True
+            )
+            if (source.get("scheduled_fetch_enabled", True) is not True
+                    and not reuse_unified_listing):
                 review.append({
                     "game": game,
                     "source": source_id,
@@ -2910,6 +2938,11 @@ def main(after_scan=None):
             offerwall_presence = []
             listing_limit = max(0, min(2, int(source.get("direct_listing_limit", 2))))
             detail_limit = max(0, min(6, int(source.get("direct_detail_limit", 6))))
+            if reuse_unified_listing:
+                detail_limit = max(
+                    detail_limit,
+                    max(0, min(6, int(source.get("coverage_detail_review_limit_per_game") or 0))),
+                )
             cached_discovery_listing_urls = cached_listing_urls_for_source(
                 source, consumer="new_game_discovery"
             )
@@ -2951,6 +2984,17 @@ def main(after_scan=None):
                               if offer_identity_key(u, source_id) in published_identities]
             discovery_urls = [u for u in deduped_urls
                               if offer_identity_key(u, source_id) not in published_identities]
+            if unified_sources_declared and source_id in unified_daily_sources:
+                for observed_url in discovery_urls:
+                    review.append({
+                        "game": game,
+                        "source": source_id,
+                        "url": observed_url,
+                        "reason": "first_party_existing_game_listing_offer_observed",
+                        "candidateOnly": True,
+                        "publicationAuthorized": False,
+                        "checkedAt": checked_at,
+                    })
             discovery_budget = max(0, detail_limit - len(published_urls))
             urls = published_urls + discovery_urls[:discovery_budget]
 
@@ -3413,7 +3457,7 @@ def main(after_scan=None):
                         })
         game_result["coverageDiscovery"] = coverage_summary
 
-        game_result["standardTotal"] = len(comparison_sources)
+        game_result["standardTotal"] = len(unified_daily_sources)
         game_result["comparisonReady"] = (
             game_result["standardConfirmed"] >= int(policy.get("minimumConfirmedSourcesForComparison") or 2)
         )
@@ -3455,6 +3499,7 @@ def main(after_scan=None):
         "coverageDiscoveryVersion": 2,
         "coverageDiscoveryMode": "candidate-only" if coverage_enabled else "disabled",
         "comparisonSources": comparison_sources,
+        "unifiedDailySources": unified_daily_sources,
         "apiCalls": 0,
         "publishedRewardChanges": changed,
         "refreshedRows": len(refreshed),
