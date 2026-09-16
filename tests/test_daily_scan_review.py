@@ -250,3 +250,32 @@ def test_daily_workflow_has_no_paid_api_or_competing_automatic_adopter():
     assert "git push origin HEAD:main" in workflow
     assert "data/daily_scan_review.json" in workflow[archive:commit]
     assert "git add data/daily_scan_review.json" not in workflow
+
+
+def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
+    items = []
+    for i in range(31):
+        for site in ("a", "b"):
+            items.append({
+                "classification": "likely_game",
+                "titleHint": f"Budget Puzzle {i:02d}",
+                "source": site,
+                "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
+            })
+    result = scan(items, monkeypatch)
+    assert daily.MAX_GROUPS == 120
+    assert daily.MAX_DETAILS == 360
+    assert result["twoSiteListingGroups"] == 31
+    assert result["reviewedGroups"] == 31
+    assert result["detailInspectionCalls"] == 62
+    assert result["groupLimitReached"] is False
+    assert result["detailLimitReached"] is False
+    assert result["rankingComplete"] is True
+
+
+def test_default_budget_covers_observed_210_candidate_surface():
+    # The 2026-09-16 production probe exposed 210 new candidate offer rows.
+    # Even if every two rows formed a distinct two-site game, 105 groups and
+    # 210 detail inspections remain inside the bounded daily review envelope.
+    assert daily.MAX_GROUPS >= 105
+    assert daily.MAX_DETAILS >= 210
