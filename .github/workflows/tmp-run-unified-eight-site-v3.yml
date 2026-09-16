@@ -6,6 +6,7 @@ on:
       - feat/unified-eight-site-offers-v2
     paths:
       - ".github/workflows/tmp-run-unified-eight-site-v3.yml"
+      - "scripts/tmp_fix_unified_compat.py"
 
 permissions:
   contents: write
