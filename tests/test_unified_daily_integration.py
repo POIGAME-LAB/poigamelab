@@ -112,6 +112,9 @@ def test_one_warau_listing_scan_drives_discovery_and_listed_reward_update(
     monkeypatch.setattr(module, "fetch_first_party", fetch)
     assert daily.main() == 0
 
+    print("DIAGNOSTIC_STATUS=" + module.STATUS.read_text())
+    print("DIAGNOSTIC_DAILY=" + (tmp_path / "data/daily_scan_review.json").read_text())
+
     with module.PUBLISHED.open(newline="") as f:
         row = list(csv.DictReader(f))[0]
     assert row["reward"] == NOW_REWARD
