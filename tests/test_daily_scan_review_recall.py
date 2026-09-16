@@ -28,6 +28,36 @@ def test_default_review_budget_was_expanded_for_reward_ranking():
     assert daily.MAX_DETAILS == 120
 
 
+def test_ambiguous_pointtown_reward_text_never_ranks_as_yen():
+    import daily_scan_review as daily
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "pointtown-detail-review-v1",
+        "verifiedCurrentRewardPoints": 160,
+        "verifiedCurrentRewardYen": 160,
+        "rewardUnit": "PointTown-point",
+        "sourcePointRate": "1pt=1JPY",
+        "headerText": "対象条件で 160 200 初回利用限定",
+    }
+    assert daily.explicit_yen(evidence) is None
+
+
+def test_pointtown_reward_requires_exact_unit_contract():
+    import daily_scan_review as daily
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "pointtown-detail-review-v1",
+        "verifiedCurrentRewardPoints": 160,
+        "verifiedCurrentRewardYen": 160,
+        "rewardUnit": "PointTown-point",
+        "sourcePointRate": "1pt=1JPY",
+        "headerText": "対象条件で 160 初回利用限定",
+    }
+    assert daily.explicit_yen(evidence) == 160
+    evidence["sourcePointRate"] = "unknown"
+    assert daily.explicit_yen(evidence) is None
+
+
 def test_transient_first_party_scan_failure_holds_ranking(monkeypatch):
     import daily_scan_review as daily
     result = scan(candidates("Quiet Kingdom"), monkeypatch)
