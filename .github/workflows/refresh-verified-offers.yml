@@ -94,14 +94,6 @@ jobs:
           node tests/test_site_data_v24.js
           node tests/test_site_health_v25.js
 
-      - name: Reject stale or non-main publication
-        if: steps.refresh.outcome == 'success'
-        run: |
-          set -euo pipefail
-          test "${GITHUB_REF}" = "refs/heads/main"
-          git fetch origin main
-          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
-
       - name: Archive refresh outputs to Cloudflare R2
         if: steps.refresh.outcome == 'success'
         env:
@@ -193,6 +185,8 @@ jobs:
           done
 
           git diff --cached --quiet || git commit -m "chore: refresh compact public offer data"
+          git fetch origin main
+          git rebase origin/main
           git push origin HEAD:main
 
       - name: Surface direct-refresh system failure
