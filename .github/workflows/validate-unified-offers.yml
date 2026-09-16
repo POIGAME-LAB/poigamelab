@@ -1,0 +1,59 @@
+name: Validate unified offer pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feat/unified-eight-site-offers-v2
+    paths:
+      - "config/refresh_policy.json"
+      - "scripts/direct_offer_refresh.py"
+      - "scripts/structured_publication.py"
+      - "scripts/unified_offer_snapshot.py"
+      - "tests/test_unified_eight_site_pipeline.py"
+      - "tests/test_unified_daily_integration.py"
+      - ".github/workflows/refresh-verified-offers.yml"
+      - ".github/workflows/validate-unified-offers.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "config/refresh_policy.json"
+      - "scripts/direct_offer_refresh.py"
+      - "scripts/structured_publication.py"
+      - "scripts/unified_offer_snapshot.py"
+      - "tests/test_unified_eight_site_pipeline.py"
+      - "tests/test_unified_daily_integration.py"
+      - ".github/workflows/refresh-verified-offers.yml"
+      - ".github/workflows/validate-unified-offers.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Syntax checks
+        run: |
+          python -m py_compile \
+            scripts/direct_offer_refresh.py \
+            scripts/structured_publication.py \
+            scripts/unified_offer_snapshot.py
+
+      - name: Unified pipeline regression tests
+        run: |
+          python -m pytest -q \
+            tests/test_unified_eight_site_pipeline.py \
+            tests/test_unified_daily_integration.py
