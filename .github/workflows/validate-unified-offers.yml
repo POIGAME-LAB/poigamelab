@@ -9,10 +9,17 @@ on:
     paths:
       - "config/refresh_policy.json"
       - "scripts/direct_offer_refresh.py"
+      - "scripts/daily_scan_review.py"
       - "scripts/structured_publication.py"
       - "scripts/unified_offer_snapshot.py"
+      - "scripts/write_new_game_content_queue.py"
       - "tests/test_unified_eight_site_pipeline.py"
       - "tests/test_unified_daily_integration.py"
+      - "tests/test_structured_publication.py"
+      - "tests/test_daily_scan_review.py"
+      - "tests/test_daily_scan_review_recall.py"
+      - "tests/test_new_game_content_queue.py"
+      - "tests/test_direct_offer_refresh_v1.py"
       - ".github/workflows/refresh-verified-offers.yml"
       - ".github/workflows/validate-unified-offers.yml"
   pull_request:
@@ -21,10 +28,17 @@ on:
     paths:
       - "config/refresh_policy.json"
       - "scripts/direct_offer_refresh.py"
+      - "scripts/daily_scan_review.py"
       - "scripts/structured_publication.py"
       - "scripts/unified_offer_snapshot.py"
+      - "scripts/write_new_game_content_queue.py"
       - "tests/test_unified_eight_site_pipeline.py"
       - "tests/test_unified_daily_integration.py"
+      - "tests/test_structured_publication.py"
+      - "tests/test_daily_scan_review.py"
+      - "tests/test_daily_scan_review_recall.py"
+      - "tests/test_new_game_content_queue.py"
+      - "tests/test_direct_offer_refresh_v1.py"
       - ".github/workflows/refresh-verified-offers.yml"
       - ".github/workflows/validate-unified-offers.yml"
 
@@ -49,11 +63,21 @@ jobs:
         run: |
           python -m py_compile \
             scripts/direct_offer_refresh.py \
+            scripts/daily_scan_review.py \
             scripts/structured_publication.py \
-            scripts/unified_offer_snapshot.py
+            scripts/unified_offer_snapshot.py \
+            tests/test_unified_eight_site_pipeline.py \
+            tests/test_unified_daily_integration.py
 
-      - name: Unified pipeline regression tests
+      - name: Unified foundation and daily integration tests
         run: |
           python -m pytest -q \
             tests/test_unified_eight_site_pipeline.py \
-            tests/test_unified_daily_integration.py
+            tests/test_unified_daily_integration.py \
+            tests/test_structured_publication.py \
+            tests/test_daily_scan_review.py \
+            tests/test_daily_scan_review_recall.py \
+            tests/test_new_game_content_queue.py \
+            'tests/test_direct_offer_refresh_v1.py::test_listing_failure_is_retained_with_or_without_known_details[404-True]' \
+            'tests/test_direct_offer_refresh_v1.py::test_listing_failure_is_retained_with_or_without_known_details[429-True]' \
+            tests/test_direct_offer_refresh_v1.py::test_moppy_first_party_terms_map_appdriver_without_external_fetch
