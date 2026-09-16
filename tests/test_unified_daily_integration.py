@@ -114,6 +114,7 @@ def test_one_warau_listing_scan_drives_discovery_and_listed_reward_update(
 
     print("DIAGNOSTIC_STATUS=" + module.STATUS.read_text())
     print("DIAGNOSTIC_DAILY=" + (tmp_path / "data/daily_scan_review.json").read_text())
+    print("DIAGNOSTIC_REVIEW=" + module.REVIEW.read_text())
 
     with module.PUBLISHED.open(newline="") as f:
         row = list(csv.DictReader(f))[0]
