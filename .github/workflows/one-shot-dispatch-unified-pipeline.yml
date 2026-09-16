@@ -1,0 +1,28 @@
+name: One-shot dispatch unified pipeline
+
+on:
+  push:
+    branches:
+      - test/manual-unified-pipeline-20260916
+    paths:
+      - ".github/workflows/one-shot-dispatch-unified-pipeline.yml"
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch production refresh on main once
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/refresh-verified-offers.yml/dispatches" \
+            -f ref=main
+          echo "Dispatched refresh-verified-offers.yml on main once."
