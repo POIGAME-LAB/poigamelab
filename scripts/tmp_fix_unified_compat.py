@@ -32,4 +32,29 @@ if text.count(old) != 1:
     raise SystemExit(f"legacy validation block count={text.count(old)}")
 text = text.replace(old, new, 1)
 
+old = '''            reuse_unified_listing = (
+                source_id in unified_daily_sources
+                and source.get("new_game_discovery_enabled") is True
+            )
+'''
+new = '''            reuse_unified_listing = (
+                unified_sources_declared
+                and source_id in unified_daily_sources
+                and source.get("new_game_discovery_enabled") is True
+            )
+'''
+if text.count(old) != 1:
+    raise SystemExit(f"reuse unified listing block count={text.count(old)}")
+text = text.replace(old, new, 1)
+
+old = '''            if source_id in unified_daily_sources:
+                for observed_url in discovery_urls:
+'''
+new = '''            if unified_sources_declared and source_id in unified_daily_sources:
+                for observed_url in discovery_urls:
+'''
+if text.count(old) != 1:
+    raise SystemExit(f"unified candidate observation block count={text.count(old)}")
+text = text.replace(old, new, 1)
+
 path.write_text(text, encoding="utf-8")
