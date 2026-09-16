@@ -6,10 +6,11 @@ WORKFLOW = ROOT / ".github" / "workflows" / "research-new-game-content.yml"
 
 
 class TestNewGameResearchWorkflow(unittest.TestCase):
-    def test_auto_trigger_is_explicitly_gated(self):
+    def test_auto_trigger_is_default_on_with_explicit_kill_switch(self):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('Refresh comparison offers (API-free)', text)
-        self.assertIn("vars.ENABLE_NEW_GAME_CONTENT_RESEARCH == 'true'", text)
+        self.assertIn("vars.ENABLE_NEW_GAME_CONTENT_RESEARCH != 'false'", text)
+        self.assertNotIn("vars.ENABLE_NEW_GAME_CONTENT_RESEARCH == 'true'", text)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", text)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", text)
 

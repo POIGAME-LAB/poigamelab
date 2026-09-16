@@ -34,6 +34,8 @@ on:
       - "tests/test_daily_scan_review_recall.py"
       - "tests/test_structured_publication.py"
       - "tests/test_new_game_content_queue.py"
+      - "tests/test_new_game_research_workflow.py"
+      - "tests/test_publish_new_game_workflow.py"
       - "tests/test_daily_publication_gate.py"
       - "tests/test_warau_baseline_candidates.py"
       - "tests/test_public_site_build.py"
@@ -74,6 +76,8 @@ jobs:
           python -m py_compile tests/test_daily_scan_review_recall.py
           python -m py_compile tests/test_structured_publication.py
           python -m py_compile tests/test_new_game_content_queue.py
+          python -m py_compile tests/test_new_game_research_workflow.py
+          python -m py_compile tests/test_publish_new_game_workflow.py
           python -m py_compile tests/test_daily_publication_gate.py
 
       - name: Current 01:17 pipeline contract tests
@@ -83,6 +87,8 @@ jobs:
             tests/test_daily_scan_review_recall.py \
             tests/test_structured_publication.py \
             tests/test_new_game_content_queue.py \
+            tests/test_new_game_research_workflow.py \
+            tests/test_publish_new_game_workflow.py \
             tests/test_daily_publication_gate.py \
             tests/test_offer_history.py
 
