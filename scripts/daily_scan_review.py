@@ -16,8 +16,8 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_GROUPS = 30
-MAX_DETAILS = 120
+MAX_GROUPS = 120
+MAX_DETAILS = 360
 
 
 def discovery_name(title):
