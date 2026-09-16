@@ -329,6 +329,12 @@ def prepare(rows, evidence_items, sources, checked_at, policy, rate_confirmed=Fa
     allowed = policy.get("sources") or []
     by_key = defaultdict(list)
     for item in evidence_items:
+        # Discovery/candidate records are deliberately non-publication inputs.
+        # They may share the same offer identity as a fully parsed snapshot, so
+        # admitting them here would turn an explicit safety marker into a false
+        # incomplete-parser hold for an otherwise valid current snapshot.
+        if item.get("candidateOnly") is True and item.get("publicationAuthorized") is False:
+            continue
         key = (
             item.get("game"),
             item.get("source"),
