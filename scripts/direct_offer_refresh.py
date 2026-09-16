@@ -2543,7 +2543,7 @@ def build_existing_game_candidate_queue(review_items, checked_at):
     }
 
 
-def main():
+def main(after_scan=None):
     try:
         approvals = load_refresh_approvals()
     except (OSError, ValueError, TypeError):
@@ -2858,7 +2858,9 @@ def main():
         supplemental = [
             str(x).strip() for x in (game_policy.get("supplementalSources") or []) if str(x).strip()
         ]
-        requested = list(dict.fromkeys(comparison_sources + supplemental))
+        published_sources = [str(r.get("site") or "") for r in rows
+                             if r.get("game") == game and r.get("site")]
+        requested = list(dict.fromkeys(comparison_sources + supplemental + published_sources))
         game_result = {"game": game, "sources": [], "standardConfirmed": 0}
 
         for source_id in requested:
@@ -2941,7 +2943,16 @@ def main():
                     continue
                 seen_identities.add(identity)
                 deduped_urls.append(exact)
-            urls = deduped_urls[:detail_limit]
+            # The discovery budget must not truncate already published offers.
+            published_identities = {
+                offer_identity_key(r.get("url"), source_id) for r in current_rows
+            } if known_detail_fetch_enabled else set()
+            published_urls = [u for u in deduped_urls
+                              if offer_identity_key(u, source_id) in published_identities]
+            discovery_urls = [u for u in deduped_urls
+                              if offer_identity_key(u, source_id) not in published_identities]
+            discovery_budget = max(0, detail_limit - len(published_urls))
+            urls = published_urls + discovery_urls[:discovery_budget]
 
             source_result = {
                 "source": source_id,
@@ -2953,10 +2964,10 @@ def main():
                 "updatedRows": 0,
                 "reviewRequired": 0,
             }
-            if len(deduped_urls) > detail_limit:
+            if len(discovery_urls) > discovery_budget:
                 review.append({
                     "game": game, "source": source_id, "reason": "detail_limit_reached",
-                    "deferredCount": len(deduped_urls) - detail_limit,
+                    "deferredCount": len(discovery_urls) - discovery_budget,
                     "checkedAt": checked_at,
                 })
                 source_result["reviewRequired"] += 1
@@ -3408,6 +3419,29 @@ def main():
         )
         results.append(game_result)
 
+    # Consume the same in-memory snapshots before they are released. The hook
+    # is optional, cannot silently fail, and runs before any publication write.
+    if after_scan is not None:
+        before_hook = [dict(row) for row in rows]
+        hook_result = after_scan(items=new_game_candidate_queue, sources=sources, targets=targets,
+                   rows=rows, checked_at=checked_at, fetcher=fetch_once,
+                   review_items=review, publication_policy=policy.get("structuredPublication", {})) or {}
+        publication_changed = publication_changed or before_hook != rows
+        changed = sum(old.get("reward") != new.get("reward") for old, new in zip(before_hook, rows))
+        confirmed_keys = set(hook_result.get("confirmedOfferKeys", []))
+        refreshed.update(confirmed_keys)
+        for game_result in results:
+            for source_result in game_result["sources"]:
+                confirmed = sum(row.get("offerKey") in confirmed_keys for row in rows
+                    if row.get("game") == game_result["game"] and row.get("site") == source_result["source"])
+                if confirmed:
+                    source_result["confirmedOffers"] = max(source_result["confirmedOffers"], confirmed)
+                    source_result["updatedRows"] = max(source_result["updatedRows"], confirmed)
+                    source_result["state"] = "confirmed"
+            game_result["standardConfirmed"] = sum(s.get("standard") is True and s["state"] == "confirmed"
+                                                     for s in game_result["sources"])
+            game_result["comparisonReady"] = game_result["standardConfirmed"] >= int(policy.get("minimumConfirmedSourcesForComparison") or 2)
+
     if publication_changed:
         if not PUBLISHED.exists() or PUBLISHED.read_bytes() != original_published:
             print("ERROR: published data changed during refresh; refusing to overwrite", file=sys.stderr)
@@ -3447,6 +3481,8 @@ def main():
         "listingSnapshot": {
             "mode": "fetch_once_reuse_many",
             "uniqueListings": len(listing_snapshots),
+            "uniqueRequests": len(fetch_cache),
+            "failedRequests": sum(error is not None for _, error in fetch_cache.values()),
             "reuseCount": listing_snapshot_reuses,
             "consumers": sorted({
                 consumer

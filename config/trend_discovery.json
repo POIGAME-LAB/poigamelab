@@ -8,18 +8,14 @@
     {
       "id": "x-poikatsu",
       "query": "ポイ活 ゲーム 案件",
-      "includeDomains": [
-        "x.com"
-      ],
+      "includeDomains": ["x.com"],
       "sourceType": "social",
       "firecrawlFallback": true
     },
     {
       "id": "warau-new",
       "query": "ゲーム アプリ 新着 案件",
-      "includeDomains": [
-        "warau.jp"
-      ],
+      "includeDomains": ["warau.jp"],
       "sourceType": "point_site",
       "directUrls": [
         "https://www.warau.jp/contents/point/category?category_id=290&display_style=list&page=1&point_group=6&sort=new",
@@ -33,38 +29,26 @@
     {
       "id": "chobirich-new",
       "query": "ゲーム アプリ 案件",
-      "includeDomains": [
-        "chobirich.com"
-      ],
+      "includeDomains": ["chobirich.com"],
       "sourceType": "point_site",
       "firecrawlFallback": true
     },
     {
       "id": "moppy-official-games",
       "query": "ポイ活 ゲーム おすすめ 案件",
-      "includeDomains": [
-        "pc.moppy.jp"
-      ],
+      "includeDomains": ["pc.moppy.jp"],
       "sourceType": "point_site",
-      "directUrls": [
-        "https://pc.moppy.jp/poikatsu-lab/4753-1/"
-      ],
+      "directUrls": ["https://pc.moppy.jp/poikatsu-lab/4753-1/"],
       "firecrawlFallback": false
     },
     {
       "id": "coincome-new",
       "query": "ゲーム アプリ 案件",
-      "includeDomains": [
-        "cimcome.jp"
-      ],
+      "includeDomains": ["cimcome.jp"],
       "sourceType": "point_site",
-      "directUrls": [
-        "https://cimcome.jp/campaigns?_category_id=21"
-      ],
+      "directUrls": ["https://cimcome.jp/campaigns?_category_id=21"],
       "firecrawlFallback": true,
-      "fallbackUrls": [
-        "https://cimcome.jp/campaigns"
-      ]
+      "fallbackUrls": ["https://cimcome.jp/campaigns"]
     }
   ],
   "minimumScoreForReview": 30,
@@ -81,9 +65,14 @@
     "enabled": true,
     "requiresV29AdoptionReady": true,
     "revalidateBeforeWrite": true,
+    "requiresContentPackage": true,
+    "requiredResearchChannels": ["web", "x", "youtube", "instagram", "pointSites"],
+    "requireImageRights": true,
+    "requireGuideHtml": true,
+    "requireProgressEvidence": true,
     "initialRefreshEnabled": false,
     "apiCalls": 0,
-    "note": "V30 may add a verified game and its strict offers to production; scheduled refresh stays disabled until a controlled refresh policy is enabled."
+    "note": "V30 may add a verified game only after a deterministic content package gate confirms cross-channel research completion, sourced guide text, deduplicated progress evidence, a rights-confirmed image, and an existing guide HTML file. Scheduled refresh stays disabled until a controlled refresh policy is enabled."
   },
   "retrievalStrategy": "direct first-party HTTP across bounded stable official listing/editorial pages; query selectors are preserved only from an allowlist; Firecrawl best-effort fallback only",
   "confidenceStrategy": "deterministic evidence confidence; Gemini extracts names only and cannot promote a single-source candidate by confidence",

@@ -223,3 +223,9 @@
     puzzle.appendChild(fig);
   }
 })();
+
+(() => {
+  const script = document.createElement('script');
+  script.src = 'assets/current-offers.js';
+  document.body.appendChild(script);
+})();

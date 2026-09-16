@@ -1,0 +1,185 @@
+name: Research top-five new games (quarantine)
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "Refresh comparison offers (API-free)"
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: poigamelab-new-game-research
+  cancel-in-progress: false
+
+jobs:
+  research:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       vars.ENABLE_NEW_GAME_CONTENT_RESEARCH == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Inspect new-game handoff
+        id: queue
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          queue=json.loads(Path('data/new_game_content_queue.json').read_text(encoding='utf-8'))
+          count=int(queue.get('count') or 0)
+          if count != len(queue.get('items') or []):
+              raise SystemExit('new-game queue count mismatch')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as handle:
+              handle.write(f"has_items={'true' if count > 0 else 'false'}\n")
+              handle.write(f"count={count}\n")
+          PY
+
+      - name: Research Web, X, YouTube, Instagram and point-site lanes
+        if: steps.queue.outputs.has_items == 'true'
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Build grounded guide packages and local title-card images
+        if: steps.queue.outputs.has_items == 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/build_new_game_content_packages.py
+          python scripts/render_new_game_guide.py
+
+      - name: Research strict point-site offers in quarantine
+        if: steps.queue.outputs.has_items == 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+        run: python scripts/research_top_five_offers.py
+
+      - name: Prepare zero-candidate quarantine outputs without API calls
+        if: steps.queue.outputs.has_items != 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          queue=json.loads(Path('data/new_game_content_queue.json').read_text(encoding='utf-8'))
+          checked=queue.get('checkedAt')
+          for directory in ('data/new_game_channel_research','data/new_game_content_packages','data/research_results'):
+              Path(directory).mkdir(parents=True,exist_ok=True)
+          docs={
+              'data/new_game_channel_research_status.json': {
+                  'phase':'NEW_GAME_MULTI_CHANNEL_RESEARCH_V1','success':True,'games':0,
+                  'completeGames':0,'apiCalls':0,'publicationWrites':0,
+              },
+              'data/new_game_content_package_status.json': {
+                  'phase':'NEW_GAME_CONTENT_PACKAGE_V1','success':True,'games':0,
+                  'failed':0,'failures':[],'apiCalls':0,'publicationWrites':0,
+              },
+              'data/top_five_offer_research_status.json': {
+                  'phase':'TOP_FIVE_STRICT_OFFER_RESEARCH_V1','sourceQueueCheckedAt':checked,
+                  'selected':0,'researched':0,'adoptionReady':0,'held':0,
+                  'publicationWrites':0,'results':[],
+              },
+              'data/top_five_adoption_candidates.json': {
+                  'schemaVersion':1,'phase':'TOP_FIVE_CONTENT_ADOPTION_GATE_V1',
+                  'sourceQueueCheckedAt':checked,'autoPublish':False,'autoAddGame':False,'items':[],
+              },
+          }
+          for name,payload in docs.items():
+              Path(name).write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Install local test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Verify research and content contracts without network calls
+        run: |
+          python -m pytest -q \
+            tests/test_research_new_game_channels.py \
+            tests/test_new_game_research_workflow.py \
+            tests/test_build_new_game_content_packages.py \
+            tests/test_research_top_five_offers.py \
+            tests/test_new_game_content_queue.py \
+            tests/test_new_game_content_gate.py
+
+      - name: Assemble exact quarantined bundle
+        run: |
+          set -euo pipefail
+          archive_dir="$(mktemp -d)"
+          echo "ARCHIVE_DIR=${archive_dir}" >> "$GITHUB_ENV"
+          mkdir -p "${archive_dir}/data/research_results" "${archive_dir}/assets/game-art" "${archive_dir}/guides"
+          mkdir -p data/new_game_channel_research data/new_game_content_packages data/research_results
+          cp data/new_game_content_queue.json "${archive_dir}/data/"
+          cp data/new_game_channel_research_status.json "${archive_dir}/data/"
+          cp data/new_game_content_package_status.json "${archive_dir}/data/"
+          cp data/top_five_offer_research_status.json "${archive_dir}/data/"
+          cp data/top_five_adoption_candidates.json "${archive_dir}/data/"
+          cp -R data/new_game_channel_research "${archive_dir}/data/"
+          cp -R data/new_game_content_packages "${archive_dir}/data/"
+          find assets/game-art -maxdepth 1 -type f -name '*-auto.svg' -exec cp {} "${archive_dir}/assets/game-art/" \;
+          ARCHIVE_DIR="${archive_dir}" python - <<'PY'
+          import json, os, shutil
+          from pathlib import Path
+          root=Path('.')
+          archive=Path(os.environ['ARCHIVE_DIR'])
+          status=json.loads(Path('data/top_five_offer_research_status.json').read_text(encoding='utf-8'))
+          for row in status.get('results') or []:
+              rel=str(row.get('resultPath') or '')
+              source=root/rel
+              if rel.startswith('data/research_results/') and source.is_file() and source.name == Path(rel).name:
+                  shutil.copy2(source, archive/'data/research_results'/source.name)
+          for p in Path('data/new_game_content_packages').glob('*.json'):
+              data=json.loads(p.read_text(encoding='utf-8'))
+              guide=Path(str(data.get('guidePath') or ''))
+              if guide.name == str(guide) and guide.suffix == '.html' and guide.is_file():
+                  shutil.copy2(guide, archive/'guides'/guide.name)
+          PY
+          tar -C "${archive_dir}" -czf "${RUNNER_TEMP}/new-game-content-bundle.tgz" .
+          (cd "${RUNNER_TEMP}" && sha256sum new-game-content-bundle.tgz > new-game-content-bundle.sha256)
+
+      - name: Archive quarantined content bundle to Cloudflare R2
+        if: steps.queue.outputs.has_items == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          command -v aws >/dev/null 2>&1
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+          stamp="$(date -u +'%Y/%m/%d/%H%M%SZ')"
+          aws s3 cp "${RUNNER_TEMP}/new-game-content-bundle.tgz" \
+            "s3://${R2_BUCKET}/new-game-research/daily/${stamp}.tgz" \
+            --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          aws s3 cp "${RUNNER_TEMP}/new-game-content-bundle.tgz" \
+            "s3://${R2_BUCKET}/new-game-research/latest.tgz" \
+            --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+
+      - name: Upload exact quarantined bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: top-five-new-game-content-bundle
+          path: |
+            ${{ runner.temp }}/new-game-content-bundle.tgz
+            ${{ runner.temp }}/new-game-content-bundle.sha256
+          retention-days: 7

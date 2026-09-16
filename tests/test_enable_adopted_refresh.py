@@ -74,13 +74,14 @@ class T(unittest.TestCase):
             cfg = json.loads((td / "policy.json").read_text(encoding="utf-8"))
             self.assertFalse(cfg["games"]["新作ゲーム"]["enabled"])
 
-    def test_workflow_chains_only_after_successful_main_refresh(self):
+    def test_legacy_api_adoption_is_manual_only(self):
         text = (ROOT / ".github/workflows/adopt-high-reward-games.yml").read_text(encoding="utf-8")
-        self.assertIn("workflow_run:", text)
-        self.assertIn('"Refresh comparison offers (API-free)"', text)
-        self.assertIn("github.event.workflow_run.conclusion == 'success'", text)
-        self.assertIn("github.event.workflow_run.head_branch == 'main'", text)
+        self.assertNotIn("workflow_run:", text)
+        self.assertNotIn("schedule:", text)
+        self.assertIn("workflow_dispatch:", text)
+        self.assertIn("if: github.event_name == 'workflow_dispatch'", text)
         self.assertIn("python scripts/enable_adopted_refresh.py", text)
+
 
 
 if __name__ == "__main__":

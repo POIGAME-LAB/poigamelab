@@ -40,8 +40,16 @@ def public_url(url:str)->str:
     return safe_identity_url(url)
 
 def site_key(site:str)->str:
-    table={'ワラウ':'warau','ちょびリッチ':'chobirich','COINCOME':'coincome','モッピー':'moppy'}
+    table={'ワラウ':'warau','ちょびリッチ':'chobirich','COINCOME':'coincome','モッピー':'moppy',
+           'ハピタス':'hapitas','ポイントタウン':'pointtown','ECナビ':'ecnavi','アメフリ':'amefuri',
+           'げん玉':'gendama','Powl':'powl','MIKOSHI':'mikoshi'}
     return table.get(site, re.sub(r'[^a-z0-9]+','-',(site or '').lower()).strip('-') or 'unknown')
+
+def canonical_site(offer):
+    registered=str((offer or {}).get('registered_source') or '').strip().lower()
+    if registered and re.fullmatch(r'[a-z0-9][a-z0-9_-]*', registered):
+        return registered
+    return site_key((offer or {}).get('site') or '')
 
 def offer_key(game,site,platform,url):
     identity=public_url(url)
@@ -59,10 +67,11 @@ def build_outputs(result):
     exceptions=[]
     for offer in ((result.get('verified') or {}).get('offers') or []):
         url=public_url(offer.get('url') or '')
-        key=offer_key(game,offer.get('site') or '',offer.get('platform') or '',url)
+        source=canonical_site(offer)
+        key=offer_key(game,source,offer.get('platform') or '',url)
         if offer.get('auto_publish_ready') is True:
             row={
-              'offerKey':key,'game':game,'site':site_key(offer.get('site') or ''),
+              'offerKey':key,'game':game,'site':source,
               'provider':'','reward':offer.get('reward_yen'),
               'condition':offer.get('condition') or '',
               'platform':offer.get('platform') or '不明','type':'StepUp',
@@ -73,7 +82,7 @@ def build_outputs(result):
             published[key]=row
         else:
             exceptions.append({
-              'offerKey':key,'game':game,'site':site_key(offer.get('site') or ''),
+              'offerKey':key,'game':game,'site':source,
               'platform':offer.get('platform') or '不明',
               'url':url,'reward':offer.get('reward_yen'),
               'condition':offer.get('condition') or '',

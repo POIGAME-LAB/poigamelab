@@ -1,9 +1,8 @@
 name: Discover trending games
 
+# Legacy API-based collector is manual-only; daily discovery reuses direct HTTP.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "7 22 * * *"
 
 permissions:
   contents: write
