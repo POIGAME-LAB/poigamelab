@@ -1,5 +1,6 @@
 name: One-shot dispatch unified pipeline
 
+# Rerun after the 2026-09-16 ranking-budget fix.
 on:
   push:
     branches:
