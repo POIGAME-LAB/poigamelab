@@ -6,12 +6,13 @@ WORKFLOW = ROOT / ".github" / "workflows" / "publish-researched-new-games.yml"
 
 
 class TestPublishNewGameWorkflow(unittest.TestCase):
-    def test_publication_is_explicitly_gated_after_successful_research(self):
+    def test_publication_is_default_on_after_successful_research_with_kill_switch(self):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('Research top-five new games (quarantine)', text)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", text)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", text)
-        self.assertIn("vars.ENABLE_NEW_GAME_AUTO_PUBLISH == 'true'", text)
+        self.assertIn("vars.ENABLE_NEW_GAME_AUTO_PUBLISH != 'false'", text)
+        self.assertNotIn("vars.ENABLE_NEW_GAME_AUTO_PUBLISH == 'true'", text)
 
     def test_exact_research_run_artifact_is_verified(self):
         text = WORKFLOW.read_text(encoding="utf-8")
