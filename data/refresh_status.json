@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-16T07:24:38+00:00",
-  "finishedAt": "2026-09-16T07:24:38+00:00",
+  "startedAt": "2026-09-16T19:35:18+00:00",
+  "finishedAt": "2026-09-16T19:35:18+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -29,7 +29,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "きのこ伝説",
@@ -40,7 +40,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "Township",
@@ -51,7 +51,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "ワーキングヒーロー",
@@ -62,7 +62,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "ホワイトアウト・サバイバル",
@@ -73,7 +73,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "東京ディバンカー",
@@ -84,7 +84,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "パズル＆サバイバル",
@@ -95,7 +95,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "キングショット",
@@ -106,7 +106,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "放置少女",
@@ -117,18 +117,18 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "エバーテイル",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardConfirmed": 1,
+      "standardTotal": 8
     },
     {
       "game": "ATLAS: EARTH",
@@ -139,7 +139,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "ファミリーファームの冒険",
@@ -150,7 +150,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "クロンダイクの冒険",
@@ -161,7 +161,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "Merge Help: ホームデザインパズル",
@@ -172,7 +172,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     },
     {
       "game": "マジックジグソーパズル",
@@ -183,7 +183,7 @@
         "comparison_sources_below_minimum"
       ],
       "standardConfirmed": 0,
-      "standardTotal": 6
+      "standardTotal": 8
     }
   ],
   "success": true
