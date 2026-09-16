@@ -46,6 +46,34 @@ def source_families(sources):
     return {sid: min(group) for sid, group in families.items()}
 
 
+def _pointtown_explicit_yen(evidence):
+    """Accept PointTown yen only when its parsed reward region is unambiguous.
+
+    The underlying review parser is intentionally conservative but older
+    fixtures exposed one edge case where text such as ``で 160 200`` could be
+    reduced to the first number. Until the source parser itself carries a
+    stronger structural marker, the automatic top-five path independently
+    rejects adjacent numeric tokens and re-checks the exact 1pt=1JPY contract.
+    """
+    if evidence.get("parserVersion") != "pointtown-detail-review-v1":
+        return None
+    header = str(evidence.get("headerText") or "")
+    if re.search(r"で\s*[0-9][0-9,]*\s+[0-9][0-9,]*(?:\s|$)", header):
+        return None
+    points = evidence.get("verifiedCurrentRewardPoints")
+    yen = evidence.get("verifiedCurrentRewardYen")
+    if (
+        type(points) is int
+        and type(yen) is int
+        and points > 0
+        and points == yen
+        and evidence.get("rewardUnit") == "PointTown-point"
+        and evidence.get("sourcePointRate") == "1pt=1JPY"
+    ):
+        return yen
+    return None
+
+
 def explicit_yen(evidence, warau_rate_confirmed=False):
     """Do not equate raw pt/P with yen or sum OS/site alternative offers."""
     if evidence.get("state") != "parsed" or evidence.get("downstreamTermsRequired"):
@@ -54,11 +82,12 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
             and evidence.get("rewardUnit") == "pt"):
         value = evidence.get("rewardPoints")
         return value if type(value) is int and value > 0 else None
+    if evidence.get("parserVersion") == "pointtown-detail-review-v1":
+        return _pointtown_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
         "coincome-detail-review-v1": "displayedRewardYen",
         "hapitas-detail-review-v1": "verifiedCurrentRewardYen",
-        "pointtown-detail-review-v1": "verifiedCurrentRewardYen",
         "ecnavi-detail-review-v1": "verifiedCurrentRewardYen",
         "amefuri-multistep-review-v1": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
