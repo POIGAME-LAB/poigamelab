@@ -114,8 +114,26 @@
   },
   "structuredPublication": {
     "enabled": true,
-    "sources": ["warau", "chobirich", "hapitas"],
-    "mode": "complete-stepup-or-verified-reward-snapshot",
+    "sources": [
+      "warau",
+      "chobirich",
+      "hapitas",
+      "coincome",
+      "point_town",
+      "ec_navi",
+      "amefuri"
+    ],
+    "mode": "complete-stepup-or-exact-reward-snapshot",
     "preserveRowsOnHold": true
-  }
+  },
+  "unifiedDailySources": [
+    "moppy",
+    "warau",
+    "coincome",
+    "hapitas",
+    "amefuri",
+    "point_town",
+    "ec_navi",
+    "powl"
+  ]
 }

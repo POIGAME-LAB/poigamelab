@@ -50,7 +50,67 @@ REWARD_ONLY_CONTRACTS = {
         ],
         "rewardUnit": "Hapitas-pt",
         "sourcePointRate": "1pt=1JPY",
+        "pointField": "verifiedCurrentRewardPoints",
+        "pointScale": 1,
         "termsMarkers": ("ポイント対象条件",),
+    },
+    "coincome": {
+        "parser": "coincome-detail-review-v1",
+        "identity": direct.coincome_offer_id,
+        "rewardField": "displayedRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "displayedRewardYen",
+            "rewardUnit", "headerText", "termsText",
+        ],
+        "rewardUnit": "JPY-equivalent",
+        "termsMarkers": ("適用端末", "キャッシュバック条件", "承認条件", "ポイント獲得条件", "否認条件"),
+    },
+    "point_town": {
+        "parser": "pointtown-detail-review-v1",
+        "identity": direct.pointtown_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "verifiedCurrentRewardPoints",
+            "verifiedCurrentRewardYen", "rewardUnit", "sourcePointRate",
+            "headerText", "termsText", "publicationAuthorized",
+        ],
+        "rewardUnit": "PointTown-point",
+        "sourcePointRate": "1pt=1JPY",
+        "pointField": "verifiedCurrentRewardPoints",
+        "pointScale": 1,
+        "termsMarkers": ("ポイント獲得条件",),
+    },
+    "ec_navi": {
+        "parser": "ecnavi-detail-review-v1",
+        "identity": direct.ecnavi_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "displayedPointCandidates",
+            "verifiedCurrentRewardPoints", "verifiedCurrentRewardYen",
+            "rewardUnit", "sourcePointRate", "headerText", "termsText",
+            "publicationAuthorized",
+        ],
+        "rewardUnit": "ECNavi-pt",
+        "sourcePointRate": "10pt=1JPY",
+        "pointField": "verifiedCurrentRewardPoints",
+        "pointScale": 10,
+        "termsMarkers": ("加算条件", "加算時期"),
+    },
+    "amefuri": {
+        "parser": "amefuri-multistep-review-v1",
+        "identity": direct.amefuri_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "displayedRewardYenCandidates",
+            "stepRewardPoints", "stepTotalPoints", "verifiedCurrentRewardYen",
+            "rewardUnit", "sourcePointRate", "headerText", "termsText",
+            "publicationAuthorized",
+        ],
+        "rewardUnit": "JPY-equivalent",
+        "sourcePointRate": "10pt=1JPY",
+        "pointField": "stepTotalPoints",
+        "pointScale": 10,
+        "termsMarkers": ("ポイント獲得条件", "成果受付期限"),
     },
 }
 
@@ -195,16 +255,22 @@ def reward_only_snapshot(item, sources, checked_at):
     reward = e.get(contract["rewardField"])
     require(type(reward) is int and 0 < reward < 1_000_000, "invalid_reward")
     require(e.get("rewardUnit") == contract["rewardUnit"], "unknown_reward_unit")
-    require(
-        e.get("sourcePointRate") == contract["sourcePointRate"],
-        "unit_conversion_review_required",
-    )
-    if sid == "hapitas":
+    if "sourcePointRate" in contract:
         require(
-            e.get("verifiedCurrentRewardPoints") == reward
-            and e.get("displayedCurrentRewardPoints") == reward,
+            e.get("sourcePointRate") == contract["sourcePointRate"],
+            "unit_conversion_review_required",
+        )
+    point_field = contract.get("pointField")
+    if point_field:
+        points = e.get(point_field)
+        scale = contract.get("pointScale")
+        require(
+            type(points) is int and type(scale) is int and scale > 0
+            and points == reward * scale,
             "yen_point_mismatch",
         )
+    if sid == "hapitas":
+        require(e.get("displayedCurrentRewardPoints") == reward, "yen_point_mismatch")
         steps = e.get("stepRewardPoints")
         require(isinstance(steps, list), "invalid_steps")
         if steps:
@@ -213,6 +279,19 @@ def reward_only_snapshot(item, sources, checked_at):
                 "invalid_step",
             )
             require(sum(steps) == reward, "step_total_mismatch")
+    elif sid == "point_town":
+        require(
+            not re.search(r"で\s*[0-9][0-9,]*\s+[0-9][0-9,]*(?:\s|$)",
+                          str(e.get("headerText") or "")),
+            "ambiguous_displayed_reward",
+        )
+    elif sid == "amefuri":
+        steps = e.get("stepRewardPoints")
+        require(isinstance(steps, list) and len(steps) >= 2, "invalid_steps")
+        require(all(type(value) is int and value >= 0 for value in steps), "invalid_step")
+        require(sum(steps) == e.get("stepTotalPoints"), "step_total_mismatch")
+        displayed = e.get("displayedRewardYenCandidates")
+        require(isinstance(displayed, list) and reward in displayed, "displayed_reward_mismatch")
     terms = e.get("termsText")
     require(
         isinstance(terms, str) and 0 < len(terms) <= 12000,
@@ -250,6 +329,12 @@ def prepare(rows, evidence_items, sources, checked_at, policy, rate_confirmed=Fa
     allowed = policy.get("sources") or []
     by_key = defaultdict(list)
     for item in evidence_items:
+        # Discovery/candidate records are deliberately non-publication inputs.
+        # They may share the same offer identity as a fully parsed snapshot, so
+        # admitting them here would turn an explicit safety marker into a false
+        # incomplete-parser hold for an otherwise valid current snapshot.
+        if item.get("candidateOnly") is True and item.get("publicationAuthorized") is False:
+            continue
         key = (
             item.get("game"),
             item.get("source"),
