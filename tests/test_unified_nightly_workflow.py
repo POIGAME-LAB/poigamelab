@@ -1,3 +1,4 @@
+import csv
 import json
 from pathlib import Path
 
@@ -77,3 +78,24 @@ def test_scheduled_comparison_sources_are_the_same_unified_eight_sources():
     unified = [str(value) for value in policy["unifiedDailySources"]]
 
     assert comparison == unified
+
+
+def test_repository_has_no_current_offer_outside_current_price_sources():
+    policy = json.loads((ROOT / "config" / "refresh_policy.json").read_text(encoding="utf-8"))
+    current_sources = set(policy["publication"]["currentPriceSources"])
+    unified = set(policy["unifiedDailySources"])
+
+    assert current_sources <= unified
+    assert "chobirich" not in current_sources
+    assert "powl" not in current_sources
+
+    with (ROOT / "data" / "published_offers.csv").open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+
+    current_rows = [row for row in rows if str(row.get("verified") or "").strip().lower() == "true"]
+    archived_rows = [row for row in rows if str(row.get("verified") or "").strip().lower() == "false"]
+
+    assert current_rows
+    assert all(row.get("site") in current_sources for row in current_rows)
+    assert sum(row.get("site") == "chobirich" for row in archived_rows) == 4
+    assert sum(row.get("site") == "chobirich" for row in current_rows) == 0
