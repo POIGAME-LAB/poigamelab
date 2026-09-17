@@ -1,0 +1,86 @@
+name: Temporary final live unified eight-site verification
+
+on:
+  push:
+    branches:
+      - feat/unified-eight-site-offers-v2
+    paths:
+      - .github/workflows/tmp-live-unified-eight-site-final.yml
+
+permissions:
+  contents: read
+
+jobs:
+  live-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/unified-eight-site-offers-v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run one real first-party daily scan
+        run: python scripts/daily_scan_review.py
+
+      - name: Enforce current-price scope in ephemeral worktree
+        run: python scripts/publication_scope_guard.py
+
+      - name: Build real unified eight-site snapshot
+        run: python scripts/unified_offer_snapshot.py
+
+      - name: Apply safe Moppy reward evidence in ephemeral worktree
+        run: python scripts/moppy_reward_refresh.py
+
+      - name: Verify live eight-site contract and current publication scope
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          expected = [
+              'moppy', 'warau', 'coincome', 'hapitas',
+              'amefuri', 'point_town', 'ec_navi', 'powl',
+          ]
+          policy = json.loads(Path('config/refresh_policy.json').read_text(encoding='utf-8'))
+          snapshot = json.loads(Path('data/unified_offer_snapshot.json').read_text(encoding='utf-8'))
+          status = json.loads(Path('data/comparison_refresh_status.json').read_text(encoding='utf-8'))
+          daily = json.loads(Path('data/daily_scan_review.json').read_text(encoding='utf-8'))
+          with Path('data/published_offers.csv').open(encoding='utf-8', newline='') as handle:
+              rows = list(csv.DictReader(handle))
+
+          assert policy['unifiedDailySources'] == expected
+          assert policy['comparisonSources'] == expected
+          assert snapshot['sourceIds'] == expected
+          assert snapshot['sourceCount'] == 8
+          health = {item['source']: item for item in snapshot.get('sourceHealth', [])}
+          assert set(health) == set(expected), (sorted(health), expected)
+
+          current_sources = set(policy['publication']['currentPriceSources'])
+          current_rows = [r for r in rows if str(r.get('verified', '')).lower() == 'true']
+          assert current_rows
+          assert all(r.get('site') in current_sources for r in current_rows)
+          assert not any(r.get('site') == 'chobirich' and r.get('verified') == 'true' for r in rows)
+
+          discovery = (status.get('newGameDiscovery') or {}).get('sourceResults') or []
+          discovered_sources = {str(item.get('source') or '') for item in discovery}
+          assert discovered_sources == set(expected), (sorted(discovered_sources), expected)
+          assert daily.get('checkedAt') or status.get('checkedAt')
+
+          summary = {
+              'sourceCount': snapshot['sourceCount'],
+              'sourceHealth': health,
+              'groupCount': snapshot.get('groupCount'),
+              'listedGroupCount': snapshot.get('listedGroupCount'),
+              'unlistedGroupCount': snapshot.get('unlistedGroupCount'),
+              'oneSiteGroupCount': snapshot.get('oneSiteGroupCount'),
+              'currentRows': len(current_rows),
+              'currentPriceSources': sorted(current_sources),
+              'publicationAuthorized': snapshot.get('publicationAuthorized'),
+          }
+          assert snapshot.get('publicationAuthorized') is False
+          print(json.dumps(summary, ensure_ascii=False, indent=2))
+          PY
