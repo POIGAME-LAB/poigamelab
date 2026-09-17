@@ -19,36 +19,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch current Chobirich published offers once
+      - name: Compare Chobirich user agents from GitHub runner
         run: |
           python - <<'PY'
-          import json, re
-          from pathlib import Path
-          import scripts.direct_offer_refresh as direct
+          import json
+          from urllib.error import HTTPError, URLError
+          from urllib.request import Request, urlopen
 
-          source_cfg = json.loads(Path('config/point_sources.json').read_text(encoding='utf-8'))
-          source = next(x for x in source_cfg['sources'] if x['id'] == 'chobirich')
-          cases = [
-              ('https://www.chobirich.com/ad_details/1894712', ['Township', 'タウンシップ']),
-              ('https://www.chobirich.com/ad_details/1896200', ['きのこ伝説', 'キノコ伝説', 'キノコ伝説：勇者と魔法のランプ']),
-              ('https://www.chobirich.com/ad_details/1896275', ['きのこ伝説', 'キノコ伝説', 'キノコ伝説：勇者と魔法のランプ']),
-          ]
+          url = 'https://www.chobirich.com/ad_details/1894712'
+          agents = {
+              'iphone': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+              'poigamelab-desktop': 'Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)',
+              'chrome-desktop': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+          }
           results = []
-          for url, aliases in cases:
-              raw, final = direct.fetch_first_party(url, source)
-              evidence = direct.inspect_chobirich_offer(raw, url, final, aliases)
-              points = re.findall(r'最大\s*([0-9,]+)\s*ポイント', direct.visible_text(raw))
-              yen = re.findall(r'最大\s*([0-9,]+)\s*円相当', direct.visible_text(raw))
-              results.append({
-                  'url': url,
-                  'final': final,
-                  'bytes': len(raw.encode('utf-8')),
-                  'state': evidence.get('state'),
-                  'reason': evidence.get('reason'),
-                  'pointTotals': points[:5],
-                  'yenTotals': yen[:5],
+          for name, ua in agents.items():
+              req = Request(url, headers={
+                  'User-Agent': ua,
+                  'Accept': 'text/html,application/xhtml+xml',
+                  'Accept-Language': 'ja,en-US;q=0.7,en;q=0.5',
               })
+              try:
+                  with urlopen(req, timeout=15) as response:
+                      body = response.read(1200000)
+                      results.append({'ua': name, 'status': response.status, 'bytes': len(body), 'final': response.geturl()})
+              except HTTPError as exc:
+                  results.append({'ua': name, 'status': exc.code, 'bytes': 0, 'final': url})
+              except URLError:
+                  results.append({'ua': name, 'status': 'network_error', 'bytes': 0, 'final': url})
           print(json.dumps(results, ensure_ascii=False, indent=2))
-          assert all(item['bytes'] > 1000 for item in results)
-          assert all(item['final'].startswith('https://www.chobirich.com/ad_details/') for item in results)
           PY
