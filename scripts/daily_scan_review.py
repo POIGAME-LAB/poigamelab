@@ -18,7 +18,6 @@ import direct_offer_refresh as direct
 ROOT = Path(__file__).resolve().parents[1]
 MAX_GROUPS = 120
 MAX_DETAILS = 360
-_ORIGINAL_FETCH_FIRST_PARTY = direct.fetch_first_party
 
 
 def _source_id(source):
@@ -124,7 +123,7 @@ def resilient_fetch_first_party(url, source, timeout=15, max_bytes=1200000, base
     identities. This prevents a temporary empty edge response from being
     mistaken for a genuine zero-offer catalog.
     """
-    base = base_fetch or _ORIGINAL_FETCH_FIRST_PARTY
+    base = base_fetch or direct.fetch_first_party
     moppy_ajax = _is_moppy_ajax_listing(url, source)
     coincome_listing = _is_coincome_app_listing(url, source)
     amefuri_listing = _is_amefuri_app_listing(url, source)
@@ -410,7 +409,13 @@ def main():
                                       if "holdReason" not in d]}
 
     prior_fetch = direct.fetch_first_party
-    direct.fetch_first_party = resilient_fetch_first_party
+
+    def guarded_fetch(url, source, timeout=15, max_bytes=1200000):
+        return resilient_fetch_first_party(
+            url, source, timeout=timeout, max_bytes=max_bytes, base_fetch=prior_fetch
+        )
+
+    direct.fetch_first_party = guarded_fetch
     try:
         result = direct.main(after_scan=consume)
     finally:
