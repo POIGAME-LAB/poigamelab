@@ -1,0 +1,59 @@
+name: Temporary archive out-of-scope current offers
+
+on:
+  push:
+    branches:
+      - feat/unified-eight-site-offers-v2
+    paths:
+      - .github/workflows/tmp-archive-out-of-scope-offers.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/unified-eight-site-offers-v2
+      - name: Archive only out-of-scope current rows
+        run: |
+          set -euo pipefail
+          before_rows="$(tail -n +2 data/published_offers.csv | wc -l)"
+          before_chobi="$(awk -F, '$3=="chobirich" && $13=="true" {n++} END {print n+0}' data/published_offers.csv)"
+          test "${before_chobi}" -eq 4
+
+          output="$(python scripts/publication_scope_guard.py)"
+          echo "${output}"
+
+          after_rows="$(tail -n +2 data/published_offers.csv | wc -l)"
+          after_chobi="$(awk -F, '$3=="chobirich" && $13=="true" {n++} END {print n+0}' data/published_offers.csv)"
+          archived_chobi="$(awk -F, '$3=="chobirich" && $13=="false" {n++} END {print n+0}' data/published_offers.csv)"
+          out_of_scope_true="$(python - <<'PY'
+          import csv, json
+          policy = json.load(open('config/refresh_policy.json', encoding='utf-8'))
+          allowed = set(policy['publication']['currentPriceSources'])
+          with open('data/published_offers.csv', encoding='utf-8', newline='') as f:
+              rows = list(csv.DictReader(f))
+          print(sum(str(r.get('verified','')).lower() == 'true' and r.get('site') not in allowed for r in rows))
+          PY
+          )"
+
+          test "${after_rows}" -eq "${before_rows}"
+          test "${after_chobi}" -eq 0
+          test "${archived_chobi}" -eq 4
+          test "${out_of_scope_true}" -eq 0
+          git diff -- data/published_offers.csv
+          test "$(git diff --numstat -- data/published_offers.csv | awk '{print $1+$2}')" -eq 8
+
+      - name: Commit branch data only
+        run: |
+          set -euo pipefail
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published_offers.csv
+          git diff --cached --quiet && exit 0
+          git commit -m "data: archive offers outside current-price scope"
+          git push origin HEAD:feat/unified-eight-site-offers-v2
