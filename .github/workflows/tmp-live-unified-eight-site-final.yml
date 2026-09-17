@@ -21,16 +21,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Isolate Moppy AJAX requirements and COINCOME variability
+      - name: Isolate exact Moppy request requirement
         run: |
           python - <<'PY'
-          import http.cookiejar
           import json
           import re
           import sys
           from pathlib import Path
-          from urllib.request import HTTPCookieProcessor, Request, build_opener
+          from urllib.request import Request, build_opener
 
           sys.path.insert(0, 'scripts')
           import direct_offer_refresh as direct
@@ -39,123 +37,55 @@ jobs:
           targets_cfg = json.loads(Path('config/game_targets.json').read_text(encoding='utf-8'))
           targets = targets_cfg.get('targets') if isinstance(targets_cfg, dict) else targets_cfg
           targets = targets or []
-          sources = {row['id']: row for row in cfg['sources']}
+          source = next(row for row in cfg['sources'] if row['id'] == 'moppy')
+          shell_url = source['direct_listing_urls'][0]
+          ajax_url = source['new_game_discovery_page_url_template'].replace('{page}', '1')
+          bot_ua = 'Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)'
+          browser_ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
 
-          # COINCOME: repeat identical first-party read three times. We print only
-          # structural counts, never page content.
-          coincome = sources['coincome']
-          coincome_url = coincome['direct_listing_urls'][0]
-          for attempt in range(1, 4):
+          def run_case(label, ua, extra):
               try:
-                  raw, final_url = direct.fetch_first_party(coincome_url, coincome)
+                  opener = build_opener(direct.FirstPartyRedirectHandler(source))
+                  headers = {
+                      'User-Agent': ua,
+                      'Accept': 'text/html,application/xhtml+xml',
+                      'Accept-Language': 'ja,en-US;q=0.7,en;q=0.5',
+                  }
+                  headers.update(extra)
+                  req = Request(ajax_url, headers=headers)
+                  with opener.open(req, timeout=15) as response:
+                      data = response.read(1200001)
+                      final_url = response.geturl()
+                  raw = data.decode('utf-8', errors='replace')
                   discovered = direct.discover_new_game_listing_candidates(
-                      raw, final_url, coincome, targets, limit=2000
+                      raw, final_url, source, targets, limit=2000
                   )
                   print(json.dumps({
-                      'source': 'coincome',
-                      'attempt': attempt,
-                      'ok': True,
-                      'bytes': len(raw.encode('utf-8', errors='replace')),
-                      'detailPathOccurrences': len(re.findall(r'/campaigns/details/', raw, flags=re.I)),
+                      'case': label,
+                      'bytes': len(data),
                       'discoveredCandidates': len(discovered),
                   }, ensure_ascii=False))
               except Exception as exc:
                   print(json.dumps({
-                      'source': 'coincome',
-                      'attempt': attempt,
-                      'ok': False,
+                      'case': label,
                       'errorCategory': direct.summarize_fetch_error(exc),
                       'exceptionType': type(exc).__name__,
                   }, ensure_ascii=False))
 
-          # Moppy: test the reviewed AJAX endpoint using increasingly browser-like
-          # request context. All requests remain on registered first-party hosts.
-          moppy = sources['moppy']
-          shell_url = moppy['direct_listing_urls'][0]
-          ajax_url = moppy['new_game_discovery_page_url_template'].replace('{page}', '1')
-          browser_ua = (
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
-          )
-
-          def structural_result(label, raw, final_url):
-              discovered = direct.discover_new_game_listing_candidates(
-                  raw, final_url, moppy, targets, limit=2000
-              )
-              print(json.dumps({
-                  'source': 'moppy',
-                  'mode': label,
-                  'ok': True,
-                  'bytes': len(raw.encode('utf-8', errors='replace')),
-                  'detailPathOccurrences': len(re.findall(r'ad/detail\\.php', raw, flags=re.I)),
-                  'discoveredCandidates': len(discovered),
-              }, ensure_ascii=False))
-
-          # Baseline current helper.
-          try:
-              raw, final_url = direct.fetch_first_party(ajax_url, moppy)
-              structural_result('baseline', raw, final_url)
-          except Exception as exc:
-              print(json.dumps({
-                  'source': 'moppy', 'mode': 'baseline', 'ok': False,
-                  'errorCategory': direct.summarize_fetch_error(exc),
-                  'exceptionType': type(exc).__name__,
-              }, ensure_ascii=False))
-
-          # AJAX headers only, no cookie session.
-          try:
-              opener = build_opener(direct.FirstPartyRedirectHandler(moppy))
-              req = Request(ajax_url, headers={
-                  'User-Agent': browser_ua,
-                  'Accept': 'text/html, */*; q=0.01',
-                  'Accept-Language': 'ja,en-US;q=0.7,en;q=0.5',
-                  'Referer': shell_url,
-                  'X-Requested-With': 'XMLHttpRequest',
-              })
-              with opener.open(req, timeout=15) as response:
-                  data = response.read(1200001)
-                  final_url = response.geturl()
-              raw = data.decode('utf-8', errors='replace')
-              structural_result('ajax-headers', raw, final_url)
-          except Exception as exc:
-              print(json.dumps({
-                  'source': 'moppy', 'mode': 'ajax-headers', 'ok': False,
-                  'errorCategory': direct.summarize_fetch_error(exc),
-                  'exceptionType': type(exc).__name__,
-              }, ensure_ascii=False))
-
-          # Browser-like cookie session: open shell first, then the AJAX endpoint.
-          try:
-              jar = http.cookiejar.CookieJar()
-              opener = build_opener(direct.FirstPartyRedirectHandler(moppy), HTTPCookieProcessor(jar))
-              shell_req = Request(shell_url, headers={
-                  'User-Agent': browser_ua,
-                  'Accept': 'text/html,application/xhtml+xml',
-                  'Accept-Language': 'ja,en-US;q=0.7,en;q=0.5',
-              })
-              with opener.open(shell_req, timeout=15) as response:
-                  response.read(1200001)
-              ajax_req = Request(ajax_url, headers={
-                  'User-Agent': browser_ua,
-                  'Accept': 'text/html, */*; q=0.01',
-                  'Accept-Language': 'ja,en-US;q=0.7,en;q=0.5',
-                  'Referer': shell_url,
-                  'X-Requested-With': 'XMLHttpRequest',
-              })
-              with opener.open(ajax_req, timeout=15) as response:
-                  data = response.read(1200001)
-                  final_url = response.geturl()
-              raw = data.decode('utf-8', errors='replace')
-              structural_result('cookie-session', raw, final_url)
-              print(json.dumps({
-                  'source': 'moppy',
-                  'mode': 'cookie-session-meta',
-                  'cookieCount': len(list(jar)),
-              }, ensure_ascii=False))
-          except Exception as exc:
-              print(json.dumps({
-                  'source': 'moppy', 'mode': 'cookie-session', 'ok': False,
-                  'errorCategory': direct.summarize_fetch_error(exc),
-                  'exceptionType': type(exc).__name__,
-              }, ensure_ascii=False))
+          run_case('bot-ua-only', bot_ua, {})
+          run_case('browser-ua-only', browser_ua, {})
+          run_case('bot-ua-referer', bot_ua, {'Referer': shell_url})
+          run_case('bot-ua-xrw', bot_ua, {'X-Requested-With': 'XMLHttpRequest'})
+          run_case('bot-ua-referer-xrw', bot_ua, {
+              'Referer': shell_url,
+              'X-Requested-With': 'XMLHttpRequest',
+              'Accept': 'text/html, */*; q=0.01',
+          })
+          run_case('browser-ua-referer', browser_ua, {'Referer': shell_url})
+          run_case('browser-ua-xrw', browser_ua, {'X-Requested-With': 'XMLHttpRequest'})
+          run_case('browser-ua-referer-xrw', browser_ua, {
+              'Referer': shell_url,
+              'X-Requested-With': 'XMLHttpRequest',
+              'Accept': 'text/html, */*; q=0.01',
+          })
           PY
