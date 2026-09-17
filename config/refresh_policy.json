@@ -100,7 +100,16 @@
     "completeRunReplacesGameSnapshot": false,
     "degradedRunMergesOnly": true,
     "directRefreshNeverCreatesNewPublishedRows": true,
-    "allowLegacyFallback": false
+    "allowLegacyFallback": false,
+    "currentPriceSources": [
+      "moppy",
+      "warau",
+      "coincome",
+      "hapitas",
+      "amefuri",
+      "point_town",
+      "ec_navi"
+    ]
   },
   "schedulerReady": true,
   "scheduledMode": "direct-http-api-free",
