@@ -1,0 +1,47 @@
+name: Validate Moppy reward-only refresh
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/unified-eight-site-offers-v2
+    paths:
+      - "scripts/moppy_reward_refresh.py"
+      - "scripts/direct_offer_refresh.py"
+      - "tests/test_moppy_reward_refresh.py"
+      - ".github/workflows/refresh-verified-offers.yml"
+      - ".github/workflows/validate-moppy-reward-refresh.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scripts/moppy_reward_refresh.py"
+      - "scripts/direct_offer_refresh.py"
+      - "tests/test_moppy_reward_refresh.py"
+      - ".github/workflows/refresh-verified-offers.yml"
+      - ".github/workflows/validate-moppy-reward-refresh.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test runner
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Syntax checks
+        run: |
+          python -m py_compile scripts/moppy_reward_refresh.py
+          python -m py_compile tests/test_moppy_reward_refresh.py
+
+      - name: Moppy reward-only regression tests
+        run: python -m pytest -q tests/test_moppy_reward_refresh.py

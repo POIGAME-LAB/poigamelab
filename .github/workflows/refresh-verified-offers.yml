@@ -78,6 +78,10 @@ jobs:
         if: steps.refresh.outcome == 'success'
         run: python scripts/unified_offer_snapshot.py
 
+      - name: Apply safe Moppy reward-only updates
+        if: steps.refresh.outcome == 'success'
+        run: python scripts/moppy_reward_refresh.py
+
       - name: Write top-five content research handoff queue
         if: steps.refresh.outcome == 'success'
         run: python scripts/write_new_game_content_queue.py
