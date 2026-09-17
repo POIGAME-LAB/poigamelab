@@ -132,6 +132,8 @@ def resilient_fetch_first_party(url, source, timeout=15, max_bytes=1200000, base
     def one_read():
         if moppy_ajax:
             return _fetch_moppy_ajax(url, source, timeout=timeout, max_bytes=max_bytes)
+        if timeout == 15 and max_bytes == 1200000:
+            return base(url, source)
         return base(url, source, timeout=timeout, max_bytes=max_bytes)
 
     try:
