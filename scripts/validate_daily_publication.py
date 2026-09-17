@@ -32,8 +32,11 @@ def validate(root, baseline, artifact):
             errors.append("unknown_catalog_game")
         if not str(row.get("reward", "")).isdigit() or int(row["reward"]) <= 0:
             errors.append("invalid_reward")
-        if row.get("verified") != "true" or not row.get("condition"):
-            errors.append("unverified_or_missing_condition")
+        verified = str(row.get("verified") or "").strip().lower()
+        if verified not in {"true", "false"}:
+            errors.append("invalid_verified_flag")
+        elif verified == "true" and not row.get("condition"):
+            errors.append("verified_offer_missing_condition")
         source = sources.get(row.get("site"))
         if not source or not all(direct.source_host_allowed(row.get(k), source) for k in ("url", "sourceUrl")):
             errors.append("invalid_source_url")
@@ -56,7 +59,14 @@ def validate(root, baseline, artifact):
             errors.append("private_research_in_public_artifact:" + name)
     if errors:
         raise ValueError(";".join(sorted(set(errors))))
-    return {"valid": True, "publishedRows": len(rows), "preservedOfferIdentities": len(old), "apiCalls": 0}
+    return {
+        "valid": True,
+        "publishedRows": len(rows),
+        "currentRows": sum(str(row.get("verified") or "").strip().lower() == "true" for row in rows),
+        "archivedRows": sum(str(row.get("verified") or "").strip().lower() == "false" for row in rows),
+        "preservedOfferIdentities": len(old),
+        "apiCalls": 0,
+    }
 
 
 def main():
