@@ -1,112 +1,22 @@
 window.POIGAME_GUIDES = Object.freeze({
-  "Township": {
-    title: "Township ポイ活攻略",
-    description: " ",
-    links: [
-      { label: "攻略を見る →", href: "township-lv70.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=Township" }
-    ]
-  },
-  "きのこ伝説": {
-    title: "きのこ伝説 ポイ活攻略",
-    description: "Lv100・120・125系案件の到達ペースと、ランプ・日課・続行判断をまとめています。",
-    links: [
-      { label: "攻略を読む →", href: "kinoko-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=きのこ伝説" }
-    ]
-  },
-  "メメントモリ": {
-    title: "メメントモリ ポイ活攻略",
-    description: "ランク110・140系案件の到達ペースと、育成素材・主力集中の進め方をまとめています。",
-    links: [
-      { label: "攻略を読む →", href: "mementomori-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=メメントモリ" }
-    ]
-  },
-  "ワーキングヒーロー": {
-    title: "ワーキングヒーロー ポイ活攻略",
-    description: "現行StepUpと仕様変更をまたいだ実プレイヤー進捗を分けて整理しています。",
-    links: [
-      { label: "攻略を読む →", href: "working-heroes-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=ワーキングヒーロー" }
-    ]
-  },
-  "ホワイトアウト・サバイバル": {
-    title: "ホワイトアウト・サバイバル ポイ活攻略",
-    description: "大溶鉱炉Lv23・26の到達ペースと、短期限案件の続行判断をまとめています。",
-    links: [
-      { label: "詳しい攻略を読む →", href: "whiteout-survival-guide.html" },
-      { label: "みんなの進捗を見る →", href: "progress.html?game=ホワイトアウト・サバイバル" }
-    ]
-  },
-  "東京ディバンカー": {
-    title: "東京ディバンカー ポイ活攻略",
-    description: "3日連続ログイン案件で、判定事故を避けて確実に成果条件を取る手順をまとめています。",
-    links: [
-      { label: "3日ログイン攻略を読む →", href: "tokyo-debunker-guide.html" }
-    ]
-  },
-  "パズル＆サバイバル": {
-    title: "パズル＆サバイバル ポイ活攻略",
-    description: "CC育成、5日以内の英雄Step、第二建設列、資源・ギルドと撤退ラインをまとめています。",
-    links: [
-      { label: "CC・StepUp攻略を読む →", href: "puzzles-survival-guide.html" }
-    ]
-  },
-  "キングショット": {
-    title: "キングショット ポイ活攻略",
-    description: "役場レベル上げ、前提施設、研究、資源、同盟・巨熊狩猟の優先順位をまとめています。",
-    links: [
-      { label: "役場攻略を読む →", href: "kingshot-guide.html" }
-    ]
-  },
-  "放置少女": {
-    title: "放置少女 ポイ活攻略",
-    description: "Lv120（1転生Lv20）へ向けて、初日進行・高速放置・主力育成・毎日の経験値回収をまとめています。",
-    links: [
-      { label: "Lv120攻略を読む →", href: "houchishojo-guide.html" }
-    ]
-  },
-  "エバーテイル": {
-    title: "エバーテイル ポイ活攻略",
-    description: "3日連続ログイン案件を、判定中確認・チュートリアル・Day1〜3の手順で安全に進めます。",
-    links: [
-      { label: "3日ログイン攻略を読む →", href: "evertale-guide.html" }
-    ]
-  },
-  "ATLAS: EARTH": {
-    title: "ATLAS: EARTH ポイ活攻略",
-    description: "土地1〜50個の実際の進捗例と、Atlas Bucks・広告・Atlas Arcade・課金Stepの進め方をまとめています。",
-    links: [
-      { label: "土地・AB攻略を読む →", href: "atlas-earth-guide.html" }
-    ]
-  },
-  "ファミリーファームの冒険": {
-    title: "ファミリーファームの冒険 ポイ活攻略",
-    description: "Lv26・30の実際の進捗例と、掲示板注文・探索ポイント・ヤギミルク・イベントの回し方をまとめています。",
-    links: [
-      { label: "Lv26・30攻略を読む →", href: "family-farm-adventure-guide.html" }
-    ]
-  },
-  "クロンダイクの冒険": {
-    title: "クロンダイクの冒険 ポイ活攻略",
-    description: "Lv20〜40の実際の進捗例と、注文ボード・動画注文・船・生産・宝石の使い方をまとめています。",
-    links: [
-      { label: "Lv20〜40攻略を読む →", href: "klondike-adventures-guide.html" }
-    ]
-  },
-  "Merge Help: ホームデザインパズル": {
-    title: "Merge Help ポイ活攻略",
-    description: "Lv10・20・28の実際の進捗例と、四季盛・エネルギー・盤面・注文の回し方をまとめています。",
-    links: [
-      { label: "Lv28攻略を読む →", href: "merge-help-guide.html" }
-    ]
-  },
-  "マジックジグソーパズル": {
-    title: "マジックジグソーパズル ポイ活攻略",
-    description: "3,500〜15,000コイン系案件の実際の到達ペースと、広告・35〜70ピース・ミッションの回し方をまとめています。",
-    links: [
-      { label: "コイン攻略を読む →", href: "magic-jigsaw-puzzles-guide.html" }
-    ]
-  }
+  "Township": {title:"Township ポイ活攻略",description:" ",links:[{label:"攻略を見る →",href:"township-lv70.html"},{label:"みんなの進捗を見る →",href:"progress.html?game=Township"}]},
+  "きのこ伝説": {title:"きのこ伝説 ポイ活攻略",description:"Lv100・120・125系案件の到達ペースと、ランプ・日課・続行判断をまとめています。",links:[{label:"攻略を読む →",href:"kinoko-guide.html"},{label:"みんなの進捗を見る →",href:"progress.html?game=きのこ伝説"}]},
+  "メメントモリ": {title:"メメントモリ ポイ活攻略",description:"ランク110・140系案件の到達ペースと、育成素材・主力集中の進め方をまとめています。",links:[{label:"攻略を読む →",href:"mementomori-guide.html"},{label:"みんなの進捗を見る →",href:"progress.html?game=メメントモリ"}]},
+  "ワーキングヒーロー": {title:"ワーキングヒーロー ポイ活攻略",description:"現行StepUpと仕様変更をまたいだ実プレイヤー進捗を分けて整理しています。",links:[{label:"攻略を読む →",href:"working-heroes-guide.html"},{label:"みんなの進捗を見る →",href:"progress.html?game=ワーキングヒーロー"}]},
+  "ホワイトアウト・サバイバル": {title:"ホワイトアウト・サバイバル ポイ活攻略",description:"大溶鉱炉Lv23・26の到達ペースと、短期限案件の続行判断をまとめています。",links:[{label:"詳しい攻略を読む →",href:"whiteout-survival-guide.html"},{label:"みんなの進捗を見る →",href:"progress.html?game=ホワイトアウト・サバイバル"}]},
+  "東京ディバンカー": {title:"東京ディバンカー ポイ活攻略",description:"3日連続ログイン案件で、判定事故を避けて確実に成果条件を取る手順をまとめています。",links:[{label:"3日ログイン攻略を読む →",href:"tokyo-debunker-guide.html"}]},
+  "パズル＆サバイバル": {title:"パズル＆サバイバル ポイ活攻略",description:"CC育成、5日以内の英雄Step、第二建設列、資源・ギルドと撤退ラインをまとめています。",links:[{label:"CC・StepUp攻略を読む →",href:"puzzles-survival-guide.html"}]},
+  "キングショット": {title:"キングショット ポイ活攻略",description:"役場レベル上げ、前提施設、研究、資源、同盟・巨熊狩猟の優先順位をまとめています。",links:[{label:"役場攻略を読む →",href:"kingshot-guide.html"}]},
+  "放置少女": {title:"放置少女 ポイ活攻略",description:"Lv120（1転生Lv20）へ向けて、初日進行・高速放置・主力育成・毎日の経験値回収をまとめています。",links:[{label:"Lv120攻略を読む →",href:"houchishojo-guide.html"}]},
+  "エバーテイル": {title:"エバーテイル ポイ活攻略",description:"3日連続ログイン案件を、判定中確認・チュートリアル・Day1〜3の手順で安全に進めます。",links:[{label:"3日ログイン攻略を読む →",href:"evertale-guide.html"}]},
+  "ATLAS: EARTH": {title:"ATLAS: EARTH ポイ活攻略",description:"土地1〜50個の実際の進捗例と、Atlas Bucks・広告・Atlas Arcade・課金Stepの進め方をまとめています。",links:[{label:"土地・AB攻略を読む →",href:"atlas-earth-guide.html"}]},
+  "ファミリーファームの冒険": {title:"ファミリーファームの冒険 ポイ活攻略",description:"Lv26・30の実際の進捗例と、掲示板注文・探索ポイント・ヤギミルク・イベントの回し方をまとめています。",links:[{label:"Lv26・30攻略を読む →",href:"family-farm-adventure-guide.html"}]},
+  "クロンダイクの冒険": {title:"クロンダイクの冒険 ポイ活攻略",description:"Lv20〜40の実際の進捗例と、注文ボード・動画注文・船・生産・宝石の使い方をまとめています。",links:[{label:"Lv20〜40攻略を読む →",href:"klondike-adventures-guide.html"}]},
+  "Merge Help: ホームデザインパズル": {title:"Merge Help ポイ活攻略",description:"Lv10・20・28の実際の進捗例と、四季盛・エネルギー・盤面・注文の回し方をまとめています。",links:[{label:"Lv28攻略を読む →",href:"merge-help-guide.html"}]},
+  "マジックジグソーパズル": {title:"マジックジグソーパズル ポイ活攻略",description:"3,500〜15,000コイン系案件の実際の到達ペースと、広告・35〜70ピース・ミッションの回し方をまとめています。",links:[{label:"コイン攻略を読む →",href:"magic-jigsaw-puzzles-guide.html"}]},
+  "マフィア・シティ-極道風雲": {title:"マフィア・シティ ポイ活攻略",description:"別荘Lv25の実例8〜25日と、前提施設・資源・加速の進め方を整理しています。",links:[{label:"別荘Lv25攻略を読む →",href:"mafia-city-guide.html"}]},
+  "Drill & Collect: idle mine dig": {title:"Drill & Collect ポイ活攻略",description:"エリア15を4日で達成した公開実例と、掘削・加工・広告ブーストの進め方を整理しています。",links:[{label:"エリア15攻略を読む →",href:"drill-collect-guide.html"}]},
+  "Travel Match": {title:"Travel Match ポイ活攻略",description:"Lv2000案件の進め方と、実到達ペースの公開データ不足を分けて整理しています。",links:[{label:"Lv2000攻略を読む →",href:"travel-match-guide.html"}]},
+  "フード＆トラベル：合成ゲーム": {title:"フード＆トラベル ポイ活攻略",description:"Lv40の実例16〜19日と日別レベル推移、注文・スポナー攻略を整理しています。",links:[{label:"Lv40攻略を読む →",href:"food-travel-guide.html"}]},
+  "Sweets Drop Match": {title:"Sweets Drop Match ポイ活攻略",description:"スコア30000案件の条件と盤面戦略、実測ペース不足を明確に分けて整理しています。",links:[{label:"スコア30000攻略を読む →",href:"sweets-drop-match-guide.html"}]}
 });
