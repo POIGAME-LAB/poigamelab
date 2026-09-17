@@ -4,10 +4,12 @@
   "comparisonSources": [
     "moppy",
     "warau",
-    "chobirich",
     "coincome",
-    "mikoshi",
-    "gendama"
+    "hapitas",
+    "amefuri",
+    "point_town",
+    "ec_navi",
+    "powl"
   ],
   "minimumConfirmedSourcesForComparison": 2,
   "games": {

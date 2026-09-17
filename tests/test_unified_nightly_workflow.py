@@ -62,3 +62,12 @@ def test_enabled_discovery_sources_match_exact_unified_eight_site_contract():
     assert len(unified) == 8
     assert len(set(unified)) == 8
     assert set(enabled) == set(unified)
+
+
+def test_scheduled_comparison_sources_are_the_same_unified_eight_sources():
+    policy = json.loads((ROOT / "config" / "refresh_policy.json").read_text(encoding="utf-8"))
+
+    comparison = [str(value) for value in policy["comparisonSources"]]
+    unified = [str(value) for value in policy["unifiedDailySources"]]
+
+    assert comparison == unified
