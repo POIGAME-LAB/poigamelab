@@ -1,4 +1,4 @@
-name: Temporary source fetch diagnostics
+name: Temporary final live eight-site validation
 
 on:
   push:
@@ -11,81 +11,100 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  live-validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: feat/unified-eight-site-offers-v2
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Isolate exact Moppy request requirement
+
+      - name: Run one shared eight-site crawl
+        run: python scripts/daily_scan_review.py
+
+      - name: Build same-run unified snapshot
+        run: python scripts/unified_offer_snapshot.py
+
+      - name: Apply safe Moppy reward-only promotion locally
+        run: python scripts/moppy_reward_refresh.py
+
+      - name: Validate live crawl, grouping and refresh path
         run: |
           python - <<'PY'
           import json
-          import re
-          import sys
           from pathlib import Path
-          from urllib.request import Request, build_opener
 
-          sys.path.insert(0, 'scripts')
-          import direct_offer_refresh as direct
+          expected = [
+              'moppy', 'warau', 'coincome', 'hapitas',
+              'amefuri', 'point_town', 'ec_navi', 'powl',
+          ]
 
-          cfg = json.loads(Path('config/point_sources.json').read_text(encoding='utf-8'))
-          targets_cfg = json.loads(Path('config/game_targets.json').read_text(encoding='utf-8'))
-          targets = targets_cfg.get('targets') if isinstance(targets_cfg, dict) else targets_cfg
-          targets = targets or []
-          source = next(row for row in cfg['sources'] if row['id'] == 'moppy')
-          shell_url = source['direct_listing_urls'][0]
-          ajax_url = source['new_game_discovery_page_url_template'].replace('{page}', '1')
-          bot_ua = 'Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)'
-          browser_ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
+          status = json.loads(Path('data/comparison_refresh_status.json').read_text(encoding='utf-8'))
+          discovery = status.get('newGameDiscovery') or {}
+          rows = discovery.get('sourceResults') or []
+          by_source = {row.get('source'): row for row in rows}
 
-          def run_case(label, ua, extra):
-              try:
-                  opener = build_opener(direct.FirstPartyRedirectHandler(source))
-                  headers = {
-                      'User-Agent': ua,
-                      'Accept': 'text/html,application/xhtml+xml',
-                      'Accept-Language': 'ja,en-US;q=0.7,en;q=0.5',
-                  }
-                  headers.update(extra)
-                  req = Request(ajax_url, headers=headers)
-                  with opener.open(req, timeout=15) as response:
-                      data = response.read(1200001)
-                      final_url = response.geturl()
-                  raw = data.decode('utf-8', errors='replace')
-                  discovered = direct.discover_new_game_listing_candidates(
-                      raw, final_url, source, targets, limit=2000
-                  )
-                  print(json.dumps({
-                      'case': label,
-                      'bytes': len(data),
-                      'discoveredCandidates': len(discovered),
-                  }, ensure_ascii=False))
-              except Exception as exc:
-                  print(json.dumps({
-                      'case': label,
-                      'errorCategory': direct.summarize_fetch_error(exc),
-                      'exceptionType': type(exc).__name__,
-                  }, ensure_ascii=False))
+          assert set(by_source) == set(expected), (set(by_source), set(expected))
+          assert status.get('listingSnapshot', {}).get('mode') == 'fetch_once_reuse_many'
 
-          run_case('bot-ua-only', bot_ua, {})
-          run_case('browser-ua-only', browser_ua, {})
-          run_case('bot-ua-referer', bot_ua, {'Referer': shell_url})
-          run_case('bot-ua-xrw', bot_ua, {'X-Requested-With': 'XMLHttpRequest'})
-          run_case('bot-ua-referer-xrw', bot_ua, {
-              'Referer': shell_url,
-              'X-Requested-With': 'XMLHttpRequest',
-              'Accept': 'text/html, */*; q=0.01',
-          })
-          run_case('browser-ua-referer', browser_ua, {'Referer': shell_url})
-          run_case('browser-ua-xrw', browser_ua, {'X-Requested-With': 'XMLHttpRequest'})
-          run_case('browser-ua-referer-xrw', browser_ua, {
-              'Referer': shell_url,
-              'X-Requested-With': 'XMLHttpRequest',
-              'Accept': 'text/html, */*; q=0.01',
-          })
+          for source_id in expected:
+              row = by_source[source_id]
+              summary = {
+                  'source': source_id,
+                  'listingPagesAttempted': row.get('listingPagesAttempted'),
+                  'fetchErrors': row.get('fetchErrors'),
+                  'candidateCount': row.get('candidateCount'),
+                  'scanComplete': row.get('scanComplete'),
+                  'catalogComplete': row.get('catalogComplete'),
+                  'candidateLimitReached': row.get('candidateLimitReached'),
+                  'contentGuardFailed': row.get('contentGuardFailed'),
+              }
+              print(json.dumps(summary, ensure_ascii=False))
+              assert int(row.get('fetchErrors') or 0) == 0, summary
+              assert row.get('contentGuardFailed') is not True, summary
+              if source_id != 'powl':
+                  assert row.get('scanComplete') is True, summary
+              else:
+                  # Powl is deliberately a partial ranked surface. Reaching the
+                  # configured cap is expected and is not treated as a crawl error.
+                  assert int(row.get('candidateCount') or 0) > 0, summary
+
+          for source_id in ('moppy', 'coincome', 'amefuri'):
+              assert int(by_source[source_id].get('candidateCount') or 0) > 0, by_source[source_id]
+
+          snapshot = json.loads(Path('data/unified_offer_snapshot.json').read_text(encoding='utf-8'))
+          assert snapshot.get('phase') == 'UNIFIED_EIGHT_SITE_OFFER_SNAPSHOT_V1'
+          assert snapshot.get('sourceIds') == expected
+          assert snapshot.get('sourceCount') == 8
+          assert int(snapshot.get('groupCount') or 0) > 0
+          assert int(snapshot.get('listedGroupCount') or 0) > 0
+          assert any(int(group.get('sourceCount') or 0) >= 2 for group in snapshot.get('groups') or [])
+
+          moppy = status.get('moppyRewardOnly') or {}
+          assert moppy.get('mode') == 'existing-row-reward-only'
+          assert int(moppy.get('networkCalls') or 0) == 0
+          assert int(moppy.get('conditionsChanged') or 0) == 0
+          assert int(moppy.get('newRowsCreated') or 0) == 0
+
+          print(json.dumps({
+              'result': 'PASS',
+              'sources': snapshot.get('sourceCount'),
+              'groups': snapshot.get('groupCount'),
+              'listedGroups': snapshot.get('listedGroupCount'),
+              'multiSourceGroups': sum(
+                  int(group.get('sourceCount') or 0) >= 2
+                  for group in snapshot.get('groups') or []
+              ),
+              'moppyVerifiedRows': moppy.get('verifiedRows'),
+              'moppyRewardChanges': moppy.get('rewardChanges'),
+              'listingSnapshot': status.get('listingSnapshot'),
+          }, ensure_ascii=False))
           PY
+
+      - name: Confirm repository was not published
+        run: |
+          git status --short
+          echo "This workflow has contents: read only and performs no git push or R2 operation."
