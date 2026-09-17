@@ -12,15 +12,21 @@ def workflow_text():
 def test_nightly_pipeline_builds_unified_snapshot_from_the_single_daily_scan():
     text = workflow_text()
     scan = "run: python scripts/daily_scan_review.py"
+    guard = "run: python scripts/publication_scope_guard.py"
     snapshot = "run: python scripts/unified_offer_snapshot.py"
 
     assert text.count(scan) == 1
+    assert text.count(guard) == 1
     assert text.count(snapshot) == 1
-    assert text.index(scan) < text.index(snapshot)
+    assert text.index(scan) < text.index(guard) < text.index(snapshot)
 
+    guard_start = text.index("- name: Enforce current-price publication scope")
     snapshot_start = text.index("- name: Build unified eight-site offer snapshot")
     next_step = text.index("- name: Write top-five content research handoff queue")
+    guard_block = text[guard_start:snapshot_start]
     snapshot_block = text[snapshot_start:next_step]
+    assert "if: steps.refresh.outcome == 'success'" in guard_block
+    assert guard in guard_block
     assert "if: steps.refresh.outcome == 'success'" in snapshot_block
     assert snapshot in snapshot_block
 
