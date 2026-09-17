@@ -74,6 +74,10 @@ jobs:
         continue-on-error: true
         run: python scripts/daily_scan_review.py
 
+      - name: Build unified eight-site offer snapshot
+        if: steps.refresh.outcome == 'success'
+        run: python scripts/unified_offer_snapshot.py
+
       - name: Write top-five content research handoff queue
         if: steps.refresh.outcome == 'success'
         run: python scripts/write_new_game_content_queue.py
@@ -119,6 +123,7 @@ jobs:
 
           files=(
             data/daily_scan_review.json
+            data/unified_offer_snapshot.json
             data/new_game_content_queue.json
             data/new_game_candidate_queue.json
             data/new_game_candidate_history.json
@@ -170,6 +175,7 @@ jobs:
 
           for path in \
             data/daily_scan_review.json \
+            data/unified_offer_snapshot.json \
             data/new_game_candidate_queue.json \
             data/new_game_candidate_history.json \
             data/existing_game_candidate_queue.json \
