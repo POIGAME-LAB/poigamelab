@@ -18,6 +18,141 @@ import direct_offer_refresh as direct
 ROOT = Path(__file__).resolve().parents[1]
 MAX_GROUPS = 120
 MAX_DETAILS = 360
+_ORIGINAL_FETCH_FIRST_PARTY = direct.fetch_first_party
+
+
+def _source_id(source):
+    return str((source or {}).get("id") or "")
+
+
+def _parsed_url(url):
+    try:
+        return direct.urlparse(str(url or ""))
+    except (TypeError, ValueError):
+        return None
+
+
+def _is_moppy_ajax_listing(url, source):
+    parsed = _parsed_url(url)
+    return bool(
+        _source_id(source) == "moppy"
+        and parsed is not None
+        and parsed.path == "/ajax/category/get_list.php"
+    )
+
+
+def _is_coincome_app_listing(url, source):
+    parsed = _parsed_url(url)
+    if _source_id(source) != "coincome" or parsed is None or parsed.path.rstrip("/") != "/campaigns":
+        return False
+    try:
+        query = direct.parse_qs(parsed.query or "")
+    except (TypeError, ValueError):
+        return False
+    return query.get("_category_id") == ["21"]
+
+
+def _is_amefuri_app_listing(url, source):
+    parsed = _parsed_url(url)
+    if _source_id(source) != "amefuri" or parsed is None or parsed.path != "/item_list":
+        return False
+    try:
+        query = direct.parse_qs(parsed.query or "")
+    except (TypeError, ValueError):
+        return False
+    return query.get("slug") == ["app_game"]
+
+
+def _is_retryable_transport_error(error):
+    if isinstance(error, direct.HTTPError):
+        return error.code in {408, 425, 429, 500, 502, 503, 504}
+    if isinstance(error, TimeoutError):
+        return True
+    if isinstance(error, direct.URLError):
+        return True
+    return isinstance(error, ConnectionError)
+
+
+def _fetch_moppy_ajax(url, source, timeout=15, max_bytes=1200000, opener_factory=None):
+    """Fetch Moppy's first-party AJAX listing using its required XRW header.
+
+    Live GitHub-runner diagnostics on 2026-09-17 showed that the endpoint
+    returns an empty 200 response without ``X-Requested-With: XMLHttpRequest``
+    and the normal listing payload with that header. Browser UA, Referer and
+    cookies were independently tested and were not required.
+    """
+    if not direct.source_host_allowed(url, source):
+        raise ValueError("URL is outside registered first-party domains")
+    mobile = bool(source.get("mobile", True))
+    ua = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
+        "Mobile/15E148 Safari/604.1"
+        if mobile else
+        "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)"
+    )
+    req = direct.Request(url, headers={
+        "User-Agent": ua,
+        "Accept": "text/html,application/xhtml+xml",
+        "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
+        "X-Requested-With": "XMLHttpRequest",
+    })
+    factory = opener_factory or direct.build_opener
+    opener = factory(direct.FirstPartyRedirectHandler(source))
+    with opener.open(req, timeout=timeout) as response:
+        final_url = response.geturl() if hasattr(response, "geturl") else url
+        if not direct.source_host_allowed(final_url, source):
+            raise ValueError("redirect left registered first-party domains")
+        data = response.read(max_bytes + 1)
+        if len(data) > max_bytes:
+            raise ValueError("response exceeds byte limit; incomplete evidence rejected")
+        charset = None
+        try:
+            charset = response.headers.get_content_charset()
+        except Exception:
+            pass
+    return data.decode(charset or "utf-8", errors="replace"), final_url
+
+
+def resilient_fetch_first_party(url, source, timeout=15, max_bytes=1200000, base_fetch=None):
+    """Use one normal read, with one bounded retry only for known transient gaps.
+
+    Normal successful listing requests are still fetched once and reused by the
+    direct collector cache. The second read is permitted only when a supported
+    listing has a transient transport failure, or when COINCOME returns a
+    successful page that contains none of its reviewed first-party detail
+    identities. This prevents a temporary empty edge response from being
+    mistaken for a genuine zero-offer catalog.
+    """
+    base = base_fetch or _ORIGINAL_FETCH_FIRST_PARTY
+    moppy_ajax = _is_moppy_ajax_listing(url, source)
+    coincome_listing = _is_coincome_app_listing(url, source)
+    amefuri_listing = _is_amefuri_app_listing(url, source)
+    retryable_listing = moppy_ajax or coincome_listing or amefuri_listing
+
+    def one_read():
+        if moppy_ajax:
+            return _fetch_moppy_ajax(url, source, timeout=timeout, max_bytes=max_bytes)
+        return base(url, source, timeout=timeout, max_bytes=max_bytes)
+
+    try:
+        raw, final_url = one_read()
+    except Exception as exc:
+        if not retryable_listing or not _is_retryable_transport_error(exc):
+            raise
+        raw, final_url = one_read()
+
+    if moppy_ajax and not str(raw or "").strip():
+        raw, final_url = one_read()
+        if not str(raw or "").strip():
+            raise ValueError("moppy ajax listing empty after retry")
+
+    if coincome_listing and "/campaigns/details/" not in str(raw or ""):
+        raw, final_url = one_read()
+        if "/campaigns/details/" not in str(raw or ""):
+            raise ValueError("coincome app listing missing detail identities after retry")
+
+    return raw, final_url
 
 
 def discovery_name(title):
@@ -274,7 +409,12 @@ def main():
         return {"confirmedOfferKeys": [d["offerKey"] for d in publication["decisions"]
                                       if "holdReason" not in d]}
 
-    result = direct.main(after_scan=consume)
+    prior_fetch = direct.fetch_first_party
+    direct.fetch_first_party = resilient_fetch_first_party
+    try:
+        result = direct.main(after_scan=consume)
+    finally:
+        direct.fetch_first_party = prior_fetch
     if result != 0:
         return result
     try:
