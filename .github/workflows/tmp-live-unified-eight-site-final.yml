@@ -1,4 +1,4 @@
-name: Temporary final live eight-site validation
+name: Temporary COINCOME listing diagnostic
 
 on:
   push:
@@ -11,9 +11,9 @@ permissions:
   contents: read
 
 jobs:
-  live-validate:
+  diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,90 +21,38 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Run one shared eight-site crawl
-        run: python scripts/daily_scan_review.py
-
-      - name: Build same-run unified snapshot
-        run: python scripts/unified_offer_snapshot.py
-
-      - name: Apply safe Moppy reward-only promotion locally
-        run: python scripts/moppy_reward_refresh.py
-
-      - name: Validate live crawl, grouping and refresh path
+      - name: Verify COINCOME listing structure and candidate filtering
         run: |
           python - <<'PY'
           import json
+          import re
+          import sys
           from pathlib import Path
 
-          expected = [
-              'moppy', 'warau', 'coincome', 'hapitas',
-              'amefuri', 'point_town', 'ec_navi', 'powl',
-          ]
+          sys.path.insert(0, 'scripts')
+          import daily_scan_review as daily
+          import direct_offer_refresh as direct
 
-          status = json.loads(Path('data/comparison_refresh_status.json').read_text(encoding='utf-8'))
-          discovery = status.get('newGameDiscovery') or {}
-          rows = discovery.get('sourceResults') or []
-          by_source = {row.get('source'): row for row in rows}
+          sources_cfg = json.loads(Path('config/point_sources.json').read_text(encoding='utf-8'))
+          source = next(row for row in sources_cfg['sources'] if row['id'] == 'coincome')
+          targets = json.loads(Path('config/game_targets.json').read_text(encoding='utf-8')).get('games') or []
+          url = source['direct_listing_urls'][0]
 
-          assert set(by_source) == set(expected), (set(by_source), set(expected))
-          assert status.get('listingSnapshot', {}).get('mode') == 'fetch_once_reuse_many'
+          raw, final_url = daily.resilient_fetch_first_party(
+              url, source, base_fetch=direct.fetch_first_party
+          )
+          detail_occurrences = len(re.findall(r'/campaigns/details/', raw, flags=re.I))
+          candidates = direct.discover_new_game_listing_candidates(
+              raw, final_url, source, targets, limit=2000
+          )
 
-          for source_id in expected:
-              row = by_source[source_id]
-              summary = {
-                  'source': source_id,
-                  'listingPagesAttempted': row.get('listingPagesAttempted'),
-                  'fetchErrors': row.get('fetchErrors'),
-                  'candidateCount': row.get('candidateCount'),
-                  'scanComplete': row.get('scanComplete'),
-                  'catalogComplete': row.get('catalogComplete'),
-                  'candidateLimitReached': row.get('candidateLimitReached'),
-                  'contentGuardFailed': row.get('contentGuardFailed'),
-              }
-              print(json.dumps(summary, ensure_ascii=False))
-              assert int(row.get('fetchErrors') or 0) == 0, summary
-              assert row.get('contentGuardFailed') is not True, summary
-              if source_id != 'powl':
-                  assert row.get('scanComplete') is True, summary
-              else:
-                  # Powl is deliberately a partial ranked surface. Reaching the
-                  # configured cap is expected and is not treated as a crawl error.
-                  assert int(row.get('candidateCount') or 0) > 0, summary
-
-          for source_id in ('moppy', 'coincome', 'amefuri'):
-              assert int(by_source[source_id].get('candidateCount') or 0) > 0, by_source[source_id]
-
-          snapshot = json.loads(Path('data/unified_offer_snapshot.json').read_text(encoding='utf-8'))
-          assert snapshot.get('phase') == 'UNIFIED_EIGHT_SITE_OFFER_SNAPSHOT_V1'
-          assert snapshot.get('sourceIds') == expected
-          assert snapshot.get('sourceCount') == 8
-          assert int(snapshot.get('groupCount') or 0) > 0
-          assert int(snapshot.get('listedGroupCount') or 0) > 0
-          assert any(int(group.get('sourceCount') or 0) >= 2 for group in snapshot.get('groups') or [])
-
-          moppy = status.get('moppyRewardOnly') or {}
-          assert moppy.get('mode') == 'existing-row-reward-only'
-          assert int(moppy.get('networkCalls') or 0) == 0
-          assert int(moppy.get('conditionsChanged') or 0) == 0
-          assert int(moppy.get('newRowsCreated') or 0) == 0
-
-          print(json.dumps({
-              'result': 'PASS',
-              'sources': snapshot.get('sourceCount'),
-              'groups': snapshot.get('groupCount'),
-              'listedGroups': snapshot.get('listedGroupCount'),
-              'multiSourceGroups': sum(
-                  int(group.get('sourceCount') or 0) >= 2
-                  for group in snapshot.get('groups') or []
-              ),
-              'moppyVerifiedRows': moppy.get('verifiedRows'),
-              'moppyRewardChanges': moppy.get('rewardChanges'),
-              'listingSnapshot': status.get('listingSnapshot'),
-          }, ensure_ascii=False))
+          result = {
+              'finalUrl': final_url,
+              'bytes': len(raw.encode('utf-8', errors='replace')),
+              'detailPathOccurrences': detail_occurrences,
+              'knownGameCount': len(targets),
+              'unlistedCandidateCount': len(candidates),
+          }
+          print(json.dumps(result, ensure_ascii=False))
+          assert detail_occurrences > 0, result
           PY
-
-      - name: Confirm repository was not published
-        run: |
-          git status --short
-          echo "This workflow has contents: read only and performs no git push or R2 operation."
