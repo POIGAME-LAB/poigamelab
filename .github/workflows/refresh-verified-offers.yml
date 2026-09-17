@@ -74,6 +74,10 @@ jobs:
         continue-on-error: true
         run: python scripts/daily_scan_review.py
 
+      - name: Enforce current-price publication scope
+        if: steps.refresh.outcome == 'success'
+        run: python scripts/publication_scope_guard.py
+
       - name: Build unified eight-site offer snapshot
         if: steps.refresh.outcome == 'success'
         run: python scripts/unified_offer_snapshot.py
@@ -101,6 +105,7 @@ jobs:
           python scripts/validate_daily_publication.py --baseline "${RUNNER_TEMP}/published-before.csv"
           node tests/test_site_data_v24.js
           node tests/test_site_health_v25.js
+          node tests/test_archived_offer_visibility.js
 
       - name: Archive refresh outputs to Cloudflare R2
         if: steps.refresh.outcome == 'success'
