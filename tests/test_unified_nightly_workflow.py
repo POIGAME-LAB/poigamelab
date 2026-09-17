@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,3 +46,19 @@ def test_nightly_schedule_and_main_only_guard_remain_unchanged():
     assert "if: github.ref == 'refs/heads/main'" in text
     assert "group: poigamelab-production-writer" in text
     assert "cancel-in-progress: false" in text
+
+
+def test_enabled_discovery_sources_match_exact_unified_eight_site_contract():
+    policy = json.loads((ROOT / "config" / "refresh_policy.json").read_text(encoding="utf-8"))
+    source_cfg = json.loads((ROOT / "config" / "point_sources.json").read_text(encoding="utf-8"))
+
+    unified = [str(value) for value in policy["unifiedDailySources"]]
+    enabled = [
+        str(source["id"])
+        for source in source_cfg["sources"]
+        if source.get("new_game_discovery_enabled") is True
+    ]
+
+    assert len(unified) == 8
+    assert len(set(unified)) == 8
+    assert set(enabled) == set(unified)
