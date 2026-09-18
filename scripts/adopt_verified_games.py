@@ -36,7 +36,10 @@ def norm(s): return ''.join(str(s or '').casefold().split())
 def identity_key(s):
     text=unicodedata.normalize('NFKC',str(s or '')).casefold()
     text=re.sub(r'^(?:ios|android|and)[ _：:・-]+','',text,flags=re.I)
-    text=re.sub(r'[（(](?:ios|android)[）)]def atomic_text(path,text):
+    text=re.sub(r'[（(](?:ios|android)[）)]$','',text,flags=re.I)
+    text=text.replace('＆','&')
+    return re.sub(r'[\s・･·／/｜|：:‐-‒–—―_\-【】\[\]（）()「」『』〈〉《》]+','',text)
+def atomic_text(path,text):
     path=Path(path); path.parent.mkdir(parents=True,exist_ok=True); tmp=path.with_suffix(path.suffix+'.tmp')
     tmp.write_text(text,encoding='utf-8'); os.replace(tmp,path)
 def json_text(obj): return json.dumps(obj,ensure_ascii=False,indent=2)+'\n'
