@@ -35,11 +35,17 @@ def scan(items, monkeypatch, inspector=inspect, registry=None, **kwargs):
                              fetcher=lambda *args: ("fixture", args[0]), **kwargs)
 
 
-def test_single_site_never_qualifies_even_with_many_urls(monkeypatch):
+def test_single_site_can_qualify_for_ranking_without_publication_permission(monkeypatch):
     items = candidates(sites=("a",)) * 10
     result = scan(items, monkeypatch)
-    assert result["reviewedGroups"] == result["detailInspectionCalls"] == 0
-    assert result["topFiveReviewCandidates"] == []
+    assert result["candidateListingGroups"] == 1
+    assert result["twoSiteListingGroups"] == 0
+    assert result["reviewedGroups"] == 1
+    assert result["detailInspectionCalls"] == 1
+    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
+    assert result["results"][0]["candidateEligible"] is True
+    assert result["results"][0]["confirmedSourceCount"] == 1
+    assert result["results"][0]["publicationAuthorized"] is False
 
 
 def test_same_domain_with_two_source_ids_is_not_two_sites(monkeypatch):
@@ -47,7 +53,9 @@ def test_same_domain_with_two_source_ids_is_not_two_sites(monkeypatch):
     registry["b"]["search_domains"] = ["a.example"]
     items = candidates()
     items[1]["firstPartyCandidateUrl"] = "https://a.example/detail?id=2"
-    assert scan(items, monkeypatch, registry=registry)["twoSiteListingGroups"] == 0
+    result = scan(items, monkeypatch, registry=registry)
+    assert result["twoSiteListingGroups"] == 0
+    assert result["candidateListingGroups"] == 1
 
 
 def test_two_details_are_candidates_but_not_publication_permission(monkeypatch):
@@ -80,8 +88,9 @@ def test_failed_or_ambiguous_second_source_is_held(monkeypatch, failure):
                 value["sourceEvidence"]["platform"] = ""
         return value
     result = scan(candidates(), monkeypatch, inspector=changed)
-    assert not result["results"][0]["candidateEligible"]
-    assert result["topFiveReviewCandidates"] == []
+    assert result["results"][0]["candidateEligible"]
+    assert result["results"][0]["confirmedSourceCount"] == 1
+    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
 
 
 @pytest.mark.parametrize("value", [True, -1, 0, "2000", 1.5, None])
@@ -263,8 +272,8 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
                 "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
             })
     result = scan(items, monkeypatch)
-    assert daily.MAX_GROUPS == 300
-    assert daily.MAX_DETAILS == 1200
+    assert daily.MAX_GROUPS == 1200
+    assert daily.MAX_DETAILS == 2400
     assert result["twoSiteListingGroups"] == 31
     assert result["reviewedGroups"] == 31
     assert result["detailInspectionCalls"] == 62
@@ -273,12 +282,11 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
     assert result["rankingComplete"] is True
 
 
-def test_default_budget_covers_observed_210_candidate_surface():
-    # The 2026-09-16 production probe exposed 210 new candidate offer rows.
-    # Even if every two rows formed a distinct two-site game, 105 groups and
-    # 210 detail inspections remain inside the bounded daily review envelope.
-    assert daily.MAX_GROUPS >= 105
-    assert daily.MAX_DETAILS >= 210
+def test_default_budget_covers_full_single_site_candidate_surface():
+    # The live 2026-09-18 run exposed 934 listing groups. One-site ranking must
+    # be able to inspect the full observed surface instead of silently truncating it.
+    assert daily.MAX_GROUPS >= 934
+    assert daily.MAX_DETAILS >= 1200
 
 
 def test_default_budget_clears_the_old_120_group_and_360_detail_ceiling(monkeypatch):
