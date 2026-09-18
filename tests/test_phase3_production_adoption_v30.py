@@ -69,6 +69,21 @@ class T(unittest.TestCase):
   with tempfile.TemporaryDirectory() as x:
    td=make_fixture(x); cfg=json.loads((td/'cfg.json').read_text()); cfg['productionAdoption']={'requiresContentPackage':True}; (td/'cfg.json').write_text(json.dumps(cfg)); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload())); content=install_content(td)
    out=self.runx(td,content,td); self.assertEqual(out['adopted'],1); self.assertTrue(out['results'][0]['contentPackageValidated']); rows=list(csv.DictReader((td/'games.csv').open())); new=next(r for r in rows if r['name']=='新作ゲーム'); self.assertEqual(new['image'],'assets/game-art/new-game.png'); self.assertEqual(new['difficulty'],'普通'); self.assertNotEqual(new['overview'],'')
+ def test_alias_collision_with_existing_game_blocks_second_catalog_row(self):
+  with tempfile.TemporaryDirectory() as x:
+   td=make_fixture(x)
+   targets=json.loads((td/'targets.json').read_text())
+   targets['games'][0]['aliases']=['Township','タウンシップ']
+   (td/'targets.json').write_text(json.dumps(targets,ensure_ascii=False))
+   p=payload('タウンシップ')
+   p['sourceQueue']['aliases']=['タウンシップ','Township']
+   (td/'adopt.json').write_text(json.dumps({'items':[{'game':'タウンシップ','eligible':True,'status':'adoption_ready'}]},ensure_ascii=False))
+   (td/'results/x.json').write_text(json.dumps(p,ensure_ascii=False))
+   out=self.runx(td)
+   self.assertEqual(out['adopted'],0)
+   self.assertIn('existing_game_identity_collision',out['results'][0]['reasons'])
+   rows=list(csv.DictReader((td/'games.csv').open()))
+   self.assertEqual([r['name'] for r in rows],['Township'])
  def test_idempotent_no_duplicate_game_or_offer(self):
   with tempfile.TemporaryDirectory() as x:
    td=make_fixture(x); (td/'adopt.json').write_text(json.dumps({'items':[{'game':'新作ゲーム','eligible':True,'status':'adoption_ready'}]})); (td/'results/x.json').write_text(json.dumps(payload()))
