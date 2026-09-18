@@ -329,8 +329,10 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
                         "publicationAuthorized": False, "holdReasons": reasons,
                         "researchStatus": "not_started", "researchQueries": research_queries(group["game"]),
                         "details": details})
+    # One confirmed point-site amount is sufficient for candidate ranking.
+    # Other sources may remain unreadable and are kept as diagnostics, but they
+    # must not veto a valid first-party yen amount from another source.
     ranked = [g for g in results if g["candidateEligible"] and g["maxObservedRewardYen"] is not None
-              and "yen_conversion_incomplete" not in g["holdReasons"]
               and "detail_budget_reached" not in g["holdReasons"]]
     ranked.sort(key=lambda g: (-g["maxObservedRewardYen"], g["game"]))
     group_limit = len(eligible) > max_groups
