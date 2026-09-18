@@ -1,0 +1,89 @@
+name: Temporary live top-five ranking validation
+
+on:
+  push:
+    branches:
+      - feat/unified-eight-site-offers-v2
+    paths:
+      - .github/workflows/tmp-live-top-five-ranking.yml
+
+permissions:
+  contents: read
+
+jobs:
+  live-top-five:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: f5c74296e406faf5c7d307de968b0c9232770764
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run one real eight-site scan with expanded ranking budget
+        run: python scripts/daily_scan_review.py
+
+      - name: Build top-five content handoff queue
+        run: python scripts/write_new_game_content_queue.py
+
+      - name: Verify exhaustive ranking and five-game handoff
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("data/daily_scan_review.json").read_text(encoding="utf-8"))
+          queue = json.loads(Path("data/new_game_content_queue.json").read_text(encoding="utf-8"))
+
+          summary = {
+              "listingGroups": report.get("listingGroups"),
+              "twoSiteListingGroups": report.get("twoSiteListingGroups"),
+              "reviewedGroups": report.get("reviewedGroups"),
+              "detailInspectionCalls": report.get("detailInspectionCalls"),
+              "groupLimitReached": report.get("groupLimitReached"),
+              "detailLimitReached": report.get("detailLimitReached"),
+              "sourceScanIncomplete": report.get("sourceScanIncomplete"),
+              "incompleteDiscoverySources": report.get("incompleteDiscoverySources"),
+              "expectedPartialDiscoverySources": report.get("expectedPartialDiscoverySources"),
+              "rankingComplete": report.get("rankingComplete"),
+              "topFiveReviewCandidates": report.get("topFiveReviewCandidates"),
+              "queueCount": queue.get("count"),
+              "queueHoldReason": queue.get("holdReason"),
+          }
+          print(json.dumps(summary, ensure_ascii=False))
+
+          assert report.get("groupLimitReached") is False, summary
+          assert report.get("detailLimitReached") is False, summary
+          assert report.get("sourceScanIncomplete") is False, summary
+          assert report.get("incompleteDiscoverySources") == [], summary
+          assert report.get("rankingComplete") is True, summary
+          assert report.get("expectedPartialDiscoverySources") == ["powl"], summary
+
+          items = queue.get("items") or []
+          assert queue.get("phase") == "NEW_GAME_CONTENT_QUEUE_V1"
+          assert queue.get("rankingComplete") is True
+          assert queue.get("publicationAuthorized") is False
+          assert queue.get("holdReason") is None
+          assert queue.get("count") == 5
+          assert len(items) == 5
+          assert [x.get("rank") for x in items] == [1, 2, 3, 4, 5]
+          assert all(x.get("publicationAuthorized") is False for x in items)
+          assert all(int(x.get("confirmedSourceCount") or 0) >= 2 for x in items)
+          rewards = [int(x.get("maxObservedRewardYen") or 0) for x in items]
+          assert rewards == sorted(rewards, reverse=True)
+          print(json.dumps({
+              "result": "PASS",
+              "topFive": [
+                  {
+                      "rank": x["rank"],
+                      "game": x["game"],
+                      "maxObservedRewardYen": x["maxObservedRewardYen"],
+                      "confirmedSourceCount": x["confirmedSourceCount"],
+                  }
+                  for x in items
+              ],
+          }, ensure_ascii=False))
+          PY
