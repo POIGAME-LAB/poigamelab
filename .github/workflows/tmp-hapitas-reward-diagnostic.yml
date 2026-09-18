@@ -11,9 +11,9 @@ permissions:
   contents: read
 
 jobs:
-  shortlist:
+  structure:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,77 +21,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Find high unlisted Hapitas candidates
+      - name: Inspect listing card markup
         run: |
           python - <<'PY'
           import json,re,sys
           from pathlib import Path
-          from urllib.parse import urljoin
           sys.path.insert(0,"scripts")
-          import direct_offer_refresh as d
           import daily_scan_review as daily
-
           cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="hapitas")
-          targets=json.loads(Path("config/game_targets.json").read_text(encoding="utf-8")).get("games") or []
-          listing=src["direct_listing_urls"][0]
-          raw,final=daily.resilient_fetch_first_party(listing,src)
-          doc=d.EvidenceHTML(raw).root
-
-          raw_candidates=d.discover_new_game_listing_candidates(raw,final,src,targets,limit=1200)
-          by_identity={}
-          for anchor in doc.find(tag="a"):
-              absolute=urljoin(final,(anchor.attrs.get("href") or "").strip()).split("#",1)[0]
-              try:
-                  ident=d.hapitas_offer_id(absolute)
-              except Exception:
-                  continue
-              node=anchor
-              best=""
-              for _ in range(8):
-                  if node is None: break
-                  txt=d.evidence_text(node)
-                  if txt and len(txt)<=2200:
-                      best=txt
-                  node=getattr(node,"parent",None)
-              if best and ident not in by_identity:
-                  by_identity[ident]=best
-
-          candidates=[]
-          for item in raw_candidates:
-              try:
-                  ident=d.hapitas_offer_id(item["firstPartyCandidateUrl"])
-              except Exception:
-                  continue
-              context=by_identity.get(ident,"")
-              pts=[int(x.replace(",","")) for x in re.findall(
-                  r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",
-                  context,re.I)]
-              if not pts: continue
-              candidates.append({
-                  "hint":max(pts),
-                  "label":daily.discovery_name(item["titleHint"]),
-                  "url":item["firstPartyCandidateUrl"],
-              })
-          candidates.sort(key=lambda x:(-x["hint"],x["label"]))
-          verified=[]
-          for item in candidates[:35]:
-              raw2,final2=daily.resilient_fetch_first_party(item["url"],src)
-              parsed=d.inspect_detail(item["url"],src,[item["label"]],fetcher=lambda u,s:(raw2,final2))
-              ev=parsed.get("sourceEvidence") or {}
-              if ev.get("state")!="parsed":
-                  continue
-              reward=daily.explicit_yen(ev)
-              if reward is None: continue
-              verified.append({
-                  "game":ev.get("name"),
-                  "reward":reward,
-                  "url":item["url"],
-                  "listingHint":item["hint"],
-              })
-              if len(verified)>=15: break
-          verified.sort(key=lambda x:(-x["reward"],x["game"] or ""))
-          print(json.dumps({"rawCandidateCount":len(raw_candidates),"hintedCount":len(candidates),"topVerified":verified},ensure_ascii=False))
-          assert len(verified)>=5, verified
-          assert verified[4]["reward"]>2100, verified[:5]
+          raw,final=daily.resilient_fetch_first_party(src["direct_listing_urls"][0],src)
+          for ident in ["98600","87594","96775","96353"]:
+              m=re.search(r'href=["\'][^"\']*itemid/'+ident+r'[^"\']*["\']',raw,re.I)
+              print("ITEM",ident,"FOUND",bool(m))
+              if m:
+                  snippet=re.sub(r"\s+"," ",raw[max(0,m.start()-1800):m.start()+3800])
+                  print(snippet[:5600])
           PY
