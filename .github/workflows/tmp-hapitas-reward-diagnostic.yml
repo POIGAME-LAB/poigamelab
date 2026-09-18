@@ -1,0 +1,78 @@
+name: Temporary Hapitas reward parser diagnostic
+
+on:
+  push:
+    branches:
+      - feat/unified-eight-site-offers-v2
+    paths:
+      - .github/workflows/tmp-hapitas-reward-diagnostic.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 68c198a9347e7302fba3e079ff23eb2b2519cf4e
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe Hapitas listing and details
+        run: |
+          python - <<'PY'
+          import json, re, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          import direct_offer_refresh as d
+          import daily_scan_review as daily
+
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          source=next(x for x in cfg["sources"] if x.get("id")=="hapitas")
+          listing=source["direct_listing_urls"][0]
+          raw, final=daily.resilient_fetch_first_party(listing, source)
+          print(json.dumps({"listingFinal":final,"bytes":len(raw)},ensure_ascii=False))
+
+          targets=[
+            "Idle Food Bar（マップ3アンロック）",
+            "Sea Block 1010",
+            "ワーキングヒーローズ",
+            "パズル＆サバイバル",
+            "パズル＆コンクエスト",
+            "ドゥームズデイ：ラストサバイバー",
+            "The Grand Mafia",
+            "出荷ぶた",
+          ]
+          for game in targets:
+              candidates=d.discover_first_party_listing_candidates(raw, final, source, [game], limit=6)
+              print(json.dumps({"game":game,"candidateUrls":[x["firstPartyCandidateUrl"] for x in candidates]},ensure_ascii=False))
+              for c in candidates[:3]:
+                  url=c["firstPartyCandidateUrl"]
+                  detail_raw, detail_final=daily.resilient_fetch_first_party(url, source)
+                  ev=d.inspect_hapitas_offer(detail_raw,url,detail_final,[game])
+                  doc=d.EvidenceHTML(detail_raw).root
+                  try:
+                      h1=d.evidence_text(d.one(doc.find(tag="h1")))
+                  except Exception as e:
+                      h1=""
+                  text=d.visible_text(detail_raw)
+                  positions=[m.start() for m in re.finditer(re.escape(h1),text)] if h1 else []
+                  first=text.find(h1) if h1 else -1
+                  boundary=text.find("ポイント対象条件",first if first>=0 else 0)
+                  header=text[first:boundary] if first>=0 and boundary>=0 else ""
+                  pts=re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\\s*pt\\b",header,re.I)
+                  print(json.dumps({
+                      "url":url,
+                      "h1":h1,
+                      "h1OccurrenceCount":len(positions),
+                      "h1Positions":positions[:5],
+                      "parserState":ev.get("state"),
+                      "parserReason":ev.get("reason"),
+                      "parsedReward":ev.get("verifiedCurrentRewardYen"),
+                      "headerPtMatches":pts[:12],
+                      "headerExcerpt":re.sub(r"\\s+"," ",header)[:1200],
+                  },ensure_ascii=False))
+          PY
