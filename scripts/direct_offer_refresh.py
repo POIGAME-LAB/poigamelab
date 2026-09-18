@@ -1500,12 +1500,12 @@ def hapitas_offer_id(url):
 
 
 def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
-    """Build review-only evidence from a Hapitas first-party app detail page.
+    """Build review-only evidence from the current Hapitas first-party detail card.
 
-    The current offer reward is the first pt amount in the current item's header.
-    Related-OS cards can appear later on the same page, so choosing the largest
-    page-wide value would be unsafe. Multi-step offers must additionally satisfy
-    sum(STEP rewards) == displayed current reward.
+    Reward extraction is bound to the current offer's structural detail block,
+    then cross-checked against the first-party page title. This deliberately
+    avoids page-wide point strings such as membership/referral copy. Multi-step
+    offers must additionally sum exactly to the displayed current reward.
     """
     try:
         offer_id = hapitas_offer_id(requested_url)
@@ -1524,71 +1524,90 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
             if hapitas_offer_id(canonical) != offer_id:
                 raise ValueError("canonical_offer_mismatch")
 
-        title = evidence_text(one(doc.find(tag="h1")))
+        header = one(doc.find(cls="detail_item_information"))
+        title = evidence_text(one(header.find(tag="h1")))
         if not target_present(title, aliases):
             raise ValueError("offer_title_mismatch")
+
+        reward_node = one(header.find(cls="calculated_detail_point"))
+        displayed_reward = exact_points(reward_node)
+        reward_box = evidence_text(one(header.find(cls="detail_item_point")))
+        reward_box_numbers = re.findall(
+            r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt(?![A-Za-z])",
+            reward_box,
+            re.I,
+        )
+        if len(reward_box_numbers) != 1 or int(reward_box_numbers[0].replace(",", "")) != displayed_reward:
+            raise ValueError("missing_or_ambiguous_displayed_reward")
+
+        page_title = evidence_text(one(doc.find(tag="title")))
+        title_match = re.match(
+            r"^" + re.escape(title) + r"\s*\|\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)pt還元中(?:\s*\||$)",
+            page_title,
+            re.I,
+        )
+        if not title_match or int(title_match.group(1).replace(",", "")) != displayed_reward:
+            raise ValueError("page_title_reward_mismatch")
 
         text = visible_text(raw)
         if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
             raise ValueError("unit_conversion_review_required")
 
-        title_pos = text.find(title)
-        if title_pos < 0:
-            raise ValueError("missing_offer_header")
-        target_pos = text.find("ポイント対象条件", title_pos)
-        if target_pos < 0:
-            raise ValueError("missing_offer_header_boundary")
-        header = text[title_pos:target_pos]
-
-        displayed_matches = re.findall(
-            r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",
-            header,
-            re.I,
-        )
-        if not displayed_matches:
-            raise ValueError("missing_displayed_reward")
-        displayed_reward = int(displayed_matches[0].replace(",", ""))
-        if not (0 < displayed_reward <= 5_000_000):
-            raise ValueError("invalid_displayed_reward")
-
-        terms_start = text.find("ポイント対象条件", title_pos)
-        if terms_start < 0:
+        attention = one(doc.find(ident="attention"))
+        terms = evidence_text(attention)
+        if len(terms) < 30:
             raise ValueError("incomplete_offer_terms")
-        terms_end_candidates = [
-            pos for marker in ("ハピタスご利用前に必ずご確認ください", "レビュー")
-            if (pos := text.find(marker, terms_start + 1)) >= 0
-        ]
-        terms_end = min(terms_end_candidates) if terms_end_candidates else min(len(text), terms_start + 18000)
-        terms = text[terms_start:terms_end].strip()
         if not any(marker in terms for marker in (
-            "ポイント獲得条件",
-            "成果受付期限",
-            "成果調査受付期限",
+            "ポイント獲得条件", "成果条件", "承認条件", "STEP1",
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "却下条件", "注意事項", "成果対象外", "対象外",
         )):
             raise ValueError("incomplete_offer_terms")
 
-        step_pairs = re.findall(
-            r"STEP\s*([0-9]+)\s*[:：]?.*?で\s*([0-9][0-9,]*)\s*pt\s*獲得",
-            terms,
-            re.I,
-        )
         step_rewards = []
-        if step_pairs:
-            step_numbers = [int(step) for step, _ in step_pairs]
+        step_numbers = []
+        chunks = re.split(r"(?=STEP\s*[0-9]+\s*[:：])", terms, flags=re.I)
+        for chunk in chunks:
+            number_match = re.match(r"STEP\s*([0-9]+)\s*[:：]", chunk, re.I)
+            if not number_match:
+                continue
+            reward_match = re.search(
+                r"で\s*([0-9][0-9,]*)\s*pt(?:\s*獲得)?",
+                chunk[:1200],
+                re.I,
+            )
+            if not reward_match:
+                raise ValueError("incomplete_or_duplicate_steps")
+            step_numbers.append(int(number_match.group(1)))
+            step_rewards.append(int(reward_match.group(1).replace(",", "")))
+        if step_numbers:
             if step_numbers != list(range(1, len(step_numbers) + 1)):
                 raise ValueError("incomplete_or_duplicate_steps")
-            step_rewards = [int(value.replace(",", "")) for _, value in step_pairs]
             if sum(step_rewards) != displayed_reward:
                 raise ValueError("step_total_not_displayed_current_reward")
 
-        os_labels = re.findall(
-            r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
-            title + " " + terms[:1800],
-            re.I,
-        )
-        normalized_os = {"ios": "iOS", "android": "Android"}
-        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
-        platform = platforms[0] if len(platforms) == 1 else ""
+        platform_labels = set()
+        for image in doc.find(tag="img"):
+            alt = str(image.attrs.get("alt") or "").strip().casefold()
+            if alt == "ios用ラベル".casefold():
+                platform_labels.add("iOS")
+            elif alt == "android用ラベル".casefold():
+                platform_labels.add("Android")
+        if len(platform_labels) == 1:
+            platform = next(iter(platform_labels))
+        else:
+            title_os = re.findall(
+                r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
+                title,
+                re.I,
+            )
+            normalized_os = {"ios": "iOS", "android": "Android"}
+            title_platforms = {normalized_os[value.casefold()] for value in title_os}
+            platform = next(iter(title_platforms)) if len(title_platforms) == 1 else ""
+        if platform not in {"iOS", "Android"}:
+            raise ValueError("ambiguous_offer_platform")
 
         payload = {
             "offerId": offer_id,
@@ -1600,7 +1619,7 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
             "verifiedCurrentRewardYen": displayed_reward,
             "rewardUnit": "Hapitas-pt",
             "sourcePointRate": "1pt=1JPY",
-            "headerText": re.sub(r"\s+", " ", header).strip(),
+            "headerText": evidence_text(header),
             "termsText": terms[:12000],
             "publicationAuthorized": False,
         }
@@ -1609,7 +1628,7 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
         ).hexdigest()
         return {
             "state": "parsed",
-            "parserVersion": "hapitas-detail-review-v1",
+            "parserVersion": "hapitas-detail-review-v2",
             **payload,
             "evidenceFingerprint": fingerprint,
         }
