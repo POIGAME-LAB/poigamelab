@@ -11,71 +11,78 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  shortlist:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: dc68611311c7deb7619975da261a569371f10171
+          ref: 53c04fe528475f13b8c74fb44ff0c9581670bc5b
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install pytest
-        run: python -m pip install --disable-pip-version-check pytest
-      - name: Offline Hapitas regression suite
-        run: |
-          python -m py_compile scripts/direct_offer_refresh.py scripts/structured_publication.py
-          python -m pytest -q \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_multistep_parser_cross_checks_step_sum \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_parser_ignores_unrelated_page_wide_rewards \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_multistep_parser_rejects_step_sum_mismatch \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_parser_rejects_page_title_reward_mismatch \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_offer_identity_accepts_reviewed_apn_suffix_only \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_known_game_detail_review_is_bounded_candidate_only \
-            tests/test_direct_offer_refresh_v1.py::test_hapitas_full_app_catalog_is_shared_for_discovery_and_coverage \
-            tests/test_structured_publication_hapitas.py \
-            tests/test_structured_publication.py \
-            tests/test_daily_scan_review.py
-      - name: Live structural reward cross-check
+      - name: Find high unlisted Hapitas candidates
         run: |
           python - <<'PY'
           import json,re,sys
           from pathlib import Path
+          from urllib.parse import urljoin
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
           import daily_scan_review as daily
 
           cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="hapitas")
-          checks=[
-            ("Idle Food Bar","https://hapitas.jp/item/detail/itemid/92295/apn/navigation_category"),
-            ("Sea Block 1010","https://hapitas.jp/item/detail/itemid/91053/apn/navigation_category"),
-            ("ワーキングヒーローズ","https://hapitas.jp/item/detail/itemid/101445/apn/navigation_category"),
-            ("パズル＆サバイバル","https://hapitas.jp/item/detail/itemid/98148/apn/navigation_category"),
-            ("パズル＆コンクエスト","https://hapitas.jp/item/detail/itemid/98600/apn/navigation_category"),
-            ("ドゥームズデイ","https://hapitas.jp/item/detail/itemid/99749/apn/navigation_category"),
-            ("The Grand Mafia","https://hapitas.jp/item/detail/itemid/87594/apn/navigation_category"),
-            ("出荷ぶた","https://hapitas.jp/item/detail/itemid/96698/apn/navigation_category"),
-          ]
-          results=[]
-          high=0
-          for game,url in checks:
-              raw,final=daily.resilient_fetch_first_party(url,src)
-              doc=d.EvidenceHTML(raw).root
-              structural=d.exact_points(d.one(d.one(doc.find(cls="detail_item_information")).find(cls="calculated_detail_point")))
-              h1=d.evidence_text(d.one(d.one(doc.find(cls="detail_item_information")).find(tag="h1")))
-              page_title=d.evidence_text(d.one(doc.find(tag="title")))
-              m=re.match(r"^"+re.escape(h1)+r"\s*\|\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)pt還元中",page_title,re.I)
-              assert m, (game,page_title)
-              title_reward=int(m.group(1).replace(",",""))
-              ev=d.inspect_hapitas_offer(raw,url,final,[game])
-              assert ev.get("state")=="parsed", (game,ev)
-              parsed=ev.get("verifiedCurrentRewardYen")
-              assert parsed==structural==title_reward, (game,parsed,structural,title_reward)
-              assert parsed!=2100 or structural==2100, (game,parsed)
-              high += parsed > 2100
-              results.append({"game":game,"reward":parsed,"parser":ev.get("parserVersion")})
-          assert high >= 5, results
-          print(json.dumps({"result":"PASS","highOver2100":high,"items":results},ensure_ascii=False))
+          targets=json.loads(Path("config/game_targets.json").read_text(encoding="utf-8")).get("games") or []
+          listing=src["direct_listing_urls"][0]
+          raw,final=daily.resilient_fetch_first_party(listing,src)
+          doc=d.EvidenceHTML(raw).root
+          candidates=[]
+          seen=set()
+          for anchor in doc.find(tag="a"):
+              href=(anchor.attrs.get("href") or "").strip()
+              absolute=urljoin(final,href).split("#",1)[0]
+              try:
+                  ident=d.hapitas_offer_id(absolute)
+              except Exception:
+                  continue
+              if ident in seen: continue
+              seen.add(ident)
+              node=anchor
+              context=""
+              for _ in range(7):
+                  if node is None: break
+                  txt=d.evidence_text(node)
+                  if len(txt)<=1800:
+                      context=txt
+                  marker=" ".join([getattr(node,"tag",""),node.attrs.get("class",""),node.attrs.get("id","")]).casefold()
+                  if any(x in marker for x in ("item","service","campaign","card")) and len(txt)<=1800:
+                      context=txt
+                      break
+                  node=getattr(node,"parent",None)
+              if not context: continue
+              pts=[int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",context,re.I)]
+              if not pts: continue
+              label=d.evidence_text(anchor).strip()
+              if not label or len(label)<2 or len(label)>180:
+                  label=context[:160]
+              if d.context_matches_known_game(context,targets):
+                  continue
+              candidates.append({"hint":max(pts),"label":label,"url":absolute,"context":context[:500]})
+          candidates.sort(key=lambda x:(-x["hint"],x["label"]))
+          verified=[]
+          for item in candidates[:30]:
+              raw2,final2=daily.resilient_fetch_first_party(item["url"],src)
+              parsed=d.inspect_detail(item["url"],src,[item["label"]],fetcher=lambda u,s:(raw2,final2))
+              ev=parsed.get("sourceEvidence") or {}
+              if ev.get("state")!="parsed":
+                  continue
+              reward=daily.explicit_yen(ev)
+              if reward is None: continue
+              verified.append({"game":ev.get("name"),"reward":reward,"url":item["url"],"listingHint":item["hint"]})
+              if len(verified)>=12: break
+          verified.sort(key=lambda x:(-x["reward"],x["game"] or ""))
+          print(json.dumps({"candidateCount":len(candidates),"topVerified":verified},ensure_ascii=False))
+          assert len(verified)>=5, verified
+          assert verified[4]["reward"]>2100, verified[:5]
           PY
