@@ -13,13 +13,24 @@ POLICY = {"enabled": True, "sources": ["hapitas"]}
 
 def markup(reward="12,345"):
     return f'''<!doctype html>
-<html><head><link rel="canonical" href="{URL}"></head><body>
-<h1>テストゲーム Android</h1>
+<html><head>
+<title>テストゲーム Android | {reward}pt還元中 | ポイ活ならポイントサイトのハピタス</title>
+<link rel="canonical" href="{URL}">
+</head><body>
+<div class="detail_item_information">
+  <h1 class="detail_item_label">テストゲーム Android</h1>
+  <div class="detail_item_point">
+    <strong><strong class="calculated_detail_point">{reward}</strong> pt</strong>
+  </div>
+</div>
+<img alt="Android用ラベル" src="/android.svg">
+<div>無関係な表示 2,100 pt</div>
+<div id="attention">
+  承認条件 新規アプリインストール後に指定条件を達成
+  却下条件 過去利用・条件未達は対象外
+  注意事項 広告クリック後に参加してください
+</div>
 <div>1ポイント=1円</div>
-<div>テストゲーム Android {reward} pt ポイント対象条件
-ポイント獲得条件 新規アプリインストール後に指定条件を達成
-成果受付期限 60日以内
-ハピタスご利用前に必ずご確認ください</div>
 </body></html>'''
 
 
