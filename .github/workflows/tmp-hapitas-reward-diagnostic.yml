@@ -11,17 +11,27 @@ permissions:
   contents: read
 
 jobs:
-  diagnose:
+  validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 68c198a9347e7302fba3e079ff23eb2b2519cf4e
+          ref: a9329f6a37f3dec325cb9cb807d23955a4da40c7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Inspect Hapitas terms DOM
+      - name: Install pytest
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Offline Hapitas regression suite
+        run: |
+          python -m py_compile scripts/direct_offer_refresh.py scripts/structured_publication.py
+          python -m pytest -q \
+            tests/test_direct_offer_refresh_v1.py \
+            tests/test_structured_publication_hapitas.py \
+            tests/test_structured_publication.py \
+            tests/test_daily_scan_review.py
+      - name: Live structural reward cross-check
         run: |
           python - <<'PY'
           import json,re,sys
@@ -29,19 +39,37 @@ jobs:
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
           import daily_scan_review as daily
+
           cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="hapitas")
-          for url in [
-            "https://hapitas.jp/item/detail/itemid/91053/apn/navigation_category",
-            "https://hapitas.jp/item/detail/itemid/98148/apn/navigation_category",
-          ]:
+          checks=[
+            ("Idle Food Bar","https://hapitas.jp/item/detail/itemid/92295/apn/navigation_category"),
+            ("Sea Block 1010","https://hapitas.jp/item/detail/itemid/91053/apn/navigation_category"),
+            ("ワーキングヒーローズ","https://hapitas.jp/item/detail/itemid/101445/apn/navigation_category"),
+            ("パズル＆サバイバル","https://hapitas.jp/item/detail/itemid/98148/apn/navigation_category"),
+            ("パズル＆コンクエスト","https://hapitas.jp/item/detail/itemid/98600/apn/navigation_category"),
+            ("ドゥームズデイ","https://hapitas.jp/item/detail/itemid/99749/apn/navigation_category"),
+            ("The Grand Mafia","https://hapitas.jp/item/detail/itemid/87594/apn/navigation_category"),
+            ("出荷ぶた","https://hapitas.jp/item/detail/itemid/96698/apn/navigation_category"),
+          ]
+          results=[]
+          high=0
+          for game,url in checks:
               raw,final=daily.resilient_fetch_first_party(url,src)
-              out={"url":url}
-              for marker in ["ポイント対象条件","ポイント獲得条件","成果受付期限","成果調査受付期限","ハピタスご利用前に必ずご確認ください"]:
-                  positions=[m.start() for m in re.finditer(marker,raw)]
-                  contexts=[]
-                  for pos in positions[:4]:
-                      contexts.append(re.sub(r"\s+"," ",raw[max(0,pos-1200):pos+3200])[:4400])
-                  out[marker]={"count":len(positions),"contexts":contexts}
-              print(json.dumps(out,ensure_ascii=False))
+              doc=d.EvidenceHTML(raw).root
+              structural=d.exact_points(d.one(d.one(doc.find(cls="detail_item_information")).find(cls="calculated_detail_point")))
+              h1=d.evidence_text(d.one(d.one(doc.find(cls="detail_item_information")).find(tag="h1")))
+              page_title=d.evidence_text(d.one(doc.find(tag="title")))
+              m=re.match(r"^"+re.escape(h1)+r"\s*\|\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)pt還元中",page_title,re.I)
+              assert m, (game,page_title)
+              title_reward=int(m.group(1).replace(",",""))
+              ev=d.inspect_hapitas_offer(raw,url,final,[game])
+              assert ev.get("state")=="parsed", (game,ev)
+              parsed=ev.get("verifiedCurrentRewardYen")
+              assert parsed==structural==title_reward, (game,parsed,structural,title_reward)
+              assert parsed!=2100 or structural==2100, (game,parsed)
+              high += parsed > 2100
+              results.append({"game":game,"reward":parsed,"parser":ev.get("parserVersion")})
+          assert high >= 5, results
+          print(json.dumps({"result":"PASS","highOver2100":high,"items":results},ensure_ascii=False))
           PY
