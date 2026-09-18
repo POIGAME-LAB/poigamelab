@@ -224,7 +224,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
         "coincome-detail-review-v1": "displayedRewardYen",
-        "hapitas-detail-review-v1": "verifiedCurrentRewardYen",
+        "hapitas-detail-review-v2": "verifiedCurrentRewardYen",
         "ecnavi-detail-review-v1": "verifiedCurrentRewardYen",
         "amefuri-multistep-review-v1": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
