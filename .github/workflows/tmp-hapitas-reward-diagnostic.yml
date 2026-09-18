@@ -13,28 +13,77 @@ permissions:
 jobs:
   structure:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 53c04fe528475f13b8c74fb44ff0c9581670bc5b
+          ref: d56205ce983ebdb910c31b20d6ec77f4378f48e6
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Inspect listing card markup
+      - name: Inspect raw Hapitas catalog transport
         run: |
           python - <<'PY'
-          import json,re,sys
+          import json,re,sys,html
           from pathlib import Path
+          from urllib.parse import urljoin
           sys.path.insert(0,"scripts")
           import daily_scan_review as daily
+          import direct_offer_refresh as d
+
           cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="hapitas")
-          raw,final=daily.resilient_fetch_first_party(src["direct_listing_urls"][0],src)
-          for ident in ["98600","87594","96775","96353"]:
-              m=re.search(r'href=["\'][^"\']*itemid/'+ident+r'[^"\']*["\']',raw,re.I)
-              print("ITEM",ident,"FOUND",bool(m))
-              if m:
-                  snippet=re.sub(r"\s+"," ",raw[max(0,m.start()-1800):m.start()+3800])
-                  print(snippet[:5600])
+          url=src["direct_listing_urls"][0]
+          raw,final=daily.resilient_fetch_first_party(url,src)
+          doc=d.EvidenceHTML(raw).root
+
+          itemids=sorted(set(re.findall(r'/item/detail/itemid/([0-9]+)',raw)))
+          names=[
+            "パズル＆サバイバル","パズル＆コンクエスト","ドゥームズデイ",
+            "The Grand Mafia","出荷ぶた","ワーキングヒーローズ","TikTok Lite"
+          ]
+          probes={}
+          for name in names:
+              positions=[m.start() for m in re.finditer(re.escape(name),raw,re.I)]
+              probes[name]={
+                  "count":len(positions),
+                  "contexts":[re.sub(r"\s+"," ",raw[max(0,p-1400):p+3200])[:4600] for p in positions[:3]]
+              }
+
+          scripts=[]
+          for n in doc.find(tag="script"):
+              srcurl=str(n.attrs.get("src") or "").strip()
+              txt=d.evidence_text(n)
+              if srcurl:
+                  scripts.append(urljoin(final,html.unescape(srcurl)))
+              elif any(k in txt.casefold() for k in ("ajax","fetch(","xhr","category","service_app","navigation_category","item/list")):
+                  scripts.append("INLINE:"+txt[:1200])
+
+          hrefs=[]
+          for a in doc.find(tag="a"):
+              href=str(a.attrs.get("href") or "").strip()
+              if not href: continue
+              absu=urljoin(final,html.unescape(href))
+              low=absu.casefold()
+              if any(k in low for k in ("service_app","navigation_category","page=","offset=","sort=","category")):
+                  hrefs.append(absu)
+
+          transport_patterns=sorted(set(
+              re.findall(r'https?://[^"\'<>\s]+',raw)
+          ))
+          transport_patterns=[
+              u for u in transport_patterns
+              if any(k in u.casefold() for k in ("ajax","api","category","service_app","item","navigation"))
+          ][:200]
+
+          print(json.dumps({
+              "final":final,
+              "bytes":len(raw),
+              "itemIdCount":len(itemids),
+              "itemIdsSample":itemids[:80],
+              "probes":probes,
+              "scriptSources":scripts[:120],
+              "interestingHrefs":sorted(set(hrefs))[:200],
+              "transportUrls":transport_patterns,
+          },ensure_ascii=False))
           PY
