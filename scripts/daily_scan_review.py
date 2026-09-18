@@ -16,8 +16,9 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_GROUPS = 300
-MAX_DETAILS = 1200
+MAX_GROUPS = 1200
+MAX_DETAILS = 2400
+MIN_CANDIDATE_SOURCES = 1
 
 
 def _source_id(source):
@@ -245,7 +246,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     families = source_families(sources)
     groups = {}
     for item in items:
-        # Ambiguous titles stay eligible for strict two-site verification.
+        # Ambiguous titles stay eligible for strict first-party detail verification.
         # Only an explicit non-game classification is dropped at this stage.
         if item.get("classification") == "likely_non_game":
             continue
@@ -275,7 +276,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         group["offers"] = {identity: offer for identity, offer in group["offers"].items()
                            if len(owners[identity]) == 1}
     eligible = [g for g in groups.values()
-                if len({family for family, _ in g["offers"]}) >= 2]
+                if len({family for family, _ in g["offers"]}) >= MIN_CANDIDATE_SOURCES]
     eligible.sort(key=lambda g: (-len({f for f, _ in g["offers"]}), g["game"]))
     warau_rate_confirmed = False
     rate_url = "https://www.warau.jp/help/qa/128/"
@@ -316,14 +317,14 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         reasons = ["game_identity_review_required", "full_terms_publication_review_required",
                    "cross_channel_research_required", "inline_progress_evidence_required",
                    "image_and_rights_required", "guide_and_mobile_artifact_validation_required"]
-        if len(confirmed) < 2:
-            reasons.insert(0, "fewer_than_two_confirmed_sites")
+        if len(confirmed) < MIN_CANDIDATE_SOURCES:
+            reasons.insert(0, "no_confirmed_site")
         if any(d.get("detailConfirmed") and d.get("rewardYen") is None for d in details) or not amounts:
             reasons.insert(0, "yen_conversion_incomplete")
         if len(details) < len(group["offers"]):
             reasons.insert(0, "detail_budget_reached")
         results.append({"game": group["game"], "confirmedSourceCount": len(confirmed),
-                        "candidateEligible": len(confirmed) >= 2,
+                        "candidateEligible": len(confirmed) >= MIN_CANDIDATE_SOURCES,
                         "maxObservedRewardYen": max(amounts) if amounts else None,
                         "publicationAuthorized": False, "holdReasons": reasons,
                         "researchStatus": "not_started", "researchQueries": research_queries(group["game"]),
@@ -337,7 +338,11 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     return {"phase": "DAILY_SAME_SCAN_REVIEW_V1", "checkedAt": checked_at,
             "apiCalls": 0, "publicationWrites": 0, "publishedGames": 0,
             "warauBaseRate": {"confirmed": warau_rate_confirmed, "sourceUrl": rate_url},
-            "listingGroups": len(groups), "twoSiteListingGroups": len(eligible),
+            "listingGroups": len(groups),
+            "candidateListingGroups": len(eligible),
+            "twoSiteListingGroups": sum(
+                len({family for family, _ in g["offers"]}) >= 2 for g in groups.values()
+            ),
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
             "groupLimitReached": group_limit,
             "detailLimitReached": detail_limit,
