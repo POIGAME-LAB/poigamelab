@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Inspect Hapitas DOM reward region
+      - name: Inspect Hapitas terms DOM
         run: |
           python - <<'PY'
           import json,re,sys
@@ -29,33 +29,19 @@ jobs:
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
           import daily_scan_review as daily
-
           cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="hapitas")
-          urls=[
+          for url in [
             "https://hapitas.jp/item/detail/itemid/91053/apn/navigation_category",
             "https://hapitas.jp/item/detail/itemid/98148/apn/navigation_category",
-          ]
-          for url in urls:
+          ]:
               raw,final=daily.resilient_fetch_first_party(url,src)
-              doc=d.EvidenceHTML(raw).root
-              h1node=d.one(doc.find(tag="h1"))
-              h1=d.evidence_text(h1node)
-              titlenode=d.one(doc.find(tag="title"))
-              pagetitle=d.evidence_text(titlenode)
-              parents=[]
-              node=h1node
-              for depth in range(5):
-                  if node is None: break
-                  parents.append({"depth":depth,"tag":getattr(node,"tag",""),"text":re.sub(r"\s+"," ",d.evidence_text(node))[:1800]})
-                  node=getattr(node,"parent",None)
-              m=re.search(r"<h1\b",raw,re.I)
-              snippet=raw[max(0,m.start()-1200):m.start()+5000] if m else ""
-              print(json.dumps({
-                  "url":url,
-                  "h1":h1,
-                  "title":pagetitle,
-                  "parents":parents,
-                  "rawAroundH1":re.sub(r"\s+"," ",snippet)[:5000],
-              },ensure_ascii=False))
+              out={"url":url}
+              for marker in ["ポイント対象条件","ポイント獲得条件","成果受付期限","成果調査受付期限","ハピタスご利用前に必ずご確認ください"]:
+                  positions=[m.start() for m in re.finditer(marker,raw)]
+                  contexts=[]
+                  for pos in positions[:4]:
+                      contexts.append(re.sub(r"\s+"," ",raw[max(0,pos-1200):pos+3200])[:4400])
+                  out[marker]={"count":len(positions),"contexts":contexts}
+              print(json.dumps(out,ensure_ascii=False))
           PY
