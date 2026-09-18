@@ -34,14 +34,13 @@ def config():
 
 
 class TestResearchTopFiveOffers(unittest.TestCase):
-    def test_research_item_requires_two_point_sites(self):
+    def test_research_item_allows_one_point_site(self):
         row = queue(1)["items"][0]
+        row["pointSiteEvidence"] = row["pointSiteEvidence"][:1]
         item = r.research_item_from_queue(row)
         self.assertEqual(item["game"], "Game 1")
-        self.assertEqual(set(item["sources"]), {"warau", "amefuri"})
-        row["pointSiteEvidence"] = row["pointSiteEvidence"][:1]
-        with self.assertRaisesRegex(ValueError, "below_two"):
-            r.research_item_from_queue(row)
+        self.assertEqual(item["sources"], ["warau"])
+        self.assertEqual(len(item["sourceCandidates"]), 1)
 
     def test_run_is_quarantine_only_and_limited_to_five(self):
         with tempfile.TemporaryDirectory() as td:
