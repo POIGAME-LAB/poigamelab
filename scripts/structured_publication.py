@@ -39,7 +39,7 @@ FULL_SNAPSHOT_CONTRACTS = {
 
 REWARD_ONLY_CONTRACTS = {
     "hapitas": {
-        "parser": "hapitas-detail-review-v1",
+        "parser": "hapitas-detail-review-v2",
         "identity": direct.hapitas_offer_id,
         "rewardField": "verifiedCurrentRewardYen",
         "fingerprintFields": [
@@ -52,7 +52,11 @@ REWARD_ONLY_CONTRACTS = {
         "sourcePointRate": "1pt=1JPY",
         "pointField": "verifiedCurrentRewardPoints",
         "pointScale": 1,
-        "termsMarkers": ("ポイント対象条件",),
+        "termsAnyGroups": (
+            ("ポイント獲得条件", "成果条件", "承認条件", "STEP1"),
+            ("却下条件", "注意事項", "成果対象外", "対象外"),
+        ),
+        "termsMarkers": (),
     },
     "coincome": {
         "parser": "coincome-detail-review-v1",
@@ -298,9 +302,14 @@ def reward_only_snapshot(item, sources, checked_at):
         "missing_or_oversize_terms",
     )
     require(
-        all(marker in terms for marker in contract["termsMarkers"]),
+        all(marker in terms for marker in contract.get("termsMarkers", ())),
         "incomplete_terms",
     )
+    for markers in contract.get("termsAnyGroups", ()):
+        require(
+            any(marker in terms for marker in markers),
+            "incomplete_terms",
+        )
     # Deliberately do not rewrite condition/deadline/type from a reward-only
     # contract. Existing prose survives unless a complete publication contract
     # exists for that source.
