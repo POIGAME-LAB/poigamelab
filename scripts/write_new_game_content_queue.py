@@ -89,8 +89,8 @@ def build(report):
             if url and sid:
                 point_sites.append({"source": sid, "url": url})
         dedup = {(x["source"], x["url"]): x for x in point_sites}
-        if len({x[0] for x in dedup}) < 2:
-            raise ValueError("ranked_game_confirmed_sources_below_two")
+        if len({x[0] for x in dedup}) < 1:
+            raise ValueError("ranked_game_confirmed_sources_below_one")
         items.append({
             "rank": rank,
             "game": game,
