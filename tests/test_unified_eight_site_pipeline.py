@@ -61,7 +61,7 @@ def contract_case(source):
              "displayedCurrentRewardPoints": 2200, "stepRewardPoints": [],
              "verifiedCurrentRewardPoints": 2200, "verifiedCurrentRewardYen": 2200,
              "rewardUnit": "Hapitas-pt", "sourcePointRate": "1pt=1JPY",
-             "headerText": "Game 2200pt", "termsText": "ポイント対象条件 条件本文",
+             "headerText": "Game 2200pt", "termsText": "承認条件 条件本文 却下条件 対象外 注意事項",
              "publicationAuthorized": False},
         ),
         "coincome": (
