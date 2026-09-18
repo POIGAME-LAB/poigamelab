@@ -70,7 +70,7 @@ jobs:
               if not pts: continue
               candidates.append({
                   "hint":max(pts),
-                  "label":item["titleHint"],
+                  "label":daily.discovery_name(item["titleHint"]),
                   "url":item["firstPartyCandidateUrl"],
               })
           candidates.sort(key=lambda x:(-x["hint"],x["label"]))
