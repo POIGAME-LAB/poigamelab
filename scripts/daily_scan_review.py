@@ -16,8 +16,8 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_GROUPS = 120
-MAX_DETAILS = 360
+MAX_GROUPS = 300
+MAX_DETAILS = 1200
 
 
 def _source_id(source):
@@ -349,12 +349,13 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
 
 
 def apply_discovery_completeness(report, discovery_summary):
-    """Hold top-five handoff when a configured first-party scan failed mid-run.
+    """Hold top-five handoff only for discovery gaps that can bias ranking.
 
-    `catalogComplete` is intentionally not required: some sources expose only a
-    reviewed partial surface by design. `scanComplete` instead captures transient
-    failures, content guards, pagination that did not finish, or candidate caps in
-    the exact run whose candidates are being ranked.
+    A source may deliberately expose a bounded partial surface. Such a source is
+    non-blocking only when the source contract explicitly marks ranking
+    completeness as optional *and* the run stopped solely at its configured
+    candidate cap. Transport/content failures still block ranking. Missing
+    metadata fails closed.
     """
     if not isinstance(report, dict):
         raise ValueError("daily_review_invalid")
@@ -365,13 +366,26 @@ def apply_discovery_completeness(report, discovery_summary):
     if not isinstance(source_results, list):
         raise ValueError("discovery_summary_missing")
     incomplete = []
+    expected_partial = []
     for row in source_results:
         if not isinstance(row, dict):
             raise ValueError("discovery_source_result_invalid")
-        if row.get("scanComplete") is not True:
-            incomplete.append(str(row.get("source") or row.get("sourceLabel") or "unknown"))
+        if row.get("scanComplete") is True:
+            continue
+        source_id = str(row.get("source") or row.get("sourceLabel") or "unknown")
+        bounded_partial = (
+            row.get("rankingCompletenessRequired") is False
+            and row.get("candidateLimitReached") is True
+            and int(row.get("fetchErrors") or 0) == 0
+            and row.get("contentGuardFailed") is not True
+        )
+        if bounded_partial:
+            expected_partial.append(source_id)
+        else:
+            incomplete.append(source_id)
     report["sourceScanIncomplete"] = bool(incomplete)
     report["incompleteDiscoverySources"] = sorted(set(incomplete))
+    report["expectedPartialDiscoverySources"] = sorted(set(expected_partial))
     report["discoverySourceCount"] = len(source_results)
     report["rankingComplete"] = bool(report.get("rankingComplete")) and not incomplete
     report["rankingScope"] = "supported_scanned_first_party_surfaces"
@@ -384,7 +398,6 @@ def apply_discovery_completeness(report, discovery_summary):
         holds.append("first_party_discovery_scan_incomplete")
     report["rankingHoldReasons"] = holds
     return report
-
 
 def _write_report(path, report):
     path = Path(path)

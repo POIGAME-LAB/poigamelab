@@ -485,7 +485,8 @@
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 1,
       "new_game_discovery_candidate_limit": 500,
-      "new_game_discovery_scope": "partial_ranked_app_listing"
+      "new_game_discovery_scope": "partial_ranked_app_listing",
+      "new_game_ranking_completeness_required": false
     }
   ],
   "offerwall_domains_discovered": [

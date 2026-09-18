@@ -24,8 +24,8 @@ def test_explicit_non_game_classification_is_excluded(monkeypatch):
 
 def test_default_review_budget_was_expanded_for_reward_ranking():
     import daily_scan_review as daily
-    assert daily.MAX_GROUPS == 120
-    assert daily.MAX_DETAILS == 360
+    assert daily.MAX_GROUPS == 300
+    assert daily.MAX_DETAILS == 1200
 
 
 def test_ambiguous_pointtown_reward_text_never_ranks_as_yen():
@@ -91,6 +91,43 @@ def test_intentionally_partial_but_successful_surface_does_not_hold_ranking(monk
     assert out["sourceScanIncomplete"] is False
     assert out["incompleteDiscoverySources"] == []
     assert out["rankingScope"] == "supported_scanned_first_party_surfaces"
+
+
+def test_explicit_bounded_powl_cap_is_visible_but_does_not_hold_ranking(monkeypatch):
+    import daily_scan_review as daily
+    result = scan(candidates("Quiet Kingdom"), monkeypatch)
+    discovery = {
+        "sourceResults": [
+            {"source": "warau", "scanComplete": True, "catalogComplete": True,
+             "fetchErrors": 0, "rankingCompletenessRequired": True},
+            {"source": "powl", "scanComplete": False, "catalogComplete": False,
+             "fetchErrors": 0, "candidateLimitReached": True,
+             "contentGuardFailed": False, "rankingCompletenessRequired": False},
+        ]
+    }
+    out = daily.apply_discovery_completeness(result, discovery)
+    assert out["rankingComplete"] is True
+    assert out["sourceScanIncomplete"] is False
+    assert out["incompleteDiscoverySources"] == []
+    assert out["expectedPartialDiscoverySources"] == ["powl"]
+    assert "first_party_discovery_scan_incomplete" not in out["rankingHoldReasons"]
+
+
+def test_optional_powl_still_holds_on_real_fetch_failure(monkeypatch):
+    import daily_scan_review as daily
+    result = scan(candidates("Quiet Kingdom"), monkeypatch)
+    discovery = {
+        "sourceResults": [
+            {"source": "powl", "scanComplete": False, "catalogComplete": False,
+             "fetchErrors": 1, "candidateLimitReached": True,
+             "contentGuardFailed": False, "rankingCompletenessRequired": False},
+        ]
+    }
+    out = daily.apply_discovery_completeness(result, discovery)
+    assert out["rankingComplete"] is False
+    assert out["sourceScanIncomplete"] is True
+    assert out["incompleteDiscoverySources"] == ["powl"]
+    assert out["expectedPartialDiscoverySources"] == []
 
 
 def test_missing_discovery_summary_fails_closed(monkeypatch):

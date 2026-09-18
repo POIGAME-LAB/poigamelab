@@ -2869,6 +2869,9 @@ def main(after_scan=None):
             "catalogComplete": catalog_complete,
             "candidateLimitReached": candidate_limit_reached,
             "contentGuardFailed": content_guard_failed,
+            "rankingCompletenessRequired": (
+                discovery_source.get("new_game_ranking_completeness_required", True) is not False
+            ),
         })
 
     for target in targets:

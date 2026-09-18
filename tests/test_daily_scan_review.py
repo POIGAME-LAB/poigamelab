@@ -263,8 +263,8 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
                 "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
             })
     result = scan(items, monkeypatch)
-    assert daily.MAX_GROUPS == 120
-    assert daily.MAX_DETAILS == 360
+    assert daily.MAX_GROUPS == 300
+    assert daily.MAX_DETAILS == 1200
     assert result["twoSiteListingGroups"] == 31
     assert result["reviewedGroups"] == 31
     assert result["detailInspectionCalls"] == 62
@@ -279,3 +279,22 @@ def test_default_budget_covers_observed_210_candidate_surface():
     # 210 detail inspections remain inside the bounded daily review envelope.
     assert daily.MAX_GROUPS >= 105
     assert daily.MAX_DETAILS >= 210
+
+
+def test_default_budget_clears_the_old_120_group_and_360_detail_ceiling(monkeypatch):
+    items = []
+    for i in range(121):
+        for site in ("a", "b", "c"):
+            items.append({
+                "classification": "likely_game",
+                "titleHint": f"Expanded Budget Puzzle {i:03d}",
+                "source": site,
+                "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
+            })
+    result = scan(items, monkeypatch)
+    assert result["twoSiteListingGroups"] == 121
+    assert result["reviewedGroups"] == 121
+    assert result["detailInspectionCalls"] == 363
+    assert result["groupLimitReached"] is False
+    assert result["detailLimitReached"] is False
+    assert result["rankingComplete"] is True
