@@ -60,6 +60,14 @@ class TestResearchNewGameChannels(unittest.TestCase):
             self.assertTrue(out["research"][channel]["complete"])
             self.assertTrue(out["research"][channel]["sources"][0]["targetConfirmed"])
 
+    def test_one_point_site_is_enough_to_begin_quarantined_research(self):
+        item = queue()["items"][0]
+        item["pointSiteEvidence"] = item["pointSiteEvidence"][:1]
+        out = r.research_item(item, "dummy", searcher=searcher, fetcher=fetcher)
+        self.assertTrue(out["complete"])
+        self.assertEqual(len(out["research"]["pointSites"]["sources"]), 1)
+        self.assertFalse(out["publicationAuthorized"])
+
     def test_search_error_is_visible_and_incomplete(self):
         def broken(query, key, max_results):
             raise RuntimeError("nope")
