@@ -53,8 +53,8 @@ def research_item_from_queue(row):
             if sid not in sources:
                 sources.append(sid)
             candidates.append({"source": sid, "url": url, "titleHint": game})
-    if len(set(sources)) < 2:
-        raise ValueError("queue_point_sources_below_two")
+    if len(set(sources)) < 1:
+        raise ValueError("queue_point_sources_missing")
     return {
         "game": game,
         "aliases": [game],
