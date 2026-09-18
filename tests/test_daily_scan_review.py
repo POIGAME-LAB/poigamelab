@@ -164,9 +164,9 @@ def test_detail_budget_is_explicit_and_partial_group_not_ranked(monkeypatch):
 def test_disabled_source_and_unsafe_urls_are_not_requested(monkeypatch):
     registry = sources()
     registry["b"]["scheduled_fetch_enabled"] = False
-    assert scan(candidates(), monkeypatch, registry=registry)["detailInspectionCalls"] == 0
-    items = candidates()
-    items[1]["firstPartyCandidateUrl"] = "https://user:pass@b.example/detail?id=1"
+    assert scan(candidates(sites=("b",)), monkeypatch, registry=registry)["detailInspectionCalls"] == 0
+    items = candidates(sites=("b",))
+    items[0]["firstPartyCandidateUrl"] = "https://user:pass@b.example/detail?id=1"
     assert scan(items, monkeypatch)["detailInspectionCalls"] == 0
 
 
