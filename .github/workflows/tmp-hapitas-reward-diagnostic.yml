@@ -27,7 +27,13 @@ jobs:
         run: |
           python -m py_compile scripts/direct_offer_refresh.py scripts/structured_publication.py
           python -m pytest -q \
-            tests/test_direct_offer_refresh_v1.py \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_multistep_parser_cross_checks_step_sum \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_parser_ignores_unrelated_page_wide_rewards \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_multistep_parser_rejects_step_sum_mismatch \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_parser_rejects_page_title_reward_mismatch \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_offer_identity_accepts_reviewed_apn_suffix_only \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_known_game_detail_review_is_bounded_candidate_only \
+            tests/test_direct_offer_refresh_v1.py::test_hapitas_full_app_catalog_is_shared_for_discovery_and_coverage \
             tests/test_structured_publication_hapitas.py \
             tests/test_structured_publication.py \
             tests/test_daily_scan_review.py
