@@ -13,7 +13,7 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,58 +21,41 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Probe Hapitas listing and details
+      - name: Inspect Hapitas DOM reward region
         run: |
           python - <<'PY'
-          import json, re, sys
+          import json,re,sys
           from pathlib import Path
-          sys.path.insert(0, "scripts")
+          sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
           import daily_scan_review as daily
 
           cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
-          source=next(x for x in cfg["sources"] if x.get("id")=="hapitas")
-          listing=source["direct_listing_urls"][0]
-          raw, final=daily.resilient_fetch_first_party(listing, source)
-          print(json.dumps({"listingFinal":final,"bytes":len(raw)},ensure_ascii=False))
-
-          targets=[
-            "Idle Food Bar（マップ3アンロック）",
-            "Sea Block 1010",
-            "ワーキングヒーローズ",
-            "パズル＆サバイバル",
-            "パズル＆コンクエスト",
-            "ドゥームズデイ：ラストサバイバー",
-            "The Grand Mafia",
-            "出荷ぶた",
+          src=next(x for x in cfg["sources"] if x["id"]=="hapitas")
+          urls=[
+            "https://hapitas.jp/item/detail/itemid/91053/apn/navigation_category",
+            "https://hapitas.jp/item/detail/itemid/98148/apn/navigation_category",
           ]
-          for game in targets:
-              candidates=d.discover_first_party_listing_candidates(raw, final, source, [game], limit=6)
-              print(json.dumps({"game":game,"candidateUrls":[x["firstPartyCandidateUrl"] for x in candidates]},ensure_ascii=False))
-              for c in candidates[:3]:
-                  url=c["firstPartyCandidateUrl"]
-                  detail_raw, detail_final=daily.resilient_fetch_first_party(url, source)
-                  ev=d.inspect_hapitas_offer(detail_raw,url,detail_final,[game])
-                  doc=d.EvidenceHTML(detail_raw).root
-                  try:
-                      h1=d.evidence_text(d.one(doc.find(tag="h1")))
-                  except Exception as e:
-                      h1=""
-                  text=d.visible_text(detail_raw)
-                  positions=[m.start() for m in re.finditer(re.escape(h1),text)] if h1 else []
-                  first=text.find(h1) if h1 else -1
-                  boundary=text.find("ポイント対象条件",first if first>=0 else 0)
-                  header=text[first:boundary] if first>=0 and boundary>=0 else ""
-                  pts=re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\\s*pt\\b",header,re.I)
-                  print(json.dumps({
-                      "url":url,
-                      "h1":h1,
-                      "h1OccurrenceCount":len(positions),
-                      "h1Positions":positions[:5],
-                      "parserState":ev.get("state"),
-                      "parserReason":ev.get("reason"),
-                      "parsedReward":ev.get("verifiedCurrentRewardYen"),
-                      "headerPtMatches":pts[:12],
-                      "headerExcerpt":re.sub(r"\\s+"," ",header)[:1200],
-                  },ensure_ascii=False))
+          for url in urls:
+              raw,final=daily.resilient_fetch_first_party(url,src)
+              doc=d.EvidenceHTML(raw).root
+              h1node=d.one(doc.find(tag="h1"))
+              h1=d.evidence_text(h1node)
+              titlenode=d.one(doc.find(tag="title"))
+              pagetitle=d.evidence_text(titlenode)
+              parents=[]
+              node=h1node
+              for depth in range(5):
+                  if node is None: break
+                  parents.append({"depth":depth,"tag":getattr(node,"tag",""),"text":re.sub(r"\s+"," ",d.evidence_text(node))[:1800]})
+                  node=getattr(node,"parent",None)
+              m=re.search(r"<h1\b",raw,re.I)
+              snippet=raw[max(0,m.start()-1200):m.start()+5000] if m else ""
+              print(json.dumps({
+                  "url":url,
+                  "h1":h1,
+                  "title":pagetitle,
+                  "parents":parents,
+                  "rawAroundH1":re.sub(r"\s+"," ",snippet)[:5000],
+              },ensure_ascii=False))
           PY
