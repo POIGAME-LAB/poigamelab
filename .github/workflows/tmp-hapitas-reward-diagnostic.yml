@@ -37,41 +37,45 @@ jobs:
           listing=src["direct_listing_urls"][0]
           raw,final=daily.resilient_fetch_first_party(listing,src)
           doc=d.EvidenceHTML(raw).root
-          candidates=[]
-          seen=set()
+
+          raw_candidates=d.discover_new_game_listing_candidates(raw,final,src,targets,limit=1200)
+          by_identity={}
           for anchor in doc.find(tag="a"):
-              href=(anchor.attrs.get("href") or "").strip()
-              absolute=urljoin(final,href).split("#",1)[0]
+              absolute=urljoin(final,(anchor.attrs.get("href") or "").strip()).split("#",1)[0]
               try:
                   ident=d.hapitas_offer_id(absolute)
               except Exception:
                   continue
-              if ident in seen: continue
-              seen.add(ident)
               node=anchor
-              context=""
-              for _ in range(7):
+              best=""
+              for _ in range(8):
                   if node is None: break
                   txt=d.evidence_text(node)
-                  if len(txt)<=1800:
-                      context=txt
-                  marker=" ".join([getattr(node,"tag",""),node.attrs.get("class",""),node.attrs.get("id","")]).casefold()
-                  if any(x in marker for x in ("item","service","campaign","card")) and len(txt)<=1800:
-                      context=txt
-                      break
+                  if txt and len(txt)<=2200:
+                      best=txt
                   node=getattr(node,"parent",None)
-              if not context: continue
-              pts=[int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",context,re.I)]
-              if not pts: continue
-              label=d.evidence_text(anchor).strip()
-              if not label or len(label)<2 or len(label)>180:
-                  label=context[:160]
-              if d.context_matches_known_game(context,targets):
+              if best and ident not in by_identity:
+                  by_identity[ident]=best
+
+          candidates=[]
+          for item in raw_candidates:
+              try:
+                  ident=d.hapitas_offer_id(item["firstPartyCandidateUrl"])
+              except Exception:
                   continue
-              candidates.append({"hint":max(pts),"label":label,"url":absolute,"context":context[:500]})
+              context=by_identity.get(ident,"")
+              pts=[int(x.replace(",","")) for x in re.findall(
+                  r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",
+                  context,re.I)]
+              if not pts: continue
+              candidates.append({
+                  "hint":max(pts),
+                  "label":item["titleHint"],
+                  "url":item["firstPartyCandidateUrl"],
+              })
           candidates.sort(key=lambda x:(-x["hint"],x["label"]))
           verified=[]
-          for item in candidates[:30]:
+          for item in candidates[:35]:
               raw2,final2=daily.resilient_fetch_first_party(item["url"],src)
               parsed=d.inspect_detail(item["url"],src,[item["label"]],fetcher=lambda u,s:(raw2,final2))
               ev=parsed.get("sourceEvidence") or {}
@@ -79,10 +83,15 @@ jobs:
                   continue
               reward=daily.explicit_yen(ev)
               if reward is None: continue
-              verified.append({"game":ev.get("name"),"reward":reward,"url":item["url"],"listingHint":item["hint"]})
-              if len(verified)>=12: break
+              verified.append({
+                  "game":ev.get("name"),
+                  "reward":reward,
+                  "url":item["url"],
+                  "listingHint":item["hint"],
+              })
+              if len(verified)>=15: break
           verified.sort(key=lambda x:(-x["reward"],x["game"] or ""))
-          print(json.dumps({"candidateCount":len(candidates),"topVerified":verified},ensure_ascii=False))
+          print(json.dumps({"rawCandidateCount":len(raw_candidates),"hintedCount":len(candidates),"topVerified":verified},ensure_ascii=False))
           assert len(verified)>=5, verified
           assert verified[4]["reward"]>2100, verified[:5]
           PY
