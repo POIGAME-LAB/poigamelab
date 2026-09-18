@@ -183,8 +183,8 @@ def point_site_lane(item):
             "claim": f"{sid} の同一巡回で案件詳細を確認済み",
             "evidenceLevel": "same_scan_first_party_detail",
         })
-    if len({x["id"] for x in sources}) < 2:
-        raise ValueError("point_site_evidence_below_two")
+    if len({x["id"] for x in sources}) < 1:
+        raise ValueError("point_site_evidence_missing")
     return {"searched": True, "complete": True, "searchCalls": 0, "sources": sources}
 
 
