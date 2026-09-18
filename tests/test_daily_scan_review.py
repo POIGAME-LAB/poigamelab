@@ -94,6 +94,21 @@ def test_failed_or_ambiguous_second_source_is_held(monkeypatch, failure):
 
 
 @pytest.mark.parametrize("value", [True, -1, 0, "2000", 1.5, None])
+def test_one_valid_yen_source_ranks_even_if_second_confirmed_site_has_unknown_yen(monkeypatch):
+    def mixed(url, source, aliases, fetcher):
+        value = inspect(url, source, aliases, fetcher)
+        if source["id"] == "b":
+            value["sourceEvidence"]["parserVersion"] = "unsupported-review-v1"
+            value["sourceEvidence"].pop("displayedRewardYen", None)
+        return value
+    result = scan(candidates(), monkeypatch, inspector=mixed)
+    row = result["results"][0]
+    assert row["confirmedSourceCount"] == 2
+    assert row["maxObservedRewardYen"] == 2000
+    assert "yen_conversion_incomplete" in row["holdReasons"]
+    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
+
+
 def test_noninteger_or_missing_amount_never_ranks(value):
     assert daily.explicit_yen({"state": "parsed", "parserVersion": "coincome-detail-review-v1",
                                "displayedRewardYen": value}) is None
