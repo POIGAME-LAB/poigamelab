@@ -114,6 +114,17 @@ def test_noninteger_or_missing_amount_never_ranks(value):
                                "displayedRewardYen": value}) is None
 
 
+def test_hapitas_v2_reward_is_rankable_and_known_bad_v1_is_rejected():
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "hapitas-detail-review-v2",
+        "verifiedCurrentRewardYen": 34861,
+    }
+    assert daily.explicit_yen(evidence) == 34861
+    legacy = dict(evidence, parserVersion="hapitas-detail-review-v1")
+    assert daily.explicit_yen(legacy) is None
+
+
 def test_points_are_not_assumed_to_be_yen():
     assert daily.explicit_yen({"state": "parsed", "parserVersion": "warau-stepup-v1",
                                "rewardPoints": 70000, "rewardUnit": "pt"}) is None
