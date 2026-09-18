@@ -56,10 +56,13 @@ def test_write_is_atomic_compact_handoff():
         assert saved == result and saved["phase"] == "NEW_GAME_CONTENT_QUEUE_V1"
 
 
-def test_missing_second_confirmed_source_fails_closed():
-    bad = report(); bad["results"][5] = row("Game 6", 6000, sources=("warau",))
-    with pytest.raises(ValueError, match="confirmed_sources_below_two"):
-        queue.build(bad)
+def test_one_confirmed_source_is_enough_for_ranked_handoff():
+    one = report(); one["results"][5] = row("Game 6", 6000, sources=("warau",))
+    out = queue.build(one)
+    assert out["count"] == 5
+    assert out["items"][0]["game"] == "Game 6"
+    assert out["items"][0]["confirmedSourceCount"] == 1
+    assert len(out["items"][0]["pointSiteEvidence"]) == 1
 
 
 def test_workflow_writes_archives_and_commits_queue_once():
