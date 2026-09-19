@@ -555,6 +555,31 @@ def paginated_listing_url(source, page):
     return candidate if source_host_allowed(candidate, source) else ""
 
 
+def new_game_listing_title_hint(anchor, source, context):
+    """Return the title from a bounded first-party listing card.
+
+    Hapitas wraps title and reward in the same anchor. Its .store node is the
+    title while .caption is the reward. Using the whole anchor text pollutes
+    identity with the current reward, so bind the title structurally there.
+    """
+    sid = str((source or {}).get("id") or "")
+    if sid == "hapitas":
+        stores = anchor.find(cls="store")
+        if len(stores) == 1:
+            title = evidence_text(stores[0]).strip()
+            if 1 < len(title) <= 160:
+                return title
+
+    generic_labels = {
+        "詳細", "詳細を見る", "もっと見る", "案件を見る", "ポイントを貯める",
+        "参加する", "今すぐ参加", "こちら", "more", "detail"
+    }
+    anchor_label = evidence_text(anchor).strip()
+    if (anchor_label and anchor_label.casefold() not in generic_labels
+            and 2 <= len(anchor_label) <= 160):
+        return anchor_label
+    return str(context or "")[:160].strip()
+
 def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=500):
     """Discover first-party detail links that do not map to a known game.
 
@@ -586,11 +611,6 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
         anchors = EvidenceHTML(raw or "").root.find(tag="a")
     except (TypeError, ValueError, RecursionError):
         return found
-
-    generic_labels = {
-        "詳細", "詳細を見る", "もっと見る", "案件を見る", "ポイントを貯める",
-        "参加する", "今すぐ参加", "こちら", "more", "detail"
-    }
 
     for anchor in anchors:
         href = html.unescape(anchor.attrs.get("href", "")).strip()
@@ -628,11 +648,7 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
         if context_matches_known_game(context, targets):
             continue
 
-        anchor_label = evidence_text(anchor).strip()
-        title_hint = anchor_label
-        if (not title_hint or title_hint.casefold() in generic_labels
-                or len(title_hint) < 2 or len(title_hint) > 160):
-            title_hint = context[:160].strip()
+        title_hint = new_game_listing_title_hint(anchor, source, context)
         if not title_hint:
             title_hint = "(title review required)"
 
