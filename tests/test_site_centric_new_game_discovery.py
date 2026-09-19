@@ -124,7 +124,7 @@ def test_nightly_workflow_persists_new_game_queue_at_1am_jst():
     workflow = (ROOT / ".github" / "workflows" / "refresh-verified-offers.yml").read_text(
         encoding="utf-8"
     )
-    assert 'cron: "0 16 * * *"' in workflow
+    assert 'cron: "17 16 * * *"' in workflow
     assert "data/new_game_candidate_queue.json" in workflow
     assert "git add data/new_game_candidate_queue.json" in workflow
 
