@@ -55,6 +55,62 @@ def test_new_game_discovery_is_candidate_only_and_suppresses_known_games():
     assert item["publicationAuthorized"] is False
 
 
+def test_hapitas_candidate_title_excludes_reward_caption():
+    direct = load_refresh_module()
+    source = {
+        "id": "hapitas",
+        "name": "ハピタス",
+        "search_domains": ["hapitas.jp"],
+        "direct_detail_url_hints": ["/item/detail/itemid/"],
+    }
+    raw = '''
+    <div class="item_slots_thumb">
+      <a href="https://hapitas.jp/item/detail/itemid/98600/apn/navigation_category" class="thumb_slots_link">
+        <div class="thumb-inner">
+          <div class="thumb_slots_title"><p class="store">パズル＆コンクエスト</p></div>
+          <p class="caption">26,172pt</p>
+        </div>
+      </a>
+    </div>
+    '''
+    items = direct.discover_new_game_listing_candidates(
+        raw, "https://hapitas.jp/category/service_app/apn/navigation_category/",
+        source, [], limit=20
+    )
+    assert len(items) == 1
+    assert items[0]["titleHint"] == "パズル＆コンクエスト"
+    assert "26,172" not in items[0]["titleHint"]
+
+
+def test_hapitas_known_game_is_still_suppressed_with_reward_caption():
+    direct = load_refresh_module()
+    source = {
+        "id": "hapitas",
+        "name": "ハピタス",
+        "search_domains": ["hapitas.jp"],
+        "direct_detail_url_hints": ["/item/detail/itemid/"],
+    }
+    targets = [{
+        "game": "パズル＆サバイバル",
+        "aliases": ["パズル＆サバイバル", "パズル&サバイバル"],
+        "known_urls_by_source": {},
+    }]
+    raw = '''
+    <div class="item_slots_thumb">
+      <a href="https://hapitas.jp/item/detail/itemid/98148/apn/navigation_category" class="thumb_slots_link">
+        <div class="thumb-inner">
+          <div class="thumb_slots_title"><p class="store">パズル＆サバイバル</p></div>
+          <p class="caption">34,861pt</p>
+        </div>
+      </a>
+    </div>
+    '''
+    items = direct.discover_new_game_listing_candidates(
+        raw, "https://hapitas.jp/category/service_app/apn/navigation_category/",
+        source, targets, limit=20
+    )
+    assert items == []
+
 def test_amefuri_is_first_site_centric_new_game_source():
     cfg = json.loads((ROOT / "config" / "point_sources.json").read_text(encoding="utf-8"))
     source = next(x for x in cfg["sources"] if x["id"] == "amefuri")
