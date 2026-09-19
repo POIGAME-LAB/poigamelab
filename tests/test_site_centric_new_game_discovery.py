@@ -126,7 +126,8 @@ def test_nightly_workflow_persists_new_game_queue_at_1am_jst():
     )
     assert 'cron: "17 16 * * *"' in workflow
     assert "data/new_game_candidate_queue.json" in workflow
-    assert "data/new_game_candidate_queue.json" in workflow\n    assert "Archive refresh outputs to Cloudflare R2" in workflow
+    assert "data/new_game_candidate_queue.json" in workflow
+    assert "Archive refresh outputs to Cloudflare R2" in workflow
 
 
 def test_new_game_queue_never_auto_creates_or_publishes():
