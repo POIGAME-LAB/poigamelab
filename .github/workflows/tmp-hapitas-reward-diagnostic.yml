@@ -47,9 +47,9 @@ jobs:
           items=d.discover_new_game_listing_candidates(raw,final,src,targets,limit=1200)
           by_id={str(x.get('offerIdentity')):x for x in items}
           checks={
-            '98600':'パズル＆コンクエスト',
-            '96775':'[LV3まで1時間] ゾンビ・パニック',
-            '96352':'ザ・アンツ',
+            'hapitas:pathid:98600':'パズル＆コンクエスト',
+            'hapitas:pathid:96775':'[LV3まで1時間] ゾンビ・パニック',
+            'hapitas:pathid:96352':'ザ・アンツ',
           }
           out=[]
           for ident,expected_title in checks.items():
