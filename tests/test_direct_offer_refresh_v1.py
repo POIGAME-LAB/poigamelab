@@ -496,6 +496,14 @@ def test_powl_first_party_app_listing_discovers_target_reward_links_only():
     assert all(x['platformHint'] == '' for x in candidates)
 
 
+def test_ranking_health_only_requires_sources_that_can_verify_details():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    by_id = {item['id']: item for item in cfg['sources']}
+    assert direct.source_participates_in_new_game_ranking(by_id['moppy']) is True
+    assert direct.source_participates_in_new_game_ranking(by_id['warau']) is True
+    assert direct.source_participates_in_new_game_ranking(by_id['powl']) is False
+
+
 def test_powl_reward_identity_ignores_navigation_query_variants():
     a = direct.offer_identity_key('https://web.powl.jp/reward/16322?from=genre', 'powl')
     b = direct.offer_identity_key('https://web.powl.jp/reward/16322?ref=search', 'powl')
@@ -3756,6 +3764,15 @@ def test_moppy_paginated_discovery_requires_nonempty_first_page():
     assert moppy['new_game_discovery_candidate_limit'] == 2000
     assert moppy['new_game_discovery_min_detail_identities_first_page'] == 1
     assert moppy['full_catalog_discovery_enabled'] is False
+    assert moppy['listing_session_bootstrap_url'] == moppy['direct_listing_urls'][0]
+    assert moppy['listing_session_url_hints'] == ['/ajax/category/get_list.php']
+    assert 'objective_category=0' in moppy['new_game_discovery_page_url_template']
+    assert 'exclude_purchased=true' in moppy['new_game_discovery_page_url_template']
+    first_page = direct.paginated_listing_url(moppy, 1)
+    assert direct.listing_session_required(first_page, moppy) is True
+    assert direct.listing_session_required(
+        'https://pc.moppy.jp/ad/detail.php?site_id=161941', moppy
+    ) is False
 
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
     assert 'min_first_page_identities = max(' in script
@@ -3786,6 +3803,11 @@ def test_nightly_schedule_avoids_top_of_hour():
     assert 'cron: "17 16 * * *"' in workflow
     assert 'cron: "0 16 * * *"' not in workflow
     assert policy['scheduleJST'] == '毎日 01:17 頃（GitHub Actions cron: 16:17 UTC）'
+
+
+def test_discovery_summary_records_ranking_requirement():
+    script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
+    assert '"rankingRequired": source_participates_in_new_game_ranking(discovery_source)' in script
 
 
 def test_source_health_fetch_errors_never_count_complete():
