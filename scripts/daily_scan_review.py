@@ -16,10 +16,12 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_DETAILS = 360
+# A 2026-09-20 live listing-only capacity probe measured 558 detail candidates
+# across 136 two-site game groups before Moppy recovery. Keep a bounded margin
+# above that observed surface while remaining well inside the 90-minute job cap.
+MAX_DETAILS = 640
 # Every rank-eligible game has offers from at least two independent source
-# families. Derive the group ceiling from the existing detail-request budget
-# so two-source groups can use the full budget without increasing network load.
+# families, so this still bounds the maximum number of groups independently.
 MAX_GROUPS = MAX_DETAILS // 2
 
 
@@ -123,9 +125,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         if (sid not in sources or not direct.source_host_allowed(url, sources[sid])
                 or not direct.detail_like(url, sources[sid])):
             continue
-        if (sources[sid].get("scheduled_fetch_enabled", True) is not True
-                and not (sources[sid].get("coverage_detail_review_enabled") is True
-                         and sources[sid].get("coverage_detail_review_mode") == "candidate_only")):
+        if not direct.source_participates_in_new_game_ranking(sources[sid]):
             continue
         identity = direct.offer_identity_key(url, sid)
         if not identity:
@@ -232,13 +232,20 @@ def apply_discovery_completeness(report, discovery_summary):
     if not isinstance(source_results, list):
         raise ValueError("discovery_summary_missing")
     incomplete = []
+    non_ranking_incomplete = []
     for row in source_results:
         if not isinstance(row, dict):
             raise ValueError("discovery_source_result_invalid")
         if row.get("scanComplete") is not True:
-            incomplete.append(str(row.get("source") or row.get("sourceLabel") or "unknown"))
+            source = str(row.get("source") or row.get("sourceLabel") or "unknown")
+            # Missing rankingRequired stays fail-closed for old/unknown data.
+            if row.get("rankingRequired") is False:
+                non_ranking_incomplete.append(source)
+            else:
+                incomplete.append(source)
     report["sourceScanIncomplete"] = bool(incomplete)
     report["incompleteDiscoverySources"] = sorted(set(incomplete))
+    report["nonRankingIncompleteDiscoverySources"] = sorted(set(non_ranking_incomplete))
     report["discoverySourceCount"] = len(source_results)
     report["rankingComplete"] = bool(report.get("rankingComplete")) and not incomplete
     report["rankingScope"] = "supported_scanned_first_party_surfaces"
