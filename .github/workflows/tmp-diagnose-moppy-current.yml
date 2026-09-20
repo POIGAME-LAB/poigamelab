@@ -30,7 +30,10 @@ jobs:
             d.paginated_listing_url(source,1),
             source["direct_listing_urls"][0],
           ]
-          for label,url in zip(["ajax","category"],urls):
+          current_ajax="https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=0&current_page=1&af_sorter=1&exclude_purchased=true"
+          urls.insert(1,current_ajax)
+          labels=["ajax_old","ajax_current","category"]
+          for label,url in zip(labels,urls):
               try:
                   raw, final=d.fetch_first_party(url,source)
                   sig=d.listing_detail_identity_signature(raw,final,source,limit=5000)
