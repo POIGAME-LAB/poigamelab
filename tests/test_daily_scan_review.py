@@ -62,7 +62,7 @@ def test_two_details_are_candidates_but_not_publication_permission(monkeypatch):
 
 
 @pytest.mark.parametrize("failure", ["exception", "partial", "shell", "redirect", "missing_terms", "missing_os"])
-def test_failed_or_ambiguous_second_source_is_held(monkeypatch, failure):
+def test_failed_or_ambiguous_second_source_is_retained_for_research(monkeypatch, failure):
     def changed(url, source, aliases, fetcher):
         value = inspect(url, source, aliases, fetcher)
         if source["id"] == "b":
@@ -80,8 +80,13 @@ def test_failed_or_ambiguous_second_source_is_held(monkeypatch, failure):
                 value["sourceEvidence"]["platform"] = ""
         return value
     result = scan(candidates(), monkeypatch, inspector=changed)
-    assert not result["results"][0]["candidateEligible"]
-    assert result["topFiveReviewCandidates"] == []
+    row = result["results"][0]
+    assert row["listingSourceCount"] == 2
+    assert row["verifiedRewardSourceCount"] >= 1
+    assert row["candidateEligible"] is True
+    assert row["publicationAuthorized"] is False
+    assert "fewer_than_two_confirmed_sites" in row["holdReasons"]
+    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
 
 
 @pytest.mark.parametrize("value", [True, -1, 0, "2000", 1.5, None])
@@ -263,8 +268,8 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
                 "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
             })
     result = scan(items, monkeypatch)
-    assert daily.MAX_DETAILS == 360
-    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 180
+    assert daily.MAX_DETAILS == 640
+    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 320
     assert result["twoSiteListingGroups"] == 31
     assert result["reviewedGroups"] == 31
     assert result["detailInspectionCalls"] == 62
@@ -296,19 +301,28 @@ def test_default_budget_completes_121_two_site_groups_without_more_detail_budget
     assert result["rankingComplete"] is True
 
 
-def test_default_budget_still_fails_closed_past_detail_capacity(monkeypatch):
-    result = scan(_budget_surface(181), monkeypatch)
-    assert result["twoSiteListingGroups"] == 181
-    assert result["reviewedGroups"] == 180
-    assert result["detailInspectionCalls"] == daily.MAX_DETAILS == 360
+def test_default_budget_covers_observed_558_detail_surface(monkeypatch):
+    result = scan(_budget_surface(279), monkeypatch)
+    assert result["twoSiteListingGroups"] == 279
+    assert result["reviewedGroups"] == 279
+    assert result["detailInspectionCalls"] == 558
+    assert result["groupLimitReached"] is False
+    assert result["detailLimitReached"] is False
+    assert result["rankingComplete"] is True
+
+
+def test_default_budget_still_fails_closed_past_group_capacity(monkeypatch):
+    result = scan(_budget_surface(321), monkeypatch)
+    assert result["twoSiteListingGroups"] == 321
+    assert result["reviewedGroups"] == 320
+    assert result["detailInspectionCalls"] == daily.MAX_DETAILS == 640
     assert result["groupLimitReached"] is True
     assert result["detailLimitReached"] is False
     assert result["rankingComplete"] is False
 
 
-def test_default_budget_covers_observed_210_candidate_surface():
-    # The 2026-09-16 production probe exposed 210 new candidate offer rows.
-    # Even if every two rows formed a distinct two-site game, 105 groups and
-    # 210 detail inspections remain inside the bounded daily review envelope.
-    assert daily.MAX_GROUPS >= 105
-    assert daily.MAX_DETAILS >= 210
+def test_default_budget_keeps_margin_above_observed_live_surface():
+    # The 2026-09-20 live listing-only probe measured 558 required detail
+    # inspections before Moppy recovery; the bounded cap keeps explicit margin.
+    assert daily.MAX_DETAILS >= 558
+    assert daily.MAX_DETAILS == 640

@@ -15,6 +15,8 @@ def row(game, reward, sources=("warau", "moppy")):
         "game": game,
         "candidateEligible": True,
         "confirmedSourceCount": len(sources),
+        "listingSourceCount": len(sources),
+        "verifiedRewardSourceCount": 1 if sources else 0,
         "maxObservedRewardYen": reward,
         "publicationAuthorized": False,
         "researchQueries": {
@@ -22,7 +24,12 @@ def row(game, reward, sources=("warau", "moppy")):
             "instagram": f'"{game}" instagram', "point_site_reviews": f'"{game}" reviews',
         },
         "details": [
-            {"source": sid, "detailConfirmed": True, "finalUrl": f"https://{sid}.example/detail/{i}"}
+            {
+                "source": sid,
+                "detailConfirmed": True,
+                "finalUrl": f"https://{sid}.example/detail/{i}",
+                "rewardYen": reward if i == 1 else None,
+            }
             for i, sid in enumerate(sources, 1)
         ],
     }
@@ -56,9 +63,25 @@ def test_write_is_atomic_compact_handoff():
         assert saved == result and saved["phase"] == "NEW_GAME_CONTENT_QUEUE_V1"
 
 
-def test_missing_second_confirmed_source_fails_closed():
-    bad = report(); bad["results"][5] = row("Game 6", 6000, sources=("warau",))
-    with pytest.raises(ValueError, match="confirmed_sources_below_two"):
+def test_one_verified_reward_with_two_listing_sources_is_valid_research_handoff():
+    value = report()
+    candidate = row("Game 6", 6000)
+    candidate["confirmedSourceCount"] = 1
+    candidate["details"][1]["detailConfirmed"] = False
+    value["results"][5] = candidate
+    out = queue.build(value)
+    top = out["items"][0]
+    assert top["game"] == "Game 6"
+    assert top["listingSourceCount"] == 2
+    assert top["verifiedRewardSourceCount"] == 1
+    assert len({x["source"] for x in top["pointSiteEvidence"]}) == 2
+    assert top["publicationAuthorized"] is False
+
+
+def test_single_listing_source_still_fails_closed():
+    bad = report()
+    bad["results"][5] = row("Game 6", 6000, sources=("warau",))
+    with pytest.raises(ValueError, match="listing_sources_below_two"):
         queue.build(bad)
 
 

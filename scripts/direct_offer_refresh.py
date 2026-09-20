@@ -10,9 +10,10 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from html.parser import HTMLParser
+from http.cookiejar import CookieJar
 from urllib.parse import parse_qs, quote_plus, urljoin, urlparse
 from urllib.error import HTTPError, URLError
-from urllib.request import HTTPRedirectHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, HTTPCookieProcessor, Request, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "config" / "refresh_policy.json"
@@ -72,7 +73,8 @@ class FirstPartyRedirectHandler(HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
-def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
+def fetch_first_party(url, source, timeout=15, max_bytes=1200000, *, opener=None,
+                      extra_headers=None):
     if not source_host_allowed(url, source):
         raise ValueError("URL is outside registered first-party domains")
     mobile = bool(source.get("mobile", True))
@@ -83,12 +85,16 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
         if mobile else
         "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)"
     )
-    req = Request(url, headers={
+    headers = {
         "User-Agent": ua,
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
-    })
-    opener = build_opener(FirstPartyRedirectHandler(source))
+    }
+    for key, value in (extra_headers or {}).items():
+        if key in {"Referer", "X-Requested-With", "Accept"} and isinstance(value, str):
+            headers[key] = value
+    req = Request(url, headers=headers)
+    opener = opener or build_opener(FirstPartyRedirectHandler(source))
     with opener.open(req, timeout=timeout) as response:
         final_url = response.geturl() if hasattr(response, "geturl") else url
         if not source_host_allowed(final_url, source):
@@ -102,6 +108,34 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
         except Exception:
             pass
     return data.decode(charset or "utf-8", errors="replace"), final_url
+
+
+def source_participates_in_new_game_ranking(source):
+    """Whether discovery health from this source can affect reward ranking."""
+    return (
+        source.get("scheduled_fetch_enabled", True) is True
+        or (
+            source.get("coverage_detail_review_enabled") is True
+            and source.get("coverage_detail_review_mode") == "candidate_only"
+        )
+    )
+
+
+def listing_session_required(url, source):
+    bootstrap = str(source.get("listing_session_bootstrap_url") or "").strip()
+    hints = [
+        str(value).strip().lower()
+        for value in (source.get("listing_session_url_hints") or [])
+        if str(value).strip()
+    ]
+    if not bootstrap or not source_host_allowed(bootstrap, source) or not hints:
+        return False
+    try:
+        parsed = urlparse(str(url or ""))
+    except (TypeError, ValueError):
+        return False
+    combined = ((parsed.path or "") + "?" + (parsed.query or "")).lower()
+    return any(hint in combined for hint in hints)
 
 
 def summarize_fetch_error(error):
@@ -2664,12 +2698,43 @@ def main(after_scan=None):
     refreshed = set()
     publication_changed = False
     fetch_cache = {}
+    listing_session_openers = {}
+    listing_session_bootstrap_requests = 0
 
     def fetch_once(url, source):
+        nonlocal listing_session_bootstrap_requests
         key = (source.get("id"), exact_url_key(url))
         if key not in fetch_cache:
             try:
-                fetch_cache[key] = (fetch_first_party(url, source), None)
+                if listing_session_required(url, source):
+                    source_id = str(source.get("id") or "")
+                    bootstrap = str(source.get("listing_session_bootstrap_url") or "").strip()
+                    opener = listing_session_openers.get(source_id)
+                    if opener is None:
+                        opener = build_opener(
+                            HTTPCookieProcessor(CookieJar()),
+                            FirstPartyRedirectHandler(source),
+                        )
+                        # Establish the same anonymous first-party session that
+                        # the category page uses before its jQuery AJAX request.
+                        fetch_first_party(bootstrap, source, opener=opener)
+                        listing_session_openers[source_id] = opener
+                        listing_session_bootstrap_requests += 1
+                    fetch_cache[key] = (
+                        fetch_first_party(
+                            url,
+                            source,
+                            opener=opener,
+                            extra_headers={
+                                "Referer": bootstrap,
+                                "X-Requested-With": "XMLHttpRequest",
+                                "Accept": "text/html, */*; q=0.01",
+                            },
+                        ),
+                        None,
+                    )
+                else:
+                    fetch_cache[key] = (fetch_first_party(url, source), None)
             except Exception as error:
                 if isinstance(error, HTTPError):
                     # Cache the failure, not an open response. No error body is
@@ -2862,6 +2927,7 @@ def main(after_scan=None):
                 or discovery_source.get("coverage_scope")
                 or "unspecified"
             ),
+            "rankingRequired": source_participates_in_new_game_ranking(discovery_source),
             "listingPagesAttempted": pages_attempted,
             "fetchErrors": source_errors,
             "candidateCount": source_candidates,
@@ -3526,7 +3592,8 @@ def main(after_scan=None):
         "listingSnapshot": {
             "mode": "fetch_once_reuse_many",
             "uniqueListings": len(listing_snapshots),
-            "uniqueRequests": len(fetch_cache),
+            "uniqueRequests": len(fetch_cache) + listing_session_bootstrap_requests,
+            "sessionBootstrapRequests": listing_session_bootstrap_requests,
             "failedRequests": sum(error is not None for _, error in fetch_cache.values()),
             "reuseCount": listing_snapshot_reuses,
             "consumers": sorted({

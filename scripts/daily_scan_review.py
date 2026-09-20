@@ -16,10 +16,12 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_DETAILS = 360
+# A 2026-09-20 live listing-only capacity probe measured 558 detail candidates
+# across 136 two-site game groups before Moppy recovery. Keep a bounded margin
+# above that observed surface while remaining well inside the 90-minute job cap.
+MAX_DETAILS = 640
 # Every rank-eligible game has offers from at least two independent source
-# families. Derive the group ceiling from the existing detail-request budget
-# so two-source groups can use the full budget without increasing network load.
+# families, so this still bounds the maximum number of groups independently.
 MAX_GROUPS = MAX_DETAILS // 2
 
 
@@ -123,9 +125,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         if (sid not in sources or not direct.source_host_allowed(url, sources[sid])
                 or not direct.detail_like(url, sources[sid])):
             continue
-        if (sources[sid].get("scheduled_fetch_enabled", True) is not True
-                and not (sources[sid].get("coverage_detail_review_enabled") is True
-                         and sources[sid].get("coverage_detail_review_mode") == "candidate_only")):
+        if not direct.source_participates_in_new_game_ranking(sources[sid]):
             continue
         identity = direct.offer_identity_key(url, sid)
         if not identity:
@@ -180,23 +180,35 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             details.append(item)
         confirmed = {d["sourceFamily"] for d in details if d.get("detailConfirmed")}
         amounts = [d["rewardYen"] for d in details if d.get("rewardYen") is not None]
+        listing_sources = {family for family, _ in group["offers"]}
+        verified_reward_sources = {
+            d["sourceFamily"] for d in details if d.get("rewardYen") is not None
+        }
         reasons = ["game_identity_review_required", "full_terms_publication_review_required",
                    "cross_channel_research_required", "inline_progress_evidence_required",
                    "image_and_rights_required", "guide_and_mobile_artifact_validation_required"]
         if len(confirmed) < 2:
             reasons.insert(0, "fewer_than_two_confirmed_sites")
-        if any(d.get("detailConfirmed") and d.get("rewardYen") is None for d in details) or not amounts:
+        if not amounts:
             reasons.insert(0, "yen_conversion_incomplete")
+        elif any(d.get("detailConfirmed") and d.get("rewardYen") is None for d in details):
+            # A second source may confirm the game/offer but expose a reward
+            # unit that is not yet safely convertible to JPY. Keep the game as
+            # a research candidate when at least one first-party reward is
+            # strictly verified; publication remains separately gated.
+            reasons.insert(0, "partial_yen_conversion")
         if len(details) < len(group["offers"]):
             reasons.insert(0, "detail_budget_reached")
+        ranking_eligible = len(listing_sources) >= 2 and bool(amounts)
         results.append({"game": group["game"], "confirmedSourceCount": len(confirmed),
-                        "candidateEligible": len(confirmed) >= 2,
+                        "listingSourceCount": len(listing_sources),
+                        "verifiedRewardSourceCount": len(verified_reward_sources),
+                        "candidateEligible": ranking_eligible,
                         "maxObservedRewardYen": max(amounts) if amounts else None,
                         "publicationAuthorized": False, "holdReasons": reasons,
                         "researchStatus": "not_started", "researchQueries": research_queries(group["game"]),
                         "details": details})
     ranked = [g for g in results if g["candidateEligible"] and g["maxObservedRewardYen"] is not None
-              and "yen_conversion_incomplete" not in g["holdReasons"]
               and "detail_budget_reached" not in g["holdReasons"]]
     ranked.sort(key=lambda g: (-g["maxObservedRewardYen"], g["game"]))
     group_limit = len(eligible) > max_groups
@@ -232,13 +244,20 @@ def apply_discovery_completeness(report, discovery_summary):
     if not isinstance(source_results, list):
         raise ValueError("discovery_summary_missing")
     incomplete = []
+    non_ranking_incomplete = []
     for row in source_results:
         if not isinstance(row, dict):
             raise ValueError("discovery_source_result_invalid")
         if row.get("scanComplete") is not True:
-            incomplete.append(str(row.get("source") or row.get("sourceLabel") or "unknown"))
+            source = str(row.get("source") or row.get("sourceLabel") or "unknown")
+            # Missing rankingRequired stays fail-closed for old/unknown data.
+            if row.get("rankingRequired") is False:
+                non_ranking_incomplete.append(source)
+            else:
+                incomplete.append(source)
     report["sourceScanIncomplete"] = bool(incomplete)
     report["incompleteDiscoverySources"] = sorted(set(incomplete))
+    report["nonRankingIncompleteDiscoverySources"] = sorted(set(non_ranking_incomplete))
     report["discoverySourceCount"] = len(source_results)
     report["rankingComplete"] = bool(report.get("rankingComplete")) and not incomplete
     report["rankingScope"] = "supported_scanned_first_party_surfaces"
