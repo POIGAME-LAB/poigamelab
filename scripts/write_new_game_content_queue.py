@@ -81,21 +81,35 @@ def build(report):
         if not required_query_keys.issubset(queries):
             raise ValueError("ranked_game_queries_incomplete")
         point_sites = []
+        verified_reward_sources = 0
         for detail in row.get("details") or []:
-            if not isinstance(detail, dict) or detail.get("detailConfirmed") is not True:
+            if not isinstance(detail, dict):
                 continue
-            url = safe_https(detail.get("finalUrl"))
+            url = safe_https(detail.get("finalUrl") or detail.get("url"))
             sid = str(detail.get("source") or "").strip()
+            reward = detail.get("rewardYen")
             if url and sid:
-                point_sites.append({"source": sid, "url": url})
+                point_sites.append({
+                    "source": sid,
+                    "url": url,
+                    "detailConfirmed": detail.get("detailConfirmed") is True,
+                    "rewardVerified": type(reward) is int and reward > 0,
+                    "rewardYen": reward if type(reward) is int and reward > 0 else None,
+                })
+                if type(reward) is int and reward > 0:
+                    verified_reward_sources += 1
         dedup = {(x["source"], x["url"]): x for x in point_sites}
         if len({x[0] for x in dedup}) < 2:
-            raise ValueError("ranked_game_confirmed_sources_below_two")
+            raise ValueError("ranked_game_listing_sources_below_two")
+        if verified_reward_sources < 1:
+            raise ValueError("ranked_game_verified_reward_missing")
         items.append({
             "rank": rank,
             "game": game,
             "maxObservedRewardYen": amount,
             "confirmedSourceCount": int(row.get("confirmedSourceCount") or 0),
+            "listingSourceCount": int(row.get("listingSourceCount") or len({x[0] for x in dedup})),
+            "verifiedRewardSourceCount": int(row.get("verifiedRewardSourceCount") or verified_reward_sources),
             "pointSiteEvidence": list(dedup.values()),
             "researchQueries": {
                 "web": str(queries["web"]),
