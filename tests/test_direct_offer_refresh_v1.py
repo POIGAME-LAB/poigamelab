@@ -3752,6 +3752,11 @@ def test_moppy_paginated_discovery_requires_nonempty_first_page():
     moppy = next(item for item in cfg['sources'] if item['id'] == 'moppy')
     assert moppy['new_game_discovery_enabled'] is True
     assert '{page}' in moppy['new_game_discovery_page_url_template']
+    assert 'objective_category=0' in moppy['new_game_discovery_page_url_template']
+    assert 'exclude_purchased=true' in moppy['new_game_discovery_page_url_template']
+    assert moppy['new_game_discovery_request_headers']['X-Requested-With'] == 'XMLHttpRequest'
+    assert moppy['new_game_discovery_request_headers']['Accept'] == 'text/html, */*; q=0.01'
+    assert moppy['new_game_discovery_request_headers']['Referer'].startswith('https://pc.moppy.jp/category/list.php')
     assert moppy['new_game_discovery_max_pages'] == 60
     assert moppy['new_game_discovery_candidate_limit'] == 2000
     assert moppy['new_game_discovery_min_detail_identities_first_page'] == 1
@@ -3762,6 +3767,28 @@ def test_moppy_paginated_discovery_requires_nonempty_first_page():
     assert 'pages_attempted == 1 and len(signature) < min_first_page_identities' in script
     assert 'content_guard_failed = True' in script
     assert '"contentGuardFailed": content_guard_failed' in script
+
+
+def test_moppy_discovery_headers_are_path_scoped_and_first_party():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    moppy = next(item for item in cfg['sources'] if item['id'] == 'moppy')
+    listing = direct.paginated_listing_url(moppy, 1)
+    headers = direct.discovery_listing_request_headers(listing, moppy)
+    assert headers['X-Requested-With'] == 'XMLHttpRequest'
+    assert headers['Accept'] == 'text/html, */*; q=0.01'
+    assert headers['Referer'].startswith('https://pc.moppy.jp/category/list.php')
+    assert direct.discovery_listing_request_headers(
+        'https://pc.moppy.jp/ad/detail.php?site_id=1', moppy
+    ) == {}
+
+
+def test_discovery_health_marks_only_detail_capable_sources_ranking_required():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    by_id = {item['id']: item for item in cfg['sources']}
+    assert direct.source_supports_new_game_ranking(by_id['moppy']) is True
+    assert direct.source_supports_new_game_ranking(by_id['warau']) is True
+    assert direct.source_supports_new_game_ranking(by_id['hapitas']) is True
+    assert direct.source_supports_new_game_ranking(by_id['powl']) is False
 
 
 def test_existing_game_refresh_reuses_new_game_listing_snapshots():
