@@ -1,0 +1,97 @@
+name: Live nightly smoke after ranking fix
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  live-smoke:
+    if: github.head_ref == 'test/live-nightly-after-ranking-fix-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore current high-growth state from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          restore_dir="$(mktemp -d)"
+          trap 'rm -rf "${restore_dir}"' EXIT
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${restore_dir}/"             --recursive --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          for name in             new_game_candidate_queue.json             new_game_candidate_history.json             existing_game_candidate_queue.json             comparison_candidate_queue.json             comparison_review_queue.json             comparison_refresh_status.json
+          do
+            if [ -f "${restore_dir}/${name}.gz" ]; then
+              gzip -dc "${restore_dir}/${name}.gz" > "data/${name}"
+            fi
+          done
+
+      - name: Run real first-party nightly scan without publication
+        run: python scripts/daily_scan_review.py
+
+      - name: Build top-five handoff
+        run: python scripts/write_new_game_content_queue.py
+
+      - name: Verify live ranking completion
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("data/daily_scan_review.json").read_text(encoding="utf-8"))
+          queue=json.loads(Path("data/new_game_content_queue.json").read_text(encoding="utf-8"))
+          refresh=json.loads(Path("data/comparison_refresh_status.json").read_text(encoding="utf-8"))
+          source_results=(refresh.get("newGameDiscovery") or {}).get("sourceResults") or []
+          compact={
+            "listingGroups":report.get("listingGroups"),
+            "twoSiteListingGroups":report.get("twoSiteListingGroups"),
+            "reviewedGroups":report.get("reviewedGroups"),
+            "detailInspectionCalls":report.get("detailInspectionCalls"),
+            "groupLimitReached":report.get("groupLimitReached"),
+            "detailLimitReached":report.get("detailLimitReached"),
+            "sourceScanIncomplete":report.get("sourceScanIncomplete"),
+            "incompleteDiscoverySources":report.get("incompleteDiscoverySources"),
+            "nonRankingIncompleteDiscoverySources":report.get("nonRankingIncompleteDiscoverySources"),
+            "rankingComplete":report.get("rankingComplete"),
+            "rankingHoldReasons":report.get("rankingHoldReasons"),
+            "topFiveReviewCandidates":report.get("topFiveReviewCandidates"),
+            "queueCount":queue.get("count"),
+            "queueHoldReason":queue.get("holdReason"),
+            "queueItems":[
+              {
+                "rank":x.get("rank"),
+                "game":x.get("game"),
+                "maxObservedRewardYen":x.get("maxObservedRewardYen"),
+                "confirmedSourceCount":x.get("confirmedSourceCount"),
+              }
+              for x in (queue.get("items") or [])
+            ],
+            "sourceHealth":[
+              {
+                "source":x.get("source"),
+                "rankingRequired":x.get("rankingRequired"),
+                "scanComplete":x.get("scanComplete"),
+                "candidateCount":x.get("candidateCount"),
+                "fetchErrors":x.get("fetchErrors"),
+                "candidateLimitReached":x.get("candidateLimitReached"),
+                "contentGuardFailed":x.get("contentGuardFailed"),
+              }
+              for x in source_results
+            ],
+          }
+          print("LIVE_AFTER_FIX_RESULT="+json.dumps(compact,ensure_ascii=False))
+          if report.get("rankingComplete") is not True:
+              raise SystemExit("ranking did not complete")
+          if int(queue.get("count") or 0) <= 0:
+              raise SystemExit("ranking completed but top-five handoff is empty")
+          PY
