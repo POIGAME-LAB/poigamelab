@@ -180,23 +180,35 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             details.append(item)
         confirmed = {d["sourceFamily"] for d in details if d.get("detailConfirmed")}
         amounts = [d["rewardYen"] for d in details if d.get("rewardYen") is not None]
+        listing_sources = {family for family, _ in group["offers"]}
+        verified_reward_sources = {
+            d["sourceFamily"] for d in details if d.get("rewardYen") is not None
+        }
         reasons = ["game_identity_review_required", "full_terms_publication_review_required",
                    "cross_channel_research_required", "inline_progress_evidence_required",
                    "image_and_rights_required", "guide_and_mobile_artifact_validation_required"]
         if len(confirmed) < 2:
             reasons.insert(0, "fewer_than_two_confirmed_sites")
-        if any(d.get("detailConfirmed") and d.get("rewardYen") is None for d in details) or not amounts:
+        if not amounts:
             reasons.insert(0, "yen_conversion_incomplete")
+        elif any(d.get("detailConfirmed") and d.get("rewardYen") is None for d in details):
+            # A second source may confirm the game/offer but expose a reward
+            # unit that is not yet safely convertible to JPY. Keep the game as
+            # a research candidate when at least one first-party reward is
+            # strictly verified; publication remains separately gated.
+            reasons.insert(0, "partial_yen_conversion")
         if len(details) < len(group["offers"]):
             reasons.insert(0, "detail_budget_reached")
+        ranking_eligible = len(listing_sources) >= 2 and bool(amounts)
         results.append({"game": group["game"], "confirmedSourceCount": len(confirmed),
-                        "candidateEligible": len(confirmed) >= 2,
+                        "listingSourceCount": len(listing_sources),
+                        "verifiedRewardSourceCount": len(verified_reward_sources),
+                        "candidateEligible": ranking_eligible,
                         "maxObservedRewardYen": max(amounts) if amounts else None,
                         "publicationAuthorized": False, "holdReasons": reasons,
                         "researchStatus": "not_started", "researchQueries": research_queries(group["game"]),
                         "details": details})
     ranked = [g for g in results if g["candidateEligible"] and g["maxObservedRewardYen"] is not None
-              and "yen_conversion_incomplete" not in g["holdReasons"]
               and "detail_budget_reached" not in g["holdReasons"]]
     ranked.sort(key=lambda g: (-g["maxObservedRewardYen"], g["game"]))
     group_limit = len(eligible) > max_groups
