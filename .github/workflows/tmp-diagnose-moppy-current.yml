@@ -1,0 +1,53 @@
+name: Diagnose current Moppy payload
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  moppy:
+    if: github.head_ref == 'diag/moppy-current-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect Moppy first discovery page
+        run: |
+          python - <<'PY'
+          import json, re, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import direct_offer_refresh as d
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          source=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          urls=[
+            d.paginated_listing_url(source,1),
+            source["direct_listing_urls"][0],
+          ]
+          for label,url in zip(["ajax","category"],urls):
+              try:
+                  raw, final=d.fetch_first_party(url,source)
+                  sig=d.listing_detail_identity_signature(raw,final,source,limit=5000)
+                  hrefs=re.findall(r'href=["\']([^"\']+)["\']',raw,flags=re.I)
+                  detail=[h for h in hrefs if "ad/detail.php" in h][:30]
+                  text=d.visible_text(raw)
+                  print("MOPPY_"+label.upper()+"="+json.dumps({
+                    "requestedUrl":url,
+                    "finalUrl":final,
+                    "chars":len(raw),
+                    "signatureCount":len(sig),
+                    "hrefCount":len(hrefs),
+                    "detailHrefCount":len(detail),
+                    "detailHrefs":detail,
+                    "textStart":text[:700],
+                    "rawStart":raw[:700],
+                  },ensure_ascii=False))
+              except Exception as exc:
+                  print("MOPPY_"+label.upper()+"_ERROR="+type(exc).__name__+":"+str(exc)[:500])
+          PY
