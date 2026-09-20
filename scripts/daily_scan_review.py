@@ -16,8 +16,11 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-MAX_GROUPS = 120
 MAX_DETAILS = 360
+# Every rank-eligible game has offers from at least two independent source
+# families. Derive the group ceiling from the existing detail-request budget
+# so two-source groups can use the full budget without increasing network load.
+MAX_GROUPS = MAX_DETAILS // 2
 
 
 def discovery_name(title):
