@@ -1,0 +1,77 @@
+name: Diagnose live ranking capacity
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/live-ranking-capacity-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore current high-growth state from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          restore_dir="$(mktemp -d)"
+          trap 'rm -rf "${restore_dir}"' EXIT
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${restore_dir}/" --recursive --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          for name in new_game_candidate_queue.json new_game_candidate_history.json existing_game_candidate_queue.json comparison_candidate_queue.json comparison_review_queue.json comparison_refresh_status.json
+          do
+            if [ -f "${restore_dir}/${name}.gz" ]; then
+              gzip -dc "${restore_dir}/${name}.gz" > "data/${name}"
+            fi
+          done
+
+      - name: Run live scan with diagnostic-only larger review envelope
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import daily_scan_review as d
+          d.MAX_DETAILS = 1000
+          d.MAX_GROUPS = 500
+          raise SystemExit(d.main())
+          PY
+
+      - name: Print exact discovery and ranking diagnostics
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          report=json.loads(Path("data/daily_scan_review.json").read_text(encoding="utf-8"))
+          refresh=json.loads(Path("data/comparison_refresh_status.json").read_text(encoding="utf-8"))
+          details=[len(x.get("details") or []) for x in report.get("results") or []]
+          source_results=(refresh.get("newGameDiscovery") or {}).get("sourceResults") or []
+          print("DISCOVERY_SOURCE_RESULTS=" + json.dumps(source_results, ensure_ascii=False))
+          print("RANKING_CAPACITY_RESULT=" + json.dumps({
+            "listingGroups": report.get("listingGroups"),
+            "twoSiteListingGroups": report.get("twoSiteListingGroups"),
+            "reviewedGroups": report.get("reviewedGroups"),
+            "detailInspectionCalls": report.get("detailInspectionCalls"),
+            "groupLimitReached": report.get("groupLimitReached"),
+            "detailLimitReached": report.get("detailLimitReached"),
+            "sourceScanIncomplete": report.get("sourceScanIncomplete"),
+            "incompleteDiscoverySources": report.get("incompleteDiscoverySources"),
+            "rankingComplete": report.get("rankingComplete"),
+            "rankingHoldReasons": report.get("rankingHoldReasons"),
+            "topFiveReviewCandidates": report.get("topFiveReviewCandidates"),
+            "detailsPerReviewedGroup": dict(sorted(Counter(details).items())),
+          }, ensure_ascii=False))
+          PY
