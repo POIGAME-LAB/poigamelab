@@ -1,0 +1,92 @@
+name: Live discovery smoke after ranking fix
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  discovery-smoke:
+    if: github.head_ref == 'test/live-discovery-after-ranking-fix-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run real first-party discovery without publication
+        run: python scripts/direct_offer_refresh.py
+
+      - name: Verify source health and current review capacity
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import daily_scan_review as daily
+          import direct_offer_refresh as direct
+
+          status=json.loads(Path("data/comparison_refresh_status.json").read_text(encoding="utf-8"))
+          queue=json.loads(Path("data/new_game_candidate_queue.json").read_text(encoding="utf-8"))
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          targets=json.loads(Path("config/game_targets.json").read_text(encoding="utf-8")).get("games") or []
+          sources={x["id"]:x for x in cfg.get("sources") or []}
+          health={x["source"]:x for x in (status.get("newGameDiscovery") or {}).get("sourceResults") or []}
+
+          families=daily.source_families(sources)
+          groups={}
+          for item in queue.get("items") or []:
+              if item.get("classification")=="likely_non_game":
+                  continue
+              name=daily.discovery_name(item.get("titleHint"))
+              if not name or direct.context_matches_known_game(name,targets):
+                  continue
+              sid=item.get("source")
+              url=item.get("firstPartyCandidateUrl")
+              if sid not in sources or not direct.source_host_allowed(url,sources[sid]) or not direct.detail_like(url,sources[sid]):
+                  continue
+              if not direct.source_participates_in_new_game_ranking(sources[sid]):
+                  continue
+              identity=direct.offer_identity_key(url,sid)
+              if not identity:
+                  continue
+              key=direct.normalized_text(name)
+              groups.setdefault(key,{"game":name,"offers":{}})["offers"].setdefault((families[sid],identity),(sid,url))
+
+          owners={}
+          for key,group in groups.items():
+              for identity in group["offers"]:
+                  owners.setdefault(identity,set()).add(key)
+          for group in groups.values():
+              group["offers"]={identity:offer for identity,offer in group["offers"].items() if len(owners[identity])==1}
+          eligible=[g for g in groups.values() if len({family for family,_ in g["offers"]})>=2]
+          needed=sum(len(g["offers"]) for g in eligible)
+
+          result={
+            "moppy":health.get("moppy"),
+            "powl":health.get("powl"),
+            "candidateItems":len(queue.get("items") or []),
+            "twoSiteListingGroups":len(eligible),
+            "exactDetailInspectionCallsNeeded":needed,
+            "configuredMaxDetails":daily.MAX_DETAILS,
+            "configuredMaxGroups":daily.MAX_GROUPS,
+          }
+          print("LIVE_DISCOVERY_AFTER_FIX="+json.dumps(result,ensure_ascii=False))
+
+          moppy=health.get("moppy") or {}
+          powl=health.get("powl") or {}
+          if moppy.get("scanComplete") is not True or int(moppy.get("candidateCount") or 0)<=0:
+              raise SystemExit("Moppy discovery did not recover")
+          if moppy.get("rankingRequired") is not True:
+              raise SystemExit("Moppy ranking health contract missing")
+          if powl.get("rankingRequired") is not False:
+              raise SystemExit("Powl should not block reward ranking")
+          if needed > daily.MAX_DETAILS:
+              raise SystemExit("live detail capacity still exceeds configured cap")
+          if len(eligible) > daily.MAX_GROUPS:
+              raise SystemExit("live group capacity still exceeds configured cap")
+          PY
