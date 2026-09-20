@@ -24,8 +24,8 @@ def test_explicit_non_game_classification_is_excluded(monkeypatch):
 
 def test_default_review_budget_was_expanded_for_reward_ranking():
     import daily_scan_review as daily
-    assert daily.MAX_DETAILS == 360
-    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 180
+    assert daily.MAX_DETAILS == 640
+    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 320
 
 
 def test_ambiguous_pointtown_reward_text_never_ranks_as_yen():
@@ -73,6 +73,25 @@ def test_transient_first_party_scan_failure_holds_ranking(monkeypatch):
     assert out["sourceScanIncomplete"] is True
     assert out["incompleteDiscoverySources"] == ["amefuri"]
     assert "first_party_discovery_scan_incomplete" in out["rankingHoldReasons"]
+
+
+def test_incomplete_nonranking_source_does_not_hold_ranking(monkeypatch):
+    import daily_scan_review as daily
+    result = scan(candidates("Quiet Kingdom"), monkeypatch)
+    discovery = {
+        "sourceResults": [
+            {"source": "warau", "scanComplete": True, "catalogComplete": True,
+             "rankingRequired": True},
+            {"source": "powl", "scanComplete": False, "catalogComplete": False,
+             "candidateLimitReached": True, "rankingRequired": False},
+        ]
+    }
+    out = daily.apply_discovery_completeness(result, discovery)
+    assert out["rankingComplete"] is True
+    assert out["sourceScanIncomplete"] is False
+    assert out["incompleteDiscoverySources"] == []
+    assert out["nonRankingIncompleteDiscoverySources"] == ["powl"]
+    assert "first_party_discovery_scan_incomplete" not in out["rankingHoldReasons"]
 
 
 def test_intentionally_partial_but_successful_surface_does_not_hold_ranking(monkeypatch):
