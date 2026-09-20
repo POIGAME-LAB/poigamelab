@@ -62,7 +62,7 @@ def test_two_details_are_candidates_but_not_publication_permission(monkeypatch):
 
 
 @pytest.mark.parametrize("failure", ["exception", "partial", "shell", "redirect", "missing_terms", "missing_os"])
-def test_failed_or_ambiguous_second_source_is_held(monkeypatch, failure):
+def test_failed_or_ambiguous_second_source_is_retained_for_research(monkeypatch, failure):
     def changed(url, source, aliases, fetcher):
         value = inspect(url, source, aliases, fetcher)
         if source["id"] == "b":
@@ -80,8 +80,13 @@ def test_failed_or_ambiguous_second_source_is_held(monkeypatch, failure):
                 value["sourceEvidence"]["platform"] = ""
         return value
     result = scan(candidates(), monkeypatch, inspector=changed)
-    assert not result["results"][0]["candidateEligible"]
-    assert result["topFiveReviewCandidates"] == []
+    row = result["results"][0]
+    assert row["listingSourceCount"] == 2
+    assert row["verifiedRewardSourceCount"] >= 1
+    assert row["candidateEligible"] is True
+    assert row["publicationAuthorized"] is False
+    assert "fewer_than_two_confirmed_sites" in row["holdReasons"]
+    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
 
 
 @pytest.mark.parametrize("value", [True, -1, 0, "2000", 1.5, None])
