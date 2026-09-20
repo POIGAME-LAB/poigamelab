@@ -61,6 +61,50 @@ def source_host_allowed(url, source):
     # must not implicitly trust arbitrary sibling subdomains.
     return host in domains
 
+def source_supports_new_game_ranking(source):
+    """Whether this source can contribute detail evidence to new-game ranking."""
+    return (
+        source.get("scheduled_fetch_enabled", True) is True
+        or (
+            source.get("coverage_detail_review_enabled") is True
+            and source.get("coverage_detail_review_mode") == "candidate_only"
+        )
+    )
+
+
+def discovery_listing_request_headers(url, source):
+    """Return reviewed, path-scoped headers for dynamic first-party listings."""
+    configured = source.get("new_game_discovery_request_headers")
+    template = source.get("new_game_discovery_page_url_template")
+    if not isinstance(configured, dict) or not isinstance(template, str) or "{page}" not in template:
+        return {}
+    try:
+        current = urlparse(str(url or ""))
+        expected = urlparse(template.replace("{page}", "1"))
+    except (TypeError, ValueError):
+        return {}
+    if (
+        current.scheme != "https"
+        or current.hostname != expected.hostname
+        or current.path != expected.path
+    ):
+        return {}
+
+    headers = {}
+    requested_with = str(configured.get("X-Requested-With") or "").strip()
+    if requested_with:
+        headers["X-Requested-With"] = requested_with
+
+    accept = str(configured.get("Accept") or "").strip()
+    if accept:
+        headers["Accept"] = accept
+
+    referer = str(configured.get("Referer") or "").strip()
+    if referer and source_host_allowed(referer, source):
+        headers["Referer"] = referer
+    return headers
+
+
 class FirstPartyRedirectHandler(HTTPRedirectHandler):
     def __init__(self, source):
         super().__init__()
@@ -83,11 +127,13 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000):
         if mobile else
         "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)"
     )
-    req = Request(url, headers={
+    request_headers = {
         "User-Agent": ua,
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "ja,en-US;q=0.7,en;q=0.5",
-    })
+    }
+    request_headers.update(discovery_listing_request_headers(url, source))
+    req = Request(url, headers=request_headers)
     opener = build_opener(FirstPartyRedirectHandler(source))
     with opener.open(req, timeout=timeout) as response:
         final_url = response.geturl() if hasattr(response, "geturl") else url
@@ -2839,6 +2885,7 @@ def main(after_scan=None):
             new_game_discovery_summary["completeSources"] += 1
 
         source_candidates = new_game_discovery_summary["candidateCount"] - source_candidate_start
+        ranking_required = source_supports_new_game_ranking(discovery_source)
         catalog_complete = (
             source_errors == 0
             and not candidate_limit_reached
@@ -2862,6 +2909,7 @@ def main(after_scan=None):
                 or discovery_source.get("coverage_scope")
                 or "unspecified"
             ),
+            "rankingRequired": ranking_required,
             "listingPagesAttempted": pages_attempted,
             "fetchErrors": source_errors,
             "candidateCount": source_candidates,
