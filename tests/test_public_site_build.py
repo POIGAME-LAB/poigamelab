@@ -648,7 +648,8 @@ def test_evertale_public_site_excludes_stale_hapitas_195(output_dir):
         and row["reward"] == "140"
     ]
     assert len(ios140) == 1
-    assert ios140[0]["updatedAt"] == "2026-09-08"
+    # updatedAt is the last successful verification date and may advance on later refreshes.
+    assert ios140[0]["updatedAt"] >= "2026-09-08"
     assert ios140[0]["verified"].lower() == "true"
 
 
@@ -691,8 +692,8 @@ def test_evertale_hapitas_140_ios_android_pair_is_public(output_dir):
         ("Android", "https://hapitas.jp/item/detail/itemid/91343"),
     }
     by_platform = {row["platform"]: row for row in matches}
-    assert by_platform["Android"]["updatedAt"] == "2026-09-09"
-    assert by_platform["iOS"]["updatedAt"] == "2026-09-08"
+    assert by_platform["Android"]["updatedAt"] >= "2026-09-09"
+    assert by_platform["iOS"]["updatedAt"] >= "2026-09-08"
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
