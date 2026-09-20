@@ -17,6 +17,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Test browser-like Moppy AJAX session
+        run: |
+          set -euo pipefail
+          category='https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1'
+          ajax='https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=0&current_page=1&af_sorter=1&exclude_purchased=true'
+          ua='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
+          curl -fsSL -A "$ua" -c /tmp/moppy.cookies "$category" -o /tmp/moppy-category.html
+          curl -fsSL -A "$ua" -b /tmp/moppy.cookies -e "$category" -H 'X-Requested-With: XMLHttpRequest' -H 'Accept: text/html, */*; q=0.01' "$ajax" -o /tmp/moppy-ajax.html
+          python - <<'PY'
+          from pathlib import Path
+          import json,re
+          raw=Path('/tmp/moppy-ajax.html').read_text(encoding='utf-8',errors='replace')
+          hrefs=re.findall(r'href=["\']([^"\']+)["\']',raw,flags=re.I)
+          detail=[h for h in hrefs if 'ad/detail.php' in h]
+          print('MOPPY_SESSION_AJAX='+json.dumps({
+            'chars':len(raw),
+            'hrefCount':len(hrefs),
+            'detailHrefCount':len(detail),
+            'detailHrefs':detail[:20],
+            'rawStart':raw[:700],
+          },ensure_ascii=False))
+          PY
+
       - name: Inspect Moppy first discovery page
         run: |
           python - <<'PY'
