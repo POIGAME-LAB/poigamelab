@@ -1,0 +1,56 @@
+name: Diagnose Moppy and Powl first page
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/moppy-powl-first-page-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect first-party first pages only
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import direct_offer_refresh as d
+
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          sources={x["id"]:x for x in cfg["sources"]}
+          tests=[
+            ("moppy", d.paginated_listing_url(sources["moppy"],1)),
+            ("powl", sources["powl"]["direct_listing_urls"][0]),
+          ]
+          out=[]
+          for sid,url in tests:
+              source=sources[sid]
+              row={"source":sid,"url":url}
+              try:
+                  raw,final=d.fetch_first_party(url,source,timeout=15,max_bytes=1200000)
+                  sig=d.listing_detail_identity_signature(raw,final,source,limit=5000)
+                  row.update({
+                    "ok":True,
+                    "finalUrl":final,
+                    "bytes":len(raw.encode("utf-8",errors="ignore")),
+                    "identityCount":len(sig),
+                    "visibleTextPrefix":d.visible_text(raw)[:300],
+                  })
+              except Exception as exc:
+                  row.update({
+                    "ok":False,
+                    "errorType":type(exc).__name__,
+                    "errorCategory":d.summarize_fetch_error(exc),
+                  })
+              out.append(row)
+          print("FIRST_PAGE_DIAG="+json.dumps(out,ensure_ascii=False))
+          PY
