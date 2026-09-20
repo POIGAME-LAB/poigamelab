@@ -22,7 +22,7 @@ jobs:
           set -euo pipefail
           category='https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1'
           ajax='https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=0&current_page=1&af_sorter=1&exclude_purchased=true'
-          ua='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
+          ua='Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)'
           curl -fsSL -A "$ua" -c /tmp/moppy.cookies "$category" -o /tmp/moppy-category.html
           curl -fsSL -A "$ua" -b /tmp/moppy.cookies -e "$category" -H 'X-Requested-With: XMLHttpRequest' -H 'Accept: text/html, */*; q=0.01' "$ajax" -o /tmp/moppy-ajax.html
           python - <<'PY'
