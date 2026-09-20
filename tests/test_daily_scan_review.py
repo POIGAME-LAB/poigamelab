@@ -263,8 +263,8 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
                 "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
             })
     result = scan(items, monkeypatch)
-    assert daily.MAX_DETAILS == 360
-    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 180
+    assert daily.MAX_DETAILS == 720
+    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 360
     assert result["twoSiteListingGroups"] == 31
     assert result["reviewedGroups"] == 31
     assert result["detailInspectionCalls"] == 62
@@ -297,13 +297,19 @@ def test_default_budget_completes_121_two_site_groups_without_more_detail_budget
 
 
 def test_default_budget_still_fails_closed_past_detail_capacity(monkeypatch):
-    result = scan(_budget_surface(181), monkeypatch)
-    assert result["twoSiteListingGroups"] == 181
-    assert result["reviewedGroups"] == 180
-    assert result["detailInspectionCalls"] == daily.MAX_DETAILS == 360
+    result = scan(_budget_surface(361), monkeypatch)
+    assert result["twoSiteListingGroups"] == 361
+    assert result["reviewedGroups"] == 360
+    assert result["detailInspectionCalls"] == daily.MAX_DETAILS == 720
     assert result["groupLimitReached"] is True
     assert result["detailLimitReached"] is False
     assert result["rankingComplete"] is False
+
+
+def test_default_budget_covers_live_558_detail_surface():
+    # 2026-09-20 listing-only production diagnostic required 558 detail
+    # inspections before Moppy recovery. Keep bounded headroom above that.
+    assert daily.MAX_DETAILS >= 558
 
 
 def test_default_budget_covers_observed_210_candidate_surface():
