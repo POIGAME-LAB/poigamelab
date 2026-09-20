@@ -1,0 +1,170 @@
+name: Diagnose listing capacity fast
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/listing-capacity-fast-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Crawl listings only and calculate exact review envelope
+        run: |
+          python - <<'PY'
+          import json, sys
+          from collections import Counter
+          from pathlib import Path
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import direct_offer_refresh as direct
+          import daily_scan_review as daily
+
+          root=Path(".")
+          source_cfg=json.loads((root/"config/point_sources.json").read_text(encoding="utf-8"))
+          targets=json.loads((root/"config/game_targets.json").read_text(encoding="utf-8")).get("games") or []
+          sources={str(x.get("id") or ""):x for x in source_cfg.get("sources") or []}
+          discovery_sources=[x for x in sources.values() if x.get("new_game_discovery_enabled") is True]
+
+          all_items=[]
+          source_results=[]
+          global_seen=set()
+
+          for source in discovery_sources[:12]:
+              sid=str(source.get("id") or "")
+              listing_limit=max(0,min(int(source.get("new_game_discovery_listing_limit") or source.get("direct_listing_limit") or 0),100))
+              explicit=[str(x).strip() for x in (source.get("direct_listing_urls") or []) if str(x).strip()][:listing_limit]
+              template=source.get("new_game_discovery_page_url_template")
+              page_cap=max(1,min(int(source.get("new_game_discovery_max_pages") or 60),100))
+              use_pagination=isinstance(template,str) and "{page}" in template
+              urls=[direct.paginated_listing_url(source,p) for p in range(1,page_cap+1)] if use_pagination else explicit
+              urls=[u for u in urls if u]
+              remaining=max(1,min(int(source.get("new_game_discovery_candidate_limit") or 500),2000))
+              seen_sigs=set()
+              source_complete=not use_pagination
+              pages=0
+              errors=0
+              content_guard=False
+              min_first=max(0,min(int(source.get("new_game_discovery_min_detail_identities_first_page") or 0),100))
+              start=len(all_items)
+
+              for url in urls:
+                  if remaining<=0:
+                      break
+                  pages+=1
+                  if not direct.source_host_allowed(url,source):
+                      errors+=1
+                      continue
+                  try:
+                      raw,final=direct.fetch_first_party(url,source)
+                      sig=direct.listing_detail_identity_signature(raw,final,source,limit=5000)
+                      if use_pagination:
+                          if pages==1 and len(sig)<min_first:
+                              content_guard=True
+                              errors+=1
+                              break
+                          if not sig:
+                              source_complete=True
+                              break
+                          if sig in seen_sigs:
+                              source_complete=True
+                              break
+                          seen_sigs.add(sig)
+                      runtime=dict(source)
+                      runtime["full_catalog_discovery_enabled"]=bool(source.get("full_catalog_discovery_enabled") is True or (use_pagination and source_complete))
+                      candidates=direct.discover_new_game_listing_candidates(raw,final,runtime,targets,limit=remaining)
+                  except Exception as exc:
+                      errors+=1
+                      continue
+                  for candidate in candidates:
+                      key=(candidate.get("source"),candidate.get("offerIdentity"))
+                      if key in global_seen:
+                          continue
+                      global_seen.add(key)
+                      candidate.update(direct.classify_new_game_candidate(candidate))
+                      all_items.append(candidate)
+                      remaining-=1
+                      if remaining<=0:
+                          break
+
+              candidate_limit=remaining<=0
+              ranking_required=bool(
+                  source.get("scheduled_fetch_enabled",True) is True
+                  or (
+                      source.get("coverage_detail_review_enabled") is True
+                      and source.get("coverage_detail_review_mode")=="candidate_only"
+                  )
+              )
+              source_results.append({
+                  "source":sid,
+                  "scope":source.get("new_game_discovery_scope") or "",
+                  "pagesAttempted":pages,
+                  "fetchErrors":errors,
+                  "candidateCount":len(all_items)-start,
+                  "candidateLimitReached":candidate_limit,
+                  "contentGuardFailed":content_guard,
+                  "paginationComplete":source_complete,
+                  "scanComplete":errors==0 and not content_guard and not candidate_limit and (not use_pagination or source_complete),
+                  "rankingRequired":ranking_required,
+                  "pageCap":page_cap,
+              })
+
+          families=daily.source_families(sources)
+          groups={}
+          for item in all_items:
+              if item.get("classification")=="likely_non_game":
+                  continue
+              name=daily.discovery_name(item.get("titleHint"))
+              if not name or direct.context_matches_known_game(name,targets):
+                  continue
+              sid=item.get("source")
+              url=item.get("firstPartyCandidateUrl")
+              if sid not in sources or not direct.source_host_allowed(url,sources[sid]) or not direct.detail_like(url,sources[sid]):
+                  continue
+              if sources[sid].get("scheduled_fetch_enabled",True) is not True and not (
+                  sources[sid].get("coverage_detail_review_enabled") is True
+                  and sources[sid].get("coverage_detail_review_mode")=="candidate_only"
+              ):
+                  continue
+              identity=direct.offer_identity_key(url,sid)
+              if not identity:
+                  continue
+              key=direct.normalized_text(name)
+              bucket=groups.setdefault(key,{"game":name,"offers":{}})
+              bucket["offers"].setdefault((families[sid],identity),(sid,url))
+
+          owners={}
+          for key,group in groups.items():
+              for identity in group["offers"]:
+                  owners.setdefault(identity,set()).add(key)
+          for group in groups.values():
+              group["offers"]={identity:offer for identity,offer in group["offers"].items() if len(owners[identity])==1}
+
+          eligible=[g for g in groups.values() if len({family for family,_ in g["offers"]})>=2]
+          eligible.sort(key=lambda g:(-len({f for f,_ in g["offers"]}),g["game"]))
+          detail_counts=[len(g["offers"]) for g in eligible]
+          ranking_sources=sorted({sid for g in eligible for sid,_ in g["offers"].values()})
+          result={
+              "sourceResults":source_results,
+              "allCandidateItems":len(all_items),
+              "listingGroups":len(groups),
+              "twoSiteListingGroups":len(eligible),
+              "exactDetailInspectionCallsNeeded":sum(detail_counts),
+              "maxOffersInOneGroup":max(detail_counts) if detail_counts else 0,
+              "detailsPerGroup":dict(sorted(Counter(detail_counts).items())),
+              "rankingSources":ranking_sources,
+              "topGroupsByOfferCount":[
+                  {"game":g["game"],"offerCount":len(g["offers"]),"sources":sorted({sid for sid,_ in g["offers"].values()})}
+                  for g in sorted(eligible,key=lambda g:-len(g["offers"]))[:20]
+              ],
+          }
+          print("FAST_CAPACITY_RESULT="+json.dumps(result,ensure_ascii=False))
+          PY
