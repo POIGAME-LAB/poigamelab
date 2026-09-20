@@ -83,8 +83,7 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000, *, opener=None
         "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
         "Mobile/15E148 Safari/604.1"
         if mobile else
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        "Mozilla/5.0 (compatible; POIGAMELAB/1.0; +https://poigamelab.com/)"
     )
     headers = {
         "User-Agent": ua,
