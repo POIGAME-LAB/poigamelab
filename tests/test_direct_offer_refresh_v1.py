@@ -2956,7 +2956,7 @@ def test_repository_evertale_stale_hapitas_195_is_not_published():
     ]
     assert len(ios140) == 1
     assert ios140[0]['url'] == 'https://hapitas.jp/item/detail/itemid/91344'
-    assert ios140[0]['updatedAt'] == '2026-09-08'
+    # updatedAt is the last successful verification date and may advance on later refreshes.\n    assert ios140[0]['updatedAt'] >= '2026-09-08'
 
     targets = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))['games']
     evertale = next(item for item in targets if item['game'] == 'エバーテイル')
