@@ -37,6 +37,15 @@ jobs:
                   hrefs=re.findall(r'href=["\']([^"\']+)["\']',raw,flags=re.I)
                   detail=[h for h in hrefs if "ad/detail.php" in h][:30]
                   text=d.visible_text(raw)
+                  extra={}
+                  if label=="category":
+                      script_srcs=re.findall(r'<script[^>]+src=["\']([^"\']+)["\']',raw,flags=re.I)
+                      needles=["get_list","ajax/category","current_page","exclude_purchased","af_sorter","child_category","parent_category"]
+                      contexts={}
+                      for needle in needles:
+                          pos=raw.find(needle)
+                          contexts[needle]=raw[max(0,pos-700):pos+1800] if pos>=0 else ""
+                      extra={"scriptSrcs":script_srcs[-30:],"contexts":contexts}
                   print("MOPPY_"+label.upper()+"="+json.dumps({
                     "requestedUrl":url,
                     "finalUrl":final,
@@ -47,6 +56,7 @@ jobs:
                     "detailHrefs":detail,
                     "textStart":text[:700],
                     "rawStart":raw[:700],
+                    **extra,
                   },ensure_ascii=False))
               except Exception as exc:
                   print("MOPPY_"+label.upper()+"_ERROR="+type(exc).__name__+":"+str(exc)[:500])
