@@ -18,6 +18,35 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Inspect current Moppy discovery response
+        run: |
+          python - <<'PY'
+          import json, sys, re
+          from pathlib import Path
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import direct_offer_refresh as direct
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          source=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          url=direct.paginated_listing_url(source,1)
+          try:
+              raw, final=direct.fetch_first_party(url,source)
+              sig=direct.listing_detail_identity_signature(raw,final,source,limit=5000)
+              hrefs=re.findall(r'href=["\']([^"\']+)["\']', raw, flags=re.I)
+              interesting=[h for h in hrefs if "detail" in h.lower() or "site_id" in h.lower()][:30]
+              print("MOPPY_DIAG="+json.dumps({
+                  "requestedUrl":url,
+                  "finalUrl":final,
+                  "bytes":len(raw.encode("utf-8")),
+                  "signatureCount":len(sig),
+                  "hrefCount":len(hrefs),
+                  "interestingHrefs":interesting,
+                  "startsWith":raw[:500],
+              },ensure_ascii=False))
+          except Exception as exc:
+              print("MOPPY_DIAG_ERROR="+type(exc).__name__+":"+str(exc)[:300])
+              raise
+          PY
+
       - name: Crawl listings only and calculate exact review envelope
         run: |
           python - <<'PY'
