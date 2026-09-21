@@ -69,7 +69,7 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
             self.assertEqual(package["image"]["provenance"], "generated")
             self.assertTrue((root / package["image"]["path"]).is_file())
             self.assertEqual(package["progress"][0]["sourceRef"], "x:1")
-            self.assertIn("直接確認できた公開攻略", package["guide"]["intro"])
+            self.assertIn("直接確認できた公開情報", package["guide"]["intro"])
             result = gate.validate(package, "新作ゲーム", root=root, require_guide_file=False)
             self.assertEqual(result["progressCount"], 1)
 
