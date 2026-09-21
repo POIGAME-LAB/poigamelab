@@ -121,10 +121,19 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
     for key in ("title", "intro", "overview", "tips"):
         if len(str(guide.get(key) or "").strip()) < 8:
             raise ContentHold(f"guide_field_missing:{key}")
+
+    guide_refs = set()
+    for key in ("overviewSourceRefs", "tipsSourceRefs"):
+        refs = guide.get(key)
+        if not isinstance(refs, list) or not refs:
+            raise ContentHold(f"guide_summary_evidence_missing:{key}")
+        if any(str(ref) not in all_sources for ref in refs):
+            raise ContentHold(f"guide_summary_unknown_source:{key}")
+        guide_refs.update(str(ref) for ref in refs)
+
     sections = guide.get("sections")
-    if not isinstance(sections, list) or len(sections) < 3:
+    if not isinstance(sections, list) or not sections:
         raise ContentHold("guide_sections_incomplete")
-    used_refs = set()
     for section in sections:
         if not isinstance(section, dict) or len(str(section.get("heading") or "").strip()) < 2:
             raise ContentHold("guide_section_invalid")
@@ -132,15 +141,21 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
         refs = section.get("sourceRefs")
         if len(text) < 20 or not isinstance(refs, list) or not refs:
             raise ContentHold("guide_section_evidence_missing")
-        if any(ref not in all_sources for ref in refs):
+        if any(str(ref) not in all_sources for ref in refs):
             raise ContentHold("guide_section_unknown_source")
-        used_refs.update(refs)
-    if len(used_refs) < 2:
+        guide_refs.update(str(ref) for ref in refs)
+
+    if len(guide_refs) < 2:
         raise ContentHold("guide_source_diversity_insufficient")
+    if not any(
+        str(all_sources[ref].get("channel") or "") != "pointSites"
+        for ref in guide_refs
+    ):
+        raise ContentHold("guide_non_point_source_missing")
 
     progress = payload.get("progress")
-    if not isinstance(progress, list) or not progress:
-        raise ContentHold("progress_missing")
+    if not isinstance(progress, list):
+        raise ContentHold("progress_invalid")
     identities = set()
     for row in progress:
         if not isinstance(row, dict):
@@ -151,6 +166,9 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
         if not identity or identity in identities:
             raise ContentHold("progress_identity_duplicate_or_missing")
         if source_ref not in all_sources or len(summary) < 8:
+            raise ContentHold("progress_evidence_invalid")
+        source = all_sources[source_ref]
+        if str(source.get("channel") or "") not in {"x", "youtube", "instagram"}:
             raise ContentHold("progress_evidence_invalid")
         identities.add(identity)
 
