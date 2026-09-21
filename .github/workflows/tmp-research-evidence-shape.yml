@@ -1,0 +1,44 @@
+name: Research evidence shape diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    if: github.head_ref == 'test/research-evidence-shape-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Research current five games
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Print evidence shape only
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          out=[]
+          for path in sorted(Path('data/new_game_channel_research').glob('*.json')):
+              data=json.loads(path.read_text(encoding='utf-8'))
+              lanes={}
+              for name,lane in (data.get('research') or {}).items():
+                  rows=lane.get('sources') or []
+                  lanes[name]={
+                    'count':len(rows),
+                    'factual':sum(bool(str(x.get('claim') or '').strip()) for x in rows if isinstance(x,dict)),
+                    'poiContext':sum(x.get('poiContext') is True for x in rows if isinstance(x,dict)),
+                  }
+              out.append({'game':data.get('game'),'lanes':lanes})
+          print('EVIDENCE_SHAPE='+json.dumps(out,ensure_ascii=False))
+          PY
