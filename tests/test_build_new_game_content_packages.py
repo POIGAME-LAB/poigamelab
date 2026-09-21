@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -86,6 +87,20 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
             with self.assertRaisesRegex(gate.ContentHold, "progress_missing"):
                 b.build_package(research(), bad, root=Path(td))
 
+    def test_unknown_days_and_difficulty_are_explicit_not_fabricated(self):
+        value = proposal()
+        value["days"] = ""
+        value["daysSourceRefs"] = []
+        value["difficulty"] = ""
+        value["difficultySourceRefs"] = []
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            package = b.build_package(research(), value, root=root)
+            self.assertEqual(package["days"], "調査中")
+            self.assertEqual(package["difficulty"], "調査中")
+            validated = gate.validate(package, "新作ゲーム", root=root, require_guide_file=False)
+            self.assertEqual(validated["catalogPending"], ["days", "difficulty"])
+
     def test_catalog_summaries_require_source_refs(self):
         bad = proposal()
         bad["guide"].pop("overviewSourceRefs")
@@ -100,6 +115,116 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(gate.ContentHold, "overview_numeric_ungrounded"):
                 b.build_package(research(), bad, root=Path(td))
+
+    def test_grounding_hold_gets_one_bounded_repair_attempt(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            research_dir = root / "research"
+            research_dir.mkdir()
+            (research_dir / "one.json").write_text(
+                json.dumps(research(), ensure_ascii=False), encoding="utf-8"
+            )
+            calls = {"count": 0}
+
+            def synth(api_key, model, prompt):
+                calls["count"] += 1
+                value = proposal()
+                if calls["count"] == 1:
+                    value["progress"] = []
+                return value
+
+            old_status = b.STATUS
+            b.STATUS = root / "status.json"
+            try:
+                status = b.run(
+                    research_dir=research_dir,
+                    package_dir=root / "packages",
+                    root=root,
+                    api_key="dummy",
+                    synthesizer=synth,
+                )
+            finally:
+                b.STATUS = old_status
+
+            self.assertTrue(status["success"])
+            self.assertTrue(status["allReady"])
+            self.assertEqual(status["games"], 1)
+            self.assertEqual(status["held"], 0)
+            self.assertEqual(status["failed"], 0)
+            self.assertEqual(status["apiCalls"], 2)
+            self.assertEqual(calls["count"], 2)
+
+    def test_evidence_hold_does_not_block_other_ready_games(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            research_dir = root / "research"
+            package_dir = root / "packages"
+            research_dir.mkdir()
+            good = research()
+            good["game"] = "Good Game"
+            held = research()
+            held["game"] = "Held Game"
+            (research_dir / "good.json").write_text(json.dumps(good, ensure_ascii=False), encoding="utf-8")
+            (research_dir / "held.json").write_text(json.dumps(held, ensure_ascii=False), encoding="utf-8")
+
+            def synth(api_key, model, prompt):
+                if "Held Game" in prompt:
+                    value = proposal()
+                    value["progress"] = []
+                    return value
+                return proposal()
+
+            old_status = b.STATUS
+            b.STATUS = root / "status.json"
+            try:
+                status = b.run(
+                    research_dir=research_dir,
+                    package_dir=package_dir,
+                    root=root,
+                    api_key="dummy",
+                    synthesizer=synth,
+                )
+            finally:
+                b.STATUS = old_status
+
+            self.assertTrue(status["success"])
+            self.assertFalse(status["allReady"])
+            self.assertEqual(status["selected"], 2)
+            self.assertEqual(status["games"], 1)
+            self.assertEqual(status["held"], 1)
+            self.assertEqual(status["failed"], 0)
+            self.assertIn("synthesis_progress_missing", status["holds"][0]["reason"])
+            self.assertEqual(len(list(package_dir.glob("*.json"))), 1)
+
+    def test_unexpected_synthesis_error_still_fails_stage(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            research_dir = root / "research"
+            research_dir.mkdir()
+            (research_dir / "one.json").write_text(
+                json.dumps(research(), ensure_ascii=False), encoding="utf-8"
+            )
+
+            def broken(api_key, model, prompt):
+                raise RuntimeError("provider unavailable")
+
+            old_status = b.STATUS
+            b.STATUS = root / "status.json"
+            try:
+                status = b.run(
+                    research_dir=research_dir,
+                    package_dir=root / "packages",
+                    root=root,
+                    api_key="dummy",
+                    synthesizer=broken,
+                )
+            finally:
+                b.STATUS = old_status
+
+            self.assertFalse(status["success"])
+            self.assertEqual(status["held"], 0)
+            self.assertEqual(status["failed"], 1)
+            self.assertEqual(status["failures"][0]["error"], "RuntimeError")
 
     def test_svg_is_local_original_title_card(self):
         svg = b.neutral_svg("新作ゲーム")

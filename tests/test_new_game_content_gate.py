@@ -74,6 +74,27 @@ def test_complete_package_passes():
         assert out["progressCount"] == 1
 
 
+def test_explicit_unknown_catalog_fields_pass_when_guide_is_grounded():
+    with tempfile.TemporaryDirectory() as td:
+        p = package()
+        p["days"] = "調査中"
+        p["difficulty"] = "調査中"
+        content = make_files(td, p)
+        out = gate.validate_for_game("新作ゲーム", content_dir=content, root=td)
+        assert out["days"] == "調査中"
+        assert out["difficulty"] == "調査中"
+        assert out["catalogPending"] == ["days", "difficulty"]
+
+
+def test_blank_catalog_fields_still_fail_closed():
+    with tempfile.TemporaryDirectory() as td:
+        p = package()
+        p["days"] = ""
+        content = make_files(td, p)
+        with pytest.raises(gate.ContentHold, match="catalog_fields_incomplete"):
+            gate.validate_for_game("新作ゲーム", content_dir=content, root=td)
+
+
 def test_missing_research_channel_fails_closed():
     with tempfile.TemporaryDirectory() as td:
         p = package(); del p["research"]["instagram"]

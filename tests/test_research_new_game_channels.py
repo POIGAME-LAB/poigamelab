@@ -60,14 +60,60 @@ class TestResearchNewGameChannels(unittest.TestCase):
             self.assertTrue(out["research"][channel]["complete"])
             self.assertTrue(out["research"][channel]["sources"][0]["targetConfirmed"])
 
+    def test_point_site_lane_uses_unique_ids_for_multiple_offers_from_one_site(self):
+        item = {
+            "pointSiteEvidence": [
+                {"source": "hapitas", "url": "https://hapitas.jp/item/detail/itemid/100/"},
+                {"source": "hapitas", "url": "https://hapitas.jp/item/detail/itemid/101/"},
+                {"source": "amefuri", "url": "https://www.amefri.net/detail/id/200"},
+            ]
+        }
+        lane = r.point_site_lane(item)
+        ids = [row["id"] for row in lane["sources"]]
+        self.assertEqual(len(ids), 3)
+        self.assertEqual(len(set(ids)), 3)
+        self.assertEqual(sum(x.startswith("pointSites:hapitas:") for x in ids), 2)
+        self.assertTrue(any(x.startswith("pointSites:amefuri:") for x in ids))
+
+    def test_multiple_offers_from_only_one_site_do_not_satisfy_two_site_gate(self):
+        item = {
+            "pointSiteEvidence": [
+                {"source": "hapitas", "url": "https://hapitas.jp/item/detail/itemid/100/"},
+                {"source": "hapitas", "url": "https://hapitas.jp/item/detail/itemid/101/"},
+            ]
+        }
+        with self.assertRaisesRegex(ValueError, "point_site_evidence_below_two"):
+            r.point_site_lane(item)
+
     def test_search_error_is_visible_and_incomplete(self):
         def broken(query, key, max_results):
             raise RuntimeError("nope")
-        lane = r.research_channel("新作ゲーム", "web", "q", "dummy", searcher=broken, fetcher=fetcher)
+        lane = r.research_channel(
+            "新作ゲーム", "web", "q", "dummy",
+            searcher=broken, fetcher=fetcher, sleeper=lambda _: None,
+        )
         self.assertTrue(lane["searched"])
         self.assertFalse(lane["complete"])
-        self.assertEqual(lane["searchErrors"], 1)
+        self.assertEqual(lane["searchCalls"], 2)
+        self.assertEqual(lane["searchErrors"], 2)
         self.assertEqual(lane["sources"], [])
+
+    def test_transient_search_error_recovers_on_one_bounded_retry(self):
+        calls = {"count": 0}
+        def flaky(query, key, max_results):
+            calls["count"] += 1
+            if calls["count"] == 1:
+                raise RuntimeError("temporary")
+            return {"results": [{"url": "https://example.com/new-game-guide"}]}
+
+        lane = r.research_channel(
+            "新作ゲーム", "web", "q", "dummy",
+            searcher=flaky, fetcher=fetcher, sleeper=lambda _: None,
+        )
+        self.assertTrue(lane["complete"])
+        self.assertEqual(lane["searchCalls"], 2)
+        self.assertEqual(lane["searchErrors"], 1)
+        self.assertEqual(len(lane["sources"]), 1)
 
     def test_snippet_only_never_becomes_source(self):
         def search(query, key, max_results):

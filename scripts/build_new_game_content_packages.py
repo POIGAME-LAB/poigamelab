@@ -85,7 +85,7 @@ def synthesis_prompt(game, rows):
 以下のsourcesだけを根拠にする。一般知識・推測・検索スニペット・別ゲーム情報は禁止。
 事実を含む文には必ずsourceRefsを付ける。数字・レベル・日数・金額を出す場合、その数字が参照元text内に存在するものだけ使う。
 「みんなの進捗」は x / youtube / instagram の公開プレイヤー記録だけから作り、同一URLを重複させない。
-根拠が足りない項目は捏造せず空にする。difficulty も根拠がある表現だけにする。
+根拠が足りない場合、days と difficulty だけは捏造せず「調査中」とする。その場合対応するSourceRefsは空配列にする。guide本文やprogressは根拠がなければ捏造せず空にする。
 
 JSONのみ返す。
 形式:
@@ -113,6 +113,21 @@ sources:
 ''' + json.dumps(compact, ensure_ascii=False)
 
 
+def repair_prompt(game, rows, reason):
+    return synthesis_prompt(game, rows) + f"""
+
+前回のJSONは検証で却下された。却下理由: {reason}
+同じsourcesだけを使ってJSONを1回だけ修正する。
+- sourceRefsは必ずsourcesに存在するsourceIdだけを使う。
+- overview/tipsは8文字以上、sectionsは3件以上で各textは20文字以上にする。
+- 数字を含む文は、その数字が参照先textに実際にある場合だけ使う。根拠がなければ数字を削る。
+- days/difficultyの根拠がない場合は「調査中」、対応SourceRefsは空配列にする。
+- progressはx/youtube/instagramの直接取得済みsourceだけを使う。存在しなければ捏造しない。
+- 根拠不足を埋めるための一般知識や推測は禁止。
+JSONのみ返す。
+"""
+
+
 def evidence_for_refs(rows, refs, error):
     if not isinstance(refs, list) or not refs or any(str(ref) not in rows for ref in refs):
         raise gate.ContentHold(error)
@@ -123,18 +138,24 @@ def validate_synthesis(game, research, proposal):
     rows = source_rows(research)
     if not isinstance(proposal, dict):
         raise gate.ContentHold("synthesis_invalid")
-    days = str(proposal.get("days") or "").strip()
-    difficulty = str(proposal.get("difficulty") or "").strip()
+    days = str(proposal.get("days") or "").strip() or "調査中"
+    difficulty = str(proposal.get("difficulty") or "").strip() or "調査中"
     guide = proposal.get("guide")
-    if not days or days == "調査中" or not difficulty or difficulty == "調査中" or not isinstance(guide, dict):
-        raise gate.ContentHold("synthesis_catalog_incomplete")
+    if not isinstance(guide, dict):
+        raise gate.ContentHold("synthesis_guide_missing")
 
-    days_evidence = evidence_for_refs(rows, proposal.get("daysSourceRefs"), "synthesis_days_evidence_invalid")
-    difficulty_evidence = evidence_for_refs(rows, proposal.get("difficultySourceRefs"), "synthesis_difficulty_evidence_invalid")
-    if not numeric_grounded(days, days_evidence):
-        raise gate.ContentHold("synthesis_days_numeric_ungrounded")
-    if not numeric_grounded(difficulty, difficulty_evidence):
-        raise gate.ContentHold("synthesis_difficulty_numeric_ungrounded")
+    if days != "調査中":
+        days_evidence = evidence_for_refs(
+            rows, proposal.get("daysSourceRefs"), "synthesis_days_evidence_invalid"
+        )
+        if not numeric_grounded(days, days_evidence):
+            raise gate.ContentHold("synthesis_days_numeric_ungrounded")
+    if difficulty != "調査中":
+        difficulty_evidence = evidence_for_refs(
+            rows, proposal.get("difficultySourceRefs"), "synthesis_difficulty_evidence_invalid"
+        )
+        if not numeric_grounded(difficulty, difficulty_evidence):
+            raise gate.ContentHold("synthesis_difficulty_numeric_ungrounded")
 
     title = str(guide.get("title") or "").strip()
     overview = str(guide.get("overview") or "").strip()
@@ -251,27 +272,70 @@ def run(research_dir=RESEARCH_DIR, package_dir=PACKAGE_DIR, root=ROOT,
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY unavailable")
     outputs = []
+    holds = []
     failures = []
-    for path in sorted(Path(research_dir).glob("*.json"))[:5]:
+    api_calls = 0
+    paths = sorted(Path(research_dir).glob("*.json"))[:5]
+    for path in paths:
         try:
             research = json.loads(path.read_text(encoding="utf-8"))
             if research.get("phase") != "NEW_GAME_MULTI_CHANNEL_RESEARCH_V1" or research.get("complete") is not True:
                 raise gate.ContentHold("research_not_complete")
             rows = source_rows(research)
-            proposal = synthesizer(api_key, model, synthesis_prompt(research.get("game"), rows))
-            package = build_package(research, proposal, root=root)
+            game = str(research.get("game") or "").strip()
+
+            api_calls += 1
+            proposal = synthesizer(api_key, model, synthesis_prompt(game, rows))
+            try:
+                package = build_package(research, proposal, root=root)
+            except gate.ContentHold as first_hold:
+                # A bounded second synthesis can repair formatting/grounding
+                # mistakes without widening the evidence set. If the evidence
+                # itself is insufficient, the second pass remains held.
+                api_calls += 1
+                repaired = synthesizer(
+                    api_key, model, repair_prompt(game, rows, str(first_hold)[:160])
+                )
+                try:
+                    package = build_package(research, repaired, root=root)
+                except gate.ContentHold as second_hold:
+                    holds.append({
+                        "file": path.name,
+                        "reason": str(second_hold)[:160],
+                        "initialReason": str(first_hold)[:160],
+                        "repairAttempted": True,
+                    })
+                    continue
+
             out = Path(package_dir) / f"{gate.safe_slug(package['game'])}.json"
             atomic_json(out, package)
             outputs.append(package)
+        except gate.ContentHold as exc:
+            # Research-level evidence holds cannot be repaired by synthesis.
+            holds.append({
+                "file": path.name,
+                "reason": str(exc)[:160],
+                "repairAttempted": False,
+            })
         except Exception as exc:
-            failures.append({"file": path.name, "error": str(exc)[:160]})
+            # Infrastructure/API/programming failures are not evidence holds.
+            # Keep failing the workflow so an operational problem is visible.
+            failures.append({
+                "file": path.name,
+                "error": type(exc).__name__,
+                "detail": str(exc)[:160],
+            })
     status = {
         "phase": "NEW_GAME_CONTENT_PACKAGE_V1",
         "success": not failures,
+        "allReady": not holds and not failures,
+        "selected": len(paths),
         "games": len(outputs),
+        "held": len(holds),
+        "holds": holds,
         "failed": len(failures),
         "failures": failures,
-        "apiCalls": len(outputs) + len(failures),
+        "apiCalls": api_calls,
         "publicationWrites": 0,
     }
     atomic_json(STATUS, status)

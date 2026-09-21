@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import time
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -108,26 +109,35 @@ def _fetch(url):
     return visible_text(raw), meta
 
 
-def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher=_fetch, max_results=5, max_fetches=4):
+def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher=_fetch,
+                     max_results=5, max_fetches=4, max_search_attempts=2,
+                     sleeper=time.sleep):
     lane = {
         "searched": True,
         "complete": False,
         "query": str(query or ""),
-        "searchCalls": 1,
+        "searchCalls": 0,
         "searchErrors": 0,
         "resultUrls": 0,
         "directFetches": 0,
         "fetchErrors": 0,
         "sources": [],
     }
-    try:
-        response = searcher(str(query or ""), api_key, max_results)
-    except Exception:
-        lane["searchErrors"] = 1
-        return lane
-    rows = response.get("results") if isinstance(response, dict) else None
-    if not isinstance(rows, list):
-        lane["searchErrors"] = 1
+    rows = None
+    for attempt in range(max(1, int(max_search_attempts))):
+        lane["searchCalls"] += 1
+        try:
+            response = searcher(str(query or ""), api_key, max_results)
+            candidate_rows = response.get("results") if isinstance(response, dict) else None
+            if not isinstance(candidate_rows, list):
+                raise ValueError("search_results_invalid")
+            rows = candidate_rows
+            break
+        except Exception:
+            lane["searchErrors"] += 1
+            if attempt + 1 < max(1, int(max_search_attempts)):
+                sleeper(5)
+    if rows is None:
         return lane
     lane["resultUrls"] = len(rows)
     seen = set()
@@ -161,21 +171,28 @@ def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher
             "evidenceLevel": "direct_public_page",
         }
         lane["sources"].append(source)
-    lane["complete"] = lane["searchErrors"] == 0
+    # A recovered first search failure stays visible in searchErrors, but the
+    # lane is complete once a later bounded retry returned a valid result set.
+    lane["complete"] = True
     return lane
 
 
 def point_site_lane(item):
     sources = []
+    seen = set()
+    independent_sites = set()
     for row in item.get("pointSiteEvidence") or []:
         if not isinstance(row, dict):
             continue
         sid = str(row.get("source") or "").strip()
         url = str(row.get("url") or "").strip()
-        if not sid or not safe_https(url):
+        if not sid or not safe_https(url) or (sid, url) in seen:
             continue
+        seen.add((sid, url))
+        independent_sites.add(sid)
+        identity = hashlib.sha256(url.encode("utf-8")).hexdigest()[:12]
         sources.append({
-            "id": f"pointSites:{sid}",
+            "id": f"pointSites:{sid}:{identity}",
             "url": url,
             "channel": "pointSites",
             "targetConfirmed": True,
@@ -183,7 +200,9 @@ def point_site_lane(item):
             "claim": f"{sid} の同一巡回で案件詳細を確認済み",
             "evidenceLevel": "same_scan_first_party_detail",
         })
-    if len({x["id"] for x in sources}) < 2:
+    # Multiple offers from one point site are useful evidence, but they never
+    # satisfy the independent two-site gate by themselves.
+    if len(independent_sites) < 2:
         raise ValueError("point_site_evidence_below_two")
     return {"searched": True, "complete": True, "searchCalls": 0, "sources": sources}
 
@@ -224,16 +243,31 @@ def run(queue=None, api_key=None, *, searcher=_search, fetcher=_fetch, out_dir=O
         raise RuntimeError("TAVILY_API_KEY unavailable")
     items = (queue.get("items") or [])[:5]
     outputs = []
+    failures = []
     for item in items:
-        result = research_item(item, api_key, searcher=searcher, fetcher=fetcher)
-        path = Path(out_dir) / f"{safe_slug(result['game'])}.json"
-        atomic_json(path, result)
-        outputs.append(result)
+        try:
+            result = research_item(item, api_key, searcher=searcher, fetcher=fetcher)
+            path = Path(out_dir) / f"{safe_slug(result['game'])}.json"
+            atomic_json(path, result)
+            outputs.append(result)
+        except Exception as exc:
+            failures.append({
+                "game": str((item or {}).get("game") or ""),
+                "error": type(exc).__name__,
+            })
+    complete_games = sum(bool(x.get("complete")) for x in outputs)
     status = {
         "phase": "NEW_GAME_MULTI_CHANNEL_RESEARCH_V1",
-        "success": all(x.get("complete") for x in outputs),
+        # Partial channel-search failures quarantine only those games. A
+        # provider-wide 0/N failure remains a workflow failure so outages are
+        # visible instead of silently publishing nothing.
+        "success": not failures and (not items or complete_games > 0),
+        "allComplete": not failures and complete_games == len(items),
         "games": len(outputs),
-        "completeGames": sum(bool(x.get("complete")) for x in outputs),
+        "completeGames": complete_games,
+        "heldGames": max(0, len(items) - complete_games),
+        "failed": len(failures),
+        "failures": failures,
         "apiCalls": sum(int(x.get("apiCalls") or 0) for x in outputs),
         "publicationWrites": 0,
     }
