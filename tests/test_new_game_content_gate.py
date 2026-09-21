@@ -103,6 +103,29 @@ def test_missing_research_channel_fails_closed():
             gate.validate_for_game("新作ゲーム", content_dir=content, root=td)
 
 
+def test_empty_progress_is_allowed_when_guide_has_grounded_sources():
+    with tempfile.TemporaryDirectory() as td:
+        p = package()
+        p["progress"] = []
+        content = make_files(td, p)
+        out = gate.validate_for_game("新作ゲーム", content_dir=content, root=td)
+        assert out["progressCount"] == 0
+
+
+def test_point_site_only_guide_is_rejected():
+    with tempfile.TemporaryDirectory() as td:
+        p = package()
+        p["guide"]["sections"] = [{
+            "heading": "案件条件",
+            "text": "ポイントサイトで確認できた案件条件を開始前に確認してください。",
+            "sourceRefs": ["point1"],
+        }]
+        p["progress"] = []
+        content = make_files(td, p)
+        with pytest.raises(gate.ContentHold, match="guide_source_diversity_insufficient|guide_non_point_source_missing"):
+            gate.validate_for_game("新作ゲーム", content_dir=content, root=td)
+
+
 def test_duplicate_progress_identity_is_rejected():
     with tempfile.TemporaryDirectory() as td:
         p = package(); p["progress"].append(dict(p["progress"][0]))

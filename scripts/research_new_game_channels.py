@@ -5,7 +5,9 @@ This stage is quarantine-only. Tavily is discovery, never factual evidence by
 itself. URLs are kept as factual research sources only when their public page is
 directly fetched and independently contains the target game. X/YouTube/Instagram
 may legitimately produce zero kept sources while still recording a completed
-search. Point-site evidence comes from the already verified same-run queue.
+search. Point-site evidence comes from the already verified same-run queue. Tavily is
+the primary discovery provider; bounded Firecrawl search is an automatic
+fallback for Tavily quota/transient failures. Search snippets are never evidence.
 """
 from __future__ import annotations
 
@@ -15,7 +17,9 @@ import os
 import re
 import time
 from pathlib import Path
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "data" / "new_game_content_queue.json"
@@ -98,9 +102,86 @@ def bounded_excerpt(text, game, limit=520):
     return excerpt
 
 
+_TAVILY_QUOTA_BLOCKED = False
+
+
+def firecrawl_search(query, api_key, max_results):
+    if not api_key:
+        raise RuntimeError("FIRECRAWL_API_KEY unavailable")
+    payload = {
+        "query": str(query or ""),
+        "limit": max(1, min(10, int(max_results or 5))),
+        "sources": ["web"],
+        "location": "Japan",
+        "country": "JP",
+        "timeout": 45000,
+    }
+    data = json.dumps(payload).encode("utf-8")
+    req = Request(
+        "https://api.firecrawl.dev/v2/search",
+        data=data,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+            "User-Agent": "POIGAME-LAB/1.0",
+        },
+        method="POST",
+    )
+    with urlopen(req, timeout=60) as response:
+        result = json.loads(response.read().decode("utf-8", errors="replace"))
+    raw = result.get("data") if isinstance(result, dict) else None
+    if isinstance(raw, dict):
+        rows = raw.get("web") or raw.get("results") or []
+    elif isinstance(raw, list):
+        rows = raw
+    else:
+        rows = []
+    results = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        url = str(row.get("url") or (row.get("metadata") or {}).get("sourceURL") or "").strip()
+        if safe_https(url):
+            results.append({"url": url})
+    return {"results": results, "_provider": "firecrawl"}
+
+
+def _fallbackable_tavily_error(exc):
+    if isinstance(exc, HTTPError):
+        return exc.code in {429, 432, 433, 500, 502, 503, 504}
+    return isinstance(exc, (URLError, TimeoutError))
+
+
 def _search(query, api_key, max_results):
+    global _TAVILY_QUOTA_BLOCKED
     from collect_guide_evidence import tavily_search
-    return tavily_search(query, api_key, max_results=max_results)
+
+    firecrawl_key = os.getenv("FIRECRAWL_API_KEY", "").strip()
+    if _TAVILY_QUOTA_BLOCKED:
+        result = firecrawl_search(query, firecrawl_key, max_results)
+        result["_fallbackReason"] = "tavily_plan_limit"
+        return result
+
+    if not str(api_key or "").strip():
+        result = firecrawl_search(query, firecrawl_key, max_results)
+        result["_fallbackReason"] = "tavily_key_unavailable"
+        return result
+
+    try:
+        result = tavily_search(query, api_key, max_results=max_results)
+        if isinstance(result, dict):
+            result = dict(result)
+            result["_provider"] = "tavily"
+        return result
+    except Exception as exc:
+        if not firecrawl_key or not _fallbackable_tavily_error(exc):
+            raise
+        if isinstance(exc, HTTPError) and exc.code in {432, 433}:
+            _TAVILY_QUOTA_BLOCKED = True
+        result = firecrawl_search(query, firecrawl_key, max_results)
+        code = getattr(exc, "code", None)
+        result["_fallbackReason"] = f"tavily_http_{code}" if code else type(exc).__name__
+        return result
 
 
 def _fetch(url):
@@ -118,6 +199,8 @@ def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher
         "query": str(query or ""),
         "searchCalls": 0,
         "searchErrors": 0,
+        "searchProviders": [],
+        "fallbackReasons": [],
         "resultUrls": 0,
         "directFetches": 0,
         "fetchErrors": 0,
@@ -131,6 +214,12 @@ def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher
             candidate_rows = response.get("results") if isinstance(response, dict) else None
             if not isinstance(candidate_rows, list):
                 raise ValueError("search_results_invalid")
+            provider = str((response or {}).get("_provider") or "").strip() if isinstance(response, dict) else ""
+            if provider and provider not in lane["searchProviders"]:
+                lane["searchProviders"].append(provider)
+            fallback_reason = str((response or {}).get("_fallbackReason") or "").strip() if isinstance(response, dict) else ""
+            if fallback_reason and fallback_reason not in lane["fallbackReasons"]:
+                lane["fallbackReasons"].append(fallback_reason)
             rows = candidate_rows
             break
         except Exception:
@@ -239,8 +328,8 @@ def run(queue=None, api_key=None, *, searcher=_search, fetcher=_fetch, out_dir=O
     if not isinstance(queue, dict) or queue.get("phase") != "NEW_GAME_CONTENT_QUEUE_V1":
         raise ValueError("content_queue_phase_mismatch")
     api_key = api_key if api_key is not None else os.getenv("TAVILY_API_KEY", "")
-    if not api_key:
-        raise RuntimeError("TAVILY_API_KEY unavailable")
+    if not str(api_key or "").strip() and not os.getenv("FIRECRAWL_API_KEY", "").strip():
+        raise RuntimeError("search provider unavailable")
     items = (queue.get("items") or [])[:5]
     outputs = []
     failures = []
@@ -269,6 +358,20 @@ def run(queue=None, api_key=None, *, searcher=_search, fetcher=_fetch, out_dir=O
         "failed": len(failures),
         "failures": failures,
         "apiCalls": sum(int(x.get("apiCalls") or 0) for x in outputs),
+        "searchProviders": sorted({
+            provider
+            for output in outputs
+            for lane in (output.get("research") or {}).values()
+            if isinstance(lane, dict)
+            for provider in (lane.get("searchProviders") or [])
+        }),
+        "fallbackReasons": sorted({
+            reason
+            for output in outputs
+            for lane in (output.get("research") or {}).values()
+            if isinstance(lane, dict)
+            for reason in (lane.get("fallbackReasons") or [])
+        }),
         "publicationWrites": 0,
     }
     atomic_json(STATUS, status)

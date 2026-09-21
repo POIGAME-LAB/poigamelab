@@ -52,6 +52,7 @@ jobs:
         if: steps.queue.outputs.has_items == 'true'
         env:
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
         run: python scripts/research_new_game_channels.py
 
       - name: Build grounded guide packages and local title-card images

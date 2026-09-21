@@ -3687,6 +3687,36 @@ def _hapitas_fixture(display='9,351', related='1,300', step7='5,393'):
     '''
 
 
+def test_hapitas_parser_ignores_sitewide_promo_before_actual_offer_header():
+    raw = '''
+    <html><head>
+      <title>エバーテイル（3日連続ログインボーナス獲得）（iOS） | 140pt還元中</title>
+      <link rel="canonical" href="https://hapitas.jp/item/detail/itemid/91344/">
+    </head><body>
+      <div>【10,000pt！】マネックス証券 口座開設キャンペーン</div>
+      <h1>エバーテイル（3日連続ログインボーナス獲得）（iOS）</h1>
+      <div>【ポイント獲得条件】の達成で 140 pt</div>
+      <section>
+        ポイント対象条件
+        ポイント獲得条件
+        新規アプリインストール後、3日間連続でログインボーナスを獲得
+        成果受付期限：広告クリック当日を1日目として10日以内
+      </section>
+      <div>ハピタスご利用前に必ずご確認ください</div>
+      <div>1ポイント＝1円</div>
+    </body></html>
+    '''
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/91344/',
+        'https://hapitas.jp/item/detail/itemid/91344/',
+        ['エバーテイル'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['verifiedCurrentRewardYen'] == 140
+    assert '10,000pt' not in evidence['headerText']
+
+
 def test_hapitas_multistep_parser_cross_checks_step_sum():
     evidence = direct.inspect_hapitas_offer(
         _hapitas_fixture(),
