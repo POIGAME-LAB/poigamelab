@@ -251,27 +251,46 @@ def run(research_dir=RESEARCH_DIR, package_dir=PACKAGE_DIR, root=ROOT,
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY unavailable")
     outputs = []
+    holds = []
     failures = []
-    for path in sorted(Path(research_dir).glob("*.json"))[:5]:
+    api_calls = 0
+    paths = sorted(Path(research_dir).glob("*.json"))[:5]
+    for path in paths:
         try:
             research = json.loads(path.read_text(encoding="utf-8"))
             if research.get("phase") != "NEW_GAME_MULTI_CHANNEL_RESEARCH_V1" or research.get("complete") is not True:
                 raise gate.ContentHold("research_not_complete")
             rows = source_rows(research)
+            api_calls += 1
             proposal = synthesizer(api_key, model, synthesis_prompt(research.get("game"), rows))
             package = build_package(research, proposal, root=root)
             out = Path(package_dir) / f"{gate.safe_slug(package['game'])}.json"
             atomic_json(out, package)
             outputs.append(package)
+        except gate.ContentHold as exc:
+            # Missing or insufficient factual evidence is an expected safe
+            # outcome for an individual game. Hold only that game and allow
+            # other content-ready candidates to continue through quarantine.
+            holds.append({"file": path.name, "reason": str(exc)[:160]})
         except Exception as exc:
-            failures.append({"file": path.name, "error": str(exc)[:160]})
+            # Infrastructure/API/programming failures are not evidence holds.
+            # Keep failing the workflow so an operational problem is visible.
+            failures.append({
+                "file": path.name,
+                "error": type(exc).__name__,
+                "detail": str(exc)[:160],
+            })
     status = {
         "phase": "NEW_GAME_CONTENT_PACKAGE_V1",
         "success": not failures,
+        "allReady": not holds and not failures,
+        "selected": len(paths),
         "games": len(outputs),
+        "held": len(holds),
+        "holds": holds,
         "failed": len(failures),
         "failures": failures,
-        "apiCalls": len(outputs) + len(failures),
+        "apiCalls": api_calls,
         "publicationWrites": 0,
     }
     atomic_json(STATUS, status)
