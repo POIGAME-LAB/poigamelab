@@ -22,6 +22,14 @@ class TestNewGameResearchWorkflow(unittest.TestCase):
         self.assertNotIn("adopt_verified_games.py", text)
         self.assertNotIn("git commit", text)
 
+    def test_initial_research_has_firecrawl_fallback_secret(self):
+        text = WORKFLOW.read_text(encoding="utf-8")
+        block = text.split(
+            "- name: Research Web, X, YouTube, Instagram and point-site lanes", 1
+        )[1].split("- name: Build grounded guide packages", 1)[0]
+        self.assertIn("TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}", block)
+        self.assertIn("FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}", block)
+
     def test_research_build_render_offer_gate_and_archive_are_bounded(self):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("python scripts/research_new_game_channels.py", text)
