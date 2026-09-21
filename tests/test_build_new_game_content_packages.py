@@ -116,6 +116,44 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
             with self.assertRaisesRegex(gate.ContentHold, "overview_numeric_ungrounded"):
                 b.build_package(research(), bad, root=Path(td))
 
+    def test_grounding_hold_gets_one_bounded_repair_attempt(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            research_dir = root / "research"
+            research_dir.mkdir()
+            (research_dir / "one.json").write_text(
+                json.dumps(research(), ensure_ascii=False), encoding="utf-8"
+            )
+            calls = {"count": 0}
+
+            def synth(api_key, model, prompt):
+                calls["count"] += 1
+                value = proposal()
+                if calls["count"] == 1:
+                    value["progress"] = []
+                return value
+
+            old_status = b.STATUS
+            b.STATUS = root / "status.json"
+            try:
+                status = b.run(
+                    research_dir=research_dir,
+                    package_dir=root / "packages",
+                    root=root,
+                    api_key="dummy",
+                    synthesizer=synth,
+                )
+            finally:
+                b.STATUS = old_status
+
+            self.assertTrue(status["success"])
+            self.assertTrue(status["allReady"])
+            self.assertEqual(status["games"], 1)
+            self.assertEqual(status["held"], 0)
+            self.assertEqual(status["failed"], 0)
+            self.assertEqual(status["apiCalls"], 2)
+            self.assertEqual(calls["count"], 2)
+
     def test_evidence_hold_does_not_block_other_ready_games(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
