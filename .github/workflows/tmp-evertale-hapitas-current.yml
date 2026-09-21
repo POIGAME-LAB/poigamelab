@@ -1,0 +1,52 @@
+name: Diagnose current Evertale Hapitas
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/evertale-hapitas-current-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect current first-party Evertale offers
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0,str(Path('scripts').resolve()))
+          import direct_offer_refresh as d
+          cfg=json.loads(Path('config/point_sources.json').read_text(encoding='utf-8'))
+          source=next(x for x in cfg['sources'] if x['id']=='hapitas')
+          for platform,itemid in [('iOS','91344'),('Android','91343')]:
+              url=f'https://hapitas.jp/item/detail/itemid/{itemid}'
+              try:
+                  detail=d.inspect_detail(url,source,['エバーテイル','Evertale'])
+                  ev=detail.get('sourceEvidence') or {}
+                  print('EVERTALE_HAPITAS='+json.dumps({
+                    'platformExpected':platform,
+                    'url':url,
+                    'finalUrl':detail.get('url'),
+                    'state':ev.get('state'),
+                    'parserVersion':ev.get('parserVersion'),
+                    'offerId':ev.get('offerId'),
+                    'platform':ev.get('platform'),
+                    'displayedRewardYen':ev.get('displayedRewardYen'),
+                    'verifiedCurrentRewardYen':ev.get('verifiedCurrentRewardYen'),
+                    'headerText':ev.get('headerText'),
+                    'reason':ev.get('reason'),
+                  },ensure_ascii=False))
+              except Exception as exc:
+                  print('EVERTALE_HAPITAS_ERROR='+json.dumps({
+                    'platformExpected':platform,'url':url,
+                    'type':type(exc).__name__,'message':str(exc)[:200],
+                  },ensure_ascii=False))
+          PY
