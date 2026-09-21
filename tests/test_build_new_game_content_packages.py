@@ -87,6 +87,20 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
             with self.assertRaisesRegex(gate.ContentHold, "progress_missing"):
                 b.build_package(research(), bad, root=Path(td))
 
+    def test_unknown_days_and_difficulty_are_explicit_not_fabricated(self):
+        value = proposal()
+        value["days"] = ""
+        value["daysSourceRefs"] = []
+        value["difficulty"] = ""
+        value["difficultySourceRefs"] = []
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            package = b.build_package(research(), value, root=root)
+            self.assertEqual(package["days"], "調査中")
+            self.assertEqual(package["difficulty"], "調査中")
+            validated = gate.validate(package, "新作ゲーム", root=root, require_guide_file=False)
+            self.assertEqual(validated["catalogPending"], ["days", "difficulty"])
+
     def test_catalog_summaries_require_source_refs(self):
         bad = proposal()
         bad["guide"].pop("overviewSourceRefs")
@@ -117,7 +131,9 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
 
             def synth(api_key, model, prompt):
                 if "Held Game" in prompt:
-                    return {"days": "", "difficulty": "", "guide": {}}
+                    value = proposal()
+                    value["progress"] = []
+                    return value
                 return proposal()
 
             old_status = b.STATUS
@@ -139,7 +155,7 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
             self.assertEqual(status["games"], 1)
             self.assertEqual(status["held"], 1)
             self.assertEqual(status["failed"], 0)
-            self.assertIn("synthesis_catalog_incomplete", status["holds"][0]["reason"])
+            self.assertIn("synthesis_progress_missing", status["holds"][0]["reason"])
             self.assertEqual(len(list(package_dir.glob("*.json"))), 1)
 
     def test_unexpected_synthesis_error_still_fails_stage(self):
