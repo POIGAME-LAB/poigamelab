@@ -167,15 +167,20 @@ def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher
 
 def point_site_lane(item):
     sources = []
+    seen = set()
+    independent_sites = set()
     for row in item.get("pointSiteEvidence") or []:
         if not isinstance(row, dict):
             continue
         sid = str(row.get("source") or "").strip()
         url = str(row.get("url") or "").strip()
-        if not sid or not safe_https(url):
+        if not sid or not safe_https(url) or (sid, url) in seen:
             continue
+        seen.add((sid, url))
+        independent_sites.add(sid)
+        identity = hashlib.sha256(url.encode("utf-8")).hexdigest()[:12]
         sources.append({
-            "id": f"pointSites:{sid}",
+            "id": f"pointSites:{sid}:{identity}",
             "url": url,
             "channel": "pointSites",
             "targetConfirmed": True,
@@ -183,7 +188,9 @@ def point_site_lane(item):
             "claim": f"{sid} の同一巡回で案件詳細を確認済み",
             "evidenceLevel": "same_scan_first_party_detail",
         })
-    if len({x["id"] for x in sources}) < 2:
+    # Multiple offers from one point site are useful evidence, but they never
+    # satisfy the independent two-site gate by themselves.
+    if len(independent_sites) < 2:
         raise ValueError("point_site_evidence_below_two")
     return {"searched": True, "complete": True, "searchCalls": 0, "sources": sources}
 
