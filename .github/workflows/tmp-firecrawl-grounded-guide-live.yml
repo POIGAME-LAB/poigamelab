@@ -1,0 +1,99 @@
+name: Firecrawl grounded guide live smoke
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.head_ref == 'test/firecrawl-grounded-guide-live-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Research current five with provider fallback
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Build grounded packages
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/build_new_game_content_packages.py
+          python scripts/render_new_game_guide.py
+
+      - name: Strict offer research for content-ready games
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+        run: python scripts/research_top_five_offers.py
+
+      - name: Verify live fallback result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          research=json.loads(Path('data/new_game_channel_research_status.json').read_text(encoding='utf-8'))
+          packages=json.loads(Path('data/new_game_content_package_status.json').read_text(encoding='utf-8'))
+          offers=json.loads(Path('data/top_five_offer_research_status.json').read_text(encoding='utf-8'))
+
+          package_rows=[]
+          for path in sorted(Path('data/new_game_content_packages').glob('*.json')):
+              d=json.loads(path.read_text(encoding='utf-8'))
+              package_rows.append({
+                  'game':d.get('game'),
+                  'days':d.get('days'),
+                  'difficulty':d.get('difficulty'),
+                  'sectionCount':len((d.get('guide') or {}).get('sections') or []),
+                  'progressCount':len(d.get('progress') or []),
+              })
+
+          result={
+              'research':research,
+              'packages':packages,
+              'packageRows':package_rows,
+              'strictOffers':{
+                  'selected':offers.get('selected'),
+                  'researched':offers.get('researched'),
+                  'adoptionReady':offers.get('adoptionReady'),
+                  'held':offers.get('held'),
+                  'results':[
+                      {
+                        'game':x.get('game'),
+                        'status':x.get('status'),
+                        'reasons':x.get('reasons'),
+                        'error':x.get('error'),
+                      }
+                      for x in (offers.get('results') or [])
+                  ],
+              },
+          }
+          print('FIRECRAWL_GROUNDED_GUIDE_RESULT='+json.dumps(result,ensure_ascii=False))
+
+          providers=set(research.get('searchProviders') or [])
+          reasons=set(research.get('fallbackReasons') or [])
+          if research.get('success') is not True:
+              raise SystemExit('research stage failed')
+          if 'firecrawl' not in providers:
+              raise SystemExit('Firecrawl fallback was not exercised')
+          if not any('tavily' in reason for reason in reasons):
+              raise SystemExit('Tavily fallback reason missing')
+          if packages.get('success') is not True:
+              raise SystemExit('package infrastructure failed')
+          if int(packages.get('games') or 0) <= 0:
+              raise SystemExit('no grounded package produced')
+          if int(packages.get('failed') or 0) != 0:
+              raise SystemExit('unexpected package failure')
+          PY
