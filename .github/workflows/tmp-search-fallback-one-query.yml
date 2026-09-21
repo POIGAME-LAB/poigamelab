@@ -1,0 +1,44 @@
+name: Search fallback one-query diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/search-fallback-one-query-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run one sanitized provider fallback query
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0,str(Path('scripts').resolve()))
+          import research_new_game_channels as r
+          try:
+              out=r._search('Sea Block 1010 ポイ活 攻略',os.environ.get('TAVILY_API_KEY',''),3)
+              print('SEARCH_FALLBACK_OK', {
+                  'provider':out.get('_provider'),
+                  'fallbackReason':out.get('_fallbackReason'),
+                  'results':len(out.get('results') or []),
+              })
+          except Exception as exc:
+              print('SEARCH_FALLBACK_ERROR', {
+                  'type':type(exc).__name__,
+                  'code':getattr(exc,'code',None),
+                  'message':str(exc)[:240],
+              })
+              raise
+          PY
