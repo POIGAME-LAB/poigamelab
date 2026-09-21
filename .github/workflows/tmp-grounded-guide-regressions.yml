@@ -1,0 +1,23 @@
+name: Grounded guide regressions
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    if: github.head_ref == 'test/grounded-guide-regressions-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check pytest
+      - name: Run grounded guide regressions
+        run: |
+          python -m pytest -q             tests/test_research_new_game_channels.py             tests/test_build_new_game_content_packages.py             tests/test_new_game_content_gate.py             tests/test_render_generated_guides.py             tests/test_research_top_five_offers.py             tests/test_new_game_research_workflow.py
