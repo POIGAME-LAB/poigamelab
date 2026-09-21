@@ -1,0 +1,96 @@
+name: Partial research live smoke v3
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.head_ref == 'test/partial-research-smoke-v3-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run targeted regressions
+        run: |
+          python -m pip install --disable-pip-version-check pytest
+          python -m pytest -q             tests/test_research_new_game_channels.py             tests/test_build_new_game_content_packages.py             tests/test_new_game_content_gate.py             tests/test_research_top_five_offers.py
+
+      - name: Replay current five-game multi-channel research
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Build packages with one bounded repair attempt
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/build_new_game_content_packages.py
+          python scripts/render_new_game_guide.py
+
+      - name: Continue strict offer research for ready games
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+        run: python scripts/research_top_five_offers.py
+
+      - name: Print smoke result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          channel=json.loads(Path('data/new_game_channel_research_status.json').read_text(encoding='utf-8'))
+          packages=json.loads(Path('data/new_game_content_package_status.json').read_text(encoding='utf-8'))
+          offers=json.loads(Path('data/top_five_offer_research_status.json').read_text(encoding='utf-8'))
+          package_rows=[]
+          for p in sorted(Path('data/new_game_content_packages').glob('*.json')):
+              data=json.loads(p.read_text(encoding='utf-8'))
+              package_rows.append({
+                'game':data.get('game'),
+                'days':data.get('days'),
+                'difficulty':data.get('difficulty'),
+                'publicationReady':data.get('publicationReady'),
+              })
+          result={
+            'channelResearch':channel,
+            'contentPackages':packages,
+            'packages':package_rows,
+            'strictOffers':{
+              'selected':offers.get('selected'),
+              'researched':offers.get('researched'),
+              'adoptionReady':offers.get('adoptionReady'),
+              'held':offers.get('held'),
+              'results':[
+                {
+                  'game':x.get('game'),
+                  'status':x.get('status'),
+                  'reasons':x.get('reasons'),
+                  'error':x.get('error'),
+                }
+                for x in (offers.get('results') or [])
+              ],
+            },
+          }
+          print('PARTIAL_RESEARCH_SMOKE_V3='+json.dumps(result,ensure_ascii=False))
+          if channel.get('games') != 5 or channel.get('completeGames') != 5:
+              raise SystemExit('five-game channel research did not complete')
+          if packages.get('success') is not True:
+              raise SystemExit('unexpected package infrastructure failure')
+          if int(packages.get('games') or 0) + int(packages.get('held') or 0) != 5:
+              raise SystemExit('package accounting mismatch')
+          if int(packages.get('failed') or 0) != 0:
+              raise SystemExit('unexpected package failure')
+          if int(packages.get('games') or 0) <= 0:
+              raise SystemExit('no content-ready package was produced')
+          if int(offers.get('selected') or 0) != 5 or int(offers.get('researched') or 0) != 5:
+              raise SystemExit('strict research did not process all five')
+          PY
