@@ -113,6 +113,21 @@ sources:
 ''' + json.dumps(compact, ensure_ascii=False)
 
 
+def repair_prompt(game, rows, reason):
+    return synthesis_prompt(game, rows) + f"""
+
+前回のJSONは検証で却下された。却下理由: {reason}
+同じsourcesだけを使ってJSONを1回だけ修正する。
+- sourceRefsは必ずsourcesに存在するsourceIdだけを使う。
+- overview/tipsは8文字以上、sectionsは3件以上で各textは20文字以上にする。
+- 数字を含む文は、その数字が参照先textに実際にある場合だけ使う。根拠がなければ数字を削る。
+- days/difficultyの根拠がない場合は「調査中」、対応SourceRefsは空配列にする。
+- progressはx/youtube/instagramの直接取得済みsourceだけを使う。存在しなければ捏造しない。
+- 根拠不足を埋めるための一般知識や推測は禁止。
+JSONのみ返す。
+"""
+
+
 def evidence_for_refs(rows, refs, error):
     if not isinstance(refs, list) or not refs or any(str(ref) not in rows for ref in refs):
         raise gate.ContentHold(error)
@@ -267,17 +282,41 @@ def run(research_dir=RESEARCH_DIR, package_dir=PACKAGE_DIR, root=ROOT,
             if research.get("phase") != "NEW_GAME_MULTI_CHANNEL_RESEARCH_V1" or research.get("complete") is not True:
                 raise gate.ContentHold("research_not_complete")
             rows = source_rows(research)
+            game = str(research.get("game") or "").strip()
+
             api_calls += 1
-            proposal = synthesizer(api_key, model, synthesis_prompt(research.get("game"), rows))
-            package = build_package(research, proposal, root=root)
+            proposal = synthesizer(api_key, model, synthesis_prompt(game, rows))
+            try:
+                package = build_package(research, proposal, root=root)
+            except gate.ContentHold as first_hold:
+                # A bounded second synthesis can repair formatting/grounding
+                # mistakes without widening the evidence set. If the evidence
+                # itself is insufficient, the second pass remains held.
+                api_calls += 1
+                repaired = synthesizer(
+                    api_key, model, repair_prompt(game, rows, str(first_hold)[:160])
+                )
+                try:
+                    package = build_package(research, repaired, root=root)
+                except gate.ContentHold as second_hold:
+                    holds.append({
+                        "file": path.name,
+                        "reason": str(second_hold)[:160],
+                        "initialReason": str(first_hold)[:160],
+                        "repairAttempted": True,
+                    })
+                    continue
+
             out = Path(package_dir) / f"{gate.safe_slug(package['game'])}.json"
             atomic_json(out, package)
             outputs.append(package)
         except gate.ContentHold as exc:
-            # Missing or insufficient factual evidence is an expected safe
-            # outcome for an individual game. Hold only that game and allow
-            # other content-ready candidates to continue through quarantine.
-            holds.append({"file": path.name, "reason": str(exc)[:160]})
+            # Research-level evidence holds cannot be repaired by synthesis.
+            holds.append({
+                "file": path.name,
+                "reason": str(exc)[:160],
+                "repairAttempted": False,
+            })
         except Exception as exc:
             # Infrastructure/API/programming failures are not evidence holds.
             # Keep failing the workflow so an operational problem is visible.
