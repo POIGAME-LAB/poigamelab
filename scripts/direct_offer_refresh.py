@@ -1566,12 +1566,17 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
         if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
             raise ValueError("unit_conversion_review_required")
 
-        title_pos = text.find(title)
-        if title_pos < 0:
-            raise ValueError("missing_offer_header")
-        target_pos = text.find("ポイント対象条件", title_pos)
+        # Hapitas can repeat the offer name in document metadata before
+        # site-wide campaign banners. Bind the reward header to the nearest
+        # occurrence of the actual offer title immediately before the offer's
+        # "ポイント対象条件" section, otherwise unrelated banner points (for
+        # example a 10,000pt securities campaign) can be mistaken for this ad.
+        target_pos = text.find("ポイント対象条件")
         if target_pos < 0:
             raise ValueError("missing_offer_header_boundary")
+        title_pos = text.rfind(title, 0, target_pos)
+        if title_pos < 0:
+            raise ValueError("missing_offer_header")
         header = text[title_pos:target_pos]
 
         displayed_matches = re.findall(
