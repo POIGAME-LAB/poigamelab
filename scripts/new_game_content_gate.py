@@ -123,11 +123,13 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
             raise ContentHold(f"guide_field_missing:{key}")
 
     guide_refs = set()
+    # New packages carry explicit summary refs. Older valid packages did not,
+    # so consume them when present without making them a migration requirement.
     for key in ("overviewSourceRefs", "tipsSourceRefs"):
         refs = guide.get(key)
-        if not isinstance(refs, list) or not refs:
-            raise ContentHold(f"guide_summary_evidence_missing:{key}")
-        if any(str(ref) not in all_sources for ref in refs):
+        if refs is None:
+            continue
+        if not isinstance(refs, list) or any(str(ref) not in all_sources for ref in refs):
             raise ContentHold(f"guide_summary_unknown_source:{key}")
         guide_refs.update(str(ref) for ref in refs)
 
