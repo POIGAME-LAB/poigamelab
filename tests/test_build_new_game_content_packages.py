@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -100,6 +101,76 @@ class TestBuildNewGameContentPackages(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             with self.assertRaisesRegex(gate.ContentHold, "overview_numeric_ungrounded"):
                 b.build_package(research(), bad, root=Path(td))
+
+    def test_evidence_hold_does_not_block_other_ready_games(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            research_dir = root / "research"
+            package_dir = root / "packages"
+            research_dir.mkdir()
+            good = research()
+            good["game"] = "Good Game"
+            held = research()
+            held["game"] = "Held Game"
+            (research_dir / "good.json").write_text(json.dumps(good, ensure_ascii=False), encoding="utf-8")
+            (research_dir / "held.json").write_text(json.dumps(held, ensure_ascii=False), encoding="utf-8")
+
+            def synth(api_key, model, prompt):
+                if "Held Game" in prompt:
+                    return {"days": "", "difficulty": "", "guide": {}}
+                return proposal()
+
+            old_status = b.STATUS
+            b.STATUS = root / "status.json"
+            try:
+                status = b.run(
+                    research_dir=research_dir,
+                    package_dir=package_dir,
+                    root=root,
+                    api_key="dummy",
+                    synthesizer=synth,
+                )
+            finally:
+                b.STATUS = old_status
+
+            self.assertTrue(status["success"])
+            self.assertFalse(status["allReady"])
+            self.assertEqual(status["selected"], 2)
+            self.assertEqual(status["games"], 1)
+            self.assertEqual(status["held"], 1)
+            self.assertEqual(status["failed"], 0)
+            self.assertIn("synthesis_catalog_incomplete", status["holds"][0]["reason"])
+            self.assertEqual(len(list(package_dir.glob("*.json"))), 1)
+
+    def test_unexpected_synthesis_error_still_fails_stage(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            research_dir = root / "research"
+            research_dir.mkdir()
+            (research_dir / "one.json").write_text(
+                json.dumps(research(), ensure_ascii=False), encoding="utf-8"
+            )
+
+            def broken(api_key, model, prompt):
+                raise RuntimeError("provider unavailable")
+
+            old_status = b.STATUS
+            b.STATUS = root / "status.json"
+            try:
+                status = b.run(
+                    research_dir=research_dir,
+                    package_dir=root / "packages",
+                    root=root,
+                    api_key="dummy",
+                    synthesizer=broken,
+                )
+            finally:
+                b.STATUS = old_status
+
+            self.assertFalse(status["success"])
+            self.assertEqual(status["held"], 0)
+            self.assertEqual(status["failed"], 1)
+            self.assertEqual(status["failures"][0]["error"], "RuntimeError")
 
     def test_svg_is_local_original_title_card(self):
         svg = b.neutral_svg("新作ゲーム")
