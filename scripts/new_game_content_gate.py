@@ -172,7 +172,10 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
 
     days = str(payload.get("days") or "").strip()
     difficulty = str(payload.get("difficulty") or "").strip()
-    if not days or days == "調査中" or not difficulty or difficulty == "調査中":
+    # "調査中" is an explicit unknown, not an unsupported factual claim.
+    # Keep rejecting blanks while allowing a grounded guide to publish without
+    # inventing an estimate that research could not establish.
+    if not days or not difficulty:
         raise ContentHold("catalog_fields_incomplete")
 
     return {
@@ -183,6 +186,10 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
         "tips": str(guide["tips"]).strip(),
         "days": days,
         "difficulty": difficulty,
+        "catalogPending": [
+            key for key, value in (("days", days), ("difficulty", difficulty))
+            if value == "調査中"
+        ],
         "sourceCount": len(all_sources),
         "progressCount": len(progress),
     }
