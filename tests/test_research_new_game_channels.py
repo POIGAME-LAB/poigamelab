@@ -1,8 +1,11 @@
 import json
+import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
+from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -114,6 +117,55 @@ class TestResearchNewGameChannels(unittest.TestCase):
         self.assertEqual(lane["searchCalls"], 2)
         self.assertEqual(lane["searchErrors"], 1)
         self.assertEqual(len(lane["sources"]), 1)
+
+    def test_tavily_plan_limit_falls_back_to_firecrawl_and_latches(self):
+        old_key = os.environ.get("FIRECRAWL_API_KEY")
+        old_blocked = r._TAVILY_QUOTA_BLOCKED
+        os.environ["FIRECRAWL_API_KEY"] = "fc-test"
+        r._TAVILY_QUOTA_BLOCKED = False
+        error = HTTPError("https://api.tavily.com/search", 432, "plan limit", None, None)
+        try:
+            with mock.patch(
+                "collect_guide_evidence.tavily_search", side_effect=error
+            ) as tavily, mock.patch.object(
+                r,
+                "firecrawl_search",
+                return_value={
+                    "results": [{"url": "https://example.com/new-game-guide"}],
+                    "_provider": "firecrawl",
+                },
+            ) as firecrawl:
+                first = r._search("first", "tvly-test", 3)
+                second = r._search("second", "tvly-test", 3)
+
+            self.assertEqual(first["_provider"], "firecrawl")
+            self.assertEqual(first["_fallbackReason"], "tavily_http_432")
+            self.assertEqual(second["_provider"], "firecrawl")
+            self.assertEqual(second["_fallbackReason"], "tavily_plan_limit")
+            self.assertEqual(tavily.call_count, 1)
+            self.assertEqual(firecrawl.call_count, 2)
+        finally:
+            r._TAVILY_QUOTA_BLOCKED = old_blocked
+            if old_key is None:
+                os.environ.pop("FIRECRAWL_API_KEY", None)
+            else:
+                os.environ["FIRECRAWL_API_KEY"] = old_key
+
+    def test_research_channel_records_fallback_provider(self):
+        def fallback(query, key, max_results):
+            return {
+                "results": [{"url": "https://example.com/new-game-guide"}],
+                "_provider": "firecrawl",
+                "_fallbackReason": "tavily_http_432",
+            }
+
+        lane = r.research_channel(
+            "新作ゲーム", "web", "q", "dummy",
+            searcher=fallback, fetcher=fetcher, sleeper=lambda _: None,
+        )
+        self.assertTrue(lane["complete"])
+        self.assertEqual(lane["searchProviders"], ["firecrawl"])
+        self.assertEqual(lane["fallbackReasons"], ["tavily_http_432"])
 
     def test_snippet_only_never_becomes_source(self):
         def search(query, key, max_results):
