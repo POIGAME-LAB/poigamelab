@@ -85,7 +85,7 @@ def synthesis_prompt(game, rows):
 以下のsourcesだけを根拠にする。一般知識・推測・検索スニペット・別ゲーム情報は禁止。
 事実を含む文には必ずsourceRefsを付ける。数字・レベル・日数・金額を出す場合、その数字が参照元text内に存在するものだけ使う。
 「みんなの進捗」は x / youtube / instagram の公開プレイヤー記録だけから作り、同一URLを重複させない。
-根拠が足りない項目は捏造せず空にする。difficulty も根拠がある表現だけにする。
+根拠が足りない場合、days と difficulty だけは捏造せず「調査中」とする。その場合対応するSourceRefsは空配列にする。guide本文やprogressは根拠がなければ捏造せず空にする。
 
 JSONのみ返す。
 形式:
@@ -123,18 +123,24 @@ def validate_synthesis(game, research, proposal):
     rows = source_rows(research)
     if not isinstance(proposal, dict):
         raise gate.ContentHold("synthesis_invalid")
-    days = str(proposal.get("days") or "").strip()
-    difficulty = str(proposal.get("difficulty") or "").strip()
+    days = str(proposal.get("days") or "").strip() or "調査中"
+    difficulty = str(proposal.get("difficulty") or "").strip() or "調査中"
     guide = proposal.get("guide")
-    if not days or days == "調査中" or not difficulty or difficulty == "調査中" or not isinstance(guide, dict):
-        raise gate.ContentHold("synthesis_catalog_incomplete")
+    if not isinstance(guide, dict):
+        raise gate.ContentHold("synthesis_guide_missing")
 
-    days_evidence = evidence_for_refs(rows, proposal.get("daysSourceRefs"), "synthesis_days_evidence_invalid")
-    difficulty_evidence = evidence_for_refs(rows, proposal.get("difficultySourceRefs"), "synthesis_difficulty_evidence_invalid")
-    if not numeric_grounded(days, days_evidence):
-        raise gate.ContentHold("synthesis_days_numeric_ungrounded")
-    if not numeric_grounded(difficulty, difficulty_evidence):
-        raise gate.ContentHold("synthesis_difficulty_numeric_ungrounded")
+    if days != "調査中":
+        days_evidence = evidence_for_refs(
+            rows, proposal.get("daysSourceRefs"), "synthesis_days_evidence_invalid"
+        )
+        if not numeric_grounded(days, days_evidence):
+            raise gate.ContentHold("synthesis_days_numeric_ungrounded")
+    if difficulty != "調査中":
+        difficulty_evidence = evidence_for_refs(
+            rows, proposal.get("difficultySourceRefs"), "synthesis_difficulty_evidence_invalid"
+        )
+        if not numeric_grounded(difficulty, difficulty_evidence):
+            raise gate.ContentHold("synthesis_difficulty_numeric_ungrounded")
 
     title = str(guide.get("title") or "").strip()
     overview = str(guide.get("overview") or "").strip()
