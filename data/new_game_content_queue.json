@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-20T18:51:10+00:00",
+  "checkedAt": "2026-09-21T20:27:07+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -12,7 +12,7 @@
     {
       "rank": 1,
       "game": "LUCK ROCK オンラインクレーンゲーム（ラックロック）",
-      "maxObservedRewardYen": 10000,
+      "maxObservedRewardYen": 33000,
       "confirmedSourceCount": 1,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
@@ -22,14 +22,14 @@
           "url": "https://hapitas.jp/item/detail/itemid/88185/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "hapitas",
           "url": "https://hapitas.jp/item/detail/itemid/88126/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "amefuri",
@@ -59,7 +59,7 @@
     {
       "rank": 2,
       "game": "Sea Block 1010",
-      "maxObservedRewardYen": 10000,
+      "maxObservedRewardYen": 33000,
       "confirmedSourceCount": 2,
       "listingSourceCount": 4,
       "verifiedRewardSourceCount": 1,
@@ -104,7 +104,7 @@
           "url": "https://hapitas.jp/item/detail/itemid/91053/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "amefuri",
@@ -115,14 +115,14 @@
         },
         {
           "source": "amefuri",
-          "url": "https://www.amefri.net/detail/id/129592",
+          "url": "https://www.amefri.net/detail/id/124013",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "amefuri",
-          "url": "https://www.amefri.net/detail/id/124013",
+          "url": "https://www.amefri.net/detail/id/129592",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -155,7 +155,7 @@
     {
       "rank": 3,
       "game": "さる山温泉旅館（温泉のリセット数31回(周回数31)到達）",
-      "maxObservedRewardYen": 10000,
+      "maxObservedRewardYen": 33000,
       "confirmedSourceCount": 1,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 1,
@@ -179,14 +179,14 @@
           "url": "https://hapitas.jp/item/detail/itemid/90405/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "hapitas",
           "url": "https://hapitas.jp/item/detail/itemid/90406/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "amefuri",
@@ -216,7 +216,7 @@
     {
       "rank": 4,
       "game": "インポッシブルカート（5−4ステージクリア）",
-      "maxObservedRewardYen": 10000,
+      "maxObservedRewardYen": 33000,
       "confirmedSourceCount": 1,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
@@ -226,7 +226,7 @@
           "url": "https://hapitas.jp/item/detail/itemid/87262/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "amefuri",
@@ -256,7 +256,7 @@
     {
       "rank": 5,
       "game": "カプコンネットキャッチャー カプとれ",
-      "maxObservedRewardYen": 10000,
+      "maxObservedRewardYen": 33000,
       "confirmedSourceCount": 1,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 1,
@@ -280,14 +280,14 @@
           "url": "https://hapitas.jp/item/detail/itemid/86374/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "hapitas",
           "url": "https://hapitas.jp/item/detail/itemid/86375/apn/navigation_category",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 10000
+          "rewardYen": 33000
         },
         {
           "source": "amefuri",
