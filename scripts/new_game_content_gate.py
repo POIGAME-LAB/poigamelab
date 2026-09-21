@@ -110,7 +110,7 @@ def validate(payload, game, root=ROOT, require_guide_file=True):
             if not source_id or source_id in source_ids or not safe_https(url):
                 raise ContentHold(f"research_source_identity_invalid:{channel}")
             source_ids.add(source_id)
-            all_sources[source_id] = source
+            all_sources[source_id] = {**source, "channel": channel}
     factual = [s for s in all_sources.values() if str(s.get("claim") or "").strip() and safe_https(s.get("url"))]
     if len(factual) < 2:
         raise ContentHold("insufficient_factual_research")
