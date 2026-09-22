@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-22",
+  "policy": "Only first-party documented base face-value rates may be used to convert raw site points for cross-site ranking. Unknown/ambiguous rates fail closed. Exchange bonuses, fees, campaigns and third-party rates are excluded.",
+  "sources": {
+    "moppy": {
+      "unit": "P",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified",
+      "evidenceUrl": "https://pc.moppy.jp/lp/index.php?type=service03",
+      "note": "Official Moppy page states 1 point = 1 yen."
+    },
+    "warau": {
+      "unit": "pt",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified_live_check_required",
+      "evidenceUrl": "https://www.warau.jp/help/qa/128/",
+      "note": "Nightly ranking already requires the current first-party rate page to confirm 1 point = 1 yen."
+    },
+    "chobirich": {
+      "unit": "chobirich-point",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified",
+      "evidenceUrl": "https://help.chobirich.com/0353093ce06c48718a8fdcf7cbdda4f4",
+      "effectiveFrom": "2026-06-22",
+      "note": "Rate changed in 2026. Official help now states 1 Chobirich point = 1 yen. Never use the historical 2pt=1JPY rate."
+    },
+    "coincome": {
+      "unit": "CIM",
+      "pointsPerYen": null,
+      "yenPerPoint": null,
+      "status": "direct_yen_equivalent_only",
+      "evidenceUrl": "https://cimcome.jp/",
+      "note": "Official site exposes yen-equivalent values. Ranking must use parser-verified displayedRewardYen, not infer a CIM conversion."
+    },
+    "mikoshi": {
+      "unit": "point",
+      "pointsPerYen": null,
+      "yenPerPoint": null,
+      "status": "unsupported",
+      "evidenceUrl": null,
+      "note": "No reviewed first-party base conversion contract in the repository. Raw points must not rank."
+    },
+    "gendama": {
+      "unit": "pt",
+      "pointsPerYen": null,
+      "yenPerPoint": null,
+      "status": "direct_yen_equivalent_only",
+      "evidenceUrl": null,
+      "note": "Current parser requires an adjacent first-party '(円相当)' value and uses displayedRewardYen. Raw pt is never converted heuristically."
+    },
+    "hapitas": {
+      "unit": "pt",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified",
+      "evidenceUrl": "https://hapitas.jp/special/beginner",
+      "note": "Official Hapitas page states 1pt = 1 yen."
+    },
+    "kurashiru_reward": {
+      "unit": "coin",
+      "pointsPerYen": 100,
+      "yenPerPoint": 0.01,
+      "status": "verified",
+      "evidenceUrl": "https://www.rewards.kurashiru.com/",
+      "note": "Official site states 100 coins = 1 yen equivalent. Exchange fees are not part of base face-value ranking."
+    },
+    "trima": {
+      "unit": "mile",
+      "pointsPerYen": 100,
+      "yenPerPoint": 0.01,
+      "status": "verified_face_value",
+      "evidenceUrl": "https://www.trip-mile.com/campaign202403-kisekae",
+      "note": "Official Trip-Mile page states 100 miles = 1 yen conversion and notes exchange fees. Use only as face-value comparison when a reviewed offer parser exists."
+    },
+    "point_income": {
+      "unit": "pt",
+      "pointsPerYen": null,
+      "yenPerPoint": null,
+      "status": "unsupported",
+      "evidenceUrl": null,
+      "note": "Do not infer a conversion until a current first-party rate page and reviewed parser contract are added."
+    },
+    "amefuri": {
+      "unit": "pt",
+      "pointsPerYen": 10,
+      "yenPerPoint": 0.1,
+      "status": "verified",
+      "evidenceUrl": "https://www.amefri.net/faq/post/24/57",
+      "note": "Official FAQ states 1pt = 0.1 yen / 10pt = 1 yen."
+    },
+    "point_town": {
+      "unit": "PointTown-point",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified",
+      "evidenceUrl": "https://support.pointtown.com/hc/ja/articles/360000015002",
+      "effectiveFrom": "2022-07-27",
+      "note": "Official FAQ states 1 point = 1 yen. Coins are separate: 100 coins = 1 point."
+    },
+    "ec_navi": {
+      "unit": "pt",
+      "pointsPerYen": 10,
+      "yenPerPoint": 0.1,
+      "status": "verified",
+      "evidenceUrl": "https://ecnavi.jp/help/point/point_info/41/",
+      "note": "Official help states 1 point = 0.1 yen equivalent."
+    },
+    "nifty_point": {
+      "unit": "pt",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified",
+      "evidenceUrl": "https://api.point.nifty.com/questions/1",
+      "note": "Official FAQ states 1 point = 1 yen equivalent."
+    },
+    "gmo_point": {
+      "unit": "point",
+      "pointsPerYen": null,
+      "yenPerPoint": null,
+      "status": "unsupported",
+      "evidenceUrl": null,
+      "note": "Do not infer a conversion until a current first-party rate page and reviewed parser contract are added."
+    },
+    "powl": {
+      "unit": "pt",
+      "pointsPerYen": null,
+      "yenPerPoint": null,
+      "status": "unsupported",
+      "evidenceUrl": null,
+      "note": "Do not infer a conversion until a current first-party rate page and reviewed parser contract are added."
+    }
+  }
+}
