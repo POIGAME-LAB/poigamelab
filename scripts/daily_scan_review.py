@@ -20,8 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # across 136 two-site game groups before Moppy recovery. Keep a bounded margin
 # above that observed surface while remaining well inside the 90-minute job cap.
 MAX_DETAILS = 640
-# Every rank-eligible game has offers from at least two independent source
-# families, so this still bounds the maximum number of groups independently.
+# Independent safety budget, not a minimum number of sources per game.
 MAX_GROUPS = MAX_DETAILS // 2
 
 
@@ -82,6 +81,11 @@ def _pointtown_explicit_yen(evidence):
 def explicit_yen(evidence, warau_rate_confirmed=False):
     """Do not equate raw pt/P with yen or sum OS/site alternative offers."""
     if evidence.get("state") != "parsed" or evidence.get("downstreamTermsRequired"):
+        return None
+    # This legacy contract binds points only by a text interval, not an offer
+    # reward DOM. Do not promote its historical "parsed" flag to verification.
+    # A future structurally verified parser needs a new, audited contract.
+    if evidence.get("parserVersion") == "hapitas-detail-review-v1":
         return None
     if (warau_rate_confirmed and evidence.get("parserVersion") == "warau-stepup-v1"
             and evidence.get("rewardUnit") == "pt"):
@@ -155,8 +159,9 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     for group in groups.values():
         group["offers"] = {identity: offer for identity, offer in group["offers"].items()
                            if len(owners[identity]) == 1}
-    eligible = [g for g in groups.values()
-                if len({family for family, _ in g["offers"]}) >= 2]
+    two_site_groups = sum(len({family for family, _ in g["offers"]}) >= 2
+                          for g in groups.values())
+    eligible = [g for g in groups.values() if g["offers"]]
     eligible.sort(key=lambda g: (-len({f for f, _ in g["offers"]}), g["game"]))
     warau_rate_confirmed = False
     rate_url = "https://www.warau.jp/help/qa/128/"
@@ -237,7 +242,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     return {"phase": "DAILY_SAME_SCAN_REVIEW_V1", "checkedAt": checked_at,
             "apiCalls": 0, "publicationWrites": 0, "publishedGames": 0,
             "warauBaseRate": {"confirmed": warau_rate_confirmed, "sourceUrl": rate_url},
-            "listingGroups": len(groups), "twoSiteListingGroups": len(eligible),
+            "listingGroups": len(groups), "twoSiteListingGroups": two_site_groups,
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
             "groupLimitReached": group_limit,
             "detailLimitReached": detail_limit,
