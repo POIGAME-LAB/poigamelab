@@ -41,6 +41,19 @@ def test_actual_parser_to_publication_updates_amount_conditions_and_jst_date(war
     assert same == updated and again["updatedRows"] == 0
 
 
+@pytest.mark.parametrize("location", ["item", "sourceEvidence", "evidence"])
+def test_valid_snapshot_with_explicit_publication_veto_never_updates(warau_markup, location):
+    row, item = sample(warau_markup)
+    if location == "item":
+        item["publicationAuthorized"] = False
+    else:
+        item.setdefault(location, {})["publicationAuthorized"] = False
+    updated, report = publication.prepare([row], [item], SOURCES, NOW, POLICY, True)
+    assert updated == [row]
+    assert report["rewardChanges"] == report["updatedRows"] == 0
+    assert report["decisions"][0]["holdReason"] == "no_current_evidence"
+
+
 @pytest.mark.parametrize("change", ["stale", "rate", "os", "fingerprint", "total", "terms", "paid", "duplicate", "empty", "unverified", "disabled"])
 def test_invalid_snapshot_keeps_old_row(warau_markup, change):
     row, item = sample(warau_markup)
