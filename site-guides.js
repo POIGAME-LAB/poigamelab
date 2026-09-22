@@ -108,5 +108,20 @@ window.POIGAME_GUIDES = Object.freeze({
     links: [
       { label: "コイン攻略を読む →", href: "magic-jigsaw-puzzles-guide.html" }
     ]
+  },
+  "Sea Block 1010": {
+    title: "Sea Block 1010 ポイ活攻略",
+    description: "レベル15案件の条件とゲーム仕様から、盤面管理・ライン消去・ブースターの使い方を整理しています。",
+    links: [{ label: "レベル15攻略を読む →", href: "sea-block-1010-guide.html" }]
+  },
+  "さる山温泉旅館": {
+    title: "さる山温泉旅館 ポイ活攻略",
+    description: "温泉リセット31回案件の条件と公開プレイヤー記録から、周回時の注意点を整理しています。",
+    links: [{ label: "31周攻略を読む →", href: "saruyama-onsen-guide.html" }]
+  },
+  "インポッシブルカート": {
+    title: "インポッシブルカート ポイ活攻略",
+    description: "5-4ステージクリア案件について、操作と難所の進め方を整理しています。",
+    links: [{ label: "5-4攻略を読む →", href: "impossible-kart-guide.html" }]
   }
 });
