@@ -199,7 +199,13 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             reasons.insert(0, "partial_yen_conversion")
         if len(details) < len(group["offers"]):
             reasons.insert(0, "detail_budget_reached")
-        ranking_eligible = len(listing_sources) >= 2 and bool(amounts)
+        # Fail closed: a single parser/source must never determine a new game's
+        # published/ranked reward. This specifically prevents a malformed detail
+        # page (for example a referral/promotional pt amount in the header) from
+        # becoming the candidate's "highest reward".
+        ranking_eligible = len(listing_sources) >= 2 and len(verified_reward_sources) >= 2 and bool(amounts)
+        if len(verified_reward_sources) < 2:
+            reasons.insert(0, "fewer_than_two_verified_reward_sources")
         results.append({"game": group["game"], "confirmedSourceCount": len(confirmed),
                         "listingSourceCount": len(listing_sources),
                         "verifiedRewardSourceCount": len(verified_reward_sources),
