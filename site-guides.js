@@ -109,6 +109,11 @@ window.POIGAME_GUIDES = Object.freeze({
       { label: "コイン攻略を読む →", href: "magic-jigsaw-puzzles-guide.html" }
     ]
   },
+  "天地英雄伝": {
+    title: "天地英雄伝 ポイ活攻略",
+    description: "30日StepUpの序盤到達ペースと、装備・戦玉・進化薬・暗殺の計、後半ステップの判断をまとめています。",
+    links: [{ label: "StepUp攻略を読む →", href: "tenchi-eiyuden-guide.html" }]
+  },
   "Sea Block 1010": {
     title: "Sea Block 1010 ポイ活攻略",
     description: "レベル15案件の条件とゲーム仕様から、盤面管理・ライン消去・ブースターの使い方を整理しています。",

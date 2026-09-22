@@ -31,6 +31,7 @@ ROOT_FILES = (
     "klondike-adventures-guide.html",
     "merge-help-guide.html",
     "magic-jigsaw-puzzles-guide.html",
+    "tenchi-eiyuden-guide.html",
     "sea-block-1010-guide.html",
     "saruyama-onsen-guide.html",
     "impossible-kart-guide.html",
