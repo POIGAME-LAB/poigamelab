@@ -101,6 +101,20 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
     return value if type(value) is int and value > 0 else None
 
 
+def load_point_rate_registry(path=ROOT / "config" / "point_value_rates.json"):
+    """Central audit registry for source point scales."""
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {}
+    return payload.get("sources") or {}
+
+
+def point_rate_policy(source_id, registry=None):
+    rates = registry if registry is not None else load_point_rate_registry()
+    return rates.get(str(source_id or ""), {"status": "unsupported", "yenPerPoint": None})
+
+
 def research_queries(game):
     return {"web": f'"{game}" ポイ活 攻略 達成 撤退',
             "x": f'site:x.com "{game}" ポイ活 日目',
