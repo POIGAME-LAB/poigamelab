@@ -1,0 +1,44 @@
+name: Temporary top-10 new-game scan
+on:
+  push:
+    branches: [tmp/top10-new-game-scan-20260922]
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore scan state from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          d="$(mktemp -d)"
+          if aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${d}/" --recursive --endpoint-url "${R2_ENDPOINT}" --only-show-errors; then
+            for name in new_game_candidate_queue.json new_game_candidate_history.json existing_game_candidate_queue.json comparison_candidate_queue.json comparison_review_queue.json comparison_refresh_status.json; do
+              if [ -f "${d}/${name}.gz" ]; then gzip -dc "${d}/${name}.gz" > "data/${name}"; fi
+            done
+          fi
+      - name: Run latest safe scan
+        run: python scripts/daily_scan_review.py
+      - name: Print verified top 10
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("data/daily_scan_review.json").read_text())
+          rows=[r for r in d.get("results",[]) if r.get("candidateEligible") and isinstance(r.get("maxObservedRewardYen"),int)]
+          rows.sort(key=lambda r:(-r["maxObservedRewardYen"],r.get("game","")))
+          out=[{"rank":i+1,"game":r.get("game"),"yen":r.get("maxObservedRewardYen"),"verifiedRewardSourceCount":r.get("verifiedRewardSourceCount"),"sources":[x.get("source") for x in r.get("details",[]) if isinstance(x.get("rewardYen"),int) and x.get("rewardYen")>0]} for i,r in enumerate(rows[:10])]
+          print("RANKING_COMPLETE",d.get("rankingComplete"))
+          print("TOP10_JSON",json.dumps(out,ensure_ascii=False))
+          PY
