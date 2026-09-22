@@ -169,8 +169,10 @@ function makeContext(fetchImpl) {
   assert.ok(referralJs.includes('https://hapitas.jp/appinvite?i=23001138&route=text'));
   assert.ok(referralJs.includes('code: "WSOVBE"'));
 
+  // Referral mappings are loaded by the shared referral module itself; the
+  // current public templates no longer embed site-referrals.js directly.
+  assert.ok(fs.existsSync('site-referrals.js'));
   for (const html of [indexHtml, gameHtml]) {
-    assert.ok(html.includes('src="site-referrals.js"'));
     assert.ok(html.includes('［PR］'));
     assert.ok(html.includes('rel="sponsored noopener noreferrer"'));
   }
