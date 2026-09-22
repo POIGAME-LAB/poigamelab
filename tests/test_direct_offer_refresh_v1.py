@@ -3817,3 +3817,20 @@ def test_source_health_fetch_errors_never_count_complete():
     assert 'source_errors > 0' in block[:800]
     assert 'catalog_complete = (' in block[:1200]
     assert 'source_errors == 0' in block[:1200]
+
+
+def test_hapitas_parser_rejects_multiple_distinct_header_rewards():
+    raw = _hapitas_fixture(display='9,351').replace(
+        '<section id="conditions">',
+        '<div>キャンペーン 33,000pt</div><section id="conditions">'
+    )
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'ambiguous_displayed_reward',
+    }
