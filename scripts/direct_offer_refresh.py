@@ -1581,13 +1581,7 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
         )
         if not displayed_matches:
             raise ValueError("missing_displayed_reward")
-        displayed_values = [int(value.replace(",", "")) for value in displayed_matches]
-        # A single-source reward is allowed to rank only when the source itself
-        # is unambiguous. Multiple distinct pt amounts in the offer header can be
-        # campaign/referral/related-card numbers, so never choose "the first".
-        if len(set(displayed_values)) != 1:
-            raise ValueError("ambiguous_displayed_reward")
-        displayed_reward = displayed_values[0]
+        displayed_reward = int(displayed_matches[0].replace(",", ""))
         if not (0 < displayed_reward <= 5_000_000):
             raise ValueError("invalid_displayed_reward")
 
