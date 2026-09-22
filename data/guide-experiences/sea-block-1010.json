@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "game": "Sea Block 1010",
+  "updatedAt": "2026-09-22",
+  "title": "実例：プレイヤーの到達ペース",
+  "intro": "公開されている利用者レビュー・実プレイ攻略から、レベル15までの到達記録をプレイヤーごとに整理しています。平均ではなく実例として見てください。",
+  "notice": "※レベル15到達には累積約105万点が必要です。広告量や1日のプレイ時間で所要日数は大きく変わります。",
+  "footnote": "到達日数・プレイ時間は広告表示、プレイ速度、開始時期などで変わります。確認できた個人記録をそのまま平均値として扱わないでください。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "7日でLv15達成",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "3/8 開始"
+        },
+        {
+          "day": 7,
+          "level": 15,
+          "label": "Lv15達成",
+          "detail": "3/15"
+        }
+      ],
+      "note": "ワラウ利用者の記録。広告に使う時間が長かったという体験談あり。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186378"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "約10日でLv15達成",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "day": 10,
+          "level": 15,
+          "label": "Lv15達成"
+        }
+      ],
+      "note": "ワラウ利用者の記録。ゲーム自体は難しくない一方、広告で集中が切れやすかったという体験談。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186378"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "13日目にLv15達成",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "day": 13,
+          "level": 15,
+          "label": "Lv15達成",
+          "detail": "累積約105万点"
+        }
+      ],
+      "note": "平均約1時間/日で進めた実プレイ記録。1分あたり1,574点の計測例も掲載。",
+      "sources": [
+        "https://tanakaatupoint.hatenablog.com/entry/sea-block-1010"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "約20時間で約100万点",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "label": "約100万点",
+          "detail": "操作約10時間＋広告も同程度"
+        }
+      ],
+      "note": "日数ではなく拘束時間の参考例。ゲーム操作と広告に関わる時間がそれぞれ約10時間という記録。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186378"
+      ]
+    }
+  ]
+}
