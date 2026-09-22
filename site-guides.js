@@ -1,4 +1,9 @@
 window.POIGAME_GUIDES = Object.freeze({
+  "High Roller Vegas": {
+    title: "High Roller Vegas ポイ活攻略",
+    description: "運営者の実プレイをもとに、SUPER25・低BET・EXPブースト・TIME BONUS・サブスマホ運用をまとめています。",
+    links: [{ label: "実プレイ攻略を読む →", href: "highroller-vegas-guide.html" }]
+  },
   "Township": {
     title: "Township ポイ活攻略",
     description: " ",
