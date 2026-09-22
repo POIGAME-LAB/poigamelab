@@ -64,6 +64,19 @@ def test_renderer_then_artifact_inclusion_makes_reachable_guide():
         assert not (artifact / "data/new_game_content_packages").exists()
 
 
+def test_renderer_omits_empty_player_progress_section():
+    with tempfile.TemporaryDirectory() as td:
+        root, _ = setup_root(td, adopted=True)
+        path = root / "data/new_game_content_packages/p.json"
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["progress"] = []
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        renderer.render_game("New Game", root / "data/new_game_content_packages", root)
+        html = (root / "new-game-guide.html").read_text(encoding="utf-8")
+        assert "みんなの進捗" not in html
+        assert "調査した出典" in html
+
+
 def test_unadopted_package_is_not_exposed():
     with tempfile.TemporaryDirectory() as td:
         root, artifact = setup_root(td, adopted=False)
