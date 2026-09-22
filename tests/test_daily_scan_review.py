@@ -35,11 +35,13 @@ def scan(items, monkeypatch, inspector=inspect, registry=None, **kwargs):
                              fetcher=lambda *args: ("fixture", args[0]), **kwargs)
 
 
-def test_single_site_never_qualifies_even_with_many_urls(monkeypatch):
+def test_single_verified_site_qualifies_without_publication_permission(monkeypatch):
     items = candidates(sites=("a",)) * 10
     result = scan(items, monkeypatch)
-    assert result["reviewedGroups"] == result["detailInspectionCalls"] == 0
-    assert result["topFiveReviewCandidates"] == []
+    assert result["reviewedGroups"] == result["detailInspectionCalls"] == 1
+    assert result["twoSiteListingGroups"] == 0
+    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
+    assert result["results"][0]["publicationAuthorized"] is False
 
 
 def test_same_domain_with_two_source_ids_is_not_two_sites(monkeypatch):
@@ -160,10 +162,10 @@ def test_detail_budget_is_explicit_and_partial_group_not_ranked(monkeypatch):
 def test_disabled_source_and_unsafe_urls_are_not_requested(monkeypatch):
     registry = sources()
     registry["b"]["scheduled_fetch_enabled"] = False
-    assert scan(candidates(), monkeypatch, registry=registry)["detailInspectionCalls"] == 0
+    assert scan(candidates(), monkeypatch, registry=registry)["detailInspectionCalls"] == 1
     items = candidates()
     items[1]["firstPartyCandidateUrl"] = "https://user:pass@b.example/detail?id=1"
-    assert scan(items, monkeypatch)["detailInspectionCalls"] == 0
+    assert scan(items, monkeypatch)["detailInspectionCalls"] == 1
 
 
 def setup_refresh(tmp_path, monkeypatch, count=7):
