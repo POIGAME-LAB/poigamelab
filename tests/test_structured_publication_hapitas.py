@@ -16,7 +16,7 @@ def markup(reward="12,345"):
 <html><head><link rel="canonical" href="{URL}"></head><body>
 <h1>テストゲーム Android</h1>
 <div>1ポイント=1円</div>
-<div>テストゲーム Android {reward} pt ポイント対象条件
+<div>{reward} pt ポイント対象条件
 ポイント獲得条件 新規アプリインストール後に指定条件を達成
 成果受付期限 60日以内
 ハピタスご利用前に必ずご確認ください</div>
@@ -51,18 +51,16 @@ def sample():
     return row, item
 
 
-def test_hapitas_verified_reward_updates_only_reward_metadata():
+def test_hapitas_review_only_reward_never_updates_publication():
     row, item = sample()
     updated, report = publication.prepare([row], [item], SOURCES, NOW, POLICY)
-    assert updated[0]["reward"] == "12345"
+    assert updated == [row]
     assert updated[0]["condition"] == row["condition"]
     assert updated[0]["deadline"] == row["deadline"]
     assert updated[0]["type"] == row["type"]
     assert updated[0]["platform"] == "Android"
-    assert updated[0]["updatedAt"] == "2026-09-16"
-    assert report["rewardChanges"] == 1
-    assert report["updatedRows"] == 1
-    assert report["decisions"][0]["publicationMode"] == "reward_only"
+    assert report["rewardChanges"] == 0
+    assert report["updatedRows"] == 0
 
 
 def test_hapitas_tampered_fingerprint_holds_old_row():
