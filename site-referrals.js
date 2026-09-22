@@ -81,9 +81,16 @@
     })
   });
 
+  const referralAliases = Object.freeze({
+    pointtown: "point_town",
+    ecnavi: "ec_navi",
+    ecnav: "ec_navi"
+  });
+
   function get(siteId) {
     const key = String(siteId || "").trim().toLowerCase();
-    return referrals[key] || null;
+    const normalizedKey = referralAliases[key] || key;
+    return referrals[normalizedKey] || null;
   }
 
   window.POIGAME_REFERRALS = Object.freeze({
