@@ -1,0 +1,75 @@
+name: Diagnose Moppy and Powl first page
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/moppy-powl-first-page-20260920'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect Moppy browser-like Ajax session
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          from http.cookiejar import CookieJar
+          from urllib.request import Request, build_opener, HTTPCookieProcessor
+          sys.path.insert(0, str(Path("scripts").resolve()))
+          import direct_offer_refresh as d
+
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          m=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          shell=m["direct_listing_urls"][0]
+          ajax="https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=0&current_page=1&af_sorter=1&exclude_purchased=true"
+          ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36"
+
+          out=[]
+
+          # Variant A: browser-like Ajax headers, no bootstrap cookies.
+          try:
+              opener=build_opener(d.FirstPartyRedirectHandler(m))
+              req=Request(ajax,headers={
+                  "User-Agent":ua,
+                  "Accept":"text/html, */*; q=0.01",
+                  "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+                  "Referer":shell,
+                  "X-Requested-With":"XMLHttpRequest",
+              })
+              with opener.open(req,timeout=15) as resp:
+                  raw=resp.read(1200001).decode(resp.headers.get_content_charset() or "utf-8",errors="replace")
+              out.append({"variant":"headers_only","bytes":len(raw.encode()),"identityCount":len(d.listing_detail_identity_signature(raw,ajax,m,limit=5000)),"prefix":d.visible_text(raw)[:220]})
+          except Exception as exc:
+              out.append({"variant":"headers_only","error":type(exc).__name__,"category":d.summarize_fetch_error(exc)})
+
+          # Variant B: load category page first, preserve cookies, then Ajax.
+          try:
+              jar=CookieJar()
+              opener=build_opener(HTTPCookieProcessor(jar),d.FirstPartyRedirectHandler(m))
+              shell_req=Request(shell,headers={"User-Agent":ua,"Accept":"text/html,application/xhtml+xml","Accept-Language":"ja,en-US;q=0.7"})
+              with opener.open(shell_req,timeout=15) as resp:
+                  resp.read(1200001)
+              ajax_req=Request(ajax,headers={
+                  "User-Agent":ua,
+                  "Accept":"text/html, */*; q=0.01",
+                  "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+                  "Referer":shell,
+                  "X-Requested-With":"XMLHttpRequest",
+              })
+              with opener.open(ajax_req,timeout=15) as resp:
+                  raw=resp.read(1200001).decode(resp.headers.get_content_charset() or "utf-8",errors="replace")
+              out.append({"variant":"cookie_bootstrap","cookieCount":len(jar),"bytes":len(raw.encode()),"identityCount":len(d.listing_detail_identity_signature(raw,ajax,m,limit=5000)),"prefix":d.visible_text(raw)[:220]})
+          except Exception as exc:
+              out.append({"variant":"cookie_bootstrap","error":type(exc).__name__,"category":d.summarize_fetch_error(exc)})
+
+          print("MOPPY_SESSION_DIAG="+json.dumps(out,ensure_ascii=False))
+          PY
