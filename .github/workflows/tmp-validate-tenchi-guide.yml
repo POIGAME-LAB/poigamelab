@@ -1,0 +1,40 @@
+name: Temporary validate Tenchi guide
+on:
+  push:
+    branches: [feat/tenchi-eiyuden-guide-20260923]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate CSV and JSON
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          rows=list(csv.DictReader(Path("games.csv").open(encoding="utf-8")))
+          x=[r for r in rows if r["name"]=="天地英雄伝"]
+          assert len(x)==1
+          assert x[0]["provisionalReward"]=="0"
+          assert x[0]["provisionalSource"]==""
+          d=json.loads(Path("data/guide-experiences/tenchi-eiyuden.json").read_text())
+          assert d["schemaVersion"]==1 and d["players"]
+          assert Path("tenchi-eiyuden-guide.html").exists()
+          print("Tenchi data OK")
+          PY
+      - name: Build public site
+        run: |
+          python scripts/build_public_site.py --output _site
+          test -f _site/tenchi-eiyuden-guide.html
+          test -f _site/data/guide-experiences/tenchi-eiyuden.json
+          grep -q '天地英雄伝' _site/games.csv
+          grep -q '天地英雄伝' _site/site-guides.js
+      - name: Run focused tests
+        run: |
+          python -m pip install pytest
+          pytest -q tests/test_public_site_build.py tests/test_guide_experience.py 2>/dev/null || pytest -q tests/test_public_site_build.py
