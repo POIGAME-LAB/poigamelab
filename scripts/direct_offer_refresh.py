@@ -1562,13 +1562,24 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
         if not target_present(title, aliases):
             raise ValueError("offer_title_mismatch")
 
-        text = visible_text(raw)
+        # Scope visible text to <body>.  Using the full document is unsafe:
+        # <title> can repeat the game name before the real <h1>, causing a
+        # campaign/referral pt value in <head>/page chrome to be mistaken for
+        # this offer's reward.
+        bodies = doc.find(tag="body")
+        if len(bodies) != 1:
+            raise ValueError("missing_or_ambiguous_offer_body")
+        text = evidence_text(bodies[0])
         if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
             raise ValueError("unit_conversion_review_required")
 
-        title_pos = text.find(title)
-        if title_pos < 0:
-            raise ValueError("missing_offer_header")
+        # The h1 text must occur exactly once in the body text used for reward
+        # scoping.  Ambiguous repeated headings fail closed instead of choosing
+        # an arbitrary earlier occurrence.
+        title_hits = [m.start() for m in re.finditer(re.escape(title), text)]
+        if len(title_hits) != 1:
+            raise ValueError("ambiguous_offer_header")
+        title_pos = title_hits[0]
         target_pos = text.find("ポイント対象条件", title_pos)
         if target_pos < 0:
             raise ValueError("missing_offer_header_boundary")

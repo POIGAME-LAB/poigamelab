@@ -3702,6 +3702,22 @@ def test_hapitas_multistep_parser_cross_checks_step_sum():
     assert evidence['publicationAuthorized'] is False
 
 
+def test_hapitas_parser_ignores_head_title_and_unrelated_head_campaign_reward():
+    raw = _hapitas_fixture(display='9,351', related='12,000').replace(
+        '<html><head>',
+        '<html><head><title>Mistplay 33,000pt キャンペーン</title>'
+    )
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['verifiedCurrentRewardPoints'] == 9351
+    assert evidence['verifiedCurrentRewardYen'] == 9351
+
+
 def test_hapitas_parser_uses_first_header_reward_not_related_os_reward():
     raw = _hapitas_fixture(display='9,351', related='12,000')
     evidence = direct.inspect_hapitas_offer(
