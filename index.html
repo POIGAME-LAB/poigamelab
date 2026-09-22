@@ -982,6 +982,9 @@
       const safeReferralUrl = referral
         ? POIGAME_DATA.safeHttpUrl(referral.url)
         : "";
+      const referralCode = referral
+        ? String(referral.code || "").trim()
+        : "";
 
       const card = document.createElement("article");
       card.className = "game-card";
@@ -1076,8 +1079,11 @@
         >
           このポイントサイトに登録［PR］
         </a>
-        <small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referral.code)}</small>
       `
+      : ""
+    }
+    ${referralCode
+      ? `<small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referralCode)}</small>`
       : ""
     }
   </div>
