@@ -326,3 +326,11 @@ def test_default_budget_keeps_margin_above_observed_live_surface():
     # inspections before Moppy recovery; the bounded cap keeps explicit margin.
     assert daily.MAX_DETAILS >= 558
     assert daily.MAX_DETAILS == 640
+
+
+def test_nightly_rate_policy_is_fail_closed_for_unknown_sources():
+    assert daily.point_rate_policy("moppy")["yenPerPoint"] == 1
+    assert daily.point_rate_policy("amefuri")["yenPerPoint"] == 0.1
+    assert daily.point_rate_policy("kurashiru_reward")["yenPerPoint"] == 0.01
+    assert daily.point_rate_policy("powl")["yenPerPoint"] is None
+    assert daily.point_rate_policy("not-a-site")["status"] == "unsupported"
