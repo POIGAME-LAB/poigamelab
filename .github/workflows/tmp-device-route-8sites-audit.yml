@@ -44,3 +44,19 @@ jobs:
             out.append(row)
           print("TRANSPORT_AUDIT_JSON="+json.dumps(out,ensure_ascii=False))
           PY
+      - name: Print latest archived discovery health
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/comparison_refresh_status.json.gz" "$RUNNER_TEMP/status.gz" --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          gzip -dc "$RUNNER_TEMP/status.gz" > "$RUNNER_TEMP/status.json"
+          python - <<'PY'
+          import json,os
+          d=json.load(open(os.environ['RUNNER_TEMP']+'/status.json'))
+          print('ARCHIVED_CHECKED_AT',d.get('checkedAt'))
+          print('DISCOVERY_HEALTH_JSON='+json.dumps((d.get('newGameDiscovery') or {}).get('sourceResults') or [],ensure_ascii=False))
+          PY
