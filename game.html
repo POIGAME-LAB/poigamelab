@@ -1319,13 +1319,20 @@
             const safeReferralUrl = referral
               ? POIGAME_DATA.safeHttpUrl(referral.url)
               : "";
-            const referralMarkup = safeReferralUrl
+            const referralCode = referral
+              ? String(referral.code || "").trim()
+              : "";
+            const referralMarkup = safeReferralUrl || referralCode
               ? `
                   <div class="referral-stack">
-                    <a href="${safeReferralUrl}" target="_blank" rel="sponsored noopener noreferrer" class="referral-link">
-                      このサイトに登録［PR］
-                    </a>
-                    <small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referral.code)}</small>
+                    ${safeReferralUrl
+                      ? `<a href="${safeReferralUrl}" target="_blank" rel="sponsored noopener noreferrer" class="referral-link">
+                          このサイトに登録［PR］
+                        </a>`
+                      : ""}
+                    ${referralCode
+                      ? `<small class="referral-code">紹介コード：${POIGAME_DATA.escapeHtml(referralCode)}</small>`
+                      : ""}
                   </div>
                 `
               : "";
