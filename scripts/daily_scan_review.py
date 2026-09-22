@@ -213,13 +213,14 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             reasons.insert(0, "partial_yen_conversion")
         if len(details) < len(group["offers"]):
             reasons.insert(0, "detail_budget_reached")
-        # Fail closed: a single parser/source must never determine a new game's
-        # published/ranked reward. This specifically prevents a malformed detail
-        # page (for example a referral/promotional pt amount in the header) from
-        # becoming the candidate's "highest reward".
-        ranking_eligible = len(listing_sources) >= 2 and len(verified_reward_sources) >= 2 and bool(amounts)
-        if len(verified_reward_sources) < 2:
-            reasons.insert(0, "fewer_than_two_verified_reward_sources")
+        # A single first-party source may rank a game when its detail parser has
+        # strictly verified the offer identity/terms and produced an explicit JPY
+        # amount under that source's conversion contract. A second source is useful
+        # corroboration, but is not required: requiring two made legitimate
+        # one-source games disappear from nightly discovery.
+        ranking_eligible = bool(verified_reward_sources) and bool(amounts)
+        if not verified_reward_sources:
+            reasons.insert(0, "no_verified_reward_source")
         results.append({"game": group["game"], "confirmedSourceCount": len(confirmed),
                         "listingSourceCount": len(listing_sources),
                         "verifiedRewardSourceCount": len(verified_reward_sources),
