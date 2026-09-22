@@ -1,0 +1,46 @@
+name: Temporary 8-site transport audit
+on:
+  push:
+    branches: [audit/device-route-8sites-20260923]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Probe configured first-party public surfaces
+        run: |
+          python - <<'PY'
+          import json
+          from http.cookiejar import CookieJar
+          from urllib.request import build_opener, HTTPCookieProcessor
+          import scripts.direct_offer_refresh as d
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          ids=["moppy","warau","chobirich","coincome","mikoshi","gendama","hapitas","kurashiru_reward"]
+          sources={x["id"]:x for x in cfg["sources"]}
+          out=[]
+          for sid in ids:
+            s=sources[sid]
+            urls=list(s.get("direct_listing_urls") or [])
+            if not urls and s.get("direct_search_url_template"):
+              urls=[s["direct_search_url_template"].replace("{query}","Township")]
+            if not urls: urls=[s["start_url"]]
+            url=urls[0]
+            row={"source":sid,"url":url}
+            try:
+              if sid=="moppy":
+                opener=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()))
+                d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=opener)
+                raw,final=d.fetch_first_party(url,s,opener=opener,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"})
+              else:
+                raw,final=d.fetch_first_party(url,s)
+              row.update(ok=True,bytes=len(raw.encode("utf-8")),final=final,has_detail=bool(d.discover_detail_links(raw,final,s,["Township","タウンシップ"],limit=3)),text_sample=d.visible_text(raw)[:120])
+            except Exception as e:
+              row.update(ok=False,error=d.summarize_fetch_error(e),errorType=type(e).__name__)
+            out.append(row)
+          print("TRANSPORT_AUDIT_JSON="+json.dumps(out,ensure_ascii=False))
+          PY
