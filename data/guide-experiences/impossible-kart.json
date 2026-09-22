@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "game": "インポッシブルカート",
+  "updatedAt": "2026-09-22",
+  "title": "実例：プレイヤーの到達ペース",
+  "intro": "公開されている実プレイ記録から、5-4までの到達例と撤退例をプレイヤーごとに整理しています。平均ではなく実例として見てください。",
+  "notice": "※短時間で終わる達成例がある一方、序盤で多数回失敗して撤退した例もあり、操作との相性による差が大きいゲームです。",
+  "footnote": "プレイ時間は操作精度、広告、リトライ回数で変わります。個人記録を平均値や保証値として扱わないでください。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "1日で5-4クリア",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "day": 1,
+          "label": "5-4クリア"
+        }
+      ],
+      "note": "全20ステージを1日でクリアした実例。後半は罠の位置を覚え、5-4は攻略情報を確認して突破。",
+      "sources": [
+        "https://www.nayu-poikatu.com/entry/impossible-kart"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "abandoned",
+      "summary": "1-2で撤退",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "1-1クリア",
+          "detail": "3回挑戦"
+        },
+        {
+          "day": 1,
+          "label": "1-2で撤退",
+          "detail": "約30回挑戦"
+        }
+      ],
+      "note": "1-2の谷越えで苦戦。単純連打ではなくタイミング調整が必要と記録。",
+      "sources": [
+        "https://game-poikatsu.com/impossible-kart-5-4/"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "5-4までクリア",
+      "milestones": [
+        {
+          "label": "5-4クリア"
+        }
+      ],
+      "note": "2025年のApp Storeレビューに、ポイ活目的で5-4までクリアした記録あり。最終コースの落下物とポーズ操作にも言及。",
+      "sources": [
+        "https://apps.apple.com/jp/app/%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%83%E3%82%B7%E3%83%96%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%88-%E9%9D%A2%E7%99%BD%E3%81%84%E3%82%B2%E3%83%BC%E3%83%A0/id1510592190"
+      ]
+    }
+  ]
+}
