@@ -334,3 +334,26 @@ def test_nightly_rate_policy_is_fail_closed_for_unknown_sources():
     assert daily.point_rate_policy("kurashiru_reward")["yenPerPoint"] == 0.01
     assert daily.point_rate_policy("powl")["yenPerPoint"] is None
     assert daily.point_rate_policy("not-a-site")["status"] == "unsupported"
+
+
+def test_one_strictly_verified_reward_source_can_rank(monkeypatch):
+    def changed(url, source, aliases, fetcher):
+        value = inspect(url, source, aliases, fetcher)
+        if source["id"] == "b":
+            raise TimeoutError()
+        return value
+    result = scan(candidates(), monkeypatch, inspector=changed)
+    row = result["results"][0]
+    assert row["verifiedRewardSourceCount"] == 1
+    assert row["candidateEligible"] is True
+    assert row["maxObservedRewardYen"] is not None
+
+def test_zero_verified_reward_sources_never_rank(monkeypatch):
+    def changed(url, source, aliases, fetcher):
+        raise TimeoutError()
+    result = scan(candidates(), monkeypatch, inspector=changed)
+    row = result["results"][0]
+    assert row["verifiedRewardSourceCount"] == 0
+    assert row["candidateEligible"] is False
+    assert row["maxObservedRewardYen"] is None
+    assert "no_verified_reward_source" in row["holdReasons"]
