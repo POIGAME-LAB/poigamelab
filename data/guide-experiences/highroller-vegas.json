@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "game": "High Roller Vegas",
+  "updatedAt": "2026-09-23",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "POIGAME LAB運営者の実プレイと、公開されている複数プレイヤーの記録を分けて整理しています。稼働時間の差が非常に大きいため、平均ではなく個別実例として見てください。",
+  "notice": "※運営者はサブスマホで寝ている間も含め、ほぼ24時間オートスピン。短い到達日数だけを通常プレイの目安にしないでください。",
+  "footnote": "同一人物の複数記録は1人分として統合。運・BET・課金・イベント・稼働時間で進行速度は大きく変わります。",
+  "players": [
+    {
+      "id": "A",
+      "label": "POIGAME LAB運営者",
+      "status": "ongoing",
+      "summary": "Lv119まで確認・ほぼ24時間稼働",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "約1億コイン→睡眠中ほぼ全損→低BETで約1億へ復帰",
+          "detail": "2025/10/20開始。15分おきのルーレットも利用"
+        },
+        {
+          "label": "Lv74〜75",
+          "detail": "約2.2B所持・3M BET。SUPER25を使用"
+        },
+        {
+          "label": "Lv119",
+          "detail": "約13.24B所持・3倍EXP中90M BET。SUPER25を使用"
+        }
+      ],
+      "note": "本人保存スクリーンショットと本人公開記録。通常時は低BET、EXP 2倍/3倍時はBETを上げ、TIME BONUSを回収。サブスマホで寝ている間も回していた。",
+      "sources": [
+        "https://x.com/Erbse_09"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "34日でLv100",
+      "milestones": [
+        {
+          "day": 34,
+          "level": 100,
+          "label": "Lv100達成",
+          "detail": "1日約3時間"
+        }
+      ],
+      "note": "300M超では300K、それ以下では120K中心というApp Storeレビュー。",
+      "sources": [
+        "https://apps.apple.com/jp/app/highroller-vegas-casino-games/id1456325213"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "31日でLv120",
+      "milestones": [
+        {
+          "day": 24,
+          "level": 100,
+          "label": "Lv100"
+        },
+        {
+          "day": 31,
+          "level": 120,
+          "label": "Lv120達成"
+        }
+      ],
+      "note": "序盤120K〜300K、後半は残高を見ながら600K〜3Mへ上げた記録。",
+      "sources": [
+        "https://apps.apple.com/jp/app/highroller-vegas-casino-games/id1456325213"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "30日・12〜15時間/日でLv120",
+      "milestones": [
+        {
+          "day": 30,
+          "level": 120,
+          "label": "Lv120で終了"
+        }
+      ],
+      "note": "サブ端末をほぼ毎日12〜15時間稼働。低BETではコインを維持しやすかった一方、EPIC WINポップアップでオートスピン停止を報告。",
+      "sources": [
+        "https://www.reddit.com/r/SwagBucks/comments/1lm1z1x"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "ongoing",
+      "summary": "17日でLv101",
+      "milestones": [
+        {
+          "day": 17,
+          "level": 101,
+          "label": "Lv101"
+        }
+      ],
+      "note": "端末を24時間近く稼働していたという公開記録。",
+      "sources": [
+        "https://www.reddit.com/r/SwagBucks/comments/1lm1z1x"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "retired",
+      "summary": "30日でLv70未満",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv70未満で終了"
+        }
+      ],
+      "note": "約7ドル課金してもLv70に届かなかったApp Storeレビュー。速い例だけでなく未達例として掲載。",
+      "sources": [
+        "https://apps.apple.com/jp/app/highroller-vegas-casino-games/id1456325213"
+      ]
+    }
+  ]
+}
