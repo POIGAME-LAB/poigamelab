@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "game": "さる山温泉旅館",
+  "updatedAt": "2026-09-22",
+  "title": "実例：プレイヤーの到達ペース",
+  "intro": "公開されている実プレイ攻略から、温泉リセット31回までの到達記録をプレイヤーごとに整理しています。平均ではなく実例として見てください。",
+  "notice": "※序盤は遅く、リセットボーナスで後半ほど周回速度が上がるゲームです。",
+  "footnote": "所要時間は広告利用、交配・放置、プレイ時間で大きく変わります。個人記録を平均値や保証値として扱わないでください。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "3日・約8時間で31周",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "day": 3,
+          "label": "31周達成",
+          "detail": "実プレイ約8時間"
+        }
+      ],
+      "note": "ポイントインカム経由の実プレイ記録。周回を重ねるほど速度が上がった例。",
+      "sources": [
+        "https://random-gameskki.com/poikatsu-monkeymountainhotspringinn/"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "3日・約23時間で31周",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始",
+          "detail": "0周目は約4時間"
+        },
+        {
+          "day": 3,
+          "label": "31周達成",
+          "detail": "終盤は1周約12分"
+        }
+      ],
+      "note": "序盤と終盤で周回時間が大きく変化した実例。",
+      "sources": [
+        "https://relax-zakkiblog.com/saruyama/"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "16日で31周",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "1周"
+        },
+        {
+          "day": 6,
+          "label": "2周"
+        },
+        {
+          "day": 8,
+          "label": "3周"
+        },
+        {
+          "day": 9,
+          "label": "5周"
+        },
+        {
+          "day": 10,
+          "label": "8周"
+        },
+        {
+          "day": 11,
+          "label": "11周"
+        },
+        {
+          "day": 12,
+          "label": "14周"
+        },
+        {
+          "day": 13,
+          "label": "16周"
+        },
+        {
+          "day": 14,
+          "label": "22周"
+        },
+        {
+          "day": 15,
+          "label": "29周"
+        },
+        {
+          "day": 16,
+          "label": "31周達成"
+        }
+      ],
+      "note": "日別の途中経過が残っている例。8日目3周から後半8日で28周進んでいる。",
+      "sources": [
+        "https://ainopoikatu.hatenablog.com/entry/saruyamaonsen/202409"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "8日で31周",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "day": 8,
+          "label": "31周達成"
+        }
+      ],
+      "note": "2026年6月更新の攻略記録にある達成例。",
+      "sources": [
+        "https://www.yumatti.com/poikatsu-saruyama-onsen-ryokan/"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "2週間強で31周",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "開始"
+        },
+        {
+          "label": "2週間強",
+          "detail": "31周達成"
+        }
+      ],
+      "note": "1日1回の交配と放置収益を活用した、張り付き時間を抑えるルート。",
+      "sources": [
+        "https://www.yakipanblog.com/sayuyama_onsenryokan_reset31_poikatsu/"
+      ]
+    }
+  ]
+}
