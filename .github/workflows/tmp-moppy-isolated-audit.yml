@@ -14,7 +14,7 @@ jobs:
       - name: Syntax and focused tests
         run: |
           python -m py_compile scripts/direct_offer_refresh.py
-          python -m pytest -q tests/test_import_moppy_device_catalog.py
+          python -m pip install -q pytest\n          python -m pytest -q tests/test_import_moppy_device_catalog.py
       - name: Exercise production discovery helpers against live Moppy catalog
         run: |
           python - <<'PY'
