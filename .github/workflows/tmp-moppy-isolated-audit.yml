@@ -1,4 +1,4 @@
-name: Temporary Moppy isolated discovery audit
+name: Temporary Moppy detail audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -6,39 +6,13 @@ permissions: {contents: read}
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Probe Moppy public catalog variants
+      - name: Verify known public game details
         run: |
-          python - <<'PY'
-          import json
-          from urllib.parse import urlencode
-          from http.cookiejar import CookieJar
-          from urllib.request import build_opener,HTTPCookieProcessor
-          import scripts.direct_offer_refresh as d
-          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
-          s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          op=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()))
-          boot,_=d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=op)
-          baseh={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"}
-          for sorter in ("1","3"):
-            for exclude in ("true","false"):
-              for page in (1,2,3):
-                url="https://pc.moppy.jp/ajax/category/get_list.php?"+urlencode({"parent_category":"4","child_category":"52","objective_category":"0","current_page":page,"af_sorter":sorter,"exclude_purchased":exclude})
-                body,final=d.fetch_first_party(url,s,opener=op,extra_headers=baseh)
-                cand=d.discover_new_game_listing_candidates(body,final,s,[],limit=500)
-                print("CAT",sorter,exclude,page,len(body.encode()),len(cand),[x.get("titleHint") for x in cand[:4]])
-          for word in ("MONOPOLY GO","メメントモリ","ゲーム","StepUp"):
-            url="https://pc.moppy.jp/search/?"+urlencode({"word":word})
-            try:
-              body,final=d.fetch_first_party(url,s,opener=op)
-              cand=d.discover_new_game_listing_candidates(body,final,s,[],limit=500)
-              print("SEARCH",word,len(body.encode()),len(cand),[x.get("titleHint") for x in cand[:8]])
-            except Exception as e: print("SEARCH",word,"ERROR",d.summarize_fetch_error(e))
-          # Known public game details: verify that Actions can still validate individual offers.
           python - <<'PY'
           import json
           import scripts.direct_offer_refresh as d
@@ -51,6 +25,6 @@ jobs:
             try:
               raw,final=d.fetch_first_party(url,s)
               ev=d.inspect_offer(raw,final,s,[name])
-              print("DETAIL",name,len(raw.encode()),{k:ev.get(k) for k in ("state","game","rewardPoints","rewardUnit","verifiedCurrentRewardPoints","condition","platform","parserVersion")})
+              print("DETAIL",name,len(raw.encode()),{k:ev.get(k) for k in ("state","rewardPoints","rewardUnit","verifiedCurrentRewardPoints","platform","parserVersion")})
             except Exception as e: print("DETAIL",name,"ERROR",d.summarize_fetch_error(e),type(e).__name__)
           PY
