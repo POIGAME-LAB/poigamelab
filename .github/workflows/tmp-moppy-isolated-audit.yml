@@ -21,7 +21,7 @@ jobs:
           import scripts.direct_offer_refresh as d
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
           s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          uas={"desktop":s["user_agent"],"ios":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1","android":"Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36"}
+          uas={"desktop":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36","ios":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1","android":"Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36"}
           opener=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()))
           raw,base=d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=opener)
           print("BOOTSTRAP",len(raw.encode()))
@@ -40,14 +40,14 @@ jobs:
           print("SCRIPTS",re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)',raw,re.I))
           from urllib.parse import urlencode
           for label,ua in uas.items():
-            ss=dict(s); ss["user_agent"]=ua
+            ss=dict(s)
             op=build_opener(d.FirstPartyRedirectHandler(ss),HTTPCookieProcessor(CookieJar()))
-            boot,_=d.fetch_first_party(ss["listing_session_bootstrap_url"],ss,opener=op)
+            boot,_=d.fetch_first_party(ss["listing_session_bootstrap_url"],ss,opener=op,extra_headers={"User-Agent":ua})
             print("UA",label,"BOOT",len(boot.encode()))
             for page in range(1,4):
               url="https://pc.moppy.jp/ajax/category/get_list.php?"+urlencode({"parent_category":"4","child_category":"52","objective_category":"0","current_page":str(page),"af_sorter":"1","exclude_purchased":"true"})
               try:
-                body,final=d.fetch_first_party(url,ss,opener=op,extra_headers={"Referer":ss["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"})
+                body,final=d.fetch_first_party(url,ss,opener=op,extra_headers={"User-Agent":ua,"Referer":ss["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"})
                 cand=d.discover_new_game_listing_candidates(body,final,ss,[],limit=500)
                 print("UA_PAGE",label,page,"bytes",len(body.encode()),"candidates",len(cand),"sample",[x.get("titleHint") for x in cand[:5]])
               except Exception as e: print("UA_PAGE",label,page,"ERROR",d.summarize_fetch_error(e))
