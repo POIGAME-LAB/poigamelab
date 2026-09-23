@@ -14,12 +14,11 @@ jobs:
       - name: Audit current COINCOME app listing and details
         run: |
           python - <<'PY'
-          import importlib.util, json
+          import json, sys
           from urllib.parse import urljoin
-          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py")
-          d=importlib.util.module_from_spec(spec); spec.loader.exec_module(d)
-          spec2=importlib.util.spec_from_file_location("daily","scripts/daily_scan_review.py")
-          daily=importlib.util.module_from_spec(spec2); spec2.loader.exec_module(daily)
+          sys.path.insert(0, "scripts")
+          import direct_offer_refresh as d
+          import daily_scan_review as daily
 
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="coincome")
