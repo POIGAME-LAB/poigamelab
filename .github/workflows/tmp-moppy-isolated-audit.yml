@@ -21,5 +21,10 @@ jobs:
             u=f"https://pc.moppy.jp/ad/detail.php?s_id={sid}"
             raw,final=d.fetch_first_party(u,s)
             out=d.inspect_moppy_offer(raw,u,final,[name])
-            print("DETAIL",name,sid,len(raw),out.get("state"),out.get("reason"),out.get("name"),out.get("platform"),out.get("displayedRewardPoints"))
+            doc=d.EvidenceHTML(raw).root
+            h=d.evidence_text(d.one(doc.find(tag="h1")))
+            textv=d.visible_text(raw); pos=textv.find(h); tail=textv[pos:pos+1200] if pos>=0 else textv[:1200]
+            print("DETAIL",name,sid,len(raw),out.get("state"),out.get("reason"))
+            print("H1",repr(h))
+            print("HEAD",repr(tail[:700]))
           PY
