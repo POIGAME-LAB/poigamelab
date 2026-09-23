@@ -1,0 +1,88 @@
+name: Temporary COINCOME detail audit
+on:
+  push:
+    branches: [audit/coincome-details-20260924]
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Audit current COINCOME app listing and details
+        run: |
+          python - <<'PY'
+          import importlib.util, json
+          from urllib.parse import urljoin
+          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py")
+          d=importlib.util.module_from_spec(spec); spec.loader.exec_module(d)
+          spec2=importlib.util.spec_from_file_location("daily","scripts/daily_scan_review.py")
+          daily=importlib.util.module_from_spec(spec2); spec2.loader.exec_module(daily)
+
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          src=next(x for x in cfg["sources"] if x["id"]=="coincome")
+          targets=json.load(open("config/game_targets.json",encoding="utf-8"))
+          if isinstance(targets,dict): targets=targets.get("games") or targets.get("targets") or []
+          url=src["direct_listing_urls"][0]
+          raw,final=d.fetch_first_party(url,src,timeout=20,max_bytes=1500000)
+
+          rows=[]
+          seen=set()
+          for a in d.EvidenceHTML(raw).root.find(tag="a"):
+              href=a.attrs.get("href","")
+              absolute=urljoin(final,href).split("#",1)[0]
+              if not d.source_host_allowed(absolute,src) or not d.detail_like(absolute,src):
+                  continue
+              ident=d.offer_identity_key(absolute,"coincome")
+              if not ident or ident in seen:
+                  continue
+              seen.add(ident)
+              label=d.evidence_text(a).strip()
+              game=daily.discovery_name(label)
+              cls=d.classify_new_game_candidate({"titleHint":label})
+              item={"url":absolute,"label":label,"game":game,"classification":cls.get("classification"),"score":cls.get("classificationScore")}
+              if game:
+                  try:
+                      parsed=d.inspect_detail(absolute,src,[game])
+                      ev=parsed.get("sourceEvidence") or {}
+                      item.update({
+                          "state":ev.get("state"),
+                          "reason":ev.get("reason"),
+                          "platform":ev.get("platform"),
+                          "rewardYen":ev.get("displayedRewardYen"),
+                          "parserVersion":ev.get("parserVersion"),
+                          "terms":bool(ev.get("termsText")),
+                      })
+                  except Exception as exc:
+                      item.update({"state":"exception","reason":d.summarize_fetch_error(exc)})
+              rows.append(item)
+
+          print("LISTING_FINAL",final)
+          print("DETAIL_COUNT",len(rows))
+          for item in rows:
+              print("OFFER",json.dumps(item,ensure_ascii=False,sort_keys=True))
+
+          print("KNOWN_TARGETS")
+          for t in targets:
+              game=str(t.get("game") or "").strip()
+              aliases=[game]+[str(x) for x in (t.get("aliases") or [])]
+              urls=d.discover_detail_links(raw,final,src,aliases,limit=12)
+              if not urls:
+                  continue
+              print("KNOWN",game,len(urls),urls)
+              for detail in urls:
+                  try:
+                      parsed=d.inspect_detail(detail,src,aliases)
+                      ev=parsed.get("sourceEvidence") or {}
+                      print("KNOWN_DETAIL",json.dumps({
+                          "game":game,"url":detail,"state":ev.get("state"),
+                          "reason":ev.get("reason"),"platform":ev.get("platform"),
+                          "rewardYen":ev.get("displayedRewardYen"),
+                          "parserVersion":ev.get("parserVersion"),
+                          "terms":bool(ev.get("termsText")),
+                      },ensure_ascii=False,sort_keys=True))
+                  except Exception as exc:
+                      print("KNOWN_DETAIL",json.dumps({"game":game,"url":detail,"state":"exception","reason":d.summarize_fetch_error(exc)},ensure_ascii=False))
+          PY
