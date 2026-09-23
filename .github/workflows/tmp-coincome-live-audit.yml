@@ -1,0 +1,45 @@
+name: Temporary COINCOME live audit
+on:
+  push:
+    branches: [audit/coincome-live-20260924]
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Compare COINCOME mobile and desktop anonymous listing
+        run: |
+          python - <<'PY'
+          import importlib.util, json
+          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py")
+          d=importlib.util.module_from_spec(spec); spec.loader.exec_module(d)
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          src=next(x for x in cfg["sources"] if x["id"]=="coincome")
+          targets=json.load(open("config/game_targets.json",encoding="utf-8"))
+          if isinstance(targets,dict): targets=targets.get("targets") or targets.get("games") or []
+          url=src["direct_listing_urls"][0]
+          for mobile in (True,False):
+              s=dict(src); s["mobile"]=mobile
+              raw,final=d.fetch_first_party(url,s,timeout=20,max_bytes=1500000)
+              anchors=d.EvidenceHTML(raw).root.find(tag="a")
+              detail=[]
+              for a in anchors:
+                  href=a.attrs.get("href","")
+                  absolute=d.urljoin(final,href).split("#",1)[0]
+                  if d.source_host_allowed(absolute,s) and d.detail_like(absolute,s):
+                      detail.append((d.evidence_text(a)[:120],absolute))
+              candidates=d.discover_new_game_listing_candidates(raw,final,s,targets,limit=200)
+              print("MODE", "mobile" if mobile else "desktop")
+              print("FINAL",final)
+              print("BYTES",len(raw.encode("utf-8")))
+              print("VISIBLE_PREFIX",d.visible_text(raw)[:800].replace("\n"," "))
+              print("DETAIL_LINKS",len(detail))
+              for item in detail[:20]: print("DETAIL",item)
+              print("CANDIDATES",len(candidates))
+              for item in candidates[:20]:
+                  print("CANDIDATE",item.get("titleHint"),item.get("firstPartyCandidateUrl"))
+          PY
