@@ -37,8 +37,9 @@ jobs:
             pos=raw.find(needle)
             print("SNIPPET",needle,raw[max(0,pos-1200):pos+2600].replace("\\n"," ") if pos>=0 else "NONE")
           print("SCRIPTS",re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)',raw,re.I))
-          for page in range(1,6):
-            url=s["new_game_discovery_page_url_template"].replace("{page}",str(page))
+          from urllib.parse import urlencode
+          for page in range(1,8):
+            url="https://pc.moppy.jp/ajax/category/get_list.php?"+urlencode({"parent_category":"4","child_category":"52","objective_category":"0","current_page":str(page),"af_sorter":"1","exclude_purchased":"true"})
             try:
               body,final=d.fetch_first_party(url,s,opener=opener,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"})
               cand=d.discover_new_game_listing_candidates(body,final,s,[],limit=500)
