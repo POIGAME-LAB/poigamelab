@@ -28,6 +28,10 @@ jobs:
             hits=re.findall(pat,raw,re.I|re.S)
             print("HINT",pat,"COUNT",len(hits))
             for h in hits[:100]: print(re.sub(r'\\s+',' ',h)[:700])
+          exact="parent_category, child_category, current_page, af_sorter, exclude_purchased"
+          pos=raw.find(exact)
+          print("EXACT_PAGINATION",raw[max(0,pos-3000):pos+7000].replace("\\n"," ") if pos>=0 else "NONE")
+          print("PHP_URLS",sorted(set(re.findall(r'[^"\\\' ]+\\.php(?:\\?[^"\\\' ]*)?',raw,re.I)))[:150])
           idx=raw.find("function get")
           for needle in ["current_page", "af_sorter", "exclude_purchased", "ajax"]:
             pos=raw.find(needle)
