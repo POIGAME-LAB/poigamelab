@@ -35,6 +35,18 @@ def scan(items, monkeypatch, inspector=inspect, registry=None, **kwargs):
                              fetcher=lambda *args: ("fixture", args[0]), **kwargs)
 
 
+def test_discovery_name_strips_coincome_listing_ui_suffix_only():
+    assert daily.discovery_name(
+        "iOS_戦国布武：我が天下戦国編【StepUp】 アプリ利用でキャッシュバック 8,650円 5,183円"
+    ) == "戦国布武：我が天下戦国編【StepUp】"
+    assert daily.discovery_name(
+        "iOS_ATLAS:EARTH - お得なキャッシュバック！「StepUp」 アプリ利用でキャッシュバック 8,620円"
+    ) == "ATLAS:EARTH - お得なキャッシュバック！「StepUp」"
+    assert daily.discovery_name(
+        "iOS_Cat Drop: Cute Slide & Match（30日以内にレベル400クリア） アプリ利用でキャッシュバック 160円"
+    ) == "Cat Drop: Cute Slide & Match（30日以内にレベル400クリア）"
+
+
 def test_single_verified_site_qualifies_without_publication_permission(monkeypatch):
     items = candidates(sites=("a",)) * 10
     result = scan(items, monkeypatch)
