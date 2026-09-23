@@ -29,6 +29,11 @@ def discovery_name(title):
     value = re.sub(r"^(?:iOS|Android|And)[ _：:・-]+", "", value, flags=re.I)
     value = re.sub(r"^(?:【(?:SKYFLAG|SmaAD|MyChips|M)】)+", "", value, flags=re.I)
     value = re.sub(r"^【(?:レベル|ゲームゴール|累計)[^】]+】", "", value)
+    # COINCOME listing cards append a UI action/reward phrase after the actual
+    # campaign title. Keeping that suffix in the game key prevents the title
+    # from matching the first-party detail page even though both identify the
+    # same offer. Strip only this explicit UI phrase, never arbitrary yen text.
+    value = re.split(r"\s+アプリ利用でキャッシュバック(?:\s|$)", value, maxsplit=1)[0]
     value = re.split(r"[（(](?:(?:ユーザー|アカウント)?レベル|LEVEL|経験値バー|累計|初回課金|ギフトリンク/)", value, flags=re.I)[0]
     value = re.split(r"_(?:iOS|Android)(?:_|\b)| リピート不可| 審査中保証", value, flags=re.I)[0]
     value = re.split(r"(?:（|\()(?:StepUp|iOS|Android|多段階)(?:）|\))| 初回アプリ| 新規アプリ| 新規インストール| - レベル", value, flags=re.I)[0]
