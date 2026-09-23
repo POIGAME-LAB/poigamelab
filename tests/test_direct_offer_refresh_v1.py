@@ -2021,7 +2021,7 @@ def test_moppy_terms_change_invalidates_fingerprint(moppy_markup):
 
 
 @pytest.mark.parametrize('fetch_fails', [False, True])
-def test_moppy_is_review_only_even_when_detail_matches_published_row(
+def test_moppy_audited_detail_can_refresh_verified_published_reward(
         moppy_markup, monkeypatch, fetch_fails):
     direct.POLICY.write_text(json.dumps({
         'comparisonSources': ['moppy'], 'minimumConfirmedSourcesForComparison': 2,
@@ -2052,8 +2052,8 @@ def test_moppy_is_review_only_even_when_detail_matches_published_row(
     if fetch_fails:
         assert item['reason']=='fetch_failed'
     else:
-        assert item['approvalHoldReason']=='source_refresh_not_enabled'
-        assert item['sourceEvidence']['displayedRewardPoints']==600
+        assert direct.read_published()[0]['reward']=='600'
+        assert direct.read_published()[0]['verified']=='true'
 
 
 def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_markup, monkeypatch):
