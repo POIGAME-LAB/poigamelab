@@ -23,7 +23,9 @@ jobs:
           for p in range(1,9):
             u=d.paginated_listing_url(s,p);raw,final=d.fetch_first_party(u,s,opener=op,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
             items += d.discover_new_game_listing_candidates(raw,final,s,[],limit=500)
-          for x in items:x.update(d.classify_new_game_candidate(x))\n          for x in items:\n            if "ハイローラー" in x["titleHint"]: print("HIGH_DEBUG",x["classification"],x["classificationScore"],x["classificationReasons"],repr(x["titleHint"]))
+          for x in items:x.update(d.classify_new_game_candidate(x))
+          for x in items:
+            if "ハイローラー" in x["titleHint"]: print("HIGH_DEBUG",x["classification"],x["classificationScore"],x["classificationReasons"],repr(x["titleHint"]))
           from collections import Counter
           print("TOTAL",len(items),"BUCKETS",dict(Counter(x["classification"] for x in items)))
           known=["Impossible Kart","放置少女","ファミリーファーム","Family Island","パズル＆サバイバル","Travel Town","信長の野望"]
