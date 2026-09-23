@@ -3211,6 +3211,23 @@ def main(after_scan=None):
                             "reason": "structured_offer_review_required" if evidence["state"] == "parsed"
                             else evidence.get("reason", "source_structure_review_required"),
                             "sourceEvidence": evidence, "checkedAt": checked_at}
+                    if (
+                        existing is None
+                        and source_id == "coincome"
+                        and evidence.get("state") == "parsed"
+                        and evidence.get("parserVersion") == "coincome-detail-review-v2"
+                        and type(evidence.get("displayedRewardYen")) is int
+                        and evidence.get("displayedRewardYen") > 0
+                    ):
+                        item.update({
+                            "reason": "first_party_existing_game_new_offer_candidate",
+                            "detectedReward": evidence["displayedRewardYen"],
+                            "platformHint": evidence.get("platform") or "",
+                            "candidateOnly": True,
+                            "firstPartyVerificationRequired": True,
+                            "autoCreateAuthorized": False,
+                            "publicationAuthorized": False,
+                        })
                     if existing is not None:
                         item["storedPlatform"] = existing.get("platform") or ""
                         item["storedReward"] = existing.get("reward") or ""
