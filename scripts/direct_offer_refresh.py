@@ -2122,7 +2122,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
 
         # Reward must come from the offer's dedicated current-point element,
         # never from surrounding navigation, campaigns, or explanatory text.
-        point_nodes = doc.find(tag="em", class_token="a-item__point--now")
+        point_nodes = doc.find(tag="em", cls="a-item__point--now")
         point_values = []
         for node in point_nodes:
             value = evidence_text(node)
