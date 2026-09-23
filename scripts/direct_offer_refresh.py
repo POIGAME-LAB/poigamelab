@@ -1455,11 +1455,13 @@ def coincome_offer_id(url):
 
 
 def inspect_coincome_offer(raw, requested_url, final_url, aliases):
-    """Review-only parser for COINCOME detail pages.
+    """Parse the current first-party COINCOME campaign detail structure.
 
-    It intentionally refuses publication. A page must bind exact URL identity,
-    target name, one displayed yen-equivalent reward, one explicit app OS and a
-    complete conditions block before it is useful as structured review evidence.
+    The live page binds offer identity, title, platform and current reward in
+    dedicated sale nodes. A nested span may contain a previous/base reward
+    during boosted campaigns, so only the direct text of the reward paragraph
+    is accepted as the current displayed amount. StepUp pages are additionally
+    checked by summing the per-step yen amounts.
     """
     try:
         offer_id = coincome_offer_id(requested_url)
@@ -1467,8 +1469,10 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
             raise ValueError("redirected_to_different_offer")
 
         doc = EvidenceHTML(raw).root
-        canonicals = [n for n in doc.find(tag="link")
-                      if "canonical" in n.attrs.get("rel", "").split()]
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
         if len(canonicals) > 1:
             raise ValueError("missing_or_ambiguous_offer_structure")
         if canonicals:
@@ -1477,88 +1481,117 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
                 raise ValueError("canonical_offer_mismatch")
 
         text = visible_text(raw)
-        if not target_present(text, aliases):
-            if any(marker in text for marker in ("ページが見つかりません", "404 Not Found", "Not Found")):
-                return {"state": "unavailable", "reason": "source_offer_unavailable",
-                        "offerId": offer_id}
-            raise ValueError("offer_title_mismatch")
-
-        positions = []
-        low = text.casefold()
-        for alias in aliases:
-            value = str(alias or "").strip()
-            if not value:
-                continue
-            pos = low.find(value.casefold())
-            if pos >= 0:
-                positions.append((pos, value))
-        if not positions:
-            raise ValueError("offer_title_mismatch")
-        start, matched_alias = min(positions, key=lambda item: item[0])
-
-        header_tail = text[start:start + 1800]
-        header_end_candidates = [
-            header_tail.find(marker) for marker in ("ストア概要", "概要")
-            if header_tail.find(marker) >= 0
+        title_nodes = doc.find(cls="sale__title")
+        if not title_nodes:
+            if any(marker in text for marker in (
+                "ページが見つかりません", "404 Not Found", "Not Found"
+            )):
+                return {
+                    "state": "unavailable",
+                    "reason": "source_offer_unavailable",
+                    "offerId": offer_id,
+                }
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        title = evidence_text(one(title_nodes))
+        title_key = normalized_text(title)
+        alias_keys = [
+            normalized_text(value)
+            for value in aliases
+            if str(value or "").strip()
         ]
-        if not header_end_candidates:
-            raise ValueError("missing_offer_header_boundary")
-        header = header_tail[:min(header_end_candidates)]
-        if len(header) < len(matched_alias):
-            raise ValueError("missing_offer_header")
+        if not any(
+            key and len(key) >= 4 and (key in title_key or title_key in key)
+            for key in alias_keys
+        ):
+            raise ValueError("offer_title_mismatch")
 
-        displayed = []
-        for match in re.finditer(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*円", header):
-            amount = int(match.group(1).replace(",", ""))
-            if 0 < amount < 1_000_000:
-                displayed.append(amount)
-        unique_displayed = sorted(set(displayed))
-        if len(unique_displayed) != 1:
+        platform_match = re.match(r"^(iOS|Android)[ _：:・-]+", title, flags=re.I)
+        if not platform_match:
+            raise ValueError("ambiguous_offer_platform")
+        platform = "iOS" if platform_match.group(1).casefold() == "ios" else "Android"
+        name = re.sub(r"^(?:iOS|Android)[ _：:・-]+", "", title, flags=re.I).strip()
+
+        reward_region = one(doc.find(cls="sale__up"))
+        reward_paragraph = one(reward_region.find(tag="p"))
+        direct_reward_text = re.sub(
+            r"\s+",
+            " ",
+            "".join(
+                child for child in reward_paragraph.children
+                if isinstance(child, str)
+            ),
+        ).strip()
+        reward_matches = re.findall(
+            r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*円",
+            direct_reward_text,
+        )
+        if len(reward_matches) != 1:
             raise ValueError("ambiguous_displayed_reward")
-        reward_yen = unique_displayed[0]
+        reward_yen = int(reward_matches[0].replace(",", ""))
+        if not 0 < reward_yen < 1_000_000:
+            raise ValueError("invalid_displayed_reward")
 
-        condition_start = text.find("適用端末", start)
+        description_nodes = doc.find(cls="description")
+        description = evidence_text(one(description_nodes)) if description_nodes else ""
+        step_reward_yen = [
+            int(value.replace(",", ""))
+            for value in re.findall(
+                r"STEP\s*[0-9]+\..*?【([0-9][0-9,]*)\s*円】",
+                description,
+                flags=re.I,
+            )
+        ]
+        step_total_yen = sum(step_reward_yen) if step_reward_yen else None
+        if step_reward_yen and step_total_yen != reward_yen:
+            raise ValueError("step_total_mismatch")
+
+        title_pos = text.find(title)
+        condition_start = text.find("適用端末", max(0, title_pos))
         if condition_start < 0:
             raise ValueError("incomplete_offer_terms")
         condition_end_candidates = [
-            x for x in (
+            value for value in (
                 text.find("リンクをコピーする", condition_start),
                 text.find("© COINCOME", condition_start),
-            ) if x >= 0
+            ) if value >= 0
         ]
         if not condition_end_candidates:
             raise ValueError("incomplete_offer_terms")
         terms = text[condition_start:min(condition_end_candidates)].strip()
 
-        required = ("適用端末", "キャッシュバック条件", "承認条件", "ポイント獲得条件", "否認条件")
-        positions = [terms.find(marker) for marker in required]
-        if any(pos < 0 for pos in positions) or positions != sorted(positions):
+        required = ("適用端末", "キャッシュバック条件", "承認条件", "否認条件")
+        marker_positions = [terms.find(marker) for marker in required]
+        if (
+            any(position < 0 for position in marker_positions)
+            or marker_positions != sorted(marker_positions)
+        ):
             raise ValueError("incomplete_offer_terms")
+        if not re.search(r"[0-9]+\s*日以内", terms):
+            raise ValueError("achievement_deadline_not_explicit")
 
-        pre_terms = text[start:condition_start]
-        os_labels = sorted(set(re.findall(r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])", pre_terms, re.I)))
-        normalized_os = {"ios": "iOS", "android": "Android"}
-        platforms = sorted({normalized_os[label.casefold()] for label in os_labels})
-        if len(platforms) != 1:
-            raise ValueError("ambiguous_offer_platform")
-
-        summary = re.sub(r"\s+", " ", header).strip()
         payload = {
             "offerId": offer_id,
-            "name": matched_alias,
-            "platform": platforms[0],
+            "name": name,
+            "offerTitle": title,
+            "platform": platform,
             "displayedRewardYen": reward_yen,
             "rewardUnit": "JPY-equivalent",
-            "headerText": summary,
+            "stepRewardYen": step_reward_yen,
+            "stepTotalYen": step_total_yen,
+            "headerText": f"{title} {direct_reward_text}".strip(),
             "termsText": terms,
         }
-        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
-                                    sort_keys=True).encode("utf-8")).hexdigest()
-        return {"state": "parsed", "parserVersion": "coincome-detail-review-v1",
-                **payload, "evidenceFingerprint": fingerprint}
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "coincome-detail-review-v2",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
-
 
 def hapitas_offer_id(url):
     try:
