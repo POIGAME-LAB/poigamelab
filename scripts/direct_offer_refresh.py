@@ -399,6 +399,10 @@ def classify_new_game_candidate(item):
         score += 2
         reasons.append("positive:explicit_game_progress")
 
+    if re.search(r"(?:step\s*up|stepup|各成果地点到達|各ミッションクリア|ミッション全クリア)", title, re.I):
+        score += 2
+        reasons.append("positive:achievement_app")
+
     if score >= 2:
         bucket = "likely_game"
     elif score <= -2:
@@ -408,6 +412,7 @@ def classify_new_game_candidate(item):
 
     return {
         "classification": bucket,
+        "scope": "achievement_app" if bucket == "likely_game" else "review",
         "classificationScore": score,
         "classificationReasons": reasons[:12],
         "classificationReviewOnly": True,
