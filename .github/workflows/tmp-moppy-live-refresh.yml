@@ -1,0 +1,37 @@
+name: Temporary Moppy live reward refresh
+on:
+  push:
+    branches: [fix/moppy-safe-live-refresh-20260923]
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: fix/moppy-safe-live-refresh-20260923}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: |
+          python -m pip install -q pytest
+          python -m py_compile scripts/direct_offer_refresh.py
+          python -m pytest -q tests/test_direct_offer_refresh_v1.py -k "moppy"
+      - run: |
+          python - <<'PY'
+          import importlib.util,csv,json,tempfile
+          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
+          rows=list(csv.DictReader(open("data/published_offers.csv",encoding="utf-8")))
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          changed=[]
+          for r in rows:
+            if r["site"]!="moppy": continue
+            try:
+              z=d.inspect_detail(r["url"],s,[r["game"]])["sourceEvidence"]
+              if z.get("state")=="parsed":
+                old=int(r["reward"].replace(",",""));new=z["displayedRewardPoints"]
+                if old!=new: changed.append((r["game"],old,new,r["offerKey"]))
+            except Exception as e: print("SKIP",r["game"],type(e).__name__)
+          print("LIVE_MOPPY_CHANGES",len(changed))
+          for x in changed: print("CHANGE",x)
+          assert changed
+          PY
