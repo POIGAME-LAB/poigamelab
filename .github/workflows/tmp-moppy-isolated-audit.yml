@@ -1,4 +1,4 @@
-name: Temporary Moppy mobile-structure audit
+name: Temporary Moppy full mobile catalog audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -11,30 +11,37 @@ jobs:
         with: {python-version: "3.12"}
       - run: |
           python - <<'PY'
-          import urllib.request,urllib.parse,http.cookiejar,re,html as H
+          import urllib.request,urllib.parse,http.cookiejar,re,html
           B="https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1"
           A="https://pc.moppy.jp/ajax/category/get_list.php"
           UA="Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 Version/26.0 Mobile/15E148 Safari/604.1"
           jar=http.cookiejar.CookieJar();op=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
           def get(u,h={}):
             q=urllib.request.Request(u,headers={"User-Agent":UA,"Accept-Language":"ja-JP,ja;q=0.9",**h})
-            with op.open(q,timeout=20) as r:return r.read().decode("utf-8","replace")
-          get(B)
-          def page(n):
-            qs=urllib.parse.urlencode({"parent_category":"4","child_category":"52","objective_category":"0","current_page":str(n),"af_sorter":"1","exclude_purchased":"true"})
-            return get(A+"?"+qs,{"Referer":B,"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
-          for n in (1,2):
-            x=page(n); print("PAGE",n,"BYTES",len(x),"COUNT",re.findall(r'アプリ広告一覧\s*[（(]\s*(\d+)件',x))
-            hrefs=[H.unescape(v) for v in re.findall(r'href\s*=\s*["\x27]([^"\x27]+)',x,re.I)]
-            print("HREF_COUNT",len(hrefs)); print("HREFS",hrefs[:80])
-            for key in ("site_id","siteId","ad_id","adId","campaign","detail","entry","program","id="):
-              vals=re.findall(r'.{0,100}'+re.escape(key)+r'.{0,180}',x,re.I|re.S)
-              if vals: print("KEY",key,[re.sub(r'\s+',' ',v)[:280] for v in vals[:12]])
-            # first candidate/card-like chunks containing points
-            chunks=re.findall(r'<(?:li|article|div)[^>]*>.*?</(?:li|article|div)>',x,re.I|re.S)
-            samples=[]
-            for c in chunks:
-              t=re.sub(r'<[^>]+>',' ',c);t=re.sub(r'\s+',' ',H.unescape(t)).strip()
-              if re.search(r'\d[\d,]*\s*P',t,re.I) and 20<len(t)<1500:samples.append((t[:500],c[:1500]))
-            print("SAMPLES",samples[:5])
+            with op.open(q,timeout=25) as r:return r.read().decode("utf-8","replace")
+          get(B); seen={}; total=None
+          for n in range(1,61):
+            qs=urllib.parse.urlencode({"parent_category":"4","child_category":"52","objective_category":"0","current_page":n,"af_sorter":"1","exclude_purchased":"true"})
+            x=get(A+"?"+qs,{"Referer":B,"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
+            if total is None:
+              m=re.search(r'（\s*(\d+)件\s*）',x);total=int(m.group(1)) if m else None
+            cards=re.findall(r'<li class="m-list__item">(.*?)</li>',x,re.S)
+            rows=[]
+            for c in cards:
+              im=re.search(r'detail\.php\?s_id=(\d+)',c)
+              nm=re.search(r'data-ga-label="([^"]+)"',c)
+              pm=re.search(r'<em class="a-list__item__point">\s*([^<]+)',c)
+              am=re.search(r'<p class="a-list__item__action[^"]*">\s*([^<]+)',c)
+              if im: rows.append((im.group(1),html.unescape(nm.group(1)) if nm else "",html.unescape(pm.group(1)).strip() if pm else "",html.unescape(am.group(1)).strip() if am else ""))
+            new=0
+            for r in rows:
+              if r[0] not in seen:seen[r[0]]=r;new+=1
+            print("PAGE",n,"ROWS",len(rows),"NEW",new,"UNIQUE",len(seen))
+            if not rows:break
+          print("ADVERTISED",total,"UNIQUE",len(seen),"MATCH",total==len(seen))
+          gamewords=("レベル","lv","城","マージ","パズル","ゲーム","ステージ","章","戦力","ランク","プレイヤー","到達","クリア")
+          games=[r for r in seen.values() if any(w in (r[1]+" "+r[3]).lower() for w in gamewords)]
+          print("GAME_LIKE",len(games))
+          for r in games[:40]:print("GAME",r)
+          if total is None or len(seen)!=total: raise SystemExit("catalog completeness mismatch")
           PY
