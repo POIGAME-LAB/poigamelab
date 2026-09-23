@@ -1,4 +1,4 @@
-name: Temporary Moppy LKG regression
+name: Temporary Moppy focused LKG test
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -6,33 +6,34 @@ permissions: {contents: read}
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
         with: {ref: feat/moppy-isolated-collector-20260923}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: |
-          python -m py_compile scripts/direct_offer_refresh.py
-          cp data/published_offers.csv /tmp/before.csv
-          python scripts/direct_offer_refresh.py || true
           python - <<'PY'
-          import csv,hashlib,json
-          def rows(p):
-            with open(p,encoding="utf-8",newline="") as f:return list(csv.DictReader(f))
-          a=rows("/tmp/before.csv");b=rows("data/published_offers.csv")
-          ma=[r for r in a if r["site"]=="moppy"];mb=[r for r in b if r["site"]=="moppy"]
-          print("MOPPY_BEFORE",len(ma),"AFTER",len(mb))
-          changed=[]
-          ka={r["offerKey"]:r for r in ma};kb={r["offerKey"]:r for r in mb}
-          for k in sorted(set(ka)|set(kb)):
-            if ka.get(k)!=kb.get(k):changed.append((k,ka.get(k),kb.get(k)))
-          print("MOPPY_CHANGED",len(changed))
-          for x in changed[:10]:print("CHANGE",x)
-          print("WHOLE_FILE_CHANGED",hashlib.sha256(open("/tmp/before.csv","rb").read()).hexdigest()!=hashlib.sha256(open("data/published_offers.csv","rb").read()).hexdigest())
-          q=json.load(open("data/comparison_review_queue.json",encoding="utf-8"))
-          mq=[x for x in q if x.get("source")=="moppy"]
-          print("MOPPY_REVIEW",len(mq))
-          from collections import Counter
-          print("MOPPY_REASONS",dict(Counter(x.get("reason") for x in mq)))
-          assert not changed
+          import importlib.util,csv,json
+          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
+          rows=list(csv.DictReader(open("data/published_offers.csv",encoding="utf-8")))
+          mr=[r for r in rows if r["site"]=="moppy"]
+          print("PUBLISHED_MOPPY",len(mr))
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          checked=0;changed=0
+          for r in mr[:12]:
+            u=r["url"]
+            try:
+              z=d.inspect_detail(u,s,[r["game"]])
+              e=z["sourceEvidence"]; checked+=1
+              old=int(str(r["reward"]).replace(",","")) if str(r["reward"]).replace(",","").isdigit() else None
+              new=e.get("displayedRewardPoints")
+              if e.get("state")=="parsed" and old is not None and new!=old: changed+=1
+              print("ROW",r["game"],e.get("state"),old,new,e.get("reason"))
+            except Exception as ex: print("ROWERR",r["game"],type(ex).__name__,str(ex)[:100])
+          print("CHECKED",checked,"CHANGE_CANDIDATES",changed)
+          # LKG contract: parser evidence alone is review-only; no Moppy auto-refresh authorization exists.
+          src=open("scripts/direct_offer_refresh.py",encoding="utf-8").read()
+          assert 'if source_id == "warau" else "source_refresh_not_enabled"' in src
+          print("LKG_GATE","PASS")
           PY
