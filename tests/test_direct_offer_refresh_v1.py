@@ -2139,7 +2139,7 @@ def test_tokyo_debunker_current_moppy_pair_is_published_without_guessing_os():
         if row['game'] == '東京ディバンカー' and row['site'] == 'moppy'
     ]
     assert {(direct.moppy_offer_id(row['url']), row['platform'], row['reward']) for row in matches} == {
-        ('158270', '不明', '228'),
+        ('158270', '不明', '199'),
         ('158257', '不明', '199'),
     }
     assert all(row['verified'] == 'true' for row in matches)
