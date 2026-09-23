@@ -393,7 +393,7 @@ def classify_new_game_candidate(item):
         r"(?:ステージ|チャプター|フロア|ワールド|boss|ボス).*?クリア",
         r"(?:勝利(?:数)?|プレイヤーレベル|勢力)\s*\d",
         r"(?:ステージ|チャプター|フロア|ワールド|アクティビティ|challenge)\s*\d",
-        r"(?:ソリティア|solitaire|idle|fighter|kingdom|mafia|zombie|ゾンビ|勇者|魔王|商人|三國|三国|戦国|rpg|merge|マージ|waterpark|ハイローラー\\s*ベガス)",
+        r"(?:ソリティア|solitaire|idle|fighter|kingdom|mafia|zombie|ゾンビ|勇者|魔王|商人|三國|三国|戦国|rpg|merge|マージ|waterpark|ハイローラー)",
     )
     if any(re.search(pattern, title, re.I) for pattern in progress_patterns):
         score += 2
