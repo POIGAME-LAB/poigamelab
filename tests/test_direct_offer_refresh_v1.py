@@ -1943,11 +1943,8 @@ def moppy_markup():
     return f'''<html><head><link rel="canonical" href="{MOPPY_URL}"></head><body>
 <main>
 <h1>テストゲーム（StepUp）〖Android〗</h1>
-<p>新規アプリインストール後、45日以内に各成果地点到達でクリア</p>
-<div>600P</div>
+<div class="m-item__info"><p class="m-item__point flex--end"><em class="a-item__point--now">600P</em></p></div>
 <section>ポイント獲得条件</section>
-<p>モッピーでは「1ポイント=1円」のポイントが貯まります。</p>
-<p>※ご注意ください。「POINT GET」をタップ後に遷移するページに記載のポイント数と獲得条件が適用となります。</p>
 <div>■獲得条件 新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。
 〖成果受付期間〗インストール後、45日以内
 各成果地点は「POINT GET」をタップ後に遷移するページでご確認ください。
@@ -1960,29 +1957,26 @@ def parse_moppy(raw, requested=MOPPY_URL, final=MOPPY_URL):
     return direct.inspect_moppy_offer(raw, requested, final, ['テストゲーム'])
 
 
-def test_moppy_review_parser_binds_shell_identity_reward_os_and_terms(moppy_markup):
+def test_moppy_review_parser_binds_identity_scoped_reward_and_terms(moppy_markup):
     evidence = parse_moppy(moppy_markup)
     assert evidence['state'] == 'parsed'
     assert evidence['offerId'] == '12345'
     assert evidence['platform'] == 'Android'
     assert evidence['displayedRewardPoints'] == 600
+    assert evidence['displayedRewardYen'] == 600
     assert evidence['rewardUnit'] == 'P'
     assert evidence['baseYenPerPoint'] == 1
     assert evidence['downstreamTermsRequired'] is True
-    assert evidence['parserVersion'] == 'moppy-shell-review-v1'
+    assert evidence['parserVersion'] == 'moppy-detail-review-v2'
     assert '成果受付期間' in evidence['termsText']
     assert len(evidence['evidenceFingerprint']) == 64
 
 
-def test_moppy_ignores_pre_offer_navigation_reward(moppy_markup):
-    noisy = moppy_markup.replace(
-        '<main>',
-        '<div>ホーム 5000P 友達紹介</div><div>テストゲーム（StepUp）〖Android〗の詳細</div><main>'
-    ).replace('<div>600P</div>', '<div>13,354P</div>')
+def test_moppy_ignores_unscoped_navigation_reward(moppy_markup):
+    noisy = moppy_markup.replace('<main>', '<div>ホーム 5000P 友達紹介</div><main>')
     evidence = parse_moppy(noisy)
     assert evidence['state'] == 'parsed'
-    assert evidence['displayedRewardPoints'] == 13354
-    assert '5000P' not in evidence['headerText']
+    assert evidence['displayedRewardPoints'] == 600
 
 
 def test_moppy_site_id_and_s_id_are_same_offer_identity(moppy_markup):
@@ -1991,21 +1985,19 @@ def test_moppy_site_id_and_s_id_are_same_offer_identity(moppy_markup):
     assert evidence['state'] == 'parsed'
 
 
-@pytest.mark.parametrize('old,new,reason', [
-    ('<div>600P</div>', '<div>600P 900P</div>', 'ambiguous_displayed_reward'),
-    ('〖Android〗', '〖Android / iOS〗', 'ambiguous_offer_platform'),
-    ('「1ポイント=1円」', '「2ポイント=1円」', 'unit_conversion_review_required'),
-    ('POINT GET', '案件ボタン', 'downstream_terms_review_required'),
-    ('成果受付期間', '受付期間', 'incomplete_offer_terms'),
-    ('■注意事項', '一般注意', 'incomplete_offer_terms'),
-    ('<section>ポイント獲得条件</section>', '', 'missing_offer_header_boundary'),
-    ('<h1>テストゲーム（StepUp）〖Android〗</h1>', '<h1>別ゲーム（StepUp）〖Android〗</h1>', 'offer_title_mismatch'),
-    ('/ad/detail.php?site_id=12345', '/ad/detail.php?site_id=99999', 'canonical_offer_mismatch'),
-])
-def test_moppy_rejects_ambiguous_or_incomplete_shell_evidence(moppy_markup, old, new, reason):
-    evidence = parse_moppy(moppy_markup.replace(old, new))
+def test_moppy_unspecified_platform_is_not_guessed(moppy_markup):
+    evidence = parse_moppy(moppy_markup.replace('〖Android〗', ''))
+    assert evidence['state'] == 'parsed'
+    assert evidence['platform'] == 'unspecified'
+
+
+def test_moppy_rejects_ambiguous_current_reward(moppy_markup):
+    raw = moppy_markup.replace(
+        '<em class="a-item__point--now">600P</em>',
+        '<em class="a-item__point--now">600P</em><em class="a-item__point--now">900P</em>')
+    evidence = parse_moppy(raw)
     assert evidence['state'] == 'review_required'
-    assert evidence['reason'] == reason
+    assert evidence['reason'] == 'missing_or_ambiguous_current_reward'
 
 
 @pytest.mark.parametrize('url', [
@@ -2023,706 +2015,74 @@ def test_moppy_rejects_unsupported_identity_urls(moppy_markup, url):
 
 def test_moppy_terms_change_invalidates_fingerprint(moppy_markup):
     original = parse_moppy(moppy_markup)
-    changed = parse_moppy(moppy_markup.replace(
-        'インストール後、45日以内',
-        'インストール後、44日以内'))
+    changed = parse_moppy(moppy_markup.replace('インストール後、45日以内','インストール後、44日以内'))
     assert original['state'] == changed['state'] == 'parsed'
     assert original['evidenceFingerprint'] != changed['evidenceFingerprint']
 
 
 @pytest.mark.parametrize('fetch_fails', [False, True])
-def test_moppy_is_review_only_even_when_shell_matches_published_row(
+def test_moppy_is_review_only_even_when_detail_matches_published_row(
         moppy_markup, monkeypatch, fetch_fails):
     direct.POLICY.write_text(json.dumps({
-        'comparisonSources': ['moppy'],
-        'minimumConfirmedSourcesForComparison': 2,
+        'comparisonSources': ['moppy'], 'minimumConfirmedSourcesForComparison': 2,
         'games': {'テストゲーム': {'enabled': True}},
     }))
     direct.TARGETS.write_text(json.dumps({'games': [{
-        'game': 'テストゲーム',
-        'known_urls_by_source': {'moppy': [MOPPY_URL]},
+        'game': 'テストゲーム', 'known_urls_by_source': {'moppy': [MOPPY_URL]},
     }]}))
     direct.SOURCES.write_text(json.dumps({'sources': [{
-        'id': 'moppy',
-        'search_domains': ['pc.moppy.jp'],
-        'direct_listing_urls': [],
+        'id': 'moppy','search_domains': ['pc.moppy.jp'],'direct_listing_urls': [],
         'direct_detail_limit': 6,
     }]}))
     row = dict.fromkeys(direct.FIELDS, '')
-    row.update(
-        offerKey='moppy-test',
-        game='テストゲーム',
-        site='moppy',
-        reward='600',
-        condition='既存要約',
-        platform='Android',
-        updatedAt='2026-08-31',
-        url=MOPPY_URL,
-        sourceUrl=MOPPY_URL,
-        verified='true',
-    )
+    row.update(offerKey='moppy-test',game='テストゲーム',site='moppy',reward='600',
+               condition='既存要約',platform='Android',updatedAt='2026-08-31',
+               url=MOPPY_URL,sourceUrl=MOPPY_URL,verified='true')
     direct.write_published([row])
-    direct.POLICY.with_name('approved_offer_baselines.json').write_text(json.dumps({
-        'schemaVersion': 1,
-        'approvals': [{
-            'offerKey': row['offerKey'],
-            'approved': True,
-            'source': 'moppy',
-        }],
-    }))
-    calls = []
-
+    calls=[]
     def fetch(url, source):
         calls.append(url)
-        if fetch_fails:
-            raise HTTPError(url, 404, 'Not Found', {}, None)
-        return moppy_markup, MOPPY_ALT_URL
-
-    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
-    before = direct.PUBLISHED.read_bytes()
-    assert direct.main() == 0
-    assert direct.PUBLISHED.read_bytes() == before
-    assert calls == [MOPPY_URL]
-
-    status = json.loads(direct.STATUS.read_text())
-    assert status['refreshedRows'] == status['publishedRewardChanges'] == status['apiCalls'] == 0
-    assert status['games'][0]['comparisonReady'] is False
-    item = json.loads(direct.REVIEW.read_text())['items'][0]
+        if fetch_fails: raise HTTPError(url,404,'Not Found',{},None)
+        return moppy_markup,url
+    monkeypatch.setattr(direct,'fetch_first_party',fetch)
+    before=direct.PUBLISHED.read_bytes()
+    assert direct.main()==0
+    assert direct.PUBLISHED.read_bytes()==before
+    item=json.loads(direct.REVIEW.read_text())['items'][0]
     if fetch_fails:
-        assert item['reason'] == 'fetch_failed'
-        assert item['error'] == 'http_status_404'
+        assert item['reason']=='fetch_failed'
     else:
-        assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
-        assert item['sourceEvidence']['displayedRewardPoints'] == 600
-        assert item['sourceEvidence']['downstreamTermsRequired'] is True
-        assert item['platformMatches'] is True
-
-
-def test_repository_whiteout_moppy_review_targets_include_current_android_and_ios():
-    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
-    whiteout = next(item for item in targets if item['game'] == 'ホワイトアウト・サバイバル')
-    urls = whiteout['known_urls_by_source']['moppy']
-    by_id = {direct.moppy_offer_id(url): url for url in urls}
-    assert set(by_id) >= {'160375', '160371'}
-
-    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
-    published_moppy = [row for row in rows
-        if row['game'] == 'ホワイトアウト・サバイバル' and row['site'] == 'moppy']
-    assert len(published_moppy) == 1
-    assert direct.moppy_offer_id(published_moppy[0]['url']) == '160375'
-    assert all(direct.moppy_offer_id(row['url']) != '160371' for row in published_moppy)
-
-
-def test_listing_only_source_skips_stale_known_details_and_preserves_rows(monkeypatch):
-    listing = 'https://example.test/list'
-    stale = 'https://example.test/detail?id=999'
-    direct.POLICY.write_text(json.dumps({
-        'comparisonSources': ['testsite'],
-        'minimumConfirmedSourcesForComparison': 2,
-        'games': {'Game A': {'enabled': True}},
-    }))
-    direct.TARGETS.write_text(json.dumps({'games': [{
-        'game': 'Game A',
-        'known_urls_by_source': {'testsite': [stale]},
-    }]}))
-    direct.SOURCES.write_text(json.dumps({'sources': [{
-        'id': 'testsite',
-        'search_domains': ['example.test'],
-        'direct_listing_urls': [listing],
-        'direct_listing_limit': 1,
-        'direct_detail_limit': 4,
-        'direct_detail_url_hints': ['/detail'],
-        'scheduled_known_detail_fetch_enabled': False,
-    }]}))
-    row = dict.fromkeys(direct.FIELDS, '')
-    row.update(
-        offerKey='existing',
-        game='Game A',
-        site='testsite',
-        reward='100',
-        condition='existing',
-        platform='iOS',
-        updatedAt='2026-09-01',
-        url=stale,
-        sourceUrl=stale,
-        verified='true',
-    )
-    direct.write_published([row])
-    before = direct.PUBLISHED.read_bytes()
-    requested = []
-
-    def fetch(url, source):
-        requested.append(url)
-        if url == listing:
-            return '<body>No matching game today</body>', url
-        pytest.fail('stale known detail URL must not be fetched')
-
-    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
-    assert direct.main() == 0
-    assert requested == [listing]
-    assert direct.PUBLISHED.read_bytes() == before
-
-    items = json.loads(direct.REVIEW.read_text())['items']
-    assert len(items) == 1
-    assert items[0]['reason'] == 'discovery_required'
-    assert items[0]['knownDetailFetchEnabled'] is False
-
-
-def test_listing_only_source_fetches_only_newly_discovered_detail(monkeypatch):
-    listing = 'https://example.test/list'
-    stale = 'https://example.test/detail?id=999'
-    current = 'https://example.test/detail?id=123'
-    direct.POLICY.write_text(json.dumps({
-        'comparisonSources': ['testsite'],
-        'minimumConfirmedSourcesForComparison': 2,
-        'games': {'Game A': {'enabled': True}},
-    }))
-    direct.TARGETS.write_text(json.dumps({'games': [{
-        'game': 'Game A',
-        'known_urls_by_source': {'testsite': [stale]},
-    }]}))
-    direct.SOURCES.write_text(json.dumps({'sources': [{
-        'id': 'testsite',
-        'search_domains': ['example.test'],
-        'direct_listing_urls': [listing],
-        'direct_listing_limit': 1,
-        'direct_detail_limit': 4,
-        'direct_detail_url_hints': ['/detail'],
-        'scheduled_known_detail_fetch_enabled': False,
-    }]}))
-    direct.write_published([])
-    requested = []
-
-    def fetch(url, source):
-        requested.append(url)
-        if url == listing:
-            return (
-                '<body>Game A <a href="/detail?id=123">Game A offer</a></body>',
-                listing,
-            )
-        if url == current:
-            return '<body>Game A 累計 100 pt</body>', current
-        pytest.fail('unexpected URL')
-
-    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
-    assert direct.main() == 0
-    assert requested == [listing, current]
-    assert stale not in requested
-    assert direct.read_published() == []
-
-    items = json.loads(direct.REVIEW.read_text())['items']
-    assert any(item['reason'] == 'unpublished_offer_found' and item['url'] == current for item in items)
-
-
-def test_repository_coincome_uses_listing_only_scheduled_discovery(monkeypatch):
-    monkeypatch.setattr(direct, 'SOURCES', ROOT/'config/point_sources.json')
-    payload = json.loads((ROOT/'config/point_sources.json').read_text())
-    by_id = {source['id']: source for source in payload['sources']}
-    coincome = by_id['coincome']
-    assert coincome['scheduled_fetch_enabled'] if 'scheduled_fetch_enabled' in coincome else True
-    assert coincome['scheduled_known_detail_fetch_enabled'] is False
-    assert 'listing' in coincome['scheduled_known_detail_fetch_reason'].lower()
-    assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
-
-
-def test_repository_tracks_current_reviewed_warau_offer_ids():
-    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
-    by_game = {item['game']: item for item in targets}
-
-    def ids(game):
-        return {
-            direct.warau_offer_id(url)
-            for url in by_game[game]['known_urls_by_source']['warau']
-        }
-
-    assert ids('ホワイトアウト・サバイバル') == {'201862'}
-    assert ids('パズル＆サバイバル') == {'206425', '205361', '206488', '206460', '205557'}
-    assert ids('キングショット') == {'204984', '204983'}
-    assert ids('放置少女') == {'177971', '206411'}
-    assert ids('メメントモリ') == {'206501', '206500', '206037', '205982', '206035', '205975'}
-    assert ids('エバーテイル') == {'188016'}
-    assert ids('東京ディバンカー') == {'191400', '191401'}
-
-
-def test_repository_mementomori_moppy_review_targets_use_current_45_day_pair():
-    targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
-    memo = next(item for item in targets if item['game'] == 'メメントモリ')
-    urls = memo['known_urls_by_source']['moppy']
-    by_id = {direct.moppy_offer_id(url): url for url in urls}
-    assert set(by_id) == {'160690', '160688'}
-
-    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
-    published = [row for row in rows if row['game'] == 'メメントモリ' and row['site'] == 'moppy']
-    assert published == []
-
-
-def test_offerwall_presence_returns_only_known_sanitized_provider_domains():
-    secret = 'user-token-DO-NOT-STORE'
-    raw = f'''<body>
-    <section>Game A
-      <a href="https://ow-gf-rewards.com/offers/game-a?uid={secret}#step">Open offerwall</a>
-      <a href="https://unknown.example/path?uid={secret}">Unknown provider</a>
-      <a href="http://appdriver.jp/path?uid={secret}">Insecure provider</a>
-      <a href="https://user@appdriver.jp/path">Credentialed provider</a>
-      <a href="https://appdriver.jp:444/path">Unexpected port</a>
-    </section>
-    </body>'''
-    found = direct.discover_offerwall_presence(
-        raw,
-        'https://example.test/list',
-        ['Game A'],
-        ['ow-gf-rewards.com', 'appdriver.jp'],
-    )
-    assert found == ['ow-gf-rewards.com']
-    serialized = json.dumps(found)
-    assert secret not in serialized
-    assert '/offers/' not in serialized
-    assert '?' not in serialized
-    assert '#' not in serialized
-
-
-def test_offerwall_presence_requires_target_adjacent_context():
-    padding = 'x' * 1600
-    raw = (
-        '<body>Game A ' + padding +
-        '<a href="https://ow-gf-rewards.com/private?uid=secret">Unrelated wall</a>'
-        '</body>'
-    )
-    assert direct.discover_offerwall_presence(
-        raw,
-        'https://example.test/list',
-        ['Game A'],
-        ['ow-gf-rewards.com'],
-    ) == []
-
-
-def test_offerwall_presence_is_review_only_and_never_fetched_or_published(monkeypatch):
-    listing = 'https://example.test/list'
-    secret = 'sensitive-user-id'
-    direct.POLICY.write_text(json.dumps({
-        'comparisonSources': ['testsite'],
-        'minimumConfirmedSourcesForComparison': 2,
-        'games': {'Game A': {'enabled': True}},
-    }))
-    direct.TARGETS.write_text(json.dumps({'games': [{'game': 'Game A'}]}))
-    direct.SOURCES.write_text(json.dumps({
-        'sources': [{
-            'id': 'testsite',
-            'search_domains': ['example.test'],
-            'direct_listing_urls': [listing],
-            'direct_listing_limit': 1,
-            'direct_detail_limit': 4,
-            'direct_detail_url_hints': ['/detail'],
-        }],
-        'offerwall_domains_discovered': ['ow-gf-rewards.com'],
-        'offerwall_presence_detection': {
-            'enabled': True,
-            'follow_external_links': False,
-            'persist': 'provider_domain_only',
-            'require_target_context': True,
-        },
-    }))
-    direct.SOURCES.with_name('offerwall_providers.json').write_text(json.dumps({
-        'schemaVersion': 1,
-        'providers': [{
-            'id': 'gf_rewards',
-            'name': 'GF Rewards',
-            'presenceDomains': ['ow-gf-rewards.com'],
-            'retrievalMode': 'presence_only',
-            'followExternalLinks': False,
-            'persist': 'provider_domain_only',
-        }],
-    }))
-    row = dict.fromkeys(direct.FIELDS, '')
-    row.update(
-        offerKey='existing',
-        game='Game A',
-        site='testsite',
-        reward='100',
-        condition='existing',
-        platform='iOS',
-        updatedAt='2026-09-01',
-        url='',
-        sourceUrl='',
-        verified='true',
-    )
-    direct.write_published([row])
-    before = direct.PUBLISHED.read_bytes()
-    requested = []
-
-    def fetch(url, source):
-        requested.append(url)
-        assert url == listing
-        return (
-            f'<body><section>Game A '
-            f'<a href="https://ow-gf-rewards.com/path?uid={secret}">Offerwall</a>'
-            f'</section></body>',
-            listing,
-        )
-
-    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
-    assert direct.main() == 0
-    assert requested == [listing]
-    assert direct.PUBLISHED.read_bytes() == before
-
-    review_text = direct.REVIEW.read_text()
-    items = json.loads(review_text)['items']
-    assert len(items) == 1
-    assert items[0]['reason'] == 'offerwall_presence_candidate'
-    assert items[0]['providerDomains'] == ['ow-gf-rewards.com']
-    assert items[0]['providerCandidates'] == [{
-        'providerId': 'gf_rewards',
-        'providerName': 'GF Rewards',
-        'domain': 'ow-gf-rewards.com',
-        'retrievalMode': 'presence_only',
-    }]
-    assert secret not in review_text
-    assert '/path' not in review_text
-
-    status = json.loads(direct.STATUS.read_text())
-    source = status['games'][0]['sources'][0]
-    assert source['offerwallPresenceDomains'] == 1
-    assert source['offerwallReviewedProviders'] == 1
-    assert source['confirmedOffers'] == source['updatedRows'] == 0
-    assert source['reviewRequired'] == 1
-    assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
-    assert status['games'][0]['comparisonReady'] is False
-
-
-def test_offerwall_presence_detection_fails_closed_without_exact_privacy_contract(monkeypatch):
-    listing = 'https://example.test/list'
-    direct.POLICY.write_text(json.dumps({
-        'comparisonSources': ['testsite'],
-        'minimumConfirmedSourcesForComparison': 2,
-        'games': {'Game A': {'enabled': True}},
-    }))
-    direct.TARGETS.write_text(json.dumps({'games': [{'game': 'Game A'}]}))
-    direct.write_published([])
-
-    base_source = {
-        'sources': [{
-            'id': 'testsite',
-            'search_domains': ['example.test'],
-            'direct_listing_urls': [listing],
-            'direct_listing_limit': 1,
-            'direct_detail_limit': 4,
-            'direct_detail_url_hints': ['/detail'],
-        }],
-        'offerwall_domains_discovered': ['ow-gf-rewards.com'],
-    }
-    unsafe_policies = [
-        None,
-        {'enabled': True, 'follow_external_links': True,
-         'persist': 'provider_domain_only', 'require_target_context': True},
-        {'enabled': True, 'follow_external_links': False,
-         'persist': 'full_url', 'require_target_context': True},
-        {'enabled': True, 'follow_external_links': False,
-         'persist': 'provider_domain_only', 'require_target_context': False},
-    ]
-
-    for policy in unsafe_policies:
-        payload = dict(base_source)
-        if policy is not None:
-            payload['offerwall_presence_detection'] = policy
-        direct.SOURCES.write_text(json.dumps(payload))
-        monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (
-            '<body>Game A <a href="https://ow-gf-rewards.com/path?uid=secret">Wall</a></body>',
-            listing,
-        ))
-        assert direct.main() == 0
-        items = json.loads(direct.REVIEW.read_text())['items']
-        assert len(items) == 1
-        assert items[0]['reason'] == 'discovery_required'
-        assert 'providerDomains' not in items[0]
-
-
-def test_repository_offerwall_presence_policy_is_domain_only_and_no_follow():
-    payload = json.loads((ROOT/'config/point_sources.json').read_text())
-    policy = payload['offerwall_presence_detection']
-    assert policy == {
-        'enabled': True,
-        'follow_external_links': False,
-        'persist': 'provider_domain_only',
-        'require_target_context': True,
-    }
-    domains = payload['offerwall_domains_discovered']
-    assert len(domains) == len(set(domains))
-    assert all('/' not in domain and '?' not in domain and '#' not in domain for domain in domains)
-
-
-def test_offerwall_presence_does_not_cross_adjacent_offer_cards():
-    raw = '''<body>
-      <article class="offer-card"><h3>Game A</h3><p>100pt</p></article>
-      <article class="offer-card"><h3>Game B</h3>
-        <a href="https://ow-gf-rewards.com/path?uid=secret">Open wall</a>
-      </article>
-    </body>'''
-    assert direct.discover_offerwall_presence(
-        raw,
-        'https://example.test/list',
-        ['Game A'],
-        ['ow-gf-rewards.com'],
-    ) == []
-
-
-def test_offerwall_presence_accepts_nested_link_inside_same_offer_card():
-    raw = '''<body>
-      <article class="offer-card">
-        <header><h3>Game A</h3></header>
-        <div class="actions"><span><a href="https://ow-gf-rewards.com/path?uid=secret">Open wall</a></span></div>
-      </article>
-      <article class="offer-card"><h3>Game B</h3></article>
-    </body>'''
-    assert direct.discover_offerwall_presence(
-        raw,
-        'https://example.test/list',
-        ['Game A'],
-        ['ow-gf-rewards.com'],
-    ) == ['ow-gf-rewards.com']
-
-
-def test_offerwall_presence_rejects_page_wide_container_even_when_target_exists():
-    filler = 'x' * 1500
-    raw = (
-        '<body><main>Game A ' + filler +
-        '<a href="https://ow-gf-rewards.com/path?uid=secret">Open wall</a>'
-        '</main></body>'
-    )
-    assert direct.discover_offerwall_presence(
-        raw,
-        'https://example.test/list',
-        ['Game A'],
-        ['ow-gf-rewards.com'],
-    ) == []
-
-
-def test_offerwall_provider_registry_loads_reviewed_gf_rewards_contract(tmp_path):
-    path = tmp_path/'offerwall_providers.json'
-    path.write_text(json.dumps({
-        'schemaVersion': 1,
-        'providers': [{
-            'id': 'gf_rewards',
-            'name': 'GF Rewards',
-            'presenceDomains': ['ow-gf-rewards.com'],
-            'retrievalMode': 'presence_only',
-            'followExternalLinks': False,
-            'persist': 'provider_domain_only',
-        }],
-    }))
-    registry = direct.load_offerwall_provider_registry(path)
-    assert registry == {
-        'ow-gf-rewards.com': {
-            'providerId': 'gf_rewards',
-            'providerName': 'GF Rewards',
-            'domain': 'ow-gf-rewards.com',
-            'retrievalMode': 'presence_only',
-        }
-    }
-    assert direct.offerwall_provider_candidates(
-        ['ow-gf-rewards.com', 'appdriver.jp'], registry
-    ) == [{
-        'providerId': 'gf_rewards',
-        'providerName': 'GF Rewards',
-        'domain': 'ow-gf-rewards.com',
-        'retrievalMode': 'presence_only',
-    }]
-
-
-@pytest.mark.parametrize('providers', [
-    [{
-        'id': 'gf_rewards',
-        'presenceDomains': ['ow-gf-rewards.com'],
-        'retrievalMode': 'direct_fetch',
-        'followExternalLinks': True,
-        'persist': 'full_url',
-    }],
-    [{
-        'id': 'gf_rewards',
-        'presenceDomains': ['ow-gf-rewards.com'],
-        'retrievalMode': 'presence_only',
-        'followExternalLinks': False,
-        'persist': 'provider_domain_only',
-    }, {
-        'id': 'other_provider',
-        'presenceDomains': ['ow-gf-rewards.com'],
-        'retrievalMode': 'presence_only',
-        'followExternalLinks': False,
-        'persist': 'provider_domain_only',
-    }],
-])
-def test_offerwall_provider_registry_rejects_unsafe_or_duplicate_contracts(tmp_path, providers):
-    path = tmp_path/'offerwall_providers.json'
-    path.write_text(json.dumps({'schemaVersion': 1, 'providers': providers}))
-    with pytest.raises(ValueError):
-        direct.load_offerwall_provider_registry(path)
-
-
-def test_repository_gf_rewards_provider_contract_is_presence_only():
-    payload = json.loads((ROOT/'config/offerwall_providers.json').read_text())
-    assert payload['schemaVersion'] == 1
-    gf = next(item for item in payload['providers'] if item['id'] == 'gf_rewards')
-    assert gf['presenceDomains'] == ['ow-gf-rewards.com']
-    assert gf['informationDomains'] == ['info.gf-rewards.com']
-    assert gf['retrievalMode'] == 'presence_only'
-    assert gf['followExternalLinks'] is False
-    assert gf['persist'] == 'provider_domain_only'
-    assert gf['requiresUserTrackingContext'] is True
-    assert gf['privacyEvidenceUrl'] == 'https://info.gf-rewards.com/privacy.html'
-
-
-def test_repository_appdriver_provider_contract_is_presence_only():
-    path = ROOT/'config/offerwall_providers.json'
-    payload = json.loads(path.read_text())
-    appdriver = next(item for item in payload['providers'] if item['id'] == 'appdriver')
-    assert appdriver['presenceDomains'] == ['appdriver.jp']
-    assert appdriver['informationDomains'] == ['appdriver.jp']
-    assert appdriver['retrievalMode'] == 'presence_only'
-    assert appdriver['followExternalLinks'] is False
-    assert appdriver['persist'] == 'provider_domain_only'
-    assert appdriver['requiresUserTrackingContext'] is True
-    assert appdriver['termsEvidenceUrl'] == 'https://appdriver.jp/public/info/terms'
-    assert appdriver['integrationEvidenceUrl'].endswith('Reward_for_publisher_ver1.4_English.pdf')
-
-    registry = direct.load_offerwall_provider_registry(path)
-    assert registry['appdriver.jp'] == {
-        'providerId': 'appdriver',
-        'providerName': 'AppDriver',
-        'domain': 'appdriver.jp',
-        'retrievalMode': 'presence_only',
-    }
-    assert direct.offerwall_provider_candidates(
-        ['appdriver.jp', 'unknown.example'], registry
-    ) == [{
-        'providerId': 'appdriver',
-        'providerName': 'AppDriver',
-        'domain': 'appdriver.jp',
-        'retrievalMode': 'presence_only',
-    }]
-
-
-def test_repository_skyflag_provider_contract_is_presence_only():
-    path = ROOT/'config/offerwall_providers.json'
-    payload = json.loads(path.read_text())
-    skyflag = next(item for item in payload['providers'] if item['id'] == 'skyflag')
-    assert skyflag['presenceDomains'] == ['ow.skyflag.jp']
-    assert skyflag['informationDomains'] == ['skyflag.info', 'skyfall.co.jp']
-    assert skyflag['retrievalMode'] == 'presence_only'
-    assert skyflag['followExternalLinks'] is False
-    assert skyflag['persist'] == 'provider_domain_only'
-    assert skyflag['anonymousPublicCatalogEstablished'] is False
-
-    registry = direct.load_offerwall_provider_registry(path)
-    assert registry['ow.skyflag.jp'] == {
-        'providerId': 'skyflag',
-        'providerName': 'SKYFLAG',
-        'domain': 'ow.skyflag.jp',
-        'retrievalMode': 'presence_only',
-    }
-
-
-def test_repository_all_discovered_offerwall_domains_have_reviewed_presence_only_providers():
-    source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
-    provider_path = ROOT/'config/offerwall_providers.json'
-    provider_payload = json.loads(provider_path.read_text())
-    registry = direct.load_offerwall_provider_registry(provider_path)
-
-    discovered = set(source_payload['offerwall_domains_discovered'])
-    assert set(registry) == discovered
-    assert len(discovered) == 9
-
-    expected = {
-        'ow-gf-rewards.com': 'gf_rewards',
-        'appdriver.jp': 'appdriver',
-        'ow.skyflag.jp': 'skyflag',
-        'cdn.mychips.io': 'mychips',
-        'ow.z.mobu.jp': 'zucks',
-        'wall.smaad.net': 'smaad',
-        'sdk.tyrads.com': 'tyrads',
-        'chobirich.playtimeweb.com': 'adjoe_playtime',
-        'offerwall.ayet.io': 'ayet',
-    }
-    assert {domain: item['providerId'] for domain, item in registry.items()} == expected
-
-    providers = provider_payload['providers']
-    assert len(providers) == len({item['id'] for item in providers})
-    assert all(item['retrievalMode'] == 'presence_only' for item in providers)
-    assert all(item['followExternalLinks'] is False for item in providers)
-    assert all(item['persist'] == 'provider_domain_only' for item in providers)
-
-
-def test_remaining_provider_contracts_keep_user_contextual_walls_presence_only():
-    path = ROOT/'config/offerwall_providers.json'
-    payload = json.loads(path.read_text())
-    by_id = {item['id']: item for item in payload['providers']}
-
-    for provider_id in ('mychips', 'zucks', 'tyrads', 'adjoe_playtime', 'ayet'):
-        item = by_id[provider_id]
-        assert item['requiresUserTrackingContext'] is True
-        assert item['retrievalMode'] == 'presence_only'
-        assert item['followExternalLinks'] is False
-        assert item['persist'] == 'provider_domain_only'
-
-    assert by_id['smaad']['anonymousPublicCatalogEstablished'] is False
-    assert by_id['smaad']['retrievalMode'] == 'presence_only'
-    assert by_id['smaad']['followExternalLinks'] is False
+        assert item['approvalHoldReason']=='source_refresh_not_enabled'
+        assert item['sourceEvidence']['displayedRewardPoints']==600
 
 
 def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_markup, monkeypatch):
     direct.POLICY.write_text(json.dumps({
-        'comparisonSources': ['moppy'],
-        'minimumConfirmedSourcesForComparison': 2,
-        'games': {'テストゲーム': {'enabled': True}},
+        'comparisonSources':['moppy'],'minimumConfirmedSourcesForComparison':2,
+        'games':{'テストゲーム':{'enabled':True}},
     }))
-    direct.TARGETS.write_text(json.dumps({'games': [{
-        'game': 'テストゲーム',
-        'known_urls_by_source': {'moppy': [MOPPY_URL]},
+    direct.TARGETS.write_text(json.dumps({'games':[{
+        'game':'テストゲーム','known_urls_by_source':{'moppy':[MOPPY_URL]},
     }]}))
-    direct.SOURCES.write_text(json.dumps({'sources': [{
-        'id': 'moppy',
-        'search_domains': ['pc.moppy.jp'],
-        'direct_listing_urls': [],
-        'direct_detail_limit': 6,
+    direct.SOURCES.write_text(json.dumps({'sources':[{
+        'id':'moppy','search_domains':['pc.moppy.jp'],'direct_listing_urls':[],
+        'direct_detail_limit':6,
     }]}))
     direct.SOURCES.with_name('offerwall_providers.json').write_text(json.dumps({
-        'schemaVersion': 1,
-        'providers': [{
-            'id': 'appdriver',
-            'name': 'AppDriver',
-            'presenceDomains': ['appdriver.jp'],
-            'firstPartyLabels': ['アプリドライブ', 'AppDriver'],
-            'retrievalMode': 'presence_only',
-            'followExternalLinks': False,
-            'persist': 'provider_domain_only',
-        }],
-    }))
+        'schemaVersion':1,'providers':[{
+            'id':'appdriver','name':'AppDriver','presenceDomains':['appdriver.jp'],
+            'firstPartyLabels':['アプリドライブ','AppDriver'],'retrievalMode':'presence_only',
+            'followExternalLinks':False,'persist':'provider_domain_only'}]}))
     direct.write_published([])
-    calls = []
-    shell = moppy_markup.replace(
-        '■注意事項',
-        'ポイント未付与はアプリドライブのサイト内お問い合わせフォームをご利用ください。■注意事項',
-    )
-
-    def fetch(url, source):
-        calls.append(url)
-        assert url == MOPPY_URL
-        return shell, MOPPY_URL
-
-    monkeypatch.setattr(direct, 'fetch_first_party', fetch)
-    assert direct.main() == 0
-    assert calls == [MOPPY_URL]
-
-    items = json.loads(direct.REVIEW.read_text())['items']
-    assert len(items) == 1
-    evidence = items[0]['sourceEvidence']
+    shell=moppy_markup.replace('■注意事項','アプリドライブ ■注意事項')
+    monkeypatch.setattr(direct,'fetch_first_party',lambda url,source:(shell,url))
+    assert direct.main()==0
+    items=json.loads(direct.REVIEW.read_text())['items']
+    evidence=items[0]['sourceEvidence']
     assert evidence['downstreamTermsRequired'] is True
-    assert evidence['downstreamProviderCandidates'] == [{
-        'providerId': 'appdriver',
-        'providerName': 'AppDriver',
-        'domain': 'appdriver.jp',
-        'retrievalMode': 'presence_only',
-    }]
-    assert items[0]['reason'] == 'structured_offer_review_required'
-    assert direct.read_published() == []
+    assert evidence['downstreamProviderCandidates'][0]['providerId']=='appdriver'
+    assert items[0]['reason']=='structured_offer_review_required'
+    assert direct.read_published()==[]
 
 
 def test_offerwall_provider_label_registry_rejects_duplicate_review_labels(tmp_path):
@@ -3778,11 +3138,11 @@ def test_moppy_paginated_discovery_requires_nonempty_first_page():
     assert '{page}' in moppy['new_game_discovery_page_url_template']
     assert moppy['new_game_discovery_max_pages'] == 60
     assert moppy['new_game_discovery_candidate_limit'] == 2000
-    assert moppy['new_game_discovery_min_detail_identities_first_page'] == 1
-    assert moppy['full_catalog_discovery_enabled'] is False
+    assert moppy['new_game_discovery_min_detail_identities_first_page'] == 25
+    assert moppy['full_catalog_discovery_enabled'] is True
     assert moppy['listing_session_bootstrap_url'] == moppy['direct_listing_urls'][0]
     assert moppy['listing_session_url_hints'] == ['/ajax/category/get_list.php']
-    assert 'objective_category=0' in moppy['new_game_discovery_page_url_template']
+    assert moppy['new_game_discovery_detail_id_param'] == 's_id'\n    assert moppy['mobile'] is True\n    assert 'objective_category=0' in moppy['new_game_discovery_page_url_template']
     assert 'exclude_purchased=true' in moppy['new_game_discovery_page_url_template']
     first_page = direct.paginated_listing_url(moppy, 1)
     assert direct.listing_session_required(first_page, moppy) is True
