@@ -1,4 +1,4 @@
-name: Temporary Moppy detail parser audit
+name: Temporary Moppy detail DOM audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -13,18 +13,13 @@ jobs:
         with: {python-version: "3.12"}
       - run: |
           python - <<'PY'
-          import importlib.util,json
+          import importlib.util,json,re
           spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          cases=[("Impossible Kart",159942),("放置少女",147269),("パズル＆サバイバル",157998),("信長の野望",161201),("Family Island",162198),("Arrow Away",162167)]
-          for name,sid in cases:
-            u=f"https://pc.moppy.jp/ad/detail.php?s_id={sid}"
-            raw,final=d.fetch_first_party(u,s)
-            out=d.inspect_moppy_offer(raw,u,final,[name])
-            doc=d.EvidenceHTML(raw).root
-            h=d.evidence_text(d.one(doc.find(tag="h1")))
-            textv=d.visible_text(raw); pos=textv.find(h); tail=textv[pos:pos+1200] if pos>=0 else textv[:1200]
-            print("DETAIL",name,sid,len(raw),out.get("state"),out.get("reason"))
-            print("H1",repr(h))
-            print("HEAD",repr(tail[:700]))
+          for name,sid in [("Impossible Kart",159942),("信長の野望",161201),("Arrow Away",162167)]:
+            u=f"https://pc.moppy.jp/ad/detail.php?s_id={sid}";raw,final=d.fetch_first_party(u,s)
+            print("CASE",name)
+            for m in re.finditer(r".{0,120}(?:145P|6,000P|300P|ポイント獲得条件|成果受付期間|iOS|Android).{0,180}",raw,re.I|re.S):
+              z=re.sub(r"\s+"," ",m.group(0))
+              if "script" not in z.lower(): print("RAW",z[:360])
           PY
