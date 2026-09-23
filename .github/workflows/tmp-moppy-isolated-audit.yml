@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Audit Moppy listing routes without publishing
+      - name: Inspect public Moppy navigation
         run: |
           python - <<'PY'
           import json,re
@@ -23,26 +23,16 @@ jobs:
           s=next(x for x in cfg["sources"] if x["id"]=="moppy")
           opener=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()))
           raw,base=d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=opener)
-          print("BOOTSTRAP",len(raw.encode()),"detail_ids",len(set(re.findall(r'ad/detail\\.php\\?(?:site_id|s_id)=[0-9]+',raw))))
-          for page in range(1,11):
-            url=s["new_game_discovery_page_url_template"].replace("{page}",str(page))
-            try:
-              raw,final=d.fetch_first_party(url,s,opener=opener,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"})
-              sig=d.listing_detail_identity_signature(raw,final,s,limit=5000)
-              cand=d.discover_new_game_listing_candidates(raw,final,s,[],limit=500)
-              print("PAGE",page,"bytes",len(raw.encode()),"identities",len(sig),"candidates",len(cand),"sample",[x.get("titleHint") for x in cand[:3]])
-            except Exception as e:
-              print("PAGE",page,"ERROR",d.summarize_fetch_error(e),type(e).__name__)
-          # Inspect public navigation/form hints only; do not publish or write data.
-          python - <<'PY'
-          import json,re
-          from urllib.request import Request,urlopen
-          cfg=json.load(open('config/point_sources.json',encoding='utf-8'))
-          s=next(x for x in cfg['sources'] if x['id']=='moppy')
-          req=Request(s['listing_session_bootstrap_url'],headers={'User-Agent':s['user_agent']})
-          raw=urlopen(req,timeout=20).read().decode('utf-8','replace')
+          print("BOOTSTRAP",len(raw.encode()))
           for pat in [r'<form[^>]*>.*?</form>',r'href=["\\\'][^"\\\']*(?:app|game|category)[^"\\\']*["\\\']',r'(?:parent_category|child_category)[^<"\\\']{0,160}']:
             hits=re.findall(pat,raw,re.I|re.S)
-            print('HINT',pat,'COUNT',len(hits))
-            for h in hits[:80]: print(re.sub(r'\\s+',' ',h)[:700])
+            print("HINT",pat,"COUNT",len(hits))
+            for h in hits[:100]: print(re.sub(r'\\s+',' ',h)[:700])
+          for page in range(1,6):
+            url=s["new_game_discovery_page_url_template"].replace("{page}",str(page))
+            try:
+              body,final=d.fetch_first_party(url,s,opener=opener,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html,*/*;q=0.8"})
+              cand=d.discover_new_game_listing_candidates(body,final,s,[],limit=500)
+              print("PAGE",page,"bytes",len(body.encode()),"candidates",len(cand),"sample",[x.get("titleHint") for x in cand[:5]])
+            except Exception as e: print("PAGE",page,"ERROR",d.summarize_fetch_error(e))
           PY
