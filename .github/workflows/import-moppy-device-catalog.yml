@@ -1,0 +1,34 @@
+name: Import Moppy device catalog
+on:
+  workflow_dispatch:
+    inputs:
+      moppy_catalog_base64:
+        description: Base64 JSON from residential iPhone shortcut
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Decode device payload
+        env:
+          MOPPY_CATALOG_BASE64: ${{ inputs.moppy_catalog_base64 }}
+        run: |
+          python - <<'PY'
+          import base64,os
+          raw=base64.b64decode(os.environ["MOPPY_CATALOG_BASE64"],validate=True)
+          if len(raw)>200000: raise SystemExit("payload too large")
+          open("/tmp/moppy-device.json","wb").write(raw)
+          PY
+      - name: Validate fail-closed catalog
+        run: python scripts/import-moppy-device-catalog.py /tmp/moppy-device.json /tmp/moppy-device-accepted.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moppy-device-catalog
+          path: /tmp/moppy-device-accepted.json
+          retention-days: 3

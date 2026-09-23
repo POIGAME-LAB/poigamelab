@@ -15,7 +15,7 @@
         "moppy.jp",
         "pc.moppy.jp"
       ],
-      "mobile": false,
+      "mobile": true,
       "enabled": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
@@ -29,13 +29,14 @@
       ],
       "new_game_discovery_enabled": true,
       "new_game_discovery_page_url_template": "https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=0&current_page={page}&af_sorter=1&exclude_purchased=true",
+      "new_game_discovery_detail_id_param": "s_id",
       "new_game_discovery_max_pages": 60,
       "new_game_discovery_candidate_limit": 2000,
-      "new_game_discovery_min_detail_identities_first_page": 1,
+      "new_game_discovery_min_detail_identities_first_page": 25,
       "new_game_discovery_scope": "paginated_first_party_ajax_app_listing",
-      "full_catalog_discovery_enabled": false,
+      "full_catalog_discovery_enabled": true,
       "reviewedAt": "2026-09-20",
-      "discoveryNote": "2026-09-20 GitHub-hosted runner diagnostics confirmed Moppy now returns an empty body for direct anonymous GETs to /ajax/category/get_list.php. The same endpoint returns the current five first-party ad/detail.php offers after first loading the public category page in the same cookie session and sending the browser AJAX headers. Scheduled discovery therefore bootstraps that first-party category session before paginating the same reviewed AJAX route; publication remains gated.",
+      "discoveryNote": "2026-09-23 isolated Actions audit: Moppy's public app catalog is UA-dependent. An iPhone Safari UA returns 231 displayed app cards across 8 pages (30/30/30/30/30/30/30/21), while desktop returns 5. 230 cards use /ad/detail.php?s_id=...; the remaining card is the non-game shopping offer トリファ using /shopping/detail.php?site_id=6611 and percentage reward. Scheduled app discovery uses the mobile public catalog, session bootstrap, s_id identity, and fail-closed page/count validation; publication remains gated.",
       "listing_session_bootstrap_url": "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1",
       "listing_session_url_hints": [
         "/ajax/category/get_list.php"
