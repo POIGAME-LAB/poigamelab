@@ -183,3 +183,5 @@ V50 claim extraction is now explicitly optimized for point-reward offer completi
 V54 runs after V53 and makes **no API calls**. It reuses directly fetched X experiences plus V51 `held_single_source` community claims that are still present in the corroborated artifact. These rows never become verified facts; they remain `anecdotal_quarantine` with `usableAsFactualClaim: false`.
 
 V54 deterministically separates offer targets from observed progress (for example, `MAXレベル50 / 4日目 レベル16` becomes target Lv50 plus the real progress example day 4 → Lv16, never day 4 → Lv50). It can build an anecdotal pace section only when at least two independent experience sources are available, and it deduplicates source identity so repeated posts/pages from one account/site do not inflate coverage. Current offer conditions are explicitly not inferred from old X/blog posts; a later publishing stage must use current verified offer data. Outputs are `data/poi_guide_experience_summary.json` and `data/poi_guide_experience_status.json`; publication remains disabled (`publicationWrites: 0`).
+
+<!-- ops: 2026-09-24 verified Moppy reward refresh published; Pages redeploy trigger -->
