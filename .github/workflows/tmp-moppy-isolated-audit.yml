@@ -1,30 +1,43 @@
-name: Temporary Moppy exceptional-card audit
+name: Temporary Moppy production-path test
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
 permissions: {contents: read}
 jobs:
-  probe:
+  test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with: {ref: feat/moppy-isolated-collector-20260923}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - run: |
+      - name: Syntax and focused tests
+        run: |
+          python -m py_compile scripts/direct_offer_refresh.py
+          python -m pytest -q tests/test_import_moppy_device_catalog.py
+      - name: Exercise production discovery helpers against live Moppy catalog
+        run: |
           python - <<'PY'
-          import urllib.request,urllib.parse,http.cookiejar,re
-          B="https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1";A="https://pc.moppy.jp/ajax/category/get_list.php"
-          UA="Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 Version/26.0 Mobile/15E148 Safari/604.1"
-          jar=http.cookiejar.CookieJar();op=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-          def get(u,h={}):
-            q=urllib.request.Request(u,headers={"User-Agent":UA,"Accept-Language":"ja-JP,ja;q=0.9",**h})
-            with op.open(q,timeout=25) as r:return r.read().decode("utf-8","replace")
-          get(B)
-          qs=urllib.parse.urlencode({"parent_category":4,"child_category":52,"objective_category":0,"current_page":5,"af_sorter":1,"exclude_purchased":"true"})
-          x=get(A+"?"+qs,{"Referer":B,"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
-          cards=re.findall(r'<li class="m-list__item">(.*?)</li>',x,re.S)
-          print("CARDS",len(cards))
-          for i,c in enumerate(cards,1):
-            if not re.search(r'detail\.php\?s_id=(\d+)',c):
-              print("NO_ID_INDEX",i)
-              print("NO_ID_CARD",re.sub(r'\s+',' ',c)[:5000])
+          import importlib.util,json
+          from urllib.request import build_opener,HTTPCookieProcessor
+          from http.cookiejar import CookieJar
+          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          opener=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()))
+          boot,_=d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=opener)
+          all_ids=[]; all_candidates=[]
+          for page in range(1,10):
+            u=d.paginated_listing_url(s,page)
+            raw,final=d.fetch_first_party(u,s,opener=opener,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
+            sig=d.listing_detail_identity_signature(raw,final,s)
+            cand=d.discover_new_game_listing_candidates(raw,final,s,[],limit=500)
+            print("PAGE",page,"IDENTITIES",len(sig),"CANDIDATES",len(cand))
+            if not sig: break
+            all_ids.extend(sig);all_candidates.extend(cand)
+          uniq=set(all_ids)
+          print("TOTAL_IDENTITIES",len(all_ids),"UNIQUE",len(uniq),"CANDIDATES",len(all_candidates))
+          print("SAMPLE",[(x["titleHint"][:70],x["firstPartyCandidateUrl"]) for x in all_candidates[:12]])
+          assert len(uniq)>=225, len(uniq)
+          assert any(":s_id:" in x for x in uniq)
+          assert any("Impossible Kart" in x["titleHint"] for x in all_candidates)
           PY
