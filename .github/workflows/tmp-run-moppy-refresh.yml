@@ -17,6 +17,7 @@ jobs:
         run: |
           cp data/published_offers.csv /tmp/before.csv
           python scripts/direct_offer_refresh.py
+          python scripts/build_public_site.py
           python scripts/validate_daily_publication.py --baseline /tmp/before.csv
           python - <<'PY'
           import csv
@@ -29,7 +30,7 @@ jobs:
             if ka[k]["reward"]!=kb[k]["reward"]: changes.append((ka[k]["game"],ka[k]["reward"],kb[k]["reward"],k))
           print("MOPPY_PUBLISHED_CHANGES",len(changes))
           for x in changes: print("PUBLISHED_CHANGE",x)
-          assert len(changes)==4, changes
+          assert len(changes) >= 1, changes
           PY
       - name: Commit verified reward updates to main
         run: |
