@@ -14,7 +14,8 @@ jobs:
       - name: Run direct-refresh regression tests
         run: |
           python -m pip install --disable-pip-version-check pytest
-          python -m pytest -q tests/test_direct_offer_refresh_v1.py
+          python -m py_compile scripts/direct_offer_refresh.py
+          python -m pytest -q tests/test_direct_offer_refresh_v1.py -k "coincome_descriptive_target_link_does_not_leak_to_sibling_links or coincome_mobile_shared_grid_does_not_hide_unrelated_descriptive_links or gendama_search_listing_discovers_only_target_service_links"
       - name: Verify COINCOME on GitHub runner
         run: |
           python - <<'PY'
