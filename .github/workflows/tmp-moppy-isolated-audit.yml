@@ -1,4 +1,4 @@
-name: Temporary Moppy duplicate-row audit
+name: Temporary Moppy exceptional-card audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -10,33 +10,21 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: |
-          cat > /tmp/a.py <<'PY'
-          import urllib.request,urllib.parse,http.cookiejar,re,html,collections
+          python - <<'PY'
+          import urllib.request,urllib.parse,http.cookiejar,re
           B="https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1";A="https://pc.moppy.jp/ajax/category/get_list.php"
           UA="Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 Version/26.0 Mobile/15E148 Safari/604.1"
           jar=http.cookiejar.CookieJar();op=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
           def get(u,h={}):
             q=urllib.request.Request(u,headers={"User-Agent":UA,"Accept-Language":"ja-JP,ja;q=0.9",**h})
             with op.open(q,timeout=25) as r:return r.read().decode("utf-8","replace")
-          get(B); rows=[]; advertised=None
-          for n in range(1,20):
-            qs=urllib.parse.urlencode({"parent_category":4,"child_category":52,"objective_category":0,"current_page":n,"af_sorter":1,"exclude_purchased":"true"})
-            x=get(A+"?"+qs,{"Referer":B,"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
-            if advertised is None:
-              m=re.search(r'（\s*(\d+)件\s*）',x); advertised=int(m.group(1)) if m else None
-            cards=re.findall(r'<li class="m-list__item">(.*?)</li>',x,re.S)
-            got=0
-            for c in cards:
-              sid=re.search(r'detail\.php\?s_id=(\d+)',c); name=re.search(r'data-ga-label="([^"]+)"',c)
-              if sid: rows.append((n,sid.group(1),html.unescape(name.group(1)) if name else ""));got+=1\n              elif n==5: print("NO_ID_CARD",re.sub(r"\\s+"," ",c)[:1800])
-            print("PAGE",n,"CARDS",len(cards),"WITH_ID",got)
-            if not cards: break
-          counts=collections.Counter(s for _,s,_ in rows)
-          dup={s:n for s,n in counts.items() if n>1}
-          print("ADVERTISED",advertised,"ROWS",len(rows),"UNIQUE",len(counts),"DUP_IDS",dup)
-          for r in rows:
-            if r[1] in dup: print("DUP_ROW",r)
-          assert len(rows) in (advertised, advertised-1), (len(rows),advertised)
-          print("PASS: all displayed catalog rows captured; unique IDs may be lower only by duplicate rows")
+          get(B)
+          qs=urllib.parse.urlencode({"parent_category":4,"child_category":52,"objective_category":0,"current_page":5,"af_sorter":1,"exclude_purchased":"true"})
+          x=get(A+"?"+qs,{"Referer":B,"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
+          cards=re.findall(r'<li class="m-list__item">(.*?)</li>',x,re.S)
+          print("CARDS",len(cards))
+          for i,c in enumerate(cards,1):
+            if not re.search(r'detail\.php\?s_id=(\d+)',c):
+              print("NO_ID_INDEX",i)
+              print("NO_ID_CARD",re.sub(r'\s+',' ',c)[:5000])
           PY
-          python /tmp/a.py
