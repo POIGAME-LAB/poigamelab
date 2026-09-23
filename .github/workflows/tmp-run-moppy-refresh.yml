@@ -39,6 +39,11 @@ jobs:
           git add data/published_offers.csv data/comparison_refresh_status.json data/comparison_review_queue.json || true
           git diff --cached --quiet && exit 0
           git commit -m "chore: refresh verified Moppy rewards"
+          # build_public_site.py intentionally changes tracked/untracked build outputs
+          # that are not part of this data-only publication commit. Clean them before
+          # rebasing so the verified data commit can be pushed safely.
+          git reset --hard HEAD
+          rm -rf _site
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
