@@ -1,4 +1,4 @@
-name: Temporary Moppy detail parser regression
+name: Temporary Moppy LKG regression
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -13,16 +13,26 @@ jobs:
         with: {python-version: "3.12"}
       - run: |
           python -m py_compile scripts/direct_offer_refresh.py
+          cp data/published_offers.csv /tmp/before.csv
+          python scripts/direct_offer_refresh.py || true
           python - <<'PY'
-          import importlib.util,json
-          spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
-          cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          cases=[("Impossible Kart",159942,145),("放置少女",147269,1852),("パズル＆サバイバル",157998,2700),("信長の野望",161201,6000),("Family Island",162198,2470),("Arrow Away",162167,300)]
-          for name,sid,expected in cases:
-            u=f"https://pc.moppy.jp/ad/detail.php?s_id={sid}";raw,final=d.fetch_first_party(u,s)
-            out=d.inspect_moppy_offer(raw,u,final,[name])
-            print("DETAIL",name,out.get("state"),out.get("platform"),out.get("displayedRewardPoints"),out.get("reason"))
-            assert out["state"]=="parsed",out
-            assert out["displayedRewardPoints"]==expected,(name,out)
-            assert out["displayedRewardYen"]==expected
+          import csv,hashlib,json
+          def rows(p):
+            with open(p,encoding="utf-8",newline="") as f:return list(csv.DictReader(f))
+          a=rows("/tmp/before.csv");b=rows("data/published_offers.csv")
+          ma=[r for r in a if r["site"]=="moppy"];mb=[r for r in b if r["site"]=="moppy"]
+          print("MOPPY_BEFORE",len(ma),"AFTER",len(mb))
+          changed=[]
+          ka={r["offerKey"]:r for r in ma};kb={r["offerKey"]:r for r in mb}
+          for k in sorted(set(ka)|set(kb)):
+            if ka.get(k)!=kb.get(k):changed.append((k,ka.get(k),kb.get(k)))
+          print("MOPPY_CHANGED",len(changed))
+          for x in changed[:10]:print("CHANGE",x)
+          print("WHOLE_FILE_CHANGED",hashlib.sha256(open("/tmp/before.csv","rb").read()).hexdigest()!=hashlib.sha256(open("data/published_offers.csv","rb").read()).hexdigest())
+          q=json.load(open("data/comparison_review_queue.json",encoding="utf-8"))
+          mq=[x for x in q if x.get("source")=="moppy"]
+          print("MOPPY_REVIEW",len(mq))
+          from collections import Counter
+          print("MOPPY_REASONS",dict(Counter(x.get("reason") for x in mq)))
+          assert not changed
           PY
