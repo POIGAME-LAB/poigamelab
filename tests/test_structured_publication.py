@@ -8,7 +8,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import structured_publication as publication
-from tests.test_direct_offer_refresh_v1 import warau_markup, WARAU_URL, chobi_markup, CHOBI_URL
+from tests.test_direct_offer_refresh_v1 import (
+    warau_markup, WARAU_URL, chobi_markup, CHOBI_URL,
+    coincome_markup, COINCOME_URL,
+)
 
 NOW = "2026-09-15T16:17:00+00:00"
 SOURCES = {"warau": {"id": "warau", "search_domains": ["www.warau.jp"]}}
@@ -107,6 +110,52 @@ def test_chobirich_requires_explicit_yen_and_preserves_paid_step_and_exclusions(
     item["sourceEvidence"] = publication.direct.inspect_chobirich_offer(
         chobi_markup.replace("円相当", "円"), CHOBI_URL, CHOBI_URL, ["テストゲーム"])
     with pytest.raises(publication.Hold): publication.snapshot(item, source, NOW)
+
+
+def test_coincome_v2_reward_only_snapshot_updates_reward_and_preserves_old_terms(coincome_markup):
+    sources = {
+        "coincome": {
+            "id": "coincome",
+            "search_domains": ["cimcome.jp"],
+        }
+    }
+    policy = {"enabled": True, "sources": ["coincome"]}
+    evidence = publication.direct.inspect_coincome_offer(
+        coincome_markup, COINCOME_URL, COINCOME_URL, ["テストゲーム"]
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "coincome-detail-review-v2"
+    row = {
+        "offerKey": "coincome-test",
+        "game": "テストゲーム",
+        "site": "coincome",
+        "provider": "",
+        "url": COINCOME_URL,
+        "sourceUrl": COINCOME_URL,
+        "reward": "500",
+        "type": "StepUp",
+        "condition": "既存の公開条件",
+        "deadline": "既存の公開期限",
+        "platform": "Android",
+        "verified": "true",
+        "updatedAt": "2026-09-01",
+    }
+    item = {
+        "source": "coincome",
+        "game": "テストゲーム",
+        "url": COINCOME_URL,
+        "checkedAt": NOW,
+        "sourceEvidence": evidence,
+    }
+    updated, report = publication.prepare([row], [item], sources, NOW, policy)
+    assert updated[0]["reward"] == "600"
+    assert updated[0]["platform"] == "Android"
+    assert updated[0]["condition"] == "既存の公開条件"
+    assert updated[0]["deadline"] == "既存の公開期限"
+    assert updated[0]["updatedAt"] == "2026-09-16"
+    assert report["updatedRows"] == 1
+    assert report["rewardChanges"] == 1
+    assert report["decisions"][0]["publicationMode"] == "reward_only"
 
 
 def test_unavailable_offer_preserves_previous_value(warau_markup):
