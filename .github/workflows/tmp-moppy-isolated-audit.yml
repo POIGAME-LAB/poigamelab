@@ -28,6 +28,11 @@ jobs:
             hits=re.findall(pat,raw,re.I|re.S)
             print("HINT",pat,"COUNT",len(hits))
             for h in hits[:100]: print(re.sub(r'\\s+',' ',h)[:700])
+          idx=raw.find("function get")
+          for needle in ["current_page", "af_sorter", "exclude_purchased", "ajax"]:
+            pos=raw.find(needle)
+            print("SNIPPET",needle,raw[max(0,pos-1200):pos+2600].replace("\\n"," ") if pos>=0 else "NONE")
+          print("SCRIPTS",re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)',raw,re.I))
           for page in range(1,6):
             url=s["new_game_discovery_page_url_template"].replace("{page}",str(page))
             try:
