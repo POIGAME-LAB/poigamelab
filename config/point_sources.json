@@ -15,7 +15,7 @@
         "moppy.jp",
         "pc.moppy.jp"
       ],
-      "mobile": false,
+      "mobile": true,
       "enabled": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
@@ -29,6 +29,7 @@
       ],
       "new_game_discovery_enabled": true,
       "new_game_discovery_page_url_template": "https://pc.moppy.jp/ajax/category/get_list.php?parent_category=4&child_category=52&objective_category=0&current_page={page}&af_sorter=1&exclude_purchased=true",
+      "new_game_discovery_detail_id_param": "s_id",
       "new_game_discovery_max_pages": 60,
       "new_game_discovery_candidate_limit": 2000,
       "new_game_discovery_min_detail_identities_first_page": 1,
