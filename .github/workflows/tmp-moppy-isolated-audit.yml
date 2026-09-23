@@ -1,4 +1,4 @@
-name: Temporary Moppy detail audit
+name: Temporary Moppy route audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -11,20 +11,27 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Verify known public game details
+      - name: Probe alternative public Moppy routes
         run: |
           python - <<'PY'
-          import json
+          import json,re
+          from urllib.parse import urljoin
           import scripts.direct_offer_refresh as d
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
           s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          for url,name in [
-            ("https://pc.moppy.jp/ad/detail.php?site_id=160726","MONOPOLY GO!"),
-            ("https://pc.moppy.jp/ad/detail.php?site_id=160688","メメントモリ"),
-            ("https://pc.moppy.jp/ad/detail.php?site_id=154630","出荷ぶた")]:
+          urls=[
+            "https://pc.moppy.jp/ad/category_ranking/list.php",
+            "https://pc.moppy.jp/help/?category_id=9",
+            "https://pc.moppy.jp/help/?category_id=16",
+            "https://pc.moppy.jp/gamecontents/",
+          ]
+          for url in urls:
             try:
               raw,final=d.fetch_first_party(url,s)
-              ev=d.inspect_moppy_offer(raw,url,final,[name])
-              print("DETAIL",name,len(raw.encode()),{k:ev.get(k) for k in ("state","reason","displayedRewardPoints","rewardUnit","platform","parserVersion","downstreamTermsRequired")})
-            except Exception as e: print("DETAIL",name,"ERROR",d.summarize_fetch_error(e),type(e).__name__)
+              print("ROUTE",url,"bytes",len(raw.encode()),"final",final)
+              links=sorted(set(urljoin(final,h) for h in re.findall(r'href=["\\\']([^"\\\']+)',raw,re.I)))
+              for h in links:
+                if any(k in h.lower() for k in ("category","ranking","game","app","ajax")):
+                  print("LINK",url,"=>",h)
+            except Exception as e: print("ROUTE",url,"ERROR",d.summarize_fetch_error(e))
           PY
