@@ -1,4 +1,4 @@
-name: Temporary Moppy route audit
+name: Temporary Moppy discovery audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -6,32 +6,46 @@ permissions: {contents: read}
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Probe alternative public Moppy routes
+      - name: Discover Moppy public game details
         run: |
           python - <<'PY'
-          import json,re
+          import re,requests
+          from bs4 import BeautifulSoup
           from urllib.parse import urljoin
-          import scripts.direct_offer_refresh as d
-          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
-          s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          urls=[
-            "https://pc.moppy.jp/ad/category_ranking/list.php",
-            "https://pc.moppy.jp/help/?category_id=9",
-            "https://pc.moppy.jp/help/?category_id=16",
-            "https://pc.moppy.jp/gamecontents/",
+          H={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36"}
+          seeds=[
+           "https://pc.moppy.jp/ad/category_ranking/list.php",
+           "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1",
+           "https://pc.moppy.jp/gamecontents/",
           ]
-          for url in urls:
-            try:
-              raw,final=d.fetch_first_party(url,s)
-              print("ROUTE",url,"bytes",len(raw.encode()),"final",final)
-              links=sorted(set(urljoin(final,h) for h in re.findall(r'href=["\\\']([^"\\\']+)',raw,re.I)))
-              for h in links:
-                if any(k in h.lower() for k in ("category","ranking","game","app","ajax")):
-                  print("LINK",url,"=>",h)
-            except Exception as e: print("ROUTE",url,"ERROR",d.summarize_fetch_error(e))
+          ids={}
+          for u in seeds:
+            r=requests.get(u,headers=H,timeout=20); print("SEED",r.status_code,len(r.content),u)
+            for m in re.finditer(r'(?:detail\.php\?site_id=|site_id["\\\'=:\s]+)(\d{4,})',r.text,re.I):
+              ids[m.group(1)]=u
+          print("DIRECT_IDS",len(ids),sorted(ids)[:30])
+          # Bing HTML public discovery, queries deliberately broad and Moppy-domain scoped.
+          for q in ["site:pc.moppy.jp/ad/detail.php ゲーム モッピー","site:pc.moppy.jp/ad/detail.php アプリ レベル モッピー","site:pc.moppy.jp/ad/detail.php 城 レベル モッピー"]:
+            r=requests.get("https://www.google.com/search",params={"q":q,"num":100},headers=H,timeout=20)
+            print("SEARCH",r.status_code,len(r.content),q)
+            for sid in re.findall(r'pc\.moppy\.jp/ad/detail\.php\?site_id%3D(\d+)|pc\.moppy\.jp/ad/detail\.php\?site_id=(\d+)',r.text):
+              x=next(v for v in sid if v); ids[x]="search"
+          print("ALL_IDS",len(ids),sorted(ids))
+          # Validate discovered detail pages and print title/reward-ish snippets.
+          good=0
+          for sid in sorted(ids):
+            u=f"https://pc.moppy.jp/ad/detail.php?site_id={sid}"
+            r=requests.get(u,headers=H,timeout=20)
+            s=BeautifulSoup(r.text,"html.parser")
+            h=s.find("h1"); title=" ".join(h.stripped_strings) if h else (s.title.get_text(" ",strip=True) if s.title else "")
+            txt=" ".join(s.stripped_strings)
+            rewards=re.findall(r'\b[\d,]{2,}\s*P\b',txt,re.I)[:4]
+            if r.status_code==200 and len(r.content)>100000: good+=1
+            print("DETAIL",sid,r.status_code,len(r.content),repr(title[:100]),rewards)
+          print("GOOD_DETAIL_PAGES",good)
           PY
