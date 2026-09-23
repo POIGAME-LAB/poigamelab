@@ -11,23 +11,27 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Inspect current COINCOME detail structure
+      - name: Inspect COINCOME reward markup
         run: |
           python - <<'PY'
-          import json, sys
+          import json,sys,re
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="coincome")
-          for offer_id in ("9663","9587","10261","9974"):
+          probes={
+            "9663":["8,620","ATLAS:EARTH"],
+            "9974":["8,650","5,183","戦国布武"],
+            "10261":["203","Cat Drop"],
+          }
+          for offer_id,needles in probes.items():
               url=f"https://cimcome.jp/campaigns/details/{offer_id}"
               raw,final=d.fetch_first_party(url,src,timeout=20,max_bytes=1500000)
-              text=d.visible_text(raw)
-              doc=d.EvidenceHTML(raw).root
-              print("===== OFFER",offer_id,"FINAL",final,"BYTES",len(raw.encode("utf-8")),"=====")
-              print("HEADINGS")
-              for tag in ("h1","h2","h3","h4"):
-                  vals=[d.evidence_text(x) for x in doc.find(tag=tag)]
-                  print(tag, json.dumps(vals[:30],ensure_ascii=False))
-              print("TEXT",text[:7500])
+              print("===== OFFER",offer_id,"=====")
+              for needle in needles:
+                  positions=[m.start() for m in re.finditer(re.escape(needle),raw)]
+                  print("NEEDLE",needle,"COUNT",len(positions))
+                  for p in positions[:4]:
+                      snippet=raw[max(0,p-700):p+900]
+                      print("RAW",re.sub(r"\s+"," ",snippet))
           PY
