@@ -40,5 +40,6 @@ jobs:
           assert not falseish
           assert any(x["classification"]=="likely_game" and "TikTok Lite" in x["titleHint"] for x in items)
           assert any(x["classification"]=="likely_game" and "Freecash" in x["titleHint"] for x in items)
+          assert not review_gameish
           for x in review_gameish[:30]:print("RG",x["titleHint"][:180])
           PY
