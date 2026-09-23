@@ -1,4 +1,4 @@
-name: Temporary Moppy classification audit
+name: Temporary Moppy detail parser audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -13,34 +13,13 @@ jobs:
         with: {python-version: "3.12"}
       - run: |
           python - <<'PY'
-          import importlib.util,json,re
-          from urllib.request import build_opener,HTTPCookieProcessor
-          from http.cookiejar import CookieJar
+          import importlib.util,json
           spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          op=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()));d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=op)
-          items=[]
-          for p in range(1,9):
-            u=d.paginated_listing_url(s,p);raw,final=d.fetch_first_party(u,s,opener=op,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
-            items += d.discover_new_game_listing_candidates(raw,final,s,[],limit=500)
-          for x in items:x.update(d.classify_new_game_candidate(x))
-          from collections import Counter
-          print("TOTAL",len(items),"BUCKETS",dict(Counter(x["classification"] for x in items)))
-          known=["Impossible Kart","放置少女","ファミリーファーム","Family Island","パズル＆サバイバル","Travel Town","信長の野望"]
-          for k in known:
-            hits=[x for x in items if k.casefold() in x["titleHint"].casefold()]
-            print("KNOWN",k,[(h["classification"],h["titleHint"][:100]) for h in hits])
-          falseish=[x for x in items if x["classification"]=="likely_non_game" and any(w in x["titleHint"].casefold() for w in ["game","ゲーム","パズル","rpg","レベル","ステージ","放置","マージ","サバイバル"])]
-          print("SUSPECT_FALSE_NEG",len(falseish))
-          for x in falseish[:25]:print("FN",x["titleHint"][:180],x["classificationReasons"])
-          review_gameish=[x for x in items if x["classification"]=="review" and re.search(r'レベル|ステージ|クリア|城|ゲーム|game|merge|マージ|puzzle|パズル',x["titleHint"],re.I)]
-          print("REVIEW_GAMEISH",len(review_gameish))
-          for x in review_gameish: print("LEFT_REVIEW",x["titleHint"][:220])
-          assert any(x["classification"]=="likely_game" and "Impossible Kart" in x["titleHint"] for x in items)
-          assert not falseish
-          assert any(x["classification"]=="likely_game" and "TikTok Lite" in x["titleHint"] for x in items)
-          assert any(x["classification"]=="likely_game" and "Freecash" in x["titleHint"] for x in items)
-          assert any(x["classification"]=="likely_game" and "ハイローラー" in x["titleHint"] for x in items)
-          assert not review_gameish
-          for x in review_gameish[:30]:print("RG",x["titleHint"][:180])
+          cases=[("Impossible Kart",159942),("放置少女",147269),("パズル＆サバイバル",157998),("信長の野望",161201),("Family Island",162198),("Arrow Away",162167)]
+          for name,sid in cases:
+            u=f"https://pc.moppy.jp/ad/detail.php?s_id={sid}"
+            raw,final=d.fetch_first_party(u,s)
+            out=d.inspect_moppy_offer(raw,u,final,[name])
+            print("DETAIL",name,sid,len(raw),out.get("state"),out.get("reason"),out.get("name"),out.get("platform"),out.get("displayedRewardPoints"))
           PY
