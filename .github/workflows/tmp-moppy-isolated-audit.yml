@@ -1,4 +1,4 @@
-name: Temporary Moppy discovery audit
+name: Temporary Moppy frontend-source audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -6,47 +6,42 @@ permissions: {contents: read}
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: python -m pip install requests beautifulsoup4
-      - name: Discover Moppy public game details
+      - name: Trace Moppy app-list data source
         run: |
           python - <<'PY'
           import re,requests
           from bs4 import BeautifulSoup
           from urllib.parse import urljoin
           H={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36"}
-          seeds=[
-           "https://pc.moppy.jp/ad/category_ranking/list.php",
-           "https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1",
-           "https://pc.moppy.jp/gamecontents/",
-          ]
-          ids={}
-          for u in seeds:
-            r=requests.get(u,headers=H,timeout=20); print("SEED",r.status_code,len(r.content),u)
-            for m in re.finditer(r'(?:detail\.php\?site_id=|site_id["\\\'=:\s]+)(\d{4,})',r.text,re.I):
-              ids[m.group(1)]=u
-          print("DIRECT_IDS",len(ids),sorted(ids)[:30])
-          # Bing HTML public discovery, queries deliberately broad and Moppy-domain scoped.
-          for q in ["site:pc.moppy.jp/ad/detail.php ゲーム モッピー","site:pc.moppy.jp/ad/detail.php アプリ レベル モッピー","site:pc.moppy.jp/ad/detail.php 城 レベル モッピー"]:
-            r=requests.get("https://www.google.com/search",params={"q":q,"num":100},headers=H,timeout=20)
-            print("SEARCH",r.status_code,len(r.content),q)
-            for sid in re.findall(r'pc\.moppy\.jp/ad/detail\.php\?site_id%3D(\d+)|pc\.moppy\.jp/ad/detail\.php\?site_id=(\d+)',r.text):
-              x=next(v for v in sid if v); ids[x]="search"
-          print("ALL_IDS",len(ids),sorted(ids))
-          # Validate discovered detail pages and print title/reward-ish snippets.
-          good=0
-          for sid in sorted(ids):
-            u=f"https://pc.moppy.jp/ad/detail.php?site_id={sid}"
-            r=requests.get(u,headers=H,timeout=20)
-            s=BeautifulSoup(r.text,"html.parser")
-            h=s.find("h1"); title=" ".join(h.stripped_strings) if h else (s.title.get_text(" ",strip=True) if s.title else "")
-            txt=" ".join(s.stripped_strings)
-            rewards=re.findall(r'\b[\d,]{2,}\s*P\b',txt,re.I)[:4]
-            if r.status_code==200 and len(r.content)>100000: good+=1
-            print("DETAIL",sid,r.status_code,len(r.content),repr(title[:100]),rewards)
-          print("GOOD_DETAIL_PAGES",good)
+          u="https://pc.moppy.jp/category/list.php?parent_category=4&child_category=52&af_sorter=1&page=1"
+          s=requests.Session(); r=s.get(u,headers=H,timeout=20); print("BOOT",r.status_code,len(r.content))
+          soup=BeautifulSoup(r.text,"html.parser")
+          scripts=[urljoin(r.url,x.get("src")) for x in soup.find_all("script") if x.get("src")]
+          print("SCRIPTS",len(scripts))
+          needles=("get_list.php","getCategoryList","current_page","exclude_purchased","objective_category","child_category")
+          for js in scripts:
+            try:
+              q=s.get(js,headers={**H,"Referer":u},timeout=20)
+              if any(n in q.text for n in needles):
+                print("JS",q.status_code,len(q.content),js)
+                for line in q.text.splitlines():
+                  if any(n in line for n in needles): print("SRC",line.strip()[:1000])
+            except Exception as e: print("JSERR",js,type(e).__name__)
+          # Probe the exact endpoint with plausible browser pagination/query variants, GET and POST.
+          ep="https://pc.moppy.jp/ajax/category/get_list.php"
+          base={"parent_category":"4","child_category":"52","objective_category":"0","af_sorter":"1","exclude_purchased":"true"}
+          for method in ("GET","POST"):
+            for key in ("current_page","page"):
+              for page in (1,2,3):
+                d={**base,key:str(page)}
+                h={**H,"Referer":u,"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*;q=0.9"}
+                q=s.request(method,ep,params=d if method=="GET" else None,data=d if method=="POST" else None,headers=h,timeout=20)
+                ids=set(re.findall(r'(?:detail\.php\?site_id=|site_id["\\\'=:\s]+)(\d{4,})',q.text,re.I))
+                print("AJAX",method,key,page,q.status_code,len(q.content),"ids",len(ids),sorted(ids)[:8],"head",repr(" ".join(BeautifulSoup(q.text,"html.parser").stripped_strings)[:160]))
           PY
