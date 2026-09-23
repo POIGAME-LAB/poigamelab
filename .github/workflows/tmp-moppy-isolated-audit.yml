@@ -24,7 +24,7 @@ jobs:
             ("https://pc.moppy.jp/ad/detail.php?site_id=154630","出荷ぶた")]:
             try:
               raw,final=d.fetch_first_party(url,s)
-              ev=d.inspect_moppy_offer(raw,final,url,[name])
-              print("DETAIL",name,len(raw.encode()),{k:ev.get(k) for k in ("state","rewardPoints","rewardUnit","verifiedCurrentRewardPoints","platform","parserVersion")})
+              ev=d.inspect_moppy_offer(raw,url,final,[name])
+              print("DETAIL",name,len(raw.encode()),{k:ev.get(k) for k in ("state","reason","displayedRewardPoints","rewardUnit","platform","parserVersion","downstreamTermsRequired")})
             except Exception as e: print("DETAIL",name,"ERROR",d.summarize_fetch_error(e),type(e).__name__)
           PY
