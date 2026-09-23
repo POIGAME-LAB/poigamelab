@@ -385,6 +385,17 @@ def classify_new_game_candidate(item):
     if re.search(r"(?:城|本部|司令部|ランク|ステージ)\s*\d+", title):
         score += 1
         reasons.append("positive:progress_condition")
+    # App-offer titles often omit genre words entirely. Explicit in-game
+    # progression/completion language is a stronger game signal than the name.
+    progress_patterns = (
+        r"ステージ\s*\d", r"\d+\s*ステージ", r"チャプター\s*\d",
+        r"フロア\s*\d", r"ワールド\s*\d", r"(?:レベル|lv)\s*\d",
+        r"(?:ステージ|チャプター|フロア|ワールド|boss|ボス).*?クリア",
+        r"(?:勝利|プレイヤーレベル|勢力)\s*\d",
+    )
+    if any(re.search(pattern, title, re.I) for pattern in progress_patterns):
+        score += 2
+        reasons.append("positive:explicit_game_progress")
 
     if score >= 2:
         bucket = "likely_game"
