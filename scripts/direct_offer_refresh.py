@@ -657,7 +657,14 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
         if not identity or identity in known_identities or identity in seen:
             continue
 
-        context = evidence_text(anchor)
+        anchor_label = evidence_text(anchor).strip()
+        anchor_label_is_descriptive = (
+            bool(anchor_label)
+            and anchor_label.casefold() not in generic_labels
+            and 2 <= len(anchor_label) <= 240
+        )
+
+        context = anchor_label
         node = anchor.parent
         depth = 0
         while node is not None and node.parent is not None and depth < 4:
@@ -680,10 +687,14 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
             node = node.parent
             depth += 1
 
-        if context_matches_known_game(context, targets):
+        # A descriptive first-party detail link is the narrowest offer identity.
+        # Do not let a loose mobile grid ancestor containing a different known
+        # game suppress every sibling offer. Generic links such as "詳細" still
+        # require bounded surrounding context for known-game suppression.
+        known_game_context = anchor_label if anchor_label_is_descriptive else context
+        if context_matches_known_game(known_game_context, targets):
             continue
 
-        anchor_label = evidence_text(anchor).strip()
         title_hint = anchor_label
         if (not title_hint or title_hint.casefold() in generic_labels
                 or len(title_hint) < 2 or len(title_hint) > 160):
