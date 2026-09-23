@@ -1,0 +1,43 @@
+name: Temporary production Moppy refresh
+on:
+  push:
+    branches: [fix/moppy-run-refresh-20260923]
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Run direct refresh and validate publication
+        run: |
+          cp data/published_offers.csv /tmp/before.csv
+          python scripts/direct_offer_refresh.py
+          python scripts/validate_daily_publication.py --baseline /tmp/before.csv
+          python - <<'PY'
+          import csv
+          def read(p):
+            with open(p,encoding="utf-8",newline="") as f:return list(csv.DictReader(f))
+          a=read("/tmp/before.csv");b=read("data/published_offers.csv")
+          ka={r["offerKey"]:r for r in a if r["site"]=="moppy"};kb={r["offerKey"]:r for r in b if r["site"]=="moppy"}
+          changes=[]
+          for k in sorted(set(ka)&set(kb)):
+            if ka[k]["reward"]!=kb[k]["reward"]: changes.append((ka[k]["game"],ka[k]["reward"],kb[k]["reward"],k))
+          print("MOPPY_PUBLISHED_CHANGES",len(changes))
+          for x in changes: print("PUBLISHED_CHANGE",x)
+          assert len(changes)==4, changes
+          PY
+      - name: Commit verified reward updates to main
+        run: |
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published_offers.csv data/comparison_refresh_status.json data/comparison_review_queue.json || true
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: refresh verified Moppy rewards"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
