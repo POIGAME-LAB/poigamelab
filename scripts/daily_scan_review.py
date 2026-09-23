@@ -95,7 +95,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         return _pointtown_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
-        "coincome-detail-review-v1": "displayedRewardYen",
+        "coincome-detail-review-v2": "displayedRewardYen",
         "hapitas-detail-review-v1": "verifiedCurrentRewardYen",
         "ecnavi-detail-review-v1": "verifiedCurrentRewardYen",
         "amefuri-multistep-review-v1": "verifiedCurrentRewardYen",
