@@ -333,7 +333,13 @@ def prepare(rows, evidence_items, sources, checked_at, policy, rate_confirmed=Fa
         # They may share the same offer identity as a fully parsed snapshot, so
         # admitting them here would turn an explicit safety marker into a false
         # incomplete-parser hold for an otherwise valid current snapshot.
-        if item.get("candidateOnly") is True and item.get("publicationAuthorized") is False:
+        evidence_records = [item.get("sourceEvidence"), item.get("evidence")]
+        if (item.get("candidateOnly") is True
+                or item.get("publicationAuthorized") is False
+                or any(isinstance(evidence, dict)
+                       and (evidence.get("publicationAuthorized") is False
+                            or evidence.get("candidateOnly") is True)
+                       for evidence in evidence_records)):
             continue
         key = (
             item.get("game"),

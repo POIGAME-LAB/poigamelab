@@ -100,7 +100,7 @@ def contract_case(source):
     return cases[source]
 
 
-def test_exact_reward_contracts_cover_five_safe_sources_and_preserve_prose():
+def test_reward_contracts_respect_publication_veto_and_preserve_prose():
     expected_safe = {"hapitas", "coincome", "point_town", "ec_navi", "amefuri"}
     assert expected_safe <= set(publication.REWARD_ONLY_CONTRACTS)
     assert "moppy" not in publication.REWARD_ONLY_CONTRACTS
@@ -130,8 +130,13 @@ def test_exact_reward_contracts_cover_five_safe_sources_and_preserve_prose():
             [row], [item], sources, NOW,
             {"enabled": True, "sources": [source]}, False
         )
-        assert report["updatedRows"] == 1, (source, report)
-        assert int(updated[0]["reward"]) > 1
+        if evidence.get("publicationAuthorized") is False:
+            assert updated == [row], (source, report)
+            assert report["updatedRows"] == report["rewardChanges"] == 0
+            assert report["decisions"][0]["holdReason"] == "no_current_evidence"
+        else:
+            assert report["updatedRows"] == 1, (source, report)
+            assert int(updated[0]["reward"]) > 1
         assert updated[0]["condition"] == "KEEP CONDITION"
         assert updated[0]["deadline"] == "KEEP DEADLINE"
 
