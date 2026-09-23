@@ -35,6 +35,7 @@ jobs:
           for x in falseish[:25]:print("FN",x["titleHint"][:180],x["classificationReasons"])
           review_gameish=[x for x in items if x["classification"]=="review" and re.search(r'レベル|ステージ|クリア|城|ゲーム|game|merge|マージ|puzzle|パズル',x["titleHint"],re.I)]
           print("REVIEW_GAMEISH",len(review_gameish))
+          for x in review_gameish: print("LEFT_REVIEW",x["titleHint"][:220])
           assert any(x["classification"]=="likely_game" and "Impossible Kart" in x["titleHint"] for x in items)
           assert not falseish
           assert any(x["classification"]=="likely_game" and "TikTok Lite" in x["titleHint"] for x in items)
