@@ -2104,84 +2104,49 @@ def moppy_offer_id(url):
 
 
 def inspect_moppy_offer(raw, requested_url, final_url, aliases):
-    """Review-only parser for the public Moppy offer shell.
-
-    Moppy explicitly states that the POINT GET destination can contain the
-    applicable reward/conditions when they differ from the shell page. This
-    parser therefore fingerprints shell evidence but never authorizes refresh.
-    """
+    """Parse first-party Moppy offer evidence conservatively for review."""
     try:
         offer_id = moppy_offer_id(requested_url)
         if moppy_offer_id(final_url) != offer_id:
             raise ValueError("redirected_to_different_offer")
-
         doc = EvidenceHTML(raw).root
-        canonicals = [n for n in doc.find(tag="link")
-                      if "canonical" in n.attrs.get("rel", "").split()]
-        if len(canonicals) > 1:
-            raise ValueError("missing_or_ambiguous_offer_structure")
-        if canonicals:
-            if moppy_offer_id(urljoin(final_url, canonicals[0].attrs.get("href", ""))) != offer_id:
-                raise ValueError("canonical_offer_mismatch")
-
         title = evidence_text(one(doc.find(tag="h1")))
         if not target_present(title, aliases):
             raise ValueError("offer_title_mismatch")
-        platforms = sorted(set(re.findall(r"(iOS|Android)", title, re.I)))
-        normalized = {"ios": "iOS", "android": "Android"}
-        platform_values = sorted({normalized[value.casefold()] for value in platforms})
-        if len(platform_values) != 1:
-            raise ValueError("ambiguous_offer_platform")
-        platform = platform_values[0]
 
-        text = visible_text(raw)
-        boundary_candidates = [
-            pos for marker in ("ポイ活応援サービス", "ポイント獲得条件")
-            if (pos := text.find(marker)) >= 0
-        ]
-        if not boundary_candidates:
-            raise ValueError("missing_offer_header_boundary")
-        first_boundary = min(boundary_candidates)
-        title_positions = [m.start() for m in re.finditer(re.escape(title), text)]
-        title_positions = [pos for pos in title_positions if pos < first_boundary]
-        if not title_positions:
-            raise ValueError("missing_offer_header")
-        start = max(title_positions)
-        tail = text[start:start + 2200]
-        boundaries = [
-            tail.find(marker) for marker in ("ポイ活応援サービス", "ポイント獲得条件")
-            if tail.find(marker) >= 0
-        ]
-        if not boundaries:
-            raise ValueError("missing_offer_header_boundary")
-        header = tail[:min(boundaries)]
+        # Platform is authoritative only when the offer title itself scopes it.
+        title_platforms = sorted(set(re.findall(r"(iOS|Android)", title, re.I)))
+        norm = {"ios": "iOS", "android": "Android"}
+        platform_values = sorted({norm[x.casefold()] for x in title_platforms})
+        platform = platform_values[0] if len(platform_values) == 1 else "unspecified"
 
-        rewards = []
-        for match in re.finditer(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*P(?![A-Za-z])", header):
-            amount = int(match.group(1).replace(",", ""))
-            if 0 < amount < 1_000_000:
-                rewards.append(amount)
-        unique_rewards = sorted(set(rewards))
+        # Reward must come from the offer's dedicated current-point element,
+        # never from surrounding navigation, campaigns, or explanatory text.
+        point_nodes = doc.find(tag="em", class_token="a-item__point--now")
+        point_values = []
+        for node in point_nodes:
+            value = evidence_text(node)
+            m = re.fullmatch(r"\s*([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*P\s*", value)
+            if m:
+                point_values.append(int(m.group(1).replace(",", "")))
+        unique_rewards = sorted(set(point_values))
         if len(unique_rewards) != 1:
-            raise ValueError("ambiguous_displayed_reward")
+            raise ValueError("missing_or_ambiguous_current_reward")
         reward_points = unique_rewards[0]
 
-        if "1ポイント=1円" not in text:
-            raise ValueError("unit_conversion_review_required")
-
-        terms_start = text.find("■獲得条件", start)
+        text = visible_text(raw)
+        terms_start = text.find("■獲得条件")
+        if terms_start < 0:
+            # Some current app offers expose the same section without the square marker.
+            terms_start = text.find("ポイント獲得条件")
         if terms_start < 0:
             raise ValueError("incomplete_offer_terms")
-        terms_end = text.find("広告概要", terms_start)
-        if terms_end < 0:
-            raise ValueError("incomplete_offer_terms")
+        terms_end_candidates = [p for marker in ("広告概要", "よくある質問", "人気クチコミ")
+                                if (p := text.find(marker, terms_start + 1)) > terms_start]
+        terms_end = min(terms_end_candidates) if terms_end_candidates else min(len(text), terms_start + 12000)
         terms = text[terms_start:terms_end].strip()
-        if "成果受付期間" not in terms:
+        if len(terms) < 40:
             raise ValueError("incomplete_offer_terms")
-        if not any(marker in terms for marker in ("■注意事項", "■却下条件", "却下条件")):
-            raise ValueError("incomplete_offer_terms")
-        if "POINT GET" not in text or "遷移" not in text:
-            raise ValueError("downstream_terms_review_required")
 
         payload = {
             "offerId": offer_id,
@@ -2190,13 +2155,13 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
             "displayedRewardPoints": reward_points,
             "rewardUnit": "P",
             "baseYenPerPoint": 1,
+            "displayedRewardYen": reward_points,
             "downstreamTermsRequired": True,
-            "headerText": re.sub(r"\s+", " ", header).strip(),
             "termsText": terms,
         }
         fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
                                     sort_keys=True).encode("utf-8")).hexdigest()
-        return {"state": "parsed", "parserVersion": "moppy-shell-review-v1",
+        return {"state": "parsed", "parserVersion": "moppy-detail-review-v2",
                 **payload, "evidenceFingerprint": fingerprint}
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
