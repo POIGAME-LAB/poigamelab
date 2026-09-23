@@ -33,7 +33,7 @@ FIELDS = [
     "type", "deadline", "updatedAt", "url", "sourceUrl", "verified"
 ]
 
-DETAIL_QUERY_KEYS = {"point_id", "site_id", "itemid", "campaign_id", "campaignid", "id"}
+DETAIL_QUERY_KEYS = {"point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "id"}
 
 def now_iso():
     return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
@@ -1113,7 +1113,7 @@ def offer_identity_key(url, source_id):
     except Exception:
         return f"{source_id}:url:{exact}"
 
-    for key in ("point_id", "site_id", "itemid", "campaign_id", "campaignid", "id"):
+    for key in ("point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "id"):
         values = query.get(key) or []
         if values:
             value = str(values[0]).strip()
