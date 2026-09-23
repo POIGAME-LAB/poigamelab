@@ -1,4 +1,4 @@
-name: Temporary Moppy production-path test
+name: Temporary Moppy classification audit
 on:
   push:
     branches: [feat/moppy-isolated-collector-20260923]
@@ -11,34 +11,29 @@ jobs:
         with: {ref: feat/moppy-isolated-collector-20260923}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Syntax and focused tests
-        run: |
-          python -m py_compile scripts/direct_offer_refresh.py
-          python -m pip install -q pytest
-          python -m pytest -q tests/test_import_moppy_device_catalog.py
-      - name: Exercise production discovery helpers against live Moppy catalog
-        run: |
+      - run: |
           python - <<'PY'
-          import importlib.util,json
+          import importlib.util,json,re
           from urllib.request import build_opener,HTTPCookieProcessor
           from http.cookiejar import CookieJar
           spec=importlib.util.spec_from_file_location("d","scripts/direct_offer_refresh.py");d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"));s=next(x for x in cfg["sources"] if x["id"]=="moppy")
-          opener=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()))
-          boot,_=d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=opener)
-          all_ids=[]; all_candidates=[]
-          for page in range(1,10):
-            u=d.paginated_listing_url(s,page)
-            raw,final=d.fetch_first_party(u,s,opener=opener,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
-            sig=d.listing_detail_identity_signature(raw,final,s)
-            cand=d.discover_new_game_listing_candidates(raw,final,s,[],limit=500)
-            print("PAGE",page,"IDENTITIES",len(sig),"CANDIDATES",len(cand))
-            if not sig: break
-            all_ids.extend(sig);all_candidates.extend(cand)
-          uniq=set(all_ids)
-          print("TOTAL_IDENTITIES",len(all_ids),"UNIQUE",len(uniq),"CANDIDATES",len(all_candidates))
-          print("SAMPLE",[(x["titleHint"][:70],x["firstPartyCandidateUrl"]) for x in all_candidates[:12]])
-          assert len(uniq)>=225, len(uniq)
-          assert any(":s_id:" in x for x in uniq)
-          assert any("Impossible Kart" in x["titleHint"] for x in all_candidates)
+          op=build_opener(d.FirstPartyRedirectHandler(s),HTTPCookieProcessor(CookieJar()));d.fetch_first_party(s["listing_session_bootstrap_url"],s,opener=op)
+          items=[]
+          for p in range(1,9):
+            u=d.paginated_listing_url(s,p);raw,final=d.fetch_first_party(u,s,opener=op,extra_headers={"Referer":s["listing_session_bootstrap_url"],"X-Requested-With":"XMLHttpRequest","Accept":"text/html, */*; q=0.01"})
+            items += d.discover_new_game_listing_candidates(raw,final,s,[],limit=500)
+          for x in items:x.update(d.classify_new_game_candidate(x))
+          from collections import Counter
+          print("TOTAL",len(items),"BUCKETS",dict(Counter(x["classification"] for x in items)))
+          known=["Impossible Kart","放置少女","ファミリーファーム","Family Island","パズル＆サバイバル","Travel Town","信長の野望"]
+          for k in known:
+            hits=[x for x in items if k.casefold() in x["titleHint"].casefold()]
+            print("KNOWN",k,[(h["classification"],h["titleHint"][:100]) for h in hits])
+          falseish=[x for x in items if x["classification"]=="likely_non_game" and any(w in x["titleHint"].casefold() for w in ["game","ゲーム","パズル","rpg","レベル","ステージ","放置","マージ","サバイバル"])]
+          print("SUSPECT_FALSE_NEG",len(falseish))
+          for x in falseish[:25]:print("FN",x["titleHint"][:180],x["classificationReasons"])
+          review_gameish=[x for x in items if x["classification"]=="review" and re.search(r'レベル|ステージ|クリア|城|ゲーム|game|merge|マージ|puzzle|パズル',x["titleHint"],re.I)]
+          print("REVIEW_GAMEISH",len(review_gameish))
+          for x in review_gameish[:30]:print("RG",x["titleHint"][:180])
           PY
