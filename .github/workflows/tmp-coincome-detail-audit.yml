@@ -6,32 +6,74 @@ permissions: {contents: read}
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Inspect COINCOME reward markup
+      - name: Run COINCOME regressions
+        run: |
+          python -m pip install --disable-pip-version-check pytest
+          python -m py_compile scripts/direct_offer_refresh.py scripts/daily_scan_review.py scripts/structured_publication.py
+          python -m pytest -q tests/test_direct_offer_refresh_v1.py -k "coincome"
+          python -m pytest -q tests/test_daily_scan_review.py
+      - name: Verify live COINCOME v2 parser
         run: |
           python - <<'PY'
-          import json,sys,re
+          import json,sys
+          from urllib.parse import urljoin
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
+          import daily_scan_review as daily
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="coincome")
-          probes={
-            "9663":["8,620","ATLAS:EARTH"],
-            "9974":["8,650","5,183","戦国布武"],
-            "10261":["203","Cat Drop"],
-          }
-          for offer_id,needles in probes.items():
-              url=f"https://cimcome.jp/campaigns/details/{offer_id}"
-              raw,final=d.fetch_first_party(url,src,timeout=20,max_bytes=1500000)
-              print("===== OFFER",offer_id,"=====")
-              for needle in needles:
-                  positions=[m.start() for m in re.finditer(re.escape(needle),raw)]
-                  print("NEEDLE",needle,"COUNT",len(positions))
-                  for p in positions[:4]:
-                      snippet=raw[max(0,p-700):p+900]
-                      print("RAW",re.sub(r"\s+"," ",snippet))
+          url=src["direct_listing_urls"][0]
+          raw,final=d.fetch_first_party(url,src,timeout=20,max_bytes=1500000)
+          rows=[]
+          seen=set()
+          for a in d.EvidenceHTML(raw).root.find(tag="a"):
+              absolute=urljoin(final,a.attrs.get("href","")).split("#",1)[0]
+              if not d.source_host_allowed(absolute,src) or not d.detail_like(absolute,src):
+                  continue
+              ident=d.offer_identity_key(absolute,"coincome")
+              if not ident or ident in seen:
+                  continue
+              seen.add(ident)
+              label=d.evidence_text(a).strip()
+              game=daily.discovery_name(label)
+              parsed=d.inspect_detail(absolute,src,[game]) if game else {}
+              ev=parsed.get("sourceEvidence") or {}
+              rows.append({
+                  "id":ident,"game":game,"url":absolute,
+                  "state":ev.get("state"),"reason":ev.get("reason"),
+                  "platform":ev.get("platform"),
+                  "rewardYen":ev.get("displayedRewardYen"),
+                  "stepTotalYen":ev.get("stepTotalYen"),
+                  "parserVersion":ev.get("parserVersion"),
+              })
+          parsed_rows=[x for x in rows if x["state"]=="parsed"]
+          print("DETAIL_COUNT",len(rows))
+          print("PARSED_COUNT",len(parsed_rows))
+          for item in rows:
+              print("OFFER",json.dumps(item,ensure_ascii=False,sort_keys=True))
+
+          atlas=d.inspect_detail(
+              "https://cimcome.jp/campaigns/details/9663",
+              src,["ATLAS: EARTH","Atlas Earth","ATLAS EARTH"]
+          )["sourceEvidence"]
+          print("ATLAS",json.dumps(atlas,ensure_ascii=False,sort_keys=True))
+          assert atlas["state"]=="parsed", atlas
+          assert atlas["platform"]=="iOS", atlas
+          assert atlas["displayedRewardYen"]==8620, atlas
+          assert atlas["stepTotalYen"]==8620, atlas
+
+          sengoku=d.inspect_detail(
+              "https://cimcome.jp/campaigns/details/9974",
+              src,["戦国布武：我が天下戦国編"]
+          )["sourceEvidence"]
+          print("SENGOKU",json.dumps(sengoku,ensure_ascii=False,sort_keys=True))
+          assert sengoku["state"]=="parsed", sengoku
+          assert sengoku["displayedRewardYen"]==8650, sengoku
+          assert sengoku["stepTotalYen"]==8650, sengoku
+          assert len(parsed_rows) >= 12, (len(parsed_rows),rows)
           PY
