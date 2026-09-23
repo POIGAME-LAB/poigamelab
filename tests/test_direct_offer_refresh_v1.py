@@ -2047,13 +2047,15 @@ def test_moppy_audited_detail_can_refresh_verified_published_reward(
     monkeypatch.setattr(direct,'fetch_first_party',fetch)
     before=direct.PUBLISHED.read_bytes()
     assert direct.main()==0
-    assert direct.PUBLISHED.read_bytes()==before
-    item=json.loads(direct.REVIEW.read_text())['items'][0]
     if fetch_fails:
+        assert direct.PUBLISHED.read_bytes()==before
+        item=json.loads(direct.REVIEW.read_text())['items'][0]
         assert item['reason']=='fetch_failed'
     else:
-        assert direct.read_published()[0]['reward']=='600'
-        assert direct.read_published()[0]['verified']=='true'
+        refreshed=direct.read_published()[0]
+        assert refreshed['reward']=='600'
+        assert refreshed['verified']=='true'
+        assert refreshed['updatedAt']!='2026-08-31'
 
 
 def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_markup, monkeypatch):
