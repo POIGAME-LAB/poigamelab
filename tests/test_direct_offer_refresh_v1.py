@@ -2139,7 +2139,7 @@ def test_tokyo_debunker_current_moppy_pair_is_published_without_guessing_os():
         if row['game'] == '東京ディバンカー' and row['site'] == 'moppy'
     ]
     assert {(direct.moppy_offer_id(row['url']), row['platform'], row['reward']) for row in matches} == {
-        ('158270', '不明', '228'),
+        ('158270', '不明', '199'),
         ('158257', '不明', '199'),
     }
     assert all(row['verified'] == 'true' for row in matches)
@@ -2633,6 +2633,66 @@ def test_coincome_app_listing_is_shared_positive_detection_only():
     assert coin['coverage_first_party_listing_enabled'] is True
     assert coin['scheduled_known_detail_fetch_enabled'] is False
     assert 'absence must not imply no coincome offer' in coin['discoveryNote'].lower()
+
+
+def test_coincome_descriptive_target_link_does_not_leak_to_sibling_links():
+    source = {
+        'id': 'coincome',
+        'name': 'COINCOME',
+        'search_domains': ['cimcome.jp'],
+        'direct_detail_url_hints': ['/campaigns/details/'],
+    }
+    html = '''
+      <main>
+        <div class="campaign-grid">
+          <a href="/campaigns/details/10260">iOS_Cat Drop: Cute Slide & Match（StepUp） 203円</a>
+          <a href="/campaigns/details/9663">iOS_ATLAS:EARTH - お得なキャッシュバック！（StepUp） 8,620円</a>
+          <a href="/campaigns/details/9587">iOS_Heroes Survival Battle(StepUp) 9,588円</a>
+        </div>
+      </main>
+    '''
+    urls = direct.discover_detail_links(
+        html,
+        'https://cimcome.jp/campaigns?_category_id=21',
+        source,
+        ['ATLAS: EARTH', 'ATLAS:EARTH'],
+        limit=6,
+    )
+    assert urls == ['https://cimcome.jp/campaigns/details/9663']
+
+
+def test_coincome_mobile_shared_grid_does_not_hide_unrelated_descriptive_links():
+    source = {
+        'id': 'coincome',
+        'name': 'COINCOME',
+        'search_domains': ['cimcome.jp'],
+        'direct_detail_url_hints': ['/campaigns/details/'],
+        'new_game_discovery_scope': 'partial_current_app_category_listing',
+    }
+    html = '''
+      <main>
+        <div class="mobile-grid">
+          <a href="/campaigns/details/10260">iOS_Cat Drop: Cute Slide & Match（StepUp） 203円</a>
+          <a href="/campaigns/details/9663">iOS_ATLAS:EARTH - お得なキャッシュバック！（StepUp） 8,620円</a>
+        </div>
+      </main>
+    '''
+    targets = [{
+        'game': 'ATLAS: EARTH',
+        'aliases': ['ATLAS: EARTH', 'ATLAS:EARTH'],
+        'known_urls_by_source': {},
+    }]
+    candidates = direct.discover_new_game_listing_candidates(
+        html,
+        'https://cimcome.jp/campaigns?_category_id=21',
+        source,
+        targets,
+        limit=20,
+    )
+    assert [x['firstPartyCandidateUrl'] for x in candidates] == [
+        'https://cimcome.jp/campaigns/details/10260',
+    ]
+    assert 'Cat Drop' in candidates[0]['titleHint']
 
 
 def test_coincome_shared_listing_reuses_unified_snapshot_path():

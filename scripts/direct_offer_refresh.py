@@ -233,28 +233,44 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
         if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
             continue
 
-        matched = target_present(evidence_text(anchor), aliases)
-        node = anchor.parent
-        depth = 0
-        while not matched and node is not None and node.parent is not None and depth < 4:
-            marker = " ".join([
-                node.tag,
-                node.attrs.get("id", ""),
-                node.attrs.get("class", ""),
-            ]).casefold()
-            is_card_boundary = (
-                node.tag in {"article", "li", "tr"}
-                or any(token in marker for token in (
-                    "card", "offer", "campaign", "service-item", "result-item"
-                ))
-            )
-            if is_card_boundary:
-                context = evidence_text(node)
-                if len(context) <= 1400 and target_present(context, aliases):
-                    matched = True
-                break
-            node = node.parent
-            depth += 1
+        anchor_label = evidence_text(anchor).strip()
+        generic_labels = {
+            "詳細", "詳細を見る", "もっと見る", "案件を見る", "ポイントを貯める",
+            "参加する", "今すぐ参加", "こちら", "more", "detail"
+        }
+        anchor_label_is_descriptive = (
+            bool(anchor_label)
+            and anchor_label.casefold() not in generic_labels
+            and 2 <= len(anchor_label) <= 240
+        )
+
+        # Descriptive detail links already bind title and URL to one offer.
+        # Do not widen them to a shared mobile grid where a sibling target can
+        # make unrelated links look like matches. Only generic/blank links may
+        # borrow text from their nearest bounded card container.
+        matched = target_present(anchor_label, aliases)
+        if not anchor_label_is_descriptive:
+            node = anchor.parent
+            depth = 0
+            while not matched and node is not None and node.parent is not None and depth < 4:
+                marker = " ".join([
+                    node.tag,
+                    node.attrs.get("id", ""),
+                    node.attrs.get("class", ""),
+                ]).casefold()
+                is_card_boundary = (
+                    node.tag in {"article", "li", "tr"}
+                    or any(token in marker for token in (
+                        "card", "offer", "campaign", "service-item", "result-item"
+                    ))
+                )
+                if is_card_boundary:
+                    context = evidence_text(node)
+                    if len(context) <= 1400 and target_present(context, aliases):
+                        matched = True
+                    break
+                node = node.parent
+                depth += 1
 
         if not matched:
             continue
@@ -657,7 +673,14 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
         if not identity or identity in known_identities or identity in seen:
             continue
 
-        context = evidence_text(anchor)
+        anchor_label = evidence_text(anchor).strip()
+        anchor_label_is_descriptive = (
+            bool(anchor_label)
+            and anchor_label.casefold() not in generic_labels
+            and 2 <= len(anchor_label) <= 240
+        )
+
+        context = anchor_label
         node = anchor.parent
         depth = 0
         while node is not None and node.parent is not None and depth < 4:
@@ -680,10 +703,14 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
             node = node.parent
             depth += 1
 
-        if context_matches_known_game(context, targets):
+        # A descriptive first-party detail link is the narrowest offer identity.
+        # Do not let a loose mobile grid ancestor containing a different known
+        # game suppress every sibling offer. Generic links such as "詳細" still
+        # require bounded surrounding context for known-game suppression.
+        known_game_context = anchor_label if anchor_label_is_descriptive else context
+        if context_matches_known_game(known_game_context, targets):
             continue
 
-        anchor_label = evidence_text(anchor).strip()
         title_hint = anchor_label
         if (not title_hint or title_hint.casefold() in generic_labels
                 or len(title_hint) < 2 or len(title_hint) > 160):
