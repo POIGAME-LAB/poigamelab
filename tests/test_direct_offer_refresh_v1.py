@@ -3142,7 +3142,9 @@ def test_moppy_paginated_discovery_requires_nonempty_first_page():
     assert moppy['full_catalog_discovery_enabled'] is True
     assert moppy['listing_session_bootstrap_url'] == moppy['direct_listing_urls'][0]
     assert moppy['listing_session_url_hints'] == ['/ajax/category/get_list.php']
-    assert moppy['new_game_discovery_detail_id_param'] == 's_id'\n    assert moppy['mobile'] is True\n    assert 'objective_category=0' in moppy['new_game_discovery_page_url_template']
+    assert moppy['new_game_discovery_detail_id_param'] == 's_id'
+    assert moppy['mobile'] is True
+    assert 'objective_category=0' in moppy['new_game_discovery_page_url_template']
     assert 'exclude_purchased=true' in moppy['new_game_discovery_page_url_template']
     first_page = direct.paginated_listing_url(moppy, 1)
     assert direct.listing_session_required(first_page, moppy) is True
