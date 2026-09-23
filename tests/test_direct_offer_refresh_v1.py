@@ -1788,19 +1788,18 @@ COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
 def coincome_markup():
     return f'''<html><head><link rel="canonical" href="{COINCOME_URL}"></head><body>
 <main>
-<h1>テストゲーム</h1>
-<div>600円</div>
-<p>新規アプリインストール後、StepUpミッションクリアでキャッシュバック</p>
-<div>Android 対象アプリ</div>
-<section>ストア概要</section>
-<h2>適用端末</h2><p>SP</p>
-<h2>キャッシュバック条件</h2>
-<h3>承認条件</h3>
-<p>新規アプリインストール後、30日以内にStepUpミッションクリアで報酬獲得となります</p>
-<p>■ポイント獲得条件</p>
-<p>広告クリック後は同一端末・同一ブラウザで条件達成してください</p>
-<h3>否認条件</h3>
-<p>重複利用、虚偽、不正利用は対象外</p>
+<p class="sale__title">Android_テストゲーム（StepUp）</p>
+<div class="sale__up"><p>600円 <span class="position-absolute">500円</span></p></div>
+<div class="description">
+■獲得可能Pt数 最大600円相当！
+STEP1. 30日以内にレベル10到達で【100円】
+STEP2. 30日以内にレベル20到達で【500円】
+</div>
+<div>適用端末 SP Tablet</div>
+<div>キャッシュバック条件</div>
+<div>承認条件 新規アプリインストール後、30日以内にStepUpミッションクリアで成果となります。</div>
+<div>広告クリック後は同一端末・同一ブラウザで条件達成してください</div>
+<div>否認条件 重複利用、虚偽、不正利用は対象外</div>
 <div>リンクをコピーする</div>
 </main></body></html>'''
 
@@ -1809,27 +1808,38 @@ def parse_coincome(raw, requested=COINCOME_URL, final=COINCOME_URL):
     return direct.inspect_coincome_offer(raw, requested, final, ['テストゲーム'])
 
 
-def test_coincome_review_parser_binds_identity_reward_os_and_full_terms(coincome_markup):
+def test_coincome_review_parser_binds_current_dom_reward_os_steps_and_terms(coincome_markup):
     evidence = parse_coincome(coincome_markup)
     assert evidence['state'] == 'parsed'
     assert evidence['offerId'] == '12345'
+    assert evidence['name'] == 'テストゲーム（StepUp）'
+    assert evidence['offerTitle'] == 'Android_テストゲーム（StepUp）'
     assert evidence['platform'] == 'Android'
     assert evidence['displayedRewardYen'] == 600
+    assert evidence['stepRewardYen'] == [100, 500]
+    assert evidence['stepTotalYen'] == 600
     assert evidence['rewardUnit'] == 'JPY-equivalent'
-    assert evidence['parserVersion'] == 'coincome-detail-review-v1'
+    assert evidence['parserVersion'] == 'coincome-detail-review-v2'
     assert all(marker in evidence['termsText'] for marker in (
-        '適用端末', 'キャッシュバック条件', '承認条件', 'ポイント獲得条件', '否認条件'))
+        '適用端末', 'キャッシュバック条件', '承認条件', '否認条件'))
     assert len(evidence['evidenceFingerprint']) == 64
 
 
+def test_coincome_boosted_old_reward_span_is_not_treated_as_current(coincome_markup):
+    evidence = parse_coincome(coincome_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['displayedRewardYen'] == 600
+    assert '500円' not in evidence['headerText']
+
+
 @pytest.mark.parametrize('old,new,reason', [
-    ('<div>600円</div>', '<div>900円 600円</div>', 'ambiguous_displayed_reward'),
-    ('Android 対象アプリ', 'iOS Android 対象アプリ', 'ambiguous_offer_platform'),
-    ('Android 対象アプリ', '対象アプリ', 'ambiguous_offer_platform'),
-    ('ポイント獲得条件', '成果条件', 'incomplete_offer_terms'),
+    ('<p>600円 <span', '<p>600円 900円 <span', 'ambiguous_displayed_reward'),
+    ('Android_テストゲーム（StepUp）', 'テストゲーム（StepUp）', 'ambiguous_offer_platform'),
+    ('キャッシュバック条件', 'キャッシュ条件', 'incomplete_offer_terms'),
     ('否認条件', '対象外条件', 'incomplete_offer_terms'),
-    ('<section>ストア概要</section>', '', 'missing_offer_header_boundary'),
-    ('<h1>テストゲーム</h1>', '<h1>別ゲーム</h1>', 'offer_title_mismatch'),
+    ('class="sale__title"', 'class="other-title"', 'missing_or_ambiguous_offer_structure'),
+    ('Android_テストゲーム（StepUp）', 'Android_別ゲーム（StepUp）', 'offer_title_mismatch'),
+    ('STEP2. 30日以内にレベル20到達で【500円】', 'STEP2. 30日以内にレベル20到達で【400円】', 'step_total_mismatch'),
     ('/campaigns/details/12345', '/campaigns/details/99999', 'canonical_offer_mismatch'),
 ])
 def test_coincome_rejects_ambiguous_or_incomplete_evidence(coincome_markup, old, new, reason):
@@ -1930,6 +1940,7 @@ def test_coincome_is_review_only_and_never_refreshes_published_date(
     else:
         assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
         assert item['sourceEvidence']['displayedRewardYen'] == 600
+        assert item['sourceEvidence']['parserVersion'] == 'coincome-detail-review-v2'
         assert item['platformMatches'] is True
         assert item['requiredChecks'] == ['reward_unit_conversion', 'complete_terms_vs_published_row']
 
