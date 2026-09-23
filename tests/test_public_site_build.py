@@ -287,7 +287,7 @@ def test_tokyo_debunker_current_verified_dates_are_fresh(output_dir):
         (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
     ))
     by_key = {(row["site"], row["url"]): row for row in rows if row["game"] == "東京ディバンカー"}
-    assert by_key[("moppy", "https://pc.moppy.jp/ad/detail.php?site_id=158270")]["updatedAt"] == "2026-09-08"
+    assert by_key[("moppy", "https://pc.moppy.jp/ad/detail.php?site_id=158270")]["updatedAt"] == "2026-09-24"
     assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["updatedAt"] == "2026-09-08"
     assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["platform"] == "iOS"
 
@@ -304,7 +304,7 @@ def test_tokyo_debunker_has_two_current_moppy_offers_without_os_guess(output_dir
         if row["game"] == "東京ディバンカー" and row["site"] == "moppy"
     ]
     assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("不明", "228", "https://pc.moppy.jp/ad/detail.php?site_id=158270"),
+        ("不明", "199", "https://pc.moppy.jp/ad/detail.php?site_id=158270"),
         ("不明", "199", "https://pc.moppy.jp/ad/detail.php?site_id=158257"),
     }
     assert all(row["verified"].lower() == "true" for row in matches)
@@ -504,8 +504,8 @@ def test_selected_moppy_verified_dates_are_current(output_dir):
         (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
     ))
     expected = {
-        ("キングショット", "Android", "18523", "https://pc.moppy.jp/ad/detail.php?site_id=161855"),
-        ("キングショット", "iOS", "18523", "https://pc.moppy.jp/ad/detail.php?site_id=161854"),
+        ("キングショット", "Android", "23367", "https://pc.moppy.jp/ad/detail.php?site_id=161855"),
+        ("キングショット", "iOS", "23367", "https://pc.moppy.jp/ad/detail.php?site_id=161854"),
         ("パズル＆サバイバル", "iOS", "39740", "https://pc.moppy.jp/ad/detail.php?site_id=160366"),
     }
     matches = {
@@ -517,7 +517,7 @@ def test_selected_moppy_verified_dates_are_current(output_dir):
     for row in rows:
         key = (row["game"], row["platform"], row["reward"], row["url"])
         if key in expected:
-            assert row["updatedAt"] == "2026-09-08"
+            assert row["updatedAt"] == "2026-09-24"
             assert row["verified"].lower() == "true"
 
 
@@ -541,7 +541,8 @@ def test_whiteout_and_houchi_selected_rows_are_current(output_dir):
     for row in rows:
         key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
         if key in expected:
-            assert row["updatedAt"] == "2026-09-08"
+            expected_date = "2026-09-24" if row["site"] == "moppy" else "2026-09-08"
+            assert row["updatedAt"] == expected_date
             assert row["verified"].lower() == "true"
 
 
@@ -562,7 +563,7 @@ def test_puzzles_moppy_android_is_current(output_dir):
     row = matches[0]
     assert row["platform"] == "Android"
     assert row["reward"] == "39734"
-    assert row["updatedAt"] == "2026-09-08"
+    assert row["updatedAt"] == "2026-09-24"
     assert row["verified"].lower() == "true"
 
 
@@ -586,7 +587,8 @@ def test_puzzles_warau_ios_and_evertale_moppy_are_current(output_dir):
     for row in rows:
         key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
         if key in expected:
-            assert row["updatedAt"] == "2026-09-08"
+            expected_date = "2026-09-24" if row["site"] == "moppy" else "2026-09-08"
+            assert row["updatedAt"] == expected_date
             assert row["verified"].lower() == "true"
 
 
@@ -599,7 +601,7 @@ def test_kingshot_hapitas_and_houchi_moppy_are_current(output_dir):
     ))
     expected = {
         ("キングショット", "hapitas", "Android", "16320", "https://hapitas.jp/item/detail/itemid/101355"),
-        ("放置少女", "moppy", "不明", "2400", "https://pc.moppy.jp/ad/detail.php?site_id=147270"),
+        ("放置少女", "moppy", "不明", "1852", "https://pc.moppy.jp/ad/detail.php?site_id=147270"),
     }
     matches = {
         (row["game"], row["site"], row["platform"], row["reward"], row["url"])
@@ -610,7 +612,8 @@ def test_kingshot_hapitas_and_houchi_moppy_are_current(output_dir):
     for row in rows:
         key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
         if key in expected:
-            assert row["updatedAt"] == "2026-09-08"
+            expected_date = "2026-09-24" if row["site"] == "moppy" else "2026-09-08"
+            assert row["updatedAt"] == expected_date
             assert row["verified"].lower() == "true"
 
 
