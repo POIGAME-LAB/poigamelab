@@ -38,4 +38,19 @@ jobs:
               cand=d.discover_new_game_listing_candidates(body,final,s,[],limit=500)
               print("SEARCH",word,len(body.encode()),len(cand),[x.get("titleHint") for x in cand[:8]])
             except Exception as e: print("SEARCH",word,"ERROR",d.summarize_fetch_error(e))
+          # Known public game details: verify that Actions can still validate individual offers.
+          python - <<'PY'
+          import json
+          import scripts.direct_offer_refresh as d
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          s=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          for url,name in [
+            ("https://pc.moppy.jp/ad/detail.php?site_id=160726","MONOPOLY GO!"),
+            ("https://pc.moppy.jp/ad/detail.php?site_id=160688","メメントモリ"),
+            ("https://pc.moppy.jp/ad/detail.php?site_id=154630","出荷ぶた")]:
+            try:
+              raw,final=d.fetch_first_party(url,s)
+              ev=d.inspect_offer(raw,final,s,[name])
+              print("DETAIL",name,len(raw.encode()),{k:ev.get(k) for k in ("state","game","rewardPoints","rewardUnit","verifiedCurrentRewardPoints","condition","platform","parserVersion")})
+            except Exception as e: print("DETAIL",name,"ERROR",d.summarize_fetch_error(e),type(e).__name__)
           PY
