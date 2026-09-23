@@ -3176,9 +3176,26 @@ def main(after_scan=None):
                                         "point_get_destination_reward",
                                         "complete_terms_vs_published_row",
                                     ]
-                            reason = (approved_refresh_reason(existing, evidence,
-                                approvals.get(existing.get("offerKey")), checked_at)
-                                if source_id == "warau" else "source_refresh_not_enabled")
+                            if source_id == "warau":
+                                reason = approved_refresh_reason(existing, evidence,
+                                    approvals.get(existing.get("offerKey")), checked_at)
+                            elif source_id == "moppy":
+                                # Moppy's audited v2 parser binds the stable offer identity and
+                                # current reward to dedicated first-party DOM. Reward-only refresh
+                                # is safe; terms/platform summaries remain untouched.
+                                if evidence.get("parserVersion") != "moppy-detail-review-v2":
+                                    reason = "source_evidence_not_supported"
+                                elif type(evidence.get("displayedRewardPoints")) is not int:
+                                    reason = "missing_current_reward"
+                                elif existing.get("verified") != "true":
+                                    reason = "published_row_not_verified"
+                                else:
+                                    existing["reward"] = str(evidence["displayedRewardPoints"])
+                                    item["candidateOnly"] = False
+                                    item["publicationAuthorized"] = True
+                                    reason = None
+                            else:
+                                reason = "source_refresh_not_enabled"
                             identity_rows = [r for r in current_rows
                                 if offer_identity_key(r.get("url"), source_id) == offer_identity_key(url, source_id)]
                             if len(identity_rows) != 1 or sum(r.get("offerKey") == existing.get("offerKey") for r in rows) != 1:
