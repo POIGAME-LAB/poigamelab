@@ -2635,6 +2635,32 @@ def test_coincome_app_listing_is_shared_positive_detection_only():
     assert 'absence must not imply no coincome offer' in coin['discoveryNote'].lower()
 
 
+def test_coincome_descriptive_target_link_does_not_leak_to_sibling_links():
+    source = {
+        'id': 'coincome',
+        'name': 'COINCOME',
+        'search_domains': ['cimcome.jp'],
+        'direct_detail_url_hints': ['/campaigns/details/'],
+    }
+    html = '''
+      <main>
+        <div class="campaign-grid">
+          <a href="/campaigns/details/10260">iOS_Cat Drop: Cute Slide & Match（StepUp） 203円</a>
+          <a href="/campaigns/details/9663">iOS_ATLAS:EARTH - お得なキャッシュバック！（StepUp） 8,620円</a>
+          <a href="/campaigns/details/9587">iOS_Heroes Survival Battle(StepUp) 9,588円</a>
+        </div>
+      </main>
+    '''
+    urls = direct.discover_detail_links(
+        html,
+        'https://cimcome.jp/campaigns?_category_id=21',
+        source,
+        ['ATLAS: EARTH', 'ATLAS:EARTH'],
+        limit=6,
+    )
+    assert urls == ['https://cimcome.jp/campaigns/details/9663']
+
+
 def test_coincome_mobile_shared_grid_does_not_hide_unrelated_descriptive_links():
     source = {
         'id': 'coincome',
