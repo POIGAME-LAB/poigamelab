@@ -24,7 +24,7 @@ def candidates(name="Example Puzzle", sites=("a", "b")):
 def inspect(url, source, aliases, fetcher):
     fetcher(url, source)
     return {"url": url, "sourceEvidence": {"state": "parsed", "platform": "iOS",
-            "parserVersion": "coincome-detail-review-v1", "displayedRewardYen": 2000,
+            "parserVersion": "coincome-detail-review-v2", "displayedRewardYen": 2000,
             "termsText": "Full terms", "evidenceFingerprint": "fixture"}}
 
 
@@ -93,7 +93,7 @@ def test_failed_or_ambiguous_second_source_is_retained_for_research(monkeypatch,
 
 @pytest.mark.parametrize("value", [True, -1, 0, "2000", 1.5, None])
 def test_noninteger_or_missing_amount_never_ranks(value):
-    assert daily.explicit_yen({"state": "parsed", "parserVersion": "coincome-detail-review-v1",
+    assert daily.explicit_yen({"state": "parsed", "parserVersion": "coincome-detail-review-v2",
                                "displayedRewardYen": value}) is None
 
 
