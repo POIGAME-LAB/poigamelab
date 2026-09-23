@@ -33,4 +33,16 @@ jobs:
               print("PAGE",page,"bytes",len(raw.encode()),"identities",len(sig),"candidates",len(cand),"sample",[x.get("titleHint") for x in cand[:3]])
             except Exception as e:
               print("PAGE",page,"ERROR",d.summarize_fetch_error(e),type(e).__name__)
+          # Inspect public navigation/form hints only; do not publish or write data.
+          python - <<'PY'
+          import json,re
+          from urllib.request import Request,urlopen
+          cfg=json.load(open('config/point_sources.json',encoding='utf-8'))
+          s=next(x for x in cfg['sources'] if x['id']=='moppy')
+          req=Request(s['listing_session_bootstrap_url'],headers={'User-Agent':s['user_agent']})
+          raw=urlopen(req,timeout=20).read().decode('utf-8','replace')
+          for pat in [r'<form[^>]*>.*?</form>',r'href=["\\\'][^"\\\']*(?:app|game|category)[^"\\\']*["\\\']',r'(?:parent_category|child_category)[^<"\\\']{0,160}']:
+            hits=re.findall(pat,raw,re.I|re.S)
+            print('HINT',pat,'COUNT',len(hits))
+            for h in hits[:80]: print(re.sub(r'\\s+',' ',h)[:700])
           PY
