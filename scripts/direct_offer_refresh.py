@@ -365,7 +365,7 @@ def classify_new_game_candidate(item):
     )
     negative_markers = (
         "クレジットカード", "カード発行", "証券", "fx", "銀行口座",
-        "口座開設", "保険", "ローン", "不動産", "電気", "ガス",
+        "口座開設", "保険", "ローン", "不動産", "電気",
         "宅配", "サブスク", "会員登録", "無料登録", "資料請求",
         "アンケート", "モニター", "ショッピング"
     )
@@ -378,6 +378,9 @@ def classify_new_game_candidate(item):
         if normalized_text(marker) in normalized:
             score -= 3
             reasons.append("negative:" + marker)
+    if re.search(r"(?:都市|プロパン|lp)ガス|ガス(?:会社|料金|契約|切替|申込)", title, re.I):
+        score -= 3
+        reasons.append("negative:gas_service")
 
     if re.search(r"(?:lv|level|レベル)\s*\d+", title, re.I):
         score += 2
