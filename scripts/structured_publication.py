@@ -39,12 +39,12 @@ FULL_SNAPSHOT_CONTRACTS = {
 
 REWARD_ONLY_CONTRACTS = {
     "hapitas": {
-        "parser": "hapitas-detail-review-v1",
+        "parser": "hapitas-detail-review-v2",
         "identity": direct.hapitas_offer_id,
         "rewardField": "verifiedCurrentRewardYen",
         "fingerprintFields": [
-            "offerId", "name", "platform", "displayedCurrentRewardPoints",
-            "stepRewardPoints", "verifiedCurrentRewardPoints",
+            "offerId", "name", "platform", "platformProvenance",
+            "displayedCurrentRewardPoints", "stepRewardPoints", "verifiedCurrentRewardPoints",
             "verifiedCurrentRewardYen", "rewardUnit", "sourcePointRate",
             "headerText", "termsText", "publicationAuthorized",
         ],
@@ -270,6 +270,11 @@ def reward_only_snapshot(item, sources, checked_at):
             "yen_point_mismatch",
         )
     if sid == "hapitas":
+        require(
+            e.get("publicationAuthorized") is True
+            and e.get("platformProvenance") == "reviewed_offer_registry",
+            "reviewed_platform_authorization_required",
+        )
         require(e.get("displayedCurrentRewardPoints") == reward, "yen_point_mismatch")
         steps = e.get("stepRewardPoints")
         require(isinstance(steps, list), "invalid_steps")
