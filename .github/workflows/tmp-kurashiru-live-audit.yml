@@ -19,6 +19,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Restore latest candidate queue
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/new_game_candidate_queue.json.gz" "${tmp}/queue.gz" \
+            --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          gzip -dc "${tmp}/queue.gz" > data/new_game_candidate_queue.json
+
       - name: Inspect current first-party ad detail surfaces
         run: |
           python - <<'PY'
@@ -91,6 +105,141 @@ jobs:
               "details":detail_rows,
           },ensure_ascii=False,sort_keys=True))
           PY
+      - name: Measure full-catalog ranking impact
+        run: |
+          python - <<'PY'
+          import json,sys
+          from datetime import datetime,timezone
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+          import daily_scan_review as daily
+
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          sources={x["id"]:x for x in cfg["sources"]}
+          targets=json.load(open("config/game_targets.json",encoding="utf-8"))["games"]
+          old=json.load(open("data/new_game_candidate_queue.json",encoding="utf-8")).get("items",[])
+          now=datetime.now(timezone.utc).isoformat()
+
+          def classify(items):
+              out=[]
+              for item in items:
+                  item=dict(item)
+                  item["checkedAt"]=now
+                  item.update(direct.classify_new_game_candidate(item))
+                  out.append(item)
+              return out
+
+          def live_source(source_id):
+              source=sources[source_id]
+              out=[]; seen=set()
+              urls=(source.get("direct_listing_urls") or [])[:source.get("new_game_discovery_listing_limit",1)]
+              for url in urls:
+                  raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=3_000_000)
+                  rows=direct.discover_new_game_listing_candidates(
+                      raw,final,source,targets,
+                      limit=source.get("new_game_discovery_candidate_limit",1200)
+                  )
+                  for item in rows:
+                      oid=item.get("offerIdentity")
+                      if oid in seen: continue
+                      seen.add(oid); out.append(item)
+              return classify(out)
+
+          kur=dict(sources["kurashiru_reward"])
+          kur.update({
+              "direct_detail_url_hints":["/ads/"],
+              "coverage_detail_review_enabled":True,
+              "coverage_detail_review_mode":"candidate_only",
+              "new_game_discovery_enabled":True,
+              "new_game_discovery_scope":"full_paginated_game_app_category",
+              "full_catalog_discovery_enabled":True,
+          })
+          sources["kurashiru_reward"]=kur
+          seen=set(); kur_items=[]; signatures=set(); pages=0; stopped=""
+          for page in range(1,61):
+              url=f"https://www.rewards.kurashiru.com/categories/3?page={page}"
+              raw,final=direct.fetch_first_party(url,kur,timeout=20,max_bytes=3_000_000)
+              sig=direct.listing_detail_identity_signature(raw,final,kur,limit=5000)
+              pages+=1
+              if not sig:
+                  stopped="empty"; break
+              if sig in signatures:
+                  stopped="repeat"; break
+              signatures.add(sig)
+              rows=direct.discover_new_game_listing_candidates(raw,final,kur,targets,limit=2000)
+              for item in rows:
+                  oid=item.get("offerIdentity")
+                  if oid in seen: continue
+                  seen.add(oid); kur_items.append(item)
+          kur_items=classify(kur_items)
+
+          powl=live_source("powl")
+          gendama=live_source("gendama")
+          base=[x for x in old if x.get("source") not in {"powl","gendama","kurashiru_reward"}]
+          fresh=base+powl+gendama
+
+          def group_stats(items):
+              families=daily.source_families(sources)
+              groups={}
+              for item in items:
+                  if item.get("classification")=="likely_non_game":
+                      continue
+                  sid=str(item.get("source") or "")
+                  if sid not in sources or not direct.source_participates_in_new_game_ranking(sources[sid]):
+                      continue
+                  url=str(item.get("firstPartyCandidateUrl") or "")
+                  identity=str(item.get("offerIdentity") or "")
+                  if not url or not identity:
+                      continue
+                  name=daily.discovery_name(item.get("titleHint"))
+                  if not name:
+                      continue
+                  key=direct.normalized_text(name)
+                  bucket=groups.setdefault(key,{"game":name,"offers":{}})
+                  bucket["offers"].setdefault((families[sid],identity),(sid,url,item))
+              handoff=[]
+              for g in groups.values():
+                  fams={fam for fam,_ in g["offers"]}
+                  if len(fams)>=2:
+                      handoff.append(g)
+              rates=daily.load_point_rate_registry()
+              unknown=0; known=0
+              for g in handoff:
+                  bounds=[]
+                  complete=True
+                  for _,_,item in g["offers"].values():
+                      b=daily.listing_reward_upper_bound_yen(item,False,rates)
+                      if b is None: complete=False
+                      else: bounds.append(b)
+                  if complete and bounds: known+=1
+                  else: unknown+=1
+              return {
+                  "groups":len(groups),"handoffGroups":len(handoff),
+                  "handoffOffers":sum(len(g["offers"]) for g in handoff),
+                  "knownBoundGroups":known,"unknownBoundGroups":unknown,
+                  "games":sorted(g["game"] for g in handoff),
+              }
+
+          before=group_stats(fresh)
+          after=group_stats(fresh+kur_items)
+          added=sorted(set(after["games"])-set(before["games"]))
+          summary={
+              "kurashiruPagesAttempted":pages,
+              "kurashiruStopReason":stopped,
+              "kurashiruCandidates":len(kur_items),
+              "powlCandidates":len(powl),
+              "gendamaCandidates":len(gendama),
+              "before":{k:v for k,v in before.items() if k!="games"},
+              "after":{k:v for k,v in after.items() if k!="games"},
+              "addedHandoffGroups":len(added),
+              "addedGames":added[:80],
+              "maxGroups":daily.MAX_GROUPS,
+          }
+          print("KURASHIRU_RANKING_IMPACT",json.dumps(summary,ensure_ascii=False,sort_keys=True))
+          if len(kur_items)<900:
+              raise SystemExit(f"Kurashiru catalog unexpectedly small: {len(kur_items)}")
+          PY
+
       - name: Inspect current first-party category surface
         run: |
           python - <<'PY'
