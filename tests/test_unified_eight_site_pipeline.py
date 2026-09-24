@@ -83,8 +83,9 @@ def contract_case(source):
         ),
         "ec_navi": (
             "https://ecnavi.jp/ad/123/show/",
-            {"offerId": "123", "name": "Game", "platform": "iOS",
-             "displayedPointCandidates": [55000], "verifiedCurrentRewardPoints": 55000,
+            {"offerId": "123", "name": "Game", "titleMatchProvenance": "exact_alias",
+             "platform": "iOS", "displayedPointCandidates": [55000],
+             "displayedYenEquivalent": 5500, "verifiedCurrentRewardPoints": 55000,
              "verifiedCurrentRewardYen": 5500, "rewardUnit": "ECNavi-pt",
              "sourcePointRate": "10pt=1JPY", "headerText": "Game 55000pts (5500円分)",
              "termsText": "加算条件 加算条件詳細 加算時期", "publicationAuthorized": False},

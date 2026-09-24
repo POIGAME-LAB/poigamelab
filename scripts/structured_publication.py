@@ -81,11 +81,12 @@ REWARD_ONLY_CONTRACTS = {
         "termsMarkers": ("ポイント獲得条件",),
     },
     "ec_navi": {
-        "parser": "ecnavi-detail-review-v1",
+        "parser": "ecnavi-detail-review-v2",
         "identity": direct.ecnavi_offer_id,
         "rewardField": "verifiedCurrentRewardYen",
         "fingerprintFields": [
-            "offerId", "name", "platform", "displayedPointCandidates",
+            "offerId", "name", "titleMatchProvenance", "platform", "displayedPointCandidates",
+            "displayedYenEquivalent",
             "verifiedCurrentRewardPoints", "verifiedCurrentRewardYen",
             "rewardUnit", "sourcePointRate", "headerText", "termsText",
             "publicationAuthorized",
