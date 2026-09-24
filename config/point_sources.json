@@ -209,20 +209,20 @@
       "scheduled_known_detail_fetch_reason": "Reviewed Hapitas parser v2 binds exact item ID, bounded current reward, 1pt=1JPY, StepUp total, terms, and an audited offer-ID platform registry before existing published rows may refresh.",
       "reviewed_reward_refresh_enabled": true,
       "reviewed_platform_by_offer_id": {
-        "101445": "Android",
-        "101444": "iOS",
         "91316": "iOS",
-        "99420": "iOS",
-        "99421": "Android",
+        "91331": "Android",
+        "91334": "Android",
+        "91343": "Android",
+        "91344": "iOS",
+        "91345": "iOS",
         "98148": "iOS",
         "99158": "Android",
+        "99420": "iOS",
+        "99421": "Android",
+        "101444": "iOS",
+        "101445": "Android",
         "102450": "iOS",
-        "102451": "Android",
-        "91334": "Android",
-        "91331": "Android",
-        "91345": "iOS",
-        "91344": "iOS",
-        "91343": "Android"
+        "102451": "Android"
       },
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 1,
@@ -351,7 +351,7 @@
         "/detail/id/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Full 26-page first-party game catalog is reused for discovery and known-game coverage. Up to 3 matching known-game detail pages per game are review-fetched nightly with the strict Amefuri parser. Publication remains disabled pending reviewed promotion rules.",
+      "scheduled_fetch_reason": "Full 26-page first-party game catalog is reused for discovery and known-game coverage. Up to 3 matching known-game detail pages per game are review-fetched nightly with the reviewed v2 parser. Publication remains disabled pending explicit reviewed promotion rules.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 12,
       "coverage_scope": "full_paginated_game_listing",
@@ -362,7 +362,8 @@
       "coverage_detail_review_enabled": true,
       "coverage_detail_review_limit_per_game": 3,
       "coverage_detail_review_mode": "candidate_only",
-      "coverage_detail_review_parser": "amefuri-multistep-review-v1"
+      "coverage_detail_review_parser": "amefuri-detail-review-v2",
+      "reviewedAt": "2026-09-24"
     },
     {
       "id": "point_town",
