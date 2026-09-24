@@ -1,0 +1,66 @@
+name: Temporary Hapitas v2 validation
+on:
+  push:
+    branches: [fix/hapitas-live-refresh-20260924]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Run Hapitas-affected regression suites
+        run: |
+          python -m pip install --disable-pip-version-check pytest
+          python -m py_compile scripts/direct_offer_refresh.py scripts/daily_scan_review.py scripts/structured_publication.py
+          python -m pytest -q             tests/test_direct_offer_refresh_v1.py             tests/test_public_site_build.py             tests/test_phase2_multigame.py             tests/test_daily_scan_review.py
+      - name: Verify all currently published Hapitas rows live
+        run: |
+          python - <<'PY'
+          import csv,json,sys
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as d
+          sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
+          source=sources["hapitas"]
+          targets={x["game"]:x for x in json.load(open("config/game_targets.json",encoding="utf-8"))["games"]}
+          rows=[r for r in csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")) if r["site"]=="hapitas"]
+          print("PUBLISHED_COUNT",len(rows))
+          assert len(rows)==14
+          for row in rows:
+              aliases=[row["game"]]+[str(x) for x in targets[row["game"]].get("aliases",[])]
+              parsed=d.inspect_detail(row["url"],source,aliases)
+              ev=parsed["sourceEvidence"]
+              result={
+                  "game":row["game"],"url":row["url"],"storedReward":row["reward"],
+                  "storedPlatform":row["platform"],"state":ev.get("state"),
+                  "parserVersion":ev.get("parserVersion"),"platform":ev.get("platform"),
+                  "platformProvenance":ev.get("platformProvenance"),
+                  "reward":ev.get("verifiedCurrentRewardYen"),
+                  "publicationAuthorized":ev.get("publicationAuthorized"),
+                  "stepCount":len(ev.get("stepRewardPoints") or []),
+              }
+              print("ACTIVE",json.dumps(result,ensure_ascii=False,sort_keys=True))
+              assert ev["state"]=="parsed"
+              assert ev["parserVersion"]=="hapitas-detail-review-v2"
+              assert ev["platform"]==row["platform"]
+              assert ev["platformProvenance"]=="reviewed_offer_registry"
+              assert ev["publicationAuthorized"] is True
+              assert ev["verifiedCurrentRewardYen"]==int(row["reward"])
+          ended={
+              "https://hapitas.jp/item/detail/itemid/101355":("キングショット","Android"),
+              "https://hapitas.jp/item/detail/itemid/101354":("キングショット","iOS"),
+              "https://hapitas.jp/item/detail/itemid/91475":("放置少女","Android"),
+          }
+          for url,(game,platform) in ended.items():
+              aliases=[game]+[str(x) for x in targets[game].get("aliases",[])]
+              parsed=d.inspect_detail(url,source,aliases)
+              ev=parsed["sourceEvidence"]
+              print("ENDED",json.dumps({"url":url,**ev},ensure_ascii=False,sort_keys=True))
+              assert ev["state"]=="unavailable"
+              assert ev["reason"]=="source_offer_unavailable"
+          PY
