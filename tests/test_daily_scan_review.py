@@ -116,13 +116,36 @@ def test_moppy_v3_verified_yen_can_rank_only_with_complete_first_party_terms():
     evidence = {
         "state": "parsed",
         "parserVersion": "moppy-detail-review-v3",
+        "displayedRewardPoints": 3500,
         "verifiedCurrentRewardYen": 3500,
+        "rewardUnit": "Moppy-P",
+        "sourcePointRate": "1P=1JPY",
         "downstreamTermsRequired": False,
         "publicationAuthorized": False,
     }
     assert daily.explicit_yen(evidence) == 3500
 
     evidence["downstreamTermsRequired"] = True
+    assert daily.explicit_yen(evidence) is None
+
+
+@pytest.mark.parametrize("field,value", [
+    ("displayedRewardPoints", 3499),
+    ("verifiedCurrentRewardYen", "3500"),
+    ("rewardUnit", "P"),
+    ("sourcePointRate", "10P=1JPY"),
+])
+def test_moppy_v3_ranking_contract_fails_closed(field, value):
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "moppy-detail-review-v3",
+        "displayedRewardPoints": 3500,
+        "verifiedCurrentRewardYen": 3500,
+        "rewardUnit": "Moppy-P",
+        "sourcePointRate": "1P=1JPY",
+        "downstreamTermsRequired": False,
+    }
+    evidence[field] = value
     assert daily.explicit_yen(evidence) is None
 
 
