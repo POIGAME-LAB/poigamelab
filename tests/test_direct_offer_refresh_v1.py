@@ -3882,3 +3882,149 @@ def test_source_health_fetch_errors_never_count_complete():
     assert 'source_errors > 0' in block[:800]
     assert 'catalog_complete = (' in block[:1200]
     assert 'source_errors == 0' in block[:1200]
+
+
+KURASHIRU_REWARD_URL = "https://www.rewards.kurashiru.com/ads/19120"
+
+
+@pytest.fixture
+def kurashiru_reward_markup():
+    return """<html><head>
+<link rel="canonical" href="https://www.rewards.kurashiru.com/ads/19120" />
+<title>隠しオブジェクトゲーム：探してみよう（レベル300到達）（iOS）の詳細</title>
+</head><body>
+<main>
+<h1>隠しオブジェクトゲーム：探してみよう（レベル300到達）（iOS）</h1>
+<div>コイン獲得条件 レベル300到達 で 16,000 &gt; 19,200 コイン還元</div>
+<div>100コイン = 1円 相当で交換できる！</div>
+<section>
+<h2>注意事項</h2>
+<p>
+成果受付期限：広告クリックから30日以内。
+成果調査受付期限：広告クリックから35日以内。
+承認条件：新規アプリインストール後、レベル300到達。
+却下条件：過去にインストール済みの場合、成果対象外です。
+広告主やスポンサーサイトへ直接問い合わせすることは禁止です。
+成果調査は本サイトのお問い合わせフォームからご連絡ください。
+ポイント付与対象外となる場合があります。
+</p>
+</section>
+</main>
+</body></html>"""
+
+
+def test_kurashiru_reward_offer_identity_is_strict():
+    assert direct.kurashiru_reward_offer_id(KURASHIRU_REWARD_URL) == "19120"
+    assert direct.offer_identity_key(KURASHIRU_REWARD_URL, "kurashiru_reward") == (
+        "kurashiru_reward:pathid:19120"
+    )
+    with pytest.raises(ValueError):
+        direct.kurashiru_reward_offer_id(KURASHIRU_REWARD_URL + "?from=test")
+    with pytest.raises(ValueError):
+        direct.kurashiru_reward_offer_id("https://example.test/ads/19120")
+
+
+def test_kurashiru_reward_parser_binds_coin_pair_rate_terms_and_platform(
+    kurashiru_reward_markup,
+):
+    evidence = direct.inspect_kurashiru_reward_offer(
+        kurashiru_reward_markup,
+        KURASHIRU_REWARD_URL,
+        KURASHIRU_REWARD_URL,
+        ["隠しオブジェクトゲーム：探してみよう", "iOS"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["offerId"] == "19120"
+    assert evidence["platform"] == "iOS"
+    assert evidence["previousRewardCoins"] == 16000
+    assert evidence["verifiedCurrentRewardCoins"] == 19200
+    assert evidence["verifiedCurrentRewardYen"] == 192
+    assert evidence["sourcePointRate"] == "100coin=1JPY"
+    assert evidence["parserVersion"] == "kurashiru-reward-detail-review-v1"
+    assert evidence["publicationAuthorized"] is False
+    assert len(evidence["evidenceFingerprint"]) == 64
+
+
+def test_kurashiru_reward_parser_preserves_fractional_yen(kurashiru_reward_markup):
+    raw = kurashiru_reward_markup.replace(
+        "16,000 &gt; 19,200 コイン還元",
+        "3,140,360 &gt; 3,768,432 コイン還元",
+    )
+    evidence = direct.inspect_kurashiru_reward_offer(
+        raw,
+        KURASHIRU_REWARD_URL,
+        KURASHIRU_REWARD_URL,
+        ["隠しオブジェクトゲーム：探してみよう", "iOS"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["verifiedCurrentRewardCoins"] == 3768432
+    assert evidence["verifiedCurrentRewardYen"] == 37684.32
+
+
+def test_kurashiru_reward_parser_fails_closed_on_ambiguous_reward(
+    kurashiru_reward_markup,
+):
+    raw = kurashiru_reward_markup.replace(
+        "</main>",
+        "<div>コイン獲得条件 別条件 で 20,000 > 24,000 コイン還元</div></main>",
+    )
+    evidence = direct.inspect_kurashiru_reward_offer(
+        raw,
+        KURASHIRU_REWARD_URL,
+        KURASHIRU_REWARD_URL,
+        ["隠しオブジェクトゲーム：探してみよう", "iOS"],
+    )
+    assert evidence["state"] == "review_required"
+    assert evidence["reason"] == "missing_or_ambiguous_displayed_reward"
+
+
+def test_kurashiru_listing_uses_h3_title_and_preserves_reward_text():
+    source = {
+        "id": "kurashiru_reward",
+        "name": "クラシルリワード（レシチャレ）",
+        "search_domains": ["www.rewards.kurashiru.com"],
+        "direct_detail_url_hints": ["/ads/"],
+        "full_catalog_discovery_enabled": True,
+        "new_game_discovery_scope": "full_current_paginated_game_and_app_category",
+    }
+    raw = """
+    <main>
+      <a href="/ads/19125">
+        <div>
+          <h3>パズル＆カオス</h3>
+          <div>センターキャッスルレベル5到達で</div>
+          <div>MAX 3,140,360 &gt; 3,768,432 コイン</div>
+        </div>
+      </a>
+    </main>
+    """
+    found = direct.discover_new_game_listing_candidates(
+        raw,
+        "https://www.rewards.kurashiru.com/categories/3?page=1",
+        source,
+        [],
+        limit=20,
+    )
+    assert len(found) == 1
+    assert found[0]["titleHint"] == "パズル＆カオス"
+    assert "3,768,432 コイン" in found[0]["listingRewardText"]
+    assert found[0]["offerIdentity"] == "kurashiru_reward:pathid:19125"
+
+
+def test_repository_kurashiru_reward_uses_full_paginated_candidate_only_catalog():
+    payload = json.loads((ROOT / "config/point_sources.json").read_text(encoding="utf-8"))
+    source = next(x for x in payload["sources"] if x["id"] == "kurashiru_reward")
+    assert source["discovery_only"] is True
+    assert source["scheduled_fetch_enabled"] is False
+    assert source["coverage_first_party_listing_enabled"] is True
+    assert source["coverage_detail_review_enabled"] is True
+    assert source["coverage_detail_review_mode"] == "candidate_only"
+    assert source["coverage_detail_review_parser"] == "kurashiru-reward-detail-review-v1"
+    assert source["full_catalog_discovery_enabled"] is True
+    assert source["new_game_discovery_enabled"] is True
+    assert source["new_game_discovery_page_url_template"].endswith(
+        "/categories/3?page={page}"
+    )
+    assert source["new_game_discovery_max_pages"] >= 50
+    assert source["new_game_discovery_candidate_limit"] >= 1000
+    assert source["direct_detail_url_hints"] == ["/ads/"]
