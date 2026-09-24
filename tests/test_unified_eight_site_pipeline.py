@@ -11,12 +11,12 @@ import unified_offer_snapshot as unified
 
 EXPECTED = [
     "moppy", "warau", "coincome", "hapitas",
-    "amefuri", "point_town", "ec_navi", "powl",
+    "amefuri", "point_town", "ec_navi", "powl", "gendama",
 ]
 NOW = "2026-09-16T16:17:00+00:00"
 
 
-def test_policy_declares_exact_unified_eight_sources():
+def test_policy_declares_exact_unified_daily_sources():
     policy = json.loads((ROOT / "config/refresh_policy.json").read_text())
     assert policy["unifiedDailySources"] == EXPECTED
     source_cfg = json.loads((ROOT / "config/point_sources.json").read_text())
