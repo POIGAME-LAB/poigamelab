@@ -303,6 +303,13 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
     listing page. Reward, platform, conditions, and publication eligibility
     remain unverified until the detail is independently reviewed.
     """
+    if str(source.get("id") or "") == "trima":
+        try:
+            return discover_trima_target_listing_candidates(
+                raw, base_url, source, aliases, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
     detail_urls = discover_detail_links(raw, base_url, source, aliases, limit=limit)
     game_label = next((str(x).strip() for x in aliases if str(x).strip()), "")
     return [{
@@ -629,8 +636,13 @@ def listing_anchor_in_scope(anchor, source):
 
 def listing_detail_identity_signature(raw, base_url, source, limit=5000):
     """Return a stable signature of first-party detail identities on one listing page."""
-    if str(source.get("id") or "") == "mikoshi":
+    source_id = str(source.get("id") or "")
+    if source_id == "mikoshi":
         return mikoshi_listing_detail_identity_signature(
+            raw, base_url, source, limit=limit
+        )
+    if source_id == "trima":
+        return trima_listing_detail_identity_signature(
             raw, base_url, source, limit=limit
         )
     identities = []
@@ -657,13 +669,27 @@ def listing_detail_identity_signature(raw, base_url, source, limit=5000):
 
 
 def paginated_listing_url(source, page):
+    """Build one reviewed page/offset listing URL without accepting extra templates."""
     template = source.get("new_game_discovery_page_url_template")
-    if not isinstance(template, str) or template.count("{page}") != 1:
+    if not isinstance(template, str):
         return ""
-    remainder = template.replace("{page}", "")
+    page_tokens = template.count("{page}")
+    start_tokens = template.count("{start}")
+    if page_tokens + start_tokens != 1:
+        return ""
+    remainder = template.replace("{page}", "").replace("{start}", "")
     if "{" in remainder or "}" in remainder:
         return ""
-    candidate = template.replace("{page}", str(int(page)))
+    page_number = int(page)
+    if page_number < 1:
+        return ""
+    if page_tokens == 1:
+        candidate = template.replace("{page}", str(page_number))
+    else:
+        page_size = source.get("new_game_discovery_page_size")
+        if type(page_size) is not int or not 1 <= page_size <= 200:
+            return ""
+        candidate = template.replace("{start}", str((page_number - 1) * page_size))
     return candidate if source_host_allowed(candidate, source) else ""
 
 
@@ -675,9 +701,17 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
     reviewed alias in bounded listing context or a known first-party offer
     identity.
     """
-    if str(source.get("id") or "") == "mikoshi":
+    source_id = str(source.get("id") or "")
+    if source_id == "mikoshi":
         try:
             return discover_mikoshi_listing_candidates(
+                raw, base_url, source, targets, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
+    if source_id == "trima":
+        try:
+            return discover_trima_listing_candidates(
                 raw, base_url, source, targets, limit=limit
             )
         except (ValueError, TypeError, RecursionError):
@@ -1233,6 +1267,14 @@ def offer_identity_key(url, source_id):
                 return f"{source_id}:{key}:{value}"
 
     path = p.path or ""
+    if str(source_id or "") == "trima":
+        match = re.fullmatch(
+            r"/ad/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+            r"[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/?",
+            path,
+        )
+        if match:
+            return f"trima:pathuuid:{match.group(1).lower()}"
     for pattern in (
         r"/ad_details/(\d+)",
         r"/campaigns/details/(\d+)",
@@ -2910,6 +2952,384 @@ def inspect_powl_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+TRIMA_UUID_RE = (
+    r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+    r"[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+)
+
+
+def trima_offer_id(url):
+    """Return the stable UUID identity for one public first-party Trima offer."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != "web.trip-mile.com"
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+        or parse_qs(parsed.query, keep_blank_values=True)
+    ):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/ad/(" + TRIMA_UUID_RE + r")/?", parsed.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    return match.group(1).lower()
+
+
+def trima_listing_start(url):
+    """Validate the reviewed anonymous Trima app-category endpoint."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+        query = parse_qs(parsed.query, keep_blank_values=True)
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_listing_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != "web.trip-mile.com"
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+        or parsed.path != "/api/ads/category"
+        or set(query) != {"id", "limit", "start", "sortBy"}
+        or query.get("id") != ["504"]
+        or query.get("limit") != ["24"]
+        or query.get("sortBy") != ["recommended"]
+        or len(query.get("start") or []) != 1
+        or not re.fullmatch(r"[0-9]{1,6}", query["start"][0])
+    ):
+        raise ValueError("unexpected_listing_url")
+    start = int(query["start"][0])
+    if start % 24 != 0:
+        raise ValueError("unexpected_listing_url")
+    return start
+
+
+def _trima_listing_rows(raw, expected_start=None):
+    try:
+        payload = json.loads(raw)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        raise ValueError("invalid_listing_payload")
+    data = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(data, dict):
+        raise ValueError("invalid_listing_payload")
+    results = data.get("results")
+    count = data.get("count")
+    limit = data.get("limit")
+    start = data.get("start")
+    category_id = data.get("categoryId")
+    if (
+        not isinstance(results, list)
+        or any(not isinstance(row, dict) for row in results)
+        or type(count) is not int
+        or not 0 <= count <= 10000
+        or type(limit) is not int
+        or limit != 24
+        or type(start) is not int
+        or start < 0
+        or start % 24 != 0
+        or str(category_id) != "504"
+        or len(results) > 24
+        or (expected_start is not None and start != expected_start)
+    ):
+        raise ValueError("invalid_listing_payload")
+    return results, count, start
+
+
+def trima_listing_detail_identity_signature(raw, base_url, source, limit=5000):
+    """Return stable offer UUIDs from one current first-party Trima JSON page."""
+    try:
+        start = trima_listing_start(base_url)
+        rows, _, _ = _trima_listing_rows(raw, expected_start=start)
+    except (ValueError, TypeError):
+        return tuple()
+    identities = []
+    seen = set()
+    for row in rows:
+        offer_id = str(row.get("id") or "").strip()
+        if not re.fullmatch(TRIMA_UUID_RE, offer_id):
+            continue
+        detail_url = f"https://web.trip-mile.com/ad/{offer_id.lower()}"
+        if not source_host_allowed(detail_url, source):
+            continue
+        identity = offer_identity_key(detail_url, "trima")
+        if not identity or identity in seen:
+            continue
+        seen.add(identity)
+        identities.append(identity)
+        if len(identities) >= max(1, min(int(limit or 5000), 5000)):
+            break
+    return tuple(sorted(identities))
+
+
+def _trima_title_matches_aliases(title, aliases):
+    if target_present(title, aliases):
+        return True
+    title_key = normalized_game_title_key(title)
+    for alias in aliases or []:
+        alias_key = normalized_game_title_key(alias)
+        if (
+            title_key
+            and alias_key
+            and min(len(title_key), len(alias_key)) >= 4
+            and (title_key.startswith(alias_key) or alias_key.startswith(title_key))
+        ):
+            return True
+    return False
+
+
+def discover_trima_target_listing_candidates(raw, base_url, source, aliases, limit=8):
+    """Find one known game in the reviewed first-party Trima category JSON."""
+    start = trima_listing_start(base_url)
+    rows, _, _ = _trima_listing_rows(raw, expected_start=start)
+    found = []
+    seen = set()
+    for row in rows:
+        offer_id = str(row.get("id") or "").strip()
+        title = str(row.get("title") or "").strip()
+        reward = row.get("reward")
+        reward_unit = str(row.get("rewardUnit") or "").strip()
+        if (
+            not re.fullmatch(TRIMA_UUID_RE, offer_id)
+            or not 2 <= len(title) <= 240
+            or type(reward) is not int
+            or not 0 < reward <= 50_000_000
+            or reward_unit != "マイル"
+            or not _trima_title_matches_aliases(title, aliases)
+        ):
+            continue
+        detail_url = f"https://web.trip-mile.com/ad/{offer_id.lower()}"
+        identity = offer_identity_key(detail_url, "trima")
+        if not source_host_allowed(detail_url, source) or not identity or identity in seen:
+            continue
+        seen.add(identity)
+        found.append({
+            "source": "trima",
+            "sourceLabel": str(source.get("name") or "トリマ"),
+            "providerHint": "",
+            "gameLabel": next(
+                (str(x).strip() for x in aliases if str(x).strip()), title
+            ),
+            "platformHint": platform_hint(title),
+            "rewardYenHint": "",
+            "listingRewardText": f"{reward:,} マイル",
+            "firstPartyCandidateUrl": detail_url,
+            "offerIdentity": identity,
+        })
+        if len(found) >= max(1, min(int(limit or 8), 100)):
+            break
+    return found
+
+
+def discover_trima_listing_candidates(raw, base_url, source, targets, limit=500):
+    """Convert the full anonymous Trima app-category JSON into review candidates."""
+    start = trima_listing_start(base_url)
+    rows, _, _ = _trima_listing_rows(raw, expected_start=start)
+    known_identities = set()
+    for target in targets or []:
+        for known_url in (
+            (target.get("known_urls_by_source") or {}).get("trima", []) or []
+        ):
+            identity = offer_identity_key(known_url, "trima")
+            if identity:
+                known_identities.add(identity)
+
+    found = []
+    seen = set()
+    for row in rows:
+        offer_id = str(row.get("id") or "").strip()
+        title = str(row.get("title") or "").strip()
+        rule = str(row.get("rule") or "").strip()
+        reward = row.get("reward")
+        reward_unit = str(row.get("rewardUnit") or "").strip()
+        if (
+            not re.fullmatch(TRIMA_UUID_RE, offer_id)
+            or not 2 <= len(title) <= 240
+            or type(reward) is not int
+            or not 0 < reward <= 50_000_000
+            or reward_unit != "マイル"
+        ):
+            continue
+        detail_url = f"https://web.trip-mile.com/ad/{offer_id.lower()}"
+        identity = offer_identity_key(detail_url, "trima")
+        if (
+            not source_host_allowed(detail_url, source)
+            or not identity
+            or identity in known_identities
+            or identity in seen
+            or context_matches_known_game(title, targets)
+        ):
+            continue
+        seen.add(identity)
+        found.append({
+            "source": "trima",
+            "sourceLabel": str(source.get("name") or "トリマ"),
+            "titleHint": title,
+            "descriptionHint": rule[:700],
+            "platformHint": platform_hint(title),
+            "listingRewardPoints": reward,
+            "listingRewardText": f"{reward:,} マイル",
+            "firstPartyCandidateUrl": detail_url,
+            "offerIdentity": identity,
+            "discoveryEvidence": "first_party_json_listing",
+            "discoveryScope": str(
+                source.get("new_game_discovery_scope") or "unspecified"
+            ),
+            "fullCatalogObserved": source.get("full_catalog_discovery_enabled") is True,
+            "candidateOnly": True,
+            "firstPartyVerificationRequired": True,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        })
+        if len(found) >= max(1, min(int(limit or 500), 2000)):
+            break
+    return found
+
+
+def _trima_embedded_reward_values(raw, offer_id):
+    values = set()
+    patterns = (
+        (
+            r'\\"id\\":\\"' + re.escape(offer_id)
+            + r'\\".{0,7000}?\\"reward\\":([0-9]+),\\"rewardUnit\\":\\"マイル\\"'
+        ),
+        (
+            r'"id":"' + re.escape(offer_id)
+            + r'".{0,7000}?"reward":([0-9]+),"rewardUnit":"マイル"'
+        ),
+    )
+    for pattern in patterns:
+        for match in re.finditer(pattern, str(raw or ""), re.S):
+            value = int(match.group(1))
+            if 0 < value <= 50_000_000:
+                values.add(value)
+    return values
+
+
+def inspect_trima_offer(raw, requested_url, final_url, aliases):
+    """Parse current public Trima detail evidence and displayed JPY equivalent."""
+    try:
+        offer_id = trima_offer_id(requested_url)
+        if trima_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        text = visible_text(raw)
+        if "ページが見つかりません" in text or "掲載終了" in text:
+            return {
+                "state": "unavailable",
+                "reason": "source_offer_unavailable",
+                "offerId": offer_id,
+            }
+
+        doc = EvidenceHTML(raw).root
+        title_nodes = doc.find(tag="title")
+        if len(title_nodes) != 1:
+            raise ValueError("missing_or_ambiguous_offer_title")
+        title_text = evidence_text(title_nodes[0])
+        name = re.sub(
+            r"\s*[｜|]\s*ポイ活ならトリマ.*$", "", title_text
+        ).strip()
+        if not 2 <= len(name) <= 240:
+            raise ValueError("missing_offer_title")
+        if not _trima_title_matches_aliases(name, aliases):
+            raise ValueError("offer_title_mismatch")
+
+        terms_candidates = []
+        for node in doc.find(tag="div") + doc.find(tag="section") + doc.find(tag="main"):
+            value = evidence_text(node)
+            if not 180 <= len(value) <= 30000:
+                continue
+            if "マイル獲得条件" not in value or "注意事項" not in value:
+                continue
+            if not any(marker in value for marker in (
+                "獲得対象外", "報酬対象外", "却下",
+            )):
+                continue
+            if not any(marker in value for marker in (
+                "お問い合わせ", "お問合わせ", "広告主",
+            )):
+                continue
+            terms_candidates.append(value)
+        if not terms_candidates:
+            raise ValueError("incomplete_offer_terms")
+        terms = min(set(terms_candidates), key=len)
+
+        terms_pos = text.find("マイル獲得条件")
+        header = text[:terms_pos] if terms_pos > 0 else text[:6000]
+        reward_matches = {
+            (
+                int(miles.replace(",", "")),
+                int(low.replace(",", "")),
+                int(high.replace(",", "")),
+            )
+            for miles, low, high in re.findall(
+                r"([1-9][0-9,]*)\s*[（(]\s*"
+                r"([1-9][0-9,]*)\s*〜\s*([1-9][0-9,]*)\s*"
+                r"円相当\s*・\s*交換手数料含む\s*[）)]",
+                header,
+            )
+        }
+        if len(reward_matches) != 1:
+            raise ValueError("missing_or_ambiguous_displayed_reward")
+        reward_miles, yen_low, yen_high = next(iter(reward_matches))
+        if yen_low != yen_high:
+            raise ValueError("ambiguous_displayed_yen_range")
+        reward_yen = yen_low
+        if not (0 < reward_miles <= 50_000_000 and 0 < reward_yen <= 5_000_000):
+            raise ValueError("invalid_reward")
+
+        embedded_rewards = _trima_embedded_reward_values(raw, offer_id)
+        if embedded_rewards != {reward_miles}:
+            raise ValueError("embedded_reward_mismatch")
+
+        condition_match = re.search(
+            r"マイル獲得条件\s+(.{2,900}?)(?=\s*※|\s*■注意事項|"
+            r"\s*獲得条件達成期限|\s*お問い合わせ受付期限)",
+            terms,
+        )
+        condition = (
+            re.sub(r"\s+", " ", condition_match.group(1)).strip()
+            if condition_match else ""
+        )
+        if len(condition) < 2:
+            raise ValueError("missing_offer_condition")
+
+        platform = platform_hint(name)
+        if platform not in {"iOS", "Android"}:
+            platform = "unknown"
+
+        payload = {
+            "offerId": offer_id,
+            "name": name,
+            "platform": platform,
+            "displayedRewardMiles": reward_miles,
+            "displayedRewardYen": reward_yen,
+            "verifiedCurrentRewardYen": reward_yen,
+            "rewardUnit": "Trima-mile",
+            "sourcePointRate": "first-party-displayed-yen-equivalent-exchange-fee-included",
+            "conditionText": condition,
+            "termsText": terms[:16000],
+            "downstreamTermsRequired": False,
+            "candidateOnly": True,
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "trima-detail-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def mikoshi_offer_id(url):
     """Return the stable numeric identity for a first-party WEB MIKOSHI ad."""
     try:
@@ -3373,6 +3793,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "powl": inspect_powl_offer,
         "kurashiru_reward": inspect_kurashiru_reward_offer,
         "mikoshi": inspect_mikoshi_offer,
+        "trima": inspect_trima_offer,
     }
     if source.get("id") in structured_parsers:
         if source.get("id") == "hapitas":
@@ -3938,7 +4359,10 @@ def main(after_scan=None):
         ][:listing_limit]
         page_template = discovery_source.get("new_game_discovery_page_url_template")
         page_cap = max(1, min(int(discovery_source.get("new_game_discovery_max_pages") or 60), 100))
-        use_pagination = isinstance(page_template, str) and "{page}" in page_template
+        use_pagination = (
+            isinstance(page_template, str)
+            and ("{page}" in page_template or "{start}" in page_template)
+        )
         listing_urls = explicit_listing_urls
         if use_pagination:
             listing_urls = [
