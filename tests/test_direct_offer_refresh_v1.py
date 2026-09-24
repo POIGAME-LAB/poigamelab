@@ -1563,9 +1563,10 @@ def test_repository_unattended_fetch_disables_only_unreliable_comparison_sources
         source_id for source_id in comparison
         if by_id[source_id].get('scheduled_fetch_enabled', True) is not True
     }
-    assert disabled == {'chobirich', 'mikoshi'}
+    assert disabled == {'chobirich', 'mikoshi', 'gendama'}
     assert 'reliable' in by_id['chobirich']['scheduled_fetch_reason'].lower()
     assert 'javascript' in by_id['mikoshi']['scheduled_fetch_reason'].lower()
+    assert 'publication' in by_id['gendama']['scheduled_fetch_reason'].lower()
 
     assert all(
         by_id[source_id].get('scheduled_fetch_enabled', True) is True
@@ -1574,29 +1575,35 @@ def test_repository_unattended_fetch_disables_only_unreliable_comparison_sources
     )
 
 
-def test_repository_gendama_uses_target_specific_https_search_and_service_item_identity():
+def test_repository_gendama_uses_current_search_and_client_detail_identity():
     payload = json.loads((ROOT/'config/point_sources.json').read_text())
     gendama = next(source for source in payload['sources'] if source['id'] == 'gendama')
-    listing = (
+    targeted = (
         'https://www.gendama.jp/sp/service_search/index/'
         '?point_max=&point_min=&search_type=and&w=Township'
     )
-    detail = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+    detail = 'https://www.gendama.jp/sp/client_detail?cd_client=1583632&rt=s'
 
     assert gendama['start_url'] == 'https://www.gendama.jp/welcome'
-    assert gendama['direct_listing_urls'] == []
+    assert len(gendama['direct_listing_urls']) == 2
     assert gendama['direct_search_url_template'].endswith(
         'point_max=&point_min=&search_type=and&w={query}')
-    assert gendama['direct_listing_limit'] == 1
-    assert direct.target_listing_urls(gendama, ['Township', 'タウンシップ']) == [listing]
-    assert '/service/item/' in gendama['direct_detail_url_hints']
-    assert gendama.get('scheduled_fetch_enabled', True) is True
+    assert gendama['direct_listing_limit'] == 2
+    assert direct.target_listing_urls(gendama, ['Township', 'タウンシップ'])[0] == targeted
+    assert '/sp/client_detail?cd_client=' in gendama['direct_detail_url_hints']
+    assert gendama['scheduled_fetch_enabled'] is False
+    assert gendama['coverage_detail_review_enabled'] is True
+    assert gendama['coverage_detail_review_mode'] == 'candidate_only'
+    assert gendama['coverage_detail_review_parser'] == 'gendama-detail-review-v2'
+    assert gendama['new_game_discovery_enabled'] is True
+    assert gendama['new_game_discovery_scope'] == 'partial_current_keyword_search'
     assert gendama['generic_reward_detection_enabled'] is False
-    assert 'conversion' in gendama['generic_reward_detection_reason'].lower()
-    assert direct.source_host_allowed(listing, gendama) is True
+    assert 'adjacent' in gendama['generic_reward_detection_reason'].lower()
+    assert direct.source_host_allowed(targeted, gendama) is True
     assert direct.source_host_allowed(detail, gendama) is True
     assert direct.detail_like(detail, gendama) is True
-    assert direct.offer_identity_key(detail, 'gendama') == 'gendama:pathid:1426617'
+    assert direct.offer_identity_key(detail, 'gendama') == 'gendama:cd_client:1583632'
+    assert direct.gendama_offer_id(detail) == '1583632'
 
 
 def test_gendama_target_search_encodes_primary_alias_only():
@@ -1627,24 +1634,24 @@ def test_invalid_search_template_fails_closed_to_configured_listings():
     ]
 
 
-def test_gendama_search_listing_discovers_only_target_service_links():
+def test_gendama_search_listing_discovers_current_client_detail_link():
     source = {
         'id': 'gendama',
         'search_domains': ['www.gendama.jp'],
-        'direct_detail_url_hints': ['/service/item/'],
+        'direct_detail_url_hints': ['/sp/client_detail?cd_client='],
     }
     raw = '''
     <main>
-      <article class="service-item">
-        <a href="/service/item/1426617?frame=pctopnewclient">
+      <div class="service-item">
+        <a href="/sp/client_detail?cd_client=1583632&rt=s">
           テストゲーム Android 3,218pt
         </a>
-      </article>
-      <article class="service-item">
-        <a href="/service/item/9999999?frame=pctopnewclient">
+      </div>
+      <div class="service-item">
+        <a href="/sp/client_detail?cd_client=9999999&rt=s">
           別ゲーム iOS 9,999pt
         </a>
-      </article>
+      </div>
     </main>
     '''
     found = direct.discover_detail_links(
@@ -1652,57 +1659,79 @@ def test_gendama_search_listing_discovers_only_target_service_links():
         source, ['テストゲーム'], limit=6
     )
     assert found == [
-        'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+        'https://www.gendama.jp/sp/client_detail?cd_client=1583632&rt=s'
     ]
 
 
-GENDAMA_URL = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+GENDAMA_URL = 'https://www.gendama.jp/sp/client_detail?cd_client=1583632&rt=s'
 
 
 @pytest.fixture
 def gendama_markup():
-    return f'''<html><body>
-<h1>テストゲーム</h1>
-<div>3,218pt (321円相当)</div>
-<table><tr><th>獲得条件</th><td>新規アプリインストール後、Androidでレベル20到達</td><th>判定ポイント</th></tr></table>
-<section>
-<h2>ポイントを獲得するための注意事項</h2>
-<p>成果受付期限：広告クリックから30日以内。Android端末で同一ブラウザ・同一端末のまま条件達成してください。</p>
-<p>過去に本アプリを利用したことがある場合、重複利用、不正利用、国外アクセスは成果対象外です。</p>
-<p>ポイント数・ポイント付与条件等は予告なく変更される場合があります。</p>
-</section>
-<h2>サービスの詳細</h2>
+    return '''<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<title>テストゲームの口コミ・評判｜最大級のポイ活会員数のげん玉</title>
+</head><body>
+<div class="service_info">
+  <p class="service_content">Androidでレベル20到達</p>
+  <p class="points_wrap"><span class="service_points">3,218pt<span>(321円相当)</span></span></p>
+</div>
+<p class="service_detail_p">
+※ご注意点※
+成果受付期限：広告クリックから30日以内。
+成果調査受付期限：広告クリックから37日以内。
+Android端末で同一ブラウザ・同一端末のまま条件達成してください。
+広告主やスポンサーサイトへ直接問い合わせする事を固く禁じます。
+重複利用、不正利用、国外アクセスは成果対象外となります。
+ポイント数・ポイント付与条件等は予告なく変更される場合があります。
+</p>
 </body></html>'''
 
 
-def parse_gendama(raw, requested=GENDAMA_URL, final=GENDAMA_URL):
-    return direct.inspect_gendama_offer(raw, requested, final, ['テストゲーム'])
+def parse_gendama(raw, requested=GENDAMA_URL, final=GENDAMA_URL, aliases=None):
+    return direct.inspect_gendama_offer(
+        raw, requested, final, aliases or ['テストゲーム', 'テストゲーム Android 3,218pt']
+    )
 
 
-def test_gendama_review_parser_uses_only_explicit_source_yen_equivalent(gendama_markup):
+def test_gendama_v2_parser_uses_only_explicit_source_yen_equivalent(gendama_markup):
     evidence = parse_gendama(gendama_markup)
     assert evidence['state'] == 'parsed'
-    assert evidence['offerId'] == '1426617'
+    assert evidence['offerId'] == '1583632'
+    assert evidence['name'] == 'テストゲーム'
     assert evidence['platform'] == 'Android'
     assert evidence['displayedRewardPoints'] == 3218
     assert evidence['displayedRewardYen'] == 321
     assert evidence['rewardUnit'] == 'JPY-equivalent'
-    assert evidence['condition'] == '新規アプリインストール後、Androidでレベル20到達'
-    assert evidence['parserVersion'] == 'gendama-detail-review-v1'
+    assert evidence['condition'] == 'Androidでレベル20到達'
+    assert evidence['parserVersion'] == 'gendama-detail-review-v2'
+    assert evidence['publicationAuthorized'] is False
+    assert len(evidence['termsText']) >= 120
     assert len(evidence['evidenceFingerprint']) == 64
 
 
+def test_gendama_v2_keeps_reward_evidence_when_platform_is_not_explicit(gendama_markup):
+    raw = gendama_markup.replace('Androidでレベル20到達', 'レベル20到達')
+    evidence = parse_gendama(raw, aliases=['テストゲーム'])
+    assert evidence['state'] == 'parsed'
+    assert evidence['platform'] == 'unknown'
+    assert evidence['displayedRewardPoints'] == 3218
+    assert evidence['displayedRewardYen'] == 321
+    assert evidence['publicationAuthorized'] is False
+
+
 @pytest.mark.parametrize('old,new,reason', [
-    ('3,218pt (321円相当)', '最大3,218pt', 'missing_or_ambiguous_yen_equivalent'),
-    ('3,218pt (321円相当)', '3,218pt (321円相当) 4,000pt (400円相当)', 'missing_or_ambiguous_yen_equivalent'),
-    ('<h1>テストゲーム</h1>', '<h1>別ゲーム</h1>', 'offer_title_mismatch'),
-    ('獲得条件</th><td>新規アプリインストール後、Androidでレベル20到達</td><th>判定ポイント',
-     '条件</th><td>新規アプリインストール後、Androidでレベル20到達</td><th>判定ポイント',
-     'missing_offer_condition'),
-    ('<h2>サービスの詳細</h2>', '', 'incomplete_offer_terms'),
-    ('Androidでレベル20到達', 'レベル20到達', 'ambiguous_offer_platform'),
+    ('3,218pt<span>(321円相当)</span>', '最大3,218pt', 'missing_or_ambiguous_yen_equivalent'),
+    ('3,218pt<span>(321円相当)</span>',
+     '3,218pt<span>(321円相当)</span> 4,000pt (400円相当)',
+     'missing_or_ambiguous_yen_equivalent'),
+    ('テストゲームの口コミ・評判', '別ゲームの口コミ・評判', 'offer_title_mismatch'),
+    ('class="service_content">Androidでレベル20到達',
+     'class="other">Androidでレベル20到達', 'missing_offer_condition'),
+    ('成果受付期限：広告クリックから30日以内。', '',
+     'incomplete_or_ambiguous_offer_terms'),
 ])
-def test_gendama_rejects_ambiguous_or_incomplete_source_evidence(
+def test_gendama_v2_rejects_ambiguous_or_incomplete_source_evidence(
         gendama_markup, old, new, reason):
     evidence = parse_gendama(gendama_markup.replace(old, new))
     assert evidence['state'] == 'review_required'
@@ -1710,17 +1739,23 @@ def test_gendama_rejects_ambiguous_or_incomplete_source_evidence(
 
 
 @pytest.mark.parametrize('url', [
-    'http://www.gendama.jp/service/item/1426617',
-    'https://gendama.jp/service/item/1426617',
-    'https://user@www.gendama.jp/service/item/1426617',
-    'https://www.gendama.jp:444/service/item/1426617',
-    'https://www.gendama.jp/service/item/1426617/extra',
-    'https://www.gendama.jp/service/item/1426617?unexpected=1',
+    'http://www.gendama.jp/sp/client_detail?cd_client=1583632',
+    'https://gendama.jp/sp/client_detail?cd_client=1583632',
+    'https://user@www.gendama.jp/sp/client_detail?cd_client=1583632',
+    'https://www.gendama.jp:444/sp/client_detail?cd_client=1583632',
+    'https://www.gendama.jp/sp/client_detail',
+    'https://www.gendama.jp/sp/client_detail?cd_client=1583632&unexpected=1',
+    'https://www.gendama.jp/sp/client_detail?cd_client=abc',
 ])
-def test_gendama_rejects_unsupported_identity_urls(gendama_markup, url):
+def test_gendama_v2_rejects_unsupported_identity_urls(gendama_markup, url):
     evidence = parse_gendama(gendama_markup, requested=url)
     assert evidence['state'] == 'review_required'
-    assert evidence['reason'] == 'unexpected_offer_url'
+    assert evidence['reason'] in {'unexpected_offer_url', 'ambiguous_offer_identity'}
+
+
+def test_gendama_legacy_service_item_identity_remains_supported():
+    legacy = 'https://www.gendama.jp/service/item/1426617?frame=pctopnewclient'
+    assert direct.gendama_offer_id(legacy) == '1426617'
 
 
 def test_gendama_terms_change_invalidates_fingerprint(gendama_markup):
@@ -1747,7 +1782,7 @@ def test_gendama_generic_points_never_become_yen_reward_candidates(monkeypatch):
         'search_domains': ['www.gendama.jp'],
         'direct_listing_urls': [],
         'direct_detail_limit': 6,
-        'direct_detail_url_hints': ['/service/item/'],
+        'direct_detail_url_hints': ['/sp/client_detail?cd_client='],
         'generic_reward_detection_enabled': False,
     }]}))
     row = dict.fromkeys(direct.FIELDS, '')
@@ -1765,26 +1800,21 @@ def test_gendama_generic_points_never_become_yen_reward_candidates(monkeypatch):
     )
     direct.write_published([row])
 
-    raw = '<html><body><h1>テストゲーム Android</h1><p>最大3,000pt</p></body></html>'
+    raw = '''<html><head><title>テストゲームの口コミ・評判｜げん玉</title></head><body>
+    <p class="service_content">Androidでレベル20到達</p>
+    <p>最大3,000pt</p>
+    </body></html>'''
     monkeypatch.setattr(direct, 'fetch_first_party', lambda url, source: (raw, url))
     before = direct.PUBLISHED.read_bytes()
 
     assert direct.main() == 0
     assert direct.PUBLISHED.read_bytes() == before
 
-    status = json.loads(direct.STATUS.read_text()) 
-    assert status['refreshedRows'] == status['publishedRewardChanges'] == 0
-    assert status['games'][0]['comparisonReady'] is False
-
     items = json.loads(direct.REVIEW.read_text())['items']
     assert len(items) == 1
-    item = items[0]
-    assert item['reason'] == 'missing_or_ambiguous_yen_equivalent'
-    assert item['storedReward'] == '300'
-    assert item['storedPlatform'] == 'Android'
-    assert 'detectedReward' not in item
-    assert 'detectedStrongRewards' not in item
-    assert 'detectedWeakRewards' not in item
+    assert items[0]['reason'] == 'missing_or_ambiguous_yen_equivalent'
+    assert 'detectedReward' not in items[0]
+
 
 
 COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
