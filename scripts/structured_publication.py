@@ -272,7 +272,9 @@ def reward_only_snapshot(item, sources, checked_at):
     if sid == "hapitas":
         require(
             e.get("publicationAuthorized") is True
-            and e.get("platformProvenance") == "reviewed_offer_registry",
+            and e.get("platformProvenance") in {
+                "reviewed_offer_registry", "source_title"
+            },
             "reviewed_platform_authorization_required",
         )
         require(e.get("displayedCurrentRewardPoints") == reward, "yen_point_mismatch")
