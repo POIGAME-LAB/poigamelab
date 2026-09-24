@@ -1566,7 +1566,7 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
             or marker_positions != sorted(marker_positions)
         ):
             raise ValueError("incomplete_offer_terms")
-        if not re.search(r"[0-9]+\s*日以内", terms):
+        if not re.search(r"(?:[0-9]+\s*(?:日|時間)以内|翌日以内|当日中)", terms):
             raise ValueError("achievement_deadline_not_explicit")
 
         payload = {
