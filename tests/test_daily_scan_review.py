@@ -673,22 +673,17 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
 
 
 def test_trima_live_diagnostic_20260925():
-    """Temporary live diagnostic; intentionally fails so CI exposes Trima client/API behavior."""
+    """Temporary live diagnostic; intentionally fails so CI exposes Trima API construction."""
     import json as _json
     import re as _re
     from http.cookiejar import CookieJar as _CookieJar
     from urllib.error import HTTPError as _HTTPError
     from urllib.parse import urljoin as _urljoin
-    from urllib.request import (
-        Request as _Request,
-        build_opener as _build_opener,
-        HTTPCookieProcessor as _HTTPCookieProcessor,
-    )
+    from urllib.request import Request as _Request, build_opener as _build_opener, HTTPCookieProcessor as _HTTPCookieProcessor
 
     ua = (
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
-        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
-        "Mobile/15E148 Safari/604.1"
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
     )
     jar = _CookieJar()
     opener = _build_opener(_HTTPCookieProcessor(jar))
@@ -705,96 +700,75 @@ def test_trima_live_diagnostic_20260925():
         try:
             with opener.open(req, timeout=20) as r:
                 data = r.read(6_000_000)
-                return {
-                    "ok": True,
-                    "status": getattr(r, "status", None),
-                    "final": r.geturl(),
-                    "contentType": r.headers.get("Content-Type"),
-                    "headers": {k: v for k, v in r.headers.items() if k.lower() in {
-                        "set-cookie", "x-powered-by", "server", "vary", "cache-control"
-                    }},
-                    "text": data.decode("utf-8", "replace"),
-                }
+                return {"ok": True, "status": getattr(r, "status", None), "final": r.geturl(),
+                        "contentType": r.headers.get("Content-Type"),
+                        "text": data.decode("utf-8", "replace")}
         except _HTTPError as exc:
             body = exc.read(500_000).decode("utf-8", "replace")
-            return {
-                "ok": False, "status": exc.code, "error": "HTTPError",
-                "headers": {k: v for k, v in exc.headers.items() if k.lower() in {
-                    "set-cookie", "www-authenticate", "server", "vary"
-                }},
-                "text": body,
-            }
+            return {"ok": False, "status": exc.code, "error": "HTTPError", "text": body}
         except Exception as exc:
             return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
 
-    category_url = "https://web.trip-mile.com/category/504"
-    category = fetch(category_url)
+    base = "https://web.trip-mile.com/category/504"
+    category = fetch(base)
     raw = category.get("text", "")
     scripts = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
-    script_urls = [_urljoin(category_url, x) for x in scripts]
-    cookies = [{"name": c.name, "domain": c.domain, "path": c.path, "valuePrefix": c.value[:24]} for c in jar]
+    script_urls = [_urljoin(base, x) for x in scripts]
 
-    bundle_contexts = []
+    matches = []
+    page_chunk = {}
+    needles = ["/api/", "/api/ads", "offerwall", "top-ranking", "Authorization", "Bearer ", "fetch(", "axios", "categoryId"]
     for su in script_urls:
-        if len(bundle_contexts) >= 80:
-            break
         b = fetch(su, "*/*")
         body = b.get("text", "")
         if not body:
             continue
-        for needle in [
-            "/api/ads", "offerwall", "top-ranking", "Authorization", "Bearer ",
-            "accessToken", "access_token", "idToken", "token", "category", "fetch(",
-        ]:
+        literal_hits = sorted(set(
+            x for x in _re.findall(r'["\\\']([^"\\\']{2,500})["\\\']', body)
+            if any(k.lower() in x.lower() for k in ["/api/", "offerwall", "top-ranking", "authorization", "ads?", "category="])
+        ))
+        contexts = []
+        for needle in needles:
             start = 0
-            while len(bundle_contexts) < 80:
+            while len(contexts) < 30:
                 pos = body.find(needle, start)
                 if pos < 0:
                     break
-                bundle_contexts.append({
-                    "script": su,
-                    "needle": needle,
-                    "context": body[max(0, pos-650):pos+1600],
-                })
+                contexts.append({"needle": needle, "context": body[max(0,pos-900):pos+2200]})
                 start = pos + len(needle)
+        if literal_hits or contexts:
+            matches.append({
+                "script": su,
+                "bytes": len(body.encode("utf-8")),
+                "literalHits": literal_hits[:80],
+                "contexts": contexts[:30],
+            })
+        if "/app/category/" in su or "app/category" in su:
+            page_chunk = {
+                "script": su,
+                "bytes": len(body.encode("utf-8")),
+                "literalHits": literal_hits[:160],
+                "apiContexts": contexts[:60],
+                "head": body[:3000],
+            }
 
-    probes = []
-    probe_urls = [
-        "https://web.trip-mile.com/api/ads/offerwall/ad-wall",
-        "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=1",
-        "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=2",
-        "https://web.trip-mile.com/api/ads/top-ranking?limit=20",
-        "https://web.trip-mile.com/api/ads?category=504",
-        "https://web.trip-mile.com/api/categories/504",
-        "https://web.trip-mile.com/api/auth/session",
-    ]
-    for url in probe_urls:
-        p = fetch(url, "application/json, text/plain, */*", {
-            "X-Requested-With": "XMLHttpRequest",
-            "Origin": "https://web.trip-mile.com",
-        })
-        body = p.get("text", "")
-        probes.append({
-            "url": url,
-            "ok": p.get("ok"),
-            "status": p.get("status"),
-            "headers": p.get("headers"),
-            "contentType": p.get("contentType"),
-            "bytes": len(body.encode("utf-8")),
-            "excerpt": body[:2400],
-        })
+    detail_url = "https://web.trip-mile.com/ad/af040a8e-650c-4e5c-9eb7-806259ae17e2"
+    detail = fetch(detail_url)
+    draw = detail.get("text", "")
+    detail_key_contexts = []
+    for needle in ["商品整理ゲーム：3Dパズル", "44000", "44,000", "exchange", "mile", "platform", "device", "ios", "android"]:
+        pos = draw.lower().find(needle.lower())
+        if pos >= 0:
+            detail_key_contexts.append({"needle": needle, "context": draw[max(0,pos-1000):pos+2200]})
 
     summary = {
         "category": {
-            "ok": category.get("ok"),
-            "status": category.get("status"),
-            "headers": category.get("headers"),
-            "bytes": len(raw.encode("utf-8")),
-            "scriptCount": len(script_urls),
-            "scriptSample": script_urls[:12],
+            "ok": category.get("ok"), "status": category.get("status"),
+            "bytes": len(raw.encode("utf-8")), "scripts": script_urls,
         },
-        "cookies": cookies,
-        "bundleContexts": bundle_contexts,
-        "probes": probes,
+        "cookies": [{"name": c.name, "domain": c.domain, "path": c.path, "valuePrefix": c.value[:24]} for c in jar],
+        "matchingBundles": matches,
+        "pageChunk": page_chunk,
+        "detailKeyContexts": detail_key_contexts,
     }
-    assert False, "TRIMA_LIVE_DIAGNOSTIC_V2=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
+    assert False, "TRIMA_LIVE_DIAGNOSTIC_V3=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
