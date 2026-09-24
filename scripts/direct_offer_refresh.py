@@ -2124,6 +2124,14 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
         if len(heading_matches) != 1:
             raise ValueError("missing_or_ambiguous_offer_structure")
         name = heading_matches[0]
+        # Some Amefuri titles arrive double-escaped (for example "&amp;").
+        # Normalize entities for identity matching while retaining the exact
+        # first-party text shape everywhere else in the fingerprint.
+        for _ in range(2):
+            decoded = html.unescape(name)
+            if decoded == name:
+                break
+            name = decoded
         if not target_present(name, aliases):
             raise ValueError("offer_title_mismatch")
 
@@ -2144,6 +2152,25 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
         if reward_end <= header_start:
             raise ValueError("missing_offer_header_boundary")
         reward_header = text[header_start:reward_end]
+
+        condition_start = text.find("成果条件", header_start)
+        condition_text = ""
+        if condition_start >= 0:
+            condition_end_candidates = [
+                pos for marker in ("反映目安", "承認目安", "広告提供元")
+                if (pos := text.find(marker, condition_start + 1)) >= 0
+            ]
+            condition_end = (
+                min(condition_end_candidates)
+                if condition_end_candidates
+                else min(len(text), condition_start + 1200)
+            )
+            condition_text = re.sub(
+                r"\s+", " ",
+                text[condition_start + len("成果条件"):condition_end],
+            ).strip()
+        if not condition_text:
+            raise ValueError("missing_offer_condition")
 
         displayed_yen = sorted({
             int(value.replace(",", ""))
@@ -2232,22 +2259,38 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
         if "ポイント獲得条件" not in terms:
             raise ValueError("incomplete_offer_terms")
         if not any(marker in terms for marker in (
-            "▼承認条件", "■承認条件", "成果地点①",
+            "▼却下条件", "■却下条件", "【却下条件】", "却下条件",
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        # Amefuri currently uses two valid condition layouts. Some networks put
+        # the achievement conditions in the StepUp table / header and leave the
+        # terms pane for investigation and rejection rules. Others repeat a
+        # dedicated 承認条件/成果条件 section in the terms pane. Never infer a
+        # condition from generic prose: a StepUp must have parsed steps, while a
+        # single offer must expose a non-generic bounded 成果条件 value.
+        terms_has_condition = any(marker in terms for marker in (
+            "▼承認条件", "■承認条件", "【成果条件】", "成果地点①",
             "新規アプリインストール後",
-        )):
+        ))
+        if reward_mode == "StepUp":
+            if not step_points:
+                raise ValueError("incomplete_offer_terms")
+        elif condition_text in {"", "条件達成"} and not terms_has_condition:
             raise ValueError("incomplete_offer_terms")
-        if not any(marker in terms for marker in (
-            "▼却下条件", "■却下条件", "却下条件",
-        )):
-            raise ValueError("incomplete_offer_terms")
-        if not re.search(
-            r"(?:達成期限[:：]?\s*[0-9]+\s*日以内|"
+
+        deadline_scope = terms + " " + condition_text
+        if reward_mode == "StepUp":
+            deadline_scope += " " + step_text
+        achievement_deadline_explicit = bool(re.search(
+            r"(?:成果到達期限[:：]?[^0-9]{0,20}[0-9]+\s*日以内|"
+            r"達成期限[:：]?\s*[0-9]+\s*日以内|"
             r"広告クリックから[^。]{0,100}?[0-9]+\s*日以内|"
             r"インストール[^。]{0,100}?[0-9]+\s*(?:日|日間)(?:以内)?|"
-            r"[0-9]+\s*日間\s*[（(][0-9]+\s*時間[）)]\s*以内)",
-            terms,
-        ):
-            raise ValueError("achievement_deadline_not_explicit")
+            r"[0-9]+\s*日間\s*[（(][0-9]+\s*時間[）)]\s*以内|"
+            r"[0-9]+\s*日以内)",
+            deadline_scope,
+        ))
 
         verified_points = (
             sum(step_points) if step_points else current_reward_yen * 10
@@ -2262,6 +2305,8 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
             "rewardMode": reward_mode,
             "displayedRewardYenCandidates": displayed_yen,
             "displayedCurrentRewardYen": current_reward_yen,
+            "conditionText": condition_text,
+            "achievementDeadlineExplicit": achievement_deadline_explicit,
             "stepRewardPoints": step_points,
             "stepTotalPoints": sum(step_points) if step_points else None,
             "verifiedCurrentRewardPoints": verified_points,
