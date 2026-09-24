@@ -250,5 +250,48 @@ jobs:
               out["rateBundleHints"]=rate_hits[:100]
           except Exception as exc:
               out["rateBundleHints"]=[{"error":type(exc).__name__}]
+          # Build a conservative game-like shortlist from both Skyflag OS feeds
+          # and inspect current first-party detail payloads.
+          merged={}
+          os_membership={}
+          for os_id,label in ((1,"Android"),(2,"iOS")):
+              au=f"https://web.mikoshi.jp/v2/skyflag/ads?os={os_id}&limit=1000"
+              req=Request(au,headers={"User-Agent":UA,"Accept":"application/json, text/plain, */*","Referer":"https://web.mikoshi.jp/"})
+              with urlopen(req,timeout=30) as r:
+                  payload=json.loads(r.read(8_000_000).decode("utf-8","replace"))
+              for ad in payload.get("ads",[]):
+                  aid=str(ad.get("id") or "")
+                  if not aid: continue
+                  merged[aid]=ad
+                  os_membership.setdefault(aid,set()).add(label)
+          game_markers=("ゲーム","rpg","パズル","シミュレーション","サバイバル","育成","バトル","冒険","クエスト","ソリティア","merge","マージ","mafia","kingdom","zombie","ゾンビ","idle","ステージ","レベル","チャプター")
+          likely=[]
+          for aid,ad in merged.items():
+              hay=(str(ad.get("name") or "")+" "+re.sub(r"<[^>]+>"," ",str(ad.get("description") or ""))).casefold()
+              if any(m.casefold() in hay for m in game_markers):
+                  likely.append({
+                      "id":aid,
+                      "name":ad.get("name"),
+                      "point":ad.get("point"),
+                      "os":sorted(os_membership.get(aid,set())),
+                      "description":re.sub(r"\\s+"," ",re.sub(r"<[^>]+>"," ",str(ad.get("description") or ""))).strip()[:300],
+                  })
+          likely.sort(key=lambda x:(-(x["point"] if isinstance(x["point"],int) else 0),x["name"] or ""))
+          out["likelyGameOffers"]={"count":len(likely),"top":likely[:50]}
+
+          detailout=[]
+          for row in likely[:8]:
+              au=f"https://web.mikoshi.jp/v2/skyflag/ads/{row['id']}"
+              try:
+                  req=Request(au,headers={"User-Agent":UA,"Accept":"application/json, text/plain, */*","Referer":"https://web.mikoshi.jp/"})
+                  with urlopen(req,timeout=20) as r:
+                      data=json.loads(r.read(3_000_000).decode("utf-8","replace"))
+                  detailout.append({
+                      "id":row["id"],"os":row["os"],"keys":sorted(data.keys()) if isinstance(data,dict) else [],
+                      "payload":data,
+                  })
+              except Exception as exc:
+                  detailout.append({"id":row["id"],"error":type(exc).__name__+":"+str(exc)[:180]})
+          out["gameDetailProbes"]=detailout
           print("MIKOSHI_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
