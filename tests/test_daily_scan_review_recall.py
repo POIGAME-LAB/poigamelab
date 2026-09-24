@@ -25,7 +25,7 @@ def test_explicit_non_game_classification_is_excluded(monkeypatch):
 def test_default_review_budget_was_expanded_for_reward_ranking():
     import daily_scan_review as daily
     assert daily.MAX_DETAILS == 768
-    assert daily.MAX_GROUPS == 320
+    assert daily.MAX_GROUPS == 4096
 
 
 def test_ambiguous_pointtown_reward_text_never_ranks_as_yen():
