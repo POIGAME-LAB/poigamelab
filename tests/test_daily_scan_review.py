@@ -647,8 +647,8 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
 
     registry = {
         "mikoshi": {
-            "status": "verified_exchange_value",
-            "yenPerPoint": 0.9,
+            "status": "verified_face_value",
+            "yenPerPoint": 1,
         }
     }
     item = {
@@ -656,17 +656,17 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
         "titleHint": "Example Game",
         "listingRewardText": "451,871 MIKOSHIポイント",
     }
-    assert daily.listing_reward_upper_bound_yen(item, registry=registry) == 406683.9
+    assert daily.listing_reward_upper_bound_yen(item, registry=registry) == 451871
 
     evidence = {
         "state": "parsed",
-        "parserVersion": "mikoshi-skyflag-detail-review-v2",
+        "parserVersion": "mikoshi-skyflag-detail-review-v3",
         "verifiedCurrentRewardPoints": 451871,
-        "verifiedCurrentRewardYen": 406683.9,
+        "verifiedCurrentRewardYen": 451871,
         "rewardUnit": "MIKOSHI-point",
-        "sourcePointRate": "500MIKOSHI-point=450JPY-via-DotMoney",
+        "sourcePointRate": "1MIKOSHI-point=1JPY",
         "downstreamTermsRequired": False,
     }
-    assert daily.explicit_yen(evidence) == 406683.9
-    evidence["verifiedCurrentRewardYen"] = 451871
+    assert daily.explicit_yen(evidence) == 451871
+    evidence["verifiedCurrentRewardYen"] = 406683.9
     assert daily.explicit_yen(evidence) is None
