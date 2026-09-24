@@ -2887,6 +2887,24 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
             )
         else:
             evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
+
+        if source.get("id") == "moppy" and evidence.get("state") == "parsed":
+            labels = provider_label_registry
+            if labels is None:
+                try:
+                    domains = load_offerwall_provider_registry()
+                    labels = load_offerwall_provider_label_registry(
+                        OFFERWALL_PROVIDERS, domains
+                    )
+                except (OSError, ValueError, TypeError):
+                    labels = {}
+            provider_candidates = offerwall_provider_candidates_from_text(
+                evidence.get("termsText", ""), labels or {}
+            )
+            if provider_candidates:
+                evidence = dict(evidence)
+                evidence["downstreamTermsRequired"] = True
+                evidence["downstreamProviderCandidates"] = provider_candidates
         if (source.get("id") == "warau" and evidence.get("state") == "parsed"
                 and provider_label_registry):
             provider_candidates = offerwall_provider_candidates_from_text(
@@ -3802,10 +3820,12 @@ def main(after_scan=None):
                                 reason = approved_refresh_reason(existing, evidence,
                                     approvals.get(existing.get("offerKey")), checked_at)
                             elif source_id == "moppy":
-                                # Moppy's audited v2 parser binds the stable offer identity and
+                                # Moppy's audited parser binds the stable offer identity and
                                 # current reward to dedicated first-party DOM. Reward-only refresh
                                 # is safe; terms/platform summaries remain untouched.
-                                if evidence.get("parserVersion") != "moppy-detail-review-v2":
+                                if evidence.get("parserVersion") not in {
+                                    "moppy-detail-review-v2", "moppy-detail-review-v3"
+                                }:
                                     reason = "source_evidence_not_supported"
                                 elif type(evidence.get("displayedRewardPoints")) is not int:
                                     reason = "missing_current_reward"
