@@ -161,7 +161,7 @@
         "/v2/skyflag/ads/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Current anonymous first-party WEB MIKOSHI Skyflag JSON endpoints expose stable OS-scoped offer lists and exact point totals. MIKOSHI base face value is 1 point = 1 yen; destination-specific exchange ratios must not reduce that base value. Reviewed details may enter candidate-only ranking; publication remains disabled.",
+      "scheduled_fetch_reason": "Current anonymous first-party WEB MIKOSHI Skyflag JSON endpoints expose stable OS-scoped offer lists and exact point totals. The reviewed point-to-JPY base contract is 1 MIKOSHI point = 1 yen; destination-specific exchange ratios must not reduce that base value. Reviewed details may enter candidate-only ranking; publication remains disabled.",
       "coverage_detail_review_enabled": true,
       "coverage_detail_review_limit_per_game": 4,
       "coverage_detail_review_mode": "candidate_only",
