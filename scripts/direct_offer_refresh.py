@@ -3064,7 +3064,7 @@ def discover_mikoshi_listing_candidates(raw, base_url, source, targets, limit=50
 
 
 def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
-    """Parse exact first-party MIKOSHI Skyflag detail evidence without yen inference."""
+    """Parse exact first-party MIKOSHI detail plus reviewed exchange-value JPY."""
     try:
         offer_id = mikoshi_offer_id(requested_url)
         if mikoshi_offer_id(final_url) != offer_id:
@@ -3153,13 +3153,17 @@ def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
         )):
             raise ValueError("incomplete_offer_terms")
 
+        verified_yen = points * 9 / 10
         payload_out = {
             "offerId": offer_id,
             "name": name,
             "platform": platform,
             "verifiedCurrentRewardPoints": points,
+            "verifiedCurrentRewardYen": verified_yen,
             "rewardUnit": "MIKOSHI-point",
-            "sourcePointRate": "unverified",
+            "sourcePointRate": "500MIKOSHI-point=450JPY-via-DotMoney",
+            "conversionEvidenceUrl": "https://d-money.jp/earn/exchange/detail/1231",
+            "conversionReviewedAt": "2026-09-25",
             "steps": steps,
             "conditionText": str(descriptions.get("cvCondition") or "").strip(),
             "termsText": terms[:16000],
@@ -3172,7 +3176,7 @@ def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
         ).hexdigest()
         return {
             "state": "parsed",
-            "parserVersion": "mikoshi-skyflag-detail-review-v1",
+            "parserVersion": "mikoshi-skyflag-detail-review-v2",
             **payload_out,
             "evidenceFingerprint": fingerprint,
         }

@@ -4260,17 +4260,17 @@ def test_mikoshi_detail_parser_verifies_steps_terms_platform_and_points():
         ["Heroes vs Crazy Wiggler"],
     )
     assert evidence["state"] == "parsed"
-    assert evidence["parserVersion"] == "mikoshi-skyflag-detail-review-v1"
+    assert evidence["parserVersion"] == "mikoshi-skyflag-detail-review-v2"
     assert evidence["offerId"] == "34631"
     assert evidence["platform"] == "Android"
     assert evidence["verifiedCurrentRewardPoints"] == 31060
     assert sum(x["rewardPoints"] for x in evidence["steps"]) == 31060
     assert evidence["rewardUnit"] == "MIKOSHI-point"
-    assert evidence["sourcePointRate"] == "unverified"
+    assert evidence["sourcePointRate"] == "500MIKOSHI-point=450JPY-via-DotMoney"
     assert evidence["candidateOnly"] is True
     assert evidence["publicationAuthorized"] is False
     assert evidence["downstreamTermsRequired"] is False
-    assert "verifiedCurrentRewardYen" not in evidence
+    assert evidence["verifiedCurrentRewardYen"] == 27954
     assert len(evidence["evidenceFingerprint"]) == 64
 
 
@@ -4294,7 +4294,7 @@ def test_mikoshi_detail_parser_fails_closed_on_step_total_or_platform_ambiguity(
     assert evidence["reason"] == "ambiguous_offer_platform"
 
 
-def test_repository_mikoshi_discovery_stays_nonranking_until_yen_rate_is_verified():
+def test_repository_mikoshi_discovery_joins_candidate_ranking_after_rate_verification():
     payload = json.loads(
         (ROOT / "config/point_sources.json").read_text(encoding="utf-8")
     )
@@ -4303,6 +4303,15 @@ def test_repository_mikoshi_discovery_stays_nonranking_until_yen_rate_is_verifie
     assert source["full_catalog_discovery_enabled"] is True
     assert source["new_game_discovery_listing_limit"] == 2
     assert source["new_game_discovery_min_detail_identities_first_page"] >= 100
-    assert source["coverage_detail_review_parser"] == "mikoshi-skyflag-detail-review-v1"
-    assert source["coverage_detail_review_mode"] == "review_only"
+    assert source["coverage_detail_review_parser"] == "mikoshi-skyflag-detail-review-v2"
+    assert source["coverage_detail_review_mode"] == "candidate_only"
     assert source["scheduled_fetch_enabled"] is False
+    assert direct.source_participates_in_new_game_ranking(source) is True
+
+    rates = json.loads(
+        (ROOT / "config/point_value_rates.json").read_text(encoding="utf-8")
+    )["sources"]["mikoshi"]
+    assert rates["status"] == "verified_exchange_value"
+    assert rates["yenPerPoint"] == 0.9
+    assert rates["sourcePoints"] == 500
+    assert rates["exchangeValueYen"] == 450

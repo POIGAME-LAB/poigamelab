@@ -138,6 +138,24 @@ def _kurashiru_reward_explicit_yen(evidence):
     return None
 
 
+def _mikoshi_explicit_yen(evidence):
+    """Accept MIKOSHI yen only under the reviewed DotMoney exchange contract."""
+    if evidence.get("parserVersion") != "mikoshi-skyflag-detail-review-v2":
+        return None
+    points = evidence.get("verifiedCurrentRewardPoints")
+    yen = evidence.get("verifiedCurrentRewardYen")
+    if (
+        type(points) is int
+        and type(yen) in {int, float}
+        and points > 0
+        and evidence.get("rewardUnit") == "MIKOSHI-point"
+        and evidence.get("sourcePointRate") == "500MIKOSHI-point=450JPY-via-DotMoney"
+        and abs((points * 0.9) - float(yen)) < 1e-9
+    ):
+        return yen
+    return None
+
+
 def explicit_yen(evidence, warau_rate_confirmed=False):
     """Do not equate raw pt/P with yen or sum OS/site alternative offers."""
     if evidence.get("state") != "parsed" or evidence.get("downstreamTermsRequired"):
@@ -157,6 +175,8 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         return _moppy_explicit_yen(evidence)
     if evidence.get("parserVersion") == "kurashiru-reward-detail-review-v2":
         return _kurashiru_reward_explicit_yen(evidence)
+    if evidence.get("parserVersion") == "mikoshi-skyflag-detail-review-v2":
+        return _mikoshi_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
         "coincome-detail-review-v2": "displayedRewardYen",
@@ -219,7 +239,7 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
     policy = point_rate_policy(source_id, registry)
     status = str(policy.get("status") or "")
     rate = policy.get("yenPerPoint")
-    rate_allowed = status in {"verified", "verified_face_value"}
+    rate_allowed = status in {"verified", "verified_face_value", "verified_exchange_value"}
     if source_id == "warau" and status == "verified_live_check_required":
         rate_allowed = bool(warau_rate_confirmed)
     point_yen = None
@@ -229,6 +249,10 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
         if source_id == "kurashiru_reward":
             unit_pattern = r"コイン"
             value_ceiling = 20_000_000
+        elif source_id == "mikoshi":
+            # MIKOSHI listing evidence uses the explicit branded unit
+            # "MIKOSHIポイント" rather than a bare point suffix.
+            unit_pattern = r"MIKOSHI\s*ポイント"
         point_values = [
             int(value.replace(",", ""))
             for value in re.findall(
