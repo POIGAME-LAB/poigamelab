@@ -162,3 +162,95 @@ jobs:
           if not rankable:
               raise SystemExit("no Moppy v3 ranking evidence")
           PY
+
+      - name: Restore latest candidate state from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          command -v aws >/dev/null 2>&1
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+          restore_dir="$(mktemp -d)"
+          trap 'rm -rf "${restore_dir}"' EXIT
+          if aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${restore_dir}/" \
+            --recursive --endpoint-url "${R2_ENDPOINT}" --only-show-errors; then
+            for name in \
+              new_game_candidate_queue.json \
+              new_game_candidate_history.json \
+              existing_game_candidate_queue.json \
+              comparison_candidate_queue.json \
+              comparison_review_queue.json \
+              comparison_refresh_status.json
+            do
+              if [ -f "${restore_dir}/${name}.gz" ]; then
+                gzip -dc "${restore_dir}/${name}.gz" > "data/${name}.r2tmp"
+                mv "data/${name}.r2tmp" "data/${name}"
+              fi
+            done
+          fi
+
+      - name: Run full production-equivalent ranking scan
+        run: python scripts/daily_scan_review.py
+
+      - name: Assert Moppy participates without breaking ranking bounds
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report=json.loads(Path("data/daily_scan_review.json").read_text(encoding="utf-8"))
+          details=[]
+          for group in report.get("results") or []:
+              for item in group.get("details") or []:
+                  if item.get("source")=="moppy":
+                      ev=item.get("evidence") or {}
+                      details.append({
+                          "game":group.get("game"),
+                          "state":ev.get("state"),
+                          "reason":ev.get("reason"),
+                          "parserVersion":ev.get("parserVersion"),
+                          "platform":ev.get("platform"),
+                          "points":ev.get("displayedRewardPoints"),
+                          "rewardYen":item.get("rewardYen"),
+                          "downstreamTermsRequired":ev.get("downstreamTermsRequired"),
+                          "detailConfirmed":item.get("detailConfirmed"),
+                      })
+
+          parsed=[x for x in details if x.get("state")=="parsed"]
+          ranked=[x for x in details if x.get("rewardYen") is not None]
+          summary={
+              "rankingComplete":report.get("rankingComplete"),
+              "rankingHoldReasons":report.get("rankingHoldReasons"),
+              "detailInspectionCalls":report.get("detailInspectionCalls"),
+              "detailLimitReached":report.get("detailLimitReached"),
+              "groupLimitReached":report.get("groupLimitReached"),
+              "sourceScanIncomplete":report.get("sourceScanIncomplete"),
+              "topFive":report.get("topFiveReviewCandidates"),
+              "moppyDetails":len(details),
+              "moppyParsed":len(parsed),
+              "moppyRanked":len(ranked),
+              "moppySamples":details[:12],
+          }
+          print("MOPPY_FULL_RANKING",json.dumps(summary,ensure_ascii=False,sort_keys=True))
+
+          if report.get("rankingComplete") is not True:
+              raise SystemExit("ranking incomplete")
+          if report.get("detailLimitReached") is True or report.get("groupLimitReached") is True:
+              raise SystemExit("ranking budget reached")
+          if report.get("sourceScanIncomplete") is True:
+              raise SystemExit("ranking source scan incomplete")
+          calls=report.get("detailInspectionCalls")
+          if not isinstance(calls,int) or calls >= 768:
+              raise SystemExit("detail budget not bounded")
+          if not parsed:
+              raise SystemExit("Moppy produced no parsed v3 evidence")
+          if not ranked:
+              raise SystemExit("Moppy produced no ranking reward evidence")
+          PY
