@@ -673,100 +673,128 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
 
 
 def test_trima_live_diagnostic_20260925():
-    """Temporary live diagnostic; intentionally fails so CI exposes the public Trima shape."""
+    """Temporary live diagnostic; intentionally fails so CI exposes Trima client/API behavior."""
     import json as _json
     import re as _re
+    from http.cookiejar import CookieJar as _CookieJar
     from urllib.error import HTTPError as _HTTPError
-    from urllib.request import Request as _Request, urlopen as _urlopen
+    from urllib.parse import urljoin as _urljoin
+    from urllib.request import (
+        Request as _Request,
+        build_opener as _build_opener,
+        HTTPCookieProcessor as _HTTPCookieProcessor,
+    )
 
     ua = (
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
         "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
         "Mobile/15E148 Safari/604.1"
     )
+    jar = _CookieJar()
+    opener = _build_opener(_HTTPCookieProcessor(jar))
 
-    def fetch(url, accept="text/html,application/xhtml+xml"):
-        req = _Request(url, headers={
+    def fetch(url, accept="text/html,application/xhtml+xml", extra=None):
+        headers = {
             "User-Agent": ua,
             "Accept": accept,
             "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
             "Referer": "https://web.trip-mile.com/",
-        })
+        }
+        headers.update(extra or {})
+        req = _Request(url, headers=headers)
         try:
-            with _urlopen(req, timeout=20) as r:
+            with opener.open(req, timeout=20) as r:
                 data = r.read(6_000_000)
                 return {
                     "ok": True,
                     "status": getattr(r, "status", None),
                     "final": r.geturl(),
                     "contentType": r.headers.get("Content-Type"),
+                    "headers": {k: v for k, v in r.headers.items() if k.lower() in {
+                        "set-cookie", "x-powered-by", "server", "vary", "cache-control"
+                    }},
                     "text": data.decode("utf-8", "replace"),
                 }
         except _HTTPError as exc:
             body = exc.read(500_000).decode("utf-8", "replace")
-            return {"ok": False, "status": exc.code, "error": "HTTPError", "text": body}
+            return {
+                "ok": False, "status": exc.code, "error": "HTTPError",
+                "headers": {k: v for k, v in exc.headers.items() if k.lower() in {
+                    "set-cookie", "www-authenticate", "server", "vary"
+                }},
+                "text": body,
+            }
         except Exception as exc:
             return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
 
     category_url = "https://web.trip-mile.com/category/504"
     category = fetch(category_url)
     raw = category.get("text", "")
-    ad_hrefs = sorted(set(_re.findall(r'href=["\\\']([^"\\\']*/ad/[0-9a-fA-F-]{20,})', raw)))
-    all_ad_paths = sorted(set(_re.findall(r'/ad/[0-9a-fA-F-]{20,}', raw)))
     scripts = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
-    next_data = _re.findall(r'<script[^>]+id=["\\\']__NEXT_DATA__["\\\'][^>]*>(.*?)</script>', raw, _re.S)
-    category_excerpt = _re.sub(r"\\s+", " ", _re.sub(r"(?s)<[^>]+>", " ", raw))[:3500]
+    script_urls = [_urljoin(category_url, x) for x in scripts]
+    cookies = [{"name": c.name, "domain": c.domain, "path": c.path, "valuePrefix": c.value[:24]} for c in jar]
 
-    detail_url = "https://web.trip-mile.com/ad/af040a8e-650c-4e5c-9eb7-806259ae17e2"
-    detail = fetch(detail_url)
-    draw = detail.get("text", "")
-    detail_text = _re.sub(r"\\s+", " ", _re.sub(r"(?s)<[^>]+>", " ", draw))
-    detail_summary = {
-        "ok": detail.get("ok"),
-        "status": detail.get("status"),
-        "bytes": len(draw.encode("utf-8")),
-        "hasTitle": "商品整理ゲーム：3Dパズル" in draw or "商品整理ゲーム：3Dパズル" in detail_text,
-        "has44000": "44,000" in draw or "44000" in draw,
-        "has366Yen": "366円" in draw or "366円" in detail_text,
-        "adPathCount": len(set(_re.findall(r"/ad/[0-9a-fA-F-]{20,}", draw))),
-        "excerpt": detail_text[:2500],
-    }
+    bundle_contexts = []
+    for su in script_urls:
+        if len(bundle_contexts) >= 80:
+            break
+        b = fetch(su, "*/*")
+        body = b.get("text", "")
+        if not body:
+            continue
+        for needle in [
+            "/api/ads", "offerwall", "top-ranking", "Authorization", "Bearer ",
+            "accessToken", "access_token", "idToken", "token", "category", "fetch(",
+        ]:
+            start = 0
+            while len(bundle_contexts) < 80:
+                pos = body.find(needle, start)
+                if pos < 0:
+                    break
+                bundle_contexts.append({
+                    "script": su,
+                    "needle": needle,
+                    "context": body[max(0, pos-650):pos+1600],
+                })
+                start = pos + len(needle)
 
     probes = []
-    for url in [
+    probe_urls = [
         "https://web.trip-mile.com/api/ads/offerwall/ad-wall",
         "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=1",
         "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=2",
         "https://web.trip-mile.com/api/ads/top-ranking?limit=20",
-    ]:
-        p = fetch(url, "application/json, text/plain, */*")
+        "https://web.trip-mile.com/api/ads?category=504",
+        "https://web.trip-mile.com/api/categories/504",
+        "https://web.trip-mile.com/api/auth/session",
+    ]
+    for url in probe_urls:
+        p = fetch(url, "application/json, text/plain, */*", {
+            "X-Requested-With": "XMLHttpRequest",
+            "Origin": "https://web.trip-mile.com",
+        })
         body = p.get("text", "")
         probes.append({
             "url": url,
             "ok": p.get("ok"),
             "status": p.get("status"),
+            "headers": p.get("headers"),
             "contentType": p.get("contentType"),
             "bytes": len(body.encode("utf-8")),
-            "excerpt": body[:1800],
+            "excerpt": body[:2400],
         })
 
     summary = {
         "category": {
             "ok": category.get("ok"),
             "status": category.get("status"),
-            "contentType": category.get("contentType"),
+            "headers": category.get("headers"),
             "bytes": len(raw.encode("utf-8")),
-            "adHrefCount": len(ad_hrefs),
-            "adPathCount": len(all_ad_paths),
-            "adHrefSample": ad_hrefs[:20],
-            "adPathSample": all_ad_paths[:20],
-            "scriptCount": len(scripts),
-            "scriptSample": scripts[:20],
-            "nextDataCount": len(next_data),
-            "nextDataExcerpt": next_data[0][:2500] if next_data else "",
-            "excerpt": category_excerpt,
+            "scriptCount": len(script_urls),
+            "scriptSample": script_urls[:12],
         },
-        "detail": detail_summary,
+        "cookies": cookies,
+        "bundleContexts": bundle_contexts,
         "probes": probes,
     }
-    assert False, "TRIMA_LIVE_DIAGNOSTIC=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
+    assert False, "TRIMA_LIVE_DIAGNOSTIC_V2=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
