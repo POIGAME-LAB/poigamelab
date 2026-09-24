@@ -191,6 +191,48 @@ def test_warau_conversion_requires_current_first_party_rate_and_is_fetched_once(
                                "rewardPoints": 3000}, warau_rate_confirmed=False) is None
 
 
+def test_warau_rate_accepts_reviewed_first_party_help_redirect(monkeypatch):
+    registry = sources()
+    registry["warau"] = {"id": "warau", "search_domains": ["www.warau.jp"]}
+    items = candidates(sites=("a",)) + [{
+        "classification": "likely_game",
+        "titleHint": "Example Puzzle",
+        "source": "warau",
+        "firstPartyCandidateUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=12",
+    }]
+
+    def parser(url, source, aliases, fetcher):
+        value = inspect(url, source, aliases, fetcher)
+        if source["id"] == "warau":
+            value["sourceEvidence"].update(
+                parserVersion="warau-stepup-v1",
+                rewardUnit="pt",
+                rewardPoints=3000,
+            )
+        return value
+
+    monkeypatch.setattr(daily.direct, "inspect_detail", parser)
+
+    def fetch(url, source):
+        if url == "https://www.warau.jp/help/qa/128/":
+            return (
+                "ワラウのポイント交換レートは原則として 1ポイント＝1円 です。",
+                "https://www.warau.jp/sp/help/detail/477/",
+            )
+        return "<p>Example Puzzle iOS 3000 pt</p>", url
+
+    result = daily.review_scan(
+        items=items,
+        sources=registry,
+        targets=[],
+        rows=[],
+        checked_at="fixture",
+        fetcher=fetch,
+    )
+    assert result["warauBaseRate"]["confirmed"] is True
+    assert result["results"][0]["maxObservedRewardYen"] == 3000
+
+
 def test_detail_budget_is_explicit_and_partial_group_not_ranked(monkeypatch):
     result = scan(candidates(sites=("a", "b", "c")), monkeypatch, max_details=2)
     assert result["detailInspectionCalls"] == 2
