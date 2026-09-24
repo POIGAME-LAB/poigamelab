@@ -10,6 +10,8 @@ on:
 permissions:
   contents: read
 
+# retry: condition suffix fix
+
 jobs:
   validate:
     runs-on: ubuntu-latest
