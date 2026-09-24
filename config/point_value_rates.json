@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-22",
-  "policy": "Only first-party documented base face-value rates may be used to convert raw site points for cross-site ranking. Unknown/ambiguous rates fail closed. Exchange bonuses, fees, campaigns and third-party rates are excluded.",
+  "updatedAt": "2026-09-25",
+  "policy": "Use reviewed official face-value contracts for raw-point ranking. When a source has no native JPY face-value contract, a current official exchange-partner contract may be used as a clearly labeled exchange-value rate. Unknown/ambiguous rates fail closed. Temporary bonuses, campaigns and downstream redemption bonuses are excluded.",
   "sources": {
     "moppy": {
       "unit": "P",
@@ -37,12 +37,16 @@
       "note": "Official site exposes yen-equivalent values. Ranking must use parser-verified displayedRewardYen, not infer a CIM conversion."
     },
     "mikoshi": {
-      "unit": "point",
-      "pointsPerYen": null,
-      "yenPerPoint": null,
-      "status": "unsupported",
-      "evidenceUrl": null,
-      "note": "No reviewed first-party base conversion contract in the repository. Raw points must not rank."
+      "unit": "MIKOSHI-point",
+      "pointsPerYen": 1.1111111111111112,
+      "yenPerPoint": 0.9,
+      "status": "verified_exchange_value",
+      "evidenceUrl": "https://d-money.jp/earn/exchange/detail/1231",
+      "reviewedAt": "2026-09-25",
+      "sourcePoints": 500,
+      "exchangeValueYen": 450,
+      "exchangeUnit": "DotMoney",
+      "note": "Official DotMoney partner page states the current MIKOSHI minimum exchange as 500 MIKOSHI points = 450 money. DotMoney's official notation defines 1 money = 1 yen equivalent. Ranking uses the resulting 0.9 JPY-equivalent per MIKOSHI point and excludes temporary downstream bonuses."
     },
     "gendama": {
       "unit": "pt",
