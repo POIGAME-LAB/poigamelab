@@ -631,3 +631,25 @@ def test_kurashiru_v2_explicit_yen_requires_exact_coin_contract():
     assert daily.explicit_yen(evidence) == 37684.32
     evidence["verifiedCurrentRewardYen"] = 37684.31
     assert daily.explicit_yen(evidence) is None
+
+
+
+def test_mikoshi_review_only_discovery_does_not_join_yen_ranking():
+    source = {
+        "id": "mikoshi",
+        "search_domains": ["web.mikoshi.jp"],
+        "direct_detail_url_hints": ["/v2/skyflag/ads/"],
+        "scheduled_fetch_enabled": False,
+        "coverage_detail_review_enabled": True,
+        "coverage_detail_review_mode": "review_only",
+    }
+    assert daily.direct.source_participates_in_new_game_ranking(source) is False
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "mikoshi-skyflag-detail-review-v1",
+        "verifiedCurrentRewardPoints": 451871,
+        "rewardUnit": "MIKOSHI-point",
+        "sourcePointRate": "unverified",
+        "downstreamTermsRequired": False,
+    }
+    assert daily.explicit_yen(evidence) is None
