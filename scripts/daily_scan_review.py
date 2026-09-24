@@ -23,15 +23,31 @@ ROOT = Path(__file__).resolve().parents[1]
 # opens detail pages that can still affect the top five. Unknown bounds fail
 # open and are always reviewed.
 MAX_DETAILS = 768
-# Independent fail-closed safety cap for the two-site handoff universe.
-MAX_GROUPS = 320
+# Emergency fail-closed cap for pathological candidate explosions. Listing-only
+# upper-bound evaluation is cheap, so normal ranking considers the whole current
+# handoff universe and lets MAX_DETAILS guard expensive detail fetches.
+MAX_GROUPS = 4096
 
 
 def discovery_name(title):
     value = direct.html.unescape(str(title or "")).strip()
     value = re.sub(r"^(?:iOS|Android|And)[ _：:・-]+", "", value, flags=re.I)
     value = re.sub(r"^(?:【(?:SKYFLAG|SmaAD|MyChips|M)】)+", "", value, flags=re.I)
-    value = re.sub(r"^【(?:レベル|ゲームゴール|累計)[^】]+】", "", value)
+    # Some point sites prepend the achievement condition to the actual game
+    # title, e.g. "【60日間でTier4をアンロック】ザ・グランドマフィア".
+    # Strip only bracket prefixes that contain explicit campaign-condition
+    # markers, never arbitrary branded/game-title brackets.
+    condition_prefix = re.compile(
+        r"^【(?=[^】]{1,120}】)(?=[^】]*(?:"
+        r"[0-9][0-9,]*\s*(?:日間?|円以上|回|個|枚)|"
+        r"Tier\s*[0-9]+|Lv\.?\s*[0-9]+|レベル\s*[0-9]+|"
+        r"到達|クリア|突破|アンロック|換金|課金|購入|獲得|"
+        r"戦力|ミッション|チャプター|ステージ"
+        r"))[^】]+】",
+        re.I,
+    )
+    while condition_prefix.search(value):
+        value = condition_prefix.sub("", value, count=1).strip()
     # COINCOME listing cards append a UI action/reward phrase after the actual
     # campaign title. Keeping that suffix in the game key prevents the title
     # from matching the first-party detail page even though both identify the
@@ -334,7 +350,8 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
 
     detail_calls, results = 0, []
     skipped_by_upper_bound = 0
-    for group in handoff_eligible[:max_groups]:
+    review_universe = handoff_eligible[:max_groups]
+    for group in review_universe:
         current_rewards = sorted(
             (r["maxObservedRewardYen"] for r in results
              if r.get("candidateEligible")
@@ -427,6 +444,8 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
             "listingUpperBoundUnknownGroups": unknown_bound_groups,
             "prefilterSkippedGroups": skipped_by_upper_bound,
+            "groupSafetyCap": max_groups,
+            "groupSafetyCapRemaining": max(0, max_groups - len(handoff_eligible)),
             "groupLimitReached": group_limit,
             "detailLimitReached": detail_limit,
             "sourceScanIncomplete": False,
