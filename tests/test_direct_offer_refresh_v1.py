@@ -3256,11 +3256,45 @@ def test_pointtown_detail_parser_reads_exact_reward():
         ['東京ディバンカー'],
     )
     assert evidence['state'] == 'parsed'
-    assert evidence['parserVersion'] == 'pointtown-detail-review-v1'
+    assert evidence['parserVersion'] == 'pointtown-detail-review-v2'
+    assert evidence['titleMatchProvenance'] == 'exact_alias'
     assert evidence['platform'] == 'iOS'
     assert evidence['verifiedCurrentRewardPoints'] == 160
     assert evidence['verifiedCurrentRewardYen'] == 160
     assert evidence['publicationAuthorized'] is False
+
+
+def test_pointtown_v2_accepts_only_explicitly_truncated_listing_prefix():
+    raw = _pointtown_fixture().replace(
+        '<h1>iOS_東京ディバンカー_3日間連続でログインボーナスを獲得</h1>',
+        '<h1>ぐっすリン-快眠音でリラックス！癒しの音で自然な睡眠-（メールアドレス登録完了）（iOS）</h1>',
+    )
+    evidence = direct.inspect_pointtown_offer(
+        raw,
+        'https://www.pointtown.com/item/9265',
+        'https://www.pointtown.com/item/9265',
+        ['ぐっすリン-快眠音でリラックス！癒しの音で自然な睡眠-（メールアドレス登…'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'pointtown-detail-review-v2'
+    assert evidence['titleMatchProvenance'] == 'truncated_listing_prefix'
+
+
+def test_pointtown_v2_rejects_unmarked_partial_alias():
+    raw = _pointtown_fixture().replace(
+        '<h1>iOS_東京ディバンカー_3日間連続でログインボーナスを獲得</h1>',
+        '<h1>ぐっすリン-快眠音でリラックス！癒しの音で自然な睡眠-（メールアドレス登録完了）（iOS）</h1>',
+    )
+    evidence = direct.inspect_pointtown_offer(
+        raw,
+        'https://www.pointtown.com/item/9265',
+        'https://www.pointtown.com/item/9265',
+        ['ぐっすリン-快眠音でリラックス'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'offer_title_mismatch',
+    }
 
 
 def test_pointtown_detail_parser_rejects_ambiguous_reward_region():
@@ -3292,7 +3326,7 @@ def test_pointtown_known_game_detail_review_is_bounded_candidate_only():
     assert pointtown['coverage_detail_review_enabled'] is True
     assert pointtown['coverage_detail_review_limit_per_game'] == 3
     assert pointtown['coverage_detail_review_mode'] == 'candidate_only'
-    assert pointtown['coverage_detail_review_parser'] == 'pointtown-detail-review-v1'
+    assert pointtown['coverage_detail_review_parser'] == 'pointtown-detail-review-v2'
     assert pointtown['scheduled_fetch_enabled'] is False
     assert pointtown['full_catalog_discovery_enabled'] is False
 
