@@ -2,9 +2,6 @@ name: Refresh comparison offers (API-free)
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/refresh-verified-offers.yml"
   schedule:
     - cron: "17 16 * * *"
 
