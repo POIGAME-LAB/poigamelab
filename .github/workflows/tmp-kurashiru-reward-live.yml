@@ -1,0 +1,96 @@
+name: Temporary Kurashiru Reward live audit
+
+on:
+  push:
+    branches:
+      - audit/kurashiru-reward-live-20260924
+    paths:
+      - ".github/workflows/tmp-kurashiru-reward-live.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect current first-party Kurashiru Reward surfaces
+        run: |
+          python - <<'PY'
+          import json,re
+          from html import unescape
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin,urlparse
+          from urllib.request import Request,urlopen
+
+          URLS=[
+              "https://www.rewards.kurashiru.com/",
+              "https://www.rewards.kurashiru.com/categories/3",
+          ]
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.links=[]; self.scripts=[]; self._href=None; self._txt=[]
+              def handle_starttag(self,tag,attrs):
+                  a=dict(attrs)
+                  if tag=="a":
+                      self._href=a.get("href"); self._txt=[]
+                  elif tag=="script" and a.get("src"):
+                      self.scripts.append(a["src"])
+              def handle_data(self,data):
+                  if self._href is not None: self._txt.append(data)
+              def handle_endtag(self,tag):
+                  if tag=="a" and self._href is not None:
+                      self.links.append((self._href,re.sub(r"\s+"," "," ".join(self._txt)).strip()))
+                      self._href=None; self._txt=[]
+          out={"pages":[]}
+          for url in URLS:
+              req=Request(url,headers={
+                  "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+                  "Accept":"text/html,application/xhtml+xml",
+                  "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+              })
+              with urlopen(req,timeout=20) as r:
+                  data=r.read(2_000_000); final=r.geturl(); ctype=r.headers.get("Content-Type")
+              raw=data.decode("utf-8","replace")
+              p=P(); p.feed(raw)
+              links=[]
+              for href,text in p.links:
+                  if not href: continue
+                  absolute=urljoin(final,unescape(href))
+                  host=(urlparse(absolute).hostname or "").lower()
+                  if host.endswith("kurashiru.com"):
+                      links.append({"url":absolute,"text":text[:180]})
+              visible=re.sub(r"(?is)<(?:script|style|noscript|svg)\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
+              visible=re.sub(r"(?s)<[^>]+>"," ",visible)
+              visible=re.sub(r"\s+"," ",unescape(visible)).strip()
+              path_counts={}
+              for item in links:
+                  path=urlparse(item["url"]).path
+                  bucket="/"+"/".join([x for x in path.split("/") if x][:2])
+                  path_counts[bucket]=path_counts.get(bucket,0)+1
+              interesting=[
+                  item for item in links
+                  if any(k in item["url"].lower() for k in ("campaign","offer","reward","mission","category","detail","app"))
+                  or any(k in item["text"] for k in ("ゲーム","アプリ","ポイント","コイン","案件"))
+              ]
+              script_urls=[urljoin(final,x) for x in p.scripts[:80]]
+              jsonish=sorted(set(re.findall(r'https?://[^"\'<> ]+|/api/[^"\'<> ]+|/_next/data/[^"\'<> ]+',raw)))
+              out["pages"].append({
+                  "url":url,"final":final,"contentType":ctype,"bytes":len(data),
+                  "title":(re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0][:300],
+                  "linkCount":len(links),"pathCounts":sorted(path_counts.items(),key=lambda x:(-x[1],x[0]))[:25],
+                  "interestingLinks":interesting[:120],
+                  "scriptUrls":script_urls[:40],
+                  "jsonish":jsonish[:80],
+                  "keywords":{
+                      k:(k in visible) for k in ["ゲーム","アプリ","案件","ポイント","コイン","レシチャレ","Working Heroes"]
+                  },
+                  "visibleExcerpt":visible[:2200],
+              })
+          print("KURASHIRU_REWARD_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
+          PY
