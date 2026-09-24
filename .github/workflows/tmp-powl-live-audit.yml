@@ -9,53 +9,126 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Inspect Powl reward-link DOM ancestry
+      - name: Restore latest new-game queue
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/new_game_candidate_queue.json.gz" "${tmp}/queue.gz" --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          gzip -dc "${tmp}/queue.gz" > data/new_game_candidate_queue.json
+      - name: Simulate full primary Powl listing in ranking universe
         run: |
           python - <<'PY'
           import collections,json,re,sys
           from urllib.parse import urljoin,urlparse
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
+          import daily_scan_review as daily
+
           sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
+          targets=json.load(open("config/game_targets.json",encoding="utf-8"))["games"]
           s=sources["powl"]
           raw,final=d.fetch_first_party(s["direct_listing_urls"][0],s,timeout=20,max_bytes=2500000)
           doc=d.EvidenceHTML(raw).root
-          rows=[]
+
+          powl=[]
           seen=set()
-          chain_counts=collections.Counter()
           for a in doc.find(tag="a"):
               href=a.attrs.get("href","")
-              url=urljoin(final,href)
+              url=urljoin(final,href).split("#",1)[0]
               m=re.fullmatch(r"/reward/(\d+)",urlparse(url).path)
               if not m or m.group(1) in seen:
                   continue
-              seen.add(m.group(1))
-              chain=[]
               node=a.parent
-              for _ in range(6):
+              in_primary=False
+              for _ in range(5):
                   if node is None: break
-                  chain.append({
-                      "tag":node.tag,
-                      "id":node.attrs.get("id",""),
-                      "class":node.attrs.get("class",""),
-                  })
+                  if "search-result-simple-list" in node.attrs.get("class","").split():
+                      in_primary=True
+                      break
                   node=node.parent
-              sig=" > ".join(
-                  f"{x['tag']}#{x['id']}.{x['class']}" for x in chain[:4]
-              )
-              chain_counts[sig]+=1
-              if len(rows)<80:
-                  rows.append({
-                      "id":m.group(1),"label":d.evidence_text(a)[:300],
-                      "chain":chain,
-                  })
-          print("COUNTS",json.dumps(chain_counts.most_common(30),ensure_ascii=False))
-          for row in rows:
-              print("ROW",json.dumps(row,ensure_ascii=False,sort_keys=True))
+              if not in_primary:
+                  continue
+              label=d.evidence_text(a).strip()
+              if not label:
+                  continue
+              seen.add(m.group(1))
+              item={
+                  "source":"powl","sourceLabel":"Powl","titleHint":label,
+                  "firstPartyCandidateUrl":url,
+                  "offerIdentity":d.offer_identity_key(url,"powl"),
+                  "classification":"review",
+              }
+              item.update(d.classify_new_game_candidate(item))
+              powl.append(item)
+
+          old=json.load(open("data/new_game_candidate_queue.json",encoding="utf-8")).get("items",[])
+          items=[x for x in old if x.get("source")!="powl"] + powl
+
+          simulated={k:dict(v) for k,v in sources.items()}
+          simulated["powl"]["coverage_detail_review_enabled"]=True
+          simulated["powl"]["coverage_detail_review_mode"]="candidate_only"
+
+          families=daily.source_families(simulated)
+          groups={}
+          for item in items:
+              if item.get("classification")=="likely_non_game":
+                  continue
+              name=daily.discovery_name(item.get("titleHint"))
+              if not name or d.context_matches_known_game(name,targets):
+                  continue
+              sid,url=item.get("source"),item.get("firstPartyCandidateUrl")
+              if sid not in simulated or not d.source_host_allowed(url,simulated[sid]) or not d.detail_like(url,simulated[sid]):
+                  continue
+              if not d.source_participates_in_new_game_ranking(simulated[sid]):
+                  continue
+              ident=d.offer_identity_key(url,sid)
+              if not ident: continue
+              key=d.normalized_text(name)
+              groups.setdefault(key,{"game":name,"offers":{}})["offers"].setdefault((families[sid],ident),(sid,url))
+
+          owners={}
+          for key,g in groups.items():
+              for ident in g["offers"]:
+                  owners.setdefault(ident,set()).add(key)
+          for g in groups.values():
+              g["offers"]={ident:offer for ident,offer in g["offers"].items() if len(owners[ident])==1}
+
+          eligible=[g for g in groups.values() if g["offers"]]
+          handoff=[g for g in eligible if len({f for f,_ in g["offers"]})>=2]
+          classification=collections.Counter(x.get("classification") for x in powl)
+          powl_handoff=[g for g in handoff if any(sid=="powl" for sid,_ in g["offers"].values())]
+          print("SUMMARY",json.dumps({
+              "powlPrimaryCandidates":len(powl),
+              "powlClassifications":dict(classification),
+              "allRankingEligibleGroups":len(eligible),
+              "handoffGroups":len(handoff),
+              "handoffOffers":sum(len(g["offers"]) for g in handoff),
+              "powlHandoffGroups":len(powl_handoff),
+              "powlHandoffOffers":sum(
+                  sum(1 for sid,_ in g["offers"].values() if sid=="powl")
+                  for g in powl_handoff
+              ),
+              "familyDistribution":dict(sorted(collections.Counter(
+                  len({f for f,_ in g["offers"]}) for g in handoff
+              ).items())),
+          },ensure_ascii=False,sort_keys=True))
+          for g in sorted(powl_handoff,key=lambda x:(-len({f for f,_ in x["offers"]}),x["game"]))[:100]:
+              print("GROUP",json.dumps({
+                  "game":g["game"],
+                  "families":len({f for f,_ in g["offers"]}),
+                  "offers":len(g["offers"]),
+                  "sources":sorted({sid for sid,_ in g["offers"].values()}),
+              },ensure_ascii=False,sort_keys=True))
           PY
