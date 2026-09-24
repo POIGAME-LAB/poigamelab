@@ -66,11 +66,11 @@ REWARD_ONLY_CONTRACTS = {
         "termsMarkers": ("適用端末", "キャッシュバック条件", "承認条件", "否認条件"),
     },
     "point_town": {
-        "parser": "pointtown-detail-review-v1",
+        "parser": "pointtown-detail-review-v2",
         "identity": direct.pointtown_offer_id,
         "rewardField": "verifiedCurrentRewardYen",
         "fingerprintFields": [
-            "offerId", "name", "platform", "verifiedCurrentRewardPoints",
+            "offerId", "name", "titleMatchProvenance", "platform", "verifiedCurrentRewardPoints",
             "verifiedCurrentRewardYen", "rewardUnit", "sourcePointRate",
             "headerText", "termsText", "publicationAuthorized",
         ],

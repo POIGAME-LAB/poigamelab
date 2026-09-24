@@ -32,7 +32,7 @@ def test_ambiguous_pointtown_reward_text_never_ranks_as_yen():
     import daily_scan_review as daily
     evidence = {
         "state": "parsed",
-        "parserVersion": "pointtown-detail-review-v1",
+        "parserVersion": "pointtown-detail-review-v2",
         "verifiedCurrentRewardPoints": 160,
         "verifiedCurrentRewardYen": 160,
         "rewardUnit": "PointTown-point",
@@ -46,7 +46,7 @@ def test_pointtown_reward_requires_exact_unit_contract():
     import daily_scan_review as daily
     evidence = {
         "state": "parsed",
-        "parserVersion": "pointtown-detail-review-v1",
+        "parserVersion": "pointtown-detail-review-v2",
         "verifiedCurrentRewardPoints": 160,
         "verifiedCurrentRewardYen": 160,
         "rewardUnit": "PointTown-point",

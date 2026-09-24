@@ -75,8 +75,8 @@ def contract_case(source):
         ),
         "point_town": (
             "https://www.pointtown.com/item/123/",
-            {"offerId": "123", "name": "Game", "platform": "iOS",
-             "verifiedCurrentRewardPoints": 4400, "verifiedCurrentRewardYen": 4400,
+            {"offerId": "123", "name": "Game", "titleMatchProvenance": "exact_alias",
+             "platform": "iOS", "verifiedCurrentRewardPoints": 4400, "verifiedCurrentRewardYen": 4400,
              "rewardUnit": "PointTown-point", "sourcePointRate": "1pt=1JPY",
              "headerText": "Game で 4400 初回利用限定", "termsText": "ポイント獲得条件 条件本文",
              "publicationAuthorized": False},

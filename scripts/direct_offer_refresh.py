@@ -1838,8 +1838,30 @@ def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
                 raise ValueError("canonical_offer_mismatch")
 
         title = evidence_text(one(doc.find(tag="h1")))
-        if not target_present(title, aliases):
-            raise ValueError("offer_title_mismatch")
+        title_match_provenance = ""
+        if target_present(title, aliases):
+            title_match_provenance = "exact_alias"
+        else:
+            # The current PointTown app-install listing visibly truncates some
+            # long anchor labels with an ellipsis even though the linked detail
+            # page contains the full title. Accept only a long normalized
+            # prefix from an explicitly truncated listing hint, never an
+            # arbitrary partial alias.
+            title_key = normalized_game_title_key(title)
+            for alias in aliases:
+                raw_alias = html.unescape(str(alias or "")).strip()
+                if raw_alias.endswith("…"):
+                    prefix = raw_alias[:-1].rstrip()
+                elif raw_alias.endswith("..."):
+                    prefix = raw_alias[:-3].rstrip()
+                else:
+                    continue
+                prefix_key = normalized_game_title_key(prefix)
+                if len(prefix_key) >= 12 and title_key.startswith(prefix_key):
+                    title_match_provenance = "truncated_listing_prefix"
+                    break
+            if not title_match_provenance:
+                raise ValueError("offer_title_mismatch")
 
         text = visible_text(raw)
         if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
@@ -1858,6 +1880,11 @@ def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
             if (pos := header.find(token)) >= 0
         ]
         reward_region = header[:min(boundary_positions)] if boundary_positions else header[:1200]
+        if re.search(
+            r"で\s*[0-9][0-9,]*\s+[0-9][0-9,]*(?:\s|$)",
+            reward_region,
+        ):
+            raise ValueError("missing_or_ambiguous_displayed_reward")
         reward_matches = re.findall(
             r"で\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*(?![%0-9])",
             reward_region,
@@ -1896,6 +1923,7 @@ def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
         payload = {
             "offerId": offer_id,
             "name": title,
+            "titleMatchProvenance": title_match_provenance,
             "platform": platform,
             "verifiedCurrentRewardPoints": reward_points,
             "verifiedCurrentRewardYen": reward_points,
@@ -1910,7 +1938,7 @@ def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
         ).hexdigest()
         return {
             "state": "parsed",
-            "parserVersion": "pointtown-detail-review-v1",
+            "parserVersion": "pointtown-detail-review-v2",
             **payload,
             "evidenceFingerprint": fingerprint,
         }
