@@ -756,6 +756,40 @@ def test_apex_registration_does_not_trust_arbitrary_subdomains():
     assert direct.source_host_allowed('https://evil.example.test/path', source) is False
 
 
+def test_first_party_fetch_sniffs_shift_jis_meta_when_http_charset_is_missing(monkeypatch):
+    requested = []
+    html = (
+        '<html><head><meta http-equiv="Content-Type" '
+        'content="text/html; charset=Shift_JIS"></head>'
+        '<body>ザ・グランドマフィア 48,750pt (4,875円相当)</body></html>'
+    )
+    payload = html.encode('cp932')
+
+    class FakeHTTPS(HTTPSHandler):
+        def https_open(self, req):
+            requested.append(req.full_url)
+            headers = Message()
+            headers['Content-Type'] = 'text/html'
+            response = addinfourl(io.BytesIO(payload), headers, req.full_url, 200)
+            response.msg = 'OK'
+            return response
+
+    monkeypatch.setattr(
+        direct, 'build_opener',
+        lambda guard: build_opener(FakeHTTPS(), guard),
+        raising=False,
+    )
+    source = {'search_domains': ['example.test']}
+    raw, final = direct.fetch_first_party(
+        'https://example.test/detail', source, max_bytes=len(payload)
+    )
+    assert final == 'https://example.test/detail'
+    assert 'ザ・グランドマフィア' in raw
+    assert '48,750pt (4,875円相当)' in raw
+    assert '\ufffd' not in raw
+    assert requested == ['https://example.test/detail']
+
+
 def test_allowed_redirect_and_oversized_response(monkeypatch):
     requested = []
 
