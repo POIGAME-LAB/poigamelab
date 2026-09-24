@@ -23,11 +23,16 @@ def test_every_enabled_refresh_policy_game_has_a_refresh_target():
     assert V33_GAMES <= target_names
 
 
-def test_v33_targets_have_safe_aliases_without_preapproved_offer_urls():
+def test_v33_targets_have_safe_aliases_and_only_reviewed_atlas_offer_url():
     targets = json.loads((ROOT / "config" / "game_targets.json").read_text(encoding="utf-8"))
     by_name = {item["game"]: item for item in targets["games"]}
 
     for name in V33_GAMES:
         target = by_name[name]
         assert name in target["aliases"]
-        assert target["known_urls_by_source"] == {}
+
+    assert by_name["ATLAS: EARTH"]["known_urls_by_source"] == {
+        "coincome": ["https://cimcome.jp/campaigns/details/9663"]
+    }
+    for name in V33_GAMES - {"ATLAS: EARTH"}:
+        assert by_name[name]["known_urls_by_source"] == {}
