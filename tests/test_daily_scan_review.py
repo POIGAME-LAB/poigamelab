@@ -112,6 +112,20 @@ def test_noninteger_or_missing_amount_never_ranks(value):
                                "displayedRewardYen": value}) is None
 
 
+def test_moppy_v3_verified_yen_can_rank_only_with_complete_first_party_terms():
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "moppy-detail-review-v3",
+        "verifiedCurrentRewardYen": 3500,
+        "downstreamTermsRequired": False,
+        "publicationAuthorized": False,
+    }
+    assert daily.explicit_yen(evidence) == 3500
+
+    evidence["downstreamTermsRequired"] = True
+    assert daily.explicit_yen(evidence) is None
+
+
 def test_powl_fractional_yen_contract_is_ranking_only():
     assert daily.explicit_yen({
         "state": "parsed",
