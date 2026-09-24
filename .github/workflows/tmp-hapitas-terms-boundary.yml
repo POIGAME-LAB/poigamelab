@@ -1,0 +1,41 @@
+name: Temporary Hapitas terms boundary audit
+on:
+  push:
+    branches: [audit/hapitas-terms-boundary-20260924]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Inspect terms boundaries
+        run: |
+          python - <<'PY'
+          import json,re,sys
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as d
+          sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
+          s=sources["hapitas"]
+          for offer_id in ("101445","99420","98148","102450","91316","91344"):
+              url=f"https://hapitas.jp/item/detail/itemid/{offer_id}"
+              raw,final=d.fetch_first_party(url,s,timeout=20,max_bytes=1500000)
+              doc=d.EvidenceHTML(raw).root
+              title=d.evidence_text(d.one(doc.find(tag="h1")))
+              bodies=doc.find(tag="body")
+              text=d.evidence_text(bodies[0])
+              title_pos=text.find(title)
+              target_pos=text.find("ポイント対象条件",title_pos)
+              markers={}
+              for marker in ("ポイント獲得条件","成果受付期限","成果調査受付期限","ハピタスご利用前に必ずご確認ください","レビュー","口コミ","広告の詳細"):
+                  pos=text.find(marker,target_pos+1) if target_pos>=0 else -1
+                  markers[marker]=pos
+              print("===== OFFER",offer_id,"TITLE",title,"=====")
+              print("POSITIONS",json.dumps({"title":title_pos,"target":target_pos,**markers},ensure_ascii=False,sort_keys=True))
+              if target_pos>=0:
+                  chunk=re.sub(r"\s+"," ",text[target_pos:target_pos+10000])
+                  print("TERMS_CHUNK",chunk)
+          PY
