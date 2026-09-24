@@ -1744,6 +1744,36 @@ def test_gendama_v2_parser_uses_only_explicit_source_yen_equivalent(gendama_mark
     assert len(evidence['evidenceFingerprint']) == 64
 
 
+@pytest.mark.parametrize("terms", [
+    (
+        "▼ポイント付与条件 新規アプリインストール後、レベル26到達でポイント付与。 "
+        "【ポイント付与受付期間】インストール後30日以内。 "
+        "▼却下条件 過去にインストール済みの場合はポイント付与対象外。 "
+        "▼注意事項 条件は予告なく変更される場合があります。 "
+        "▼ポイント付与調査に関して 直接スポンサーサイトへ問い合わせることはお控えください。"
+    ),
+    (
+        "新規アプリインストール後、3日間連続でログインボーナスを獲得することが獲得条件です。 "
+        "お問い合わせ受付期限はインストール日から60日以内。 "
+        "■注意事項 過去にアプリをインストールした場合は獲得対象外。 "
+        "■お問い合わせに関して 広告主へ直接問い合わせることは禁止されています。 "
+        "不正・虚偽・重複の申請も獲得対象外となります。"
+    ),
+])
+def test_gendama_v2_accepts_reviewed_alternate_terms_vocabularies(gendama_markup, terms):
+    raw = re.sub(
+        r'<p class="service_detail_p">.*?</p>',
+        f'<p class="service_detail_p">{terms}</p>',
+        gendama_markup,
+        flags=re.S,
+    )
+    evidence = parse_gendama(raw)
+    assert evidence['state'] == 'parsed'
+    assert evidence['displayedRewardPoints'] == 3218
+    assert evidence['displayedRewardYen'] == 321
+    assert evidence['publicationAuthorized'] is False
+
+
 def test_gendama_v2_keeps_reward_evidence_when_platform_is_not_explicit(gendama_markup):
     raw = gendama_markup.replace('Androidでレベル20到達', 'レベル20到達')
     evidence = parse_gendama(raw, aliases=['テストゲーム'])
