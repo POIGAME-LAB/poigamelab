@@ -3032,7 +3032,7 @@ def inspect_kurashiru_reward_offer(raw, requested_url, final_url, aliases):
         condition = ""
         for box in reward_boxes:
             match = re.search(
-                r"コイン獲得条件\s+(.{2,500}?)\s+で\s+(?:MAX\s+)?",
+                r"コイン獲得条件\s+(.{2,500}?)\s*で\s*(?:MAX\s+)?",
                 box,
             )
             if match:
