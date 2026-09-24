@@ -317,22 +317,45 @@
     {
       "id": "trima",
       "name": "トリマ",
-      "start_url": "https://www.trip-mile.com/",
+      "start_url": "https://web.trip-mile.com/category/504",
       "search_domains": [
         "trip-mile.com",
-        "www.trip-mile.com"
+        "www.trip-mile.com",
+        "web.trip-mile.com"
       ],
       "mobile": true,
       "enabled": true,
       "discovery_only": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [],
-      "direct_listing_limit": 0,
+      "direct_listing_urls": [
+        "https://web.trip-mile.com/api/ads/category?id=504&limit=24&start=0&sortBy=recommended"
+      ],
+      "direct_listing_limit": 1,
       "direct_detail_limit": 0,
-      "direct_detail_url_hints": [],
+      "direct_detail_url_hints": [
+        "/ad/"
+      ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Discovery-only source until a stable first-party mission listing/detail route is validated."
+      "scheduled_fetch_reason": "Current anonymous first-party Trima category API exposes the full app catalog with stable UUID offer identities and exact mile totals. Reviewed public detail pages expose current conditions, terms, and a displayed yen-equivalent including exchange fees. Keep candidate-only; publication remains disabled.",
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "paginated_first_party_app_category_api",
+      "coverage_candidate_limit": 8,
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 4,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "trima-detail-review-v1",
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_page_url_template": "https://web.trip-mile.com/api/ads/category?id=504&limit=24&start={start}&sortBy=recommended",
+      "new_game_discovery_page_size": 24,
+      "new_game_discovery_max_pages": 20,
+      "new_game_discovery_candidate_limit": 1000,
+      "new_game_discovery_min_detail_identities_first_page": 20,
+      "new_game_discovery_scope": "paginated_first_party_app_category_api",
+      "reviewedAt": "2026-09-25",
+      "discoveryNote": "2026-09-25 live Actions audit: anonymous GET /api/ads/category?id=504&limit=24&start=N&sortBy=recommended returned 191 unique current app offers across 8 pages (24x7 + 23). Each result exposes UUID, title, rule, reward miles, image and publish stamp. Public /ad/<uuid> pages are server-rendered with current reward, conditions, exclusions and displayed yen-equivalent. Offerwall APIs require authentication and are not used."
     },
     {
       "id": "point_income",

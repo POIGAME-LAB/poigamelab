@@ -4314,3 +4314,212 @@ def test_repository_mikoshi_discovery_joins_candidate_ranking_after_rate_verific
     assert rates["status"] == "verified_face_value"
     assert rates["yenPerPoint"] == 1
     assert rates["pointsPerYen"] == 1
+
+TRIMA_LISTING = (
+    "https://web.trip-mile.com/api/ads/category?"
+    "id=504&limit=24&start=0&sortBy=recommended"
+)
+TRIMA_DETAIL = "https://web.trip-mile.com/ad/af040a8e-650c-4e5c-9eb7-806259ae17e2"
+
+
+def trima_source_fixture():
+    return {
+        "id": "trima",
+        "name": "トリマ",
+        "search_domains": ["trip-mile.com", "www.trip-mile.com", "web.trip-mile.com"],
+        "direct_detail_url_hints": ["/ad/"],
+        "full_catalog_discovery_enabled": True,
+        "new_game_discovery_scope": "paginated_first_party_app_category_api",
+    }
+
+
+def trima_listing_fixture(start=0, results=None, count=2):
+    if results is None:
+        results = [
+            {
+                "id": "af040a8e-650c-4e5c-9eb7-806259ae17e2",
+                "title": "商品整理ゲーム：3Dパズル",
+                "rule": "レベル300クリア",
+                "reward": 44000,
+                "rewardUnit": "マイル",
+                "approved": False,
+            },
+            {
+                "id": "b985c3bc-24f8-4009-b75b-dca6fa5e8542",
+                "title": "Cat Drop: Cute Slide & Match（iOS）",
+                "rule": "30日以内にレベル400クリア",
+                "reward": 28800,
+                "rewardUnit": "マイル",
+                "approved": False,
+            },
+        ]
+    return json.dumps({
+        "status": "success",
+        "data": {
+            "categoryId": "504",
+            "count": count,
+            "limit": 24,
+            "start": start,
+            "results": results,
+        },
+    }, ensure_ascii=False)
+
+
+def trima_detail_fixture(*, miles=44000, yen=366, embedded_miles=None, title="商品整理ゲーム：3Dパズル"):
+    embedded_miles = miles if embedded_miles is None else embedded_miles
+    offer_id = "af040a8e-650c-4e5c-9eb7-806259ae17e2"
+    return f"""
+    <html lang="ja">
+      <head><title>{title}｜ポイ活ならトリマ｜高還元率ポイントサイトでお小遣い稼ぎ</title></head>
+      <body>
+        <main>
+          <div>
+            <h1>{title}</h1>
+            <div>無料</div>
+            <div>{title}</div>
+            <div>レベル300クリア</div>
+            <div>判定開始まで アプリ初回起動後30分程度</div>
+            <div>承認完了まで 成果条件達成後30分～3日程度</div>
+            <div>{miles:,} ( {yen:,} 〜 {yen:,} 円相当・交換手数料含む )</div>
+          </div>
+          <section>
+            <h2>マイル獲得条件</h2>
+            <p>新規アプリインストール後、【レベル300クリア】で報酬獲得となります。</p>
+            <p>※広告クリックから必ず1時間以内にアプリ初回起動をしてください。</p>
+            <p>獲得条件達成期限はインストール日から起算して30日以内までです。</p>
+            <p>■注意事項 同一アプリに関する報酬獲得は1人1回までです。</p>
+            <p>■獲得対象外条件 過去に同一アプリをインストールした場合は獲得対象外です。</p>
+            <p>■お問い合わせに関して 本サイトのお問い合わせフォームよりご連絡ください。広告主へ直接お問い合わせする事を禁じます。</p>
+          </section>
+        </main>
+        <script>
+          self.__next_f.push([1,"4:[\\\"ad\\\":{{\\\"id\\\":\\\"{offer_id}\\\",\\\"reward\\\":{embedded_miles},\\\"rewardUnit\\\":\\\"マイル\\\"}}]"])
+        </script>
+      </body>
+    </html>
+    """
+
+
+def test_trima_listing_url_identity_and_offset_pagination_are_strict():
+    source = trima_source_fixture()
+    source["new_game_discovery_page_url_template"] = (
+        "https://web.trip-mile.com/api/ads/category?"
+        "id=504&limit=24&start={start}&sortBy=recommended"
+    )
+    source["new_game_discovery_page_size"] = 24
+    assert direct.trima_listing_start(TRIMA_LISTING) == 0
+    assert direct.paginated_listing_url(source, 1) == TRIMA_LISTING
+    assert direct.paginated_listing_url(source, 2).endswith(
+        "id=504&limit=24&start=24&sortBy=recommended"
+    )
+    assert direct.trima_offer_id(TRIMA_DETAIL) == "af040a8e-650c-4e5c-9eb7-806259ae17e2"
+    assert direct.offer_identity_key(TRIMA_DETAIL, "trima") == (
+        "trima:pathuuid:af040a8e-650c-4e5c-9eb7-806259ae17e2"
+    )
+    with pytest.raises(ValueError):
+        direct.trima_listing_start(
+            "https://web.trip-mile.com/api/ads/category?id=504&limit=24&start=1&sortBy=recommended"
+        )
+    with pytest.raises(ValueError):
+        direct.trima_offer_id(TRIMA_DETAIL + "?x=1")
+
+
+def test_trima_json_catalog_preserves_miles_and_uuid_candidates():
+    source = trima_source_fixture()
+    raw = trima_listing_fixture()
+    candidates = direct.discover_new_game_listing_candidates(
+        raw, TRIMA_LISTING, source, [], limit=20
+    )
+    assert [x["titleHint"] for x in candidates] == [
+        "商品整理ゲーム：3Dパズル",
+        "Cat Drop: Cute Slide & Match（iOS）",
+    ]
+    assert candidates[0]["listingRewardPoints"] == 44000
+    assert candidates[0]["listingRewardText"] == "44,000 マイル"
+    assert candidates[1]["platformHint"] == "iOS"
+    assert candidates[0]["offerIdentity"].startswith("trima:pathuuid:")
+    assert candidates[0]["candidateOnly"] is True
+    assert candidates[0]["publicationAuthorized"] is False
+
+    signature = direct.listing_detail_identity_signature(
+        raw, TRIMA_LISTING, source
+    )
+    assert signature == tuple(sorted([
+        "trima:pathuuid:af040a8e-650c-4e5c-9eb7-806259ae17e2",
+        "trima:pathuuid:b985c3bc-24f8-4009-b75b-dca6fa5e8542",
+    ]))
+
+
+def test_trima_known_game_coverage_uses_same_json_snapshot():
+    source = trima_source_fixture()
+    found = direct.discover_first_party_listing_candidates(
+        trima_listing_fixture(), TRIMA_LISTING, source,
+        ["商品整理ゲーム：3Dパズル"], limit=8,
+    )
+    assert len(found) == 1
+    assert found[0]["source"] == "trima"
+    assert found[0]["listingRewardText"] == "44,000 マイル"
+    assert found[0]["firstPartyCandidateUrl"] == TRIMA_DETAIL
+
+
+def test_trima_detail_parser_uses_visible_fee_included_yen_and_cross_checks_miles():
+    evidence = direct.inspect_trima_offer(
+        trima_detail_fixture(), TRIMA_DETAIL, TRIMA_DETAIL,
+        ["商品整理ゲーム：3Dパズル"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "trima-detail-review-v1"
+    assert evidence["displayedRewardMiles"] == 44000
+    assert evidence["displayedRewardYen"] == 366
+    assert evidence["verifiedCurrentRewardYen"] == 366
+    assert evidence["rewardUnit"] == "Trima-mile"
+    assert evidence["platform"] == "unknown"
+    assert "レベル300クリア" in evidence["conditionText"]
+    assert evidence["candidateOnly"] is True
+    assert evidence["publicationAuthorized"] is False
+    assert len(evidence["evidenceFingerprint"]) == 64
+
+    ios = direct.inspect_trima_offer(
+        trima_detail_fixture(title="商品整理ゲーム：3Dパズル（iOS）"),
+        TRIMA_DETAIL, TRIMA_DETAIL,
+        ["商品整理ゲーム：3Dパズル"],
+    )
+    assert ios["state"] == "parsed"
+    assert ios["platform"] == "iOS"
+
+
+def test_trima_detail_parser_fails_closed_on_hidden_reward_mismatch_or_yen_range():
+    evidence = direct.inspect_trima_offer(
+        trima_detail_fixture(embedded_miles=45000),
+        TRIMA_DETAIL, TRIMA_DETAIL, ["商品整理ゲーム：3Dパズル"],
+    )
+    assert evidence["state"] == "review_required"
+    assert evidence["reason"] == "embedded_reward_mismatch"
+
+    raw = trima_detail_fixture().replace(
+        "366 〜 366 円相当", "366 〜 440 円相当"
+    )
+    evidence = direct.inspect_trima_offer(
+        raw, TRIMA_DETAIL, TRIMA_DETAIL, ["商品整理ゲーム：3Dパズル"],
+    )
+    assert evidence["state"] == "review_required"
+    assert evidence["reason"] == "ambiguous_displayed_yen_range"
+
+
+def test_repository_trima_uses_full_paginated_candidate_only_catalog():
+    payload = json.loads((ROOT / "config/point_sources.json").read_text(encoding="utf-8"))
+    source = next(x for x in payload["sources"] if x["id"] == "trima")
+    assert "web.trip-mile.com" in source["search_domains"]
+    assert source["scheduled_fetch_enabled"] is False
+    assert source["coverage_first_party_listing_enabled"] is True
+    assert source["coverage_detail_review_enabled"] is True
+    assert source["coverage_detail_review_mode"] == "candidate_only"
+    assert source["coverage_detail_review_parser"] == "trima-detail-review-v1"
+    assert source["full_catalog_discovery_enabled"] is True
+    assert source["new_game_discovery_enabled"] is True
+    assert "{start}" in source["new_game_discovery_page_url_template"]
+    assert source["new_game_discovery_page_size"] == 24
+    assert source["new_game_discovery_max_pages"] >= 9
+    assert source["new_game_discovery_min_detail_identities_first_page"] >= 20
+    assert source["direct_detail_url_hints"] == ["/ad/"]
+    assert direct.source_participates_in_new_game_ranking(source) is True

@@ -185,6 +185,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         "amefuri-detail-review-v2": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
         "gendama-detail-review-v2": "displayedRewardYen",
+        "trima-detail-review-v1": "verifiedCurrentRewardYen",
     }
     contracts["powl-detail-review-v1"] = "verifiedCurrentRewardYen"
     parser_version = evidence.get("parserVersion")
@@ -253,6 +254,9 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
             # MIKOSHI listing evidence uses the explicit branded unit
             # "MIKOSHIポイント" rather than a bare point suffix.
             unit_pattern = r"MIKOSHI\s*ポイント"
+        elif source_id == "trima":
+            unit_pattern = r"マイル"
+            value_ceiling = 50_000_000
         point_values = [
             int(value.replace(",", ""))
             for value in re.findall(
