@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-24T06:44:19+00:00",
+  "checkedAt": "2026-09-24T07:53:47+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -11,74 +11,6 @@
   "items": [
     {
       "rank": 1,
-      "game": "モーマンタイム",
-      "maxObservedRewardYen": 11255,
-      "confirmedSourceCount": 2,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 1,
-      "pointSiteEvidence": [
-        {
-          "source": "moppy",
-          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159912&track_ref=category",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202455&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202453&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/9971",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 11255
-        }
-      ],
-      "researchQueries": {
-        "web": "\"モーマンタイム\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"モーマンタイム\" ポイ活 日目",
-        "youtube": "site:youtube.com \"モーマンタイム\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"モーマンタイム\" ポイ活",
-        "pointSites": "\"モーマンタイム\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 2,
       "game": "出荷ぶた",
       "maxObservedRewardYen": 10417,
       "confirmedSourceCount": 2,
@@ -87,14 +19,14 @@
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205656&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205655&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205655&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205656&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -160,7 +92,7 @@
       "publicationAuthorized": false
     },
     {
-      "rank": 3,
+      "rank": 2,
       "game": "出荷ぶた -冬ver-",
       "maxObservedRewardYen": 10417,
       "confirmedSourceCount": 2,
@@ -183,14 +115,14 @@
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186212&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186211&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186211&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186212&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -228,6 +160,46 @@
       "publicationAuthorized": false
     },
     {
+      "rank": 3,
+      "game": "Mistplay",
+      "maxObservedRewardYen": 8400,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 2,
+      "pointSiteEvidence": [
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/9829",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 8400
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/138822",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 8112
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Mistplay\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Mistplay\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Mistplay\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Mistplay\" ポイ活",
+        "pointSites": "\"Mistplay\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
       "rank": 4,
       "game": "ぼくとネコ",
       "maxObservedRewardYen": 7969,
@@ -237,14 +209,14 @@
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196390&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196389&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196389&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196390&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -305,14 +277,14 @@
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205228&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205227&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205227&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205228&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
