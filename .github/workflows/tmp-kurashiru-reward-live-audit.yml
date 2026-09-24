@@ -50,10 +50,10 @@ jobs:
 
           out={"listings":[],"details":[]}
           detail_urls=[]
-          for url in [
-              "https://www.rewards.kurashiru.com/categories/3",
-              "https://www.rewards.kurashiru.com/categories/3?page=2",
-          ]:
+          seen_page_ads=set()
+          for page in range(1,11):
+              url=("https://www.rewards.kurashiru.com/categories/3"
+                   if page==1 else f"https://www.rewards.kurashiru.com/categories/3?page={page}")
               raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=3_000_000)
               ls=links(raw,final)
               ads=[(u,t,a) for u,t,a in ls if re.fullmatch(r"/ads/\d+",urlparse(u).path)]
@@ -65,9 +65,21 @@ jobs:
                   "samples":[{"url":u,"text":t[:420],"class":a.get("class")} for u,t,a in ads[:12]],
                   "has36": "(36件)" in re.sub(r"\s+","",direct.visible_text(raw)),
               })
+              page_ids={u for u,_,_ in ads}
+              new_ids=page_ids-seen_page_ads
+              seen_page_ads.update(page_ids)
               for u,t,a in ads:
                   if u not in detail_urls:
                       detail_urls.append(u)
+              if not ads or not new_ids:
+                  break
+
+          out["listingSummary"]={
+              "pagesFetched":len(out["listings"]),
+              "uniqueAds":len(detail_urls),
+              "pagesWith20":sum(1 for x in out["listings"] if x["uniqueAds"]==20),
+              "lastPageAds":out["listings"][-1]["uniqueAds"] if out["listings"] else 0,
+          }
 
           wanted=[]
           for u in detail_urls:
@@ -105,7 +117,7 @@ jobs:
               })
 
           print("KURASHIRU_LIVE_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
-          if not out["listings"] or sum(x["uniqueAds"] for x in out["listings"]) < 20:
+          if not out["listings"] or out["listingSummary"]["uniqueAds"] < 20:
               raise SystemExit("insufficient listing coverage")
           if not out["details"] or not any(x["rewardPairs"] for x in out["details"]):
               raise SystemExit("reward pair not found")
