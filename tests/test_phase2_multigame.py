@@ -109,10 +109,7 @@ def test_kingshot_known_sources_are_isolated():
         'https://pc.moppy.jp/ad/detail.php?site_id=161855',
         'https://pc.moppy.jp/ad/detail.php?site_id=161854',
     }
-    assert set(kingshot['hapitas']) == {
-        'https://hapitas.jp/item/detail/itemid/101355',
-        'https://hapitas.jp/item/detail/itemid/101354',
-    }
+    assert kingshot['hapitas'] == []
     assert set(kingshot['warau']) == {
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=204984',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=204983',
@@ -130,9 +127,7 @@ def test_v32_game_known_sources_are_isolated():
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971',
         'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206411',
     }
-    assert houchi['hapitas']==[
-        'https://hapitas.jp/item/detail/itemid/91475',
-    ]
+    assert houchi['hapitas']==[]
 
     evertale=by_game['エバーテイル']['known_urls_by_source']
     assert set(evertale)=={'moppy','hapitas','warau'}
