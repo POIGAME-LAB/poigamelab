@@ -6,6 +6,10 @@ on:
       - fix/moppy-ranking-current-v3-20260924
     paths:
       - ".github/workflows/tmp-moppy-v3-live.yml"
+      - "scripts/direct_offer_refresh.py"
+      - "scripts/daily_scan_review.py"
+      - "tests/test_direct_offer_refresh_v1.py"
+      - "tests/test_daily_scan_review.py"
 
 permissions:
   contents: read
