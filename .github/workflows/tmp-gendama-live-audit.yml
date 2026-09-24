@@ -1,0 +1,118 @@
+name: Temporary Gendama live audit
+
+on:
+  push:
+    branches:
+      - audit/gendama-live-20260924
+    paths:
+      - ".github/workflows/tmp-gendama-live-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit current Gendama search and detail surfaces
+        run: |
+          python - <<'PY'
+          import json, re, sys
+          from collections import Counter
+          from html.parser import HTMLParser
+          from urllib.parse import quote, urljoin, urlparse
+          sys.path.insert(0, "scripts")
+          import direct_offer_refresh as direct
+
+          source = next(
+              x for x in json.load(open("config/point_sources.json", encoding="utf-8"))["sources"]
+              if x["id"] == "gendama"
+          )
+
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links=[]
+                  self._href=None
+                  self._text=[]
+              def handle_starttag(self, tag, attrs):
+                  if tag=="a":
+                      self._href=dict(attrs).get("href")
+                      self._text=[]
+              def handle_data(self, data):
+                  if self._href is not None:
+                      self._text.append(data)
+              def handle_endtag(self, tag):
+                  if tag=="a" and self._href is not None:
+                      self.links.append((self._href, re.sub(r"\s+"," "," ".join(self._text)).strip()))
+                      self._href=None
+                      self._text=[]
+
+          def parse_links(raw, base):
+              p=Links(); p.feed(raw)
+              out=[]
+              for href,text in p.links:
+                  if not href:
+                      continue
+                  out.append((urljoin(base,href),text))
+              return out
+
+          summary={"queries":[],"sampleDetails":[]}
+          detail_urls={}
+          for query in ["ゲーム","アプリ","ザ・グランドマフィア","パズル＆サバイバル","エバーテイル"]:
+              url=source["direct_search_url_template"].format(query=quote(query))
+              raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=2_500_000)
+              links=parse_links(raw,final)
+              items=[]
+              for u,text in links:
+                  if "/service/item/" in urlparse(u).path:
+                      oid=direct.offer_identity_key(u,"gendama")
+                      if oid and oid not in detail_urls:
+                          detail_urls[oid]=(u,text,query)
+                      items.append({"identity":oid,"url":u,"text":text[:220]})
+              href_paths=Counter(urlparse(u).path.split("/")[2] if len(urlparse(u).path.split("/"))>2 else urlparse(u).path for u,_ in links)
+              pages=[u for u,_ in links if "service_search" in urlparse(u).path and ("page=" in u or "p=" in u)]
+              summary["queries"].append({
+                  "query":query,
+                  "finalUrl":final,
+                  "htmlBytes":len(raw.encode("utf-8")),
+                  "detailLinks":len(items),
+                  "uniqueDetailLinks":len({x["identity"] for x in items if x["identity"]}),
+                  "paginationLinks":len(set(pages)),
+                  "sampleItems":items[:8],
+                  "commonLinkBuckets":href_paths.most_common(8),
+              })
+
+          for oid,(url,hint,query) in list(detail_urls.items())[:12]:
+              try:
+                  raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=2_500_000)
+                  m=re.search(r"<h1[^>]*>(.*?)</h1>",raw,re.I|re.S)
+                  title=direct.visible_text(m.group(0)) if m else hint
+                  ev=direct.inspect_gendama_offer(raw,url,final,[title or hint])
+                  summary["sampleDetails"].append({
+                      "identity":oid,
+                      "query":query,
+                      "url":url,
+                      "title":title[:180] if title else "",
+                      "state":ev.get("state"),
+                      "reason":ev.get("reason"),
+                      "points":ev.get("displayedRewardPoints"),
+                      "yen":ev.get("displayedRewardYen"),
+                      "platform":ev.get("platform"),
+                      "parserVersion":ev.get("parserVersion"),
+                  })
+              except Exception as exc:
+                  summary["sampleDetails"].append({
+                      "identity":oid,"query":query,"url":url,
+                      "state":"fetch_error","reason":type(exc).__name__
+                  })
+
+          print("GENDAMA_LIVE_AUDIT", json.dumps(summary, ensure_ascii=False, sort_keys=True))
+          if not any(x["uniqueDetailLinks"] > 0 for x in summary["queries"]):
+              raise SystemExit("No current Gendama detail links discovered")
+          PY
