@@ -208,5 +208,47 @@ jobs:
                   out[name+"Raw"]=raw[:30000]
               except Exception as exc:
                   out[name+"Raw"]="ERROR:"+type(exc).__name__
+          extra_urls=[
+              "https://web.mikoshi.jp/v2/games/list?uid=",
+              "https://web.mikoshi.jp/v2/games/estlier/list?uid=",
+              "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=1000",
+              "https://web.mikoshi.jp/v2/skyflag/ads?os=2&limit=1000",
+          ]
+          extra=[]
+          for au in extra_urls:
+              try:
+                  req=Request(au,headers={
+                      "User-Agent":UA,
+                      "Accept":"application/json, text/plain, */*",
+                      "Referer":"https://web.mikoshi.jp/",
+                  })
+                  with urlopen(req,timeout=30) as r:
+                      data=r.read(8_000_000); final=r.geturl(); ctype=r.headers.get("Content-Type")
+                  body=data.decode("utf-8","replace")
+                  parsed=json.loads(body)
+                  summary={"url":au,"final":final,"bytes":len(data),"contentType":ctype}
+                  if isinstance(parsed,dict):
+                      summary["keys"]=sorted(parsed.keys())
+                      for k,v in parsed.items():
+                          if isinstance(v,list):
+                              summary["listKey"]=k;summary["count"]=len(v);summary["sample"]=v[:12];break
+                  elif isinstance(parsed,list):
+                      summary["count"]=len(parsed);summary["sample"]=parsed[:12]
+                  extra.append(summary)
+              except Exception as exc:
+                  extra.append({"url":au,"error":type(exc).__name__+":"+str(exc)[:200],"code":getattr(exc,"code",None)})
+          out["extraApiProbes"]=extra
+
+          try:
+              req=Request("https://web.mikoshi.jp/assets/main-f1adedca.js",headers={"User-Agent":UA})
+              with urlopen(req,timeout=20) as r:
+                  main_raw=r.read(500000).decode("utf-8","replace")
+              rate_hits=[]
+              for key in ("1ポイント","1円","交換","exchange","pointRate","yen"):
+                  for m in list(re.finditer(re.escape(key),main_raw,re.I))[:20]:
+                      rate_hits.append({"key":key,"context":main_raw[max(0,m.start()-320):m.end()+520]})
+              out["rateBundleHints"]=rate_hits[:100]
+          except Exception as exc:
+              out["rateBundleHints"]=[{"error":type(exc).__name__}]
           print("MIKOSHI_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
