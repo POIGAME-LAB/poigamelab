@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-24T04:37:15+00:00",
+  "checkedAt": "2026-09-24T05:12:41+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -79,47 +79,75 @@
     },
     {
       "rank": 2,
-      "game": "Survival Defense:Zombie",
-      "maxObservedRewardYen": 4875,
-      "confirmedSourceCount": 1,
+      "game": "出荷ぶた",
+      "maxObservedRewardYen": 10417,
+      "confirmedSourceCount": 2,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206129&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205655&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205722&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205656&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205207&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186242&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186163&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/10093",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186164&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/128485",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/128382",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 4875
+          "rewardYen": 10417
         }
       ],
       "researchQueries": {
-        "web": "\"Survival Defense:Zombie\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Survival Defense:Zombie\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Survival Defense:Zombie\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Survival Defense:Zombie\" ポイ活",
-        "pointSites": "\"Survival Defense:Zombie\" ポイ活 口コミ 課金"
+        "web": "\"出荷ぶた\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"出荷ぶた\" ポイ活 日目",
+        "youtube": "site:youtube.com \"出荷ぶた\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"出荷ぶた\" ポイ活",
+        "pointSites": "\"出荷ぶた\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
@@ -133,54 +161,61 @@
     },
     {
       "rank": 3,
-      "game": "アニマルタイル3マッチ",
-      "maxObservedRewardYen": 3195,
+      "game": "出荷ぶた -冬ver-",
+      "maxObservedRewardYen": 10417,
       "confirmedSourceCount": 2,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206465&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206464&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206096&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=188088&pl=pc_categoryService",
           "detailConfirmed": true,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206094&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=188084&pl=pc_categoryService",
           "detailConfirmed": true,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/10167",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186212&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186211&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/128541",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/128418",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 3195
+          "rewardYen": 10417
         }
       ],
       "researchQueries": {
-        "web": "\"アニマルタイル3マッチ\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"アニマルタイル3マッチ\" ポイ活 日目",
-        "youtube": "site:youtube.com \"アニマルタイル3マッチ\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"アニマルタイル3マッチ\" ポイ活",
-        "pointSites": "\"アニマルタイル3マッチ\" ポイ活 口コミ 課金"
+        "web": "\"出荷ぶた -冬ver-\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"出荷ぶた -冬ver-\" ポイ活 日目",
+        "youtube": "site:youtube.com \"出荷ぶた -冬ver-\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"出荷ぶた -冬ver-\" ポイ活",
+        "pointSites": "\"出荷ぶた -冬ver-\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
@@ -194,54 +229,61 @@
     },
     {
       "rank": 4,
-      "game": "Yarnation",
-      "maxObservedRewardYen": 3185,
+      "game": "ぼくとネコ",
+      "maxObservedRewardYen": 7969,
       "confirmedSourceCount": 2,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204497&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204496&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204306&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196390&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204304&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196389&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/9776",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196414&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=196418&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/128545",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/133970",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 3185
+          "rewardYen": 7969
         }
       ],
       "researchQueries": {
-        "web": "\"Yarnation\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Yarnation\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Yarnation\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Yarnation\" ポイ活",
-        "pointSites": "\"Yarnation\" ポイ活 口コミ 課金"
+        "web": "\"ぼくとネコ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ぼくとネコ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ぼくとネコ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ぼくとネコ\" ポイ活",
+        "pointSites": "\"ぼくとネコ\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
@@ -255,33 +297,40 @@
     },
     {
       "rank": 5,
-      "game": "Alice's Mergeland",
-      "maxObservedRewardYen": 2280,
+      "game": "All in Hole",
+      "maxObservedRewardYen": 6400,
       "confirmedSourceCount": 1,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206993&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205227&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/10341",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205228&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/135638",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 2280
+          "rewardYen": 6400
         }
       ],
       "researchQueries": {
-        "web": "\"Alice's Mergeland\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Alice's Mergeland\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Alice's Mergeland\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Alice's Mergeland\" ポイ活",
-        "pointSites": "\"Alice's Mergeland\" ポイ活 口コミ 課金"
+        "web": "\"All in Hole\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"All in Hole\" ポイ活 日目",
+        "youtube": "site:youtube.com \"All in Hole\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"All in Hole\" ポイ活",
+        "pointSites": "\"All in Hole\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
