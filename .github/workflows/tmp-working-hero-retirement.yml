@@ -1,0 +1,71 @@
+name: Temporary Working Hero retirement flow audit
+
+on:
+  push:
+    branches:
+      - audit/working-hero-retirement-flow-20260925
+    paths:
+      - ".github/workflows/tmp-working-hero-retirement.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Reproduce exact retirement decision inputs
+        run: |
+          python - <<'PY'
+          import csv,json,sys
+          from pathlib import Path
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+          import structured_publication as publication
+
+          cfg=json.loads(Path("config/point_sources.json").read_text(encoding="utf-8"))
+          sources={x["id"]:x for x in cfg["sources"]}
+          policy=json.loads(Path("config/refresh_policy.json").read_text(encoding="utf-8"))
+          rows=list(csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")))
+          target=json.loads(Path("config/game_targets.json").read_text(encoding="utf-8"))
+          target_row=next(x for x in target["games"] if x["game"]=="ワーキングヒーロー")
+          aliases=target_row["aliases"]
+          source=sources["hapitas"]
+          checked_at="2026-09-25T00:00:00+00:00"
+
+          review=[]
+          for url in target_row["known_urls_by_source"]["hapitas"]:
+              detail=direct.inspect_detail(url,source,aliases)
+              evidence=detail.get("sourceEvidence")
+              identity=direct.offer_identity_key(url,"hapitas")
+              existing=next((r for r in rows if r["game"]=="ワーキングヒーロー" and r["site"]=="hapitas" and direct.offer_identity_key(r["url"],"hapitas")==identity),None)
+              item={
+                  "game":"ワーキングヒーロー",
+                  "source":"hapitas",
+                  "url":detail["url"],
+                  "reason":"structured_offer_review_required" if evidence["state"]=="parsed" else evidence.get("reason","source_structure_review_required"),
+                  "sourceEvidence":evidence,
+                  "checkedAt":checked_at,
+              }
+              if existing is not None:
+                  item["storedPlatform"]=existing.get("platform") or ""
+                  item["storedReward"]=existing.get("reward") or ""
+              review.append(item)
+
+          updated,report=publication.prepare(
+              rows,review,sources,checked_at,policy["structuredPublication"],False
+          )
+          before=[r["offerKey"] for r in rows if r["game"]=="ワーキングヒーロー" and r["site"]=="hapitas"]
+          after=[r["offerKey"] for r in updated if r["game"]=="ワーキングヒーロー" and r["site"]=="hapitas"]
+          print("WORKING_HERO_RETIREMENT_FLOW",json.dumps({
+              "review":review,
+              "before":before,
+              "after":after,
+              "report":report,
+          },ensure_ascii=False,sort_keys=True))
+          PY
