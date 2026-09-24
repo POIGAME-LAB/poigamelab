@@ -92,5 +92,41 @@ jobs:
                   },
                   "visibleExcerpt":visible[:2200],
               })
+          details=[]
+          for url in [
+              "https://www.rewards.kurashiru.com/ads/19125",
+              "https://www.rewards.kurashiru.com/ads/19120",
+              "https://www.rewards.kurashiru.com/ads/19108",
+          ]:
+              req=Request(url,headers={
+                  "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+                  "Accept":"text/html,application/xhtml+xml",
+                  "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+              })
+              with urlopen(req,timeout=20) as r:
+                  data=r.read(2_000_000); final=r.geturl()
+              raw=data.decode("utf-8","replace")
+              visible=re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
+              visible=re.sub(r"(?s)<[^>]+>"," ",visible)
+              visible=re.sub(r"\\s+"," ",unescape(visible)).strip()
+              coin_patterns={
+                  "arrow":re.findall(r"([1-9][0-9,]*)\\s*>\\s*([1-9][0-9,]*)\\s*コイン",visible)[:20],
+                  "max":re.findall(r"MAX\\s*([1-9][0-9,]*)\\s*(?:>\\s*([1-9][0-9,]*))?\\s*コイン",visible,re.I)[:20],
+                  "plain":re.findall(r"([1-9][0-9,]*)\\s*コイン",visible)[:40],
+              }
+              snippets={}
+              for key in ("コイン","獲得条件","達成条件","却下","対象外","注意事項","お問い合わせ","iOS","Android","多段階"):
+                  p=visible.find(key)
+                  if p>=0:
+                      snippets[key]=visible[max(0,p-240):p+1500]
+              h1s=[re.sub(r"\\s+"," ",re.sub(r"(?s)<[^>]+>"," ",x)).strip()
+                   for x in re.findall(r"(?is)<h1[^>]*>(.*?)</h1>",raw)]
+              details.append({
+                  "url":url,"final":final,"bytes":len(data),
+                  "title":(re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0][:300],
+                  "h1s":h1s[:8],"coinPatterns":coin_patterns,"snippets":snippets,
+                  "visibleExcerpt":visible[:3500],
+              })
+          out["details"]=details
           print("KURASHIRU_REWARD_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
