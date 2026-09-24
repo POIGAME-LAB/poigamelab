@@ -9,79 +9,46 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Restore latest R2 candidate state
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_EC2_METADATA_DISABLED: "true"
-          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-        run: |
-          set -euo pipefail
-          tmp="$(mktemp -d)"
-          for name in new_game_candidate_queue existing_game_candidate_queue; do
-            aws s3 cp "s3://${R2_BUCKET}/state/latest/${name}.json.gz" "${tmp}/${name}.gz" --endpoint-url "${R2_ENDPOINT}" --only-show-errors
-            gzip -dc "${tmp}/${name}.gz" > "data/${name}.json"
-          done
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Inspect Amefuri current live parser surface
+      - name: Inspect current Amefuri detail structure
         run: |
           python - <<'PY'
-          import json,sys,collections
+          import json,re,sys
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
-          import daily_scan_review as daily
 
           sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
           s=sources["amefuri"]
-          newq=json.load(open("data/new_game_candidate_queue.json",encoding="utf-8")).get("items",[])
-          exq=json.load(open("data/existing_game_candidate_queue.json",encoding="utf-8")).get("items",[])
-          new=[x for x in newq if x.get("source")=="amefuri" and x.get("active",True)]
-          existing=[x for x in exq if x.get("source")=="amefuri" and x.get("active",True)]
-          print("SUMMARY",json.dumps({
-              "newActive":len(new),
-              "existingActive":len(existing),
-              "newClassifications":collections.Counter((x.get("classification") or "review") for x in new),
-              "existingReasons":collections.Counter((x.get("reason") or "") for x in existing),
-          },ensure_ascii=False,sort_keys=True,default=dict))
-          for x in existing[:50]:
-              print("EXISTING",json.dumps({
-                  "game":x.get("game"),"url":x.get("url") or x.get("firstPartyCandidateUrl"),
-                  "reason":x.get("reason"),"detectedReward":x.get("detectedReward"),
-                  "platformHint":x.get("platformHint"),"parserVersion":x.get("parserVersion"),
-              },ensure_ascii=False,sort_keys=True))
-
-          # Audit a spread of first-party candidates, not just the first page.
-          sample=[]
-          if new:
-              step=max(1,len(new)//20)
-              for i in range(0,len(new),step):
-                  if len(sample)>=20: break
-                  sample.append(new[i])
-          outcomes=collections.Counter()
-          for item in sample:
-              url=item.get("firstPartyCandidateUrl")
-              alias=daily.discovery_name(item.get("titleHint"))
-              try:
-                  raw,final=d.fetch_first_party(url,s,timeout=20,max_bytes=1500000)
-                  ev=d.inspect_amefuri_offer(raw,url,final,[alias])
-              except Exception as exc:
-                  ev={"state":"exception","reason":d.summarize_fetch_error(exc)}
-              outcomes[(ev.get("state"),ev.get("reason") or "")]+=1
-              print("SAMPLE",json.dumps({
-                  "titleHint":item.get("titleHint"),"alias":alias,"url":url,
-                  "state":ev.get("state"),"reason":ev.get("reason"),
-                  "parserVersion":ev.get("parserVersion"),
-                  "platform":ev.get("platform"),
-                  "rewardYen":ev.get("verifiedCurrentRewardYen"),
-                  "stepTotalPoints":ev.get("stepTotalPoints"),
-                  "publicationAuthorized":ev.get("publicationAuthorized"),
-                  "termsLength":len(ev.get("termsText") or ""),
-              },ensure_ascii=False,sort_keys=True))
-          print("OUTCOMES",json.dumps({f"{k[0]}|{k[1]}":v for k,v in outcomes.items()},ensure_ascii=False,sort_keys=True))
+          for offer_id in ("135997","140497","138814","140783"):
+              url=f"https://www.amefri.net/detail/id/{offer_id}"
+              raw,final=d.fetch_first_party(url,s,timeout=20,max_bytes=1500000)
+              doc=d.EvidenceHTML(raw).root
+              text=d.visible_text(raw)
+              h1=[d.evidence_text(x) for x in doc.find(tag="h1")]
+              h2=[d.evidence_text(x) for x in doc.find(tag="h2")]
+              canon=[x.attrs.get("href","") for x in doc.find(tag="link") if "canonical" in x.attrs.get("rel","").split()]
+              titles=[d.evidence_text(x) for x in doc.find(tag="title")]
+              print("===== OFFER",offer_id,"FINAL",final,"BYTES",len(raw.encode("utf-8")),"=====")
+              print("TITLES",json.dumps(titles,ensure_ascii=False))
+              print("H1",json.dumps(h1,ensure_ascii=False))
+              print("H2",json.dumps(h2[:30],ensure_ascii=False))
+              print("CANONICALS",json.dumps(canon,ensure_ascii=False))
+              for marker in (
+                  "アメフリ経由で登録すると","※下記条件の合計","多段階",
+                  "ポイント獲得条件","成果受付期限","成果調査受付期限","お問い合わせ受付期限",
+                  "10pt","10 pt","1円","iOS","Android","android","認証済"
+              ):
+                  pos=[m.start() for m in re.finditer(re.escape(marker),text,re.I)]
+                  print("MARKER",marker,"COUNT",len(pos),"POS",pos[:12])
+              # Print bounded contexts around title/reward/terms landmarks.
+              for marker in (h1[0] if h1 else "", "アメフリ経由で登録すると", "ポイント獲得条件", "成果受付期限"):
+                  if not marker: continue
+                  p=text.find(marker)
+                  if p>=0:
+                      print("CONTEXT",json.dumps({"marker":marker,"text":re.sub(r"\s+"," ",text[max(0,p-700):p+5000])},ensure_ascii=False))
           PY
