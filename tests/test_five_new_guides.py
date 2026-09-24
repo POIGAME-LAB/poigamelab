@@ -158,4 +158,5 @@ def test_reference_rewards_are_display_only_until_verified_offer_exists():
 
     with (ROOT / "data" / "published_offers.csv").open(encoding="utf-8", newline="") as handle:
         published_games = {row["game"] for row in csv.DictReader(handle)}
-    assert published_games.isdisjoint(GUIDES)
+    assert published_games.intersection(GUIDES) == {"ATLAS: EARTH"}
+    assert (set(GUIDES) - {"ATLAS: EARTH"}).isdisjoint(published_games)

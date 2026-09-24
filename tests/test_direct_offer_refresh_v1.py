@@ -2430,7 +2430,7 @@ def test_repository_ended_coincome_township_and_kinoko_are_not_published_or_targ
     sources = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))['sources']
     coincome = next(source for source in sources if source['id'] == 'coincome')
     assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
-    assert coincome['scheduled_known_detail_fetch_enabled'] is False
+    assert coincome['scheduled_known_detail_fetch_enabled'] is True
 
 
 def test_repository_evertale_stale_hapitas_195_is_not_published():
@@ -2748,6 +2748,36 @@ def test_listing_detail_signature_dedupes_offer_identities():
     assert len(sig) == 2
 
 
+def test_repository_atlas_coincome_offer_is_verified_and_bound():
+    atlas_url = 'https://cimcome.jp/campaigns/details/9663'
+    rows = list(csv.DictReader(
+        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
+    ))
+    matches = [
+        row for row in rows
+        if row['game'] == 'ATLAS: EARTH' and row['site'] == 'coincome'
+    ]
+    assert len(matches) == 1
+    row = matches[0]
+    assert row['offerKey'] == f'ATLAS: EARTH|coincome|iOS|{atlas_url}'
+    assert row['reward'] == '8620'
+    assert row['platform'] == 'iOS'
+    assert row['type'] == 'StepUp'
+    assert row['deadline'] == 'インストール後30日以内'
+    assert row['updatedAt'] == '2026-09-24'
+    assert row['url'] == row['sourceUrl'] == atlas_url
+    assert row['verified'] == 'true'
+
+    targets = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))['games']
+    atlas = next(item for item in targets if item['game'] == 'ATLAS: EARTH')
+    assert atlas['known_urls_by_source']['coincome'] == [atlas_url]
+
+    games = list(csv.DictReader((ROOT/'games.csv').open(encoding='utf-8', newline='')))
+    atlas_game = next(item for item in games if item['name'] == 'ATLAS: EARTH')
+    assert atlas_game['provisionalReward'] == '8620'
+    assert atlas_game['provisionalSource'] == 'COINCOME'
+
+
 def test_coincome_app_listing_is_shared_positive_detection_only():
     cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
     coin = next(item for item in cfg['sources'] if item['id'] == 'coincome')
@@ -2757,7 +2787,8 @@ def test_coincome_app_listing_is_shared_positive_detection_only():
     assert coin['new_game_discovery_scope'] == 'partial_current_app_category_listing'
     assert coin['full_catalog_discovery_enabled'] is False
     assert coin['coverage_first_party_listing_enabled'] is True
-    assert coin['scheduled_known_detail_fetch_enabled'] is False
+    assert coin['scheduled_known_detail_fetch_enabled'] is True
+    assert 'reviewed v2 parser' in coin['scheduled_known_detail_fetch_reason'].lower()
     assert 'absence must not imply no coincome offer' in coin['discoveryNote'].lower()
 
 

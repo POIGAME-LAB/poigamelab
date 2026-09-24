@@ -90,7 +90,9 @@
     {
       "game": "ATLAS: EARTH",
       "aliases": ["ATLAS: EARTH", "Atlas Earth", "ATLAS EARTH"],
-      "known_urls_by_source": {}
+      "known_urls_by_source": {
+        "coincome": ["https://cimcome.jp/campaigns/details/9663"]
+      }
     },
     {
       "game": "ファミリーファームの冒険",
