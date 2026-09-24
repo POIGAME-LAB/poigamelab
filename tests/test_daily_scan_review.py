@@ -670,3 +670,103 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
     assert daily.explicit_yen(evidence) == 451871
     evidence["verifiedCurrentRewardYen"] = 406683.9
     assert daily.explicit_yen(evidence) is None
+
+
+def test_trima_live_diagnostic_20260925():
+    """Temporary live diagnostic; intentionally fails so CI exposes the public Trima shape."""
+    import json as _json
+    import re as _re
+    from urllib.error import HTTPError as _HTTPError
+    from urllib.request import Request as _Request, urlopen as _urlopen
+
+    ua = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
+        "Mobile/15E148 Safari/604.1"
+    )
+
+    def fetch(url, accept="text/html,application/xhtml+xml"):
+        req = _Request(url, headers={
+            "User-Agent": ua,
+            "Accept": accept,
+            "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
+            "Referer": "https://web.trip-mile.com/",
+        })
+        try:
+            with _urlopen(req, timeout=20) as r:
+                data = r.read(6_000_000)
+                return {
+                    "ok": True,
+                    "status": getattr(r, "status", None),
+                    "final": r.geturl(),
+                    "contentType": r.headers.get("Content-Type"),
+                    "text": data.decode("utf-8", "replace"),
+                }
+        except _HTTPError as exc:
+            body = exc.read(500_000).decode("utf-8", "replace")
+            return {"ok": False, "status": exc.code, "error": "HTTPError", "text": body}
+        except Exception as exc:
+            return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
+
+    category_url = "https://web.trip-mile.com/category/504"
+    category = fetch(category_url)
+    raw = category.get("text", "")
+    ad_hrefs = sorted(set(_re.findall(r'href=["\\\']([^"\\\']*/ad/[0-9a-fA-F-]{20,})', raw)))
+    all_ad_paths = sorted(set(_re.findall(r'/ad/[0-9a-fA-F-]{20,}', raw)))
+    scripts = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
+    next_data = _re.findall(r'<script[^>]+id=["\\\']__NEXT_DATA__["\\\'][^>]*>(.*?)</script>', raw, _re.S)
+    category_excerpt = _re.sub(r"\\s+", " ", _re.sub(r"(?s)<[^>]+>", " ", raw))[:3500]
+
+    detail_url = "https://web.trip-mile.com/ad/af040a8e-650c-4e5c-9eb7-806259ae17e2"
+    detail = fetch(detail_url)
+    draw = detail.get("text", "")
+    detail_text = _re.sub(r"\\s+", " ", _re.sub(r"(?s)<[^>]+>", " ", draw))
+    detail_summary = {
+        "ok": detail.get("ok"),
+        "status": detail.get("status"),
+        "bytes": len(draw.encode("utf-8")),
+        "hasTitle": "商品整理ゲーム：3Dパズル" in draw or "商品整理ゲーム：3Dパズル" in detail_text,
+        "has44000": "44,000" in draw or "44000" in draw,
+        "has366Yen": "366円" in draw or "366円" in detail_text,
+        "adPathCount": len(set(_re.findall(r"/ad/[0-9a-fA-F-]{20,}", draw))),
+        "excerpt": detail_text[:2500],
+    }
+
+    probes = []
+    for url in [
+        "https://web.trip-mile.com/api/ads/offerwall/ad-wall",
+        "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=1",
+        "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=2",
+        "https://web.trip-mile.com/api/ads/top-ranking?limit=20",
+    ]:
+        p = fetch(url, "application/json, text/plain, */*")
+        body = p.get("text", "")
+        probes.append({
+            "url": url,
+            "ok": p.get("ok"),
+            "status": p.get("status"),
+            "contentType": p.get("contentType"),
+            "bytes": len(body.encode("utf-8")),
+            "excerpt": body[:1800],
+        })
+
+    summary = {
+        "category": {
+            "ok": category.get("ok"),
+            "status": category.get("status"),
+            "contentType": category.get("contentType"),
+            "bytes": len(raw.encode("utf-8")),
+            "adHrefCount": len(ad_hrefs),
+            "adPathCount": len(all_ad_paths),
+            "adHrefSample": ad_hrefs[:20],
+            "adPathSample": all_ad_paths[:20],
+            "scriptCount": len(scripts),
+            "scriptSample": scripts[:20],
+            "nextDataCount": len(next_data),
+            "nextDataExcerpt": next_data[0][:2500] if next_data else "",
+            "excerpt": category_excerpt,
+        },
+        "detail": detail_summary,
+        "probes": probes,
+    }
+    assert False, "TRIMA_LIVE_DIAGNOSTIC=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
