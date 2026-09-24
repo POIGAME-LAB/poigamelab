@@ -108,6 +108,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         "ecnavi-detail-review-v2": "verifiedCurrentRewardYen",
         "amefuri-detail-review-v2": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
+        "gendama-detail-review-v2": "displayedRewardYen",
     }
     contracts["powl-detail-review-v1"] = "verifiedCurrentRewardYen"
     parser_version = evidence.get("parserVersion")
@@ -305,7 +306,12 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             detail_calls += 1
             item = {"source": sid, "url": url, "sourceFamily": families[sid]}
             try:
-                parsed = direct.inspect_detail(url, sources[sid], [group["game"]], fetcher=fetcher)
+                aliases = [group["game"]]
+                if sid == "gendama":
+                    listing_title = str((_source_item or {}).get("titleHint") or "").strip()
+                    if listing_title:
+                        aliases.append(listing_title)
+                parsed = direct.inspect_detail(url, sources[sid], aliases, fetcher=fetcher)
                 evidence = parsed.get("sourceEvidence") or {}
                 item["evidence"] = evidence
                 item["finalUrl"] = parsed.get("url")

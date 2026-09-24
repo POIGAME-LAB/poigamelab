@@ -33,7 +33,7 @@ FIELDS = [
     "type", "deadline", "updatedAt", "url", "sourceUrl", "verified"
 ]
 
-DETAIL_QUERY_KEYS = {"point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "id"}
+DETAIL_QUERY_KEYS = {"point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "cd_client", "id"}
 
 def now_iso():
     return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
@@ -107,7 +107,20 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000, *, opener=None
             charset = response.headers.get_content_charset()
         except Exception:
             pass
-    return data.decode(charset or "utf-8", errors="replace"), final_url
+    if not charset:
+        # Some legacy Japanese first-party pages omit the HTTP charset while
+        # declaring Shift_JIS in HTML. Sniff only the bounded response head.
+        match = re.search(
+            br"(?i)charset\s*=\s*['\"]?\s*([a-z0-9._-]+)",
+            data[:16384],
+        )
+        if match:
+            charset = match.group(1).decode("ascii", errors="ignore")
+    try:
+        decoded = data.decode(charset or "utf-8", errors="replace")
+    except LookupError:
+        decoded = data.decode("utf-8", errors="replace")
+    return decoded, final_url
 
 
 def source_participates_in_new_game_ranking(source):
@@ -1187,7 +1200,7 @@ def offer_identity_key(url, source_id):
     except Exception:
         return f"{source_id}:url:{exact}"
 
-    for key in ("point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "id"):
+    for key in ("point_id", "site_id", "s_id", "itemid", "campaign_id", "campaignid", "cd_client", "id"):
         values = query.get(key) or []
         if values:
             value = str(values[0]).strip()
@@ -2501,7 +2514,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
 
 
 def gendama_offer_id(url):
-    """Return the stable numeric Gendama service identity for supported URLs."""
+    """Return a stable numeric Gendama identity for reviewed legacy/current URLs."""
     try:
         p = urlparse(str(url or ""))
         port = p.port
@@ -2511,20 +2524,34 @@ def gendama_offer_id(url):
             or p.username is not None or p.password is not None
             or port not in {None, 443}):
         raise ValueError("unexpected_offer_url")
-    m = re.fullmatch(r"/service/item/([0-9]+)", p.path or "")
-    if not m:
-        raise ValueError("unexpected_offer_url")
+
     query = parse_qs(p.query, keep_blank_values=True)
+    if p.path == "/sp/client_detail":
+        values = query.get("cd_client", [])
+        if len(values) != 1 or not re.fullmatch(r"[0-9]+", values[0]):
+            raise ValueError("ambiguous_offer_identity")
+        if any(key not in {"cd_client", "rt"} for key in query):
+            raise ValueError("unexpected_offer_url")
+        for value in query.get("rt", []):
+            if not re.fullmatch(r"[A-Za-z0-9_-]{1,16}", value or ""):
+                raise ValueError("unexpected_offer_url")
+        return values[0]
+
+    match = re.fullmatch(r"/service/item/([0-9]+)", p.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
     if any(key != "frame" for key in query):
         raise ValueError("unexpected_offer_url")
-    return m.group(1)
+    return match.group(1)
 
 
 def inspect_gendama_offer(raw, requested_url, final_url, aliases):
-    """Extract review-only evidence from a Gendama service detail page.
+    """Extract ranking-only evidence from current/legacy Gendama detail pages.
 
-    The parser never converts points to yen. It accepts only Gendama's own
-    adjacent "pt (円相当)" display and records both source values verbatim.
+    Current mobile pages are Shift_JIS and expose an exact pt + yen-equivalent
+    pair inside one offer card. Reward values are never inferred from a base
+    conversion. Platform remains unknown unless the exact first-party title,
+    condition, or listing alias explicitly names iOS/Android.
     """
     try:
         offer_id = gendama_offer_id(requested_url)
@@ -2537,8 +2564,17 @@ def inspect_gendama_offer(raw, requested_url, final_url, aliases):
             return {"state": "unavailable", "reason": "source_offer_unavailable",
                     "offerId": offer_id}
 
-        title = evidence_text(one(doc.find(tag="h1")))
-        if not target_present(title, aliases):
+        title_nodes = doc.find(tag="title")
+        title_text = evidence_text(one(title_nodes)) if title_nodes else ""
+        current_name = re.sub(
+            r"\s*の口コミ・評判[｜|].*$", "", title_text
+        ).strip()
+        h1_values = [evidence_text(node) for node in doc.find(tag="h1")
+                     if evidence_text(node)]
+        name = current_name or (h1_values[0] if len(h1_values) == 1 else "")
+        if not name:
+            raise ValueError("missing_offer_title")
+        if not target_present(name, aliases):
             raise ValueError("offer_title_mismatch")
 
         pairs = {
@@ -2552,52 +2588,71 @@ def inspect_gendama_offer(raw, requested_url, final_url, aliases):
         if len(pairs) != 1:
             raise ValueError("missing_or_ambiguous_yen_equivalent")
         reward_points, reward_yen = next(iter(pairs))
-        if not (0 < reward_points < 1_000_000 and 0 < reward_yen < 1_000_000):
+        if not (0 < reward_points < 5_000_000 and 0 < reward_yen < 1_000_000):
             raise ValueError("invalid_reward")
 
-        m = re.search(
-            r"獲得条件\s*[|｜]?\s*(.+?)\s*(?:[|｜]\s*)?判定ポイント",
-            text
+        condition_candidates = [
+            evidence_text(node) for node in doc.find(cls="service_content")
+            if 2 <= len(evidence_text(node)) <= 500
+        ]
+        if len(set(condition_candidates)) == 1:
+            condition = condition_candidates[0]
+        else:
+            match = re.search(r"ポイント獲得条件\s*[（(]\s*(.+?)\s*[）)]", text)
+            condition = re.sub(r"\s+", " ", match.group(1)).strip() if match else ""
+        if len(condition) < 2:
+            raise ValueError("missing_offer_condition")
+
+        term_candidates = []
+        positive_markers = (
+            "成果受付期限", "成果調査受付期限", "ポイント付与条件",
+            "ポイント付与受付期間", "獲得条件", "お問い合わせ受付期限",
         )
-        if not m:
-            raise ValueError("missing_offer_condition")
-        condition = re.sub(r"\s+", " ", m.group(1)).strip()
-        if len(condition) < 4:
-            raise ValueError("missing_offer_condition")
+        rejection_markers = (
+            "成果対象外", "却下条件", "獲得対象外", "注意事項", "ご注意点",
+        )
+        support_markers = (
+            "広告主", "スポンサーサイト", "成果調査", "ポイント付与調査",
+            "お問い合わせ", "問合せ",
+        )
+        for node in doc.find(cls="service_detail_p"):
+            value = evidence_text(node)
+            reviewed_shape = (
+                any(marker in value for marker in positive_markers)
+                and any(marker in value for marker in rejection_markers)
+                and any(marker in value for marker in support_markers)
+            )
+            if len(value) >= 120 and reviewed_shape:
+                term_candidates.append(value)
+        unique_terms = list(dict.fromkeys(term_candidates))
+        if len(unique_terms) != 1:
+            raise ValueError("incomplete_or_ambiguous_offer_terms")
+        terms = unique_terms[0]
 
-        marker = "ポイントを獲得するための注意事項"
-        start = text.find(marker)
-        end = text.find("サービスの詳細", start + len(marker)) if start >= 0 else -1
-        if start < 0 or end <= start:
-            raise ValueError("incomplete_offer_terms")
-        terms = re.sub(r"\s+", " ", text[start:end]).strip()
-        if len(terms) < 80:
-            raise ValueError("incomplete_offer_terms")
-
-        # Gendama boilerplate contains generic iOS tracking notices even for
-        # Android-only offers. Bind OS only to the offer title/condition.
-        platform = platform_hint(" ".join((title, condition)))
+        platform = platform_hint(" ".join([name, condition, *[
+            str(alias or "") for alias in aliases
+        ]]))
         if platform not in {"iOS", "Android", "iOS|Android"}:
-            raise ValueError("ambiguous_offer_platform")
+            platform = "unknown"
 
         payload = {
             "offerId": offer_id,
-            "name": title,
+            "name": name,
             "platform": platform,
             "displayedRewardPoints": reward_points,
             "displayedRewardYen": reward_yen,
             "rewardUnit": "JPY-equivalent",
             "condition": condition,
-            "termsText": terms,
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
         }
         fingerprint = hashlib.sha256(json.dumps(
             payload, ensure_ascii=False, sort_keys=True
         ).encode("utf-8")).hexdigest()
-        return {"state": "parsed", "parserVersion": "gendama-detail-review-v1",
+        return {"state": "parsed", "parserVersion": "gendama-detail-review-v2",
                 **payload, "evidenceFingerprint": fingerprint}
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
-
 
 def powl_offer_id(url):
     try:
