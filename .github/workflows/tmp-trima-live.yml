@@ -155,5 +155,93 @@ jobs:
                   appbundles.append({"url":su,"error":type(exc).__name__+":"+str(exc)[:180]})
           out["pointWebApp"]=webapp
           out["pointWebBundles"]=appbundles
+          # Inspect app/category SSR plus exact offerwall API strings in current Next.js bundles.
+          focused_urls=[
+              "https://web.trip-mile.com/category/504",
+              "https://web.trip-mile.com/ad/af040a8e-650c-4e5c-9eb7-806259ae17e2",
+          ]
+          focused=[]
+          focused_scripts=[]
+          for url in focused_urls:
+              try:
+                  req=Request(url,headers={"User-Agent":UA,"Accept-Language":"ja,en-US;q=0.8,en;q=0.5"})
+                  with urlopen(req,timeout=20) as r:
+                      data=r.read(4_000_000); final=r.geturl();ctype=r.headers.get("Content-Type")
+                  raw=data.decode("utf-8","replace")
+                  p=P();p.feed(raw)
+                  focused_scripts += [urljoin(final,s) for s in p.scripts]
+                  visible=re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
+                  visible=re.sub(r"(?s)<[^>]+>"," ",visible)
+                  visible=re.sub(r"\\s+"," ",unescape(visible)).strip()
+                  ad_links=[
+                      {"url":urljoin(final,h),"text":t[:260]}
+                      for h,t in p.links
+                      if h and "/ad/" in urljoin(final,h)
+                  ]
+                  focused.append({
+                      "url":url,"final":final,"bytes":len(data),"contentType":ctype,
+                      "title":(re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0][:300],
+                      "adLinks":ad_links[:180],
+                      "scriptUrls":[urljoin(final,s) for s in p.scripts[:100]],
+                      "visibleExcerpt":visible[:5000],
+                  })
+              except Exception as exc:
+                  focused.append({"url":url,"error":type(exc).__name__+":"+str(exc)[:220]})
+
+          contexts=[]
+          all_scripts=list(dict.fromkeys(dynamic_scripts+focused_scripts))
+          for su in all_scripts:
+              if len(contexts)>=80: break
+              try:
+                  req=Request(su,headers={"User-Agent":UA})
+                  with urlopen(req,timeout=20) as r:
+                      raw=r.read(5_000_000).decode("utf-8","replace")
+                  for needle in ("/api/ads/","ads/offerwall","top-ranking","category="):
+                      start=0
+                      while len(contexts)<80:
+                          pos=raw.find(needle,start)
+                          if pos<0: break
+                          contexts.append({
+                              "script":su,"needle":needle,
+                              "context":raw[max(0,pos-700):pos+1600]
+                          })
+                          start=pos+len(needle)
+              except Exception:
+                  pass
+
+          probes=[]
+          probe_urls=[
+              "https://web.trip-mile.com/api/ads/offerwall/ad-wall",
+              "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=1",
+              "https://web.trip-mile.com/api/ads/offerwall/skyflag?os=2",
+              "https://web.trip-mile.com/api/ads/top-ranking?limit=20",
+          ]
+          for url in probe_urls:
+              try:
+                  req=Request(url,headers={
+                      "User-Agent":UA,
+                      "Accept":"application/json, text/plain, */*",
+                      "Referer":"https://web.trip-mile.com/",
+                  })
+                  with urlopen(req,timeout=20) as r:
+                      data=r.read(6_000_000); final=r.geturl();ctype=r.headers.get("Content-Type")
+                  body=data.decode("utf-8","replace")
+                  try: parsed=json.loads(body)
+                  except Exception: parsed=None
+                  summary={"url":url,"final":final,"bytes":len(data),"contentType":ctype}
+                  if isinstance(parsed,dict):
+                      summary["keys"]=sorted(parsed.keys())
+                      summary["payload"]=parsed
+                  elif isinstance(parsed,list):
+                      summary["count"]=len(parsed);summary["sample"]=parsed[:10]
+                  else:
+                      summary["excerpt"]=body[:2500]
+                  probes.append(summary)
+              except Exception as exc:
+                  probes.append({"url":url,"error":type(exc).__name__+":"+str(exc)[:200],"code":getattr(exc,"code",None)})
+
+          out["focusedPages"]=focused
+          out["apiContexts"]=contexts
+          out["apiProbes"]=probes
           print("TRIMA_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
