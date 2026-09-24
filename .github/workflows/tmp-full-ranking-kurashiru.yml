@@ -1,0 +1,166 @@
+name: Temporary full ranking audit with Kurashiru
+
+on:
+  push:
+    branches:
+      - audit/full-ranking-kurashiru-20260924
+    paths:
+      - ".github/workflows/tmp-full-ranking-kurashiru.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore latest candidate state from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          command -v aws >/dev/null 2>&1
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+          restore_dir="$(mktemp -d)"
+          trap 'rm -rf "${restore_dir}"' EXIT
+          if aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${restore_dir}/"             --recursive --endpoint-url "${R2_ENDPOINT}" --only-show-errors; then
+            for name in               new_game_candidate_queue.json               new_game_candidate_history.json               existing_game_candidate_queue.json               comparison_candidate_queue.json               comparison_review_queue.json               comparison_refresh_status.json
+            do
+              if [ -f "${restore_dir}/${name}.gz" ]; then
+                gzip -dc "${restore_dir}/${name}.gz" > "data/${name}.r2tmp"
+                mv "data/${name}.r2tmp" "data/${name}"
+              fi
+            done
+          fi
+
+      - name: Run production-equivalent ranking scan without publication commit
+        run: python scripts/daily_scan_review.py
+
+      - name: Summarize and enforce bounded ranking
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          report=json.loads(Path("data/daily_scan_review.json").read_text(encoding="utf-8"))
+          refresh=json.loads(Path("data/comparison_refresh_status.json").read_text(encoding="utf-8"))
+          discovery=(refresh.get("newGameDiscovery") or {})
+
+          source_stats=defaultdict(lambda: {
+              "details":0,"parsed":0,"rewardYen":0,"platformConfirmed":0,
+              "parserVersions":Counter()
+          })
+          top_rows=[]
+          top=set(report.get("topFiveReviewCandidates") or [])
+          for group in report.get("results",[]):
+              for detail in group.get("details",[]):
+                  sid=str(detail.get("source") or "")
+                  if not sid:
+                      continue
+                  st=source_stats[sid]
+                  st["details"]+=1
+                  ev=detail.get("evidence") or {}
+                  if ev.get("state")=="parsed":
+                      st["parsed"]+=1
+                  if detail.get("rewardYen") is not None:
+                      st["rewardYen"]+=1
+                  if detail.get("detailConfirmed") is True:
+                      st["platformConfirmed"]+=1
+                  pv=ev.get("parserVersion")
+                  if pv:
+                      st["parserVersions"][pv]+=1
+              if group.get("game") in top:
+                  top_rows.append({
+                      "game":group.get("game"),
+                      "maxObservedRewardYen":group.get("maxObservedRewardYen"),
+                      "verifiedRewardSourceCount":group.get("verifiedRewardSourceCount"),
+                      "details":[{
+                          "source":d.get("source"),
+                          "rewardYen":d.get("rewardYen"),
+                          "state":(d.get("evidence") or {}).get("state"),
+                          "platform":(d.get("evidence") or {}).get("platform"),
+                          "parserVersion":(d.get("evidence") or {}).get("parserVersion"),
+                          "coins":(d.get("evidence") or {}).get("verifiedCurrentRewardCoins"),
+                          "points":(d.get("evidence") or {}).get("displayedRewardPoints")
+                                   or (d.get("evidence") or {}).get("verifiedCurrentRewardPoints")
+                                   or (d.get("evidence") or {}).get("rewardPoints"),
+                      } for d in group.get("details",[])]
+                  })
+
+          sources={}
+          for sid,st in source_stats.items():
+              sources[sid]={
+                  **{k:v for k,v in st.items() if k!="parserVersions"},
+                  "parserVersions":dict(st["parserVersions"])
+              }
+
+          disc={}
+          for row in discovery.get("sourceResults") or []:
+              sid=str(row.get("source") or row.get("sourceLabel") or "")
+              if sid in {"powl","gendama","kurashiru_reward","moppy"}:
+                  disc[sid]={
+                      "scanComplete":row.get("scanComplete"),
+                      "rankingRequired":row.get("rankingRequired"),
+                      "candidateCount":row.get("candidateCount"),
+                      "catalogComplete":row.get("catalogComplete"),
+                      "listingPagesAttempted":row.get("listingPagesAttempted"),
+                      "candidateLimitReached":row.get("candidateLimitReached"),
+                      "fetchErrors":row.get("fetchErrors"),
+                  }
+
+          summary={
+              "rankingComplete":report.get("rankingComplete"),
+              "rankingHoldReasons":report.get("rankingHoldReasons"),
+              "detailInspectionCalls":report.get("detailInspectionCalls"),
+              "detailLimitReached":report.get("detailLimitReached"),
+              "groupLimitReached":report.get("groupLimitReached"),
+              "maxDetails":768,
+              "listingGroups":report.get("listingGroups"),
+              "rankingEligibleGroups":report.get("rankingEligibleGroups"),
+              "reviewedGroups":report.get("reviewedGroups"),
+              "listingUpperBoundUnknownGroups":report.get("listingUpperBoundUnknownGroups"),
+              "prefilterSkippedGroups":report.get("prefilterSkippedGroups"),
+              "sourceScanIncomplete":report.get("sourceScanIncomplete"),
+              "incompleteDiscoverySources":report.get("incompleteDiscoverySources"),
+              "topFive":report.get("topFiveReviewCandidates"),
+              "sourceStats":sources,
+              "keyDiscovery":disc,
+              "topFiveEvidence":top_rows,
+          }
+          print("FULL_KURASHIRU_RANKING_AUDIT",json.dumps(summary,ensure_ascii=False,sort_keys=True))
+
+          if report.get("rankingComplete") is not True:
+              raise SystemExit("ranking incomplete")
+          if report.get("detailLimitReached") is True:
+              raise SystemExit("detail limit reached")
+          if report.get("groupLimitReached") is True:
+              raise SystemExit("group limit reached")
+          calls=report.get("detailInspectionCalls")
+          if not isinstance(calls,int) or calls >= 768:
+              raise SystemExit("detail budget not safely bounded")
+          if report.get("sourceScanIncomplete") is True:
+              raise SystemExit("ranking source scan incomplete")
+
+          kdisc=disc.get("kurashiru_reward") or {}
+          if kdisc.get("scanComplete") is not True or kdisc.get("catalogComplete") is not True:
+              raise SystemExit("Kurashiru catalog scan incomplete")
+          if (kdisc.get("candidateCount") or 0) < 900:
+              raise SystemExit("Kurashiru candidate count unexpectedly low")
+          kur=sources.get("kurashiru_reward") or {}
+          if kur.get("parsed",0) <= 0:
+              raise SystemExit("Kurashiru did not contribute parsed evidence")
+          PY
