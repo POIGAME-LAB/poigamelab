@@ -2,114 +2,261 @@
   "games": [
     {
       "game": "メメントモリ",
-      "aliases": ["メメントモリ", "MementoMori", "Memento Mori"],
+      "aliases": [
+        "メメントモリ",
+        "MementoMori",
+        "Memento Mori"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=160690", "https://pc.moppy.jp/ad/detail.php?site_id=160688"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/99420", "https://hapitas.jp/item/detail/itemid/99421", "https://hapitas.jp/item/detail/itemid/101349"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206501", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206500", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205982", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=160690",
+          "https://pc.moppy.jp/ad/detail.php?site_id=160688"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/99420",
+          "https://hapitas.jp/item/detail/itemid/99421",
+          "https://hapitas.jp/item/detail/itemid/101349"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206501",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206500",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205982",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975"
+        ]
       }
     },
     {
       "game": "きのこ伝説",
-      "aliases": ["きのこ伝説", "キノコ伝説"],
+      "aliases": [
+        "きのこ伝説",
+        "キノコ伝説"
+      ],
       "known_urls_by_source": {
-        "chobirich": ["https://www.chobirich.com/ad_details/1883822", "https://www.chobirich.com/ad_details/1896200", "https://www.chobirich.com/ad_details/1896275"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/102450", "https://hapitas.jp/item/detail/itemid/102451", "https://hapitas.jp/item/detail/itemid/99850"]
+        "chobirich": [
+          "https://www.chobirich.com/ad_details/1883822",
+          "https://www.chobirich.com/ad_details/1896200",
+          "https://www.chobirich.com/ad_details/1896275"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/102450",
+          "https://hapitas.jp/item/detail/itemid/102451",
+          "https://hapitas.jp/item/detail/itemid/99850"
+        ]
       }
     },
     {
       "game": "Township",
-      "aliases": ["Township", "タウンシップ"],
+      "aliases": [
+        "Township",
+        "タウンシップ"
+      ],
       "known_urls_by_source": {
-        "chobirich": ["https://www.chobirich.com/ad_details/1894712"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/101453", "https://hapitas.jp/item/detail/itemid/101454"]
+        "chobirich": [
+          "https://www.chobirich.com/ad_details/1894712"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204643"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/101453",
+          "https://hapitas.jp/item/detail/itemid/101454"
+        ]
       }
     },
     {
       "game": "ワーキングヒーロー",
-      "aliases": ["ワーキングヒーロー", "ワーキングヒーローズ", "Working Hero", "Working Heroes"],
+      "aliases": [
+        "ワーキングヒーロー",
+        "ワーキングヒーローズ",
+        "Working Hero",
+        "Working Heroes"
+      ],
       "known_urls_by_source": {
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/101445", "https://hapitas.jp/item/detail/itemid/101444"]
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/101445",
+          "https://hapitas.jp/item/detail/itemid/101444"
+        ]
       }
     },
     {
       "game": "ホワイトアウト・サバイバル",
-      "aliases": ["ホワイトアウト・サバイバル", "Whiteout Survival"],
+      "aliases": [
+        "ホワイトアウト・サバイバル",
+        "Whiteout Survival"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=160375", "https://pc.moppy.jp/ad/detail.php?site_id=160371"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=160375",
+          "https://pc.moppy.jp/ad/detail.php?site_id=160371"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862"
+        ]
       }
     },
     {
       "game": "東京ディバンカー",
-      "aliases": ["東京ディバンカー", "Tokyo Debunker"],
+      "aliases": [
+        "東京ディバンカー",
+        "Tokyo Debunker"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=158270", "https://pc.moppy.jp/ad/detail.php?site_id=158257"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/91316", "https://hapitas.jp/item/detail/itemid/91334"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=191400", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191401"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=158270",
+          "https://pc.moppy.jp/ad/detail.php?site_id=158257"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/91316",
+          "https://hapitas.jp/item/detail/itemid/91334"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191400",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191401"
+        ]
       }
     },
     {
       "game": "パズル＆サバイバル",
-      "aliases": ["パズル＆サバイバル", "パズル&サバイバル", "Puzzles & Survival"],
+      "aliases": [
+        "パズル＆サバイバル",
+        "パズル&サバイバル",
+        "Puzzles & Survival"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=160367", "https://pc.moppy.jp/ad/detail.php?site_id=160366"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206425", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206488", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206460", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205557"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/98148", "https://hapitas.jp/item/detail/itemid/99158"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=160367",
+          "https://pc.moppy.jp/ad/detail.php?site_id=160366"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206425",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206488",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206460",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205557"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/98148",
+          "https://hapitas.jp/item/detail/itemid/99158"
+        ]
       }
     },
     {
       "game": "キングショット",
-      "aliases": ["キングショット", "Kingshot"],
+      "aliases": [
+        "キングショット",
+        "Kingshot"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=161855", "https://pc.moppy.jp/ad/detail.php?site_id=161854"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/101355", "https://hapitas.jp/item/detail/itemid/101354"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=204984", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204983"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=161855",
+          "https://pc.moppy.jp/ad/detail.php?site_id=161854"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/101355",
+          "https://hapitas.jp/item/detail/itemid/101354"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204984",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204983"
+        ]
       }
     },
     {
       "game": "放置少女",
-      "aliases": ["放置少女", "放置少女〜百花繚乱の萌姫たち〜", "放置少女～百花繚乱の萌姫たち～"],
+      "aliases": [
+        "放置少女",
+        "放置少女〜百花繚乱の萌姫たち〜",
+        "放置少女～百花繚乱の萌姫たち～"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=147270"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206411"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/91475"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=147270"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206411"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/91475"
+        ]
       }
     },
     {
       "game": "エバーテイル",
-      "aliases": ["エバーテイル", "Evertale"],
+      "aliases": [
+        "エバーテイル",
+        "Evertale"
+      ],
       "known_urls_by_source": {
-        "moppy": ["https://pc.moppy.jp/ad/detail.php?site_id=158276", "https://pc.moppy.jp/ad/detail.php?site_id=158275"],
-        "hapitas": ["https://hapitas.jp/item/detail/itemid/91344", "https://hapitas.jp/item/detail/itemid/91331", "https://hapitas.jp/item/detail/itemid/91345", "https://hapitas.jp/item/detail/itemid/91343"],
-        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=188016"]
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?site_id=158276",
+          "https://pc.moppy.jp/ad/detail.php?site_id=158275"
+        ],
+        "hapitas": [
+          "https://hapitas.jp/item/detail/itemid/91344",
+          "https://hapitas.jp/item/detail/itemid/91331",
+          "https://hapitas.jp/item/detail/itemid/91345",
+          "https://hapitas.jp/item/detail/itemid/91343"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=188016"
+        ]
       }
     },
     {
       "game": "ATLAS: EARTH",
-      "aliases": ["ATLAS: EARTH", "Atlas Earth", "ATLAS EARTH"],
-      "known_urls_by_source": {}
+      "aliases": [
+        "ATLAS: EARTH",
+        "Atlas Earth",
+        "ATLAS EARTH"
+      ],
+      "known_urls_by_source": {
+        "coincome": [
+          "https://cimcome.jp/campaigns/details/9663"
+        ]
+      }
     },
     {
       "game": "ファミリーファームの冒険",
-      "aliases": ["ファミリーファームの冒険", "Family Farm Adventure", "Family Farm Adventures"],
+      "aliases": [
+        "ファミリーファームの冒険",
+        "Family Farm Adventure",
+        "Family Farm Adventures"
+      ],
       "known_urls_by_source": {}
     },
     {
       "game": "クロンダイクの冒険",
-      "aliases": ["クロンダイクの冒険", "Klondike Adventures", "Klondike Adventure"],
+      "aliases": [
+        "クロンダイクの冒険",
+        "Klondike Adventures",
+        "Klondike Adventure"
+      ],
       "known_urls_by_source": {}
     },
     {
       "game": "Merge Help: ホームデザインパズル",
-      "aliases": ["Merge Help: ホームデザインパズル", "Merge Help", "ホームデザインパズル"],
+      "aliases": [
+        "Merge Help: ホームデザインパズル",
+        "Merge Help",
+        "ホームデザインパズル"
+      ],
       "known_urls_by_source": {}
     },
     {
       "game": "マジックジグソーパズル",
-      "aliases": ["マジックジグソーパズル", "Magic Jigsaw Puzzles", "Magic Jigsaw"],
+      "aliases": [
+        "マジックジグソーパズル",
+        "Magic Jigsaw Puzzles",
+        "Magic Jigsaw"
+      ],
       "known_urls_by_source": {}
     }
   ]
