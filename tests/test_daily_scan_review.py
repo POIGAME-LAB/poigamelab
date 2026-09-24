@@ -47,6 +47,16 @@ def test_discovery_name_strips_coincome_listing_ui_suffix_only():
     ) == "Cat Drop: Cute Slide & Match（30日以内にレベル400クリア）"
 
 
+def test_discovery_name_strips_condition_prefix_without_stripping_branded_title():
+    assert daily.discovery_name(
+        "【60日間でいずれかのTier4隊員をアンロック】ザ・グランドマフィア"
+    ) == "ザ・グランドマフィア"
+    assert daily.discovery_name(
+        "【85,000円以上を換金する】Freecash"
+    ) == "Freecash"
+    assert daily.discovery_name("【勝利の女神】NIKKE") == "【勝利の女神】NIKKE"
+
+
 def test_single_verified_site_stays_discovery_only_and_does_not_spend_ranking_budget(monkeypatch):
     items = candidates(sites=("a",)) * 10
     result = scan(items, monkeypatch)
@@ -465,7 +475,7 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
             })
     result = scan(items, monkeypatch)
     assert daily.MAX_DETAILS == 768
-    assert daily.MAX_GROUPS == 320
+    assert daily.MAX_GROUPS == 4096
     assert result["twoSiteListingGroups"] == 31
     assert result["rankingEligibleGroups"] == 31
     assert result["singleSiteListingGroups"] == 0
@@ -528,13 +538,25 @@ def test_many_single_site_groups_do_not_false_hold_two_site_handoff(monkeypatch)
     assert result["rankingComplete"] is True
 
 
-def test_default_budget_still_fails_closed_past_group_capacity(monkeypatch):
-    result = scan(_budget_surface(321), monkeypatch)
-    assert result["twoSiteListingGroups"] == 321
-    assert result["reviewedGroups"] == 320
-    assert result["detailInspectionCalls"] == 640
+def test_default_group_budget_no_longer_blocks_current_501_group_scale(monkeypatch):
+    # 501 two-site groups require 1,002 details when every listing bound is
+    # unknown, so the expensive-detail guard still fails closed first.
+    result = scan(_budget_surface(501), monkeypatch)
+    assert result["twoSiteListingGroups"] == 501
+    assert result["groupLimitReached"] is False
+    assert result["groupSafetyCap"] == 4096
+    assert result["detailLimitReached"] is True
+    assert result["rankingComplete"] is False
+    assert result["detailInspectionCalls"] == 768
+
+
+def test_group_safety_cap_remains_fail_closed_for_pathological_universe(monkeypatch):
+    result = scan(_budget_surface(11), monkeypatch, max_groups=10)
+    assert result["twoSiteListingGroups"] == 11
+    assert result["reviewedGroups"] == 10
+    assert result["detailInspectionCalls"] == 20
+    assert result["groupSafetyCap"] == 10
     assert result["groupLimitReached"] is True
-    assert result["detailLimitReached"] is False
     assert result["rankingComplete"] is False
 
 
