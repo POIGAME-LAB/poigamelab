@@ -2083,12 +2083,17 @@ def amefuri_offer_id(url):
 
 
 def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
-    """Build review-only evidence for an Amefuri multi-step game offer.
+    """Build strict review evidence from the current Amefuri detail layout.
 
-    The current yen-equivalent reward is accepted only when the summed step
-    points convert exactly at Amefuri's displayed 10pt=1yen rate and equal the
-    largest displayed total in the offer header. This distinguishes a boosted
-    current total from a lower pre-boost/base total without guessing.
+    Amefuri currently exposes both the former/base yen value and the boosted
+    current yen value in the first-party offer header. Multi-step offers also
+    expose every step in source points. The parser accepts the current reward
+    only when the bounded offer header is unambiguous; for multi-step offers the
+    summed points must additionally convert exactly at the displayed 10pt=1JPY
+    rate and equal the largest displayed yen value.
+
+    This parser is review/ranking evidence only. It never authorizes creation of
+    a published row by itself.
     """
     try:
         offer_id = amefuri_offer_id(requested_url)
@@ -2107,87 +2112,209 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
             if amefuri_offer_id(canonical) != offer_id:
                 raise ValueError("canonical_offer_mismatch")
 
-        title = evidence_text(one(doc.find(tag="h1")))
-        if not target_present(title, aliases):
+        heading_matches = []
+        for node in doc.find(tag="h1"):
+            value = evidence_text(node).strip()
+            match = re.fullmatch(
+                r"案件詳細[:：]\s*(.+?)\s*でポイントが貯まる",
+                value,
+            )
+            if match:
+                heading_matches.append(match.group(1).strip())
+        if len(heading_matches) != 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        name = heading_matches[0]
+        # Some Amefuri titles arrive double-escaped (for example "&amp;").
+        # Normalize entities for identity matching while retaining the exact
+        # first-party text shape everywhere else in the fingerprint.
+        for _ in range(2):
+            decoded = html.unescape(name)
+            if decoded == name:
+                break
+            name = decoded
+        if not target_present(name, aliases):
             raise ValueError("offer_title_mismatch")
-
-        os_labels = re.findall(r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])", title, re.I)
-        normalized_os = {"ios": "iOS", "android": "Android"}
-        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
-        if len(platforms) != 1:
-            raise ValueError("ambiguous_offer_platform")
-        platform = platforms[0]
 
         text = visible_text(raw)
         if not re.search(r"10\s*pt\s*[=＝]\s*1\s*円", text, re.I):
             raise ValueError("unit_conversion_review_required")
 
         header_start = text.find("アメフリ経由で登録すると")
-        header_end = text.find("※下記条件の合計", header_start)
-        if header_start < 0 or header_end < 0 or header_end <= header_start:
+        if header_start < 0:
             raise ValueError("missing_offer_header_boundary")
-        header = text[header_start:header_end]
+        reward_end_candidates = [
+            pos for marker in ("成果条件", "反映目安", "承認目安", "広告提供元")
+            if (pos := text.find(marker, header_start + 1)) >= 0
+        ]
+        if not reward_end_candidates:
+            raise ValueError("missing_offer_header_boundary")
+        reward_end = min(reward_end_candidates)
+        if reward_end <= header_start:
+            raise ValueError("missing_offer_header_boundary")
+        reward_header = text[header_start:reward_end]
+
+        condition_start = text.find("成果条件", header_start)
+        condition_text = ""
+        if condition_start >= 0:
+            condition_end_candidates = [
+                pos for marker in ("反映目安", "承認目安", "広告提供元")
+                if (pos := text.find(marker, condition_start + 1)) >= 0
+            ]
+            condition_end = (
+                min(condition_end_candidates)
+                if condition_end_candidates
+                else min(len(text), condition_start + 1200)
+            )
+            condition_text = re.sub(
+                r"\s+", " ",
+                text[condition_start + len("成果条件"):condition_end],
+            ).strip()
+        if not condition_text:
+            raise ValueError("missing_offer_condition")
 
         displayed_yen = sorted({
             int(value.replace(",", ""))
             for value in re.findall(
                 r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円",
-                header,
+                reward_header,
             )
         })
         if not displayed_yen or len(displayed_yen) > 3:
             raise ValueError("ambiguous_displayed_reward")
+        current_reward_yen = max(displayed_yen)
 
-        multi_start = text.find("多段階", header_end)
-        if multi_start < 0:
-            raise ValueError("multistep_structure_required")
-        end_candidates = [
-            pos for marker in ("多段階案件は", "この案件は「スマホ専用案件」", "ポイント獲得条件")
-            if (pos := text.find(marker, multi_start + 1)) >= 0
-        ]
-        multi_end = min(end_candidates) if end_candidates else len(text)
-        step_text = text[multi_start:multi_end]
+        offer_header_end = text.find("公式サイトを確認", reward_end)
+        if offer_header_end < 0:
+            offer_header_end = min(len(text), reward_end + 6000)
+        platform_scope = name + " " + text[header_start:offer_header_end]
+        os_labels = re.findall(
+            r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
+            platform_scope,
+            re.I,
+        )
+        normalized_os = {"ios": "iOS", "android": "Android"}
+        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
+        if len(platforms) != 1:
+            raise ValueError("ambiguous_offer_platform")
+        platform = platforms[0]
 
-        step_points = [
-            int(value.replace(",", ""))
-            for value in re.findall(
-                r"ステップ\s*[0-9]+.*?([0-9][0-9,]*)\s*pt\b",
-                step_text,
-                re.I,
-            )
-        ]
-        if len(step_points) < 2:
-            raise ValueError("incomplete_multistep_rewards")
-        total_points = sum(step_points)
-        if total_points <= 0 or total_points % 10 != 0:
-            raise ValueError("step_total_conversion_mismatch")
-        current_reward_yen = total_points // 10
-        if current_reward_yen not in displayed_yen:
-            raise ValueError("step_total_not_displayed_current_reward")
-        if current_reward_yen != max(displayed_yen):
-            raise ValueError("boosted_reward_selection_ambiguous")
+        # The current page has a visible StepUp table only for multi-step offers.
+        multi_match = re.search(
+            r"(?:【|〖|\[)?多段階(?:】|〗|\])?",
+            text[reward_end:offer_header_end],
+        )
+        step_points = []
+        reward_mode = "Single"
+        if multi_match:
+            reward_mode = "StepUp"
+            multi_start = reward_end + multi_match.start()
+            multi_end_candidates = [
+                pos for marker in ("多段階案件は", "ポイント獲得条件", "公式サイトを確認")
+                if (pos := text.find(marker, multi_start + 1)) >= 0
+            ]
+            multi_end = min(multi_end_candidates) if multi_end_candidates else offer_header_end
+            if multi_end <= multi_start:
+                raise ValueError("missing_multistep_boundary")
+            step_text = text[multi_start:multi_end]
+            step_points = [
+                int(value.replace(",", ""))
+                for value in re.findall(
+                    r"ステップ\s*[0-9]+.*?認証済\s*([0-9][0-9,]*)\s*pt\b",
+                    step_text,
+                    re.I,
+                )
+            ]
+            if len(step_points) < 2:
+                raise ValueError("incomplete_multistep_rewards")
+            if any(value <= 0 for value in step_points):
+                raise ValueError("invalid_multistep_reward")
+            step_total_points = sum(step_points)
+            if step_total_points % 10 != 0:
+                raise ValueError("step_total_conversion_mismatch")
+            if step_total_points // 10 != current_reward_yen:
+                raise ValueError("step_total_not_displayed_current_reward")
+        else:
+            step_total_points = current_reward_yen * 10
 
-        terms_start = text.find("ポイント獲得条件", multi_end)
+        terms_start = text.find("ポイント獲得条件", offer_header_end)
+        if terms_start < 0:
+            terms_start = text.find("ポイント獲得条件", reward_end)
         if terms_start < 0:
             raise ValueError("incomplete_offer_terms")
-        terms = text[terms_start:]
-        if "成果受付期限" not in terms:
+        terms_end_candidates = [
+            pos for marker in (
+                "友達紹介のダウン報酬対象外です。",
+                "広告案件のポイント付与に関するご質問",
+                "他のユーザーが取り組んでいる案件もチェック",
+            )
+            if (pos := text.find(marker, terms_start + 1)) >= 0
+        ]
+        terms_end = min(terms_end_candidates) if terms_end_candidates else min(
+            len(text), terms_start + 12000
+        )
+        terms = text[terms_start:terms_end].strip()
+        if len(terms) > 12000:
+            terms = terms[:12000]
+
+        if "ポイント獲得条件" not in terms:
             raise ValueError("incomplete_offer_terms")
-        if not any(marker in terms for marker in ("成果調査受付期限", "お問い合わせ受付期限")):
+        if not any(marker in terms for marker in (
+            "▼却下条件", "■却下条件", "【却下条件】", "却下条件",
+        )):
             raise ValueError("incomplete_offer_terms")
+
+        # Amefuri currently uses two valid condition layouts. Some networks put
+        # the achievement conditions in the StepUp table / header and leave the
+        # terms pane for investigation and rejection rules. Others repeat a
+        # dedicated 承認条件/成果条件 section in the terms pane. Never infer a
+        # condition from generic prose: a StepUp must have parsed steps, while a
+        # single offer must expose a non-generic bounded 成果条件 value.
+        terms_has_condition = any(marker in terms for marker in (
+            "▼承認条件", "■承認条件", "【成果条件】", "成果地点①",
+            "新規アプリインストール後",
+        ))
+        if reward_mode == "StepUp":
+            if not step_points:
+                raise ValueError("incomplete_offer_terms")
+        elif condition_text in {"", "条件達成"} and not terms_has_condition:
+            raise ValueError("incomplete_offer_terms")
+
+        deadline_scope = terms + " " + condition_text
+        if reward_mode == "StepUp":
+            deadline_scope += " " + step_text
+        achievement_deadline_explicit = bool(re.search(
+            r"(?:成果到達期限[:：]?[^0-9]{0,20}[0-9]+\s*日以内|"
+            r"達成期限[:：]?\s*[0-9]+\s*日以内|"
+            r"広告クリックから[^。]{0,100}?[0-9]+\s*日以内|"
+            r"インストール[^。]{0,100}?[0-9]+\s*(?:日|日間)(?:以内)?|"
+            r"[0-9]+\s*日間\s*[（(][0-9]+\s*時間[）)]\s*以内|"
+            r"[0-9]+\s*日以内)",
+            deadline_scope,
+        ))
+
+        verified_points = (
+            sum(step_points) if step_points else current_reward_yen * 10
+        )
+        if verified_points != current_reward_yen * 10:
+            raise ValueError("yen_point_mismatch")
 
         payload = {
             "offerId": offer_id,
-            "name": title,
+            "name": name,
             "platform": platform,
+            "rewardMode": reward_mode,
             "displayedRewardYenCandidates": displayed_yen,
+            "displayedCurrentRewardYen": current_reward_yen,
+            "conditionText": condition_text,
+            "achievementDeadlineExplicit": achievement_deadline_explicit,
             "stepRewardPoints": step_points,
-            "stepTotalPoints": total_points,
+            "stepTotalPoints": sum(step_points) if step_points else None,
+            "verifiedCurrentRewardPoints": verified_points,
             "verifiedCurrentRewardYen": current_reward_yen,
             "rewardUnit": "JPY-equivalent",
             "sourcePointRate": "10pt=1JPY",
-            "headerText": re.sub(r"\s+", " ", header).strip(),
-            "termsText": terms[:12000],
+            "headerText": re.sub(r"\s+", " ", reward_header).strip(),
+            "termsText": terms,
             "publicationAuthorized": False,
         }
         fingerprint = hashlib.sha256(
@@ -2195,13 +2322,12 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
         ).hexdigest()
         return {
             "state": "parsed",
-            "parserVersion": "amefuri-multistep-review-v1",
+            "parserVersion": "amefuri-detail-review-v2",
             **payload,
             "evidenceFingerprint": fingerprint,
         }
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
-
 
 def moppy_offer_id(url):
     p = urlparse(url)

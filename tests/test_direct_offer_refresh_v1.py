@@ -619,11 +619,17 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
         'https://www.rewards.kurashiru.com/categories/3'
     ]
     assert by_id['trima']['scheduled_fetch_enabled'] is False
-    for source_id in ('point_income', 'amefuri', 'nifty_point'):
+    for source_id in ('point_income', 'nifty_point'):
         assert by_id[source_id]['discovery_only'] is True
         assert by_id[source_id]['scheduled_fetch_enabled'] is False
         assert by_id[source_id]['direct_listing_limit'] == 0
         assert by_id[source_id]['direct_detail_limit'] == 0
+    assert by_id['amefuri']['discovery_only'] is True
+    assert by_id['amefuri']['scheduled_fetch_enabled'] is False
+    assert by_id['amefuri']['coverage_first_party_listing_enabled'] is True
+    assert by_id['amefuri']['coverage_scope'] == 'full_paginated_game_listing'
+    assert by_id['amefuri']['direct_listing_limit'] == 26
+    assert by_id['amefuri']['direct_detail_limit'] == 0
     assert by_id['point_town']['discovery_only'] is True
     assert by_id['point_town']['scheduled_fetch_enabled'] is False
     assert by_id['point_town']['coverage_first_party_listing_enabled'] is True
@@ -2894,41 +2900,81 @@ def test_refresh_policy_schedule_label_matches_one_am_jst():
     assert policy['scheduleJST'] == '毎日 01:00 頃（GitHub Actions cron: 16:00 UTC）'
 
 
-def _amefuri_fixture(display_current='4,737'):
+def _amefuri_fixture(display_current='4,737', platform='Android'):
     return f'''
     <html><head>
       <link rel="canonical" href="https://www.amefri.net/detail/id/140198">
     </head><body>
-      <h1>案件詳細：キングショット（多段階）〖Android〗でポイントが貯まる</h1>
+      <h1></h1>
+      <h1>案件詳細：キングショット（多段階）（{platform}）でポイントが貯まる</h1>
       <p>ポイントは10pt＝1円で交換できます。</p>
       <section>
         アメフリ経由で登録すると
         2,890 円
-        {display_current} 円 分のポイントGET！
-        ※下記条件の合計
-      </section>
-      <section>
-        〖多段階〗
-        ステップ1 25日以内に役場レベル8到達 認証済 830 pt
-        ステップ2 25日以内に役場レベル16到達 認証済 900 pt
-        ステップ3 35日以内に一括800円以上1600円未満の課金 認証済 3,880 pt
-        ステップ4 25日以内に役場レベル20到達 認証済 2,910 pt
-        ステップ5 25日以内に役場レベル26到達 認証済 12,950 pt
-        ステップ6 35日以内に一括1600円以上3200円未満の課金 認証済 7,770 pt
-        ステップ7 35日以内に役場レベル30到達 認証済 18,130 pt
+        {display_current} 円 分の ポイントGET！
+        成果条件 条件達成
+        反映目安 反映なし
+        広告提供元 Example
+        {platform}
+        【多段階】
+        クリア条件 獲得pt
+        ステップ 1 25日以内に役場レベル8到達 認証済 830 pt
+        ステップ 2 25日以内に役場レベル16到達 認証済 900 pt
+        ステップ 3 35日以内に一括800円以上1600円未満の課金 認証済 3,880 pt
+        ステップ 4 25日以内に役場レベル20到達 認証済 2,910 pt
+        ステップ 5 25日以内に役場レベル26到達 認証済 12,950 pt
+        ステップ 6 35日以内に一括1600円以上3200円未満の課金 認証済 7,770 pt
+        ステップ 7 35日以内に役場レベル30到達 認証済 18,130 pt
         多段階案件は記載された各ステップの条件を満たした時点で付与されます。
+        公式サイトを確認
       </section>
       <section>
         ポイント獲得条件
+        案件詳細
+        ▼承認条件
         新規アプリインストール後、各ミッションクリアで報酬獲得となります。
-        成果受付期限：広告クリックから35日以内
-        お問い合わせ受付期限：広告クリックから80日以内
+        達成期限：35日以内
+        ▼却下条件
+        過去にインストール済の場合
+        友達紹介のダウン報酬対象外です。
       </section>
     </body></html>
     '''
 
 
-def test_amefuri_multistep_parser_selects_verified_boosted_total():
+def _amefuri_single_fixture(display_current='57', platform='iOS'):
+    return f'''
+    <html><head>
+      <link rel="canonical" href="https://www.amefri.net/detail/id/140783">
+    </head><body>
+      <h1></h1>
+      <h1>案件詳細：弱虫ペダル レゾナンス・ぺダイズム（{platform}）でポイントが貯まる</h1>
+      <p>ポイントは10pt＝1円で交換できます。</p>
+      <section>
+        アメフリ経由で登録すると
+        35 円
+        {display_current} 円 分の ポイントGET！
+        成果条件 新規インストール後、起動
+        反映目安 即時～約3日
+        広告提供元 Example
+        {platform}
+        公式サイトを確認
+      </section>
+      <section>
+        ポイント獲得条件
+        案件詳細
+        ▼承認条件
+        新規インストール後、初回起動
+        広告クリックから30日以内
+        ▼却下条件
+        過去にインストール済の場合
+        友達紹介のダウン報酬対象外です。
+      </section>
+    </body></html>
+    '''
+
+
+def test_amefuri_v2_multistep_parser_selects_verified_boosted_total():
     evidence = direct.inspect_amefuri_offer(
         _amefuri_fixture(),
         'https://www.amefri.net/detail/id/140198',
@@ -2936,15 +2982,37 @@ def test_amefuri_multistep_parser_selects_verified_boosted_total():
         ['キングショット'],
     )
     assert evidence['state'] == 'parsed'
-    assert evidence['parserVersion'] == 'amefuri-multistep-review-v1'
+    assert evidence['parserVersion'] == 'amefuri-detail-review-v2'
+    assert evidence['name'] == 'キングショット（多段階）（Android）'
     assert evidence['platform'] == 'Android'
+    assert evidence['rewardMode'] == 'StepUp'
     assert evidence['stepTotalPoints'] == 47370
+    assert evidence['verifiedCurrentRewardPoints'] == 47370
     assert evidence['verifiedCurrentRewardYen'] == 4737
+    assert evidence['displayedCurrentRewardYen'] == 4737
     assert evidence['displayedRewardYenCandidates'] == [2890, 4737]
     assert evidence['publicationAuthorized'] is False
 
 
-def test_amefuri_multistep_parser_rejects_display_step_mismatch():
+def test_amefuri_v2_single_offer_uses_bounded_current_display():
+    evidence = direct.inspect_amefuri_offer(
+        _amefuri_single_fixture(),
+        'https://www.amefri.net/detail/id/140783',
+        'https://www.amefri.net/detail/id/140783',
+        ['弱虫ペダル レゾナンス・ぺダイズム'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'amefuri-detail-review-v2'
+    assert evidence['platform'] == 'iOS'
+    assert evidence['rewardMode'] == 'Single'
+    assert evidence['stepRewardPoints'] == []
+    assert evidence['stepTotalPoints'] is None
+    assert evidence['verifiedCurrentRewardPoints'] == 570
+    assert evidence['verifiedCurrentRewardYen'] == 57
+    assert evidence['displayedRewardYenCandidates'] == [35, 57]
+
+
+def test_amefuri_v2_multistep_parser_rejects_display_step_mismatch():
     evidence = direct.inspect_amefuri_offer(
         _amefuri_fixture(display_current='4,700'),
         'https://www.amefri.net/detail/id/140198',
@@ -2954,6 +3022,23 @@ def test_amefuri_multistep_parser_rejects_display_step_mismatch():
     assert evidence == {
         'state': 'review_required',
         'reason': 'step_total_not_displayed_current_reward',
+    }
+
+
+def test_amefuri_v2_rejects_ambiguous_platform_in_bounded_header():
+    raw = _amefuri_single_fixture().replace(
+        'iOS\n        公式サイトを確認',
+        'iOS Android\n        公式サイトを確認',
+    )
+    evidence = direct.inspect_amefuri_offer(
+        raw,
+        'https://www.amefri.net/detail/id/140783',
+        'https://www.amefri.net/detail/id/140783',
+        ['弱虫ペダル レゾナンス・ぺダイズム'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'ambiguous_offer_platform',
     }
 
 
@@ -2977,7 +3062,7 @@ def test_amefuri_known_game_detail_review_is_bounded_and_candidate_only():
     assert amefuri['coverage_detail_review_enabled'] is True
     assert amefuri['coverage_detail_review_limit_per_game'] == 3
     assert amefuri['coverage_detail_review_mode'] == 'candidate_only'
-    assert amefuri['coverage_detail_review_parser'] == 'amefuri-multistep-review-v1'
+    assert amefuri['coverage_detail_review_parser'] == 'amefuri-detail-review-v2'
     assert amefuri['scheduled_fetch_enabled'] is False
 
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
@@ -3023,7 +3108,7 @@ def test_existing_game_candidate_queue_is_candidate_only_and_bounded():
             'detectedReward': 4737,
             'platformHint': 'Android',
             'sourceEvidence': {
-                'parserVersion': 'amefuri-multistep-review-v1',
+                'parserVersion': 'amefuri-detail-review-v2',
                 'evidenceFingerprint': 'abc123',
                 'termsText': 'do not persist this long terms block',
             },
@@ -3055,7 +3140,7 @@ def test_existing_game_candidate_queue_is_candidate_only_and_bounded():
     item = payload['items'][0]
     assert item['game'] == 'キングショット'
     assert item['detectedReward'] == 4737
-    assert item['parserVersion'] == 'amefuri-multistep-review-v1'
+    assert item['parserVersion'] == 'amefuri-detail-review-v2'
     assert item['evidenceFingerprint'] == 'abc123'
     assert 'sourceEvidence' not in item
     assert 'termsText' not in item

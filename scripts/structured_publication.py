@@ -97,20 +97,22 @@ REWARD_ONLY_CONTRACTS = {
         "termsMarkers": ("加算条件", "加算時期"),
     },
     "amefuri": {
-        "parser": "amefuri-multistep-review-v1",
+        "parser": "amefuri-detail-review-v2",
         "identity": direct.amefuri_offer_id,
         "rewardField": "verifiedCurrentRewardYen",
         "fingerprintFields": [
-            "offerId", "name", "platform", "displayedRewardYenCandidates",
-            "stepRewardPoints", "stepTotalPoints", "verifiedCurrentRewardYen",
-            "rewardUnit", "sourcePointRate", "headerText", "termsText",
-            "publicationAuthorized",
+            "offerId", "name", "platform", "rewardMode",
+            "displayedRewardYenCandidates", "displayedCurrentRewardYen",
+            "conditionText", "achievementDeadlineExplicit",
+            "stepRewardPoints", "stepTotalPoints", "verifiedCurrentRewardPoints",
+            "verifiedCurrentRewardYen", "rewardUnit", "sourcePointRate",
+            "headerText", "termsText", "publicationAuthorized",
         ],
         "rewardUnit": "JPY-equivalent",
         "sourcePointRate": "10pt=1JPY",
-        "pointField": "stepTotalPoints",
+        "pointField": "verifiedCurrentRewardPoints",
         "pointScale": 10,
-        "termsMarkers": ("ポイント獲得条件", "成果受付期限"),
+        "termsMarkers": ("ポイント獲得条件",),
     },
 }
 
@@ -293,12 +295,29 @@ def reward_only_snapshot(item, sources, checked_at):
             "ambiguous_displayed_reward",
         )
     elif sid == "amefuri":
-        steps = e.get("stepRewardPoints")
-        require(isinstance(steps, list) and len(steps) >= 2, "invalid_steps")
-        require(all(type(value) is int and value >= 0 for value in steps), "invalid_step")
-        require(sum(steps) == e.get("stepTotalPoints"), "step_total_mismatch")
+        require(
+            e.get("displayedCurrentRewardYen") == reward,
+            "displayed_reward_mismatch",
+        )
         displayed = e.get("displayedRewardYenCandidates")
-        require(isinstance(displayed, list) and reward in displayed, "displayed_reward_mismatch")
+        require(
+            isinstance(displayed, list)
+            and displayed
+            and reward == max(displayed),
+            "displayed_reward_mismatch",
+        )
+        steps = e.get("stepRewardPoints")
+        require(isinstance(steps, list), "invalid_steps")
+        require(all(type(value) is int and value > 0 for value in steps), "invalid_step")
+        mode = e.get("rewardMode")
+        if mode == "StepUp":
+            require(len(steps) >= 2, "invalid_steps")
+            require(sum(steps) == e.get("stepTotalPoints"), "step_total_mismatch")
+            require(e.get("stepTotalPoints") == reward * 10, "yen_point_mismatch")
+        elif mode == "Single":
+            require(steps == [] and e.get("stepTotalPoints") is None, "invalid_steps")
+        else:
+            raise Hold("invalid_reward_mode")
     terms = e.get("termsText")
     require(
         isinstance(terms, str) and 0 < len(terms) <= 12000,

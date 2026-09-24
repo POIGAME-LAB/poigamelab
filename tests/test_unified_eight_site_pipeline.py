@@ -92,11 +92,14 @@ def contract_case(source):
         "amefuri": (
             "https://www.amefri.net/detail/id/123",
             {"offerId": "123", "name": "Game iOS", "platform": "iOS",
-             "displayedRewardYenCandidates": [6600], "stepRewardPoints": [30000, 36000],
-             "stepTotalPoints": 66000, "verifiedCurrentRewardYen": 6600,
+             "rewardMode": "StepUp",
+             "displayedRewardYenCandidates": [6600], "displayedCurrentRewardYen": 6600,
+             "conditionText": "条件達成", "achievementDeadlineExplicit": True,
+             "stepRewardPoints": [30000, 36000], "stepTotalPoints": 66000,
+             "verifiedCurrentRewardPoints": 66000, "verifiedCurrentRewardYen": 6600,
              "rewardUnit": "JPY-equivalent", "sourcePointRate": "10pt=1JPY",
              "headerText": "アメフリ経由で登録すると 6600円",
-             "termsText": "ポイント獲得条件 成果受付期限 成果調査受付期限",
+             "termsText": "ポイント獲得条件 ▼承認条件 30日以内 ▼却下条件",
              "publicationAuthorized": False},
         ),
     }
