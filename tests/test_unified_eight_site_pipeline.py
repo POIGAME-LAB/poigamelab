@@ -94,6 +94,7 @@ def contract_case(source):
             {"offerId": "123", "name": "Game iOS", "platform": "iOS",
              "rewardMode": "StepUp",
              "displayedRewardYenCandidates": [6600], "displayedCurrentRewardYen": 6600,
+             "conditionText": "条件達成", "achievementDeadlineExplicit": True,
              "stepRewardPoints": [30000, 36000], "stepTotalPoints": 66000,
              "verifiedCurrentRewardPoints": 66000, "verifiedCurrentRewardYen": 6600,
              "rewardUnit": "JPY-equivalent", "sourcePointRate": "10pt=1JPY",
