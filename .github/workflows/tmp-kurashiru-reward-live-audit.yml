@@ -19,6 +19,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Run focused Kurashiru Reward tests
+        run: |
+          python -m pip install -q pytest
+          python -m py_compile scripts/direct_offer_refresh.py scripts/daily_scan_review.py
+          pytest -q \
+            tests/test_direct_offer_refresh_v1.py::test_kurashiru_reward_offer_identity_is_strict \
+            tests/test_direct_offer_refresh_v1.py::test_kurashiru_reward_parser_binds_coin_pair_rate_terms_and_platform \
+            tests/test_direct_offer_refresh_v1.py::test_kurashiru_reward_parser_preserves_fractional_yen \
+            tests/test_direct_offer_refresh_v1.py::test_kurashiru_reward_parser_fails_closed_on_ambiguous_reward \
+            tests/test_direct_offer_refresh_v1.py::test_kurashiru_listing_uses_h3_title_and_preserves_reward_text \
+            tests/test_direct_offer_refresh_v1.py::test_repository_kurashiru_reward_uses_full_paginated_candidate_only_catalog \
+            tests/test_daily_scan_review.py::test_kurashiru_listing_upper_bound_uses_verified_coin_rate \
+            tests/test_daily_scan_review.py::test_kurashiru_explicit_yen_accepts_fractional_face_value_only_for_reviewed_parser
+
       - name: Inspect current listing and detail markup
         run: |
           python - <<'PY'
