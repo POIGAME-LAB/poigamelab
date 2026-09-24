@@ -712,7 +712,16 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
         if not identity or identity in known_identities or identity in seen:
             continue
 
-        anchor_label = evidence_text(anchor).strip()
+        raw_anchor_label = evidence_text(anchor).strip()
+        anchor_label = raw_anchor_label
+        if str(source.get("id") or "") == "kurashiru_reward":
+            h3_values = [
+                evidence_text(node).strip()
+                for node in anchor.find(tag="h3")
+                if evidence_text(node).strip()
+            ]
+            if len(h3_values) == 1:
+                anchor_label = h3_values[0]
         anchor_label_is_descriptive = (
             bool(anchor_label)
             and anchor_label.casefold() not in generic_labels
@@ -762,6 +771,11 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
             "source": str(source.get("id") or ""),
             "sourceLabel": str(source.get("name") or source.get("id") or ""),
             "titleHint": title_hint,
+            "listingRewardText": (
+                raw_anchor_label[:600]
+                if str(source.get("id") or "") == "kurashiru_reward"
+                else ""
+            ),
             "firstPartyCandidateUrl": absolute,
             "offerIdentity": identity,
             "discoveryEvidence": "first_party_listing",
@@ -1216,6 +1230,7 @@ def offer_identity_key(url, source_id):
         r"/service/item/(\d+)",
         r"/ad/(\d+)/show/",
         r"/reward/(\d+)",
+        r"/ads/(\d+)",
         r"/item/(\d+)",
         r"/detail/id/(\d+)",
     ):
@@ -2786,6 +2801,159 @@ def inspect_powl_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+
+def kurashiru_reward_offer_id(url):
+    """Return the stable numeric id for a reviewed Kurashiru Reward ad URL."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname not in {"www.rewards.kurashiru.com", "rewards.kurashiru.com"}
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+    ):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/ads/([0-9]+)/?", parsed.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    if parse_qs(parsed.query, keep_blank_values=True):
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_kurashiru_reward_offer(raw, requested_url, final_url, aliases):
+    """Build ranking-only evidence from the anonymous Kurashiru Reward ad page.
+
+    The current first-party page exposes one promoted reward pair (old > current)
+    in coins and explicitly states 100 coins = 1 yen equivalent. Exchange fees
+    are excluded from face-value ranking and publication remains disabled.
+    """
+    try:
+        offer_id = kurashiru_reward_offer_id(requested_url)
+        if kurashiru_reward_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if kurashiru_reward_offer_id(canonical) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        h1_values = [
+            evidence_text(node).strip()
+            for node in doc.find(tag="h1")
+            if evidence_text(node).strip()
+        ]
+        if len(h1_values) != 1:
+            raise ValueError("missing_or_ambiguous_offer_title")
+        name = h1_values[0]
+        if not target_present(name, aliases):
+            name_key = normalized_game_title_key(name)
+            matched = False
+            for alias in aliases:
+                alias_key = normalized_game_title_key(html.unescape(str(alias or "")))
+                if len(name_key) >= 4 and (
+                    alias_key.startswith(name_key) or name_key.startswith(alias_key)
+                ):
+                    matched = True
+                    break
+            if not matched:
+                raise ValueError("offer_title_mismatch")
+
+        text = visible_text(raw)
+        reward_pairs = {
+            (int(old.replace(",", "")), int(current.replace(",", "")))
+            for old, current in re.findall(
+                r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)"
+                r"\s*>\s*"
+                r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)"
+                r"\s*コイン還元",
+                text,
+            )
+        }
+        if len(reward_pairs) != 1:
+            raise ValueError("missing_or_ambiguous_displayed_reward")
+        previous_coins, reward_coins = next(iter(reward_pairs))
+        if not (0 < previous_coins <= reward_coins <= 20_000_000):
+            raise ValueError("invalid_reward")
+
+        if not re.search(r"100\s*コイン\s*=\s*1\s*円\s*相当", text):
+            raise ValueError("missing_current_coin_rate")
+
+        reward_yen = reward_coins / 100
+        if reward_yen.is_integer():
+            reward_yen = int(reward_yen)
+        else:
+            reward_yen = round(reward_yen, 2)
+
+        reward_marker = re.search(
+            r"コイン獲得条件\s+(.{2,500}?)\s+で\s+(?:MAX\s+)?"
+            r"[1-9][0-9,]*\s*>\s*[1-9][0-9,]*\s*コイン還元",
+            text,
+        )
+        condition = re.sub(r"\s+", " ", reward_marker.group(1)).strip() if reward_marker else ""
+        if len(condition) < 2:
+            raise ValueError("missing_offer_condition")
+
+        reward_pos = text.find("コイン獲得条件")
+        terms_start = text.find("注意事項", max(0, reward_pos))
+        if terms_start < 0:
+            raise ValueError("incomplete_offer_terms")
+        terms = re.sub(r"\s+", " ", text[terms_start:]).strip()
+        if len(terms) < 180:
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "成果受付期限", "承認条件", "成果条件", "ポイント付与条件"
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "却下条件", "成果対象外", "ポイント付与対象外", "報酬付与対象外"
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "広告主", "スポンサーサイト", "成果調査", "お問い合わせ", "問合せ"
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        platform = platform_hint(" ".join([name, *[str(alias or "") for alias in aliases]]))
+        if platform not in {"iOS", "Android"}:
+            platform = "unknown"
+
+        payload = {
+            "offerId": offer_id,
+            "name": name,
+            "platform": platform,
+            "previousRewardCoins": previous_coins,
+            "verifiedCurrentRewardCoins": reward_coins,
+            "verifiedCurrentRewardYen": reward_yen,
+            "rewardUnit": "Kurashiru-coin",
+            "sourcePointRate": "100coin=1JPY",
+            "conditionText": condition,
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "kurashiru-reward-detail-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
 def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
     structured_parsers = {
@@ -2799,6 +2967,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "moppy": inspect_moppy_offer,
         "gendama": inspect_gendama_offer,
         "powl": inspect_powl_offer,
+        "kurashiru_reward": inspect_kurashiru_reward_offer,
     }
     if source.get("id") in structured_parsers:
         if source.get("id") == "hapitas":
