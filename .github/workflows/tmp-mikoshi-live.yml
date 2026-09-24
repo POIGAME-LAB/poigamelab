@@ -123,5 +123,26 @@ jobs:
               except Exception as exc:
                   sec.append({"url":su,"error":type(exc).__name__+":"+str(exc)[:160]})
           out["secondaryBundles"]=sec
+          deps=[
+              "https://web.mikoshi.jp/assets/http-common-6469cf1c.js",
+              "https://web.mikoshi.jp/assets/SkyflagApiService-9fc7a2bd.js",
+          ]
+          depout=[]
+          for su in deps:
+              try:
+                  req=Request(su,headers={"User-Agent":UA})
+                  with urlopen(req,timeout=20) as r:
+                      raw=r.read(3_000_000).decode("utf-8","replace")
+                  strings=sorted(set(re.findall(r'["\\\']([^"\\\']{2,500})["\\\']',raw)))
+                  depout.append({
+                      "url":su,"bytes":len(raw),
+                      "interestingStrings":[x for x in strings if any(k in x.lower() for k in (
+                          "http","api","baseurl","game","offer","ad","point","reward","skyflag","shopping"
+                      ))][:300],
+                      "rawExcerpt":raw[:12000],
+                  })
+              except Exception as exc:
+                  depout.append({"url":su,"error":type(exc).__name__+":"+str(exc)[:180]})
+          out["dependencyBundles"]=depout
           print("MIKOSHI_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
