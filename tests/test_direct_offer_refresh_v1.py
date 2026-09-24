@@ -2171,12 +2171,21 @@ def moppy_markup():
 <main>
 <h1>テストゲーム（StepUp）〖Android〗</h1>
 <div class="m-item__info"><p class="m-item__point flex--end"><em class="a-item__point--now">600P</em></p></div>
-<section>ポイント獲得条件</section>
-<div>■獲得条件 新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。
+<section class="m-section--main m-item__section m-tabslider js-floating-trigger">
+<div>
+▼ポイント獲得条件
+新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。
 〖成果受付期間〗インストール後、45日以内
 各成果地点は「POINT GET」をタップ後に遷移するページでご確認ください。
-■注意事項 クリックされた時点で表示されていた条件が適用されます。</div>
-<h3>広告概要</h3>
+▼却下条件 過去に同じアプリを利用した場合はポイント対象外です。
+▼注意事項 クリックされた時点で表示されていた条件が適用されます。
+▼ポイントに関するお問い合わせに関して
+成果条件達成後にポイントが未付与の場合、本サイトのお問い合わせフォームよりご連絡ください。
+広告主へ直接問い合わせすることは禁止されています。
+広告概要
+テスト広告の説明
+</div>
+</section>
 </main></body></html>'''
 
 
@@ -2191,12 +2200,44 @@ def test_moppy_review_parser_binds_identity_scoped_reward_and_terms(moppy_markup
     assert evidence['platform'] == 'Android'
     assert evidence['displayedRewardPoints'] == 600
     assert evidence['displayedRewardYen'] == 600
-    assert evidence['rewardUnit'] == 'P'
-    assert evidence['baseYenPerPoint'] == 1
+    assert evidence['rewardUnit'] == 'Moppy-P'
+    assert evidence['sourcePointRate'] == '1P=1JPY'
+    assert evidence['verifiedCurrentRewardYen'] == 600
     assert evidence['downstreamTermsRequired'] is True
-    assert evidence['parserVersion'] == 'moppy-detail-review-v2'
+    assert evidence['publicationAuthorized'] is False
+    assert evidence['parserVersion'] == 'moppy-detail-review-v3'
     assert '成果受付期間' in evidence['termsText']
     assert len(evidence['evidenceFingerprint']) == 64
+
+
+def test_moppy_v3_complete_first_party_terms_do_not_require_downstream(moppy_markup):
+    raw = moppy_markup.replace(
+        '各成果地点は「POINT GET」をタップ後に遷移するページでご確認ください。',
+        '達成条件と却下条件はこのページにすべて記載されています。'
+    )
+    evidence = parse_moppy(raw)
+    assert evidence['state'] == 'parsed'
+    assert evidence['downstreamTermsRequired'] is False
+    assert evidence['verifiedCurrentRewardYen'] == 600
+
+
+def test_moppy_v3_accepts_current_category_card_suffix_alias(moppy_markup):
+    alias = 'テストゲーム（StepUp）〖Android〗 新規インストール後レベル20達成 600P'
+    evidence = direct.inspect_moppy_offer(
+        moppy_markup, MOPPY_CATEGORY_URL, MOPPY_CATEGORY_URL, [alias]
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['offerId'] == '12345'
+
+
+def test_moppy_v3_rejects_missing_bounded_terms_section(moppy_markup):
+    raw = moppy_markup.replace(
+        'class="m-section--main m-item__section m-tabslider js-floating-trigger"',
+        'class="unreviewed-layout"'
+    )
+    evidence = parse_moppy(raw)
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == 'incomplete_or_ambiguous_offer_terms'
 
 
 def test_moppy_ignores_unscoped_navigation_reward(moppy_markup):
@@ -2306,7 +2347,7 @@ def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_mark
             'firstPartyLabels':['アプリドライブ','AppDriver'],'retrievalMode':'presence_only',
             'followExternalLinks':False,'persist':'provider_domain_only'}]}))
     direct.write_published([])
-    shell=moppy_markup.replace('■注意事項','アプリドライブ ■注意事項')
+    shell=moppy_markup.replace('▼注意事項','アプリドライブ ▼注意事項')
     monkeypatch.setattr(direct,'fetch_first_party',lambda url,source:(shell,url))
     assert direct.main()==0
     items=json.loads(direct.REVIEW.read_text())['items']
