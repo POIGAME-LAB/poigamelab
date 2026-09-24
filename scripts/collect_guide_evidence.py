@@ -35,22 +35,34 @@ def load_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def post_json(url, payload, timeout=45):
+def post_json(url, payload, timeout=45, *, headers=None):
     data = json.dumps(payload).encode("utf-8")
-    req = Request(url, data=data, headers={"Content-Type": "application/json", "User-Agent": "POIGAME-LAB/1.0"})
+    request_headers = {
+        "Content-Type": "application/json",
+        "User-Agent": "POIGAME-LAB/1.0",
+    }
+    for key, value in (headers or {}).items():
+        if isinstance(key, str) and isinstance(value, str):
+            request_headers[key] = value
+    req = Request(url, data=data, headers=request_headers)
     with urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode("utf-8", errors="replace"))
 
 
 def tavily_search(query, api_key, max_results=6):
-    return post_json("https://api.tavily.com/search", {
-        "api_key": api_key,
-        "query": query,
-        "search_depth": "basic",
-        "max_results": max_results,
-        "include_answer": False,
-        "include_raw_content": False,
-    })
+    if not isinstance(api_key, str) or not api_key.strip():
+        raise RuntimeError("TAVILY_API_KEY unavailable")
+    return post_json(
+        "https://api.tavily.com/search",
+        {
+            "query": query,
+            "search_depth": "basic",
+            "max_results": max_results,
+            "include_answer": False,
+            "include_raw_content": False,
+        },
+        headers={"Authorization": f"Bearer {api_key.strip()}"},
+    )
 
 
 def direct_fetch(url, timeout=25):
