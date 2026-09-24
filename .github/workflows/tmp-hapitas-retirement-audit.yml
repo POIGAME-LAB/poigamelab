@@ -1,0 +1,53 @@
+name: Temporary Hapitas retirement audit
+
+on:
+  push:
+    branches:
+      - audit/hapitas-retirement-20260924
+    paths:
+      - ".github/workflows/tmp-hapitas-retirement-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit published Hapitas offer availability
+        run: |
+          python - <<'PY'
+          import csv,json,sys
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          source=next(x for x in cfg["sources"] if x["id"]=="hapitas")
+          rows=list(csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")))
+          rows=[r for r in rows if r.get("site")=="hapitas"]
+
+          out=[]
+          for row in rows:
+              url=row["url"]
+              try:
+                  parsed=direct.inspect_detail(url,source,[row["game"]])
+                  ev=parsed.get("sourceEvidence") or {}
+                  out.append({
+                      "offerKey":row["offerKey"],"game":row["game"],
+                      "url":url,"state":ev.get("state"),"reason":ev.get("reason"),
+                      "offerId":ev.get("offerId"),"name":ev.get("name"),
+                      "platform":ev.get("platform"),"parserVersion":ev.get("parserVersion"),
+                      "unavailableMarker":ev.get("unavailableMarker"),
+                  })
+              except Exception as exc:
+                  out.append({
+                      "offerKey":row["offerKey"],"game":row["game"],"url":url,
+                      "state":"fetch_error","reason":direct.summarize_fetch_error(exc)
+                  })
+          print("HAPITAS_RETIREMENT_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
+          PY
