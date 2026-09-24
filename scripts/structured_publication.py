@@ -103,6 +103,7 @@ REWARD_ONLY_CONTRACTS = {
         "fingerprintFields": [
             "offerId", "name", "platform", "rewardMode",
             "displayedRewardYenCandidates", "displayedCurrentRewardYen",
+            "conditionText", "achievementDeadlineExplicit",
             "stepRewardPoints", "stepTotalPoints", "verifiedCurrentRewardPoints",
             "verifiedCurrentRewardYen", "rewardUnit", "sourcePointRate",
             "headerText", "termsText", "publicationAuthorized",
