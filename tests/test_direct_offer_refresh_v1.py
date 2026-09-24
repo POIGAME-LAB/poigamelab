@@ -2430,7 +2430,7 @@ def test_repository_ended_coincome_township_and_kinoko_are_not_published_or_targ
     sources = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))['sources']
     coincome = next(source for source in sources if source['id'] == 'coincome')
     assert coincome['direct_listing_urls'] == ['https://cimcome.jp/campaigns?_category_id=21']
-    assert coincome['scheduled_known_detail_fetch_enabled'] is False
+    assert coincome['scheduled_known_detail_fetch_enabled'] is True
 
 
 def test_repository_evertale_stale_hapitas_195_is_not_published():
