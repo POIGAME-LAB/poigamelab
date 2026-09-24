@@ -1,0 +1,104 @@
+name: Temporary Trima live audit
+
+on:
+  push:
+    branches:
+      - audit/trima-live-20260925
+    paths:
+      - ".github/workflows/tmp-trima-live.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect Trima public web surfaces and bundles
+        run: |
+          python - <<'PY'
+          import json,re
+          from html import unescape
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin,urlparse
+          from urllib.request import Request,urlopen
+
+          UA="Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1"
+          urls=[
+              "https://www.trip-mile.com/",
+              "https://www.trip-mile.com/robots.txt",
+              "https://www.trip-mile.com/sitemap.xml",
+          ]
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.links=[]; self.scripts=[]; self._href=None; self._txt=[]
+              def handle_starttag(self,tag,attrs):
+                  a=dict(attrs)
+                  if tag=="a":
+                      self._href=a.get("href"); self._txt=[]
+                  elif tag=="script" and a.get("src"):
+                      self.scripts.append(a.get("src"))
+              def handle_data(self,data):
+                  if self._href is not None:self._txt.append(data)
+              def handle_endtag(self,tag):
+                  if tag=="a" and self._href is not None:
+                      self.links.append((self._href,re.sub(r"\s+"," "," ".join(self._txt)).strip()))
+                      self._href=None; self._txt=[]
+
+          out={"pages":[],"bundles":[]}
+          script_urls=[]
+          for url in urls:
+              try:
+                  req=Request(url,headers={"User-Agent":UA,"Accept-Language":"ja,en-US;q=0.8,en;q=0.5"})
+                  with urlopen(req,timeout=20) as r:
+                      data=r.read(3_000_000); final=r.geturl();ctype=r.headers.get("Content-Type")
+                  raw=data.decode("utf-8","replace")
+                  p=P();p.feed(raw)
+                  script_urls += [urljoin(final,s) for s in p.scripts]
+                  visible=re.sub(r"(?is)<(?:script|style|noscript|svg)\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
+                  visible=re.sub(r"(?s)<[^>]+>"," ",visible)
+                  visible=re.sub(r"\s+"," ",unescape(visible)).strip()
+                  paths=sorted(set(re.findall(r'(?:https?://[^"\'<> ]+|/[A-Za-z0-9_./?=&%-]{3,})',raw)))
+                  out["pages"].append({
+                      "url":url,"final":final,"bytes":len(data),"contentType":ctype,
+                      "title":(re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0][:300],
+                      "links":[{"url":urljoin(final,h),"text":t[:180]} for h,t in p.links[:160]],
+                      "scripts":[urljoin(final,s) for s in p.scripts[:80]],
+                      "keywords":{k:(k in visible) for k in ["ゲーム","アプリ","ミッション","ポイント","マイル","広告","案件"]},
+                      "visibleExcerpt":visible[:3000],
+                      "interestingPaths":[x for x in paths if any(k in x.lower() for k in (
+                          "api","mission","game","app","offer","reward","campaign","point","mile","ad"
+                      ))][:160],
+                  })
+              except Exception as exc:
+                  out["pages"].append({"url":url,"error":type(exc).__name__+":"+str(exc)[:220]})
+
+          seen=set()
+          for su in script_urls:
+              if su in seen or len(out["bundles"])>=40: continue
+              seen.add(su)
+              host=(urlparse(su).hostname or "").lower()
+              if not host.endswith("trip-mile.com"): continue
+              try:
+                  req=Request(su,headers={"User-Agent":UA})
+                  with urlopen(req,timeout=20) as r:
+                      raw=r.read(4_000_000).decode("utf-8","replace")
+                  strings=sorted(set(re.findall(r'["\\\']([^"\\\']{3,400})["\\\']',raw)))
+                  interesting=[x for x in strings if any(k in x.lower() for k in (
+                      "http","api","graphql","game","app","mission","offer","reward",
+                      "campaign","point","mile","advert"
+                  ))]
+                  out["bundles"].append({
+                      "url":su,"bytes":len(raw),"interestingStrings":interesting[:260],
+                      "fetchCalls":re.findall(r'fetch\\(([^)]{1,300})\\)',raw)[:80],
+                  })
+              except Exception as exc:
+                  out["bundles"].append({"url":su,"error":type(exc).__name__+":"+str(exc)[:180]})
+
+          print("TRIMA_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
+          PY
