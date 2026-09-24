@@ -1,12 +1,297 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-24T02:36:50+00:00",
+  "checkedAt": "2026-09-24T04:37:15+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
-  "rankingComplete": false,
-  "holdReason": "ranking_group_budget_reached",
-  "count": 0,
-  "items": []
+  "rankingComplete": true,
+  "holdReason": null,
+  "count": 5,
+  "items": [
+    {
+      "rank": 1,
+      "game": "モーマンタイム",
+      "maxObservedRewardYen": 11255,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159912&track_ref=category",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202455&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202453&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/9971",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 11255
+        }
+      ],
+      "researchQueries": {
+        "web": "\"モーマンタイム\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"モーマンタイム\" ポイ活 日目",
+        "youtube": "site:youtube.com \"モーマンタイム\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"モーマンタイム\" ポイ活",
+        "pointSites": "\"モーマンタイム\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 2,
+      "game": "Survival Defense:Zombie",
+      "maxObservedRewardYen": 4875,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206129&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205722&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205207&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/10093",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 4875
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Survival Defense:Zombie\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Survival Defense:Zombie\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Survival Defense:Zombie\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Survival Defense:Zombie\" ポイ活",
+        "pointSites": "\"Survival Defense:Zombie\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 3,
+      "game": "アニマルタイル3マッチ",
+      "maxObservedRewardYen": 3195,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206465&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206464&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206096&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206094&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/10167",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 3195
+        }
+      ],
+      "researchQueries": {
+        "web": "\"アニマルタイル3マッチ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"アニマルタイル3マッチ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"アニマルタイル3マッチ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"アニマルタイル3マッチ\" ポイ活",
+        "pointSites": "\"アニマルタイル3マッチ\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 4,
+      "game": "Yarnation",
+      "maxObservedRewardYen": 3185,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204497&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204496&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204306&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204304&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/9776",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 3185
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Yarnation\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Yarnation\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Yarnation\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Yarnation\" ポイ活",
+        "pointSites": "\"Yarnation\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 5,
+      "game": "Alice's Mergeland",
+      "maxObservedRewardYen": 2280,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206993&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/10341",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 2280
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Alice's Mergeland\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Alice's Mergeland\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Alice's Mergeland\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Alice's Mergeland\" ポイ活",
+        "pointSites": "\"Alice's Mergeland\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    }
+  ]
 }
