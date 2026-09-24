@@ -26,6 +26,7 @@ jobs:
           import csv,json,sys
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
+          import structured_publication as p
           sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
           source=sources["hapitas"]
           targets={x["game"]:x for x in json.load(open("config/game_targets.json",encoding="utf-8"))["games"]}
@@ -51,10 +52,23 @@ jobs:
                   ev.get("state")=="parsed"
                   and ev.get("parserVersion")=="hapitas-detail-review-v2"
                   and ev.get("platform")==row["platform"]
-                  and ev.get("platformProvenance")=="reviewed_offer_registry"
+                  and ev.get("platformProvenance") in {"reviewed_offer_registry","source_title"}
                   and ev.get("publicationAuthorized") is True
                   and ev.get("verifiedCurrentRewardYen")==int(row["reward"])
               )
+              if ok:
+                  checked_at="2026-09-24T02:30:00+00:00"
+                  snap=p.reward_only_snapshot(
+                      {"source":"hapitas","url":row["url"],"checkedAt":checked_at,
+                       "sourceEvidence":ev},
+                      {"hapitas":source},
+                      checked_at,
+                  )
+                  ok = (
+                      snap["reward"]==row["reward"]
+                      and snap["platform"]==row["platform"]
+                      and snap["verified"]=="true"
+                  )
               if not ok:
                   failures.append(result)
           ended={
