@@ -1,3 +1,4 @@
+import json
 import importlib.util
 from pathlib import Path
 
@@ -19,6 +20,26 @@ def fetch_map(mapping, calls):
   if isinstance(v,Exception): raise v
   return v,{"httpStatus":200}
  return f
+
+def test_tavily_search_uses_bearer_header_not_body_key(monkeypatch):
+ class Response:
+  def __enter__(self): return self
+  def __exit__(self,*args): return False
+  def read(self): return b'{"results": []}'
+ captured={}
+ def fake_urlopen(req,timeout=45):
+  captured["authorization"]=req.get_header("Authorization")
+  captured["body"]=json.loads(req.data.decode("utf-8"))
+  captured["timeout"]=timeout
+  return Response()
+ monkeypatch.setattr(guide,"urlopen",fake_urlopen)
+ result=guide.tavily_search("Game A", "tvly-secret", max_results=2)
+ assert result == {"results":[]}
+ assert captured["authorization"] == "Bearer tvly-secret"
+ assert "api_key" not in captured["body"]
+ assert captured["body"]["query"] == "Game A"
+ assert captured["body"]["max_results"] == 2
+
 
 def test_search_snippet_is_never_evidence_when_page_lacks_target():
  def search(q,key,n): return {"results":[{"url":"https://guide.example/a","title":"Game A 攻略","content":"Game A 最短"}]}
