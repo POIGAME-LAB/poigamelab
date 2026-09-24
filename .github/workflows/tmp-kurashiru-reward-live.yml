@@ -204,6 +204,22 @@ jobs:
                   "hasConditions":all(k in visible for k in ("成果","注意事項","お問い合わせ")),
                   "platformMarkers":{"iOS":"iOS" in visible,"Android":"Android" in visible},
               })
+          # Inspect the exact DOM structure of the first category offer cards.
+          req=Request("https://www.rewards.kurashiru.com/categories/3",headers={
+              "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+              "Accept":"text/html,application/xhtml+xml","Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+          })
+          with urlopen(req,timeout=20) as r:
+              category_raw=r.read(2_000_000).decode("utf-8","replace")
+          card_html=[]
+          for oid in ("19125","19121","19120","19108"):
+              m=re.search(r'(?is)<a([^>]*href=["\\\']/ads/'+oid+r'["\\\'][^>]*)>(.*?)</a>',category_raw)
+              card_html.append({
+                  "id":oid,
+                  "attrs":re.sub(r"\\s+"," ",m.group(1))[:600] if m else "",
+                  "inner":m.group(2)[:5000] if m else "",
+              })
+          print("KURASHIRU_CARDS",json.dumps(card_html,ensure_ascii=False,sort_keys=True))
           print("KURASHIRU_CONCISE",json.dumps(concise,ensure_ascii=False,sort_keys=True))
           print("KURASHIRU_REWARD_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
