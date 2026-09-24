@@ -199,5 +199,14 @@ jobs:
               out["gamesBundleRaw"]=games_raw[:12000]
           except Exception as exc:
               out["gamesBundleRaw"]="ERROR:"+type(exc).__name__
+          for name in ("GameCard-ae15a47c.js","OfferDetail-a56cc006.js"):
+              try:
+                  su="https://web.mikoshi.jp/assets/"+name
+                  req=Request(su,headers={"User-Agent":UA})
+                  with urlopen(req,timeout=20) as r:
+                      raw=r.read(200000).decode("utf-8","replace")
+                  out[name+"Raw"]=raw[:30000]
+              except Exception as exc:
+                  out[name+"Raw"]="ERROR:"+type(exc).__name__
           print("MIKOSHI_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
