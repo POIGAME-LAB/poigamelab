@@ -1,0 +1,71 @@
+name: Temporary Powl bounded live rehearsal
+
+on:
+  push:
+    branches:
+      - audit/powl-bounded-live-rehearsal-20260924
+
+permissions:
+  contents: read
+
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore high-growth state from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/" "${tmp}/"             --recursive --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          for name in             new_game_candidate_queue.json             new_game_candidate_history.json             existing_game_candidate_queue.json             comparison_candidate_queue.json             comparison_review_queue.json             comparison_refresh_status.json
+          do
+            if [ -f "${tmp}/${name}.gz" ]; then
+              gzip -dc "${tmp}/${name}.gz" > "data/${name}"
+            fi
+          done
+
+      - name: Run exact daily collector and bounded ranking
+        run: python scripts/daily_scan_review.py
+
+      - name: Print bounded ranking summary
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open("data/daily_scan_review.json",encoding="utf-8"))
+          ranked=sorted(
+            [r for r in d.get("results",[]) if r.get("candidateEligible") and r.get("maxObservedRewardYen") is not None],
+            key=lambda x:(-x["maxObservedRewardYen"],x["game"])
+          )
+          print("POWL_REHEARSAL",json.dumps({
+            "rankingComplete":d.get("rankingComplete"),
+            "rankingHoldReasons":d.get("rankingHoldReasons"),
+            "listingGroups":d.get("listingGroups"),
+            "rankingEligibleGroups":d.get("rankingEligibleGroups"),
+            "reviewedGroups":d.get("reviewedGroups"),
+            "detailInspectionCalls":d.get("detailInspectionCalls"),
+            "listingUpperBoundUnknownGroups":d.get("listingUpperBoundUnknownGroups"),
+            "prefilterSkippedGroups":d.get("prefilterSkippedGroups"),
+            "detailLimitReached":d.get("detailLimitReached"),
+            "groupLimitReached":d.get("groupLimitReached"),
+            "incompleteDiscoverySources":d.get("incompleteDiscoverySources"),
+            "topFiveReviewCandidates":d.get("topFiveReviewCandidates"),
+            "topFive":[
+              {"game":x.get("game"),"yen":x.get("maxObservedRewardYen"),
+               "confirmed":x.get("confirmedSourceCount"),
+               "verifiedRewardSources":x.get("verifiedRewardSourceCount")}
+              for x in ranked[:5]
+            ]
+          },ensure_ascii=False,sort_keys=True))
+          PY
