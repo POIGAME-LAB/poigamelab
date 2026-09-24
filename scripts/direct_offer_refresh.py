@@ -1880,6 +1880,11 @@ def inspect_pointtown_offer(raw, requested_url, final_url, aliases):
             if (pos := header.find(token)) >= 0
         ]
         reward_region = header[:min(boundary_positions)] if boundary_positions else header[:1200]
+        if re.search(
+            r"で\s*[0-9][0-9,]*\s+[0-9][0-9,]*(?:\s|$)",
+            reward_region,
+        ):
+            raise ValueError("missing_or_ambiguous_displayed_reward")
         reward_matches = re.findall(
             r"で\s*([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*(?![%0-9])",
             reward_region,
