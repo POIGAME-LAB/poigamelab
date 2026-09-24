@@ -34,7 +34,10 @@ jobs:
           for a in doc.find(tag="a"):
               href=a.attrs.get("href","")
               absolute=urljoin(final,href)
-              oid=d.hapitas_offer_id(absolute)
+              try:
+                  oid=d.hapitas_offer_id(absolute)
+              except ValueError:
+                  continue
               if oid not in ids:
                   continue
               found.add(oid)
