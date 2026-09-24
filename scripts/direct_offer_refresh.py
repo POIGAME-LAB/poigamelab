@@ -2437,8 +2437,11 @@ def moppy_offer_id(url):
             or p.username is not None or p.password is not None or p.port not in {None, 443}
             or p.path != "/ad/detail.php"):
         raise ValueError("unexpected_offer_url")
-    query = parse_qs(p.query, keep_blank_values=False)
-    if any(key not in {"site_id", "s_id"} for key in query):
+    query = parse_qs(p.query, keep_blank_values=True)
+    if any(key not in {"site_id", "s_id", "track_ref"} for key in query):
+        raise ValueError("ambiguous_offer_identity")
+    track_ref = query.get("track_ref", [])
+    if track_ref and (len(track_ref) != 1 or track_ref[0] != "category"):
         raise ValueError("ambiguous_offer_identity")
     values = []
     for key in ("site_id", "s_id"):
@@ -2449,65 +2452,160 @@ def moppy_offer_id(url):
 
 
 def inspect_moppy_offer(raw, requested_url, final_url, aliases):
-    """Parse first-party Moppy offer evidence conservatively for review."""
+    """Parse current first-party Moppy detail evidence for ranking/review.
+
+    Moppy's app catalog appends the reviewed track_ref=category navigation
+    parameter to stable s_id detail identities. The current detail page exposes
+    one dedicated current-point element plus one bounded terms section. StepUp
+    offers that delegate tier conditions to POINT GET remain non-ranking.
+    """
     try:
         offer_id = moppy_offer_id(requested_url)
         if moppy_offer_id(final_url) != offer_id:
             raise ValueError("redirected_to_different_offer")
-        doc = EvidenceHTML(raw).root
-        title = evidence_text(one(doc.find(tag="h1")))
-        if not target_present(title, aliases):
-            raise ValueError("offer_title_mismatch")
 
-        # Platform is authoritative only when the offer title itself scopes it.
+        doc = EvidenceHTML(raw).root
+        titles = [evidence_text(node) for node in doc.find(tag="h1")
+                  if evidence_text(node)]
+        titles = list(dict.fromkeys(titles))
+        if len(titles) != 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        title = titles[0]
+
+        if not target_present(title, aliases):
+            title_key = normalized_game_title_key(title)
+            matched = False
+            for alias in aliases:
+                alias_key = normalized_game_title_key(alias)
+                # Current category cards can append condition/reward text after
+                # the exact detail title. Accept only that one-way prefix shape.
+                if len(title_key) >= 4 and alias_key.startswith(title_key):
+                    matched = True
+                    break
+            if not matched:
+                raise ValueError("offer_title_mismatch")
+
         title_platforms = sorted(set(re.findall(r"(iOS|Android)", title, re.I)))
         norm = {"ios": "iOS", "android": "Android"}
         platform_values = sorted({norm[x.casefold()] for x in title_platforms})
         platform = platform_values[0] if len(platform_values) == 1 else "unspecified"
 
-        # Reward must come from the offer's dedicated current-point element,
-        # never from surrounding navigation, campaigns, or explanatory text.
-        point_nodes = doc.find(tag="em", cls="a-item__point--now")
+        # Reward must come from the dedicated current-point element only.
         point_values = []
-        for node in point_nodes:
+        for node in doc.find(tag="em", cls="a-item__point--now"):
             value = evidence_text(node)
-            m = re.fullmatch(r"\s*([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*P\s*", value)
-            if m:
-                point_values.append(int(m.group(1).replace(",", "")))
+            match = re.fullmatch(
+                r"\s*([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*P\s*",
+                value,
+            )
+            if match:
+                point_values.append(int(match.group(1).replace(",", "")))
         unique_rewards = sorted(set(point_values))
         if len(unique_rewards) != 1:
             raise ValueError("missing_or_ambiguous_current_reward")
         reward_points = unique_rewards[0]
+        if not 0 < reward_points <= 5_000_000:
+            raise ValueError("invalid_reward")
 
-        text = visible_text(raw)
-        terms_start = text.find("■獲得条件")
-        if terms_start < 0:
-            # Some current app offers expose the same section without the square marker.
-            terms_start = text.find("ポイント獲得条件")
-        if terms_start < 0:
+        # The reviewed current app page keeps the actual campaign rules inside
+        # one tabbed main section. Binding to this container avoids generic
+        # Moppy help text elsewhere on the page.
+        terms_sections = []
+        for node in doc.find(tag="section"):
+            classes = set(node.attrs.get("class", "").split())
+            if not {"m-section--main", "m-tabslider"} <= classes:
+                continue
+            value = evidence_text(node)
+            has_condition = any(marker in value for marker in (
+                "▼ポイント獲得条件", "■ポイント獲得条件", "■獲得条件",
+                "【獲得条件】", "【獲得対象】", "成果受付期限",
+                "新規アプリインストール後", "新規インストール後",
+            ))
+            if (
+                has_condition
+                and "広告概要" in value
+                and any(marker in value for marker in (
+                    "却下条件", "注意事項", "対象外", "ご注意点"
+                ))
+                and any(marker in value for marker in (
+                    "お問い合わせ", "お問合せ", "広告主", "スポンサーサイト",
+                    "成果調査受付期限",
+                ))
+            ):
+                terms_sections.append(value)
+        unique_sections = list(dict.fromkeys(terms_sections))
+        if len(unique_sections) != 1:
+            raise ValueError("incomplete_or_ambiguous_offer_terms")
+
+        section_text = unique_sections[0]
+        terms_end = section_text.find("広告概要")
+        starts = [
+            section_text.find(marker)
+            for marker in (
+                "▼ポイント獲得条件",
+                "■ポイント獲得条件",
+                "■獲得条件",
+                "【獲得条件】",
+                "【獲得対象】",
+            )
+        ]
+        starts = [pos for pos in starts if 0 <= pos < terms_end]
+        if starts:
+            terms_start = min(starts)
+        else:
+            pr_marker = section_text.find("[PR]")
+            strong_unheaded = (
+                any(marker in section_text[:terms_end] for marker in (
+                    "成果受付期限", "成果調査受付期限"
+                ))
+                and any(marker in section_text[:terms_end] for marker in (
+                    "新規アプリインストール後", "新規インストール後",
+                    "成果となります", "報酬獲得となります",
+                ))
+            )
+            if pr_marker >= 0 and strong_unheaded:
+                terms_start = pr_marker
+            else:
+                raise ValueError("incomplete_offer_terms")
+        if terms_end <= terms_start:
             raise ValueError("incomplete_offer_terms")
-        terms_end_candidates = [p for marker in ("広告概要", "よくある質問", "人気クチコミ")
-                                if (p := text.find(marker, terms_start + 1)) > terms_start]
-        terms_end = min(terms_end_candidates) if terms_end_candidates else min(len(text), terms_start + 12000)
-        terms = text[terms_start:terms_end].strip()
-        if len(terms) < 40:
+        terms = re.sub(r"\s+", " ", section_text[terms_start:terms_end]).strip()
+        if len(terms) < 120:
             raise ValueError("incomplete_offer_terms")
+
+        if not any(marker in terms for marker in (
+            "却下条件", "注意事項", "成果対象外", "獲得対象外", "ポイント対象外",
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "お問い合わせ", "お問合せ", "広告主", "スポンサーサイト",
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        downstream_required = bool(re.search(r"POINT\s*GET", terms, re.I))
 
         payload = {
             "offerId": offer_id,
             "name": title,
             "platform": platform,
             "displayedRewardPoints": reward_points,
-            "rewardUnit": "P",
-            "baseYenPerPoint": 1,
             "displayedRewardYen": reward_points,
-            "downstreamTermsRequired": True,
-            "termsText": terms,
+            "verifiedCurrentRewardYen": reward_points,
+            "rewardUnit": "Moppy-P",
+            "sourcePointRate": "1P=1JPY",
+            "downstreamTermsRequired": downstream_required,
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
         }
-        fingerprint = hashlib.sha256(json.dumps(payload, ensure_ascii=False,
-                                    sort_keys=True).encode("utf-8")).hexdigest()
-        return {"state": "parsed", "parserVersion": "moppy-detail-review-v2",
-                **payload, "evidenceFingerprint": fingerprint}
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "moppy-detail-review-v3",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
 
@@ -2818,6 +2916,24 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
             )
         else:
             evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
+
+        if source.get("id") == "moppy" and evidence.get("state") == "parsed":
+            labels = provider_label_registry
+            if labels is None:
+                try:
+                    domains = load_offerwall_provider_registry()
+                    labels = load_offerwall_provider_label_registry(
+                        OFFERWALL_PROVIDERS, domains
+                    )
+                except (OSError, ValueError, TypeError):
+                    labels = {}
+            provider_candidates = offerwall_provider_candidates_from_text(
+                evidence.get("termsText", ""), labels or {}
+            )
+            if provider_candidates:
+                evidence = dict(evidence)
+                evidence["downstreamTermsRequired"] = True
+                evidence["downstreamProviderCandidates"] = provider_candidates
         if (source.get("id") == "warau" and evidence.get("state") == "parsed"
                 and provider_label_registry):
             provider_candidates = offerwall_provider_candidates_from_text(
@@ -3733,10 +3849,12 @@ def main(after_scan=None):
                                 reason = approved_refresh_reason(existing, evidence,
                                     approvals.get(existing.get("offerKey")), checked_at)
                             elif source_id == "moppy":
-                                # Moppy's audited v2 parser binds the stable offer identity and
+                                # Moppy's audited parser binds the stable offer identity and
                                 # current reward to dedicated first-party DOM. Reward-only refresh
                                 # is safe; terms/platform summaries remain untouched.
-                                if evidence.get("parserVersion") != "moppy-detail-review-v2":
+                                if evidence.get("parserVersion") not in {
+                                    "moppy-detail-review-v2", "moppy-detail-review-v3"
+                                }:
                                     reason = "source_evidence_not_supported"
                                 elif type(evidence.get("displayedRewardPoints")) is not int:
                                     reason = "missing_current_reward"

@@ -2162,6 +2162,7 @@ def test_coincome_is_review_only_and_never_refreshes_published_date(
 
 MOPPY_URL = 'https://pc.moppy.jp/ad/detail.php?site_id=12345'
 MOPPY_ALT_URL = 'https://pc.moppy.jp/ad/detail.php?s_id=12345'
+MOPPY_CATEGORY_URL = 'https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=category'
 
 
 @pytest.fixture
@@ -2170,12 +2171,21 @@ def moppy_markup():
 <main>
 <h1>テストゲーム（StepUp）〖Android〗</h1>
 <div class="m-item__info"><p class="m-item__point flex--end"><em class="a-item__point--now">600P</em></p></div>
-<section>ポイント獲得条件</section>
-<div>■獲得条件 新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。
+<section class="m-section--main m-item__section m-tabslider js-floating-trigger">
+<div>
+▼ポイント獲得条件
+新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。
 〖成果受付期間〗インストール後、45日以内
 各成果地点は「POINT GET」をタップ後に遷移するページでご確認ください。
-■注意事項 クリックされた時点で表示されていた条件が適用されます。</div>
-<h3>広告概要</h3>
+▼却下条件 過去に同じアプリを利用した場合はポイント対象外です。
+▼注意事項 クリックされた時点で表示されていた条件が適用されます。
+▼ポイントに関するお問い合わせに関して
+成果条件達成後にポイントが未付与の場合、本サイトのお問い合わせフォームよりご連絡ください。
+広告主へ直接問い合わせすることは禁止されています。
+広告概要
+テスト広告の説明
+</div>
+</section>
 </main></body></html>'''
 
 
@@ -2190,12 +2200,62 @@ def test_moppy_review_parser_binds_identity_scoped_reward_and_terms(moppy_markup
     assert evidence['platform'] == 'Android'
     assert evidence['displayedRewardPoints'] == 600
     assert evidence['displayedRewardYen'] == 600
-    assert evidence['rewardUnit'] == 'P'
-    assert evidence['baseYenPerPoint'] == 1
+    assert evidence['rewardUnit'] == 'Moppy-P'
+    assert evidence['sourcePointRate'] == '1P=1JPY'
+    assert evidence['verifiedCurrentRewardYen'] == 600
     assert evidence['downstreamTermsRequired'] is True
-    assert evidence['parserVersion'] == 'moppy-detail-review-v2'
+    assert evidence['publicationAuthorized'] is False
+    assert evidence['parserVersion'] == 'moppy-detail-review-v3'
     assert '成果受付期間' in evidence['termsText']
     assert len(evidence['evidenceFingerprint']) == 64
+
+
+def test_moppy_v3_complete_first_party_terms_do_not_require_downstream(moppy_markup):
+    raw = moppy_markup.replace(
+        '各成果地点は「POINT GET」をタップ後に遷移するページでご確認ください。',
+        '達成条件と却下条件はこのページにすべて記載されています。'
+    )
+    evidence = parse_moppy(raw)
+    assert evidence['state'] == 'parsed'
+    assert evidence['downstreamTermsRequired'] is False
+    assert evidence['verifiedCurrentRewardYen'] == 600
+
+
+@pytest.mark.parametrize("heading", ["【獲得条件】", "【獲得対象】"])
+def test_moppy_v3_accepts_reviewed_current_condition_headings(moppy_markup, heading):
+    raw = moppy_markup.replace("▼ポイント獲得条件", heading)
+    evidence = parse_moppy(raw)
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "moppy-detail-review-v3"
+
+
+def test_moppy_v3_accepts_unheaded_pr_terms_with_explicit_deadlines(moppy_markup):
+    raw = moppy_markup.replace(
+        "▼ポイント獲得条件\n新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。\n〖成果受付期間〗インストール後、45日以内",
+        "ｰｰｰｰｰｰ[PR]ｰｰｰｰｰｰ\n新規アプリインストール後、条件達成で成果となります。\n成果受付期限：広告クリックから45日以内\n成果調査受付期限：広告クリックから50日以内"
+    )
+    evidence = parse_moppy(raw)
+    assert evidence["state"] == "parsed"
+    assert "[PR]" in evidence["termsText"]
+
+
+def test_moppy_v3_accepts_current_category_card_suffix_alias(moppy_markup):
+    alias = 'テストゲーム（StepUp）〖Android〗 新規インストール後レベル20達成 600P'
+    evidence = direct.inspect_moppy_offer(
+        moppy_markup, MOPPY_CATEGORY_URL, MOPPY_CATEGORY_URL, [alias]
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['offerId'] == '12345'
+
+
+def test_moppy_v3_rejects_missing_bounded_terms_section(moppy_markup):
+    raw = moppy_markup.replace(
+        'class="m-section--main m-item__section m-tabslider js-floating-trigger"',
+        'class="unreviewed-layout"'
+    )
+    evidence = parse_moppy(raw)
+    assert evidence['state'] == 'review_required'
+    assert evidence['reason'] == 'incomplete_or_ambiguous_offer_terms'
 
 
 def test_moppy_ignores_unscoped_navigation_reward(moppy_markup):
@@ -2207,7 +2267,8 @@ def test_moppy_ignores_unscoped_navigation_reward(moppy_markup):
 
 def test_moppy_site_id_and_s_id_are_same_offer_identity(moppy_markup):
     assert direct.moppy_offer_id(MOPPY_URL) == direct.moppy_offer_id(MOPPY_ALT_URL) == '12345'
-    evidence = parse_moppy(moppy_markup, requested=MOPPY_URL, final=MOPPY_ALT_URL)
+    assert direct.moppy_offer_id(MOPPY_CATEGORY_URL) == '12345'
+    evidence = parse_moppy(moppy_markup, requested=MOPPY_URL, final=MOPPY_CATEGORY_URL)
     assert evidence['state'] == 'parsed'
 
 
@@ -2232,6 +2293,8 @@ def test_moppy_rejects_ambiguous_current_reward(moppy_markup):
     'https://user@pc.moppy.jp/ad/detail.php?site_id=12345',
     'https://pc.moppy.jp:444/ad/detail.php?site_id=12345',
     'https://pc.moppy.jp/ad/detail.php?site_id=12345&ref=test',
+    'https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=search',
+    'https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=category&track_ref=category',
     'https://pc.moppy.jp/ad/detail.php?site_id=12345&s_id=12345',
     'https://pc.moppy.jp/ad/other.php?site_id=12345',
 ])
@@ -2302,7 +2365,7 @@ def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_mark
             'firstPartyLabels':['アプリドライブ','AppDriver'],'retrievalMode':'presence_only',
             'followExternalLinks':False,'persist':'provider_domain_only'}]}))
     direct.write_published([])
-    shell=moppy_markup.replace('■注意事項','アプリドライブ ■注意事項')
+    shell=moppy_markup.replace('▼注意事項','アプリドライブ ▼注意事項')
     monkeypatch.setattr(direct,'fetch_first_party',lambda url,source:(shell,url))
     assert direct.main()==0
     items=json.loads(direct.REVIEW.read_text())['items']
@@ -2974,10 +3037,12 @@ def test_moppy_shell_reward_change_is_explicit_candidate_only():
     assert '"existingRewardChangeCandidateCount"' in script
 
 
-def test_moppy_shell_parser_still_requires_downstream_terms_review():
+def test_moppy_v3_keeps_downstream_and_publication_guards():
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
-    assert '"downstreamTermsRequired": True' in script
+    assert '"downstreamTermsRequired": downstream_required' in script
+    assert 'POINT\\s*GET' in script
     assert 'source_id == "moppy"' in script
+    assert '"publicationAuthorized": False' in script
     assert '"source_refresh_not_enabled"' in script
 
 
