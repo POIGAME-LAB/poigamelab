@@ -128,5 +128,36 @@ jobs:
                   "visibleExcerpt":visible[:3500],
               })
           out["details"]=details
+          decoded_details=[]
+          for detail in details:
+              url=detail["url"]
+              req=Request(url,headers={
+                  "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+                  "Accept":"text/html,application/xhtml+xml",
+                  "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+              })
+              with urlopen(req,timeout=20) as r:
+                  raw=r.read(2_000_000).decode("utf-8","replace")
+              chunks=[]
+              for m in re.finditer(r'self\\.__next_f\\.push\\(\\[1,("(?:\\\\.|[^"\\\\])*")\\]\\)',raw,re.S):
+                  try:
+                      chunks.append(json.loads(m.group(1)))
+                  except Exception:
+                      pass
+              joined="\n".join(chunks)
+              snippets={}
+              for key in ("コイン獲得条件","コイン還元","成果調査に関して","注意事項","ポイント付与対象外"):
+                  p=joined.find(key)
+                  if p>=0:
+                      snippets[key]=joined[max(0,p-500):p+2600]
+              decoded_details.append({
+                  "url":url,"chunks":len(chunks),"joinedLength":len(joined),
+                  "snippets":snippets,
+                  "numbersNearReward":re.findall(
+                      r'(?:MAX\\s*)?([0-9][0-9,]*)[^0-9]{0,120}?>[^0-9]{0,120}?([0-9][0-9,]*)[^0-9]{0,80}?コイン還元',
+                      joined
+                  )[:10],
+              })
+          out["decodedDetails"]=decoded_details
           print("KURASHIRU_REWARD_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
