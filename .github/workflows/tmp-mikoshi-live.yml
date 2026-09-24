@@ -144,5 +144,60 @@ jobs:
               except Exception as exc:
                   depout.append({"url":su,"error":type(exc).__name__+":"+str(exc)[:180]})
           out["dependencyBundles"]=depout
+          api_urls=[
+              "https://web.mikoshi.jp/v2/skyflag/suggest?limit=100",
+              "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=100",
+              "https://web.mikoshi.jp/v2/skyflag/ads?os=2&limit=100",
+          ]
+          apiout=[]
+          for au in api_urls:
+              try:
+                  req=Request(au,headers={
+                      "User-Agent":UA,
+                      "Accept":"application/json, text/plain, */*",
+                      "Referer":"https://web.mikoshi.jp/",
+                  })
+                  with urlopen(req,timeout=20) as r:
+                      data=r.read(4_000_000); final=r.geturl(); ctype=r.headers.get("Content-Type")
+                  textdata=data.decode("utf-8","replace")
+                  try:
+                      parsed=json.loads(textdata)
+                  except Exception:
+                      parsed=None
+                  summary={"url":au,"final":final,"bytes":len(data),"contentType":ctype}
+                  if isinstance(parsed,dict):
+                      summary["keys"]=sorted(parsed.keys())
+                      for key,val in parsed.items():
+                          if isinstance(val,list):
+                              summary["listKey"]=key
+                              summary["count"]=len(val)
+                              summary["sample"]=val[:5]
+                              break
+                      if "data" in parsed and isinstance(parsed["data"],dict):
+                          summary["dataKeys"]=sorted(parsed["data"].keys())
+                          for key,val in parsed["data"].items():
+                              if isinstance(val,list):
+                                  summary["dataListKey"]=key
+                                  summary["count"]=len(val)
+                                  summary["sample"]=val[:5]
+                                  break
+                  elif isinstance(parsed,list):
+                      summary["count"]=len(parsed); summary["sample"]=parsed[:5]
+                  else:
+                      summary["excerpt"]=textdata[:1800]
+                  apiout.append(summary)
+              except Exception as exc:
+                  code=getattr(exc,"code",None)
+                  apiout.append({"url":au,"error":type(exc).__name__+":"+str(exc)[:180],"code":code})
+          out["apiProbes"]=apiout
+
+          # Print the small Games bundle for service discovery.
+          try:
+              req=Request("https://web.mikoshi.jp/assets/Games-fae3ee75.js",headers={"User-Agent":UA})
+              with urlopen(req,timeout=20) as r:
+                  games_raw=r.read(100000).decode("utf-8","replace")
+              out["gamesBundleRaw"]=games_raw[:12000]
+          except Exception as exc:
+              out["gamesBundleRaw"]="ERROR:"+type(exc).__name__
           print("MIKOSHI_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
