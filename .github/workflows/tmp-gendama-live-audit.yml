@@ -19,6 +19,42 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Probe Gendama response encoding and current detail shape
+        run: |
+          python - <<'PY'
+          import json, re
+          from urllib.request import Request, urlopen
+
+          url="https://www.gendama.jp/sp/client_detail?cd_client=1583632&rt=s"
+          req=Request(url,headers={
+              "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+              "Accept":"text/html,application/xhtml+xml",
+              "Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+          })
+          with urlopen(req,timeout=20) as r:
+              data=r.read(1_500_000)
+              ctype=r.headers.get("Content-Type")
+              hcharset=r.headers.get_content_charset()
+              final=r.geturl()
+          latin=data[:20000].decode("latin1","replace")
+          metas=sorted(set(re.findall(r"(?i)charset\s*=\s*['\"]?([a-z0-9._-]+)",latin)))
+          attempts=[]
+          for enc in ("utf-8","cp932","shift_jis","euc_jp"):
+              text=data.decode(enc,errors="replace")
+              visible=re.sub(r"\s+"," ",re.sub(r"(?s)<[^>]+>"," ",text)).strip()
+              attempts.append({
+                  "encoding":enc,
+                  "replacementCount":text.count("\ufffd"),
+                  "hasGrandMafia":"ザ・グランドマフィア" in text,
+                  "hasRewardCondition":"獲得条件" in text,
+                  "hasAttention":"ポイントを獲得するための注意事項" in text,
+                  "excerpt":visible[:900],
+              })
+          print("GENDAMA_ENCODING_AUDIT",json.dumps({
+              "finalUrl":final,"contentType":ctype,"headerCharset":hcharset,
+              "metaCharsets":metas,"bytes":len(data),"attempts":attempts
+          },ensure_ascii=False,sort_keys=True))
+          PY
       - name: Audit current Gendama search and detail surfaces
         run: |
           python - <<'PY'
