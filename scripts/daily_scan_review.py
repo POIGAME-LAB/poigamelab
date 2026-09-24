@@ -106,7 +106,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         "coincome-detail-review-v2": "displayedRewardYen",
         "hapitas-detail-review-v2": "verifiedCurrentRewardYen",
         "ecnavi-detail-review-v1": "verifiedCurrentRewardYen",
-        "amefuri-multistep-review-v1": "verifiedCurrentRewardYen",
+        "amefuri-detail-review-v2": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
     }
     value = evidence.get(contracts.get(evidence.get("parserVersion"), ""))
