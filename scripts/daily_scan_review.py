@@ -67,7 +67,7 @@ def _pointtown_explicit_yen(evidence):
     stronger structural marker, the automatic top-five path independently
     rejects adjacent numeric tokens and re-checks the exact 1pt=1JPY contract.
     """
-    if evidence.get("parserVersion") != "pointtown-detail-review-v1":
+    if evidence.get("parserVersion") != "pointtown-detail-review-v2":
         return None
     header = str(evidence.get("headerText") or "")
     if re.search(r"で\s*[0-9][0-9,]*\s+[0-9][0-9,]*(?:\s|$)", header):
@@ -99,7 +99,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
             and evidence.get("rewardUnit") == "pt"):
         value = evidence.get("rewardPoints")
         return value if type(value) is int and value > 0 else None
-    if evidence.get("parserVersion") == "pointtown-detail-review-v1":
+    if evidence.get("parserVersion") == "pointtown-detail-review-v2":
         return _pointtown_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
