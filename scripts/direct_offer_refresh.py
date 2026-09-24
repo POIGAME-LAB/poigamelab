@@ -629,6 +629,10 @@ def listing_anchor_in_scope(anchor, source):
 
 def listing_detail_identity_signature(raw, base_url, source, limit=5000):
     """Return a stable signature of first-party detail identities on one listing page."""
+    if str(source.get("id") or "") == "mikoshi":
+        return mikoshi_listing_detail_identity_signature(
+            raw, base_url, source, limit=limit
+        )
     identities = []
     seen = set()
     try:
@@ -671,6 +675,13 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
     reviewed alias in bounded listing context or a known first-party offer
     identity.
     """
+    if str(source.get("id") or "") == "mikoshi":
+        try:
+            return discover_mikoshi_listing_candidates(
+                raw, base_url, source, targets, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
     known_identities = set()
     for target in targets or []:
         known_urls = (target.get("known_urls_by_source") or {}).get(str(source.get("id") or ""), [])
@@ -2899,6 +2910,276 @@ def inspect_powl_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def mikoshi_offer_id(url):
+    """Return the stable numeric identity for a first-party WEB MIKOSHI ad."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != "web.mikoshi.jp"
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+    ):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/v2/skyflag/ads/([0-9]+)/?", parsed.path or "")
+    if not match or parse_qs(parsed.query, keep_blank_values=True):
+        raise ValueError("unexpected_offer_url")
+    return match.group(1)
+
+
+def mikoshi_listing_platform(url):
+    """Validate one reviewed anonymous OS-scoped Skyflag listing endpoint."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+        query = parse_qs(parsed.query, keep_blank_values=True)
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_listing_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != "web.mikoshi.jp"
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+        or parsed.path != "/v2/skyflag/ads"
+        or any(key not in {"os", "limit"} for key in query)
+    ):
+        raise ValueError("unexpected_listing_url")
+    os_values = query.get("os") or []
+    limit_values = query.get("limit") or []
+    if (
+        len(os_values) != 1
+        or os_values[0] not in {"1", "2"}
+        or len(limit_values) != 1
+        or not re.fullmatch(r"[1-9][0-9]{0,3}", limit_values[0])
+        or not 1 <= int(limit_values[0]) <= 2000
+    ):
+        raise ValueError("unexpected_listing_url")
+    return "Android" if os_values[0] == "1" else "iOS"
+
+
+def _mikoshi_listing_ads(raw):
+    try:
+        payload = json.loads(raw)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        raise ValueError("invalid_listing_payload")
+    if not isinstance(payload, dict) or not isinstance(payload.get("ads"), list):
+        raise ValueError("invalid_listing_payload")
+    return payload["ads"]
+
+
+def mikoshi_listing_detail_identity_signature(raw, base_url, source, limit=5000):
+    """Return stable first-party identities from one current MIKOSHI JSON feed."""
+    try:
+        mikoshi_listing_platform(base_url)
+        ads = _mikoshi_listing_ads(raw)
+    except (ValueError, TypeError):
+        return tuple()
+    identities = []
+    seen = set()
+    for ad in ads:
+        if not isinstance(ad, dict):
+            continue
+        offer_id = str(ad.get("id") or "")
+        if not re.fullmatch(r"[0-9]+", offer_id):
+            continue
+        detail_url = f"https://web.mikoshi.jp/v2/skyflag/ads/{offer_id}"
+        if not source_host_allowed(detail_url, source):
+            continue
+        identity = offer_identity_key(detail_url, "mikoshi")
+        if not identity or identity in seen:
+            continue
+        seen.add(identity)
+        identities.append(identity)
+        if len(identities) >= max(1, min(int(limit or 5000), 5000)):
+            break
+    return tuple(sorted(identities))
+
+
+def discover_mikoshi_listing_candidates(raw, base_url, source, targets, limit=500):
+    """Convert the anonymous first-party MIKOSHI JSON feed into review candidates."""
+    platform = mikoshi_listing_platform(base_url)
+    ads = _mikoshi_listing_ads(raw)
+    known_identities = set()
+    for target in targets or []:
+        for known_url in (
+            (target.get("known_urls_by_source") or {}).get("mikoshi", []) or []
+        ):
+            identity = offer_identity_key(known_url, "mikoshi")
+            if identity:
+                known_identities.add(identity)
+
+    found = []
+    seen = set()
+    for ad in ads:
+        if not isinstance(ad, dict):
+            continue
+        offer_id = str(ad.get("id") or "")
+        name = str(ad.get("name") or "").strip()
+        points = ad.get("point")
+        description = visible_text(str(ad.get("description") or ""))
+        if (
+            not re.fullmatch(r"[0-9]+", offer_id)
+            or not 2 <= len(name) <= 240
+            or type(points) is not int
+            or not 0 < points <= 5_000_000
+        ):
+            continue
+        detail_url = f"https://web.mikoshi.jp/v2/skyflag/ads/{offer_id}"
+        if not source_host_allowed(detail_url, source):
+            continue
+        identity = offer_identity_key(detail_url, "mikoshi")
+        if not identity or identity in known_identities or identity in seen:
+            continue
+        if context_matches_known_game(name, targets):
+            continue
+        seen.add(identity)
+        found.append({
+            "source": "mikoshi",
+            "sourceLabel": str(source.get("name") or "MIKOSHI"),
+            "titleHint": name,
+            "descriptionHint": description[:700],
+            "platformHint": platform,
+            "listingRewardPoints": points,
+            "listingRewardText": f"{points:,} MIKOSHIポイント",
+            "firstPartyCandidateUrl": detail_url,
+            "offerIdentity": identity,
+            "discoveryEvidence": "first_party_json_listing",
+            "discoveryScope": str(
+                source.get("new_game_discovery_scope") or "unspecified"
+            ),
+            "fullCatalogObserved": source.get("full_catalog_discovery_enabled") is True,
+            "candidateOnly": True,
+            "firstPartyVerificationRequired": True,
+            "autoCreateAuthorized": False,
+            "publicationAuthorized": False,
+        })
+        if len(found) >= max(1, min(int(limit or 500), 2000)):
+            break
+    return found
+
+
+def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
+    """Parse exact first-party MIKOSHI Skyflag detail evidence without yen inference."""
+    try:
+        offer_id = mikoshi_offer_id(requested_url)
+        if mikoshi_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+        try:
+            payload = json.loads(raw)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            raise ValueError("invalid_offer_payload")
+        if not isinstance(payload, dict) or str(payload.get("id") or "") != offer_id:
+            raise ValueError("offer_identity_mismatch")
+
+        name = str(payload.get("name") or "").strip()
+        if not 2 <= len(name) <= 240:
+            raise ValueError("missing_offer_title")
+        if not target_present(name, aliases):
+            name_key = normalized_game_title_key(name)
+            alias_keys = [
+                normalized_game_title_key(alias)
+                for alias in aliases
+                if str(alias or "").strip()
+            ]
+            if not any(
+                key and len(key) >= 4
+                and (key.startswith(name_key) or name_key.startswith(key))
+                for key in alias_keys
+            ):
+                raise ValueError("offer_title_mismatch")
+
+        if payload.get("platformType") != "PLATFORM_TYPE_APP":
+            raise ValueError("unexpected_offer_type")
+        ios = payload.get("isPublishIos") is True
+        android = payload.get("isPublishAndroid") is True
+        if ios == android:
+            raise ValueError("ambiguous_offer_platform")
+        platform = "iOS" if ios else "Android"
+
+        points = payload.get("point")
+        if type(points) is not int or not 0 < points <= 5_000_000:
+            raise ValueError("invalid_reward")
+
+        conversion_points = payload.get("conversionPoints")
+        if not isinstance(conversion_points, list) or not conversion_points:
+            raise ValueError("missing_conversion_steps")
+        steps = []
+        for expected_step, row in enumerate(conversion_points, start=1):
+            if not isinstance(row, dict):
+                raise ValueError("invalid_conversion_step")
+            step = row.get("step")
+            step_points = row.get("point")
+            condition = str(row.get("name") or "").strip()
+            if (
+                type(step) is not int
+                or step != expected_step
+                or type(step_points) is not int
+                or not 0 < step_points <= 5_000_000
+                or len(condition) < 2
+            ):
+                raise ValueError("invalid_conversion_step")
+            steps.append({
+                "step": step,
+                "condition": condition,
+                "rewardPoints": step_points,
+            })
+        if sum(step["rewardPoints"] for step in steps) != points:
+            raise ValueError("step_total_mismatch")
+
+        descriptions = payload.get("descriptions")
+        if not isinstance(descriptions, dict):
+            raise ValueError("missing_offer_terms")
+        terms = visible_text(str(descriptions.get("acquisitionCondition") or ""))
+        if len(terms) < 180:
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "獲得条件達成期限", "成果受付期限", "広告クリックから",
+            "新規アプリインストール",
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if "注意事項" not in terms:
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "獲得対象外", "成果対象外", "報酬対象外", "却下条件",
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "お問い合わせ", "お問合せ", "広告主",
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        payload_out = {
+            "offerId": offer_id,
+            "name": name,
+            "platform": platform,
+            "verifiedCurrentRewardPoints": points,
+            "rewardUnit": "MIKOSHI-point",
+            "sourcePointRate": "unverified",
+            "steps": steps,
+            "conditionText": str(descriptions.get("cvCondition") or "").strip(),
+            "termsText": terms[:16000],
+            "downstreamTermsRequired": False,
+            "candidateOnly": True,
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload_out, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "mikoshi-skyflag-detail-review-v1",
+            **payload_out,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def kurashiru_reward_offer_id(url):
     """Return the stable numeric identity for current Kurashiru Reward ad URLs."""
     try:
@@ -3087,6 +3368,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "gendama": inspect_gendama_offer,
         "powl": inspect_powl_offer,
         "kurashiru_reward": inspect_kurashiru_reward_offer,
+        "mikoshi": inspect_mikoshi_offer,
     }
     if source.get("id") in structured_parsers:
         if source.get("id") == "hapitas":
