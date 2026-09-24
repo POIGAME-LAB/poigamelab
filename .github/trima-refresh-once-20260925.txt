@@ -1,0 +1,1 @@
+Trigger one production refresh after Trima first-party catalog integration.
