@@ -19,6 +19,78 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Inspect current first-party ad detail surfaces
+        run: |
+          python - <<'PY'
+          import json,re,sys
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin,urlparse
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+
+          source=next(
+              x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]
+              if x["id"]=="kurashiru_reward"
+          )
+          category="https://www.rewards.kurashiru.com/categories/3"
+          raw,final=direct.fetch_first_party(category,source,timeout=20,max_bytes=3_000_000)
+
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__(convert_charrefs=True)
+                  self.links=[]; self.current=None
+              def handle_starttag(self,tag,attrs):
+                  if tag=="a":
+                      self.current={"href":dict(attrs).get("href",""),"parts":[]}
+              def handle_data(self,data):
+                  if self.current is not None:
+                      self.current["parts"].append(data)
+              def handle_endtag(self,tag):
+                  if tag=="a" and self.current is not None:
+                      node=self.current; self.current=None
+                      self.links.append((node["href"],re.sub(r"\s+"," "," ".join(node["parts"])).strip()))
+          p=Links(); p.feed(raw)
+          ads=[]
+          pages=[]
+          for href,text in p.links:
+              absolute=urljoin(final,href)
+              parsed=urlparse(absolute)
+              if re.fullmatch(r"/ads/[0-9]+",parsed.path):
+                  ads.append({"url":absolute,"text":text[:500]})
+              if parsed.path=="/categories/3" and parsed.query:
+                  pages.append(absolute)
+
+          detail_rows=[]
+          for item in ads[:6]:
+              u=item["url"]
+              body,detail_final=direct.fetch_first_party(u,source,timeout=20,max_bytes=3_000_000)
+              visible=direct.visible_text(body)
+              title_match=re.search(r"(?is)<title[^>]*>(.*?)</title>",body)
+              title=direct.visible_text(title_match.group(0)) if title_match else ""
+              scripts=[]
+              for m in re.finditer(r'(?is)<script[^>]*>(.*?)</script>',body):
+                  text=m.group(1)
+                  if any(k in text for k in ("cashback_amount","conversion_name","affiliat","stepUp")):
+                      scripts.append(text[:7000])
+                      if len(scripts)>=4: break
+              snippets={}
+              for marker in ("コイン","獲得条件","却下","成果","ポイント","注意","利用条件","達成条件"):
+                  pos=visible.find(marker)
+                  if pos>=0:
+                      snippets[marker]=visible[max(0,pos-300):pos+2200]
+              detail_rows.append({
+                  "url":u,"finalUrl":detail_final,"linkText":item["text"],
+                  "htmlBytes":len(body.encode("utf-8")),
+                  "title":title[:300],"snippets":snippets,"scriptSamples":scripts,
+              })
+
+          print("KURASHIRU_DETAIL_AUDIT",json.dumps({
+              "adCountOnPage":len(ads),
+              "ads":ads[:25],
+              "paginationLinks":pages[:20],
+              "details":detail_rows,
+          },ensure_ascii=False,sort_keys=True))
+          PY
       - name: Inspect current first-party category surface
         run: |
           python - <<'PY'
