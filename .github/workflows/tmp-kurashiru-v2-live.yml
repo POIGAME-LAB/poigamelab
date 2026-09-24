@@ -64,6 +64,32 @@ jobs:
               ("https://www.rewards.kurashiru.com/ads/19125",["パズル＆カオス"]),
               ("https://www.rewards.kurashiru.com/ads/19108",["タウンシップ"]),
           ]
+          # Diagnose bounded terms containers on a large StepUp offer.
+          debug_url="https://www.rewards.kurashiru.com/ads/19108"
+          debug_raw,debug_final=direct.fetch_first_party(
+              debug_url,source,timeout=20,max_bytes=2_000_000
+          )
+          debug_doc=direct.EvidenceHTML(debug_raw).root
+          term_nodes=[]
+          for tag in ("div","section","article"):
+              for node in debug_doc.find(tag=tag):
+                  value=direct.evidence_text(node)
+                  if "注意事項" not in value:
+                      continue
+                  term_nodes.append({
+                      "tag":tag,
+                      "class":node.attrs.get("class",""),
+                      "length":len(value),
+                      "hasDeadline":any(x in value for x in ("成果受付期限","承認条件","成果条件","成果となります")),
+                      "hasReject":any(x in value for x in ("却下条件","成果対象外","ポイント付与対象外","報酬付与対象外")),
+                      "hasContact":any(x in value for x in ("広告主","スポンサーサイト","成果調査","お問い合わせ","お問合せ")),
+                      "excerpt":value[:900],
+                  })
+          print("KURASHIRU_19108_TERMS",json.dumps(
+              sorted(term_nodes,key=lambda x:x["length"])[:30],
+              ensure_ascii=False,sort_keys=True
+          ))
+
           details=[]
           for url,aliases in samples:
               parsed=direct.inspect_detail(url,source,aliases)
