@@ -670,3 +670,30 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
     assert daily.explicit_yen(evidence) == 451871
     evidence["verifiedCurrentRewardYen"] = 406683.9
     assert daily.explicit_yen(evidence) is None
+
+def test_trima_listing_upper_bound_uses_face_value_but_detail_uses_displayed_yen():
+    registry = {
+        "trima": {
+            "status": "verified_face_value",
+            "yenPerPoint": 0.01,
+        }
+    }
+    item = {
+        "source": "trima",
+        "titleHint": "商品整理ゲーム：3Dパズル",
+        "listingRewardText": "44,000 マイル",
+    }
+    assert daily.listing_reward_upper_bound_yen(item, registry=registry) == 440
+
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "trima-detail-review-v1",
+        "displayedRewardMiles": 44000,
+        "displayedRewardYen": 366,
+        "verifiedCurrentRewardYen": 366,
+        "rewardUnit": "Trima-mile",
+        "sourcePointRate": "first-party-displayed-yen-equivalent-exchange-fee-included",
+        "downstreamTermsRequired": False,
+    }
+    assert daily.explicit_yen(evidence) == 366
+
