@@ -2162,6 +2162,7 @@ def test_coincome_is_review_only_and_never_refreshes_published_date(
 
 MOPPY_URL = 'https://pc.moppy.jp/ad/detail.php?site_id=12345'
 MOPPY_ALT_URL = 'https://pc.moppy.jp/ad/detail.php?s_id=12345'
+MOPPY_CATEGORY_URL = 'https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=category'
 
 
 @pytest.fixture
@@ -2207,7 +2208,8 @@ def test_moppy_ignores_unscoped_navigation_reward(moppy_markup):
 
 def test_moppy_site_id_and_s_id_are_same_offer_identity(moppy_markup):
     assert direct.moppy_offer_id(MOPPY_URL) == direct.moppy_offer_id(MOPPY_ALT_URL) == '12345'
-    evidence = parse_moppy(moppy_markup, requested=MOPPY_URL, final=MOPPY_ALT_URL)
+    assert direct.moppy_offer_id(MOPPY_CATEGORY_URL) == '12345'
+    evidence = parse_moppy(moppy_markup, requested=MOPPY_URL, final=MOPPY_CATEGORY_URL)
     assert evidence['state'] == 'parsed'
 
 
@@ -2232,6 +2234,8 @@ def test_moppy_rejects_ambiguous_current_reward(moppy_markup):
     'https://user@pc.moppy.jp/ad/detail.php?site_id=12345',
     'https://pc.moppy.jp:444/ad/detail.php?site_id=12345',
     'https://pc.moppy.jp/ad/detail.php?site_id=12345&ref=test',
+    'https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=search',
+    'https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=category&track_ref=category',
     'https://pc.moppy.jp/ad/detail.php?site_id=12345&s_id=12345',
     'https://pc.moppy.jp/ad/other.php?site_id=12345',
 ])
