@@ -2437,8 +2437,11 @@ def moppy_offer_id(url):
             or p.username is not None or p.password is not None or p.port not in {None, 443}
             or p.path != "/ad/detail.php"):
         raise ValueError("unexpected_offer_url")
-    query = parse_qs(p.query, keep_blank_values=False)
-    if any(key not in {"site_id", "s_id"} for key in query):
+    query = parse_qs(p.query, keep_blank_values=True)
+    if any(key not in {"site_id", "s_id", "track_ref"} for key in query):
+        raise ValueError("ambiguous_offer_identity")
+    track_ref = query.get("track_ref", [])
+    if track_ref and (len(track_ref) != 1 or track_ref[0] != "category"):
         raise ValueError("ambiguous_offer_identity")
     values = []
     for key in ("site_id", "s_id"):
