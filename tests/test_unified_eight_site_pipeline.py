@@ -12,6 +12,7 @@ import unified_offer_snapshot as unified
 EXPECTED = [
     "moppy", "warau", "coincome", "hapitas",
     "amefuri", "point_town", "ec_navi", "powl", "gendama",
+    "kurashiru_reward",
 ]
 NOW = "2026-09-16T16:17:00+00:00"
 
