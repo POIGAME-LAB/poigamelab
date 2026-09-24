@@ -2495,7 +2495,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
         for node in doc.find(tag="em", cls="a-item__point--now"):
             value = evidence_text(node)
             match = re.fullmatch(
-                r"\\s*([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\\s*P\\s*",
+                r"\s*([1-9][0-9]{0,2}(?:,[0-9]{3})+|[1-9][0-9]*)\s*P\s*",
                 value,
             )
             if match:
@@ -2540,7 +2540,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
         starts = [pos for pos in starts if 0 <= pos < terms_end]
         if not starts or terms_end <= min(starts):
             raise ValueError("incomplete_offer_terms")
-        terms = re.sub(r"\\s+", " ", section_text[min(starts):terms_end]).strip()
+        terms = re.sub(r"\s+", " ", section_text[min(starts):terms_end]).strip()
         if len(terms) < 120:
             raise ValueError("incomplete_offer_terms")
 
@@ -2553,7 +2553,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
         )):
             raise ValueError("incomplete_offer_terms")
 
-        downstream_required = bool(re.search(r"POINT\\s*GET", terms, re.I))
+        downstream_required = bool(re.search(r"POINT\s*GET", terms, re.I))
 
         payload = {
             "offerId": offer_id,
