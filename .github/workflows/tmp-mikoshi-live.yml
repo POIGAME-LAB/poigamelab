@@ -94,5 +94,34 @@ jobs:
               except Exception as exc:
                   out["bundleHints"].append({"url":su,"error":type(exc).__name__+":"+str(exc)[:160]})
 
+          # Inspect known dynamically imported app bundles discovered from main.
+          secondary=[
+              "https://web.mikoshi.jp/assets/Games-fae3ee75.js",
+              "https://web.mikoshi.jp/assets/OfferDetail-a56cc006.js",
+              "https://web.mikoshi.jp/assets/GameCard-ae15a47c.js",
+              "https://web.mikoshi.jp/assets/ShoppingDetail-393528bb.js",
+          ]
+          sec=[]
+          for su in secondary:
+              try:
+                  req=Request(su,headers={"User-Agent":UA})
+                  with urlopen(req,timeout=20) as r:
+                      raw=r.read(3_000_000).decode("utf-8","replace")
+                  strings=sorted(set(re.findall(r'["\\\']([^"\\\']{3,260})["\\\']',raw)))
+                  interesting=[
+                      x for x in strings
+                      if any(k in x.lower() for k in (
+                          "http","api","graphql","game","offer","reward","campaign",
+                          "mission","point","shopping","suggest","recommend","category"
+                      ))
+                  ]
+                  patterns={
+                      "fetch":re.findall(r'fetch\\(([^)]{1,240})\\)',raw)[:40],
+                      "axios":re.findall(r'(?:axios|baseURL|url)[:=]([^,;}]{1,240})',raw,re.I)[:80],
+                  }
+                  sec.append({"url":su,"bytes":len(raw),"interestingStrings":interesting[:220],"patterns":patterns})
+              except Exception as exc:
+                  sec.append({"url":su,"error":type(exc).__name__+":"+str(exc)[:160]})
+          out["secondaryBundles"]=sec
           print("MIKOSHI_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
