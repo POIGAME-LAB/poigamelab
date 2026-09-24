@@ -113,6 +113,36 @@ jobs:
           print("MOPPY_STRUCTURE",json.dumps({
               "url":probe_final,"nodes":structural[:40]
           },ensure_ascii=False,sort_keys=True))
+          diagnostics=[]
+          failed_urls=[row["url"] for row in rows if row.get("state")!="parsed"][:8]
+          for failed_url in failed_urls:
+              raw,final=direct.fetch_first_party(failed_url,source,timeout=20,max_bytes=2_000_000)
+              doc=direct.EvidenceHTML(raw).root
+              nodes=[]
+              for tag in ("section","div","article"):
+                  for node in doc.find(tag=tag):
+                      value=direct.evidence_text(node)
+                      if not 40 <= len(value) <= 14000:
+                          continue
+                      if any(marker in value for marker in (
+                          "ポイント獲得条件","獲得条件","注意事項","却下条件","広告概要"
+                      )):
+                          nodes.append({
+                              "tag":tag,
+                              "id":node.attrs.get("id",""),
+                              "class":node.attrs.get("class",""),
+                              "length":len(value),
+                              "hasPointCondition":"ポイント獲得条件" in value,
+                              "hasReject":any(m in value for m in ("却下条件","成果対象外","獲得対象外","ポイント対象外")),
+                              "hasCaution":"注意事項" in value,
+                              "hasContact":any(m in value for m in ("お問い合わせ","お問合せ","広告主","スポンサーサイト")),
+                              "hasOverview":"広告概要" in value,
+                              "hasPointGet":"POINT GET" in value,
+                              "text":value[:900],
+                          })
+              diagnostics.append({"url":final,"nodes":nodes[:14]})
+          print("MOPPY_FAILURE_STRUCTURE",json.dumps(diagnostics,ensure_ascii=False,sort_keys=True))
+
           rankable=[
               row for row in rows
               if row.get("state")=="parsed"
