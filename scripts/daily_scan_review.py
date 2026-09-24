@@ -109,6 +109,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         "amefuri-detail-review-v2": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
         "gendama-detail-review-v2": "displayedRewardYen",
+        "moppy-detail-review-v3": "verifiedCurrentRewardYen",
     }
     contracts["powl-detail-review-v1"] = "verifiedCurrentRewardYen"
     parser_version = evidence.get("parserVersion")
