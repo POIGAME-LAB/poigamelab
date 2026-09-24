@@ -1,0 +1,59 @@
+name: Temporary Hapitas live audit
+on:
+  push:
+    branches: [audit/hapitas-live-20260924]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Audit published Hapitas offers against live detail pages
+        run: |
+          python - <<'PY'
+          import csv,json,sys
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as d
+
+          sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
+          source=sources["hapitas"]
+          targets={x["game"]:x for x in json.load(open("config/game_targets.json",encoding="utf-8"))["games"]}
+          rows=[r for r in csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")) if r["site"]=="hapitas"]
+          print("ROW_COUNT",len(rows))
+          parsed=0
+          changed=[]
+          failures=[]
+          for row in rows:
+              aliases=[row["game"]]+[str(x) for x in targets.get(row["game"],{}).get("aliases",[])]
+              try:
+                  raw,final=d.fetch_first_party(row["url"],source,timeout=20,max_bytes=1500000)
+                  ev=d.inspect_hapitas_offer(raw,row["url"],final,aliases)
+              except Exception as exc:
+                  ev={"state":"exception","reason":d.summarize_fetch_error(exc)}
+              result={
+                  "game":row["game"],"url":row["url"],"storedReward":row["reward"],
+                  "storedPlatform":row["platform"],"state":ev.get("state"),
+                  "reason":ev.get("reason"),"parserVersion":ev.get("parserVersion"),
+                  "platform":ev.get("platform"),"reward":ev.get("verifiedCurrentRewardYen"),
+                  "stepTotal":sum(ev.get("stepRewardPoints") or []) if isinstance(ev.get("stepRewardPoints"),list) else None,
+                  "termsLength":len(ev.get("termsText") or ""),
+              }
+              if ev.get("state")=="parsed":
+                  parsed+=1
+                  if str(ev.get("verifiedCurrentRewardYen"))!=str(row["reward"]) or ev.get("platform")!=row["platform"]:
+                      changed.append(result)
+              else:
+                  failures.append(result)
+              print("OFFER",json.dumps(result,ensure_ascii=False,sort_keys=True))
+          print("SUMMARY",json.dumps({
+              "rows":len(rows),"parsed":parsed,"changed":len(changed),"failures":len(failures)
+          },ensure_ascii=False,sort_keys=True))
+          print("CHANGED",json.dumps(changed,ensure_ascii=False,sort_keys=True))
+          print("FAILURES",json.dumps(failures,ensure_ascii=False,sort_keys=True))
+          PY
