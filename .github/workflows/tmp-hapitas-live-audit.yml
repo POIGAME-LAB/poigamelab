@@ -9,51 +9,48 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Probe all published Hapitas rows with current text structure
+      - name: Inspect Hapitas catalog contexts for published item IDs
         run: |
           python - <<'PY'
           import csv,json,re,sys
+          from urllib.parse import urljoin
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
 
           sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
           s=sources["hapitas"]
-          rows=[r for r in csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")) if r["site"]=="hapitas"]
-          for row in rows:
-              raw,final=d.fetch_first_party(row["url"],s,timeout=20,max_bytes=1500000)
-              doc=d.EvidenceHTML(raw).root
-              title=d.evidence_text(d.one(doc.find(tag="h1")))
-              bodies=doc.find(tag="body")
-              body=d.evidence_text(bodies[0]) if len(bodies)==1 else d.visible_text(raw)
-              first=body.find(title)
-              boundary=body.find("ポイント対象条件",max(0,first))
-              header=body[first:boundary] if first>=0 and boundary>first else ""
-              ended="この広告は終了しています" in body[first:first+1200] if first>=0 else False
-              rewards=[int(x.replace(",","")) for x in re.findall(r"条件達成で\s*([0-9][0-9,]*)\s*pt",header,re.I)]
-              if not rewards:
-                  rewards=[int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9,]*)\s*pt\b",header,re.I)]
-              terms_start=body.find("ポイント対象条件",max(0,first))
-              terms_end_candidates=[p for marker in ("ハピタスご利用前に必ずご確認ください","レビュー") if (p:=body.find(marker,terms_start+1))>=0]
-              terms_end=min(terms_end_candidates) if terms_end_candidates else min(len(body),terms_start+18000)
-              terms=body[terms_start:terms_end] if terms_start>=0 else ""
-              step_pairs=re.findall(r"STEP\s*([0-9]+)\s*[:：]?.*?で\s*([0-9][0-9,]*)\s*pt(?:\s*獲得)?",terms,re.I)
-              step_values=[int(v.replace(",","")) for _,v in step_pairs]
-              os_hits=[]
-              for m in re.finditer(r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",body,re.I):
-                  p=m.start()
-                  os_hits.append(re.sub(r"\s+"," ",body[max(0,p-100):p+180]))
-              print("PROBE",json.dumps({
-                  "game":row["game"],"url":row["url"],"storedReward":row["reward"],
-                  "storedPlatform":row["platform"],"title":title,"firstTitlePos":first,
-                  "boundaryPos":boundary,"ended":ended,"header":header[:900],
-                  "headerRewards":rewards,"stepCount":len(step_values),
-                  "stepTotal":sum(step_values) if step_values else None,
-                  "unitMarker":bool(re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円",body)),
-                  "osContexts":os_hits[:6],
+          listing=s["direct_listing_urls"][0]
+          raw,final=d.fetch_first_party(listing,s,timeout=20,max_bytes=3000000)
+          doc=d.EvidenceHTML(raw).root
+          published=[r for r in csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")) if r["site"]=="hapitas"]
+          ids={d.hapitas_offer_id(r["url"]):r for r in published}
+          print("LISTING",final,"BYTES",len(raw.encode("utf-8")),"PUBLISHED_IDS",len(ids))
+          found=set()
+          for a in doc.find(tag="a"):
+              href=a.attrs.get("href","")
+              absolute=urljoin(final,href)
+              oid=d.hapitas_offer_id(absolute)
+              if oid not in ids:
+                  continue
+              found.add(oid)
+              parent=a.parent
+              contexts=[]
+              depth=0
+              while parent is not None and depth<4:
+                  txt=d.evidence_text(parent)
+                  marker=" ".join([parent.tag,parent.attrs.get("id",""),parent.attrs.get("class","")])
+                  contexts.append({"depth":depth,"marker":marker,"text":re.sub(r"\s+"," ",txt)[:1200]})
+                  parent=parent.parent
+                  depth+=1
+              print("MATCH",json.dumps({
+                  "id":oid,"game":ids[oid]["game"],"storedPlatform":ids[oid]["platform"],
+                  "anchor":d.evidence_text(a),"href":absolute,"contexts":contexts,
               },ensure_ascii=False,sort_keys=True))
+          print("FOUND",sorted(found))
+          print("MISSING",sorted(set(ids)-found))
           PY
