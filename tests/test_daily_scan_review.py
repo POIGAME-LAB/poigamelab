@@ -112,6 +112,30 @@ def test_noninteger_or_missing_amount_never_ranks(value):
                                "displayedRewardYen": value}) is None
 
 
+def test_powl_fractional_yen_contract_is_ranking_only():
+    assert daily.explicit_yen({
+        "state": "parsed",
+        "parserVersion": "powl-detail-review-v1",
+        "verifiedCurrentRewardYen": 28641.1,
+        "publicationAuthorized": False,
+    }) == 28641.1
+
+
+def test_listing_reward_upper_bound_uses_max_explicit_value_and_fails_open():
+    rates = {
+        "powl": {"status": "verified", "yenPerPoint": 0.1},
+        "unknown": {"status": "unsupported", "yenPerPoint": None},
+    }
+    assert daily.listing_reward_upper_bound_yen({
+        "source": "powl",
+        "titleHint": "Game（iOS） 条件28,000ポイント達成 34,000pt",
+    }, registry=rates) == 3400
+    assert daily.listing_reward_upper_bound_yen({
+        "source": "unknown",
+        "titleHint": "Game reward 12,345",
+    }, registry=rates) is None
+
+
 def test_points_are_not_assumed_to_be_yen():
     assert daily.explicit_yen({"state": "parsed", "parserVersion": "warau-stepup-v1",
                                "rewardPoints": 70000, "rewardUnit": "pt"}) is None
@@ -281,6 +305,75 @@ def test_daily_workflow_has_no_paid_api_or_competing_automatic_adopter():
     assert "git add data/daily_scan_review.json" not in workflow
 
 
+def test_conservative_upper_bounds_skip_only_groups_that_cannot_reach_top_five(monkeypatch):
+    registry = {
+        "moppy": {"id": "moppy", "search_domains": ["moppy.example"],
+                  "direct_detail_url_hints": ["/detail"]},
+        "powl": {"id": "powl", "search_domains": ["powl.example"],
+                 "direct_detail_url_hints": ["/detail"],
+                 "scheduled_fetch_enabled": False,
+                 "coverage_detail_review_enabled": True,
+                 "coverage_detail_review_mode": "candidate_only"},
+    }
+    items = []
+    for i in range(1, 11):
+        items.extend([
+            {"classification": "likely_game",
+             "titleHint": f"Ceiling Puzzle {i:02d}（iOS） {i * 1000:,}P",
+             "source": "moppy",
+             "firstPartyCandidateUrl": f"https://moppy.example/detail?id={i}"},
+            {"classification": "likely_game",
+             "titleHint": f"Ceiling Puzzle {i:02d}（iOS） {i * 10000:,}pt",
+             "source": "powl",
+             "firstPartyCandidateUrl": f"https://powl.example/detail?id={i}"},
+        ])
+
+    def priced(url, source, aliases, fetcher):
+        fetcher(url, source)
+        amount = int(aliases[0].split()[-1]) * 1000
+        return {"url": url, "sourceEvidence": {
+            "state": "parsed", "platform": "iOS",
+            "parserVersion": "coincome-detail-review-v2",
+            "displayedRewardYen": amount,
+            "termsText": "Full terms", "evidenceFingerprint": "fixture",
+        }}
+
+    result = scan(items, monkeypatch, inspector=priced, registry=registry)
+    assert result["twoSiteListingGroups"] == 10
+    assert result["topFiveReviewCandidates"] == [
+        "Ceiling Puzzle 10", "Ceiling Puzzle 09", "Ceiling Puzzle 08",
+        "Ceiling Puzzle 07", "Ceiling Puzzle 06",
+    ]
+    assert result["reviewedGroups"] == 5
+    assert result["prefilterSkippedGroups"] == 5
+    assert result["detailInspectionCalls"] == 10
+    assert result["listingUpperBoundUnknownGroups"] == 0
+    assert result["rankingComplete"] is True
+
+
+def test_unknown_listing_bound_fails_open_and_is_reviewed(monkeypatch):
+    registry = {
+        "point_town": {"id": "point_town", "search_domains": ["point.example"],
+                       "direct_detail_url_hints": ["/detail"]},
+        "powl": {"id": "powl", "search_domains": ["powl.example"],
+                 "direct_detail_url_hints": ["/detail"],
+                 "scheduled_fetch_enabled": False,
+                 "coverage_detail_review_enabled": True,
+                 "coverage_detail_review_mode": "candidate_only"},
+    }
+    items = [
+        {"classification": "likely_game", "titleHint": "Mystery Puzzle（iOS）",
+         "source": "point_town", "firstPartyCandidateUrl": "https://point.example/detail?id=1"},
+        {"classification": "likely_game", "titleHint": "Mystery Puzzle（iOS） 10pt",
+         "source": "powl", "firstPartyCandidateUrl": "https://powl.example/detail?id=1"},
+    ]
+    result = scan(items, monkeypatch, registry=registry)
+    assert result["listingUpperBoundUnknownGroups"] == 1
+    assert result["reviewedGroups"] == 1
+    assert result["detailInspectionCalls"] == 2
+    assert result["prefilterSkippedGroups"] == 0
+
+
 def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
     items = []
     for i in range(31):
@@ -377,7 +470,8 @@ def test_nightly_rate_policy_is_fail_closed_for_unknown_sources():
     assert daily.point_rate_policy("moppy")["yenPerPoint"] == 1
     assert daily.point_rate_policy("amefuri")["yenPerPoint"] == 0.1
     assert daily.point_rate_policy("kurashiru_reward")["yenPerPoint"] == 0.01
-    assert daily.point_rate_policy("powl")["yenPerPoint"] is None
+    assert daily.point_rate_policy("powl")["yenPerPoint"] == 0.1
+    assert daily.point_rate_policy("powl")["status"] == "verified"
     assert daily.point_rate_policy("not-a-site")["status"] == "unsupported"
 
 
