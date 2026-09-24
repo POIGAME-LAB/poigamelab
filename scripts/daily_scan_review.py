@@ -249,6 +249,10 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
         if source_id == "kurashiru_reward":
             unit_pattern = r"コイン"
             value_ceiling = 20_000_000
+        elif source_id == "mikoshi":
+            # MIKOSHI listing evidence uses the explicit branded unit
+            # "MIKOSHIポイント" rather than a bare point suffix.
+            unit_pattern = r"MIKOSHI\s*ポイント"
         point_values = [
             int(value.replace(",", ""))
             for value in re.findall(
