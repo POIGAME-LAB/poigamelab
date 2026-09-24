@@ -1,0 +1,84 @@
+name: Temporary Moppy v3 live audit
+
+on:
+  push:
+    branches:
+      - fix/moppy-ranking-current-v3-20260924
+    paths:
+      - ".github/workflows/tmp-moppy-v3-live.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit Moppy parser after category URL fix
+        run: |
+          python - <<'PY'
+          import json, sys
+          from http.cookiejar import CookieJar
+          from urllib.request import HTTPCookieProcessor, build_opener
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+          import daily_scan_review as daily
+
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          source=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          opener=build_opener(HTTPCookieProcessor(CookieJar()),direct.FirstPartyRedirectHandler(source))
+          bootstrap=source["listing_session_bootstrap_url"]
+          direct.fetch_first_party(bootstrap,source,opener=opener)
+
+          candidates=[]
+          seen=set()
+          for page in range(1,3):
+              url=source["new_game_discovery_page_url_template"].format(page=page)
+              raw,final=direct.fetch_first_party(
+                  url,source,opener=opener,
+                  extra_headers={"Referer":bootstrap,"X-Requested-With":"XMLHttpRequest",
+                                 "Accept":"text/html, */*; q=0.01"}
+              )
+              for item in direct.discover_new_game_listing_candidates(raw,final,source,[],limit=100):
+                  key=item.get("offerIdentity")
+                  if key and key not in seen:
+                      seen.add(key); candidates.append(item)
+
+          rows=[]
+          reasons={}
+          for item in candidates[:18]:
+              url=item["firstPartyCandidateUrl"]
+              title=item.get("titleHint") or ""
+              game=daily.discovery_name(title)
+              try:
+                  raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=2_000_000)
+                  ev=direct.inspect_moppy_offer(raw,url,final,[game,title])
+                  reason=ev.get("reason") or "parsed"
+                  reasons[reason]=reasons.get(reason,0)+1
+                  rows.append({
+                      "game":game,"url":url,"finalUrl":final,
+                      "state":ev.get("state"),"reason":ev.get("reason"),
+                      "platform":ev.get("platform"),
+                      "points":ev.get("displayedRewardPoints"),
+                      "yen":ev.get("displayedRewardYen"),
+                      "downstreamTermsRequired":ev.get("downstreamTermsRequired"),
+                      "parserVersion":ev.get("parserVersion"),
+                  })
+              except Exception as exc:
+                  reason="fetch:"+direct.summarize_fetch_error(exc)
+                  reasons[reason]=reasons.get(reason,0)+1
+                  rows.append({"game":game,"url":url,"state":"fetch_error","reason":reason})
+
+          print("MOPPY_V3_LIVE",json.dumps({
+              "candidateCount":len(candidates),
+              "reasonCounts":reasons,
+              "rows":rows,
+          },ensure_ascii=False,sort_keys=True))
+          if not candidates:
+              raise SystemExit("no candidates")
+          PY
