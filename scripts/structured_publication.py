@@ -364,6 +364,7 @@ def prepare(rows, evidence_items, sources, checked_at, policy, rate_confirmed=Fa
         for row in rows
     )
     decisions = []
+    retired_offer_keys = set()
     for row in output:
         sid = row.get("site")
         key = (
@@ -391,6 +392,54 @@ def prepare(rows, evidence_items, sources, checked_at, policy, rate_confirmed=Fa
                 require(row.get("type") == "StepUp", "unsupported_published_row")
             items = by_key[key]
             require(bool(items), "no_current_evidence")
+
+            # Hapitas can explicitly mark an exact first-party item page as
+            # ended. Retire a published row only when the current scan contains
+            # exactly one fingerprinted unavailable snapshot for the same offer
+            # identity and game. Fetch/parser failures continue to hold rows.
+            if sid == "hapitas":
+                unavailable_items = [
+                    item for item in items
+                    if (item.get("sourceEvidence") or item.get("evidence") or {}).get("state")
+                    == "unavailable"
+                ]
+                if unavailable_items:
+                    require(
+                        len(items) == 1 and len(unavailable_items) == 1,
+                        "conflicting_current_evidence",
+                    )
+                    item = unavailable_items[0]
+                    e = item.get("sourceEvidence") or item.get("evidence") or {}
+                    require(item.get("checkedAt") == checked_at, "not_current_scan")
+                    require(
+                        e.get("parserVersion") == "hapitas-detail-review-v2"
+                        and e.get("reason") == "source_offer_unavailable"
+                        and e.get("unavailableMarker") == "この広告は終了しています",
+                        "unverified_unavailable_state",
+                    )
+                    url = item.get("url") or ""
+                    require(direct.source_host_allowed(url, sources[sid]), "unregistered_url")
+                    require(
+                        direct.hapitas_offer_id(url) == e.get("offerId"),
+                        "offer_identity_mismatch",
+                    )
+                    require(
+                        direct.target_present(e.get("name", ""), [row["game"]]),
+                        "game_identity_changed",
+                    )
+                    require(
+                        _fingerprint(
+                            e, ["offerId", "name", "unavailableMarker"]
+                        ) == e.get("evidenceFingerprint"),
+                        "evidence_fingerprint_mismatch",
+                    )
+                    decision["publicationMode"] = "explicit_unavailable_retirement"
+                    decision["retired"] = True
+                    decision["updated"] = True
+                    retired_offer_keys.add(row.get("offerKey"))
+                    decisions.append(decision)
+                    continue
+
             candidates = []
             for item in items:
                 update = snapshot(item, sources, checked_at, rate_confirmed)
@@ -429,11 +478,16 @@ def prepare(rows, evidence_items, sources, checked_at, policy, rate_confirmed=Fa
                 str(exc) if isinstance(exc, Hold) else "invalid_snapshot"
             )
         decisions.append(decision)
+    output = [
+        row for row in output
+        if row.get("offerKey") not in retired_offer_keys
+    ]
     return output, {
         "mode": "structured_first_party_publication_v2",
         "apiCalls": 0,
         "updatedRows": sum(decision["updated"] for decision in decisions),
         "rewardChanges": sum(decision.get("rewardChanged", False) for decision in decisions),
+        "retiredRows": sum(decision.get("retired", False) for decision in decisions),
         "heldRows": sum("holdReason" in decision for decision in decisions),
         "decisions": decisions,
     }
