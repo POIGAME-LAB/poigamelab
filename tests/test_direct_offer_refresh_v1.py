@@ -1728,7 +1728,7 @@ def test_gendama_v2_keeps_reward_evidence_when_platform_is_not_explicit(gendama_
     ('テストゲームの口コミ・評判', '別ゲームの口コミ・評判', 'offer_title_mismatch'),
     ('class="service_content">Androidでレベル20到達',
      'class="other">Androidでレベル20到達', 'missing_offer_condition'),
-    ('成果受付期限：広告クリックから30日以内。', '',
+    ('class="service_detail_p"', 'class="other_terms"',
      'incomplete_or_ambiguous_offer_terms'),
 ])
 def test_gendama_v2_rejects_ambiguous_or_incomplete_source_evidence(
