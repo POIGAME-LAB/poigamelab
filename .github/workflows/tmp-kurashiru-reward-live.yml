@@ -139,11 +139,21 @@ jobs:
               with urlopen(req,timeout=20) as r:
                   raw=r.read(2_000_000).decode("utf-8","replace")
               chunks=[]
-              for m in re.finditer(r'self\\.__next_f\\.push\\(\\[1,("(?:\\\\.|[^"\\\\])*")\\]\\)',raw,re.S):
+              decoder=json.JSONDecoder()
+              marker='self.__next_f.push([1,'
+              pos=0
+              while True:
+                  pos=raw.find(marker,pos)
+                  if pos < 0:
+                      break
+                  pos += len(marker)
                   try:
-                      chunks.append(json.loads(m.group(1)))
+                      value,end=decoder.raw_decode(raw[pos:])
+                      if isinstance(value,str):
+                          chunks.append(value)
+                      pos += max(end,1)
                   except Exception:
-                      pass
+                      pos += 1
               joined="\n".join(chunks)
               snippets={}
               for key in ("コイン獲得条件","コイン還元","成果調査に関して","注意事項","ポイント付与対象外"):
