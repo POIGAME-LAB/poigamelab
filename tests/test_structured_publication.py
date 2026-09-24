@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import structured_publication as publication
 from tests.test_direct_offer_refresh_v1 import (
     warau_markup, WARAU_URL, chobi_markup, CHOBI_URL,
-    coincome_markup, COINCOME_URL,
+    coincome_markup, COINCOME_URL, _hapitas_fixture,
 )
 
 NOW = "2026-09-15T16:17:00+00:00"
@@ -156,6 +156,125 @@ def test_coincome_v2_reward_only_snapshot_updates_reward_and_preserves_old_terms
     assert report["updatedRows"] == 1
     assert report["rewardChanges"] == 1
     assert report["decisions"][0]["publicationMode"] == "reward_only"
+
+
+def test_hapitas_v2_reward_only_snapshot_accepts_reviewed_registry_platform():
+    url = "https://hapitas.jp/item/detail/itemid/102497/"
+    sources = {"hapitas": {"id": "hapitas", "search_domains": ["hapitas.jp"]}}
+    policy = {"enabled": True, "sources": ["hapitas"]}
+    evidence = publication.direct.inspect_hapitas_offer(
+        _hapitas_fixture(), url, url, ["Mistplay"],
+        reviewed_platform="iOS", publication_authorized=True,
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["platformProvenance"] == "reviewed_offer_registry"
+    row = {
+        "offerKey": f"Mistplay|hapitas|iOS|{url}",
+        "game": "Mistplay", "site": "hapitas", "provider": "",
+        "url": url, "sourceUrl": url, "reward": "9000",
+        "type": "StepUp", "condition": "既存条件", "deadline": "既存期限",
+        "platform": "iOS", "verified": "true", "updatedAt": "2026-09-01",
+    }
+    item = {
+        "source": "hapitas", "game": "Mistplay", "url": url,
+        "checkedAt": NOW, "sourceEvidence": evidence,
+    }
+    updated, report = publication.prepare([row], [item], sources, NOW, policy)
+    assert updated[0]["reward"] == "9351"
+    assert updated[0]["condition"] == "既存条件"
+    assert updated[0]["deadline"] == "既存期限"
+    assert report["updatedRows"] == 1
+    assert report["rewardChanges"] == 1
+    assert report["retiredRows"] == 0
+
+
+def test_hapitas_v2_accepts_source_title_platform_only_when_registry_authorized():
+    url = "https://hapitas.jp/item/detail/itemid/102497/"
+    sources = {"hapitas": {"id": "hapitas", "search_domains": ["hapitas.jp"]}}
+    policy = {"enabled": True, "sources": ["hapitas"]}
+    raw = _hapitas_fixture().replace(
+        "<h1>Mistplay</h1>", "<h1>Mistplay（iOS）</h1>"
+    )
+    evidence = publication.direct.inspect_hapitas_offer(
+        raw, url, url, ["Mistplay"],
+        reviewed_platform="iOS", publication_authorized=True,
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["platform"] == "iOS"
+    assert evidence["platformProvenance"] == "source_title"
+    assert evidence["publicationAuthorized"] is True
+    item = {
+        "source": "hapitas", "game": "Mistplay", "url": url,
+        "checkedAt": NOW, "sourceEvidence": evidence,
+    }
+    snap = publication.reward_only_snapshot(item, sources, NOW)
+    assert snap["reward"] == "9351"
+    assert snap["platform"] == "iOS"
+
+
+def test_hapitas_explicit_ended_page_retires_exact_published_row():
+    url = "https://hapitas.jp/item/detail/itemid/101355"
+    sources = {"hapitas": {"id": "hapitas", "search_domains": ["hapitas.jp"]}}
+    policy = {"enabled": True, "sources": ["hapitas"]}
+    raw = """
+    <html><head>
+      <link rel="canonical" href="https://hapitas.jp/item/detail/itemid/101355/">
+    </head><body>
+      <h1>キングショット</h1>
+      <div>キングショット この広告は終了しています</div>
+      <section>ポイント対象条件 STEP1: 役場レベル4に到達で42pt</section>
+    </body></html>
+    """
+    evidence = publication.direct.inspect_hapitas_offer(
+        raw, url, url, ["キングショット"],
+        reviewed_platform="Android", publication_authorized=True,
+    )
+    row = {
+        "offerKey": f"キングショット|hapitas|Android|{url}",
+        "game": "キングショット", "site": "hapitas", "provider": "",
+        "url": url, "sourceUrl": url, "reward": "16320",
+        "type": "StepUp", "condition": "既存条件", "deadline": "既存期限",
+        "platform": "Android", "verified": "true", "updatedAt": "2026-09-01",
+    }
+    item = {
+        "source": "hapitas", "game": "キングショット", "url": url,
+        "checkedAt": NOW, "sourceEvidence": evidence,
+    }
+    updated, report = publication.prepare([row], [item], sources, NOW, policy)
+    assert updated == []
+    assert report["retiredRows"] == 1
+    assert report["updatedRows"] == 1
+    assert report["heldRows"] == 0
+    assert report["decisions"][0]["publicationMode"] == "explicit_unavailable_retirement"
+    assert report["decisions"][0]["retired"] is True
+
+
+def test_hapitas_unfingerprinted_unavailable_evidence_never_retires():
+    url = "https://hapitas.jp/item/detail/itemid/101355"
+    sources = {"hapitas": {"id": "hapitas", "search_domains": ["hapitas.jp"]}}
+    policy = {"enabled": True, "sources": ["hapitas"]}
+    row = {
+        "offerKey": f"キングショット|hapitas|Android|{url}",
+        "game": "キングショット", "site": "hapitas", "provider": "",
+        "url": url, "sourceUrl": url, "reward": "16320",
+        "type": "StepUp", "condition": "既存条件", "deadline": "既存期限",
+        "platform": "Android", "verified": "true", "updatedAt": "2026-09-01",
+    }
+    item = {
+        "source": "hapitas", "game": "キングショット", "url": url,
+        "checkedAt": NOW,
+        "sourceEvidence": {
+            "state": "unavailable", "reason": "source_offer_unavailable",
+            "parserVersion": "hapitas-detail-review-v2",
+            "offerId": "101355", "name": "キングショット",
+            "unavailableMarker": "この広告は終了しています",
+            "evidenceFingerprint": "wrong",
+        },
+    }
+    updated, report = publication.prepare([row], [item], sources, NOW, policy)
+    assert updated == [row]
+    assert report["retiredRows"] == 0
+    assert report["heldRows"] == 1
 
 
 def test_unavailable_offer_preserves_previous_value(warau_markup):
