@@ -245,3 +245,5 @@ jobs:
           out["apiProbes"]=probes
           print("TRIMA_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
+
+# rerun: 2026-09-25-trima-finalize
