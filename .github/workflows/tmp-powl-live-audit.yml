@@ -27,7 +27,7 @@ jobs:
           tmp="$(mktemp -d)"
           aws s3 cp "s3://${R2_BUCKET}/state/latest/new_game_candidate_queue.json.gz" "${tmp}/queue.gz" --endpoint-url "${R2_ENDPOINT}" --only-show-errors
           gzip -dc "${tmp}/queue.gz" > data/new_game_candidate_queue.json
-      - name: Simulate full primary Powl listing in ranking universe
+      - name: Measure bounded Powl detail candidates
         run: |
           python - <<'PY'
           import collections,json,re,sys
@@ -41,7 +41,6 @@ jobs:
           s=sources["powl"]
           raw,final=d.fetch_first_party(s["direct_listing_urls"][0],s,timeout=20,max_bytes=2500000)
           doc=d.EvidenceHTML(raw).root
-
           powl=[]
           seen=set()
           for a in doc.find(tag="a"):
@@ -73,62 +72,78 @@ jobs:
               item.update(d.classify_new_game_candidate(item))
               powl.append(item)
 
+          powl_by_url={x["firstPartyCandidateUrl"]:x for x in powl}
+          def listed_yen(item):
+              label=item.get("titleHint","")
+              vals=[int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",label,re.I)]
+              vals=sorted(set(v for v in vals if 0 < v <= 5000000))
+              if len(vals)!=1 or vals[0] % 10:
+                  return None
+              return vals[0]//10
+
           old=json.load(open("data/new_game_candidate_queue.json",encoding="utf-8")).get("items",[])
           items=[x for x in old if x.get("source")!="powl"] + powl
-
           simulated={k:dict(v) for k,v in sources.items()}
           simulated["powl"]["coverage_detail_review_enabled"]=True
           simulated["powl"]["coverage_detail_review_mode"]="candidate_only"
-
           families=daily.source_families(simulated)
-          groups={}
-          for item in items:
-              if item.get("classification")=="likely_non_game":
-                  continue
-              name=daily.discovery_name(item.get("titleHint"))
-              if not name or d.context_matches_known_game(name,targets):
-                  continue
-              sid,url=item.get("source"),item.get("firstPartyCandidateUrl")
-              if sid not in simulated or not d.source_host_allowed(url,simulated[sid]) or not d.detail_like(url,simulated[sid]):
-                  continue
-              if not d.source_participates_in_new_game_ranking(simulated[sid]):
-                  continue
-              ident=d.offer_identity_key(url,sid)
-              if not ident: continue
-              key=d.normalized_text(name)
-              groups.setdefault(key,{"game":name,"offers":{}})["offers"].setdefault((families[sid],ident),(sid,url))
 
-          owners={}
-          for key,g in groups.items():
-              for ident in g["offers"]:
-                  owners.setdefault(ident,set()).add(key)
-          for g in groups.values():
-              g["offers"]={ident:offer for ident,offer in g["offers"].items() if len(owners[ident])==1}
+          def build(items_subset):
+              groups={}
+              for item in items_subset:
+                  if item.get("classification")=="likely_non_game": continue
+                  name=daily.discovery_name(item.get("titleHint"))
+                  if not name or d.context_matches_known_game(name,targets): continue
+                  sid,url=item.get("source"),item.get("firstPartyCandidateUrl")
+                  if sid not in simulated or not d.source_host_allowed(url,simulated[sid]) or not d.detail_like(url,simulated[sid]): continue
+                  if sid!="powl" and not d.source_participates_in_new_game_ranking(simulated[sid]): continue
+                  ident=d.offer_identity_key(url,sid)
+                  if not ident: continue
+                  key=d.normalized_text(name)
+                  groups.setdefault(key,{"game":name,"offers":{}})["offers"].setdefault((families[sid],ident),(sid,url))
+              owners={}
+              for key,g in groups.items():
+                  for ident in g["offers"]: owners.setdefault(ident,set()).add(key)
+              for g in groups.values():
+                  g["offers"]={ident:offer for ident,offer in g["offers"].items() if len(owners[ident])==1}
+              return {k:g for k,g in groups.items() if g["offers"] and len({f for f,_ in g["offers"]})>=2}
 
-          eligible=[g for g in groups.values() if g["offers"]]
-          handoff=[g for g in eligible if len({f for f,_ in g["offers"]})>=2]
-          classification=collections.Counter(x.get("classification") for x in powl)
-          powl_handoff=[g for g in handoff if any(sid=="powl" for sid,_ in g["offers"].values())]
+          base=build([x for x in old if x.get("source")!="powl"])
+          full=build(items)
+          powl_groups={k:g for k,g in full.items() if any(sid=="powl" for sid,_ in g["offers"].values())}
+          added={k:g for k,g in powl_groups.items() if k not in base}
+          existing={k:g for k,g in powl_groups.items() if k in base}
+
+          parsed=0; unknown=0
+          offer_thresholds={t:0 for t in (3000,5000,6400,7969,10000,10417,11255,15000,20000)}
+          group_thresholds={t:0 for t in offer_thresholds}
+          for key,g in powl_groups.items():
+              ys=[]
+              for sid,url in g["offers"].values():
+                  if sid!="powl": continue
+                  y=listed_yen(powl_by_url[url])
+                  if y is None: unknown+=1
+                  else:
+                      parsed+=1; ys.append(y)
+                      for t in offer_thresholds:
+                          if y>t: offer_thresholds[t]+=1
+              for t in group_thresholds:
+                  if ys and max(ys)>t: group_thresholds[t]+=1
+
           print("SUMMARY",json.dumps({
               "powlPrimaryCandidates":len(powl),
-              "powlClassifications":dict(classification),
-              "allRankingEligibleGroups":len(eligible),
-              "handoffGroups":len(handoff),
-              "handoffOffers":sum(len(g["offers"]) for g in handoff),
-              "powlHandoffGroups":len(powl_handoff),
-              "powlHandoffOffers":sum(
-                  sum(1 for sid,_ in g["offers"].values() if sid=="powl")
-                  for g in powl_handoff
-              ),
-              "familyDistribution":dict(sorted(collections.Counter(
-                  len({f for f,_ in g["offers"]}) for g in handoff
-              ).items())),
+              "baseHandoffGroups":len(base),
+              "baseHandoffOffers":sum(len(g["offers"]) for g in base.values()),
+              "fullHandoffGroups":len(full),
+              "fullHandoffOffers":sum(len(g["offers"]) for g in full.values()),
+              "powlHandoffGroups":len(powl_groups),
+              "powlExistingBaseGroups":len(existing),
+              "powlAddedGroups":len(added),
+              "powlOffersParsedListingYen":parsed,
+              "powlOffersUnknownListingYen":unknown,
+              "powlOfferCountsAboveYen":offer_thresholds,
+              "powlGroupCountsAboveYen":group_thresholds,
+              "addedGroupPowlOffers":sum(sum(1 for sid,_ in g["offers"].values() if sid=="powl") for g in added.values()),
+              "existingGroupPowlOffers":sum(sum(1 for sid,_ in g["offers"].values() if sid=="powl") for g in existing.values()),
           },ensure_ascii=False,sort_keys=True))
-          for g in sorted(powl_handoff,key=lambda x:(-len({f for f,_ in x["offers"]}),x["game"]))[:100]:
-              print("GROUP",json.dumps({
-                  "game":g["game"],
-                  "families":len({f for f,_ in g["offers"]}),
-                  "offers":len(g["offers"]),
-                  "sources":sorted({sid for sid,_ in g["offers"].values()}),
-              },ensure_ascii=False,sort_keys=True))
           PY
