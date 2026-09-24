@@ -3971,11 +3971,15 @@ def main(after_scan=None):
                 signature = listing_detail_identity_signature(
                     raw, final_url, discovery_source, limit=5000
                 )
+                if (
+                    pages_attempted == 1
+                    and min_first_page_identities > 0
+                    and len(signature) < min_first_page_identities
+                ):
+                    content_guard_failed = True
+                    new_game_discovery_summary["fetchErrors"] += 1
+                    break
                 if use_pagination:
-                    if pages_attempted == 1 and len(signature) < min_first_page_identities:
-                        content_guard_failed = True
-                        new_game_discovery_summary["fetchErrors"] += 1
-                        break
                     if not signature:
                         source_complete = True
                         break
