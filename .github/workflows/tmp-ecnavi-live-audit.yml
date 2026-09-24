@@ -1,0 +1,74 @@
+name: Temporary ECNavi live audit
+on:
+  push:
+    branches: [audit/ecnavi-live-20260924]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore latest new-game queue
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/new_game_candidate_queue.json.gz" "${tmp}/queue.gz" --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          gzip -dc "${tmp}/queue.gz" > data/new_game_candidate_queue.json
+      - name: Audit current ECNavi details
+        run: |
+          python - <<'PY'
+          import collections,json,re,sys
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as d
+          import daily_scan_review as daily
+
+          sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
+          s=sources["ec_navi"]
+          items=[x for x in json.load(open("data/new_game_candidate_queue.json",encoding="utf-8")).get("items",[])
+                 if x.get("source")=="ec_navi" and x.get("active",True)]
+          print("CANDIDATES",len(items))
+          outcomes=collections.Counter()
+          for item in items:
+              url=item.get("firstPartyCandidateUrl")
+              alias=daily.discovery_name(item.get("titleHint"))
+              try:
+                  raw,final=d.fetch_first_party(url,s,timeout=20,max_bytes=1500000)
+                  ev=d.inspect_ecnavi_offer(raw,url,final,[alias])
+                  if ev.get("state")!="parsed":
+                      text=d.visible_text(raw)
+                      doc=d.EvidenceHTML(raw).root
+                      print("FAIL_STRUCTURE",json.dumps({
+                          "url":url,"titleHint":item.get("titleHint"),
+                          "h1":[d.evidence_text(x) for x in doc.find(tag="h1")][:5],
+                          "canonical":[x.attrs.get("href","") for x in doc.find(tag="link") if "canonical" in x.attrs.get("rel","").split()][:3],
+                          "pointRate":bool(re.search(r"10\s*pts?\.?\s*[=＝]\s*1\s*円",text,re.I)),
+                          "markers":{m:text.find(m) for m in ("加算条件","加算条件詳細","加算時期","注意事項","共通の注意事項")},
+                          "head":re.sub(r"\s+"," ",text)[:6500],
+                      },ensure_ascii=False,sort_keys=True))
+              except Exception as exc:
+                  ev={"state":"exception","reason":d.summarize_fetch_error(exc)}
+              outcomes[(ev.get("state"),ev.get("reason") or "")]+=1
+              print("DETAIL",json.dumps({
+                  "titleHint":item.get("titleHint"),"url":url,
+                  "state":ev.get("state"),"reason":ev.get("reason"),
+                  "parserVersion":ev.get("parserVersion"),"name":ev.get("name"),
+                  "platform":ev.get("platform"),
+                  "rewardPoints":ev.get("verifiedCurrentRewardPoints"),
+                  "rewardYen":ev.get("verifiedCurrentRewardYen"),
+                  "publicationAuthorized":ev.get("publicationAuthorized"),
+              },ensure_ascii=False,sort_keys=True))
+          print("SUMMARY",json.dumps({f"{k[0]}|{k[1]}":v for k,v in outcomes.items()},ensure_ascii=False,sort_keys=True))
+          PY
