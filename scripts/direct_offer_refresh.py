@@ -3012,11 +3012,13 @@ def inspect_kurashiru_reward_offer(raw, requested_url, final_url, aliases):
             if "注意事項" not in value:
                 continue
             if not any(marker in value for marker in (
-                "成果受付期限", "承認条件", "成果条件", "成果となります",
+                "成果受付期限", "獲得条件達成期限", "承認条件",
+                "成果条件", "成果となります",
             )):
                 continue
             if not any(marker in value for marker in (
-                "却下条件", "成果対象外", "ポイント付与対象外", "報酬付与対象外",
+                "却下条件", "成果対象外", "獲得対象外",
+                "ポイント付与対象外", "報酬付与対象外", "報酬対象外",
             )):
                 continue
             if not any(marker in value for marker in (
