@@ -3177,11 +3177,85 @@ def test_ecnavi_detail_parser_validates_point_yen_pair():
         ['Neverness to Everness'],
     )
     assert evidence['state'] == 'parsed'
-    assert evidence['parserVersion'] == 'ecnavi-detail-review-v1'
+    assert evidence['parserVersion'] == 'ecnavi-detail-review-v2'
+    assert evidence['titleMatchProvenance'] == 'exact_alias'
+    assert evidence['verifiedCurrentRewardPoints'] == 20000
+    assert evidence['verifiedCurrentRewardYen'] == 2000
+    assert evidence['displayedYenEquivalent'] == 2000
+    assert evidence['displayedPointCandidates'] == [9450, 20000]
+    assert evidence['publicationAuthorized'] is False
+
+
+def test_ecnavi_v2_normalizes_spaced_thousands_separators():
+    evidence = direct.inspect_ecnavi_offer(
+        _ecnavi_fixture(points='20 , 000', yen='2 , 000', base='9 , 450'),
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['Neverness to Everness'],
+    )
+    assert evidence['state'] == 'parsed'
     assert evidence['verifiedCurrentRewardPoints'] == 20000
     assert evidence['verifiedCurrentRewardYen'] == 2000
     assert evidence['displayedPointCandidates'] == [9450, 20000]
-    assert evidence['publicationAuthorized'] is False
+
+
+def test_ecnavi_v2_rejects_floor_converted_yen_display():
+    evidence = direct.inspect_ecnavi_offer(
+        _ecnavi_fixture(points='96', yen='9', base=''),
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['Neverness to Everness'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'point_yen_conversion_mismatch',
+    }
+
+
+def test_ecnavi_v2_rejects_boosted_floor_conversion():
+    evidence = direct.inspect_ecnavi_offer(
+        _ecnavi_fixture(points='17 , 745', yen='1 , 774', base='2 , 600'),
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['Neverness to Everness'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'point_yen_conversion_mismatch',
+    }
+
+
+def test_ecnavi_v2_accepts_long_listing_context_with_exact_h1_prefix():
+    raw = _ecnavi_fixture(points='33 , 750', yen='3 , 375', base='').replace(
+        '<h1>人気ソシャゲ〖NTE(Neverness to Everness)〗PC版無料登録</h1>',
+        '<h1>ユーキャン</h1>',
+    )
+    evidence = direct.inspect_ecnavi_offer(
+        raw,
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['ユーキャン 講座購入完了で成果となります。 33 , 750'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['titleMatchProvenance'] == 'listing_context_prefix'
+    assert evidence['verifiedCurrentRewardYen'] == 3375
+
+
+def test_ecnavi_v2_rejects_unrelated_listing_context():
+    raw = _ecnavi_fixture().replace(
+        '<h1>人気ソシャゲ〖NTE(Neverness to Everness)〗PC版無料登録</h1>',
+        '<h1>ユーキャン</h1>',
+    )
+    evidence = direct.inspect_ecnavi_offer(
+        raw,
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        'https://ecnavi.jp/ad/10721342/show/?frame=category',
+        ['まったく別のサービス'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'offer_title_mismatch',
+    }
 
 
 def test_ecnavi_detail_parser_rejects_point_yen_mismatch():
@@ -3217,7 +3291,7 @@ def test_ecnavi_known_game_detail_review_is_bounded_candidate_only():
     assert ec['coverage_detail_review_enabled'] is True
     assert ec['coverage_detail_review_limit_per_game'] == 3
     assert ec['coverage_detail_review_mode'] == 'candidate_only'
-    assert ec['coverage_detail_review_parser'] == 'ecnavi-detail-review-v1'
+    assert ec['coverage_detail_review_parser'] == 'ecnavi-detail-review-v2'
     assert ec['scheduled_fetch_enabled'] is False
 
 
