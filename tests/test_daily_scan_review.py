@@ -575,3 +575,37 @@ def test_zero_verified_reward_sources_never_rank(monkeypatch):
     assert row["candidateEligible"] is False
     assert row["maxObservedRewardYen"] is None
     assert "no_verified_reward_source" in row["holdReasons"]
+
+
+
+def test_kurashiru_v2_listing_upper_bound_uses_verified_coin_rate():
+    registry = {
+        "kurashiru_reward": {
+            "status": "verified",
+            "yenPerPoint": 0.01,
+        }
+    }
+    item = {
+        "source": "kurashiru_reward",
+        "titleHint": "パズル＆カオス",
+        "listingRewardText": (
+            "パズル＆カオス センターキャッスルレベル5到達で "
+            "MAX 3,140,360 > 3,768,432 コイン"
+        ),
+    }
+    assert daily.listing_reward_upper_bound_yen(item, registry=registry) == 37684.32
+
+
+def test_kurashiru_v2_explicit_yen_requires_exact_coin_contract():
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "kurashiru-reward-detail-review-v2",
+        "verifiedCurrentRewardCoins": 3768432,
+        "verifiedCurrentRewardYen": 37684.32,
+        "rewardUnit": "Kurashiru-coin",
+        "sourcePointRate": "100coin=1JPY",
+        "downstreamTermsRequired": False,
+    }
+    assert daily.explicit_yen(evidence) == 37684.32
+    evidence["verifiedCurrentRewardYen"] = 37684.31
+    assert daily.explicit_yen(evidence) is None
