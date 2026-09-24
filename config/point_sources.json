@@ -171,7 +171,8 @@
       "new_game_discovery_listing_limit": 2,
       "new_game_discovery_candidate_limit": 1000,
       "new_game_discovery_scope": "current_anonymous_first_party_skyflag_os_feeds",
-      "reviewedAt": "2026-09-25"
+      "reviewedAt": "2026-09-25",
+      "new_game_discovery_min_detail_identities_first_page": 100
     },
     {
       "id": "gendama",
