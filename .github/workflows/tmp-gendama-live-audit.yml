@@ -50,9 +50,28 @@ jobs:
                   "hasAttention":"ポイントを獲得するための注意事項" in text,
                   "excerpt":visible[:900],
               })
+          decoded=data.decode("cp932",errors="replace")
+          visible=re.sub(r"\\s+"," ",re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",decoded))
+          visible=re.sub(r"(?s)<[^>]+>"," ",visible)
+          visible=re.sub(r"\\s+"," ",visible).strip()
+          snippets={}
+          for marker in ("ザ・グランドマフィア","獲得条件","判定ポイント","ポイントを獲得","注意事項","円相当","48,750pt","48,750"):
+              pos=visible.find(marker)
+              if pos>=0:
+                  snippets[marker]=visible[max(0,pos-220):pos+900]
+          patterns={
+              "ptParenYen":re.findall(r"([1-9][0-9,]*)\\s*pt\\s*[（(]\\s*([1-9][0-9,]*)\\s*円相当",visible,re.I)[:10],
+              "ptValues":re.findall(r"([1-9][0-9,]*)\\s*pt",visible,re.I)[:20],
+              "yenEquivalent":re.findall(r"([1-9][0-9,]*)\\s*円相当",visible)[:20],
+          }
+          h1s=[re.sub(r"\\s+"," ",re.sub(r"(?s)<[^>]+>"," ",x)).strip()
+               for x in re.findall(r"(?is)<h1[^>]*>(.*?)</h1>",decoded)]
+          titles=[re.sub(r"\\s+"," ",re.sub(r"(?s)<[^>]+>"," ",x)).strip()
+                  for x in re.findall(r"(?is)<title[^>]*>(.*?)</title>",decoded)]
           print("GENDAMA_ENCODING_AUDIT",json.dumps({
               "finalUrl":final,"contentType":ctype,"headerCharset":hcharset,
-              "metaCharsets":metas,"bytes":len(data),"attempts":attempts
+              "metaCharsets":metas,"bytes":len(data),"attempts":attempts,
+              "h1s":h1s[:5],"titles":titles[:5],"patterns":patterns,"snippets":snippets
           },ensure_ascii=False,sort_keys=True))
           PY
       - name: Audit current Gendama search and detail surfaces
