@@ -100,5 +100,60 @@ jobs:
               except Exception as exc:
                   out["bundles"].append({"url":su,"error":type(exc).__name__+":"+str(exc)[:180]})
 
+          # The public landing page links to the actual Trima point-site web app.
+          point_urls=[
+              "https://web.trip-mile.com/",
+              "https://web.trip-mile.com/robots.txt",
+          ]
+          webapp=[]
+          dynamic_scripts=[]
+          for url in point_urls:
+              try:
+                  req=Request(url,headers={"User-Agent":UA,"Accept-Language":"ja,en-US;q=0.8,en;q=0.5"})
+                  with urlopen(req,timeout=20) as r:
+                      data=r.read(4_000_000); final=r.geturl();ctype=r.headers.get("Content-Type")
+                  raw=data.decode("utf-8","replace")
+                  p=P();p.feed(raw)
+                  dynamic_scripts += [urljoin(final,s) for s in p.scripts]
+                  visible=re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
+                  visible=re.sub(r"(?s)<[^>]+>"," ",visible)
+                  visible=re.sub(r"\\s+"," ",unescape(visible)).strip()
+                  strings=sorted(set(re.findall(r'(?:https?://[^"\\'<> ]+|/[A-Za-z0-9_./?=&%-]{3,})',raw)))
+                  webapp.append({
+                      "url":url,"final":final,"bytes":len(data),"contentType":ctype,
+                      "title":(re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0][:300],
+                      "scripts":[urljoin(final,s) for s in p.scripts[:100]],
+                      "links":[{"url":urljoin(final,h),"text":t[:180]} for h,t in p.links[:140]],
+                      "keywords":{k:(k in visible) for k in ["ゲーム","アプリ","ポイント","案件","ミッション","広告"]},
+                      "visibleExcerpt":visible[:3000],
+                      "interestingPaths":[x for x in strings if any(k in x.lower() for k in (
+                          "api","game","app","mission","offer","reward","campaign","point","ad"
+                      ))][:180],
+                  })
+              except Exception as exc:
+                  webapp.append({"url":url,"error":type(exc).__name__+":"+str(exc)[:220]})
+
+          appbundles=[]
+          seen2=set()
+          for su in dynamic_scripts:
+              if su in seen2 or len(appbundles)>=60: continue
+              seen2.add(su)
+              try:
+                  req=Request(su,headers={"User-Agent":UA})
+                  with urlopen(req,timeout=20) as r:
+                      raw=r.read(5_000_000).decode("utf-8","replace")
+                  strings=sorted(set(re.findall(r'["\\\']([^"\\\']{3,500})["\\\']',raw)))
+                  interesting=[x for x in strings if any(k in x.lower() for k in (
+                      "http","api","graphql","game","app","mission","offer",
+                      "reward","campaign","point","advert","category"
+                  ))]
+                  appbundles.append({
+                      "url":su,"bytes":len(raw),"interestingStrings":interesting[:320],
+                      "fetchCalls":re.findall(r'fetch\\(([^)]{1,350})\\)',raw)[:100],
+                  })
+              except Exception as exc:
+                  appbundles.append({"url":su,"error":type(exc).__name__+":"+str(exc)[:180]})
+          out["pointWebApp"]=webapp
+          out["pointWebBundles"]=appbundles
           print("TRIMA_AUDIT",json.dumps(out,ensure_ascii=False,sort_keys=True))
           PY
