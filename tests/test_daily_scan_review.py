@@ -47,13 +47,16 @@ def test_discovery_name_strips_coincome_listing_ui_suffix_only():
     ) == "Cat Drop: Cute Slide & Match（30日以内にレベル400クリア）"
 
 
-def test_single_verified_site_qualifies_without_publication_permission(monkeypatch):
+def test_single_verified_site_stays_discovery_only_and_does_not_spend_ranking_budget(monkeypatch):
     items = candidates(sites=("a",)) * 10
     result = scan(items, monkeypatch)
-    assert result["reviewedGroups"] == result["detailInspectionCalls"] == 1
+    assert result["listingGroups"] == 1
+    assert result["singleSiteListingGroups"] == 1
+    assert result["rankingEligibleGroups"] == 0
+    assert result["reviewedGroups"] == result["detailInspectionCalls"] == 0
     assert result["twoSiteListingGroups"] == 0
-    assert result["topFiveReviewCandidates"] == ["Example Puzzle"]
-    assert result["results"][0]["publicationAuthorized"] is False
+    assert result["topFiveReviewCandidates"] == []
+    assert result["rankingComplete"] is True
 
 
 def test_same_domain_with_two_source_ids_is_not_two_sites(monkeypatch):
@@ -282,9 +285,11 @@ def test_default_budget_handles_more_than_thirty_two_site_groups(monkeypatch):
                 "firstPartyCandidateUrl": f"https://{site}.example/detail?id={i}",
             })
     result = scan(items, monkeypatch)
-    assert daily.MAX_DETAILS == 640
-    assert daily.MAX_GROUPS == daily.MAX_DETAILS // 2 == 320
+    assert daily.MAX_DETAILS == 768
+    assert daily.MAX_GROUPS == 320
     assert result["twoSiteListingGroups"] == 31
+    assert result["rankingEligibleGroups"] == 31
+    assert result["singleSiteListingGroups"] == 0
     assert result["reviewedGroups"] == 31
     assert result["detailInspectionCalls"] == 62
     assert result["groupLimitReached"] is False
@@ -325,21 +330,40 @@ def test_default_budget_covers_observed_558_detail_surface(monkeypatch):
     assert result["rankingComplete"] is True
 
 
+def test_many_single_site_groups_do_not_false_hold_two_site_handoff(monkeypatch):
+    items = _budget_surface(158)
+    for i in range(944):
+        items.append({
+            "classification": "likely_game",
+            "titleHint": f"Single Site Candidate {i:04d}",
+            "source": "a",
+            "firstPartyCandidateUrl": f"https://a.example/detail?id=single-{i}",
+        })
+    result = scan(items, monkeypatch)
+    assert result["listingGroups"] == 1102
+    assert result["twoSiteListingGroups"] == 158
+    assert result["singleSiteListingGroups"] == 944
+    assert result["rankingEligibleGroups"] == 158
+    assert result["reviewedGroups"] == 158
+    assert result["groupLimitReached"] is False
+    assert result["rankingComplete"] is True
+
+
 def test_default_budget_still_fails_closed_past_group_capacity(monkeypatch):
     result = scan(_budget_surface(321), monkeypatch)
     assert result["twoSiteListingGroups"] == 321
     assert result["reviewedGroups"] == 320
-    assert result["detailInspectionCalls"] == daily.MAX_DETAILS == 640
+    assert result["detailInspectionCalls"] == 640
     assert result["groupLimitReached"] is True
     assert result["detailLimitReached"] is False
     assert result["rankingComplete"] is False
 
 
 def test_default_budget_keeps_margin_above_observed_live_surface():
-    # The 2026-09-20 live listing-only probe measured 558 required detail
-    # inspections before Moppy recovery; the bounded cap keeps explicit margin.
-    assert daily.MAX_DETAILS >= 558
-    assert daily.MAX_DETAILS == 640
+    # The 2026-09-24 live queue audit measured 667 detail offers across the
+    # 158 groups that satisfy the downstream two-site handoff gate.
+    assert daily.MAX_DETAILS >= 667
+    assert daily.MAX_DETAILS == 768
 
 
 def test_nightly_rate_policy_is_fail_closed_for_unknown_sources():
