@@ -1665,11 +1665,22 @@ def inspect_hapitas_offer(
         header = text[title_pos:target_pos]
 
         if "この広告は終了しています" in header:
+            unavailable_payload = {
+                "offerId": offer_id,
+                "name": title,
+                "unavailableMarker": "この広告は終了しています",
+            }
+            fingerprint = hashlib.sha256(
+                json.dumps(
+                    unavailable_payload, ensure_ascii=False, sort_keys=True
+                ).encode("utf-8")
+            ).hexdigest()
             return {
                 "state": "unavailable",
                 "reason": "source_offer_unavailable",
-                "offerId": offer_id,
-                "name": title,
+                "parserVersion": "hapitas-detail-review-v2",
+                **unavailable_payload,
+                "evidenceFingerprint": fingerprint,
             }
 
         if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
