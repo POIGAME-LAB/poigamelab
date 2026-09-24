@@ -2604,13 +2604,25 @@ def inspect_gendama_offer(raw, requested_url, final_url, aliases):
             raise ValueError("missing_offer_condition")
 
         term_candidates = []
+        positive_markers = (
+            "成果受付期限", "成果調査受付期限", "ポイント付与条件",
+            "ポイント付与受付期間", "獲得条件", "お問い合わせ受付期限",
+        )
+        rejection_markers = (
+            "成果対象外", "却下条件", "獲得対象外", "注意事項", "ご注意点",
+        )
+        support_markers = (
+            "広告主", "スポンサーサイト", "成果調査", "ポイント付与調査",
+            "お問い合わせ", "問合せ",
+        )
         for node in doc.find(cls="service_detail_p"):
             value = evidence_text(node)
-            marker_count = sum(marker in value for marker in (
-                "成果受付期限", "成果調査受付期限", "成果対象外",
-                "広告主", "スポンサーサイト", "ご注意点",
-            ))
-            if len(value) >= 120 and marker_count >= 2:
+            reviewed_shape = (
+                any(marker in value for marker in positive_markers)
+                and any(marker in value for marker in rejection_markers)
+                and any(marker in value for marker in support_markers)
+            )
+            if len(value) >= 120 and reviewed_shape:
                 term_candidates.append(value)
         unique_terms = list(dict.fromkeys(term_candidates))
         if len(unique_terms) != 1:
