@@ -1,0 +1,18 @@
+name: Temporary Hapitas baseline test
+on:
+  push:
+    branches: [audit/hapitas-test-baseline-20260924]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: |
+          python -m pip install --disable-pip-version-check pytest
+          python -m py_compile scripts/direct_offer_refresh.py scripts/daily_scan_review.py scripts/structured_publication.py
+          python -m pytest -q tests/test_direct_offer_refresh_v1.py tests/test_public_site_build.py tests/test_phase2_multigame.py tests/test_daily_scan_review.py
