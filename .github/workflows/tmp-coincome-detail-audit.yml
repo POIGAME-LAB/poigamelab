@@ -18,40 +18,55 @@ jobs:
           python -m pytest -q tests/test_direct_offer_refresh_v1.py -k "coincome"
           python -m pytest -q tests/test_daily_scan_review.py
           python -m pytest -q tests/test_structured_publication.py -k "coincome"
-      - name: Audit remaining COINCOME edge cases
+      - name: Verify current COINCOME listing end to end
         run: |
           python - <<'PY'
-          import json,sys,re
+          import json,sys
+          from urllib.parse import urljoin
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
+          import daily_scan_review as daily
           cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
           src=next(x for x in cfg["sources"] if x["id"]=="coincome")
-          cases={
-            "9940":["ペタペタペンギン団"],
-            "7446":["TikTok"],
-            "10134":["タイトーオンラインクレーン"],
-          }
-          for offer_id,aliases in cases.items():
-              url=f"https://cimcome.jp/campaigns/details/{offer_id}"
-              raw,final=d.fetch_first_party(url,src,timeout=20,max_bytes=1500000)
-              text=d.visible_text(raw)
-              doc=d.EvidenceHTML(raw).root
-              title=d.evidence_text(d.one(doc.find(cls="sale__title")))
-              reward_node=d.one(d.one(doc.find(cls="sale__up")).find(tag="p"))
-              direct_reward=" ".join(x.strip() for x in reward_node.children if isinstance(x,str) and x.strip())
-              descriptions=doc.find(cls="description")
-              description=d.evidence_text(d.one(descriptions)) if descriptions else ""
-              steps=[
-                  int(x.replace(",",""))
-                  for x in re.findall(r"STEP\s*[0-9]+\..*?【([0-9][0-9,]*)\s*円】",description,flags=re.I)
-              ]
-              start=text.find("適用端末")
-              end=text.find("リンクをコピーする",start)
-              terms=text[start:end] if start>=0 and end>start else ""
-              ev=d.inspect_coincome_offer(raw,url,final,aliases)
-              print("EDGE",json.dumps({
-                  "id":offer_id,"title":title,"directReward":direct_reward,
-                  "steps":steps,"stepSum":sum(steps),"hasDayWithin":bool(re.search(r"[0-9]+\s*日以内",terms)),
-                  "termsPrefix":terms[:1800],"parsed":ev,
-              },ensure_ascii=False,sort_keys=True))
+          url=src["direct_listing_urls"][0]
+          raw,final=d.fetch_first_party(url,src,timeout=20,max_bytes=1500000)
+          rows=[]
+          seen=set()
+          for a in d.EvidenceHTML(raw).root.find(tag="a"):
+              absolute=urljoin(final,a.attrs.get("href","")).split("#",1)[0]
+              if not d.source_host_allowed(absolute,src) or not d.detail_like(absolute,src):
+                  continue
+              ident=d.offer_identity_key(absolute,"coincome")
+              if not ident or ident in seen:
+                  continue
+              seen.add(ident)
+              label=d.evidence_text(a).strip()
+              game=daily.discovery_name(label)
+              ev=d.inspect_detail(absolute,src,[game]).get("sourceEvidence") or {}
+              rows.append({
+                  "id":ident,"game":game,"url":absolute,
+                  "state":ev.get("state"),"reason":ev.get("reason"),
+                  "platform":ev.get("platform"),"rewardYen":ev.get("displayedRewardYen"),
+                  "stepTotalYen":ev.get("stepTotalYen"),
+                  "parserVersion":ev.get("parserVersion"),
+              })
+          parsed=[x for x in rows if x["state"]=="parsed"]
+          held=[x for x in rows if x["state"]!="parsed"]
+          print("DETAIL_COUNT",len(rows))
+          print("PARSED_COUNT",len(parsed))
+          print("HELD",json.dumps(held,ensure_ascii=False,sort_keys=True))
+          for item in parsed:
+              print("PARSED",json.dumps(item,ensure_ascii=False,sort_keys=True))
+          assert len(rows)==20, rows
+          assert len(parsed)==19, rows
+          assert len(held)==1, held
+          assert held[0]["url"].endswith("/9940"), held
+          assert held[0]["reason"]=="step_total_mismatch", held
+
+          by_url={x["url"]:x for x in parsed}
+          assert by_url["https://cimcome.jp/campaigns/details/9663"]["rewardYen"]==8620
+          assert by_url["https://cimcome.jp/campaigns/details/9587"]["rewardYen"]==9588
+          assert by_url["https://cimcome.jp/campaigns/details/9974"]["rewardYen"]==8650
+          assert by_url["https://cimcome.jp/campaigns/details/10134"]["rewardYen"]==461
+          assert by_url["https://cimcome.jp/campaigns/details/10261"]["rewardYen"]==203
           PY
