@@ -16,12 +16,15 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-# A 2026-09-20 live listing-only capacity probe measured 558 detail candidates
-# across 136 two-site game groups before Moppy recovery. Keep a bounded margin
-# above that observed surface while remaining well inside the 90-minute job cap.
-MAX_DETAILS = 640
-# Independent safety budget, not a minimum number of sources per game.
-MAX_GROUPS = MAX_DETAILS // 2
+# A 2026-09-24 live queue audit measured 158 handoff-eligible game groups
+# (at least two independent listing-source families) and 667 first-party detail
+# offers. Single-source groups cannot enter the downstream top-five content
+# queue, so they remain visible in discovery but are not allowed to consume the
+# nightly ranking budget. Keep explicit margin above the observed 667-detail
+# surface while remaining well inside the 90-minute job cap.
+MAX_DETAILS = 768
+# Independent fail-closed safety cap for the two-site handoff universe.
+MAX_GROUPS = 320
 
 
 def discovery_name(title):
@@ -164,14 +167,30 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     for group in groups.values():
         group["offers"] = {identity: offer for identity, offer in group["offers"].items()
                            if len(owners[identity]) == 1}
-    two_site_groups = sum(len({family for family, _ in g["offers"]}) >= 2
-                          for g in groups.values())
     eligible = [g for g in groups.values() if g["offers"]]
-    eligible.sort(key=lambda g: (-len({f for f, _ in g["offers"]}), g["game"]))
+    handoff_eligible = [
+        g for g in eligible
+        if len({family for family, _ in g["offers"]}) >= 2
+    ]
+    two_site_groups = len(handoff_eligible)
+    single_site_groups = len(eligible) - two_site_groups
+
+    # The next-stage content queue deliberately rejects a candidate with fewer
+    # than two independent listing-source families. Reviewing 944 single-source
+    # groups before the 158 candidates that can actually reach that handoff made
+    # the old group budget fail even though the handoff universe itself fit.
+    # Keep those single-source candidates quarantined in discovery/R2, but spend
+    # ranking detail requests only on groups that can satisfy the downstream
+    # corroboration gate.
+    handoff_eligible.sort(
+        key=lambda g: (-len({f for f, _ in g["offers"]}), g["game"])
+    )
+
     warau_rate_confirmed = False
     rate_url = "https://www.warau.jp/help/qa/128/"
     if (any(row.get("site") == "warau" for row in rows)
-            or any(sid == "warau" for g in eligible[:max_groups] for sid, _ in g["offers"].values())) and "warau" in sources:
+            or any(sid == "warau" for g in handoff_eligible[:max_groups]
+                   for sid, _ in g["offers"].values())) and "warau" in sources:
         try:
             raw, final_url = fetcher(rate_url, sources["warau"])
             warau_rate_confirmed = bool(final_url == rate_url and re.search(
@@ -179,7 +198,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         except Exception:
             pass
     detail_calls, results = 0, []
-    for group in eligible[:max_groups]:
+    for group in handoff_eligible[:max_groups]:
         details = []
         for sid, url in group["offers"].values():
             if detail_calls >= max_details:
@@ -242,12 +261,15 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     ranked = [g for g in results if g["candidateEligible"] and g["maxObservedRewardYen"] is not None
               and "detail_budget_reached" not in g["holdReasons"]]
     ranked.sort(key=lambda g: (-g["maxObservedRewardYen"], g["game"]))
-    group_limit = len(eligible) > max_groups
+    group_limit = len(handoff_eligible) > max_groups
     detail_limit = any("detail_budget_reached" in r["holdReasons"] for r in results)
     return {"phase": "DAILY_SAME_SCAN_REVIEW_V1", "checkedAt": checked_at,
             "apiCalls": 0, "publicationWrites": 0, "publishedGames": 0,
             "warauBaseRate": {"confirmed": warau_rate_confirmed, "sourceUrl": rate_url},
-            "listingGroups": len(groups), "twoSiteListingGroups": two_site_groups,
+            "listingGroups": len(groups),
+            "rankingEligibleGroups": len(handoff_eligible),
+            "twoSiteListingGroups": two_site_groups,
+            "singleSiteListingGroups": single_site_groups,
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
             "groupLimitReached": group_limit,
             "detailLimitReached": detail_limit,
