@@ -19,6 +19,9 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Preserve publication baseline
         run: cp data/published_offers.csv "${RUNNER_TEMP}/published-before.csv"
