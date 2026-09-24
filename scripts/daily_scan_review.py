@@ -109,11 +109,15 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         "amefuri-detail-review-v2": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
         "gendama-detail-review-v2": "displayedRewardYen",
+        "kurashiru-reward-detail-review-v1": "verifiedCurrentRewardYen",
     }
     contracts["powl-detail-review-v1"] = "verifiedCurrentRewardYen"
     parser_version = evidence.get("parserVersion")
     value = evidence.get(contracts.get(parser_version, ""))
-    if parser_version == "powl-detail-review-v1":
+    if parser_version in {
+        "powl-detail-review-v1",
+        "kurashiru-reward-detail-review-v1",
+    }:
         return value if type(value) in {int, float} and value > 0 else None
     return value if type(value) is int and value > 0 else None
 
@@ -142,7 +146,11 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
     None so the detail is fetched rather than skipped.
     """
     source_id = str((item or {}).get("source") or "")
-    text = str((item or {}).get("titleHint") or "")
+    text = str(
+        (item or {}).get("listingRewardText")
+        or (item or {}).get("titleHint")
+        or ""
+    )
     if not text:
         return None
 
@@ -164,15 +172,20 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
         rate_allowed = bool(warau_rate_confirmed)
     point_yen = None
     if rate_allowed and type(rate) in {int, float} and rate > 0:
+        unit_pattern = r"(?:pt|P|ポイント)(?![A-Za-z])"
+        value_ceiling = 5_000_000
+        if source_id == "kurashiru_reward":
+            unit_pattern = r"コイン"
+            value_ceiling = 20_000_000
         point_values = [
             int(value.replace(",", ""))
             for value in re.findall(
                 r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)"
-                r"\s*(?:pt|P|ポイント)(?![A-Za-z])",
+                + r"\s*" + unit_pattern,
                 text,
                 re.I,
             )
-            if 0 < int(value.replace(",", "")) <= 5_000_000
+            if 0 < int(value.replace(",", "")) <= value_ceiling
         ]
         if point_values:
             point_yen = max(point_values) * rate
@@ -307,7 +320,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             item = {"source": sid, "url": url, "sourceFamily": families[sid]}
             try:
                 aliases = [group["game"]]
-                if sid == "gendama":
+                if sid in {"gendama", "kurashiru_reward"}:
                     listing_title = str((_source_item or {}).get("titleHint") or "").strip()
                     if listing_title:
                         aliases.append(listing_title)
