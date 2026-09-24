@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <style>
+    :root{--ink:#2d1768;--muted:#746a8f;--line:#ece7f8;--soft:#f7f4ff;--violet:#6a3dff;--purple:#a855f7;--yellow:#ffd93d;--good:#147a53;--bad:#b42318}
+    *{box-sizing:border-box}body{margin:0;background:#fbfaff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Arial,sans-serif}
+    button{font:inherit}.app{max-width:1120px;margin:0 auto;padding:18px 14px 64px}.top{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}.orb{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--violet),var(--purple) 60%,var(--yellow));display:grid;place-items:center;color:white;font-weight:1000}
+    h1{font-size:20px;margin:0 0 3px}.sub{font-size:12px;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:white;color:var(--ink);border-radius:12px;min-height:44px;padding:0 13px;font-weight:800}.btn.primary{border:0;background:linear-gradient(135deg,var(--violet),var(--purple));color:white}.btn:disabled{opacity:.55}
+    .status{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.pill{padding:7px 10px;border-radius:999px;background:white;border:1px solid var(--line);font-size:12px;font-weight:700}.good{color:var(--good)}.bad{color:var(--bad)}
+    .hero,.card{background:white;border:1px solid var(--line);border-radius:20px;padding:16px}.hero{background:linear-gradient(120deg,#fff,#f6f1ff);margin-bottom:14px}.hero-row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.hero h2,.card h3{margin:0 0 4px;font-size:16px}
+    .range{display:flex;background:white;border:1px solid var(--line);border-radius:12px;padding:3px}.range button{border:0;background:transparent;color:var(--muted);padding:8px 11px;border-radius:9px;font-weight:800}.range button.active{background:var(--soft);color:var(--violet)}
+    .metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:15px}.metric{background:white;border:1px solid var(--line);border-radius:16px;padding:13px;min-width:0}.metric .k{font-size:11px;color:var(--muted);font-weight:800}.metric .v{font-size:24px;font-weight:1000;margin-top:5px}.metric .d{font-size:11px;margin-top:4px;color:var(--muted)}.up{color:var(--good)!important}.down{color:var(--bad)!important}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.hint{color:var(--muted);font-size:12px;margin-bottom:12px}.opps{display:grid;gap:8px}.opp{border:1px solid var(--line);border-radius:14px;padding:11px}.tag{display:inline-block;font-size:11px;font-weight:900;border-radius:999px;padding:4px 7px;background:var(--soft);color:var(--violet);margin-right:7px}.opp strong{font-size:13px;overflow-wrap:anywhere}.opp p{font-size:12px;color:var(--muted);margin:5px 0 0;line-height:1.5}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:560px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:right;font-size:12px;white-space:nowrap}th{background:#faf8ff;color:var(--muted);font-size:11px}th:first-child,td:first-child{text-align:left;max-width:330px;overflow:hidden;text-overflow:ellipsis}
+    .bar{height:8px;background:#eee9fe;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--purple));border-radius:999px}.section{margin-top:14px}.loading{text-align:center;padding:28px;color:var(--muted);font-weight:800}.error{background:#fff3f1;border:1px solid #ffd0ca;color:var(--bad);border-radius:14px;padding:10px 12px;font-size:12px;margin-bottom:10px}.empty{color:var(--muted);font-size:13px;padding:16px 0}.foot{font-size:11px;color:var(--muted);line-height:1.6;margin-top:14px}
+    @media(max-width:860px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr}}@media(max-width:520px){.app{padding:14px 10px 44px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric .v{font-size:21px}.hero,.card{border-radius:17px;padding:13px}.actions{width:100%}.actions .btn{flex:1}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <div class="top">
+    <div class="brand"><div class="orb">P</div><div><h1>POIGAME LAB COMMAND CENTER</h1><div class="sub">GA4 × Search Console を1画面で</div></div></div>
+    <div class="actions"><button class="btn" id="diag">接続確認</button><button class="btn primary" id="refresh">↻ 最新に更新</button></div>
+  </div>
+  <div id="errors"></div><div class="status" id="status"></div>
+  <section class="hero">
+    <div class="hero-row"><div><h2>📊 今日見る数字</h2><div class="sub" id="generated">読み込み中…</div></div><div class="range"><button data-r="7d" class="active">7日</button><button data-r="28d">28日</button></div></div>
+    <div class="metrics" id="metrics"></div>
+  </section>
+  <div class="loading" id="loading">Googleから最新データをまとめています…</div>
+  <div id="content" hidden>
+    <div class="grid">
+      <section class="card"><h3>🔥 今見るべきところ</h3><div class="hint">GA4と検索データを重ねたPOIGAME LAB専用判定</div><div class="opps" id="opps"></div></section>
+      <section class="card"><h3>🎯 CTAクリック場所</h3><div class="hint">invite_click × cta_location</div><div id="cta"></div></section>
+    </div>
+    <section class="card section"><h3>🔎 検索クエリ</h3><div class="hint">Search Consoleの取得可能な最新データ</div><div class="table-wrap"><table><thead><tr><th>検索語</th><th>Click</th><th>表示</th><th>CTR</th><th>順位</th></tr></thead><tbody id="queries"></tbody></table></div></section>
+    <section class="card section"><h3>🧩 ページ別 合体ビュー</h3><div class="hint">検索流入 × GA4閲覧 × 招待CTA</div><div class="table-wrap"><table><thead><tr><th>ページ</th><th>検索Click</th><th>表示</th><th>順位</th><th>PV</th><th>Users</th><th>CTA</th></tr></thead><tbody id="pages"></tbody></table></div></section>
+    <p class="foot">Search ConsoleはGA4より処理が遅れることがあります。「Console最新」の日付を実データの最新日として扱います。</p>
+  </div>
+</main>
+<script>
+(function(){
+  var range='7d', nf=new Intl.NumberFormat('ja-JP');
+  function el(id){return document.getElementById(id);}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function fmt(v){return nf.format(Math.round(Number(v)||0));}
+  function pct(v){return ((Number(v)||0)*100).toFixed(1)+'%';}
+  function delta(c,p){c=Number(c)||0;p=Number(p)||0;if(!p)return{text:'前期データなし',cls:''};var d=(c-p)/Math.abs(p);return{text:'前期比 '+(d>=0?'+':'')+(d*100).toFixed(1)+'%',cls:d>0?'up':d<0?'down':''};}
+  function busy(on){el('loading').hidden=!on;el('content').hidden=on;el('refresh').disabled=on;el('diag').disabled=on;}
+  function load(force){busy(true);el('errors').innerHTML='';google.script.run.withSuccessHandler(render).withFailureHandler(fatal).getDashboard(range,!!force);}
+  function fatal(e){busy(false);el('content').hidden=true;el('errors').innerHTML='<div class="error">'+esc(e&&e.message?e.message:e)+'</div>';}
+  function render(d){busy(false);el('generated').textContent=(d.days===28?'過去28日':'過去7日')+' ｜ 更新 '+d.generatedAt;el('errors').innerHTML=(d.errors||[]).map(function(x){return'<div class="error"><b>'+esc(x.source)+'</b>：'+esc(x.message)+'</div>';}).join('');status(d);metrics(d);opps(d);cta(d);queries(d);pages(d);}
+  function status(d){var a=[];a.push('<span class="pill '+(d.ga4?'good':'bad')+'">GA4 '+(d.ga4?'接続OK':'失敗')+'</span>');a.push('<span class="pill '+(d.gsc?'good':'bad')+'">Console '+(d.gsc?'接続OK':'失敗')+'</span>');if(d.gsc&&d.gsc.latestDate)a.push('<span class="pill">Console最新 '+esc(d.gsc.latestDate)+'</span>');if(d.ga4&&d.ga4.ctaError)a.push('<span class="pill bad">CTA反映待ち/エラー</span>');el('status').innerHTML=a.join('');}
+  function metrics(d){var gc=d.ga4&&d.ga4.current||{},gp=d.ga4&&d.ga4.previous||{},sc=d.gsc&&d.gsc.current||{},sp=d.gsc&&d.gsc.previous||{};var defs=[['👥 Users',gc.activeUsers,gp.activeUsers,fmt],['👀 PV',gc.screenPageViews,gp.screenPageViews,fmt],['🧭 Sessions',gc.sessions,gp.sessions,fmt],['🔎 検索Click',sc.clicks,sp.clicks,fmt],['📢 表示回数',sc.impressions,sp.impressions,fmt],['🎯 検索CTR',sc.ctr,sp.ctr,pct]];el('metrics').innerHTML=defs.map(function(x){var z=delta(x[1],x[2]);return'<div class="metric"><div class="k">'+x[0]+'</div><div class="v">'+x[3](x[1])+'</div><div class="d '+z.cls+'">'+z.text+'</div></div>';}).join('');}
+  function opps(d){var r=d.combined&&d.combined.opportunities||[];el('opps').innerHTML=r.length?r.map(function(x){return'<div class="opp"><span class="tag">'+esc(x.title)+'</span><strong>'+esc(x.label)+'</strong><p>'+esc(x.detail)+'</p></div>';}).join(''):'<div class="empty">今の条件では強い改善候補はありません。</div>';}
+  function cta(d){var g=d.ga4||{},r=g.cta||[];if(!r.length){el('cta').innerHTML='<div class="empty">'+(g.ctaError?'cta_locationの反映待ち、またはまだデータがありません。':'まだinvite_clickデータがありません。')+'</div>';return;}var m=Math.max.apply(null,r.map(function(x){return x.clicks;}));el('cta').innerHTML=r.slice(0,12).map(function(x){return'<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:800"><span>'+esc(x.location)+'</span><span>'+fmt(x.clicks)+'</span></div><div class="bar" style="margin-top:5px"><i style="width:'+Math.max(3,x.clicks/m*100)+'%"></i></div></div>';}).join('');}
+  function queries(d){var r=d.gsc&&d.gsc.queries||[];el('queries').innerHTML=r.slice(0,50).map(function(x){return'<tr><td title="'+esc(x.query)+'">'+esc(x.query)+'</td><td>'+fmt(x.clicks)+'</td><td>'+fmt(x.impressions)+'</td><td>'+pct(x.ctr)+'</td><td>'+Number(x.position||0).toFixed(1)+'</td></tr>';}).join('')||'<tr><td colspan="5">データなし</td></tr>';}
+  function pages(d){var r=d.combined&&d.combined.pages||[];el('pages').innerHTML=r.map(function(x){return'<tr><td title="'+esc(x.path)+'">'+esc(x.path)+'</td><td>'+fmt(x.searchClicks)+'</td><td>'+fmt(x.impressions)+'</td><td>'+Number(x.position||0).toFixed(1)+'</td><td>'+fmt(x.views)+'</td><td>'+fmt(x.users)+'</td><td>'+fmt(x.ctaClicks)+'</td></tr>';}).join('')||'<tr><td colspan="7">データなし</td></tr>';}
+  Array.prototype.forEach.call(document.querySelectorAll('[data-r]'),function(b){b.addEventListener('click',function(){Array.prototype.forEach.call(document.querySelectorAll('[data-r]'),function(x){x.classList.remove('active');});b.classList.add('active');range=b.getAttribute('data-r');load(false);});});
+  el('refresh').addEventListener('click',function(){load(true);});
+  el('diag').addEventListener('click',function(){el('diag').disabled=true;google.script.run.withSuccessHandler(function(r){el('diag').disabled=false;alert(r.map(function(x){return(x.ok?'✅ ':'❌ ')+x.source+': '+x.detail;}).join('\n'));}).withFailureHandler(function(e){el('diag').disabled=false;alert(e&&e.message?e.message:e);}).diagnose();});
+  load(false);
+})();
+</script>
+</body>
+</html>
