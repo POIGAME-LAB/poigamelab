@@ -3372,12 +3372,13 @@ def test_hapitas_v2_marks_explicit_ended_item_unavailable_before_unit_check():
         reviewed_platform='Android',
         publication_authorized=True,
     )
-    assert evidence == {
-        'state': 'unavailable',
-        'reason': 'source_offer_unavailable',
-        'offerId': '101355',
-        'name': 'キングショット',
-    }
+    assert evidence['state'] == 'unavailable'
+    assert evidence['reason'] == 'source_offer_unavailable'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v2'
+    assert evidence['offerId'] == '101355'
+    assert evidence['name'] == 'キングショット'
+    assert evidence['unavailableMarker'] == 'この広告は終了しています'
+    assert len(evidence['evidenceFingerprint']) == 64
 
 
 def test_hapitas_reviewed_platform_registry_is_required_for_publication_authorization():
