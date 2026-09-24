@@ -16,9 +16,34 @@ def read_csv(path):
         return list(csv.DictReader(handle))
 
 
+def reviewed_retirement_keys(root):
+    """Return only exact offer keys retired by the audited publication contract."""
+    try:
+        report = json.loads(
+            (Path(root) / "data/daily_scan_review.json").read_text(encoding="utf-8")
+        )
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return set()
+    publication = report.get("existingPublication") or {}
+    decisions = publication.get("decisions") or []
+    return {
+        str(decision.get("offerKey") or "")
+        for decision in decisions
+        if (
+            decision.get("source") == "hapitas"
+            and decision.get("publicationMode") == "explicit_unavailable_retirement"
+            and decision.get("retired") is True
+            and decision.get("updated") is True
+            and not decision.get("holdReason")
+            and str(decision.get("offerKey") or "")
+        )
+    }
+
+
 def validate(root, baseline, artifact):
     rows = read_csv(root / "data/published_offers.csv")
     old = read_csv(baseline)
+    allowed_retirements = reviewed_retirement_keys(root)
     games = {g["name"] for g in read_csv(root / "games.csv")}
     sources = {s["id"]: s for s in json.loads((root / "config/point_sources.json").read_text())["sources"]}
     errors = []
@@ -37,10 +62,15 @@ def validate(root, baseline, artifact):
         source = sources.get(row.get("site"))
         if not source or not all(direct.source_host_allowed(row.get(k), source) for k in ("url", "sourceUrl")):
             errors.append("invalid_source_url")
+    retired = []
     for row in old:
-        current = by_key.get(row.get("offerKey"))
+        offer_key = row.get("offerKey")
+        current = by_key.get(offer_key)
         if current is None:
-            errors.append("existing_offer_removed")
+            if offer_key in allowed_retirements:
+                retired.append(offer_key)
+            else:
+                errors.append("existing_offer_removed")
         elif any(current.get(k) != row.get(k) for k in ("game", "site", "platform", "url", "offerKey")):
             errors.append("existing_offer_identity_changed")
     # Verify the data actually uploaded to Pages, not just a mock fetch response.
@@ -56,7 +86,13 @@ def validate(root, baseline, artifact):
             errors.append("private_research_in_public_artifact:" + name)
     if errors:
         raise ValueError(";".join(sorted(set(errors))))
-    return {"valid": True, "publishedRows": len(rows), "preservedOfferIdentities": len(old), "apiCalls": 0}
+    return {
+        "valid": True,
+        "publishedRows": len(rows),
+        "preservedOfferIdentities": len(old) - len(retired),
+        "retiredOfferIdentities": len(retired),
+        "apiCalls": 0,
+    }
 
 
 def main():
