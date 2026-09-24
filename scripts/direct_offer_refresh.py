@@ -592,6 +592,28 @@ def build_new_game_candidate_clusters(items):
     )
 
 
+def listing_anchor_in_scope(anchor, source):
+    """Limit listing discovery to a reviewed first-party container when configured.
+
+    Most sources expose only offer cards in their listing body. Powl also embeds
+    sidebar rankings and trend links that point at /reward/<id>; treating those
+    as part of the primary app listing inflates the discovery universe. A
+    source-specific container class keeps the generic discovery code reusable
+    while failing closed when the reviewed container is absent.
+    """
+    required_class = str(source.get("new_game_discovery_container_class") or "").strip()
+    if not required_class:
+        return True
+    node = anchor.parent
+    for _ in range(8):
+        if node is None:
+            break
+        if required_class in node.attrs.get("class", "").split():
+            return True
+        node = node.parent
+    return False
+
+
 def listing_detail_identity_signature(raw, base_url, source, limit=5000):
     """Return a stable signature of first-party detail identities on one listing page."""
     identities = []
@@ -604,6 +626,8 @@ def listing_detail_identity_signature(raw, base_url, source, limit=5000):
         href = html.unescape(anchor.attrs.get("href", "")).strip()
         absolute = urljoin(base_url, href).split("#", 1)[0]
         if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
+            continue
+        if not listing_anchor_in_scope(anchor, source):
             continue
         identity = offer_identity_key(absolute, str(source.get("id") or ""))
         if not identity or identity in seen:
@@ -667,6 +691,8 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
         href = html.unescape(anchor.attrs.get("href", "")).strip()
         absolute = urljoin(base_url, href).split("#", 1)[0]
         if not source_host_allowed(absolute, source) or not detail_like(absolute, source):
+            continue
+        if not listing_anchor_in_scope(anchor, source):
             continue
 
         identity = offer_identity_key(absolute, str(source.get("id") or ""))
@@ -2573,6 +2599,138 @@ def inspect_gendama_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def powl_offer_id(url):
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (parsed.scheme != "https" or parsed.hostname not in {"web.powl.jp"}
+            or parsed.username is not None or parsed.password is not None
+            or port not in {None, 443}):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/reward/([0-9]+)/?", parsed.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    if parse_qs(parsed.query, keep_blank_values=True):
+        raise ValueError("ambiguous_offer_identity")
+    return match.group(1)
+
+
+def inspect_powl_offer(raw, requested_url, final_url, aliases):
+    """Build ranking-only evidence from Powl's current first-party reward card.
+
+    The visible total is duplicated for responsive layouts inside one
+    reward-parent container. Require every matching p.pt node to agree and
+    ignore tier rewards, recommendations, and other numeric prose outside that
+    container. Powl's reviewed base scale is 10pt=1JPY; fractional-yen totals
+    are preserved to one decimal place. Publication stays disabled.
+    """
+    try:
+        offer_id = powl_offer_id(requested_url)
+        if powl_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        doc = EvidenceHTML(raw).root
+        canonicals = [
+            node for node in doc.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) > 1:
+            raise ValueError("missing_or_ambiguous_offer_structure")
+        if canonicals:
+            canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+            if powl_offer_id(canonical) != offer_id:
+                raise ValueError("canonical_offer_mismatch")
+
+        title_text = evidence_text(one(doc.find(tag="title")))
+        name = re.sub(r"\s*[|｜]\s*Powl\s*$", "", title_text, flags=re.I).strip()
+        if not name:
+            raise ValueError("missing_offer_title")
+        if not target_present(name, aliases):
+            name_key = normalized_game_title_key(name)
+            matched = False
+            for alias in aliases:
+                alias_key = normalized_game_title_key(html.unescape(str(alias or "")))
+                if len(name_key) >= 4 and alias_key.startswith(name_key):
+                    matched = True
+                    break
+            if not matched:
+                raise ValueError("offer_title_mismatch")
+
+        reward_parent = one(doc.find(cls="reward-parent"))
+        point_values = []
+        for node in reward_parent.find(cls="pt"):
+            value = evidence_text(node).replace(" ", "")
+            match = re.fullmatch(
+                r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)pt",
+                value,
+                re.I,
+            )
+            if match:
+                amount = int(match.group(1).replace(",", ""))
+                if 0 < amount <= 5_000_000:
+                    point_values.append(amount)
+        unique_points = sorted(set(point_values))
+        if len(unique_points) != 1:
+            raise ValueError("missing_or_ambiguous_displayed_reward")
+        reward_points = unique_points[0]
+
+        condition = evidence_text(one(reward_parent.find(cls="results")))
+        if len(condition) < 4:
+            raise ValueError("missing_offer_condition")
+
+        text = visible_text(raw)
+        title_pos = text.find(name)
+        terms_start = text.find("ポイント獲得条件", max(0, title_pos))
+        description_start = text.find("広告の説明", terms_start) if terms_start >= 0 else -1
+        if terms_start < 0 or description_start <= terms_start:
+            raise ValueError("incomplete_offer_terms")
+        terms = text[terms_start:description_start].strip()
+        if len(terms) < 80 or not any(marker in terms for marker in (
+            "承認条件", "成果条件", "新規インストール", "新規アプリインストール"
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "却下条件", "注意事項", "成果のお問い合わせ", "成果のお問合せ"
+        )):
+            raise ValueError("incomplete_offer_terms")
+
+        platform = platform_hint(name)
+        if platform not in {"iOS", "Android"}:
+            raise ValueError("ambiguous_offer_platform")
+
+        reward_yen = reward_points / 10
+        if reward_yen.is_integer():
+            reward_yen = int(reward_yen)
+        else:
+            reward_yen = round(reward_yen, 1)
+
+        payload = {
+            "offerId": offer_id,
+            "name": name,
+            "platform": platform,
+            "displayedRewardPoints": reward_points,
+            "verifiedCurrentRewardYen": reward_yen,
+            "rewardUnit": "Powl-pt",
+            "sourcePointRate": "10pt=1JPY",
+            "conditionText": condition,
+            "termsText": terms[:12000],
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "powl-detail-review-v1",
+            **payload,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=None):
     raw, final_url = (fetcher or fetch_first_party)(url, source)
     structured_parsers = {
@@ -2585,6 +2743,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "amefuri": inspect_amefuri_offer,
         "moppy": inspect_moppy_offer,
         "gendama": inspect_gendama_offer,
+        "powl": inspect_powl_offer,
     }
     if source.get("id") in structured_parsers:
         if source.get("id") == "hapitas":
