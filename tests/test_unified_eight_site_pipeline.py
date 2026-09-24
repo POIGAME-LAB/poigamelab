@@ -66,9 +66,11 @@ def contract_case(source):
         ),
         "coincome": (
             "https://cimcome.jp/campaigns/details/123",
-            {"offerId": "123", "name": "Game", "platform": "iOS",
+            {"offerId": "123", "name": "Game", "offerTitle": "iOS_Game", "platform": "iOS",
              "displayedRewardYen": 3300, "rewardUnit": "JPY-equivalent",
-             "headerText": "Game 3300円", "termsText": "適用端末 キャッシュバック条件 承認条件 ポイント獲得条件 否認条件"},
+             "stepRewardYen": [], "stepTotalYen": None,
+             "headerText": "iOS_Game 3300円",
+             "termsText": "適用端末 キャッシュバック条件 承認条件 30日以内 否認条件"},
         ),
         "point_town": (
             "https://www.pointtown.com/item/123/",

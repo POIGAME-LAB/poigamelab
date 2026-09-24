@@ -1788,19 +1788,18 @@ COINCOME_URL = 'https://cimcome.jp/campaigns/details/12345'
 def coincome_markup():
     return f'''<html><head><link rel="canonical" href="{COINCOME_URL}"></head><body>
 <main>
-<h1>テストゲーム</h1>
-<div>600円</div>
-<p>新規アプリインストール後、StepUpミッションクリアでキャッシュバック</p>
-<div>Android 対象アプリ</div>
-<section>ストア概要</section>
-<h2>適用端末</h2><p>SP</p>
-<h2>キャッシュバック条件</h2>
-<h3>承認条件</h3>
-<p>新規アプリインストール後、30日以内にStepUpミッションクリアで報酬獲得となります</p>
-<p>■ポイント獲得条件</p>
-<p>広告クリック後は同一端末・同一ブラウザで条件達成してください</p>
-<h3>否認条件</h3>
-<p>重複利用、虚偽、不正利用は対象外</p>
+<p class="sale__title">Android_テストゲーム（StepUp）</p>
+<div class="sale__up"><p>600円 <span class="position-absolute">500円</span></p></div>
+<div class="description">
+■獲得可能Pt数 最大600円相当！
+STEP1. 30日以内にレベル10到達で【100円】
+STEP2. 30日以内にレベル20到達で【500円】
+</div>
+<div>適用端末 SP Tablet</div>
+<div>キャッシュバック条件</div>
+<div>承認条件 新規アプリインストール後、30日以内にStepUpミッションクリアで成果となります。</div>
+<div>広告クリック後は同一端末・同一ブラウザで条件達成してください</div>
+<div>否認条件 重複利用、虚偽、不正利用は対象外</div>
 <div>リンクをコピーする</div>
 </main></body></html>'''
 
@@ -1809,27 +1808,46 @@ def parse_coincome(raw, requested=COINCOME_URL, final=COINCOME_URL):
     return direct.inspect_coincome_offer(raw, requested, final, ['テストゲーム'])
 
 
-def test_coincome_review_parser_binds_identity_reward_os_and_full_terms(coincome_markup):
+def test_coincome_review_parser_binds_current_dom_reward_os_steps_and_terms(coincome_markup):
     evidence = parse_coincome(coincome_markup)
     assert evidence['state'] == 'parsed'
     assert evidence['offerId'] == '12345'
+    assert evidence['name'] == 'テストゲーム（StepUp）'
+    assert evidence['offerTitle'] == 'Android_テストゲーム（StepUp）'
     assert evidence['platform'] == 'Android'
     assert evidence['displayedRewardYen'] == 600
+    assert evidence['stepRewardYen'] == [100, 500]
+    assert evidence['stepTotalYen'] == 600
     assert evidence['rewardUnit'] == 'JPY-equivalent'
-    assert evidence['parserVersion'] == 'coincome-detail-review-v1'
+    assert evidence['parserVersion'] == 'coincome-detail-review-v2'
     assert all(marker in evidence['termsText'] for marker in (
-        '適用端末', 'キャッシュバック条件', '承認条件', 'ポイント獲得条件', '否認条件'))
+        '適用端末', 'キャッシュバック条件', '承認条件', '否認条件'))
     assert len(evidence['evidenceFingerprint']) == 64
 
 
+@pytest.mark.parametrize("deadline_text", ["24時間以内", "翌日以内", "当日中"])
+def test_coincome_accepts_explicit_non_day_deadlines(coincome_markup, deadline_text):
+    raw = coincome_markup.replace("30日以内", deadline_text)
+    evidence = parse_coincome(raw)
+    assert evidence["state"] == "parsed"
+    assert evidence["displayedRewardYen"] == 600
+
+
+def test_coincome_boosted_old_reward_span_is_not_treated_as_current(coincome_markup):
+    evidence = parse_coincome(coincome_markup)
+    assert evidence['state'] == 'parsed'
+    assert evidence['displayedRewardYen'] == 600
+    assert '500円' not in evidence['headerText']
+
+
 @pytest.mark.parametrize('old,new,reason', [
-    ('<div>600円</div>', '<div>900円 600円</div>', 'ambiguous_displayed_reward'),
-    ('Android 対象アプリ', 'iOS Android 対象アプリ', 'ambiguous_offer_platform'),
-    ('Android 対象アプリ', '対象アプリ', 'ambiguous_offer_platform'),
-    ('ポイント獲得条件', '成果条件', 'incomplete_offer_terms'),
+    ('<p>600円 <span', '<p>600円 900円 <span', 'ambiguous_displayed_reward'),
+    ('Android_テストゲーム（StepUp）', 'テストゲーム（StepUp）', 'ambiguous_offer_platform'),
+    ('キャッシュバック条件', 'キャッシュ条件', 'incomplete_offer_terms'),
     ('否認条件', '対象外条件', 'incomplete_offer_terms'),
-    ('<section>ストア概要</section>', '', 'missing_offer_header_boundary'),
-    ('<h1>テストゲーム</h1>', '<h1>別ゲーム</h1>', 'offer_title_mismatch'),
+    ('class="sale__title"', 'class="other-title"', 'missing_or_ambiguous_offer_structure'),
+    ('Android_テストゲーム（StepUp）', 'Android_別ゲーム（StepUp）', 'offer_title_mismatch'),
+    ('STEP2. 30日以内にレベル20到達で【500円】', 'STEP2. 30日以内にレベル20到達で【400円】', 'step_total_mismatch'),
     ('/campaigns/details/12345', '/campaigns/details/99999', 'canonical_offer_mismatch'),
 ])
 def test_coincome_rejects_ambiguous_or_incomplete_evidence(coincome_markup, old, new, reason):
@@ -1864,6 +1882,113 @@ def test_coincome_explicit_not_found_page_is_unavailable():
     evidence = parse_coincome(raw)
     assert evidence['state'] == 'unavailable'
     assert evidence['reason'] == 'source_offer_unavailable'
+
+
+def test_coincome_verified_existing_game_offer_enters_candidate_queue(tmp_path, monkeypatch):
+    (tmp_path / "config").mkdir()
+    (tmp_path / "data").mkdir()
+    for name in (
+        "POLICY", "TARGETS", "SOURCES", "PUBLISHED", "STATUS", "LEGACY_STATUS",
+        "REVIEW", "NEW_GAME_QUEUE", "NEW_GAME_HISTORY", "EXISTING_GAME_QUEUE",
+    ):
+        mapping = {
+            "POLICY": tmp_path / "config/refresh_policy.json",
+            "TARGETS": tmp_path / "config/game_targets.json",
+            "SOURCES": tmp_path / "config/point_sources.json",
+            "PUBLISHED": tmp_path / "data/published_offers.csv",
+            "STATUS": tmp_path / "data/comparison_refresh_status.json",
+            "LEGACY_STATUS": tmp_path / "data/refresh_status.json",
+            "REVIEW": tmp_path / "data/comparison_review_queue.json",
+            "NEW_GAME_QUEUE": tmp_path / "data/new_game_candidate_queue.json",
+            "NEW_GAME_HISTORY": tmp_path / "data/new_game_candidate_history.json",
+            "EXISTING_GAME_QUEUE": tmp_path / "data/existing_game_candidate_queue.json",
+        }
+        monkeypatch.setattr(direct, name, mapping[name])
+
+    listing_url = "https://cimcome.jp/campaigns?_category_id=21"
+    detail_url = "https://cimcome.jp/campaigns/details/9663"
+    direct.POLICY.write_text(json.dumps({
+        "comparisonSources": ["coincome"],
+        "unifiedDailySources": ["coincome"],
+        "minimumConfirmedSourcesForComparison": 1,
+        "games": {"ATLAS: EARTH": {"enabled": True}},
+    }), encoding="utf-8")
+    direct.TARGETS.write_text(json.dumps({"games": [{
+        "game": "ATLAS: EARTH",
+        "aliases": ["ATLAS: EARTH", "Atlas Earth", "ATLAS EARTH"],
+        "known_urls_by_source": {},
+    }]}), encoding="utf-8")
+    direct.SOURCES.write_text(json.dumps({"sources": [{
+        "id": "coincome",
+        "name": "COINCOME",
+        "search_domains": ["cimcome.jp"],
+        "mobile": True,
+        "direct_listing_urls": [listing_url],
+        "direct_listing_limit": 1,
+        "direct_detail_limit": 6,
+        "direct_detail_url_hints": ["/campaigns/details/"],
+        "scheduled_known_detail_fetch_enabled": False,
+        "new_game_discovery_enabled": True,
+        "new_game_discovery_listing_limit": 1,
+        "new_game_discovery_candidate_limit": 200,
+        "new_game_discovery_scope": "partial_current_app_category_listing",
+        "full_catalog_discovery_enabled": False,
+    }]}), encoding="utf-8")
+    with direct.PUBLISHED.open("w", encoding="utf-8", newline="") as handle:
+        csv.DictWriter(handle, fieldnames=direct.FIELDS, lineterminator="\n").writeheader()
+
+    listing_markup = f'''
+      <html><body><main>
+        <div class="campaign-grid">
+          <a href="{detail_url}">iOS_ATLAS:EARTH - お得なキャッシュバック！「StepUp」 8,620円</a>
+        </div>
+      </main></body></html>
+    '''
+    calls = []
+    def fetch(url, source, timeout=15, max_bytes=1200000, **kwargs):
+        calls.append(url)
+        if url == listing_url:
+            return listing_markup, listing_url
+        if url == detail_url:
+            return "<html>detail</html>", detail_url
+        raise AssertionError(url)
+
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "coincome-detail-review-v2",
+        "offerId": "9663",
+        "name": "ATLAS:EARTH - お得なキャッシュバック！「StepUp」",
+        "offerTitle": "iOS_ATLAS:EARTH - お得なキャッシュバック！「StepUp」",
+        "platform": "iOS",
+        "displayedRewardYen": 8620,
+        "rewardUnit": "JPY-equivalent",
+        "stepRewardYen": [8620],
+        "stepTotalYen": 8620,
+        "headerText": "iOS_ATLAS:EARTH - お得なキャッシュバック！「StepUp」 8,620円",
+        "termsText": "適用端末 SP キャッシュバック条件 承認条件 30日以内 否認条件",
+        "evidenceFingerprint": "fixture",
+    }
+    def inspect(url, source, aliases, fetcher, **kwargs):
+        fetcher(url, source)
+        return {"url": url, "sourceEvidence": dict(evidence)}
+
+    monkeypatch.setattr(direct, "fetch_first_party", fetch)
+    monkeypatch.setattr(direct, "inspect_detail", inspect)
+
+    assert direct.main() == 0
+    queue = json.loads(direct.EXISTING_GAME_QUEUE.read_text(encoding="utf-8"))
+    assert queue["count"] == 1
+    assert queue["newOfferCount"] == 1
+    item = queue["items"][0]
+    assert item["game"] == "ATLAS: EARTH"
+    assert item["source"] == "coincome"
+    assert item["detectedReward"] == 8620
+    assert item["platformHint"] == "iOS"
+    assert item["parserVersion"] == "coincome-detail-review-v2"
+    assert item["publicationAuthorized"] is False
+    assert list(csv.DictReader(direct.PUBLISHED.open(encoding="utf-8"))) == []
+    assert calls.count(listing_url) == 1
+    assert calls.count(detail_url) == 1
 
 
 @pytest.mark.parametrize('fetch_fails', [False, True])
@@ -1930,6 +2055,7 @@ def test_coincome_is_review_only_and_never_refreshes_published_date(
     else:
         assert item['approvalHoldReason'] == 'source_refresh_not_enabled'
         assert item['sourceEvidence']['displayedRewardYen'] == 600
+        assert item['sourceEvidence']['parserVersion'] == 'coincome-detail-review-v2'
         assert item['platformMatches'] is True
         assert item['requiredChecks'] == ['reward_unit_conversion', 'complete_terms_vs_published_row']
 

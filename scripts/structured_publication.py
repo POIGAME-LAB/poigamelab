@@ -55,15 +55,15 @@ REWARD_ONLY_CONTRACTS = {
         "termsMarkers": ("ポイント対象条件",),
     },
     "coincome": {
-        "parser": "coincome-detail-review-v1",
+        "parser": "coincome-detail-review-v2",
         "identity": direct.coincome_offer_id,
         "rewardField": "displayedRewardYen",
         "fingerprintFields": [
-            "offerId", "name", "platform", "displayedRewardYen",
-            "rewardUnit", "headerText", "termsText",
+            "offerId", "name", "offerTitle", "platform", "displayedRewardYen",
+            "rewardUnit", "stepRewardYen", "stepTotalYen", "headerText", "termsText",
         ],
         "rewardUnit": "JPY-equivalent",
-        "termsMarkers": ("適用端末", "キャッシュバック条件", "承認条件", "ポイント獲得条件", "否認条件"),
+        "termsMarkers": ("適用端末", "キャッシュバック条件", "承認条件", "否認条件"),
     },
     "point_town": {
         "parser": "pointtown-detail-review-v1",
