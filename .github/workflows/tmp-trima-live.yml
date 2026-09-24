@@ -118,7 +118,7 @@ jobs:
                   visible=re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
                   visible=re.sub(r"(?s)<[^>]+>"," ",visible)
                   visible=re.sub(r"\\s+"," ",unescape(visible)).strip()
-                  strings=sorted(set(re.findall(r'(?:https?://[^"\\'<> ]+|/[A-Za-z0-9_./?=&%-]{3,})',raw)))
+                  strings=sorted(set(re.findall(r"(?:https?://[^\\\"'<> ]+|/[A-Za-z0-9_./?=&%-]{3,})",raw)))
                   webapp.append({
                       "url":url,"final":final,"bytes":len(data),"contentType":ctype,
                       "title":(re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0][:300],
@@ -142,7 +142,7 @@ jobs:
                   req=Request(su,headers={"User-Agent":UA})
                   with urlopen(req,timeout=20) as r:
                       raw=r.read(5_000_000).decode("utf-8","replace")
-                  strings=sorted(set(re.findall(r'["\\\']([^"\\\']{3,500})["\\\']',raw)))
+                  strings=sorted(set(re.findall(r"[\\\"']([^\\\"']{3,500})[\\\"']",raw)))
                   interesting=[x for x in strings if any(k in x.lower() for k in (
                       "http","api","graphql","game","app","mission","offer",
                       "reward","campaign","point","advert","category"
