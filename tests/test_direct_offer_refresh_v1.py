@@ -3019,10 +3019,12 @@ def test_moppy_shell_reward_change_is_explicit_candidate_only():
     assert '"existingRewardChangeCandidateCount"' in script
 
 
-def test_moppy_shell_parser_still_requires_downstream_terms_review():
+def test_moppy_v3_keeps_downstream_and_publication_guards():
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
-    assert '"downstreamTermsRequired": True' in script
+    assert '"downstreamTermsRequired": downstream_required' in script
+    assert 'POINT\\s*GET' in script
     assert 'source_id == "moppy"' in script
+    assert '"publicationAuthorized": False' in script
     assert '"source_refresh_not_enabled"' in script
 
 
