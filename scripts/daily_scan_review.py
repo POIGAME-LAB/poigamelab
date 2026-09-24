@@ -242,8 +242,13 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
                    for sid, _, _ in g["offers"].values())) and "warau" in sources:
         try:
             raw, final_url = fetcher(rate_url, sources["warau"])
-            warau_rate_confirmed = bool(final_url == rate_url and re.search(
-                r"原則として\s*1ポイント\s*[=＝]\s*1円", direct.visible_text(raw)))
+            warau_rate_confirmed = bool(
+                direct.source_host_allowed(final_url, sources["warau"])
+                and re.search(
+                    r"原則として\s*1ポイント\s*[=＝]\s*1円",
+                    direct.visible_text(raw),
+                )
+            )
         except Exception:
             pass
 
