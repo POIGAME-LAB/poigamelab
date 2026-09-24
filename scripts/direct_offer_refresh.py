@@ -111,7 +111,7 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000, *, opener=None
         # Some legacy Japanese first-party pages omit the HTTP charset while
         # declaring Shift_JIS in HTML. Sniff only the bounded response head.
         match = re.search(
-            br"(?i)charset\\s*=\\s*['\"]?\\s*([a-z0-9._-]+)",
+            br"(?i)charset\s*=\s*['\"]?\s*([a-z0-9._-]+)",
             data[:16384],
         )
         if match:
