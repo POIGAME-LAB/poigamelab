@@ -275,13 +275,30 @@
       "known_target_urls": [],
       "prefer_known_pages": false,
       "direct_listing_urls": [
-        "https://www.rewards.kurashiru.com/categories/3"
+        "https://www.rewards.kurashiru.com/categories/3?page=1"
       ],
-      "direct_listing_limit": 0,
+      "direct_listing_limit": 1,
       "direct_detail_limit": 0,
-      "direct_detail_url_hints": [],
+      "direct_detail_url_hints": [
+        "/ads/"
+      ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Official web categories are anonymous and reachable, but Working Heroes currently appears to be provider-surface specific; keep discovery-only until a stable first-party campaign detail route is established."
+      "scheduled_fetch_reason": "Current anonymous web category exposes a stable paginated /ads/<id> catalog and exact coin totals. Use it for candidate-only discovery/ranking review; publication remains disabled.",
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "full_paginated_game_and_app_category",
+      "coverage_candidate_limit": 1200,
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 4,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "kurashiru-reward-detail-review-v1",
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_page_url_template": "https://www.rewards.kurashiru.com/categories/3?page={page}",
+      "new_game_discovery_max_pages": 60,
+      "new_game_discovery_min_detail_identities_first_page": 15,
+      "new_game_discovery_candidate_limit": 1200,
+      "new_game_discovery_scope": "full_current_paginated_game_and_app_category",
+      "reviewedAt": "2026-09-24"
     },
     {
       "id": "trima",
