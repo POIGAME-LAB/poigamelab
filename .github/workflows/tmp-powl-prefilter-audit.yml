@@ -1,0 +1,130 @@
+name: Temporary Powl ranking prefilter audit
+on:
+  push:
+    branches: [audit/powl-ranking-prefilter-20260924]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore latest new-game queue
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          aws s3 cp "s3://${R2_BUCKET}/state/latest/new_game_candidate_queue.json.gz" "${tmp}/queue.gz" --endpoint-url "${R2_ENDPOINT}" --only-show-errors
+          gzip -dc "${tmp}/queue.gz" > data/new_game_candidate_queue.json
+      - name: Measure fail-open listing reward prefilter
+        run: |
+          python - <<'PY'
+          import collections,json,re,sys
+          from urllib.parse import urljoin,urlparse
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as d
+          import daily_scan_review as daily
+
+          sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
+          targets=json.load(open("config/game_targets.json",encoding="utf-8"))["games"]
+          rates=(json.load(open("config/point_value_rates.json",encoding="utf-8")).get("sources") or {})
+          s=sources["powl"]
+          raw,final=d.fetch_first_party(s["direct_listing_urls"][0],s,timeout=20,max_bytes=2500000)
+          doc=d.EvidenceHTML(raw).root
+          powl=[]; seen=set()
+          for a in doc.find(tag="a"):
+              url=urljoin(final,a.attrs.get("href","")).split("#",1)[0]
+              m=re.fullmatch(r"/reward/(\d+)",urlparse(url).path)
+              if not m or m.group(1) in seen: continue
+              node=a.parent; primary=False
+              for _ in range(5):
+                  if node is None: break
+                  if "search-result-simple-list" in node.attrs.get("class","").split():
+                      primary=True; break
+                  node=node.parent
+              if not primary: continue
+              label=d.evidence_text(a).strip()
+              if not label: continue
+              seen.add(m.group(1))
+              item={"source":"powl","sourceLabel":"Powl","titleHint":label,
+                    "firstPartyCandidateUrl":url,"offerIdentity":d.offer_identity_key(url,"powl")}
+              item.update(d.classify_new_game_candidate(item))
+              powl.append(item)
+
+          old=json.load(open("data/new_game_candidate_queue.json",encoding="utf-8")).get("items",[])
+          items=[x for x in old if x.get("source")!="powl"]+powl
+          sim={k:dict(v) for k,v in sources.items()}
+          sim["powl"]["coverage_detail_review_enabled"]=True
+          sim["powl"]["coverage_detail_review_mode"]="candidate_only"
+          fam=daily.source_families(sim)
+
+          def hint_yen(item):
+              sid=str(item.get("source") or "")
+              text=str(item.get("titleHint") or "")
+              ys={int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円(?:相当|分)?",text)}
+              if len(ys)==1: return float(next(iter(ys)))
+              rate=rates.get(sid) or {}
+              ypp=rate.get("yenPerPoint")
+              if not isinstance(ypp,(int,float)) or isinstance(ypp,bool) or ypp<=0: return None
+              vals={int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*(?:pt|P|ポイント)(?![A-Za-z])",text,re.I)}
+              if len(vals)!=1: return None
+              return next(iter(vals))*float(ypp)
+
+          groups={}
+          for item in items:
+              if item.get("classification")=="likely_non_game": continue
+              name=daily.discovery_name(item.get("titleHint"))
+              if not name or d.context_matches_known_game(name,targets): continue
+              sid,url=item.get("source"),item.get("firstPartyCandidateUrl")
+              if sid not in sim or not d.source_host_allowed(url,sim[sid]) or not d.detail_like(url,sim[sid]): continue
+              if sid!="powl" and not d.source_participates_in_new_game_ranking(sim[sid]): continue
+              ident=d.offer_identity_key(url,sid)
+              if not ident: continue
+              key=d.normalized_text(name)
+              groups.setdefault(key,{"game":name,"offers":{}})["offers"].setdefault((fam[sid],ident),(sid,url,item))
+          owners={}
+          for key,g in groups.items():
+              for ident in g["offers"]: owners.setdefault(ident,set()).add(key)
+          for g in groups.values():
+              g["offers"]={ident:o for ident,o in g["offers"].items() if len(owners[ident])==1}
+          hand={k:g for k,g in groups.items() if g["offers"] and len({f for f,_ in g["offers"]})>=2}
+          no_powl={}
+          for k,g in groups.items():
+              offs={ident:o for ident,o in g["offers"].items() if o[0]!="powl"}
+              if offs and len({f for f,_ in offs})>=2: no_powl[k]=offs
+          added={k:g for k,g in hand.items() if k not in no_powl and any(o[0]=="powl" for o in g["offers"].values())}
+          existing={k:g for k,g in hand.items() if k in no_powl and any(o[0]=="powl" for o in g["offers"].values())}
+
+          def stats(sub):
+              out={"groups":len(sub),"offers":sum(len(g["offers"]) for g in sub.values()),"allHintsKnownGroups":0,"hasUnknownHintGroups":0,
+                   "unknownOfferBySource":collections.Counter(),"above":{t:0 for t in (3000,5000,6400,7969,10000,10417,11255,15000,20000)},"samples":[]}
+              for g in sub.values():
+                  vals=[]; unknown=False
+                  for _,(_,_,item) in g["offers"].items():
+                      v=hint_yen(item)
+                      if v is None:
+                          unknown=True; out["unknownOfferBySource"][item.get("source")]+=1
+                      else: vals.append(v)
+                  out["hasUnknownHintGroups" if unknown else "allHintsKnownGroups"]+=1
+                  mx=max(vals) if vals else None
+                  for t in out["above"]:
+                      if mx is not None and mx>t: out["above"][t]+=1
+                  if unknown and len(out["samples"])<12:
+                      out["samples"].append({"game":g["game"],"sources":sorted({o[0] for o in g["offers"].values()}),
+                        "unknown":[{"source":o[0],"title":o[2].get("titleHint","")[:120]} for o in g["offers"].values() if hint_yen(o[2]) is None][:3]})
+              out["unknownOfferBySource"]=dict(out["unknownOfferBySource"])
+              return out
+
+          print("SUMMARY",json.dumps({"all":stats(hand),"powlAdded":stats(added),"powlExisting":stats(existing),"powlPrimaryCandidates":len(powl)},ensure_ascii=False,sort_keys=True))
+          PY
