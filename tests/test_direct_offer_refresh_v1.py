@@ -4036,6 +4036,24 @@ def test_kurashiru_reward_v2_preserves_fractional_yen(kurashiru_reward_v2_markup
     assert evidence["verifiedCurrentRewardYen"] == 37684.32
 
 
+def test_kurashiru_reward_v2_accepts_live_stepup_deadline_and_rejection_wording(
+    kurashiru_reward_v2_markup,
+):
+    raw = kurashiru_reward_v2_markup.replace(
+        "成果受付期限：広告クリックから30日以内。",
+        "獲得条件達成期限はインストール日から起算して60日以内まで。"
+    ).replace(
+        "却下条件：過去にインストール済みの場合、成果対象外です。",
+        "通信環境を変更した場合、獲得対象外となることがあります。"
+    )
+    evidence = direct.inspect_kurashiru_reward_offer(
+        raw, KURASHIRU_REWARD_URL, KURASHIRU_REWARD_URL,
+        ["隠しオブジェクトゲーム：探してみよう", "iOS"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["verifiedCurrentRewardYen"] == 192
+
+
 def test_kurashiru_reward_v2_fails_closed_on_two_current_reward_spans(
     kurashiru_reward_v2_markup,
 ):
