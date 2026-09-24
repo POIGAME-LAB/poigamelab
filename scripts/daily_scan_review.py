@@ -104,6 +104,24 @@ def _moppy_explicit_yen(evidence):
     return None
 
 
+def _kurashiru_reward_explicit_yen(evidence):
+    """Accept Kurashiru Reward yen only under the reviewed 100coin=1JPY contract."""
+    if evidence.get("parserVersion") != "kurashiru-reward-detail-review-v2":
+        return None
+    coins = evidence.get("verifiedCurrentRewardCoins")
+    yen = evidence.get("verifiedCurrentRewardYen")
+    if (
+        type(coins) is int
+        and type(yen) in {int, float}
+        and coins > 0
+        and evidence.get("rewardUnit") == "Kurashiru-coin"
+        and evidence.get("sourcePointRate") == "100coin=1JPY"
+        and abs((coins / 100) - float(yen)) < 1e-9
+    ):
+        return yen
+    return None
+
+
 def explicit_yen(evidence, warau_rate_confirmed=False):
     """Do not equate raw pt/P with yen or sum OS/site alternative offers."""
     if evidence.get("state") != "parsed" or evidence.get("downstreamTermsRequired"):
@@ -121,6 +139,8 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         return _pointtown_explicit_yen(evidence)
     if evidence.get("parserVersion") == "moppy-detail-review-v3":
         return _moppy_explicit_yen(evidence)
+    if evidence.get("parserVersion") == "kurashiru-reward-detail-review-v2":
+        return _kurashiru_reward_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
         "coincome-detail-review-v2": "displayedRewardYen",
@@ -162,7 +182,11 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
     None so the detail is fetched rather than skipped.
     """
     source_id = str((item or {}).get("source") or "")
-    text = str((item or {}).get("titleHint") or "")
+    text = str(
+        (item or {}).get("listingRewardText")
+        or (item or {}).get("titleHint")
+        or ""
+    )
     if not text:
         return None
 
@@ -184,15 +208,20 @@ def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=No
         rate_allowed = bool(warau_rate_confirmed)
     point_yen = None
     if rate_allowed and type(rate) in {int, float} and rate > 0:
+        unit_pattern = r"(?:pt|P|ポイント)(?![A-Za-z])"
+        value_ceiling = 5_000_000
+        if source_id == "kurashiru_reward":
+            unit_pattern = r"コイン"
+            value_ceiling = 20_000_000
         point_values = [
             int(value.replace(",", ""))
             for value in re.findall(
                 r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)"
-                r"\s*(?:pt|P|ポイント)(?![A-Za-z])",
+                + r"\s*" + unit_pattern,
                 text,
                 re.I,
             )
-            if 0 < int(value.replace(",", "")) <= 5_000_000
+            if 0 < int(value.replace(",", "")) <= value_ceiling
         ]
         if point_values:
             point_yen = max(point_values) * rate
@@ -327,7 +356,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             item = {"source": sid, "url": url, "sourceFamily": families[sid]}
             try:
                 aliases = [group["game"]]
-                if sid == "gendama":
+                if sid in {"gendama", "kurashiru_reward"}:
                     listing_title = str((_source_item or {}).get("titleHint") or "").strip()
                     if listing_title:
                         aliases.append(listing_title)
