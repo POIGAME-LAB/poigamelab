@@ -3280,7 +3280,7 @@ def test_pointtown_v2_accepts_only_explicitly_truncated_listing_prefix():
     assert evidence['titleMatchProvenance'] == 'truncated_listing_prefix'
 
 
-def test_pointtown_v2_rejects_unmarked_partial_alias():
+def test_pointtown_v2_rejects_too_short_truncated_prefix():
     raw = _pointtown_fixture().replace(
         '<h1>iOS_東京ディバンカー_3日間連続でログインボーナスを獲得</h1>',
         '<h1>ぐっすリン-快眠音でリラックス！癒しの音で自然な睡眠-（メールアドレス登録完了）（iOS）</h1>',
@@ -3289,7 +3289,7 @@ def test_pointtown_v2_rejects_unmarked_partial_alias():
         raw,
         'https://www.pointtown.com/item/9265',
         'https://www.pointtown.com/item/9265',
-        ['ぐっすリン-快眠音でリラックス'],
+        ['ぐっすリン-快…'],
     )
     assert evidence == {
         'state': 'review_required',
