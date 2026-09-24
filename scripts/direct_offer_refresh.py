@@ -1695,19 +1695,36 @@ def inspect_hapitas_offer(
             raise ValueError("invalid_displayed_reward")
 
         terms_start = target_pos
+        # "レビュー" can be ordinary ad-description text immediately after
+        # ポイント対象条件 (for example Tokyo Debunker), so it is not a safe
+        # boundary. The reviewed footer marker is stable across both the legacy
+        # and current Hapitas item layouts.
         terms_end_candidates = [
-            pos for marker in ("ハピタスご利用前に必ずご確認ください", "レビュー")
+            pos for marker in ("ハピタスご利用前に必ずご確認ください",)
             if (pos := text.find(marker, terms_start + 1)) >= 0
         ]
         terms_end = min(terms_end_candidates) if terms_end_candidates else min(
             len(text), terms_start + 18000
         )
         terms = text[terms_start:terms_end].strip()
-        if not any(marker in terms for marker in (
-            "ポイント獲得条件",
-            "成果受付期限",
-            "成果調査受付期限",
-        )):
+
+        # Hapitas currently has two first-party terms layouts:
+        #   legacy: 【ポイント獲得条件】 / 獲得条件達成期限
+        #   current StepUp: ▼成果条件 / 【成果受付期間】 /
+        #                   【成果調査受付期間】
+        # Require both a condition section and an explicit deadline/acceptance
+        # section so description text alone can never become publishable terms.
+        has_condition_section = bool(re.search(
+            r"(?:ポイント獲得条件|(?:^|\s)▼?成果条件(?:\s|$))",
+            terms,
+        ))
+        has_deadline_section = bool(re.search(
+            r"(?:成果(?:調査)?受付(?:期間|期限)|獲得条件達成期限|"
+            r"広告クリックから[^。\n]{0,80}?[0-9]+\s*日以内|"
+            r"インストール(?:日から起算して|後)?[^。\n]{0,80}?[0-9]+\s*日以内)",
+            terms,
+        ))
+        if not (has_condition_section and has_deadline_section):
             raise ValueError("incomplete_offer_terms")
 
         step_pairs = re.findall(
