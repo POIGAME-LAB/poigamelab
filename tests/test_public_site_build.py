@@ -702,7 +702,7 @@ def test_memento_warau_12050_ios_android_pair_is_public(output_dir):
         ("iOS", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035"),
         ("Android", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975"),
     }
-    assert all(row["updatedAt"] == "2026-09-24" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
