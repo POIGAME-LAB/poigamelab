@@ -58,6 +58,7 @@ def contract_case(source):
         "hapitas": (
             "https://hapitas.jp/item/detail/itemid/123",
             {"offerId": "123", "name": "Game", "platform": "iOS",
+             "platformProvenance": "reviewed_offer_registry",
              "displayedCurrentRewardPoints": 2200, "stepRewardPoints": [],
              "verifiedCurrentRewardPoints": 2200, "verifiedCurrentRewardYen": 2200,
              "rewardUnit": "Hapitas-pt", "sourcePointRate": "1pt=1JPY",
