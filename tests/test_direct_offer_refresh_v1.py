@@ -1825,6 +1825,14 @@ def test_coincome_review_parser_binds_current_dom_reward_os_steps_and_terms(coin
     assert len(evidence['evidenceFingerprint']) == 64
 
 
+@pytest.mark.parametrize("deadline_text", ["24時間以内", "翌日以内", "当日中"])
+def test_coincome_accepts_explicit_non_day_deadlines(coincome_markup, deadline_text):
+    raw = coincome_markup.replace("30日以内", deadline_text)
+    evidence = parse_coincome(raw)
+    assert evidence["state"] == "parsed"
+    assert evidence["displayedRewardYen"] == 600
+
+
 def test_coincome_boosted_old_reward_span_is_not_treated_as_current(coincome_markup):
     evidence = parse_coincome(coincome_markup)
     assert evidence['state'] == 'parsed'
