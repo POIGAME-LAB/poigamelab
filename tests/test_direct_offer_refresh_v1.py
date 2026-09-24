@@ -4524,3 +4524,27 @@ def test_repository_trima_uses_full_paginated_candidate_only_catalog():
     assert source["direct_detail_url_hints"] == ["/ad/"]
     assert direct.source_participates_in_new_game_ranking(source) is True
 
+def test_trima_live_first_party_parser_smoke_20260925():
+    """Temporary proof that the reviewed parser matches today's public Trima detail."""
+    from urllib.request import Request, urlopen
+
+    url = TRIMA_DETAIL
+    req = Request(url, headers={
+        "User-Agent": (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+            "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
+            "Mobile/15E148 Safari/604.1"
+        ),
+        "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
+    })
+    with urlopen(req, timeout=20) as response:
+        raw = response.read(1_200_000).decode("utf-8", "replace")
+        final_url = response.geturl()
+
+    evidence = direct.inspect_trima_offer(
+        raw, url, final_url, ["商品整理ゲーム：3Dパズル"]
+    )
+    assert evidence["state"] == "parsed", evidence
+    assert evidence["displayedRewardMiles"] == 44000
+    assert evidence["verifiedCurrentRewardYen"] == 366
+
