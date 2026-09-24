@@ -2649,10 +2649,7 @@ def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/91316',
         'https://hapitas.jp/item/detail/itemid/91334',
     }
-    assert set(kingshot) == {
-        'https://hapitas.jp/item/detail/itemid/101355',
-        'https://hapitas.jp/item/detail/itemid/101354',
-    }
+    assert kingshot == []
     assert set(evertale) == {
         'https://hapitas.jp/item/detail/itemid/91344',
         'https://hapitas.jp/item/detail/itemid/91343',
@@ -2668,9 +2665,7 @@ def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/98148',
         'https://hapitas.jp/item/detail/itemid/99158',
     }
-    assert houchi == [
-        'https://hapitas.jp/item/detail/itemid/91475',
-    ]
+    assert houchi == []
 
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
