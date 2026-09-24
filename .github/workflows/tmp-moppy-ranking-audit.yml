@@ -1,0 +1,119 @@
+name: Temporary Moppy ranking audit
+
+on:
+  push:
+    branches:
+      - audit/moppy-ranking-live-20260924
+    paths:
+      - ".github/workflows/tmp-moppy-ranking-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit current Moppy mobile catalog and detail parser
+        run: |
+          python - <<'PY'
+          import json, re, sys
+          from http.cookiejar import CookieJar
+          from urllib.request import HTTPCookieProcessor, build_opener
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+          import daily_scan_review as daily
+
+          cfg=json.load(open("config/point_sources.json",encoding="utf-8"))
+          source=next(x for x in cfg["sources"] if x["id"]=="moppy")
+          opener=build_opener(HTTPCookieProcessor(CookieJar()),direct.FirstPartyRedirectHandler(source))
+          bootstrap=source["listing_session_bootstrap_url"]
+          direct.fetch_first_party(bootstrap,source,opener=opener)
+
+          candidates=[]
+          seen=set()
+          for page in range(1,4):
+              url=source["new_game_discovery_page_url_template"].format(page=page)
+              raw,final=direct.fetch_first_party(
+                  url,source,opener=opener,
+                  extra_headers={
+                      "Referer":bootstrap,
+                      "X-Requested-With":"XMLHttpRequest",
+                      "Accept":"text/html, */*; q=0.01",
+                  }
+              )
+              page_candidates=direct.discover_new_game_listing_candidates(
+                  raw,final,source,[],limit=100
+              )
+              for item in page_candidates:
+                  key=item.get("offerIdentity")
+                  if key and key not in seen:
+                      seen.add(key)
+                      candidates.append(item)
+
+          samples=[]
+          reasons={}
+          for item in candidates[:24]:
+              url=item["firstPartyCandidateUrl"]
+              title_hint=item.get("titleHint") or ""
+              game=daily.discovery_name(title_hint)
+              try:
+                  raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=2_000_000)
+                  ev=direct.inspect_moppy_offer(raw,url,final,[game,title_hint])
+                  reason=ev.get("reason") or ""
+                  reasons[reason]=reasons.get(reason,0)+1
+                  doc=direct.EvidenceHTML(raw).root
+                  h1=[direct.evidence_text(n) for n in doc.find(tag="h1") if direct.evidence_text(n)]
+                  em=[{
+                      "class":n.attrs.get("class",""),
+                      "text":direct.evidence_text(n)
+                  } for n in doc.find(tag="em") if direct.evidence_text(n)][:20]
+                  text=direct.visible_text(raw)
+                  markers=[m for m in [
+                      "■獲得条件","ポイント獲得条件","獲得条件","POINT GET",
+                      "■注意事項","注意事項","広告概要","よくある質問","人気クチコミ"
+                  ] if m in text]
+                  snippets={}
+                  for marker in ("獲得条件","POINT GET","注意事項","広告概要"):
+                      p=text.find(marker)
+                      if p>=0:
+                          snippets[marker]=text[max(0,p-180):p+900]
+                  samples.append({
+                      "game":game,
+                      "titleHint":title_hint[:220],
+                      "url":url,
+                      "finalUrl":final,
+                      "state":ev.get("state"),
+                      "reason":reason,
+                      "parserVersion":ev.get("parserVersion"),
+                      "platform":ev.get("platform"),
+                      "points":ev.get("displayedRewardPoints"),
+                      "yen":ev.get("displayedRewardYen"),
+                      "downstreamTermsRequired":ev.get("downstreamTermsRequired"),
+                      "h1":h1[:5],
+                      "em":em,
+                      "markers":markers,
+                      "snippets":snippets,
+                  })
+              except Exception as exc:
+                  key="fetch:"+direct.summarize_fetch_error(exc)
+                  reasons[key]=reasons.get(key,0)+1
+                  samples.append({
+                      "game":game,"titleHint":title_hint[:220],"url":url,
+                      "state":"fetch_error","reason":key
+                  })
+
+          summary={
+              "candidateCountFirst3Pages":len(candidates),
+              "reasonCounts":reasons,
+              "samples":samples,
+          }
+          print("MOPPY_RANKING_AUDIT",json.dumps(summary,ensure_ascii=False,sort_keys=True))
+          if not candidates:
+              raise SystemExit("no Moppy candidates")
+          PY
