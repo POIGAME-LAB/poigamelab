@@ -1614,13 +1614,18 @@ def hapitas_offer_id(url):
     return match.group(1)
 
 
-def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
-    """Build review-only evidence from a Hapitas first-party app detail page.
+def inspect_hapitas_offer(
+        raw, requested_url, final_url, aliases,
+        reviewed_platform="", publication_authorized=False):
+    """Extract bounded current Hapitas evidence from one first-party item page.
 
-    The current offer reward is the first pt amount in the current item's header.
-    Related-OS cards can appear later on the same page, so choosing the largest
-    page-wide value would be unsafe. Multi-step offers must additionally satisfy
-    sum(STEP rewards) == displayed current reward.
+    Hapitas repeats the item title in breadcrumbs/share chrome, so title
+    uniqueness is not a safe current-page invariant. The reviewed v2 contract
+    scopes the current reward to the first item-title through the first
+    ポイント対象条件 header window, requires Hapitas' 1pt=1JPY marker,
+    and cross-checks StepUp totals when steps are present. Platform is accepted
+    only when explicit in the item title or supplied by the version-controlled
+    reviewed offer-id registry.
     """
     try:
         offer_id = hapitas_offer_id(requested_url)
@@ -1643,58 +1648,98 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
         if not target_present(title, aliases):
             raise ValueError("offer_title_mismatch")
 
-        # Scope visible text to <body>.  Using the full document is unsafe:
-        # <title> can repeat the game name before the real <h1>, causing a
-        # campaign/referral pt value in <head>/page chrome to be mistaken for
-        # this offer's reward.
         bodies = doc.find(tag="body")
         if len(bodies) != 1:
             raise ValueError("missing_or_ambiguous_offer_body")
         text = evidence_text(bodies[0])
-        if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
-            raise ValueError("unit_conversion_review_required")
 
-        # The h1 text must occur exactly once in the body text used for reward
-        # scoping.  Ambiguous repeated headings fail closed instead of choosing
-        # an arbitrary earlier occurrence.
-        title_hits = [m.start() for m in re.finditer(re.escape(title), text)]
-        if len(title_hits) != 1:
-            raise ValueError("ambiguous_offer_header")
-        title_pos = title_hits[0]
+        # The first body occurrence is the item header/breadcrumb region on the
+        # reviewed desktop page. Repeated title mentions later in share/review
+        # chrome are intentionally ignored.
+        title_pos = text.find(title)
+        if title_pos < 0:
+            raise ValueError("missing_offer_header")
         target_pos = text.find("ポイント対象条件", title_pos)
-        if target_pos < 0:
+        if target_pos <= title_pos or target_pos - title_pos > 4000:
             raise ValueError("missing_offer_header_boundary")
         header = text[title_pos:target_pos]
 
-        displayed_matches = re.findall(
-            r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",
+        if "この広告は終了しています" in header:
+            unavailable_payload = {
+                "offerId": offer_id,
+                "name": title,
+                "unavailableMarker": "この広告は終了しています",
+            }
+            fingerprint = hashlib.sha256(
+                json.dumps(
+                    unavailable_payload, ensure_ascii=False, sort_keys=True
+                ).encode("utf-8")
+            ).hexdigest()
+            return {
+                "state": "unavailable",
+                "reason": "source_offer_unavailable",
+                "parserVersion": "hapitas-detail-review-v2",
+                **unavailable_payload,
+                "evidenceFingerprint": fingerprint,
+            }
+
+        if not re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円", text):
+            raise ValueError("unit_conversion_review_required")
+
+        # Bind reward to Hapitas' current-item CTA sentence. Related-OS cards
+        # may contain other pt values in the same header and must never win by
+        # position or magnitude.
+        reward_matches = re.findall(
+            r"(?:【ポイント獲得条件】の達成で|"
+            r"インストール後、条件達成で|"
+            r"アプリ複数条件達成で|"
+            r"条件達成で)\s*"
+            r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt\b",
             header,
             re.I,
         )
-        if not displayed_matches:
-            raise ValueError("missing_displayed_reward")
-        displayed_reward = int(displayed_matches[0].replace(",", ""))
+        reward_values = {int(value.replace(",", "")) for value in reward_matches}
+        if len(reward_values) != 1:
+            raise ValueError("missing_or_ambiguous_displayed_reward")
+        displayed_reward = next(iter(reward_values))
         if not (0 < displayed_reward <= 5_000_000):
             raise ValueError("invalid_displayed_reward")
 
-        terms_start = text.find("ポイント対象条件", title_pos)
-        if terms_start < 0:
-            raise ValueError("incomplete_offer_terms")
+        terms_start = target_pos
+        # "レビュー" can be ordinary ad-description text immediately after
+        # ポイント対象条件 (for example Tokyo Debunker), so it is not a safe
+        # boundary. The reviewed footer marker is stable across both the legacy
+        # and current Hapitas item layouts.
         terms_end_candidates = [
-            pos for marker in ("ハピタスご利用前に必ずご確認ください", "レビュー")
+            pos for marker in ("ハピタスご利用前に必ずご確認ください",)
             if (pos := text.find(marker, terms_start + 1)) >= 0
         ]
-        terms_end = min(terms_end_candidates) if terms_end_candidates else min(len(text), terms_start + 18000)
+        terms_end = min(terms_end_candidates) if terms_end_candidates else min(
+            len(text), terms_start + 18000
+        )
         terms = text[terms_start:terms_end].strip()
-        if not any(marker in terms for marker in (
-            "ポイント獲得条件",
-            "成果受付期限",
-            "成果調査受付期限",
-        )):
+
+        # Hapitas currently has two first-party terms layouts:
+        #   legacy: 【ポイント獲得条件】 / 獲得条件達成期限
+        #   current StepUp: ▼成果条件 / 【成果受付期間】 /
+        #                   【成果調査受付期間】
+        # Require both a condition section and an explicit deadline/acceptance
+        # section so description text alone can never become publishable terms.
+        has_condition_section = bool(re.search(
+            r"(?:ポイント獲得条件|(?:^|\s)▼?成果条件(?:\s|$))",
+            terms,
+        ))
+        has_deadline_section = bool(re.search(
+            r"(?:成果(?:調査)?受付(?:期間|期限)|獲得条件達成期限|"
+            r"広告クリックから[^。\n]{0,80}?[0-9]+\s*日以内|"
+            r"インストール(?:日から起算して|後)?[^。\n]{0,80}?[0-9]+\s*日以内)",
+            terms,
+        ))
+        if not (has_condition_section and has_deadline_section):
             raise ValueError("incomplete_offer_terms")
 
         step_pairs = re.findall(
-            r"STEP\s*([0-9]+)\s*[:：]?.*?で\s*([0-9][0-9,]*)\s*pt\s*獲得",
+            r"STEP\s*([0-9]+)\s*[:：]?.*?で\s*([0-9][0-9,]*)\s*pt(?:\s*獲得)?",
             terms,
             re.I,
         )
@@ -1707,19 +1752,27 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
             if sum(step_rewards) != displayed_reward:
                 raise ValueError("step_total_not_displayed_current_reward")
 
-        os_labels = re.findall(
-            r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",
-            title + " " + terms[:1800],
-            re.I,
+        title_platform = platform_hint(title)
+        if title_platform == "iOS|Android":
+            title_platform = ""
+        registry_platform = str(reviewed_platform or "").strip()
+        if registry_platform and registry_platform not in {"iOS", "Android"}:
+            raise ValueError("invalid_reviewed_platform")
+        if title_platform and title_platform not in {"iOS", "Android"}:
+            title_platform = ""
+        if title_platform and registry_platform and title_platform != registry_platform:
+            raise ValueError("reviewed_platform_mismatch")
+        platform = title_platform or registry_platform
+        platform_provenance = (
+            "source_title" if title_platform
+            else ("reviewed_offer_registry" if registry_platform else "")
         )
-        normalized_os = {"ios": "iOS", "android": "Android"}
-        platforms = sorted({normalized_os[value.casefold()] for value in os_labels})
-        platform = platforms[0] if len(platforms) == 1 else ""
 
         payload = {
             "offerId": offer_id,
             "name": title,
             "platform": platform,
+            "platformProvenance": platform_provenance,
             "displayedCurrentRewardPoints": displayed_reward,
             "stepRewardPoints": step_rewards,
             "verifiedCurrentRewardPoints": displayed_reward,
@@ -1728,14 +1781,18 @@ def inspect_hapitas_offer(raw, requested_url, final_url, aliases):
             "sourcePointRate": "1pt=1JPY",
             "headerText": re.sub(r"\s+", " ", header).strip(),
             "termsText": terms[:12000],
-            "publicationAuthorized": False,
+            "publicationAuthorized": bool(
+                publication_authorized
+                and platform in {"iOS", "Android"}
+                and registry_platform == platform
+            ),
         }
         fingerprint = hashlib.sha256(
             json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
         ).hexdigest()
         return {
             "state": "parsed",
-            "parserVersion": "hapitas-detail-review-v1",
+            "parserVersion": "hapitas-detail-review-v2",
             **payload,
             "evidenceFingerprint": fingerprint,
         }
@@ -2341,7 +2398,23 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "gendama": inspect_gendama_offer,
     }
     if source.get("id") in structured_parsers:
-        evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
+        if source.get("id") == "hapitas":
+            try:
+                offer_id = hapitas_offer_id(url)
+            except ValueError:
+                offer_id = ""
+            platform_registry = source.get("reviewed_platform_by_offer_id") or {}
+            reviewed_platform = platform_registry.get(offer_id, "")
+            evidence = inspect_hapitas_offer(
+                raw, url, final_url, aliases,
+                reviewed_platform=reviewed_platform,
+                publication_authorized=(
+                    source.get("reviewed_reward_refresh_enabled") is True
+                    and bool(reviewed_platform)
+                ),
+            )
+        else:
+            evidence = structured_parsers[source["id"]](raw, url, final_url, aliases)
         if (source.get("id") == "warau" and evidence.get("state") == "parsed"
                 and provider_label_registry):
             provider_candidates = offerwall_provider_candidates_from_text(

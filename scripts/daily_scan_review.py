@@ -87,9 +87,9 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
     """Do not equate raw pt/P with yen or sum OS/site alternative offers."""
     if evidence.get("state") != "parsed" or evidence.get("downstreamTermsRequired"):
         return None
-    # This legacy contract binds points only by a text interval, not an offer
-    # reward DOM. Do not promote its historical "parsed" flag to verification.
-    # A future structurally verified parser needs a new, audited contract.
+    # The legacy Hapitas v1 parser bound points by a loose body interval and is
+    # intentionally non-ranking. Reviewed v2 scopes the current item header and
+    # cross-checks StepUp totals before exposing a JPY-equivalent reward.
     if evidence.get("parserVersion") == "hapitas-detail-review-v1":
         return None
     if (warau_rate_confirmed and evidence.get("parserVersion") == "warau-stepup-v1"
@@ -101,7 +101,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
         "coincome-detail-review-v2": "displayedRewardYen",
-        "hapitas-detail-review-v1": "verifiedCurrentRewardYen",
+        "hapitas-detail-review-v2": "verifiedCurrentRewardYen",
         "ecnavi-detail-review-v1": "verifiedCurrentRewardYen",
         "amefuri-multistep-review-v1": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",

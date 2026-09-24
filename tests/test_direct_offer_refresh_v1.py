@@ -2288,7 +2288,7 @@ def test_repository_evertale_current_moppy_pair_is_published_without_guessing_os
     assert all(row['condition'] == '新規アプリインストール後、3日連続でログインボーナスを獲得' for row in matches)
 
 
-def test_repository_houchi_current_hapitas_android_offer_is_published():
+def test_repository_houchi_ended_hapitas_offer_is_retired():
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
     ))
@@ -2296,13 +2296,7 @@ def test_repository_houchi_current_hapitas_android_offer_is_published():
         row for row in rows
         if row['game'] == '放置少女' and row['site'] == 'hapitas'
     ]
-    assert [(row['platform'], row['reward'], row['url']) for row in matches] == [
-        ('Android', '1501', 'https://hapitas.jp/item/detail/itemid/91475')
-    ]
-    row = matches[0]
-    assert row['condition'] == '新規アプリインストール後、45日以内にプレイヤーレベル120到達（1転生Lv.20到達）'
-    assert row['deadline'] == 'インストール日から起算して45日以内'
-    assert row['verified'] == 'true'
+    assert matches == []
 
 
 def test_repository_evertale_current_hapitas_182_pair_is_published():
@@ -2600,12 +2594,30 @@ def test_repository_tokyo_debunker_current_warau_210_pair_is_published():
     assert all(row['verified'] == 'true' for row in matches)
 
 
-def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
+def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
     source_payload = json.loads((ROOT/'config/point_sources.json').read_text())
     by_id = {source['id']: source for source in source_payload['sources']}
     hapitas = by_id['hapitas']
     assert hapitas['scheduled_fetch_enabled'] is False
-    assert 'review-only' in hapitas['scheduled_fetch_reason'].lower()
+    assert hapitas['scheduled_known_detail_fetch_enabled'] is True
+    assert hapitas['reviewed_reward_refresh_enabled'] is True
+    assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v2'
+    assert hapitas['reviewed_platform_by_offer_id'] == {
+        '101445': 'Android',
+        '101444': 'iOS',
+        '91316': 'iOS',
+        '99420': 'iOS',
+        '99421': 'Android',
+        '98148': 'iOS',
+        '99158': 'Android',
+        '102450': 'iOS',
+        '102451': 'Android',
+        '91334': 'Android',
+        '91331': 'Android',
+        '91345': 'iOS',
+        '91344': 'iOS',
+        '91343': 'Android',
+    }
 
     targets = json.loads((ROOT/'config/game_targets.json').read_text())['games']
     by_game = {item['game']: item for item in targets}
@@ -2637,10 +2649,7 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/91316',
         'https://hapitas.jp/item/detail/itemid/91334',
     }
-    assert set(kingshot) == {
-        'https://hapitas.jp/item/detail/itemid/101355',
-        'https://hapitas.jp/item/detail/itemid/101354',
-    }
+    assert kingshot == []
     assert set(evertale) == {
         'https://hapitas.jp/item/detail/itemid/91344',
         'https://hapitas.jp/item/detail/itemid/91343',
@@ -2656,35 +2665,32 @@ def test_repository_hapitas_is_scheduled_review_only_with_current_targets():
         'https://hapitas.jp/item/detail/itemid/98148',
         'https://hapitas.jp/item/detail/itemid/99158',
     }
-    assert houchi == [
-        'https://hapitas.jp/item/detail/itemid/91475',
-    ]
+    assert houchi == []
 
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
     ))
     hapitas_rows = [row for row in rows if row['site'] == 'hapitas']
     assert {(row['game'], row['platform'], row['reward']) for row in hapitas_rows} == {
-        ('ワーキングヒーロー', 'Android', '11502'),
-        ('ワーキングヒーロー', 'iOS', '11502'),
+        ('ワーキングヒーロー', 'Android', '9822'),
+        ('ワーキングヒーロー', 'iOS', '9822'),
         ('東京ディバンカー', 'iOS', '147'),
         ('東京ディバンカー', 'Android', '147'),
-        ('キングショット', 'Android', '16320'),
-        ('キングショット', 'iOS', '16320'),
-        ('メメントモリ', 'Android', '4815'),
-        ('メメントモリ', 'iOS', '4815'),
+        ('メメントモリ', 'Android', '5317'),
+        ('メメントモリ', 'iOS', '5317'),
         ('エバーテイル', 'Android', '140'),
         ('エバーテイル', 'iOS', '140'),
         ('エバーテイル', 'Android', '182'),
         ('エバーテイル', 'iOS', '182'),
-        ('パズル＆サバイバル', 'Android', '30612'),
-        ('パズル＆サバイバル', 'iOS', '35015'),
-        ('きのこ伝説', 'Android', '14792'),
-        ('きのこ伝説', 'iOS', '18142'),
-        ('放置少女', 'Android', '1501'),
+        ('パズル＆サバイバル', 'Android', '33829'),
+        ('パズル＆サバイバル', 'iOS', '38696'),
+        ('きのこ伝説', 'Android', '16346'),
+        ('きのこ伝説', 'iOS', '20047'),
     }
     assert not any(row['game'] == 'Township' for row in hapitas_rows)
-
+    assert not any(row['game'] == 'キングショット' for row in hapitas_rows)
+    assert not any(row['game'] == '放置少女' for row in hapitas_rows)
+    assert all(row['updatedAt'] == '2026-09-24' for row in hapitas_rows)
 
 def test_unified_listing_snapshot_reuses_one_fetch_for_multiple_consumers():
     script = (ROOT/'scripts/direct_offer_refresh.py').read_text(encoding='utf-8')
@@ -3274,7 +3280,7 @@ def test_hapitas_multistep_parser_cross_checks_step_sum():
         ['Mistplay'],
     )
     assert evidence['state'] == 'parsed'
-    assert evidence['parserVersion'] == 'hapitas-detail-review-v1'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v2'
     assert evidence['displayedCurrentRewardPoints'] == 9351
     assert evidence['stepRewardPoints'] == [0, 105, 175, 269, 538, 175, 2696, 5393]
     assert evidence['verifiedCurrentRewardYen'] == 9351
@@ -3322,6 +3328,65 @@ def test_hapitas_multistep_parser_rejects_step_sum_mismatch():
     }
 
 
+def test_hapitas_v2_handles_repeated_title_and_live_step_syntax():
+    raw = _hapitas_fixture().replace(
+        '<h1>Mistplay</h1>',
+        '<div>Mistplay</div><h1>Mistplay</h1>'
+    ).replace('pt獲得', 'pt')
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+        reviewed_platform='iOS',
+        publication_authorized=True,
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v2'
+    assert evidence['platform'] == 'iOS'
+    assert evidence['platformProvenance'] == 'reviewed_offer_registry'
+    assert evidence['verifiedCurrentRewardYen'] == 9351
+    assert evidence['publicationAuthorized'] is True
+
+
+def test_hapitas_v2_marks_explicit_ended_item_unavailable_before_unit_check():
+    raw = '''
+    <html><head>
+      <link rel="canonical" href="https://hapitas.jp/item/detail/itemid/101355/">
+    </head><body>
+      <h1>キングショット</h1>
+      <div>キングショット この広告は終了しています</div>
+      <section>ポイント対象条件 STEP1: 役場レベル4に到達で42pt</section>
+    </body></html>
+    '''
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/101355',
+        'https://hapitas.jp/item/detail/itemid/101355',
+        ['キングショット'],
+        reviewed_platform='Android',
+        publication_authorized=True,
+    )
+    assert evidence['state'] == 'unavailable'
+    assert evidence['reason'] == 'source_offer_unavailable'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v2'
+    assert evidence['offerId'] == '101355'
+    assert evidence['name'] == 'キングショット'
+    assert evidence['unavailableMarker'] == 'この広告は終了しています'
+    assert len(evidence['evidenceFingerprint']) == 64
+
+
+def test_hapitas_reviewed_platform_registry_is_required_for_publication_authorization():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    hapitas = next(item for item in cfg['sources'] if item['id'] == 'hapitas')
+    assert hapitas['scheduled_known_detail_fetch_enabled'] is True
+    assert hapitas['reviewed_reward_refresh_enabled'] is True
+    assert hapitas['reviewed_platform_by_offer_id']['101445'] == 'Android'
+    assert hapitas['reviewed_platform_by_offer_id']['101444'] == 'iOS'
+    assert '101355' not in hapitas['reviewed_platform_by_offer_id']
+    assert '91475' not in hapitas['reviewed_platform_by_offer_id']
+
+
 def test_hapitas_offer_identity_accepts_reviewed_apn_suffix_only():
     assert direct.hapitas_offer_id(
         'https://hapitas.jp/item/detail/itemid/92863/apn/top_gemes'
@@ -3346,7 +3411,7 @@ def test_hapitas_known_game_detail_review_is_bounded_candidate_only():
     assert hapitas['coverage_detail_review_enabled'] is True
     assert hapitas['coverage_detail_review_limit_per_game'] == 3
     assert hapitas['coverage_detail_review_mode'] == 'candidate_only'
-    assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v1'
+    assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v2'
     assert hapitas['scheduled_fetch_enabled'] is False
 
 
