@@ -127,11 +127,12 @@
     },
     "powl": {
       "unit": "pt",
-      "pointsPerYen": null,
-      "yenPerPoint": null,
-      "status": "unsupported",
-      "evidenceUrl": null,
-      "note": "Do not infer a conversion until a current first-party rate page and reviewed parser contract are added."
+      "pointsPerYen": 10,
+      "yenPerPoint": 0.1,
+      "status": "verified",
+      "evidenceUrl": "https://web.powl.jp/reward/17163",
+      "reviewedAt": "2026-09-24",
+      "note": "Current first-party Powl offer terms explicitly describe 1 yen equivalent as 10pt. Ranking uses the reviewed reward-parent total only; publication remains disabled."
     }
   }
 }
