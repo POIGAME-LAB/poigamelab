@@ -161,11 +161,11 @@
         "/v2/skyflag/ads/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Current anonymous first-party WEB MIKOSHI Skyflag JSON endpoints expose stable OS-scoped offer lists and exact point totals. Current point-to-JPY exchange value is independently verified via DotMoney (500 MIKOSHI points = 450 money), so reviewed details may enter candidate-only ranking; publication remains disabled.",
+      "scheduled_fetch_reason": "Current anonymous first-party WEB MIKOSHI Skyflag JSON endpoints expose stable OS-scoped offer lists and exact point totals. The reviewed point-to-JPY base contract is 1 MIKOSHI point = 1 yen; destination-specific exchange ratios must not reduce that base value. Reviewed details may enter candidate-only ranking; publication remains disabled.",
       "coverage_detail_review_enabled": true,
       "coverage_detail_review_limit_per_game": 4,
       "coverage_detail_review_mode": "candidate_only",
-      "coverage_detail_review_parser": "mikoshi-skyflag-detail-review-v2",
+      "coverage_detail_review_parser": "mikoshi-skyflag-detail-review-v3",
       "full_catalog_discovery_enabled": true,
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 2,

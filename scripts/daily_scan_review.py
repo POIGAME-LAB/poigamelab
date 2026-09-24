@@ -139,8 +139,8 @@ def _kurashiru_reward_explicit_yen(evidence):
 
 
 def _mikoshi_explicit_yen(evidence):
-    """Accept MIKOSHI yen only under the reviewed DotMoney exchange contract."""
-    if evidence.get("parserVersion") != "mikoshi-skyflag-detail-review-v2":
+    """Accept MIKOSHI yen only under the reviewed 1 point = 1 JPY contract."""
+    if evidence.get("parserVersion") != "mikoshi-skyflag-detail-review-v3":
         return None
     points = evidence.get("verifiedCurrentRewardPoints")
     yen = evidence.get("verifiedCurrentRewardYen")
@@ -149,8 +149,8 @@ def _mikoshi_explicit_yen(evidence):
         and type(yen) in {int, float}
         and points > 0
         and evidence.get("rewardUnit") == "MIKOSHI-point"
-        and evidence.get("sourcePointRate") == "500MIKOSHI-point=450JPY-via-DotMoney"
-        and abs((points * 0.9) - float(yen)) < 1e-9
+        and evidence.get("sourcePointRate") == "1MIKOSHI-point=1JPY"
+        and abs(points - float(yen)) < 1e-9
     ):
         return yen
     return None
@@ -175,7 +175,7 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         return _moppy_explicit_yen(evidence)
     if evidence.get("parserVersion") == "kurashiru-reward-detail-review-v2":
         return _kurashiru_reward_explicit_yen(evidence)
-    if evidence.get("parserVersion") == "mikoshi-skyflag-detail-review-v2":
+    if evidence.get("parserVersion") == "mikoshi-skyflag-detail-review-v3":
         return _mikoshi_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",

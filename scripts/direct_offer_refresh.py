@@ -3153,7 +3153,7 @@ def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
         )):
             raise ValueError("incomplete_offer_terms")
 
-        verified_yen = points * 9 / 10
+        verified_yen = points
         payload_out = {
             "offerId": offer_id,
             "name": name,
@@ -3161,8 +3161,8 @@ def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
             "verifiedCurrentRewardPoints": points,
             "verifiedCurrentRewardYen": verified_yen,
             "rewardUnit": "MIKOSHI-point",
-            "sourcePointRate": "500MIKOSHI-point=450JPY-via-DotMoney",
-            "conversionEvidenceUrl": "https://d-money.jp/earn/exchange/detail/1231",
+            "sourcePointRate": "1MIKOSHI-point=1JPY",
+            "conversionEvidenceUrl": "https://www.atpress.ne.jp/news/334278",
             "conversionReviewedAt": "2026-09-25",
             "steps": steps,
             "conditionText": str(descriptions.get("cvCondition") or "").strip(),
@@ -3176,7 +3176,7 @@ def inspect_mikoshi_offer(raw, requested_url, final_url, aliases):
         ).hexdigest()
         return {
             "state": "parsed",
-            "parserVersion": "mikoshi-skyflag-detail-review-v2",
+            "parserVersion": "mikoshi-skyflag-detail-review-v3",
             **payload_out,
             "evidenceFingerprint": fingerprint,
         }
