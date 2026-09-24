@@ -9,40 +9,51 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - name: Inspect current Hapitas detail structure
+      - name: Probe all published Hapitas rows with current text structure
         run: |
           python - <<'PY'
-          import json,re,sys
+          import csv,json,re,sys
           sys.path.insert(0,"scripts")
           import direct_offer_refresh as d
+
           sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
           s=sources["hapitas"]
-          for offer_id in ("101445","101355","91316"):
-              url=f"https://hapitas.jp/item/detail/itemid/{offer_id}"
-              raw,final=d.fetch_first_party(url,s,timeout=20,max_bytes=1500000)
+          rows=[r for r in csv.DictReader(open("data/published_offers.csv",encoding="utf-8",newline="")) if r["site"]=="hapitas"]
+          for row in rows:
+              raw,final=d.fetch_first_party(row["url"],s,timeout=20,max_bytes=1500000)
               doc=d.EvidenceHTML(raw).root
+              title=d.evidence_text(d.one(doc.find(tag="h1")))
               bodies=doc.find(tag="body")
               body=d.evidence_text(bodies[0]) if len(bodies)==1 else d.visible_text(raw)
-              print("===== OFFER",offer_id,"FINAL",final,"BYTES",len(raw.encode("utf-8")),"=====")
-              print("H1",json.dumps([d.evidence_text(x) for x in doc.find(tag="h1")],ensure_ascii=False))
-              print("H2",json.dumps([d.evidence_text(x) for x in doc.find(tag="h2")][:20],ensure_ascii=False))
-              print("CONVERSION_MARKERS",json.dumps(re.findall(r".{0,80}1\s*(?:ポイント|pt).{0,80}1\s*円.{0,80}",body,re.I)[:10],ensure_ascii=False))
-              for marker in ("ポイント対象条件","ポイント獲得条件","成果受付期限","STEP1","pt獲得"):
-                  positions=[m.start() for m in re.finditer(re.escape(marker),body,re.I)]
-                  print("MARKER",marker,"COUNT",len(positions),"POS",positions[:10])
-              for h in [d.evidence_text(x) for x in doc.find(tag="h1")][:4]:
-                  positions=[m.start() for m in re.finditer(re.escape(h),body)]
-                  print("TITLE_HITS",json.dumps(h,ensure_ascii=False),positions[:10])
-                  for p in positions[:2]:
-                      print("TITLE_CONTEXT",re.sub(r"\s+"," ",body[max(0,p-500):p+1800]))
-              reward_matches=list(re.finditer(r"[0-9][0-9,]*\s*pt\b",body,re.I))
-              print("PT_CONTEXTS")
-              for m in reward_matches[:20]:
+              first=body.find(title)
+              boundary=body.find("ポイント対象条件",max(0,first))
+              header=body[first:boundary] if first>=0 and boundary>first else ""
+              ended="この広告は終了しています" in body[first:first+1200] if first>=0 else False
+              rewards=[int(x.replace(",","")) for x in re.findall(r"条件達成で\s*([0-9][0-9,]*)\s*pt",header,re.I)]
+              if not rewards:
+                  rewards=[int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9,]*)\s*pt\b",header,re.I)]
+              terms_start=body.find("ポイント対象条件",max(0,first))
+              terms_end_candidates=[p for marker in ("ハピタスご利用前に必ずご確認ください","レビュー") if (p:=body.find(marker,terms_start+1))>=0]
+              terms_end=min(terms_end_candidates) if terms_end_candidates else min(len(body),terms_start+18000)
+              terms=body[terms_start:terms_end] if terms_start>=0 else ""
+              step_pairs=re.findall(r"STEP\s*([0-9]+)\s*[:：]?.*?で\s*([0-9][0-9,]*)\s*pt(?:\s*獲得)?",terms,re.I)
+              step_values=[int(v.replace(",","")) for _,v in step_pairs]
+              os_hits=[]
+              for m in re.finditer(r"(?<![A-Za-z])(iOS|Android)(?![A-Za-z])",body,re.I):
                   p=m.start()
-                  print(re.sub(r"\s+"," ",body[max(0,p-180):p+260]))
+                  os_hits.append(re.sub(r"\s+"," ",body[max(0,p-100):p+180]))
+              print("PROBE",json.dumps({
+                  "game":row["game"],"url":row["url"],"storedReward":row["reward"],
+                  "storedPlatform":row["platform"],"title":title,"firstTitlePos":first,
+                  "boundaryPos":boundary,"ended":ended,"header":header[:900],
+                  "headerRewards":rewards,"stepCount":len(step_values),
+                  "stepTotal":sum(step_values) if step_values else None,
+                  "unitMarker":bool(re.search(r"1\s*ポイント\s*[=＝]\s*1\s*円",body)),
+                  "osContexts":os_hits[:6],
+              },ensure_ascii=False,sort_keys=True))
           PY
