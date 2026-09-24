@@ -3274,7 +3274,7 @@ def test_hapitas_multistep_parser_cross_checks_step_sum():
         ['Mistplay'],
     )
     assert evidence['state'] == 'parsed'
-    assert evidence['parserVersion'] == 'hapitas-detail-review-v1'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v2'
     assert evidence['displayedCurrentRewardPoints'] == 9351
     assert evidence['stepRewardPoints'] == [0, 105, 175, 269, 538, 175, 2696, 5393]
     assert evidence['verifiedCurrentRewardYen'] == 9351
@@ -3322,6 +3322,64 @@ def test_hapitas_multistep_parser_rejects_step_sum_mismatch():
     }
 
 
+def test_hapitas_v2_handles_repeated_title_and_live_step_syntax():
+    raw = _hapitas_fixture().replace(
+        '<h1>Mistplay</h1>',
+        '<div>Mistplay</div><h1>Mistplay</h1>'
+    ).replace('pt獲得', 'pt')
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        'https://hapitas.jp/item/detail/itemid/102497/',
+        ['Mistplay'],
+        reviewed_platform='iOS',
+        publication_authorized=True,
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'hapitas-detail-review-v2'
+    assert evidence['platform'] == 'iOS'
+    assert evidence['platformProvenance'] == 'reviewed_offer_registry'
+    assert evidence['verifiedCurrentRewardYen'] == 9351
+    assert evidence['publicationAuthorized'] is True
+
+
+def test_hapitas_v2_marks_explicit_ended_item_unavailable_before_unit_check():
+    raw = '''
+    <html><head>
+      <link rel="canonical" href="https://hapitas.jp/item/detail/itemid/101355/">
+    </head><body>
+      <h1>キングショット</h1>
+      <div>キングショット この広告は終了しています</div>
+      <section>ポイント対象条件 STEP1: 役場レベル4に到達で42pt</section>
+    </body></html>
+    '''
+    evidence = direct.inspect_hapitas_offer(
+        raw,
+        'https://hapitas.jp/item/detail/itemid/101355',
+        'https://hapitas.jp/item/detail/itemid/101355',
+        ['キングショット'],
+        reviewed_platform='Android',
+        publication_authorized=True,
+    )
+    assert evidence == {
+        'state': 'unavailable',
+        'reason': 'source_offer_unavailable',
+        'offerId': '101355',
+        'name': 'キングショット',
+    }
+
+
+def test_hapitas_reviewed_platform_registry_is_required_for_publication_authorization():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    hapitas = next(item for item in cfg['sources'] if item['id'] == 'hapitas')
+    assert hapitas['scheduled_known_detail_fetch_enabled'] is True
+    assert hapitas['reviewed_reward_refresh_enabled'] is True
+    assert hapitas['reviewed_platform_by_offer_id']['101445'] == 'Android'
+    assert hapitas['reviewed_platform_by_offer_id']['101444'] == 'iOS'
+    assert '101355' not in hapitas['reviewed_platform_by_offer_id']
+    assert '91475' not in hapitas['reviewed_platform_by_offer_id']
+
+
 def test_hapitas_offer_identity_accepts_reviewed_apn_suffix_only():
     assert direct.hapitas_offer_id(
         'https://hapitas.jp/item/detail/itemid/92863/apn/top_gemes'
@@ -3346,7 +3404,7 @@ def test_hapitas_known_game_detail_review_is_bounded_candidate_only():
     assert hapitas['coverage_detail_review_enabled'] is True
     assert hapitas['coverage_detail_review_limit_per_game'] == 3
     assert hapitas['coverage_detail_review_mode'] == 'candidate_only'
-    assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v1'
+    assert hapitas['coverage_detail_review_parser'] == 'hapitas-detail-review-v2'
     assert hapitas['scheduled_fetch_enabled'] is False
 
 
