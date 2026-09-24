@@ -142,7 +142,7 @@
     {
       "id": "mikoshi",
       "name": "MIKOSHI",
-      "start_url": "https://web.mikoshi.jp/shopping/suggest",
+      "start_url": "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=1000",
       "search_domains": [
         "mikoshi.jp",
         "web.mikoshi.jp"
@@ -152,13 +152,26 @@
       "known_target_urls": [],
       "prefer_known_pages": false,
       "direct_listing_urls": [
-        "https://web.mikoshi.jp/shopping/suggest"
+        "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=1000",
+        "https://web.mikoshi.jp/v2/skyflag/ads?os=2&limit=1000"
       ],
-      "direct_listing_limit": 1,
-      "direct_detail_limit": 6,
-      "direct_detail_url_hints": [],
+      "direct_listing_limit": 2,
+      "direct_detail_limit": 0,
+      "direct_detail_url_hints": [
+        "/v2/skyflag/ads/"
+      ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Public WEB MIKOSHI requires JavaScript for offer content; direct HTML does not expose reliable unattended listing/detail evidence."
+      "scheduled_fetch_reason": "Current anonymous first-party WEB MIKOSHI Skyflag JSON endpoints expose stable OS-scoped offer lists and exact point totals. Keep candidate-only until the current MIKOSHI point-to-JPY face-value contract is independently verified.",
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 4,
+      "coverage_detail_review_mode": "review_only",
+      "coverage_detail_review_parser": "mikoshi-skyflag-detail-review-v1",
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 2,
+      "new_game_discovery_candidate_limit": 1000,
+      "new_game_discovery_scope": "current_anonymous_first_party_skyflag_os_feeds",
+      "reviewedAt": "2026-09-25"
     },
     {
       "id": "gendama",
