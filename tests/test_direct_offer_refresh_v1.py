@@ -3295,6 +3295,122 @@ def test_ecnavi_known_game_detail_review_is_bounded_candidate_only():
     assert ec['scheduled_fetch_enabled'] is False
 
 
+def _powl_fixture(points='286,411', second_points=None,
+                  title='ゾンビ・パニック（iOS）マルチミッション'):
+    second = second_points if second_points is not None else points
+    return f'''
+    <html><head><title>{title} | Powl</title></head><body>
+      <h2 class="sp">{title}</h2>
+      <div class="reward-parent">
+        <div><p class="results">新規アプリインストール後、各ミッションクリア</p></div>
+        <div class="sp"><p class="pt">{points}pt</p></div>
+        <div class="pc"><p class="pt">{second}pt</p></div>
+      </div>
+      <section>
+        ポイント獲得条件※必ずお読みください
+        【成果条件】新規アプリインストール後、各ミッションクリア
+        STEP1 レベル10到達【800pt】
+        STEP2 レベル100到達【24,500pt】
+        すべて達成で{points}ptゲット！
+        【却下条件】過去にインストール済みの場合
+        成果のお問い合わせについて
+      </section>
+      <h2>広告の説明</h2>
+      <p>ゲーム紹介</p>
+    </body></html>
+    '''
+
+
+def test_powl_detail_parser_binds_reward_parent_total_and_preserves_fractional_yen():
+    evidence = direct.inspect_powl_offer(
+        _powl_fixture(),
+        'https://web.powl.jp/reward/22265',
+        'https://web.powl.jp/reward/22265',
+        ['ゾンビ・パニック'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['parserVersion'] == 'powl-detail-review-v1'
+    assert evidence['displayedRewardPoints'] == 286411
+    assert evidence['verifiedCurrentRewardYen'] == 28641.1
+    assert evidence['rewardUnit'] == 'Powl-pt'
+    assert evidence['sourcePointRate'] == '10pt=1JPY'
+    assert evidence['publicationAuthorized'] is False
+    assert evidence['platform'] == 'iOS'
+    assert evidence['evidenceFingerprint']
+
+
+def test_powl_detail_parser_ignores_step_amounts_outside_reward_parent():
+    evidence = direct.inspect_powl_offer(
+        _powl_fixture(points='912,450'),
+        'https://web.powl.jp/reward/37763',
+        'https://web.powl.jp/reward/37763',
+        ['ゾンビ・パニック'],
+    )
+    assert evidence['state'] == 'parsed'
+    assert evidence['displayedRewardPoints'] == 912450
+    assert evidence['verifiedCurrentRewardYen'] == 91245
+
+
+def test_powl_detail_parser_rejects_conflicting_responsive_totals():
+    evidence = direct.inspect_powl_offer(
+        _powl_fixture(points='286,411', second_points='280,000'),
+        'https://web.powl.jp/reward/22265',
+        'https://web.powl.jp/reward/22265',
+        ['ゾンビ・パニック'],
+    )
+    assert evidence == {
+        'state': 'review_required',
+        'reason': 'missing_or_ambiguous_displayed_reward',
+    }
+
+
+def test_powl_offer_identity_rejects_queries():
+    assert direct.powl_offer_id('https://web.powl.jp/reward/22265') == '22265'
+    try:
+        direct.powl_offer_id('https://web.powl.jp/reward/22265?invite_code=secret')
+    except ValueError as error:
+        assert str(error) == 'ambiguous_offer_identity'
+    else:
+        raise AssertionError('query-bearing Powl reward URL must be rejected')
+
+
+def test_powl_primary_listing_container_excludes_sidebar_reward_links():
+    source = {
+        'id': 'powl',
+        'name': 'Powl',
+        'search_domains': ['web.powl.jp'],
+        'direct_detail_url_hints': ['/reward/'],
+        'new_game_discovery_container_class': 'search-result-simple-list',
+    }
+    raw = '''
+      <div class="search-result-simple-list">
+        <a href="/reward/100">Primary Puzzle（iOS） 20,000pt</a>
+      </div>
+      <aside class="ranking">
+        <a href="/reward/200">Sidebar Puzzle（iOS） 999,999pt</a>
+      </aside>
+    '''
+    items = direct.discover_new_game_listing_candidates(
+        raw, 'https://web.powl.jp/genre/2', source, [], limit=20
+    )
+    assert [item['offerIdentity'] for item in items] == ['powl:pathid:100']
+    signature = direct.listing_detail_identity_signature(
+        raw, 'https://web.powl.jp/genre/2', source
+    )
+    assert signature['detailIdentityCount'] == 1
+
+
+def test_powl_ranking_config_is_candidate_only_and_publication_disabled():
+    cfg = json.loads((ROOT/'config/point_sources.json').read_text(encoding='utf-8'))
+    powl = next(item for item in cfg['sources'] if item['id'] == 'powl')
+    assert powl['coverage_detail_review_enabled'] is True
+    assert powl['coverage_detail_review_mode'] == 'candidate_only'
+    assert powl['coverage_detail_review_parser'] == 'powl-detail-review-v1'
+    assert powl['new_game_discovery_container_class'] == 'search-result-simple-list'
+    assert powl['new_game_discovery_candidate_limit'] >= 999
+    assert powl['scheduled_fetch_enabled'] is False
+
+
 def _pointtown_fixture(reward='160'):
     return f'''
     <html><head>
