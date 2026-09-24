@@ -151,8 +151,8 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
         if row["game"] == "メメントモリ" and row["site"] == "hapitas"
     ]
     assert {(row["platform"], row["reward"]) for row in matches} == {
-        ("iOS", "4815"),
-        ("Android", "4815"),
+        ("iOS", "5317"),
+        ("Android", "5317"),
     }
     assert {row["url"] for row in matches} == {
         "https://hapitas.jp/item/detail/itemid/99420",
@@ -181,7 +181,7 @@ def test_evertale_has_two_current_moppy_offers_without_os_guess(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
-def test_houchi_has_current_hapitas_android_offer(output_dir):
+def test_houchi_ended_hapitas_offer_is_not_published(output_dir):
     builder.build_public_site(output_dir)
     import csv
 
@@ -192,12 +192,7 @@ def test_houchi_has_current_hapitas_android_offer(output_dir):
         row for row in rows
         if row["game"] == "放置少女" and row["site"] == "hapitas"
     ]
-    assert [(row["platform"], row["reward"], row["url"]) for row in matches] == [
-        ("Android", "1501", "https://hapitas.jp/item/detail/itemid/91475")
-    ]
-    assert matches[0]["updatedAt"] == "2026-09-08"
-    assert matches[0]["verified"].lower() == "true"
-    assert matches[0]["deadline"] == "インストール日から起算して45日以内"
+    assert matches == []
 
 
 def test_working_hero_hapitas_pair_is_current(output_dir):
@@ -212,10 +207,10 @@ def test_working_hero_hapitas_pair_is_current(output_dir):
         if row["game"] == "ワーキングヒーロー" and row["site"] == "hapitas"
     ]
     assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("Android", "11502", "https://hapitas.jp/item/detail/itemid/101445"),
-        ("iOS", "11502", "https://hapitas.jp/item/detail/itemid/101444"),
+        ("Android", "9822", "https://hapitas.jp/item/detail/itemid/101445"),
+        ("iOS", "9822", "https://hapitas.jp/item/detail/itemid/101444"),
     }
-    assert all(row["updatedAt"] == "2026-09-09" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-24" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
@@ -236,7 +231,7 @@ def test_evertale_has_current_hapitas_182_pair(output_dir):
         ("Android", "https://hapitas.jp/item/detail/itemid/91331"),
         ("iOS", "https://hapitas.jp/item/detail/itemid/91345"),
     }
-    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-24" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
     assert all(row["deadline"] == "インストール日から起算して30日以内" for row in matches)
 
@@ -275,7 +270,7 @@ def test_tokyo_debunker_hapitas_ios_android_pair_is_published(output_dir):
         ("iOS", "147", "https://hapitas.jp/item/detail/itemid/91316"),
         ("Android", "147", "https://hapitas.jp/item/detail/itemid/91334"),
     }
-    assert all(row["updatedAt"] == "2026-09-08" for row in matches)
+    assert all(row["updatedAt"] == "2026-09-24" for row in matches)
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
@@ -288,7 +283,7 @@ def test_tokyo_debunker_current_verified_dates_are_fresh(output_dir):
     ))
     by_key = {(row["site"], row["url"]): row for row in rows if row["game"] == "東京ディバンカー"}
     assert by_key[("moppy", "https://pc.moppy.jp/ad/detail.php?site_id=158270")]["updatedAt"] == "2026-09-24"
-    assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["updatedAt"] == "2026-09-08"
+    assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["updatedAt"] == "2026-09-24"
     assert by_key[("hapitas", "https://hapitas.jp/item/detail/itemid/91316")]["platform"] == "iOS"
 
 
@@ -310,7 +305,7 @@ def test_tokyo_debunker_has_two_current_moppy_offers_without_os_guess(output_dir
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
-def test_kingshot_has_current_hapitas_ios_android_pair(output_dir):
+def test_kingshot_ended_hapitas_pair_is_not_published(output_dir):
     builder.build_public_site(output_dir)
     import csv
 
@@ -321,16 +316,7 @@ def test_kingshot_has_current_hapitas_ios_android_pair(output_dir):
         row for row in rows
         if row["game"] == "キングショット" and row["site"] == "hapitas"
     ]
-    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("Android", "16320", "https://hapitas.jp/item/detail/itemid/101355"),
-        ("iOS", "16320", "https://hapitas.jp/item/detail/itemid/101354"),
-    }
-    assert all(row["verified"].lower() == "true" for row in matches)
-    assert {(row["platform"], row["updatedAt"]) for row in matches} == {
-        ("Android", "2026-09-08"),
-        ("iOS", "2026-09-08"),
-    }
-    assert all("10日／30日／70日以内" in row["deadline"] for row in matches)
+    assert matches == []
 
 
 def test_kinoko_has_current_hapitas_ios_android_pair(output_dir):
@@ -345,8 +331,8 @@ def test_kinoko_has_current_hapitas_ios_android_pair(output_dir):
         if row["game"] == "きのこ伝説" and row["site"] == "hapitas"
     ]
     assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("iOS", "18142", "https://hapitas.jp/item/detail/itemid/102450"),
-        ("Android", "14792", "https://hapitas.jp/item/detail/itemid/102451"),
+        ("iOS", "20047", "https://hapitas.jp/item/detail/itemid/102450"),
+        ("Android", "16346", "https://hapitas.jp/item/detail/itemid/102451"),
     }
     assert all(row["verified"].lower() == "true" for row in matches)
     assert all(row["updatedAt"] == "2026-09-08" for row in matches)
@@ -367,8 +353,8 @@ def test_puzzles_survival_has_current_hapitas_ios_android_pair(output_dir):
         if row["game"] == "パズル＆サバイバル" and row["site"] == "hapitas"
     ]
     assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("iOS", "35015", "https://hapitas.jp/item/detail/itemid/98148"),
-        ("Android", "30612", "https://hapitas.jp/item/detail/itemid/99158"),
+        ("iOS", "38696", "https://hapitas.jp/item/detail/itemid/98148"),
+        ("Android", "33829", "https://hapitas.jp/item/detail/itemid/99158"),
     }
     assert all(row["verified"].lower() == "true" for row in matches)
     assert all(row["updatedAt"] == "2026-09-08" for row in matches)
@@ -541,8 +527,7 @@ def test_whiteout_and_houchi_selected_rows_are_current(output_dir):
     for row in rows:
         key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
         if key in expected:
-            expected_date = "2026-09-24" if row["site"] == "moppy" else "2026-09-08"
-            assert row["updatedAt"] == expected_date
+            assert row["updatedAt"] == "2026-09-24"
             assert row["verified"].lower() == "true"
 
 
@@ -600,7 +585,6 @@ def test_kingshot_hapitas_and_houchi_moppy_are_current(output_dir):
         (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
     ))
     expected = {
-        ("キングショット", "hapitas", "Android", "16320", "https://hapitas.jp/item/detail/itemid/101355"),
         ("放置少女", "moppy", "不明", "1852", "https://pc.moppy.jp/ad/detail.php?site_id=147270"),
     }
     matches = {
