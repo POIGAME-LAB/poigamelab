@@ -1,5 +1,5 @@
 name: Temporary Gendama current-surface validation
-# rerun after charset sniff fix
+# rerun after current terms-vocabulary fix
 
 on:
   push:
