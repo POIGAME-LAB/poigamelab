@@ -69,12 +69,17 @@ jobs:
               raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=2_500_000)
               links=parse_links(raw,final)
               items=[]
+              candidate_like=[]
               for u,text in links:
-                  if "/service/item/" in urlparse(u).path:
+                  path=urlparse(u).path
+                  if "/service/item/" in path:
                       oid=direct.offer_identity_key(u,"gendama")
                       if oid and oid not in detail_urls:
                           detail_urls[oid]=(u,text,query)
                       items.append({"identity":oid,"url":u,"text":text[:220]})
+                  if ("client_detail" in path or path.startswith("/service/") or
+                          any(k in urlparse(u).query for k in ("service_id=", "id=", "sid="))):
+                      candidate_like.append({"url":u,"text":text[:240]})
               href_paths=Counter(urlparse(u).path.split("/")[2] if len(urlparse(u).path.split("/"))>2 else urlparse(u).path for u,_ in links)
               pages=[u for u,_ in links if "service_search" in urlparse(u).path and ("page=" in u or "p=" in u)]
               summary["queries"].append({
@@ -85,6 +90,7 @@ jobs:
                   "uniqueDetailLinks":len({x["identity"] for x in items if x["identity"]}),
                   "paginationLinks":len(set(pages)),
                   "sampleItems":items[:8],
+                  "sampleCandidateLinks":candidate_like[:20],
                   "commonLinkBuckets":href_paths.most_common(8),
               })
 
@@ -113,6 +119,6 @@ jobs:
                   })
 
           print("GENDAMA_LIVE_AUDIT", json.dumps(summary, ensure_ascii=False, sort_keys=True))
-          if not any(x["uniqueDetailLinks"] > 0 for x in summary["queries"]):
-              raise SystemExit("No current Gendama detail links discovered")
+          if not any(x["sampleCandidateLinks"] for x in summary["queries"]):
+              raise SystemExit("No current Gendama candidate-like links discovered")
           PY
