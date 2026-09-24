@@ -2516,11 +2516,21 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
             if not {"m-section--main", "m-tabslider"} <= classes:
                 continue
             value = evidence_text(node)
+            has_condition = any(marker in value for marker in (
+                "▼ポイント獲得条件", "■ポイント獲得条件", "■獲得条件",
+                "【獲得条件】", "【獲得対象】", "成果受付期限",
+                "新規アプリインストール後", "新規インストール後",
+            ))
             if (
-                "ポイント獲得条件" in value
+                has_condition
                 and "広告概要" in value
-                and any(marker in value for marker in ("却下条件", "注意事項", "対象外"))
-                and any(marker in value for marker in ("お問い合わせ", "お問合せ", "広告主", "スポンサーサイト"))
+                and any(marker in value for marker in (
+                    "却下条件", "注意事項", "対象外", "ご注意点"
+                ))
+                and any(marker in value for marker in (
+                    "お問い合わせ", "お問合せ", "広告主", "スポンサーサイト",
+                    "成果調査受付期限",
+                ))
             ):
                 terms_sections.append(value)
         unique_sections = list(dict.fromkeys(terms_sections))
@@ -2535,12 +2545,31 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
                 "▼ポイント獲得条件",
                 "■ポイント獲得条件",
                 "■獲得条件",
+                "【獲得条件】",
+                "【獲得対象】",
             )
         ]
         starts = [pos for pos in starts if 0 <= pos < terms_end]
-        if not starts or terms_end <= min(starts):
+        if starts:
+            terms_start = min(starts)
+        else:
+            pr_marker = section_text.find("[PR]")
+            strong_unheaded = (
+                any(marker in section_text[:terms_end] for marker in (
+                    "成果受付期限", "成果調査受付期限"
+                ))
+                and any(marker in section_text[:terms_end] for marker in (
+                    "新規アプリインストール後", "新規インストール後",
+                    "成果となります", "報酬獲得となります",
+                ))
+            )
+            if pr_marker >= 0 and strong_unheaded:
+                terms_start = pr_marker
+            else:
+                raise ValueError("incomplete_offer_terms")
+        if terms_end <= terms_start:
             raise ValueError("incomplete_offer_terms")
-        terms = re.sub(r"\s+", " ", section_text[min(starts):terms_end]).strip()
+        terms = re.sub(r"\s+", " ", section_text[terms_start:terms_end]).strip()
         if len(terms) < 120:
             raise ValueError("incomplete_offer_terms")
 
