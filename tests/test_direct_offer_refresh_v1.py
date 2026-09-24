@@ -2221,6 +2221,24 @@ def test_moppy_v3_complete_first_party_terms_do_not_require_downstream(moppy_mar
     assert evidence['verifiedCurrentRewardYen'] == 600
 
 
+@pytest.mark.parametrize("heading", ["【獲得条件】", "【獲得対象】"])
+def test_moppy_v3_accepts_reviewed_current_condition_headings(moppy_markup, heading):
+    raw = moppy_markup.replace("▼ポイント獲得条件", heading)
+    evidence = parse_moppy(raw)
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "moppy-detail-review-v3"
+
+
+def test_moppy_v3_accepts_unheaded_pr_terms_with_explicit_deadlines(moppy_markup):
+    raw = moppy_markup.replace(
+        "▼ポイント獲得条件\n新規アプリインストール後、45日以内に各成果地点クリアで報酬獲得となります。\n〖成果受付期間〗インストール後、45日以内",
+        "ｰｰｰｰｰｰ[PR]ｰｰｰｰｰｰ\n新規アプリインストール後、条件達成で成果となります。\n成果受付期限：広告クリックから45日以内\n成果調査受付期限：広告クリックから50日以内"
+    )
+    evidence = parse_moppy(raw)
+    assert evidence["state"] == "parsed"
+    assert "[PR]" in evidence["termsText"]
+
+
 def test_moppy_v3_accepts_current_category_card_suffix_alias(moppy_markup):
     alias = 'テストゲーム（StepUp）〖Android〗 新規インストール後レベル20達成 600P'
     evidence = direct.inspect_moppy_offer(
