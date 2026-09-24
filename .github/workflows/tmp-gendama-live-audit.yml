@@ -55,7 +55,8 @@ jobs:
           visible=re.sub(r"(?s)<[^>]+>"," ",visible)
           visible=re.sub(r"\\s+"," ",visible).strip()
           snippets={}
-          for marker in ("ザ・グランドマフィア","獲得条件","判定ポイント","ポイントを獲得","注意事項","円相当","48,750pt","48,750"):
+          for marker in ("ザ・グランドマフィア","獲得条件","ポイント獲得条件","判定ポイント","ポイントを獲得",
+                         "注意事項","却下","対象外","ポイント獲得について","サービスの詳細","円相当","48,750pt","48,750"):
               pos=visible.find(marker)
               if pos>=0:
                   snippets[marker]=visible[max(0,pos-220):pos+900]
