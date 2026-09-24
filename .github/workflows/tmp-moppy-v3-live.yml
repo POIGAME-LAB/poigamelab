@@ -74,6 +74,29 @@ jobs:
                   reasons[reason]=reasons.get(reason,0)+1
                   rows.append({"game":game,"url":url,"state":"fetch_error","reason":reason})
 
+          probe_url="https://pc.moppy.jp/ad/detail.php?s_id=162206&track_ref=category"
+          probe_raw,probe_final=direct.fetch_first_party(probe_url,source,timeout=20,max_bytes=2_000_000)
+          probe_doc=direct.EvidenceHTML(probe_raw).root
+          structural=[]
+          for tag in ("div","section","article","p","dl","table"):
+              for node in probe_doc.find(tag=tag):
+                  value=direct.evidence_text(node)
+                  if len(value) < 30 or len(value) > 12000:
+                      continue
+                  if any(marker in value for marker in (
+                      "ポイント獲得条件","▼ポイント獲得条件","■獲得条件",
+                      "注意事項","ポイントに関するお問い合わせ"
+                  )):
+                      structural.append({
+                          "tag":tag,
+                          "id":node.attrs.get("id",""),
+                          "class":node.attrs.get("class",""),
+                          "length":len(value),
+                          "text":value[:2600],
+                      })
+          print("MOPPY_STRUCTURE",json.dumps({
+              "url":probe_final,"nodes":structural[:40]
+          },ensure_ascii=False,sort_keys=True))
           print("MOPPY_V3_LIVE",json.dumps({
               "candidateCount":len(candidates),
               "reasonCounts":reasons,
