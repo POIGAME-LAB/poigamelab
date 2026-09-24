@@ -673,102 +673,121 @@ def test_mikoshi_verified_exchange_rate_joins_yen_ranking():
 
 
 def test_trima_live_diagnostic_20260925():
-    """Temporary live diagnostic; intentionally fails so CI exposes Trima API construction."""
+    """Temporary live diagnostic; intentionally fails so CI exposes Trima category JSON."""
     import json as _json
     import re as _re
-    from http.cookiejar import CookieJar as _CookieJar
     from urllib.error import HTTPError as _HTTPError
-    from urllib.parse import urljoin as _urljoin
-    from urllib.request import Request as _Request, build_opener as _build_opener, HTTPCookieProcessor as _HTTPCookieProcessor
+    from urllib.request import Request as _Request, urlopen as _urlopen
 
     ua = (
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
         "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
     )
-    jar = _CookieJar()
-    opener = _build_opener(_HTTPCookieProcessor(jar))
 
-    def fetch(url, accept="text/html,application/xhtml+xml", extra=None):
-        headers = {
+    def fetch(url, accept="application/json, text/plain, */*"):
+        req = _Request(url, headers={
             "User-Agent": ua,
             "Accept": accept,
             "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
-            "Referer": "https://web.trip-mile.com/",
-        }
-        headers.update(extra or {})
-        req = _Request(url, headers=headers)
+            "Referer": "https://web.trip-mile.com/category/504",
+        })
         try:
-            with opener.open(req, timeout=20) as r:
+            with _urlopen(req, timeout=20) as r:
                 data = r.read(6_000_000)
-                return {"ok": True, "status": getattr(r, "status", None), "final": r.geturl(),
-                        "contentType": r.headers.get("Content-Type"),
-                        "text": data.decode("utf-8", "replace")}
+                return {
+                    "ok": True, "status": getattr(r, "status", None),
+                    "final": r.geturl(), "contentType": r.headers.get("Content-Type"),
+                    "text": data.decode("utf-8", "replace"),
+                }
         except _HTTPError as exc:
-            body = exc.read(500_000).decode("utf-8", "replace")
-            return {"ok": False, "status": exc.code, "error": "HTTPError", "text": body}
+            return {
+                "ok": False, "status": exc.code, "error": "HTTPError",
+                "text": exc.read(500_000).decode("utf-8", "replace"),
+            }
         except Exception as exc:
             return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
 
-    base = "https://web.trip-mile.com/category/504"
-    category = fetch(base)
-    raw = category.get("text", "")
-    scripts = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
-    script_urls = [_urljoin(base, x) for x in scripts]
+    pages = []
+    merged = []
+    total_count = None
+    for start in range(0, 240, 24):
+        url = (
+            "https://web.trip-mile.com/api/ads/category?"
+            "id=504&limit=24&start=" + str(start) + "&sortBy=recommended"
+        )
+        res = fetch(url)
+        body = res.get("text", "")
+        parsed = None
+        try:
+            parsed = _json.loads(body)
+        except Exception:
+            pass
+        data = parsed.get("data") if isinstance(parsed, dict) else None
+        results = data.get("results") if isinstance(data, dict) else None
+        count = data.get("count") if isinstance(data, dict) else None
+        if isinstance(count, int):
+            total_count = count
+        if isinstance(results, list):
+            merged.extend(results)
+        pages.append({
+            "start": start,
+            "ok": res.get("ok"),
+            "status": res.get("status"),
+            "contentType": res.get("contentType"),
+            "count": count,
+            "resultCount": len(results) if isinstance(results, list) else None,
+            "keys": sorted(parsed.keys()) if isinstance(parsed, dict) else [],
+            "dataKeys": sorted(data.keys()) if isinstance(data, dict) else [],
+            "sample": results[:5] if isinstance(results, list) else body[:1600],
+        })
+        if isinstance(results, list) and (
+            len(results) == 0 or (isinstance(total_count, int) and len(merged) >= total_count)
+        ):
+            break
 
-    matches = []
-    page_chunk = {}
-    needles = ["/api/", "/api/ads", "offerwall", "top-ranking", "Authorization", "Bearer ", "fetch(", "axios", "categoryId"]
-    for su in script_urls:
-        b = fetch(su, "*/*")
-        body = b.get("text", "")
-        if not body:
+    game_markers = (
+        "ゲーム", "レベル", "ステージ", "城", "RPG", "パズル", "ソリティア",
+        "サバイバル", "冒険", "チャプター", "ミッション", "Merge", "マージ",
+    )
+    likely = []
+    for row in merged:
+        if not isinstance(row, dict):
             continue
-        literal_hits = sorted(set(
-            x for x in _re.findall(r'["\\\']([^"\\\']{2,500})["\\\']', body)
-            if any(k.lower() in x.lower() for k in ["/api/", "offerwall", "top-ranking", "authorization", "ads?", "category="])
-        ))
-        contexts = []
-        for needle in needles:
-            start = 0
-            while len(contexts) < 30:
-                pos = body.find(needle, start)
-                if pos < 0:
-                    break
-                contexts.append({"needle": needle, "context": body[max(0,pos-900):pos+2200]})
-                start = pos + len(needle)
-        if literal_hits or contexts:
-            matches.append({
-                "script": su,
-                "bytes": len(body.encode("utf-8")),
-                "literalHits": literal_hits[:80],
-                "contexts": contexts[:30],
-            })
-        if "/app/category/" in su or "app/category" in su:
-            page_chunk = {
-                "script": su,
-                "bytes": len(body.encode("utf-8")),
-                "literalHits": literal_hits[:160],
-                "apiContexts": contexts[:60],
-                "head": body[:3000],
-            }
+        hay = (str(row.get("title") or "") + " " + str(row.get("rule") or ""))
+        if any(m.casefold() in hay.casefold() for m in game_markers):
+            likely.append(row)
 
-    detail_url = "https://web.trip-mile.com/ad/af040a8e-650c-4e5c-9eb7-806259ae17e2"
-    detail = fetch(detail_url)
-    draw = detail.get("text", "")
-    detail_key_contexts = []
-    for needle in ["商品整理ゲーム：3Dパズル", "44000", "44,000", "exchange", "mile", "platform", "device", "ios", "android"]:
-        pos = draw.lower().find(needle.lower())
-        if pos >= 0:
-            detail_key_contexts.append({"needle": needle, "context": draw[max(0,pos-1000):pos+2200]})
+    detail_samples = []
+    for row in likely[:8]:
+        ad_id = str(row.get("id") or "")
+        if not _re.fullmatch(r"[0-9a-fA-F-]{20,}", ad_id):
+            continue
+        d = fetch("https://web.trip-mile.com/ad/" + ad_id, "text/html,application/xhtml+xml")
+        raw = d.get("text", "")
+        platform_contexts = []
+        for needle in ["platform", "android", "ios", "osType", "device", "rewardCurrency"]:
+            pos = raw.lower().find(needle.lower())
+            if pos >= 0:
+                platform_contexts.append({
+                    "needle": needle,
+                    "context": raw[max(0,pos-500):pos+1000],
+                })
+        detail_samples.append({
+            "id": ad_id,
+            "title": row.get("title"),
+            "status": d.get("status"),
+            "bytes": len(raw.encode("utf-8")),
+            "platformContexts": platform_contexts[:8],
+        })
 
     summary = {
-        "category": {
-            "ok": category.get("ok"), "status": category.get("status"),
-            "bytes": len(raw.encode("utf-8")), "scripts": script_urls,
-        },
-        "cookies": [{"name": c.name, "domain": c.domain, "path": c.path, "valuePrefix": c.value[:24]} for c in jar],
-        "matchingBundles": matches,
-        "pageChunk": page_chunk,
-        "detailKeyContexts": detail_key_contexts,
+        "pages": pages,
+        "totalCount": total_count,
+        "mergedCount": len(merged),
+        "uniqueIds": len({str(x.get("id")) for x in merged if isinstance(x, dict)}),
+        "allKeys": sorted({k for x in merged if isinstance(x, dict) for k in x.keys()}),
+        "likelyGameCount": len(likely),
+        "likelyGameSample": likely[:30],
+        "detailSamples": detail_samples,
     }
-    assert False, "TRIMA_LIVE_DIAGNOSTIC_V3=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
+    assert False, "TRIMA_LIVE_DIAGNOSTIC_V4=" + _json.dumps(summary, ensure_ascii=False, sort_keys=True)
