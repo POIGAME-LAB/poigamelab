@@ -425,7 +425,7 @@
         "/show/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "The anonymous first-party app/game category and /ad/<id>/show detail pages are stable enough for bounded review. Up to 3 matching known-game details per game may be review-fetched nightly. Publication remains disabled.",
+      "scheduled_fetch_reason": "The first-party app/game category and /ad/<id>/show pages are stable enough for bounded review. The reviewed v2 parser normalizes only EC Navi's spaced thousands separators, binds the exact displayed yen equivalent to a unique point amount at 10pts=1JPY, and holds floor/truncated conversions. Up to 3 matching known-game details per game may be review-fetched nightly. Publication remains disabled.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 4,
       "full_catalog_discovery_enabled": true,
@@ -436,8 +436,8 @@
       "coverage_detail_review_enabled": true,
       "coverage_detail_review_limit_per_game": 3,
       "coverage_detail_review_mode": "candidate_only",
-      "coverage_detail_review_parser": "ecnavi-detail-review-v1",
-      "reviewedAt": "2026-09-09"
+      "coverage_detail_review_parser": "ecnavi-detail-review-v2",
+      "reviewedAt": "2026-09-24"
     },
     {
       "id": "nifty_point",
