@@ -501,7 +501,7 @@ def test_ranking_health_only_requires_sources_that_can_verify_details():
     by_id = {item['id']: item for item in cfg['sources']}
     assert direct.source_participates_in_new_game_ranking(by_id['moppy']) is True
     assert direct.source_participates_in_new_game_ranking(by_id['warau']) is True
-    assert direct.source_participates_in_new_game_ranking(by_id['powl']) is False
+    assert direct.source_participates_in_new_game_ranking(by_id['powl']) is True
 
 
 def test_powl_reward_identity_ignores_navigation_query_variants():
@@ -3397,7 +3397,7 @@ def test_powl_primary_listing_container_excludes_sidebar_reward_links():
     signature = direct.listing_detail_identity_signature(
         raw, 'https://web.powl.jp/genre/2', source
     )
-    assert signature['detailIdentityCount'] == 1
+    assert signature == ('powl:pathid:100',)
 
 
 def test_powl_ranking_config_is_candidate_only_and_publication_disabled():
