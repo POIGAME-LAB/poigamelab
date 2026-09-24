@@ -1,0 +1,92 @@
+name: Temporary Kurashiru Rewards live audit
+
+on:
+  push:
+    branches:
+      - audit/kurashiru-live-20260924
+    paths:
+      - ".github/workflows/tmp-kurashiru-live-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect current first-party category surface
+        run: |
+          python - <<'PY'
+          import json,re,sys
+          from collections import Counter
+          from html.parser import HTMLParser
+          from urllib.parse import urljoin,urlparse
+          sys.path.insert(0,"scripts")
+          import direct_offer_refresh as direct
+
+          source=next(
+              x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]
+              if x["id"]=="kurashiru_reward"
+          )
+          url="https://www.rewards.kurashiru.com/categories/3"
+          raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=3_000_000)
+
+          class Links(HTMLParser):
+              def __init__(self):
+                  super().__init__(convert_charrefs=True)
+                  self.links=[]; self.stack=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag=="a":
+                      self.stack.append({"href":dict(attrs).get("href",""),"parts":[]})
+              def handle_data(self,data):
+                  if self.stack:
+                      self.stack[-1]["parts"].append(data)
+              def handle_endtag(self,tag):
+                  if tag=="a" and self.stack:
+                      node=self.stack.pop()
+                      self.links.append((node["href"],re.sub(r"\s+"," "," ".join(node["parts"])).strip()))
+          p=Links(); p.feed(raw)
+          links=[]
+          for href,text in p.links:
+              if not href: continue
+              absolute=urljoin(final,href)
+              if urlparse(absolute).hostname in {"www.rewards.kurashiru.com","rewards.kurashiru.com"}:
+                  links.append((absolute,text))
+          paths=Counter(urlparse(u).path for u,_ in links)
+          likely=[
+              {"url":u,"text":text[:300]}
+              for u,text in links
+              if any(k in urlparse(u).path.lower() for k in (
+                  "campaign","offer","mission","reward","detail","service","app"
+              ))
+          ]
+          visible=direct.visible_text(raw)
+          fragments={}
+          for marker in ("ゲーム","アプリ","ポイント","コイン","ワーキングヒーロー","エバーテイル","パズル"):
+              pos=visible.find(marker)
+              if pos>=0:
+                  fragments[marker]=visible[max(0,pos-350):pos+1400]
+
+          script_json=[]
+          for m in re.finditer(r'(?is)<script[^>]*>(.*?)</script>',raw):
+              body=m.group(1)
+              if any(token in body for token in ("campaign","offer","mission","reward","カテゴリ")):
+                  script_json.append(body[:3000])
+                  if len(script_json)>=8: break
+
+          print("KURASHIRU_CATEGORY_AUDIT",json.dumps({
+              "finalUrl":final,
+              "htmlBytes":len(raw.encode("utf-8")),
+              "linkCount":len(links),
+              "uniqueLinks":len({u for u,_ in links}),
+              "commonPaths":paths.most_common(25),
+              "likelyLinks":likely[:40],
+              "fragments":fragments,
+              "scriptSamples":script_json,
+          },ensure_ascii=False,sort_keys=True))
+          PY
