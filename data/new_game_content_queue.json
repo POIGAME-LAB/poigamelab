@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-24T17:40:25+00:00",
+  "checkedAt": "2026-09-24T20:01:12+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -11,82 +11,75 @@
   "items": [
     {
       "rank": 1,
-      "game": "ザ・グランドマフィア",
-      "maxObservedRewardYen": 76360,
-      "confirmedSourceCount": 4,
-      "listingSourceCount": 5,
-      "verifiedRewardSourceCount": 4,
+      "game": "天地英雄伝",
+      "maxObservedRewardYen": 451871,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 4,
+      "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
         {
-          "source": "moppy",
-          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157476&track_ref=category",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "moppy",
-          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161772&track_ref=category",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206522&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207048&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206523&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206561&pl=pc_categoryService",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 55500
+          "rewardYen": 1460
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206538&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206554&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 1460
         },
         {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206539&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35087",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 451871
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35086",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 451871
         },
         {
           "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/16651",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 70824
-        },
-        {
-          "source": "amefuri",
-          "url": "https://www.amefri.net/detail/id/137656",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 70198
+          "url": "https://www.rewards.kurashiru.com/ads/18815",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
         },
         {
           "source": "powl",
-          "url": "https://web.powl.jp/reward/17194",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 76360
-        },
-        {
-          "source": "powl",
-          "url": "https://web.powl.jp/reward/35054",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 71000
+          "url": "https://web.powl.jp/reward/26400",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
         }
       ],
       "researchQueries": {
-        "web": "\"ザ・グランドマフィア\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"ザ・グランドマフィア\" ポイ活 日目",
-        "youtube": "site:youtube.com \"ザ・グランドマフィア\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"ザ・グランドマフィア\" ポイ活",
-        "pointSites": "\"ザ・グランドマフィア\" ポイ活 口コミ 課金"
+        "web": "\"天地英雄伝\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"天地英雄伝\" ポイ活 日目",
+        "youtube": "site:youtube.com \"天地英雄伝\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"天地英雄伝\" ポイ活",
+        "pointSites": "\"天地英雄伝\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
@@ -100,11 +93,133 @@
     },
     {
       "rank": 2,
-      "game": "マフィア・シティ-極道風雲",
-      "maxObservedRewardYen": 47170,
-      "confirmedSourceCount": 2,
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "maxObservedRewardYen": 158224,
+      "confirmedSourceCount": 1,
       "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204347&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204346&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/33937",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 152754
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/33934",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 158224
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19087",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/17458",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ロックンキャッシュカジノ-スロットゲーム\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ロックンキャッシュカジノ-スロットゲーム\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ロックンキャッシュカジノ-スロットゲーム\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ロックンキャッシュカジノ-スロットゲーム\" ポイ活",
+        "pointSites": "\"ロックンキャッシュカジノ-スロットゲーム\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 3,
+      "game": "Slot Mate（スロットメイト）- ベガススロットカジノ",
+      "maxObservedRewardYen": 112186,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205176&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34282",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 112186
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/31607",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 46012
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/14639",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Slot Mate（スロットメイト）- ベガススロットカジノ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Slot Mate（スロットメイト）- ベガススロットカジノ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Slot Mate（スロットメイト）- ベガススロットカジノ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Slot Mate（スロットメイト）- ベガススロットカジノ\" ポイ活",
+        "pointSites": "\"Slot Mate（スロットメイト）- ベガススロットカジノ\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 4,
+      "game": "マフィア・シティ-極道風雲",
+      "maxObservedRewardYen": 98704,
+      "confirmedSourceCount": 3,
+      "listingSourceCount": 4,
+      "verifiedRewardSourceCount": 3,
       "pointSiteEvidence": [
         {
           "source": "warau",
@@ -133,6 +248,20 @@
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/28487",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 98704
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/27809",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 46434
         },
         {
           "source": "kurashiru_reward",
@@ -167,59 +296,12 @@
       "publicationAuthorized": false
     },
     {
-      "rank": 3,
-      "game": "Freecash",
-      "maxObservedRewardYen": 38480,
+      "rank": 5,
+      "game": "Wild Survival",
+      "maxObservedRewardYen": 93918,
       "confirmedSourceCount": 2,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 2,
-      "pointSiteEvidence": [
-        {
-          "source": "moppy",
-          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161900&track_ref=category",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/19091",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 28860
-        },
-        {
-          "source": "amefuri",
-          "url": "https://www.amefri.net/detail/id/140884",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 38480
-        }
-      ],
-      "researchQueries": {
-        "web": "\"Freecash\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Freecash\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Freecash\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Freecash\" ポイ活",
-        "pointSites": "\"Freecash\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 4,
-      "game": "Wild Survival",
-      "maxObservedRewardYen": 31000,
-      "confirmedSourceCount": 1,
-      "listingSourceCount": 2,
-      "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
         {
           "source": "warau",
@@ -243,6 +325,13 @@
           "rewardYen": null
         },
         {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34646",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 93918
+        },
+        {
           "source": "kurashiru_reward",
           "url": "https://www.rewards.kurashiru.com/ads/18916",
           "detailConfirmed": false,
@@ -263,109 +352,6 @@
         "youtube": "site:youtube.com \"Wild Survival\" ポイ活 攻略",
         "instagram": "site:instagram.com \"Wild Survival\" ポイ活",
         "pointSites": "\"Wild Survival\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 5,
-      "game": "Heroes vs Crazy Wiggler",
-      "maxObservedRewardYen": 30000,
-      "confirmedSourceCount": 3,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 3,
-      "pointSiteEvidence": [
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206635&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206636&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205754&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 11400
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205755&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 11400
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18904",
-          "detailConfirmed": true,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18795",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18336",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "powl",
-          "url": "https://web.powl.jp/reward/41005",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 30000
-        },
-        {
-          "source": "powl",
-          "url": "https://web.powl.jp/reward/41018",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 30000
-        }
-      ],
-      "researchQueries": {
-        "web": "\"Heroes vs Crazy Wiggler\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Heroes vs Crazy Wiggler\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Heroes vs Crazy Wiggler\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Heroes vs Crazy Wiggler\" ポイ活",
-        "pointSites": "\"Heroes vs Crazy Wiggler\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
