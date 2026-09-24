@@ -81,6 +81,25 @@ jobs:
               "rawFragments":raw_fragments
           },ensure_ascii=False,sort_keys=True))
           PY
+      - name: Probe Gendama search-card platform markup
+        run: |
+          python - <<'PY'
+          import json, re
+          from urllib.parse import quote
+          from urllib.request import Request, urlopen
+          url="https://www.gendama.jp/sp/service_search/index/?point_max=&point_min=&search_type=and&w="+quote("ザ・グランドマフィア")
+          req=Request(url,headers={
+              "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1",
+              "Accept":"text/html,application/xhtml+xml","Accept-Language":"ja,en-US;q=0.7,en;q=0.5",
+          })
+          with urlopen(req,timeout=20) as r:
+              data=r.read(1_500_000)
+          text=data.decode("cp932",errors="replace")
+          marker="cd_client=1583632"
+          pos=text.find(marker)
+          fragment=text[max(0,pos-2200):pos+4500] if pos>=0 else ""
+          print("GENDAMA_SEARCH_CARD",json.dumps({"found":pos>=0,"fragment":fragment},ensure_ascii=False))
+          PY
       - name: Audit current Gendama search and detail surfaces
         run: |
           python - <<'PY'
