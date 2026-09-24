@@ -19,6 +19,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Run focused Moppy v3 regressions
+        run: |
+          python -m pytest -q tests/test_direct_offer_refresh_v1.py -k "moppy"
+          python -m pytest -q tests/test_daily_scan_review.py -k "moppy_v3"
+
       - name: Audit Moppy parser after category URL fix
         run: |
           python - <<'PY'
@@ -57,16 +62,20 @@ jobs:
               game=daily.discovery_name(title)
               try:
                   raw,final=direct.fetch_first_party(url,source,timeout=20,max_bytes=2_000_000)
-                  ev=direct.inspect_moppy_offer(raw,url,final,[game,title])
+                  detail=direct.inspect_detail(url,source,[game,title])
+                  ev=detail.get("sourceEvidence") or {}
                   reason=ev.get("reason") or "parsed"
                   reasons[reason]=reasons.get(reason,0)+1
+                  reward_yen=daily.explicit_yen(ev)
                   rows.append({
                       "game":game,"url":url,"finalUrl":final,
                       "state":ev.get("state"),"reason":ev.get("reason"),
                       "platform":ev.get("platform"),
                       "points":ev.get("displayedRewardPoints"),
                       "yen":ev.get("displayedRewardYen"),
+                      "rankingYen":reward_yen,
                       "downstreamTermsRequired":ev.get("downstreamTermsRequired"),
+                      "providerCandidates":ev.get("downstreamProviderCandidates") or [],
                       "parserVersion":ev.get("parserVersion"),
                   })
               except Exception as exc:
@@ -97,11 +106,22 @@ jobs:
           print("MOPPY_STRUCTURE",json.dumps({
               "url":probe_final,"nodes":structural[:40]
           },ensure_ascii=False,sort_keys=True))
+          rankable=[
+              row for row in rows
+              if row.get("state")=="parsed"
+              and row.get("platform") in {"iOS","Android"}
+              and row.get("rankingYen") is not None
+              and row.get("downstreamTermsRequired") is False
+          ]
           print("MOPPY_V3_LIVE",json.dumps({
               "candidateCount":len(candidates),
               "reasonCounts":reasons,
+              "rankableCount":len(rankable),
+              "rankable":rankable[:10],
               "rows":rows,
           },ensure_ascii=False,sort_keys=True))
           if not candidates:
               raise SystemExit("no candidates")
+          if not rankable:
+              raise SystemExit("no Moppy v3 ranking evidence")
           PY
