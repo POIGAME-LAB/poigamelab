@@ -39,6 +39,7 @@ jobs:
           sources={x["id"]:x for x in json.load(open("config/point_sources.json",encoding="utf-8"))["sources"]}
           targets=json.load(open("config/game_targets.json",encoding="utf-8"))["games"]
           rates=(json.load(open("config/point_value_rates.json",encoding="utf-8")).get("sources") or {})
+          rates["powl"]={"yenPerPoint":0.1,"status":"audit_assumed_from_current_first_party_10pt_per_yen"}
           s=sources["powl"]
           raw,final=d.fetch_first_party(s["direct_listing_urls"][0],s,timeout=20,max_bytes=2500000)
           doc=d.EvidenceHTML(raw).root
@@ -73,13 +74,13 @@ jobs:
               sid=str(item.get("source") or "")
               text=str(item.get("titleHint") or "")
               ys={int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円(?:相当|分)?",text)}
-              if len(ys)==1: return float(next(iter(ys)))
+              if ys: return float(max(ys))
               rate=rates.get(sid) or {}
               ypp=rate.get("yenPerPoint")
               if not isinstance(ypp,(int,float)) or isinstance(ypp,bool) or ypp<=0: return None
               vals={int(x.replace(",","")) for x in re.findall(r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*(?:pt|P|ポイント)(?![A-Za-z])",text,re.I)}
-              if len(vals)!=1: return None
-              return next(iter(vals))*float(ypp)
+              if not vals: return None
+              return max(vals)*float(ypp)
 
           groups={}
           for item in items:
