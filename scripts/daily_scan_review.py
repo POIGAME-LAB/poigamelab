@@ -16,12 +16,12 @@ from pathlib import Path
 import direct_offer_refresh as direct
 
 ROOT = Path(__file__).resolve().parents[1]
-# A 2026-09-24 live queue audit measured 158 handoff-eligible game groups
-# (at least two independent listing-source families) and 667 first-party detail
-# offers. Single-source groups cannot enter the downstream top-five content
-# queue, so they remain visible in discovery but are not allowed to consume the
-# nightly ranking budget. Keep explicit margin above the observed 667-detail
-# surface while remaining well inside the 90-minute job cap.
+# A 2026-09-24 live queue audit measured 273 handoff-eligible groups after the
+# full Powl primary listing is included, with 1,274 first-party detail offers.
+# Fetching all of them would exceed the 768-detail safety cap. The ranking scan
+# therefore uses conservative first-party listing reward upper bounds and only
+# opens detail pages that can still affect the top five. Unknown bounds fail
+# open and are always reviewed.
 MAX_DETAILS = 768
 # Independent fail-closed safety cap for the two-site handoff universe.
 MAX_GROUPS = 320
@@ -109,7 +109,11 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         "amefuri-detail-review-v2": "verifiedCurrentRewardYen",
         "gendama-detail-review-v1": "displayedRewardYen",
     }
-    value = evidence.get(contracts.get(evidence.get("parserVersion"), ""))
+    contracts["powl-detail-review-v1"] = "verifiedCurrentRewardYen"
+    parser_version = evidence.get("parserVersion")
+    value = evidence.get(contracts.get(parser_version, ""))
+    if parser_version == "powl-detail-review-v1":
+        return value if type(value) in {int, float} and value > 0 else None
     return value if type(value) is int and value > 0 else None
 
 
@@ -125,6 +129,60 @@ def load_point_rate_registry(path=ROOT / "config" / "point_value_rates.json"):
 def point_rate_policy(source_id, registry=None):
     rates = registry if registry is not None else load_point_rate_registry()
     return rates.get(str(source_id or ""), {"status": "unsupported", "yenPerPoint": None})
+
+
+def listing_reward_upper_bound_yen(item, warau_rate_confirmed=False, registry=None):
+    """Return a conservative reward upper bound from one first-party listing hint.
+
+    This value is never published or treated as verified reward evidence. It is
+    used only to prove that a group cannot enter the current top five. Taking
+    the maximum explicit amount is intentionally conservative for old→new
+    displays and StepUp summaries. Missing/ambiguous conversion policy returns
+    None so the detail is fetched rather than skipped.
+    """
+    source_id = str((item or {}).get("source") or "")
+    text = str((item or {}).get("titleHint") or "")
+    if not text:
+        return None
+
+    yen_values = [
+        int(value.replace(",", ""))
+        for value in re.findall(
+            r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*円(?:相当|分)?",
+            text,
+        )
+        if 0 < int(value.replace(",", "")) <= 5_000_000
+    ]
+    direct_yen = max(yen_values) if yen_values else None
+
+    policy = point_rate_policy(source_id, registry)
+    status = str(policy.get("status") or "")
+    rate = policy.get("yenPerPoint")
+    rate_allowed = status in {"verified", "verified_face_value"}
+    if source_id == "warau" and status == "verified_live_check_required":
+        rate_allowed = bool(warau_rate_confirmed)
+    point_yen = None
+    if rate_allowed and type(rate) in {int, float} and rate > 0:
+        point_values = [
+            int(value.replace(",", ""))
+            for value in re.findall(
+                r"(?<![0-9,])([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)"
+                r"\s*(?:pt|P|ポイント)(?![A-Za-z])",
+                text,
+                re.I,
+            )
+            if 0 < int(value.replace(",", "")) <= 5_000_000
+        ]
+        if point_values:
+            point_yen = max(point_values) * rate
+
+    candidates = [value for value in (direct_yen, point_yen) if value is not None]
+    if not candidates:
+        return None
+    upper = max(candidates)
+    if isinstance(upper, float) and upper.is_integer():
+        return int(upper)
+    return round(upper, 3) if isinstance(upper, float) else upper
 
 
 def research_queries(game):
@@ -158,7 +216,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             continue
         key = direct.normalized_text(name)
         bucket = groups.setdefault(key, {"game": name, "offers": {}})
-        bucket["offers"].setdefault((families[sid], identity), (sid, url))
+        bucket["offers"].setdefault((families[sid], identity), (sid, url, item))
 
     owners = {}
     for key, group in groups.items():
@@ -175,32 +233,73 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
     two_site_groups = len(handoff_eligible)
     single_site_groups = len(eligible) - two_site_groups
 
-    # The next-stage content queue deliberately rejects a candidate with fewer
-    # than two independent listing-source families. Reviewing 944 single-source
-    # groups before the 158 candidates that can actually reach that handoff made
-    # the old group budget fail even though the handoff universe itself fit.
-    # Keep those single-source candidates quarantined in discovery/R2, but spend
-    # ranking detail requests only on groups that can satisfy the downstream
-    # corroboration gate.
-    handoff_eligible.sort(
-        key=lambda g: (-len({f for f, _ in g["offers"]}), g["game"])
-    )
-
+    # Single-source candidates cannot enter the downstream content queue.
+    # Keep them visible in discovery/R2 but do not spend detail requests on them.
     warau_rate_confirmed = False
     rate_url = "https://www.warau.jp/help/qa/128/"
     if (any(row.get("site") == "warau" for row in rows)
             or any(sid == "warau" for g in handoff_eligible[:max_groups]
-                   for sid, _ in g["offers"].values())) and "warau" in sources:
+                   for sid, _, _ in g["offers"].values())) and "warau" in sources:
         try:
             raw, final_url = fetcher(rate_url, sources["warau"])
-            warau_rate_confirmed = bool(final_url == rate_url and re.search(
-                r"原則として\s*1ポイント\s*[=＝]\s*1円", direct.visible_text(raw)))
+            warau_rate_confirmed = bool(
+                direct.source_host_allowed(final_url, sources["warau"])
+                and re.search(
+                    r"原則として\s*1ポイント\s*[=＝]\s*1円",
+                    direct.visible_text(raw),
+                )
+            )
         except Exception:
             pass
+
+    rate_registry = load_point_rate_registry()
+    unknown_bound_groups = 0
+    for group in handoff_eligible:
+        bounds = []
+        bound_complete = True
+        for _, _, source_item in group["offers"].values():
+            bound = listing_reward_upper_bound_yen(
+                source_item, warau_rate_confirmed, rate_registry
+            )
+            if bound is None:
+                bound_complete = False
+            else:
+                bounds.append(bound)
+        group["listingRewardUpperBoundYen"] = (
+            max(bounds) if bound_complete and bounds else None
+        )
+        if group["listingRewardUpperBoundYen"] is None:
+            unknown_bound_groups += 1
+
+    # Branch-and-bound: unknown groups are reviewed first. Known groups follow
+    # by descending conservative upper bound. Once five verified rewards exist,
+    # any remaining group whose complete upper bound is strictly below the
+    # current fifth-place reward is mathematically unable to change the top five.
+    handoff_eligible.sort(key=lambda g: (
+        g["listingRewardUpperBoundYen"] is not None,
+        -(g["listingRewardUpperBoundYen"] or 0),
+        -len({f for f, _ in g["offers"]}),
+        g["game"],
+    ))
+
     detail_calls, results = 0, []
+    skipped_by_upper_bound = 0
     for group in handoff_eligible[:max_groups]:
+        current_rewards = sorted(
+            (r["maxObservedRewardYen"] for r in results
+             if r.get("candidateEligible")
+             and r.get("maxObservedRewardYen") is not None
+             and "detail_budget_reached" not in r.get("holdReasons", [])),
+            reverse=True,
+        )
+        current_fifth = current_rewards[4] if len(current_rewards) >= 5 else None
+        group_upper = group.get("listingRewardUpperBoundYen")
+        if current_fifth is not None and group_upper is not None and group_upper < current_fifth:
+            skipped_by_upper_bound += 1
+            continue
+
         details = []
-        for sid, url in group["offers"].values():
+        for sid, url, _source_item in group["offers"].values():
             if detail_calls >= max_details:
                 break
             detail_calls += 1
@@ -271,6 +370,8 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             "twoSiteListingGroups": two_site_groups,
             "singleSiteListingGroups": single_site_groups,
             "reviewedGroups": len(results), "detailInspectionCalls": detail_calls,
+            "listingUpperBoundUnknownGroups": unknown_bound_groups,
+            "prefilterSkippedGroups": skipped_by_upper_bound,
             "groupLimitReached": group_limit,
             "detailLimitReached": detail_limit,
             "sourceScanIncomplete": False,

@@ -503,14 +503,20 @@
         "/reward/"
       ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Coverage-only first-party app listing is anonymous and stable; reward-detail retrieval and publication remain disabled until detail-page evidence is reviewed.",
+      "scheduled_fetch_reason": "The anonymous first-party /genre/2 primary result list and /reward/<id> detail structure were live-reviewed on 2026-09-24. Ranking may review only bounded candidates; publication remains disabled.",
       "coverage_first_party_listing_enabled": true,
       "coverage_candidate_limit": 6,
-      "full_catalog_discovery_enabled": false,
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 4,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "powl-detail-review-v1",
+      "full_catalog_discovery_enabled": true,
       "new_game_discovery_enabled": true,
       "new_game_discovery_listing_limit": 1,
-      "new_game_discovery_candidate_limit": 500,
-      "new_game_discovery_scope": "partial_ranked_app_listing"
+      "new_game_discovery_candidate_limit": 1200,
+      "new_game_discovery_container_class": "search-result-simple-list",
+      "new_game_discovery_scope": "full_current_primary_app_listing",
+      "reviewedAt": "2026-09-24"
     }
   ],
   "offerwall_domains_discovered": [
