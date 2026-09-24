@@ -4117,3 +4117,190 @@ def test_repository_kurashiru_reward_v2_uses_full_paginated_candidate_only_catal
     assert source["new_game_discovery_max_pages"] >= 50
     assert source["new_game_discovery_candidate_limit"] >= 1000
     assert source["direct_detail_url_hints"] == ["/ads/"]
+
+
+
+MIKOSHI_ANDROID_LISTING = "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=1000"
+MIKOSHI_IOS_LISTING = "https://web.mikoshi.jp/v2/skyflag/ads?os=2&limit=1000"
+MIKOSHI_DETAIL = "https://web.mikoshi.jp/v2/skyflag/ads/34631"
+
+
+def mikoshi_source_fixture():
+    return {
+        "id": "mikoshi",
+        "name": "MIKOSHI",
+        "search_domains": ["mikoshi.jp", "web.mikoshi.jp"],
+        "direct_detail_url_hints": ["/v2/skyflag/ads/"],
+        "full_catalog_discovery_enabled": True,
+        "new_game_discovery_scope": "current_anonymous_first_party_skyflag_os_feeds",
+    }
+
+
+def mikoshi_listing_fixture():
+    return json.dumps({
+        "ads": [
+            {
+                "id": "34631",
+                "name": "Heroes vs Crazy Wiggler",
+                "point": 31060,
+                "description": "爽快サバイバーアクションゲーム！",
+                "offerwallDetailUrl": "https://ow.skyflag.jp/ignored",
+            },
+            {
+                "id": "33491",
+                "name": "パズル＆カオス",
+                "point": 17057,
+                "description": "マッチ3ダンジョン！",
+            },
+        ]
+    }, ensure_ascii=False)
+
+
+def mikoshi_detail_fixture(point=31060):
+    steps = [
+        {"step": 1, "name": "30日以内に難易度2クリア", "point": 60},
+        {"step": 2, "name": "30日以内に難易度50クリア", "point": point - 60},
+    ]
+    return json.dumps({
+        "id": "34631",
+        "name": "Heroes vs Crazy Wiggler",
+        "point": point,
+        "platformType": "PLATFORM_TYPE_APP",
+        "isPublishAndroid": True,
+        "approvalType": "APPROVAL_TYPE_AUTO",
+        "conversionPoints": steps,
+        "descriptions": {
+            "cvCondition": "30日以内に難易度2クリア",
+            "timeTaken": "30日程度",
+            "serviceDetail": "巨大ボスに挑むサバイバーアクションゲーム。",
+            "acquisitionCondition": """
+                新規アプリインストール後、各ミッションクリアで報酬獲得となります。
+                獲得条件達成期限はインストール日から起算して30日以内までです。
+                ■注意事項 広告クリックから同一ブラウザで条件達成してください。
+                ■獲得対象外条件 過去に同一アプリをインストールした場合は獲得対象外です。
+                ■お問い合わせに関して 報酬未獲得の場合は本サイトのお問い合わせフォームからご連絡ください。
+                広告主へ直接お問い合わせすることは禁止されています。
+            """,
+        },
+    }, ensure_ascii=False)
+
+
+def test_mikoshi_listing_urls_are_strict_and_platform_scoped():
+    assert direct.mikoshi_listing_platform(MIKOSHI_ANDROID_LISTING) == "Android"
+    assert direct.mikoshi_listing_platform(MIKOSHI_IOS_LISTING) == "iOS"
+    import pytest
+    with pytest.raises(ValueError):
+        direct.mikoshi_listing_platform(
+            "https://web.mikoshi.jp/v2/skyflag/ads?os=3&limit=1000"
+        )
+    with pytest.raises(ValueError):
+        direct.mikoshi_listing_platform(
+            "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=1000&extra=1"
+        )
+
+
+def test_mikoshi_offer_identity_is_first_party_and_query_free():
+    assert direct.mikoshi_offer_id(MIKOSHI_DETAIL) == "34631"
+    assert direct.offer_identity_key(MIKOSHI_DETAIL, "mikoshi") == "mikoshi:pathid:34631"
+    import pytest
+    with pytest.raises(ValueError):
+        direct.mikoshi_offer_id(MIKOSHI_DETAIL + "?x=1")
+    with pytest.raises(ValueError):
+        direct.mikoshi_offer_id("https://ow.skyflag.jp/v2/skyflag/ads/34631")
+
+
+def test_mikoshi_json_listing_preserves_exact_points_without_yen_inference():
+    source = mikoshi_source_fixture()
+    raw = mikoshi_listing_fixture()
+    candidates = direct.discover_new_game_listing_candidates(
+        raw, MIKOSHI_ANDROID_LISTING, source, [], limit=20
+    )
+    assert [x["titleHint"] for x in candidates] == [
+        "Heroes vs Crazy Wiggler", "パズル＆カオス"
+    ]
+    assert candidates[0]["platformHint"] == "Android"
+    assert candidates[0]["listingRewardPoints"] == 31060
+    assert candidates[0]["listingRewardText"] == "31,060 MIKOSHIポイント"
+    assert candidates[0]["firstPartyCandidateUrl"] == MIKOSHI_DETAIL
+    assert candidates[0]["offerIdentity"] == "mikoshi:pathid:34631"
+    assert candidates[0]["candidateOnly"] is True
+    assert candidates[0]["publicationAuthorized"] is False
+    assert "rewardYen" not in candidates[0]
+
+    signature = direct.listing_detail_identity_signature(
+        raw, MIKOSHI_ANDROID_LISTING, source
+    )
+    assert signature == ("mikoshi:pathid:33491", "mikoshi:pathid:34631")
+
+
+def test_mikoshi_json_listing_suppresses_known_game_and_rejects_bad_payload():
+    source = mikoshi_source_fixture()
+    targets = [{
+        "game": "Heroes vs Crazy Wiggler",
+        "aliases": [],
+        "known_urls_by_source": {},
+    }]
+    candidates = direct.discover_new_game_listing_candidates(
+        mikoshi_listing_fixture(), MIKOSHI_ANDROID_LISTING, source, targets, limit=20
+    )
+    assert [x["titleHint"] for x in candidates] == ["パズル＆カオス"]
+    assert direct.discover_new_game_listing_candidates(
+        '{"ads":"not-a-list"}', MIKOSHI_ANDROID_LISTING, source, [], limit=20
+    ) == []
+    assert direct.listing_detail_identity_signature(
+        '{"ads":"not-a-list"}', MIKOSHI_ANDROID_LISTING, source
+    ) == ()
+
+
+def test_mikoshi_detail_parser_verifies_steps_terms_platform_and_points():
+    evidence = direct.inspect_mikoshi_offer(
+        mikoshi_detail_fixture(), MIKOSHI_DETAIL, MIKOSHI_DETAIL,
+        ["Heroes vs Crazy Wiggler"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "mikoshi-skyflag-detail-review-v1"
+    assert evidence["offerId"] == "34631"
+    assert evidence["platform"] == "Android"
+    assert evidence["verifiedCurrentRewardPoints"] == 31060
+    assert sum(x["rewardPoints"] for x in evidence["steps"]) == 31060
+    assert evidence["rewardUnit"] == "MIKOSHI-point"
+    assert evidence["sourcePointRate"] == "unverified"
+    assert evidence["candidateOnly"] is True
+    assert evidence["publicationAuthorized"] is False
+    assert evidence["downstreamTermsRequired"] is False
+    assert "verifiedCurrentRewardYen" not in evidence
+    assert len(evidence["evidenceFingerprint"]) == 64
+
+
+def test_mikoshi_detail_parser_fails_closed_on_step_total_or_platform_ambiguity():
+    broken = json.loads(mikoshi_detail_fixture())
+    broken["conversionPoints"][1]["point"] -= 1
+    evidence = direct.inspect_mikoshi_offer(
+        json.dumps(broken, ensure_ascii=False),
+        MIKOSHI_DETAIL, MIKOSHI_DETAIL, ["Heroes vs Crazy Wiggler"],
+    )
+    assert evidence["state"] == "review_required"
+    assert evidence["reason"] == "step_total_mismatch"
+
+    broken = json.loads(mikoshi_detail_fixture())
+    broken["isPublishIos"] = True
+    evidence = direct.inspect_mikoshi_offer(
+        json.dumps(broken, ensure_ascii=False),
+        MIKOSHI_DETAIL, MIKOSHI_DETAIL, ["Heroes vs Crazy Wiggler"],
+    )
+    assert evidence["state"] == "review_required"
+    assert evidence["reason"] == "ambiguous_offer_platform"
+
+
+def test_repository_mikoshi_discovery_stays_nonranking_until_yen_rate_is_verified():
+    payload = json.loads(
+        (ROOT / "config/point_sources.json").read_text(encoding="utf-8")
+    )
+    source = next(x for x in payload["sources"] if x["id"] == "mikoshi")
+    assert source["new_game_discovery_enabled"] is True
+    assert source["full_catalog_discovery_enabled"] is True
+    assert source["new_game_discovery_listing_limit"] == 2
+    assert source["new_game_discovery_min_detail_identities_first_page"] >= 100
+    assert source["coverage_detail_review_parser"] == "mikoshi-skyflag-detail-review-v1"
+    assert source["coverage_detail_review_mode"] == "review_only"
+    assert source["scheduled_fetch_enabled"] is False
