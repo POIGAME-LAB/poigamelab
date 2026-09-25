@@ -203,7 +203,7 @@ def test_dispatch_request_targets_only_expected_workflow():
 
     result = capture.dispatch_to_github(
         "abc123",
-        "github_pat_test_token_1234567890",
+        "github_pat_" + ("A" * 50),
         open_url=fake_open,
     )
     assert result["status"] == 200
@@ -212,8 +212,34 @@ def test_dispatch_request_targets_only_expected_workflow():
         "https://api.github.com/repos/POIGAME-LAB/poigamelab/"
         "actions/workflows/import-point-income-device-catalog.yml/dispatches"
     )
-    assert seen["authorization"] == "Bearer github_pat_test_token_1234567890"
+    assert seen["authorization"] == "Bearer " + "github_pat_" + ("A" * 50)
     assert seen["body"] == {
         "ref": "main",
         "inputs": {"point_income_catalog_base64": "abc123"},
     }
+
+
+def test_capture_rejects_base64_or_oversized_value_as_github_token():
+    capture = load_capture_module()
+    assert capture.looks_like_github_token("github_pat_" + ("A" * 50)) is True
+    assert capture.looks_like_github_token("ghp_" + ("B" * 40)) is True
+    assert capture.looks_like_github_token("eyJzY2hlbWFWZXJzaW9uIjoy") is False
+    assert capture.looks_like_github_token("github_pat_" + ("C" * 500)) is False
+
+
+def test_dispatch_rejects_invalid_token_before_network_call():
+    capture = load_capture_module()
+    called = {"value": False}
+
+    def fake_open(request, timeout):
+        called["value"] = True
+        raise AssertionError("network must not be called")
+
+    try:
+        capture.dispatch_to_github("abc123", "eyJzY2hlbWFWZXJzaW9uIjoy", open_url=fake_open)
+    except SystemExit as exc:
+        assert "トークン" in str(exc)
+    else:
+        raise AssertionError("invalid token must fail closed")
+
+    assert called["value"] is False
