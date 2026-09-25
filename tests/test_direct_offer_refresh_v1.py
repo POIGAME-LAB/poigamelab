@@ -656,12 +656,23 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert by_id['point_town']['start_url'] == 'https://www.pointtown.com/'
     assert by_id['ec_navi']['start_url'] == 'https://ecnavi.jp/'
     assert by_id['nifty_point']['start_url'] == 'https://api.point.nifty.com/service/alist/spapp'
-    for source_id in ('gmo_point', 'powl'):
-        assert by_id[source_id]['discovery_only'] is True
-        assert by_id[source_id]['scheduled_fetch_enabled'] is False
-        assert by_id[source_id]['direct_detail_limit'] == 0
-    assert by_id['gmo_point']['start_url'] == 'https://colleee.net/'
+    assert by_id['gmo_point']['discovery_only'] is True
+    assert by_id['gmo_point']['scheduled_fetch_enabled'] is False
+    assert by_id['gmo_point']['coverage_first_party_listing_enabled'] is True
+    assert by_id['gmo_point']['coverage_detail_review_mode'] == 'candidate_only'
+    assert by_id['gmo_point']['direct_listing_limit'] == 1
+    assert by_id['gmo_point']['direct_detail_limit'] == 0
+    assert by_id['gmo_point']['start_url'] == (
+        'https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0'
+    )
+    assert by_id['gmo_point']['direct_listing_urls'] == [
+        'https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0'
+    ]
+    assert by_id['gmo_point']['new_game_discovery_max_pages'] == 12
     assert 'colleee.net' in by_id['gmo_point']['search_domains']
+    assert by_id['powl']['discovery_only'] is True
+    assert by_id['powl']['scheduled_fetch_enabled'] is False
+    assert by_id['powl']['direct_detail_limit'] == 0
     assert by_id['powl']['start_url'] == 'https://web.powl.jp/'
     assert by_id['powl']['coverage_first_party_listing_enabled'] is True
     assert by_id['powl']['direct_listing_urls'] == ['https://web.powl.jp/genre/2']
@@ -4735,4 +4746,194 @@ def test_repository_nifty_uses_current_candidate_only_smartphone_app_listing():
         (ROOT / "config/point_value_rates.json").read_text(encoding="utf-8")
     )["sources"]["nifty_point"]
     assert rates["status"] == "verified"
+    assert rates["yenPerPoint"] == 1
+
+
+
+GMO_LISTING = "https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0"
+GMO_DETAIL = "https://colleee.net/programs/11521"
+
+
+def gmo_source_fixture():
+    return {
+        "id": "gmo_point",
+        "name": "GMOポイ活",
+        "search_domains": ["colleee.net", "www.colleee.net", "static.colleee.net"],
+        "direct_detail_url_hints": ["/programs/"],
+        "full_catalog_discovery_enabled": True,
+        "new_game_discovery_scope": "full_paginated_game_keyword_listing",
+        "new_game_discovery_page_url_template": (
+            "https://colleee.net/programs/list/0/{page}?"
+            "keywords=%E3%82%B2%E3%83%BC%E3%83%A0"
+        ),
+    }
+
+
+def gmo_listing_fixture():
+    return """
+    <html><body>
+      <div class="programs_list__ttl">
+        <h1>ゲームに関連する広告一覧（1ページ目）</h1>
+        <p>全 91 件</p>
+      </div>
+      <ul class="programs_list__list__wrap">
+        <li>
+          <a href="https://colleee.net/programs/11521">
+            <p class="programs_list__detail__txt">【ステップアップ】スーパーラッキーカジノ_プレイヤーレベル500到達(iOS)</p>
+            <dl class="programs_list__detail__chart"><dd>アプリインストール後→条件達成</dd></dl>
+            <p class="programs_list__detail__point"><span class="large">5,820</span><span>P</span></p>
+          </a>
+        </li>
+        <li>
+          <a href="https://colleee.net/programs/11495">
+            <p class="programs_list__detail__txt">Puzzle Spy（ミッション1000クリア）(iOS)</p>
+            <dl class="programs_list__detail__chart"><dd>新規アプリインストール後→条件達成</dd></dl>
+            <p class="programs_list__detail__point"><span class="large">504</span><span>P</span></p>
+          </a>
+        </li>
+      </ul>
+    </body></html>
+    """
+
+
+def gmo_detail_fixture(*, reward=5820, meta_reward=5820, platform="iOS",
+                       canonical=GMO_DETAIL, include_rate=True):
+    rate = "貯まったポイントは1ポイント=1円分で現金や電子マネーなどに交換！" if include_rate else ""
+    return f"""
+    <html>
+      <head>
+        <title>【ステップアップ】スーパーラッキーカジノ_プレイヤーレベル500到達({platform}) | ポイントサイトのGMOポイ活なら{reward:,}P還元</title>
+        <meta name="description" content="GMOポイ活経由で【ステップアップ】スーパーラッキーカジノ_プレイヤーレベル500到達({platform})案件に参加すると、{meta_reward:,}ポイントをプレゼント！1P=1円相当のポイントが貯まってお得！">
+        <link rel="canonical" href="{canonical}">
+      </head>
+      <body>
+        <div>{rate}</div>
+        <section class="program__tab__item js-tabs-item condition">
+          <div class="program__tab__item__ttl">ポイント獲得条件</div>
+          <div>【ポイント配布の対象】</div>
+          <div>・新規アプリインストール後、【ステップアップミッション】クリアで報酬獲得。</div>
+          <div>①：30日以内にプレイヤーレベル130到達</div>
+          <div>④：30日以内にプレイヤーレベル500到達</div>
+          <div>■注意事項</div>
+          <div>広告クリックから1時間以内に初回起動してください。</div>
+          <div>■獲得対象外条件</div>
+          <div>過去にアプリをインストールしたことがある場合は対象外です。</div>
+          <div>日本国外からのアクセスは獲得対象外です。</div>
+          <div>■お問い合わせに関して</div>
+          <div>報酬未獲得の場合は本サイトのお問い合わせフォームよりご連絡ください。</div>
+          <div>広告主への直接問い合わせは禁止されています。</div>
+        </section>
+      </body>
+    </html>
+    """
+
+
+def test_gmo_point_game_listing_and_detail_contract():
+    source = gmo_source_fixture()
+    candidates = direct.discover_new_game_listing_candidates(
+        gmo_listing_fixture(), GMO_LISTING, source, [], limit=20
+    )
+    assert [x["titleHint"] for x in candidates] == [
+        "【ステップアップ】スーパーラッキーカジノ_プレイヤーレベル500到達(iOS)",
+        "Puzzle Spy（ミッション1000クリア）(iOS)",
+    ]
+    assert candidates[0]["listingRewardPoints"] == 5820
+    assert candidates[0]["listingRewardText"] == "5,820 P"
+    assert candidates[0]["platformHint"] == "iOS"
+    assert candidates[0]["offerIdentity"] == "gmo_point:pathid:11521"
+    assert candidates[0]["candidateOnly"] is True
+    assert candidates[0]["publicationAuthorized"] is False
+
+    signature = direct.listing_detail_identity_signature(
+        gmo_listing_fixture(), GMO_LISTING, source
+    )
+    assert signature == (
+        "gmo_point:pathid:11495",
+        "gmo_point:pathid:11521",
+    )
+
+    evidence = direct.inspect_gmo_point_offer(
+        gmo_detail_fixture(), GMO_DETAIL, GMO_DETAIL,
+        ["スーパーラッキーカジノ"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "gmo-point-detail-review-v1"
+    assert evidence["offerId"] == "11521"
+    assert evidence["platform"] == "iOS"
+    assert evidence["displayedRewardPoints"] == 5820
+    assert evidence["verifiedCurrentRewardYen"] == 5820
+    assert evidence["rewardUnit"] == "GMO-point"
+    assert evidence["sourcePointRate"] == "1P=1JPY"
+    assert "プレイヤーレベル500到達" in evidence["conditionText"]
+    assert "お問い合わせ" in evidence["termsText"]
+    assert evidence["candidateOnly"] is True
+    assert evidence["publicationAuthorized"] is False
+    assert len(evidence["evidenceFingerprint"]) == 64
+
+
+def test_gmo_point_pagination_and_identity_contract():
+    source = gmo_source_fixture()
+    assert direct.paginated_listing_url(source, 1) == GMO_LISTING
+    assert direct.paginated_listing_url(source, 2) == (
+        "https://colleee.net/programs/list/0/2?"
+        "keywords=%E3%82%B2%E3%83%BC%E3%83%A0"
+    )
+    assert direct.gmo_point_offer_id(GMO_DETAIL) == "11521"
+    assert direct.gmo_point_offer_id("https://colleee.net/programs/6225/08") == "6225:08"
+    assert direct.offer_identity_key(
+        "https://colleee.net/programs/6225/08", "gmo_point"
+    ) == "gmo_point:pathid:6225:08"
+
+
+def test_gmo_point_known_game_and_fail_closed_guards():
+    source = gmo_source_fixture()
+    found = direct.discover_first_party_listing_candidates(
+        gmo_listing_fixture(), GMO_LISTING, source,
+        ["スーパーラッキーカジノ"], limit=8,
+    )
+    assert len(found) == 1
+    assert found[0]["firstPartyCandidateUrl"] == GMO_DETAIL
+    assert found[0]["rewardYenHint"] == 5820
+
+    mismatch = direct.inspect_gmo_point_offer(
+        gmo_detail_fixture(meta_reward=5819), GMO_DETAIL, GMO_DETAIL,
+        ["スーパーラッキーカジノ"],
+    )
+    assert mismatch["state"] == "review_required"
+    assert mismatch["reason"] == "reward_crosscheck_mismatch"
+
+    no_rate = direct.inspect_gmo_point_offer(
+        gmo_detail_fixture(include_rate=False), GMO_DETAIL, GMO_DETAIL,
+        ["スーパーラッキーカジノ"],
+    )
+    assert no_rate["state"] == "review_required"
+    assert no_rate["reason"] == "missing_face_value_contract"
+
+    bad_canonical = direct.inspect_gmo_point_offer(
+        gmo_detail_fixture(canonical="https://colleee.net/programs/11495"),
+        GMO_DETAIL, GMO_DETAIL, ["スーパーラッキーカジノ"],
+    )
+    assert bad_canonical["state"] == "review_required"
+    assert bad_canonical["reason"] == "canonical_offer_mismatch"
+
+
+def test_repository_gmo_point_uses_candidate_only_full_game_listing():
+    payload = json.loads((ROOT / "config/point_sources.json").read_text(encoding="utf-8"))
+    source = next(x for x in payload["sources"] if x["id"] == "gmo_point")
+    assert source["start_url"] == GMO_LISTING
+    assert source["direct_listing_urls"] == [GMO_LISTING]
+    assert source["coverage_first_party_listing_enabled"] is True
+    assert source["coverage_detail_review_enabled"] is True
+    assert source["coverage_detail_review_mode"] == "candidate_only"
+    assert source["coverage_detail_review_parser"] == "gmo-point-detail-review-v1"
+    assert source["full_catalog_discovery_enabled"] is True
+    assert source["new_game_discovery_enabled"] is True
+    assert source["new_game_discovery_max_pages"] == 12
+    assert source["scheduled_fetch_enabled"] is False
+    assert direct.source_participates_in_new_game_ranking(source) is True
+
+    rates = json.loads(
+        (ROOT / "config/point_value_rates.json").read_text(encoding="utf-8")
+    )["sources"]["gmo_point"]
+    assert rates["status"] == "verified_face_value"
     assert rates["yenPerPoint"] == 1
