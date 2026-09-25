@@ -46,6 +46,9 @@ POINT_RE = re.compile(r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt", re.I)
 MAX_PAGES = 50
 MAX_BYTES = 5_000_000
 MAX_DISPATCH_CHARS = 60_000
+GITHUB_TOKEN_RE = re.compile(r"^(?:github_pat_|ghp_)[A-Za-z0-9_]+$")
+MIN_GITHUB_TOKEN_LEN = 30
+MAX_GITHUB_TOKEN_LEN = 255
 
 jar = CookieJar()
 opener = build_opener(HTTPCookieProcessor(jar))
@@ -250,16 +253,29 @@ def _pythonista_keychain():
         return None
 
 
-def _secure_input(prompt):
+def looks_like_github_token(value):
+    token = str(value or "").strip()
+    return (
+        MIN_GITHUB_TOKEN_LEN <= len(token) <= MAX_GITHUB_TOKEN_LEN
+        and GITHUB_TOKEN_RE.fullmatch(token) is not None
+    )
+
+
+def clipboard_github_token():
     try:
-        import console
-        return str(console.secure_input(prompt) or "").strip()
+        import clipboard
+        value = str(clipboard.get() or "").strip()
     except (ImportError, AttributeError):
-        try:
-            import getpass
-            return str(getpass.getpass(prompt) or "").strip()
-        except Exception:
-            return str(input(prompt) or "").strip()
+        return ""
+    return value if looks_like_github_token(value) else ""
+
+
+def clear_clipboard_if_possible():
+    try:
+        import clipboard
+        clipboard.set("")
+    except (ImportError, AttributeError):
+        pass
 
 
 def stored_github_token():
@@ -267,9 +283,17 @@ def stored_github_token():
     if keychain is None:
         return ""
     try:
-        return str(keychain.get_password(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT) or "").strip()
+        token = str(keychain.get_password(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT) or "").strip()
     except Exception:
         return ""
+    if looks_like_github_token(token):
+        return token
+    if token:
+        try:
+            keychain.delete_password(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT)
+        except Exception:
+            pass
+    return ""
 
 
 def save_github_token(token):
@@ -293,17 +317,24 @@ def clear_github_token():
 
 
 def setup_github_token():
-    print("初回だけGitHubトークンを登録します。")
-    print("POIGAME-LAB/poigamelab の Actions: Read and write だけを許可した")
-    print("Fine-grained token を入力してください。入力内容は画面に表示しません。")
-    token = _secure_input("GitHub token: ")
-    if not token or len(token) < 20:
-        raise SystemExit("GitHub token が空または短すぎるため保存しませんでした。")
+    token = clipboard_github_token()
+    if not token:
+        raise SystemExit(
+            "GitHubトークンが未登録です。Fine-grained token をコピーしてから、"
+            "このスクリプトの▶︎をもう一度押してください。手入力は不要です。"
+        )
     save_github_token(token)
+    clear_clipboard_if_possible()
+    print("GitHubトークンをiPhoneのKeychainへ保存しました ✅")
     return token
 
 
 def dispatch_to_github(encoded, token, *, open_url=urlopen):
+    if not looks_like_github_token(token):
+        raise SystemExit(
+            "保存済みGitHubトークンが不正なため送信を停止しました。"
+            " Fine-grained token をコピーしてから▶︎を押し直してください。"
+        )
     body = json.dumps({
         "ref": "main",
         "inputs": {
@@ -389,11 +420,7 @@ def main():
         manual_fallback(encoded)
         return
 
-    try:
-        dispatch_result = dispatch_to_github(encoded, token)
-    except SystemExit:
-        manual_fallback(encoded)
-        raise
+    dispatch_result = dispatch_to_github(encoded, token)
 
     print("\n送信完了 ✅")
     if dispatch_result.get("workflowRunId"):
