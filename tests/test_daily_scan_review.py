@@ -738,10 +738,12 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
 
 
 def test_gmo_point_live_diagnostic_20260925():
-    """Temporary structural diagnostic for GMO card/detail DOM classes."""
+    """Temporary DOM-based live enumeration of GMO Poikatsu game search."""
     import json as _json
     import re as _re
     from urllib.request import Request as _Request, urlopen as _urlopen
+    from urllib.parse import urljoin as _urljoin
+    from html import unescape as _unescape
 
     ua=("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
         "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1")
@@ -750,25 +752,58 @@ def test_gmo_point_live_diagnostic_20260925():
         with _urlopen(req,timeout=25) as r:
             return r.read(5_000_000).decode("utf-8","replace")
 
-    listing=fetch("https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0")
-    detail=fetch("https://colleee.net/programs/11521")
+    encoded="%E3%82%B2%E3%83%BC%E3%83%A0"
+    pages=[]
+    all_rows=[]
+    seen=set()
+    reported_total=None
+    for page in range(1,13):
+        url=("https://colleee.net/programs/list?keywords="+encoded
+             if page==1 else f"https://colleee.net/programs/list/0/{page}?keywords="+encoded)
+        raw=fetch(url)
+        text=daily.direct.visible_text(raw)
+        tm=_re.search(r"全\s*([0-9,]+)\s*件",text)
+        if tm:
+            reported_total=int(tm.group(1).replace(",",""))
+        root=daily.direct.EvidenceHTML(raw).root
+        rows=[]
+        for ul in root.find(tag="ul"):
+            if "programs_list__list__wrap" not in ul.attrs.get("class","").split():
+                continue
+            for li in ul.find(tag="li"):
+                anchors=li.find(tag="a")
+                if not anchors:
+                    continue
+                href=_unescape(anchors[0].attrs.get("href","")).strip()
+                absolute=_urljoin(url,href).split("#",1)[0]
+                if not _re.fullmatch(r"https://colleee\.net/programs/[0-9]+(?:/[0-9A-Za-z]+)?/?",absolute):
+                    continue
+                titles=[
+                    daily.direct.evidence_text(n).strip() for n in li.find(tag="p")
+                    if "programs_list__detail__txt" in n.attrs.get("class","").split()
+                    and daily.direct.evidence_text(n).strip()
+                ]
+                points=[]
+                for n in li.find(tag="p"):
+                    if "programs_list__detail__point" not in n.attrs.get("class","").split():
+                        continue
+                    m=_re.fullmatch(r"([0-9][0-9,]*)\s*P",daily.direct.evidence_text(n).strip(),_re.I)
+                    if m:
+                        points.append(int(m.group(1).replace(",","")))
+                row={"url":absolute,"title":titles[0] if len(titles)==1 else "",
+                     "points":points[0] if len(points)==1 else None}
+                rows.append(row)
+                if absolute not in seen:
+                    seen.add(absolute); all_rows.append(row)
+        pages.append({"page":page,"count":len(rows),"sample":rows[:3]})
+        if page>1 and not rows:
+            break
 
-    def around(raw, needle, before=2200, after=4200):
-        p=raw.find(needle)
-        return raw[max(0,p-before):p+after] if p>=0 else ""
-
-    # Keep output compact and centered on exact reviewed structural markers.
-    report={
-        "listingTitle": around(listing,"スーパーラッキーカジノ",1800,3000),
-        "listingTotal": around(listing,"全 91 件",700,800),
-        "listingPaging": around(listing,"/programs/list/0/2?keywords=",800,1600),
-        "detailTitle": around(detail,"スーパーラッキーカジノ",1800,2800),
-        "detailReward": around(detail,"5,820",2200,3200),
-        "detailCondition": around(detail,"ポイント獲得条件",1600,3800),
-        "detailRate": around(detail,"1ポイント=1円分",900,1200),
-        "classesNearReward": list(dict.fromkeys(_re.findall(
-            r'class=["\\\']([^"\\\']+)["\\\']',
-            around(detail,"5,820",3000,4000)
-        )))[:80],
-    }
-    assert False,"GMO_POINT_LIVE_DIAGNOSTIC_V6="+_json.dumps(report,ensure_ascii=False,sort_keys=True)
+    assert False,"GMO_POINT_LIVE_DIAGNOSTIC_V7="+_json.dumps({
+        "reportedTotal":reported_total,
+        "uniqueCount":len(all_rows),
+        "pages":pages,
+        "sample":all_rows[:12],
+        "lastSample":all_rows[-8:],
+        "allRowsValid":all(bool(r["title"]) and isinstance(r["points"],int) and r["points"]>0 for r in all_rows),
+    },ensure_ascii=False,sort_keys=True)
