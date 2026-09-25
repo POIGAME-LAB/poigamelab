@@ -10,18 +10,37 @@ function getDashboard(rangeKey,force){
   var days=rangeKey==='28d'?28:7;
   var cache=CacheService.getUserCache(), key='cc:'+days;
   if(!force){var hit=cache.get(key); if(hit) return JSON.parse(hit);}
-  var w=windows_(days), out={ok:true,generatedAt:Utilities.formatDate(new Date(),CFG.tz,'yyyy-MM-dd HH:mm:ss'),days:days,ga4:null,gsc:null,combined:null,errors:[]};
+  var w=windows_(days), out={ok:true,generatedAt:Utilities.formatDate(new Date(),CFG.tz,'yyyy-MM-dd HH:mm:ss'),days:days,ga4:null,gsc:null,combined:null,errors:[],warnings:[]};
   try{out.ga4=ga4Bundle_(w);}catch(e){out.errors.push({source:'GA4',message:safeErr_(e)});}
-  try{out.gsc=gscBundle_(w);}catch(e){out.errors.push({source:'Search Console',message:safeErr_(e)});}
-  out.combined=combine_(out.ga4,out.gsc); out.ok=out.errors.length===0;
+  try{
+    out.gsc=gscBundle_(w);
+    out.gsc.source='search-console-api';
+  }catch(e){
+    var directErr=safeErr_(e);
+    try{
+      out.gsc=gscViaGa4Bundle_(w);
+      out.gsc.source='ga4-search-console-link';
+      out.gsc.directApiError=directErr;
+      out.warnings.push({source:'Search Console',message:'Search Console APIは未接続のため、GA4に連携済みの検索指標で表示しています。検索語・検索ページ別は未取得です。'});
+    }catch(fallbackErr){
+      out.errors.push({source:'Search data',message:'検索データを取得できませんでした。Search Console API: '+directErr+' / GA4連携: '+safeErr_(fallbackErr)});
+    }
+  }
+  out.combined=combine_(out.ga4,out.gsc); out.ok=!!out.ga4&&!!out.gsc;
   try{cache.put(key,JSON.stringify(out),CFG.cacheSec);}catch(e){}
   return out;
 }
 
 function diagnose(){
   var r=[];
-  try{var x=ga4_({dateRanges:[{startDate:'7daysAgo',endDate:'today'}],metrics:[{name:'activeUsers'}],limit:1});r.push({source:'GA4',ok:true,detail:'接続OK'});}catch(e){r.push({source:'GA4',ok:false,detail:safeErr_(e)});}
-  try{r.push({source:'Search Console',ok:true,detail:gscSite_()});}catch(e){r.push({source:'Search Console',ok:false,detail:safeErr_(e)});}
+  try{ga4_({dateRanges:[{startDate:'7daysAgo',endDate:'today'}],metrics:[{name:'activeUsers'}],limit:1});r.push({source:'GA4',ok:true,detail:'接続OK'});}catch(e){r.push({source:'GA4',ok:false,detail:safeErr_(e)});}
+  try{r.push({source:'Search Console API',ok:true,detail:gscSite_()});}
+  catch(e){
+    try{
+      ga4_({dateRanges:[{startDate:'7daysAgo',endDate:'today'}],metrics:[{name:'organicGoogleSearchClicks'},{name:'organicGoogleSearchImpressions'}],limit:1});
+      r.push({source:'検索データ',ok:true,detail:'Search Console APIは未接続ですが、GA4連携経由で検索指標を取得できます'});
+    }catch(f){r.push({source:'検索データ',ok:false,detail:'Search Console API: '+safeErr_(e)+' / GA4連携: '+safeErr_(f)});}
+  }
   return r;
 }
 
@@ -36,6 +55,32 @@ function ga4Bundle_(w){
     cta=gaRows_(cr).map(function(x){return{path:x.d.pagePath||'/',location:x.d['customEvent:cta_location']||'(未設定)',clicks:num_(x.m.eventCount)};});
   }catch(e){ctaError=safeErr_(e);}
   return{propertyId:CFG.ga4PropertyId,current:gaSummary_(cur,metrics),previous:gaSummary_(prev,metrics),pages:gaRows_(pages).map(function(x){return{path:x.d.pagePath||'/',views:num_(x.m.screenPageViews),users:num_(x.m.activeUsers),sessions:num_(x.m.sessions)};}),cta:aggCta_(cta),ctaByPage:aggCtaPage_(cta),ctaError:ctaError};
+}
+
+
+function gscViaGa4Bundle_(w){
+  var names=['organicGoogleSearchClicks','organicGoogleSearchImpressions','organicGoogleSearchClickThroughRate','organicGoogleSearchAveragePosition'];
+  var cur=ga4_({dateRanges:[w.cur],metrics:names.map(function(n){return{name:n};}),limit:1});
+  var prev=ga4_({dateRanges:[w.prev],metrics:names.map(function(n){return{name:n};}),limit:1});
+  return{
+    siteUrl:'GA4 linked Search Console',
+    latestDate:null,
+    current:gaSearchSummary_(cur),
+    previous:gaSearchSummary_(prev),
+    queries:null,
+    pages:null,
+    limited:true
+  };
+}
+
+function gaSearchSummary_(r){
+  var row=gaRows_(r)[0]||{m:{}};
+  return{
+    clicks:nullableNum_(row.m.organicGoogleSearchClicks),
+    impressions:nullableNum_(row.m.organicGoogleSearchImpressions),
+    ctr:nullableNum_(row.m.organicGoogleSearchClickThroughRate),
+    position:nullableNum_(row.m.organicGoogleSearchAveragePosition)
+  };
 }
 
 function gscBundle_(w){
@@ -92,6 +137,7 @@ function maxKey_(rows){return rows.reduce(function(m,x){var v=x.keys&&x.keys[0]|
 function path_(u){return String(u||'').replace(/^https?:\/\/[^/]+/i,'')||'/';}
 function npath_(p){p=String(p||'/').split('?')[0].split('#')[0];return p==='/'?'/':('/'+p.replace(/^\/+/,''));}
 function num_(v){var n=Number(v||0);return isFinite(n)?n:0;}
+function nullableNum_(v){if(v===undefined||v===null||v==='')return null;var n=Number(v);return isFinite(n)?n:null;}
 function pct_(v){return(num_(v)*100).toFixed(1)+'%';}
 function safeErr_(e){return String(e&&e.message||e||'Unknown error').replace(/Bearer\s+[A-Za-z0-9._~+\/-]+/gi,'Bearer [redacted]').slice(0,400);}
 function dedupe_(rows){var s={};return rows.filter(function(x){var k=x.type+':'+x.label;if(s[k])return false;s[k]=1;return true;});}
