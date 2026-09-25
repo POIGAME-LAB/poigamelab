@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       point_income_catalog_base64:
-        description: Base64 JSON from residential iPhone/Pythonista capture
+        description: gzip+Base64 JSON from residential iPhone/Pythonista capture
         required: true
         type: string
 
@@ -25,11 +25,18 @@ jobs:
           POINT_INCOME_CATALOG_BASE64: ${{ inputs.point_income_catalog_base64 }}
         run: |
           python - <<'PY'
-          import base64, os
-          raw = base64.b64decode(
+          import base64
+          import gzip
+          import os
+
+          packed = base64.b64decode(
               os.environ["POINT_INCOME_CATALOG_BASE64"],
               validate=True,
           )
+          if len(packed) > 100000:
+              raise SystemExit("compressed payload too large")
+
+          raw = gzip.decompress(packed) if packed[:2] == b"\\x1f\\x8b" else packed
           if len(raw) > 250000:
               raise SystemExit("payload too large")
           open("/tmp/point-income-device.json", "wb").write(raw)
@@ -48,6 +55,50 @@ jobs:
           games.csv
           /tmp/point-income-existing-game-candidates.json
           /tmp/point-income-unmatched-app-candidates.json
+
+      - name: Persist accepted device catalog to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+
+          stamp="$(date -u +'%Y/%m/%d/%H%M%SZ')"
+          archive_dir="$(mktemp -d)"
+          trap 'rm -rf "${archive_dir}"' EXIT
+
+          for path in \
+            /tmp/point-income-device-accepted.json \
+            /tmp/point-income-existing-game-candidates.json \
+            /tmp/point-income-unmatched-app-candidates.json
+          do
+            base="$(basename "${path}")"
+            gzip -9 -c "${path}" > "${archive_dir}/${base}.gz"
+          done
+
+          (
+            cd "${archive_dir}"
+            sha256sum *.gz > SHA256SUMS
+          )
+
+          aws s3 cp "${archive_dir}/" \
+            "s3://${R2_BUCKET}/device/point-income/daily/${stamp}/" \
+            --recursive \
+            --endpoint-url "${R2_ENDPOINT}" \
+            --only-show-errors
+
+          aws s3 cp "${archive_dir}/" \
+            "s3://${R2_BUCKET}/device/point-income/latest/" \
+            --recursive \
+            --endpoint-url "${R2_ENDPOINT}" \
+            --only-show-errors
 
       - uses: actions/upload-artifact@v4
         with:
