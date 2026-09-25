@@ -2,7 +2,6 @@ import importlib.util
 import json
 import subprocess
 import sys
-from pathlib import Path
 
 IMPORTER = "scripts/import-point-income-device-catalog.py"
 CAPTURE = "scripts/point-income-device-capture.py"
@@ -27,27 +26,104 @@ def load_capture_module():
     return module
 
 
-def test_importer_accepts_candidate_ids_and_official_urls(tmp_path):
+def test_capture_parses_current_reward_and_platform_from_realistic_cards():
+    capture = load_capture_module()
+    raw = """
+    <html><body>
+      <a href="/ad/155403/">
+        Water Sort Puzzle - ソートパズルゲーム（iOS用）【9/25までの高還元!!】
+        3,500pt ⇒ 8,000pt アプリ アプリ保証
+      </a>
+      <a href="/ad/156173/">
+        マフィア・シティ-極道風雲（Android用）
+        80,000pt ⇒ 100,000pt アプリ
+      </a>
+      <a href="/ad/156006/">
+        マネーフォワード ME（iOS用） 2,500pt アプリ
+      </a>
+    </body></html>
+    """
+    offers = capture.parse_listing_page(
+        raw,
+        "https://sp.pointi.jp/ajax_load/load_list_site.php?page=1&cat_no=68&od=1",
+    )
+    assert [x["adId"] for x in offers] == ["155403", "156173", "156006"]
+    assert offers[0]["currentPoints"] == 8000
+    assert offers[0]["currentYen"] == 800
+    assert offers[0]["platform"] == "iOS"
+    assert offers[1]["currentPoints"] == 100000
+    assert offers[1]["platform"] == "Android"
+    assert offers[2]["currentPoints"] == 2500
+
+
+def test_capture_strips_purchase_amount_before_reward():
+    capture = load_capture_module()
+    raw = """
+    <a href="/ad/146816/">
+      100% 還元 カプとれ（Android用） 650円(税込)の商品ご購入で
+      3,000pt ⇒ 6,500pt アプリ
+    </a>
+    """
+    offers = capture.parse_listing_page(
+        raw,
+        "https://sp.pointi.jp/ajax_load/load_list_site.php?page=3&cat_no=68&od=1",
+    )
+    assert len(offers) == 1
+    assert offers[0]["title"] == "100% 還元 カプとれ（Android用）"
+    assert offers[0]["currentPoints"] == 6500
+
+
+def test_importer_accepts_structured_candidate_catalog(tmp_path):
     payload = {
+        "schemaVersion": 2,
         "source": "point_income",
-        "sourceUrl": "https://pointi.jp/list.php?category=game",
-        "pageCount": 2,
-        "adUrls": [
-            "https://pointi.jp/ad/149843/",
-            "https://sp.pointi.jp/ad/149388/",
-            "149843",
-            "https://evil.example/ad/999999/",
+        "sourceUrl": "https://sp.pointi.jp/list.php?cat_no=68",
+        "pageCount": 4,
+        "stoppedBecause": "empty_page",
+        "offers": [
+            {
+                "adId": "156226",
+                "url": "https://sp.pointi.jp/ad/156226/",
+                "title": "タウンシップ【アプリ利用でptゲット/iOS用】",
+                "platform": "iOS",
+                "currentPoints": 308302,
+            },
+            {
+                "adId": "149940",
+                "title": "エバーテイル（Android用）",
+                "platform": "Android",
+                "currentPoints": 2500,
+            },
         ],
     }
     result, out = run_importer(tmp_path, payload)
     assert result.returncode == 0
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert data["source"] == "point_income"
     assert data["candidateOnly"] is True
     assert data["catalogCompleteClaim"] is False
-    assert data["pageCount"] == 2
-    assert data["adIds"] == ["149843", "149388"]
     assert data["count"] == 2
+    assert data["offers"][0]["currentPoints"] == 308302
+    assert data["offers"][0]["currentYen"] == 30830.2
+    assert data["offers"][0]["publicationAuthorized"] is False
+
+
+def test_importer_still_accepts_legacy_id_only_payload(tmp_path):
+    result, out = run_importer(
+        tmp_path,
+        {
+            "source": "point_income",
+            "sourceUrl": "https://pointi.jp/list.php?category=68",
+            "adUrls": [
+                "https://pointi.jp/ad/149843/",
+                "https://sp.pointi.jp/ad/149388/",
+                "149843",
+                "https://evil.example/ad/999999/",
+            ],
+        },
+    )
+    assert result.returncode == 0
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert [x["adId"] for x in data["offers"]] == ["149843", "149388"]
 
 
 def test_importer_rejects_empty_or_non_first_party_source(tmp_path):
@@ -56,39 +132,11 @@ def test_importer_rejects_empty_or_non_first_party_source(tmp_path):
         {
             "source": "point_income",
             "sourceUrl": "https://evil.example/list",
-            "adUrls": ["https://evil.example/ad/1/"],
+            "offers": [],
         },
     )
     assert result.returncode != 0
     assert not out.exists()
-
-    result, out = run_importer(
-        tmp_path,
-        {
-            "source": "point_income",
-            "sourceUrl": "https://pointi.jp/list.php",
-            "adUrls": [],
-        },
-    )
-    assert result.returncode != 0
-    assert not out.exists()
-
-
-def test_capture_parser_extracts_only_point_income_ad_ids_and_next_link():
-    capture = load_capture_module()
-    raw = """
-    <html><head>
-      <link rel="next" href="/list.php?page=2">
-    </head><body>
-      <a href="/ad/149843/">Game A</a>
-      <a href="https://sp.pointi.jp/ad/149388/">Game B</a>
-      <a href="https://evil.example/ad/999999/">Bad</a>
-      <a href="/help/detail.php?tno=296">Help</a>
-    </body></html>
-    """
-    ids, next_urls = capture.parse_page(raw, "https://pointi.jp/list.php?page=1")
-    assert ids == ["149843", "149388"]
-    assert next_urls == ["https://pointi.jp/list.php?page=2"]
 
 
 def test_capture_detects_first_party_hosts_and_rejects_lookalikes():

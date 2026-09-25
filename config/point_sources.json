@@ -360,7 +360,7 @@
     {
       "id": "point_income",
       "name": "ポイントインカム",
-      "start_url": "https://pointi.jp/",
+      "start_url": "https://sp.pointi.jp/list.php?cat_no=68",
       "search_domains": [
         "pointi.jp",
         "sp.pointi.jp"
@@ -377,7 +377,11 @@
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "2026-09-25 GitHub Actions live audit: every tested public Point Income route was redirected to the first-party domestic-only access-control page (sp.pointi.jp/information.php?cn=2&sn=1). Keep cloud fetching disabled; current offer retrieval requires a Japan-residential/device path before parser/ranking integration.",
       "reviewedAt": "2026-09-25",
-      "discoveryNote": "Cloud audit confirmed regional access control rather than an HTTP transport failure. Do not treat HTTP 200 on the access-control page as offer retrieval success. A candidate-only residential iPhone/Pythonista capture plus GitHub artifact importer is now available; it transmits only public /ad/<id>/ identities and never HTML, cookies or account data."
+      "discoveryNote": "2026-09-25 iPhone/Pythonista live verification: category 68 loads current offers from /ajax_load/load_list_site.php?page=N&cat_no=68&od=1. Four observed pages returned 10 stable /ad/<id>/ cards each with title and current points, including Township 308,302pt, ATLAS:EARTH 279,405pt and Evertale 2,500pt. Cloud CI remains geo-gated, so the candidate-only residential-device capture now walks numbered pages and exports structured public offer rows. Category 68 also contains non-game apps, so publication still requires classification/review.",
+      "device_capture_enabled": true,
+      "device_capture_listing_endpoint": "https://sp.pointi.jp/ajax_load/load_list_site.php?page={page}&cat_no=68&od=1",
+      "device_capture_page_size_observed": 10,
+      "device_capture_point_rate": "10pt=1JPY"
     },
     {
       "id": "amefuri",
