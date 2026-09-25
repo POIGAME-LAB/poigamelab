@@ -21,7 +21,7 @@ function getDashboard(rangeKey,force){
       out.gsc=gscViaGa4Bundle_(w);
       out.gsc.source='ga4-search-console-link';
       out.gsc.directApiError=directErr;
-      out.warnings.push({source:'Search Console',message:'Search Console APIは未接続のため、GA4に連携済みの検索指標で表示しています。検索語・検索ページ別は未取得です。'});
+      out.warnings.push({source:'Search Console',message:'Search Console APIは未接続のため、GA4に連携済みの検索指標で表示しています。検索語一覧のみ未取得です。'});
     }catch(fallbackErr){
       out.errors.push({source:'Search data',message:'検索データを取得できませんでした。Search Console API: '+directErr+' / GA4連携: '+safeErr_(fallbackErr)});
     }
@@ -37,7 +37,7 @@ function diagnose(){
   try{r.push({source:'Search Console API',ok:true,detail:gscSite_()});}
   catch(e){
     try{
-      ga4_({dateRanges:[{startDate:'7daysAgo',endDate:'today'}],dimensions:[{name:'landingPagePlusQueryString'}],metrics:[{name:'organicGoogleSearchClicks'},{name:'organicGoogleSearchImpressions'}],limit:10});
+      gaSearchReport_({startDate:'7daysAgo',endDate:'today'});
       r.push({source:'検索データ',ok:true,detail:'Search Console APIは未接続ですが、GA4連携経由で検索指標を取得できます'});
     }catch(f){r.push({source:'検索データ',ok:false,detail:'Search Console API: '+safeErr_(e)+' / GA4連携: '+safeErr_(f)});}
   }
@@ -59,10 +59,8 @@ function ga4Bundle_(w){
 
 
 function gscViaGa4Bundle_(w){
-  var names=['organicGoogleSearchClicks','organicGoogleSearchImpressions','organicGoogleSearchClickThroughRate','organicGoogleSearchAveragePosition'];
-  var dims=[{name:'landingPagePlusQueryString'}];
-  var cur=ga4_({dateRanges:[w.cur],dimensions:dims,metrics:names.map(function(n){return{name:n};}),limit:10000});
-  var prev=ga4_({dateRanges:[w.prev],dimensions:dims,metrics:names.map(function(n){return{name:n};}),limit:10000});
+  var cur=gaSearchReport_(w.cur);
+  var prev=gaSearchReport_(w.prev);
   return{
     siteUrl:'GA4 linked Search Console',
     latestDate:null,
@@ -71,6 +69,63 @@ function gscViaGa4Bundle_(w){
     queries:null,
     pages:gaSearchPages_(cur),
     limited:true
+  };
+}
+
+function gaSearchReport_(dateRange){
+  var dims=[{name:'landingPagePlusQueryString'}];
+  try{
+    return ga4_({
+      dateRanges:[dateRange],
+      dimensions:dims,
+      metrics:[
+        {name:'organicGoogleSearchClicks'},
+        {name:'organicGoogleSearchImpressions'},
+        {name:'organicGoogleSearchAveragePosition'}
+      ],
+      limit:10000
+    });
+  }catch(e){
+    var traffic=ga4_({
+      dateRanges:[dateRange],
+      dimensions:dims,
+      metrics:[
+        {name:'organicGoogleSearchClicks'},
+        {name:'organicGoogleSearchImpressions'}
+      ],
+      limit:10000
+    });
+    var position=ga4_({
+      dateRanges:[dateRange],
+      dimensions:dims,
+      metrics:[{name:'organicGoogleSearchAveragePosition'}],
+      limit:10000
+    });
+    return mergeGaSearchReports_(traffic,position);
+  }
+}
+
+function mergeGaSearchReports_(traffic,position){
+  var tr=gaRows_(traffic), pr=gaRows_(position), pos={};
+  pr.forEach(function(x){pos[x.d.landingPagePlusQueryString||'/']=x.m.organicGoogleSearchAveragePosition;});
+  return{
+    dimensionHeaders:[{name:'landingPagePlusQueryString'}],
+    metricHeaders:[
+      {name:'organicGoogleSearchClicks'},
+      {name:'organicGoogleSearchImpressions'},
+      {name:'organicGoogleSearchAveragePosition'}
+    ],
+    rows:tr.map(function(x){
+      var k=x.d.landingPagePlusQueryString||'/';
+      return{
+        dimensionValues:[{value:k}],
+        metricValues:[
+          {value:String(x.m.organicGoogleSearchClicks||'0')},
+          {value:String(x.m.organicGoogleSearchImpressions||'0')},
+          {value:String(pos[k]||'')}
+        ]
+      };
+    })
   };
 }
 
@@ -93,19 +148,28 @@ function gaSearchSummary_(r){
 }
 
 function gaSearchPages_(r){
-  return gaRows_(r).map(function(x){
-    var path=x.d.landingPagePlusQueryString||'/';
-    return{
-      url:path,
-      path:npath_(path),
-      clicks:nullableNum_(x.m.organicGoogleSearchClicks),
-      impressions:nullableNum_(x.m.organicGoogleSearchImpressions),
-      ctr:nullableNum_(x.m.organicGoogleSearchClickThroughRate),
-      position:nullableNum_(x.m.organicGoogleSearchAveragePosition)
-    };
-  }).filter(function(x){
-    return (x.clicks||0)>0||(x.impressions||0)>0;
+  var m={};
+  gaRows_(r).forEach(function(x){
+    var path=npath_(x.d.landingPagePlusQueryString||'/');
+    if(!m[path])m[path]={url:path,path:path,clicks:0,impressions:0,weightedPosition:0,positionWeight:0};
+    var c=nullableNum_(x.m.organicGoogleSearchClicks), i=nullableNum_(x.m.organicGoogleSearchImpressions), p=nullableNum_(x.m.organicGoogleSearchAveragePosition);
+    if(c!==null)m[path].clicks+=c;
+    if(i!==null){
+      m[path].impressions+=i;
+      if(p!==null){m[path].weightedPosition+=p*i;m[path].positionWeight+=i;}
+    }
   });
+  return Object.keys(m).map(function(k){
+    var x=m[k];
+    return{
+      url:x.url,
+      path:x.path,
+      clicks:x.clicks,
+      impressions:x.impressions,
+      ctr:x.impressions>0?x.clicks/x.impressions:null,
+      position:x.positionWeight>0?x.weightedPosition/x.positionWeight:null
+    };
+  }).filter(function(x){return x.clicks>0||x.impressions>0;});
 }
 
 function gscBundle_(w){
