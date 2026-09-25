@@ -41,8 +41,19 @@ jobs:
           /tmp/point-income-device.json
           /tmp/point-income-device-accepted.json
 
+      - name: Build existing-game and unmatched-app review queues
+        run: >-
+          python scripts/postprocess-point-income-device-catalog.py
+          /tmp/point-income-device-accepted.json
+          games.csv
+          /tmp/point-income-existing-game-candidates.json
+          /tmp/point-income-unmatched-app-candidates.json
+
       - uses: actions/upload-artifact@v4
         with:
           name: point-income-device-catalog
-          path: /tmp/point-income-device-accepted.json
+          path: |
+            /tmp/point-income-device-accepted.json
+            /tmp/point-income-existing-game-candidates.json
+            /tmp/point-income-unmatched-app-candidates.json
           retention-days: 3
