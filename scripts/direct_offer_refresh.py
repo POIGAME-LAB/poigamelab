@@ -310,6 +310,13 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
             )
         except (ValueError, TypeError, RecursionError):
             return []
+    if str(source.get("id") or "") == "gmo_point":
+        try:
+            return discover_gmo_point_target_listing_candidates(
+                raw, base_url, source, aliases, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
     if str(source.get("id") or "") == "trima":
         try:
             return discover_trima_target_listing_candidates(
@@ -673,6 +680,10 @@ def listing_detail_identity_signature(raw, base_url, source, limit=5000):
         return nifty_listing_detail_identity_signature(
             raw, base_url, source, limit=limit
         )
+    if source_id == "gmo_point":
+        return gmo_point_listing_detail_identity_signature(
+            raw, base_url, source, limit=limit
+        )
     identities = []
     seen = set()
     try:
@@ -711,7 +722,12 @@ def paginated_listing_url(source, page):
     page_number = int(page)
     if page_number < 1:
         return ""
-    if page_tokens == 1:
+    if str(source.get("id") or "") == "gmo_point" and page_tokens == 1:
+        if page_number == 1:
+            candidate = "https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0"
+        else:
+            candidate = template.replace("{page}", str(page_number))
+    elif page_tokens == 1:
         candidate = template.replace("{page}", str(page_number))
     else:
         page_size = source.get("new_game_discovery_page_size")
@@ -747,6 +763,13 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
     if source_id == "nifty_point":
         try:
             return discover_nifty_listing_candidates(
+                raw, base_url, source, targets, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
+    if source_id == "gmo_point":
+        try:
+            return discover_gmo_point_listing_candidates(
                 raw, base_url, source, targets, limit=limit
             )
         except (ValueError, TypeError, RecursionError):
@@ -1314,6 +1337,11 @@ def offer_identity_key(url, source_id):
         match = re.fullmatch(r"/service/detail/([0-9A-Za-z]{12})/?", path)
         if match:
             return f"nifty_point:pathid:{match.group(1).upper()}"
+    if str(source_id or "") == "gmo_point":
+        match = re.fullmatch(r"/programs/([0-9]+)(?:/([0-9A-Za-z]+))?/?", path)
+        if match:
+            variant = f":{match.group(2).upper()}" if match.group(2) else ""
+            return f"gmo_point:pathid:{match.group(1)}{variant}"
     for pattern in (
         r"/ad_details/(\d+)",
         r"/campaigns/details/(\d+)",
@@ -3299,6 +3327,333 @@ def inspect_nifty_offer(raw, requested_url, final_url, aliases):
         return {"state": "review_required", "reason": str(error)[:120]}
 
 
+def gmo_point_offer_id(url):
+    """Return stable first-party GMO Poikatsu program identity."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname not in {"colleee.net", "www.colleee.net"}
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+        or parse_qs(parsed.query, keep_blank_values=True)
+    ):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/programs/([0-9]+)(?:/([0-9A-Za-z]+))?/?", parsed.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    return match.group(1) + (":" + match.group(2).upper() if match.group(2) else "")
+
+
+def _gmo_point_listing_cards(raw, base_url, source):
+    """Parse only reviewed GMO Poikatsu search result cards."""
+    try:
+        root = EvidenceHTML(raw or "").root
+    except (TypeError, ValueError, RecursionError):
+        raise ValueError("invalid_listing_payload")
+
+    list_roots = [
+        node for node in root.find(tag="ul")
+        if "programs_list__list__wrap" in node.attrs.get("class", "").split()
+    ]
+    if len(list_roots) != 1:
+        # An empty last page may omit the result list but still be a valid page.
+        text = visible_text(raw)
+        if "ゲームに関連する広告一覧" in text:
+            return []
+        raise ValueError("missing_or_ambiguous_listing_container")
+
+    cards = []
+    for card in list_roots[0].find(tag="li"):
+        links = []
+        for anchor in card.find(tag="a"):
+            href = html.unescape(anchor.attrs.get("href", "")).strip()
+            absolute = urljoin(base_url, href).split("#", 1)[0]
+            if not source_host_allowed(absolute, source):
+                continue
+            try:
+                offer_id = gmo_point_offer_id(absolute)
+            except ValueError:
+                continue
+            links.append((offer_id, absolute))
+        links = list(dict.fromkeys(links))
+        if len(links) != 1:
+            continue
+        offer_id, detail_url = links[0]
+
+        titles = [
+            evidence_text(node).strip()
+            for node in card.find(tag="p")
+            if "programs_list__detail__txt" in node.attrs.get("class", "").split()
+            and evidence_text(node).strip()
+        ]
+        titles = list(dict.fromkeys(titles))
+        if len(titles) != 1 or not 2 <= len(titles[0]) <= 260:
+            continue
+        title = titles[0]
+
+        conditions = []
+        for dl in card.find(tag="dl"):
+            if "programs_list__detail__chart" not in dl.attrs.get("class", "").split():
+                continue
+            for dd in dl.find(tag="dd"):
+                value = evidence_text(dd).strip()
+                if value:
+                    conditions.append(value)
+        conditions = list(dict.fromkeys(conditions))
+        condition = conditions[0][:900] if len(conditions) == 1 else ""
+
+        rewards = []
+        for node in card.find(tag="p"):
+            if "programs_list__detail__point" not in node.attrs.get("class", "").split():
+                continue
+            value = evidence_text(node).strip()
+            match = re.fullmatch(r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*P", value, re.I)
+            if match:
+                points = int(match.group(1).replace(",", ""))
+                if 0 < points <= 5_000_000:
+                    rewards.append(points)
+        rewards = list(dict.fromkeys(rewards))
+        if len(rewards) != 1:
+            continue
+
+        cards.append({
+            "offerId": offer_id,
+            "detailUrl": detail_url,
+            "title": title,
+            "condition": condition,
+            "rewardPoints": rewards[0],
+            "platformHint": platform_hint(title),
+        })
+    return cards
+
+
+def gmo_point_listing_detail_identity_signature(raw, base_url, source, limit=5000):
+    identities = []
+    seen = set()
+    for card in _gmo_point_listing_cards(raw, base_url, source):
+        identity = offer_identity_key(card["detailUrl"], "gmo_point")
+        if identity and identity not in seen:
+            seen.add(identity)
+            identities.append(identity)
+        if len(identities) >= max(1, min(int(limit or 5000), 5000)):
+            break
+    return tuple(sorted(identities))
+
+
+def _gmo_point_known_identities(targets):
+    known = set()
+    for target in targets or []:
+        for url in (target.get("known_urls_by_source") or {}).get("gmo_point", []) or []:
+            identity = offer_identity_key(url, "gmo_point")
+            if identity:
+                known.add(identity)
+    return known
+
+
+def _gmo_point_candidate(card, source):
+    points = card["rewardPoints"]
+    return {
+        "source": "gmo_point",
+        "sourceLabel": str(source.get("name") or "GMOポイ活"),
+        "titleHint": card["title"],
+        "descriptionHint": card["condition"],
+        "platformHint": card["platformHint"],
+        "listingRewardPoints": points,
+        "listingRewardText": f"{points:,} P",
+        "firstPartyCandidateUrl": card["detailUrl"],
+        "offerIdentity": offer_identity_key(card["detailUrl"], "gmo_point"),
+        "discoveryEvidence": "first_party_game_keyword_listing",
+        "discoveryScope": str(
+            source.get("new_game_discovery_scope")
+            or source.get("coverage_scope")
+            or "full_paginated_game_keyword_listing"
+        ),
+        "fullCatalogObserved": source.get("full_catalog_discovery_enabled") is True,
+        "candidateOnly": True,
+        "firstPartyVerificationRequired": True,
+        "autoCreateAuthorized": False,
+        "publicationAuthorized": False,
+    }
+
+
+def discover_gmo_point_listing_candidates(raw, base_url, source, targets, limit=500):
+    """Convert current GMO Poikatsu game-search cards into review-only candidates."""
+    known_identities = _gmo_point_known_identities(targets)
+    found = []
+    seen = set()
+    for card in _gmo_point_listing_cards(raw, base_url, source):
+        identity = offer_identity_key(card["detailUrl"], "gmo_point")
+        if not identity or identity in known_identities or identity in seen:
+            continue
+        if context_matches_known_game(card["title"], targets):
+            continue
+        seen.add(identity)
+        found.append(_gmo_point_candidate(card, source))
+        if len(found) >= max(1, min(int(limit or 500), 2000)):
+            break
+    return found
+
+
+def discover_gmo_point_target_listing_candidates(raw, base_url, source, aliases, limit=8):
+    """Find known-game GMO cards using only bounded first-party search cards."""
+    found = []
+    for card in _gmo_point_listing_cards(raw, base_url, source):
+        if not target_present(card["title"], aliases):
+            continue
+        item = _gmo_point_candidate(card, source)
+        item["gameLabel"] = next(
+            (str(value).strip() for value in aliases if str(value).strip()), ""
+        )
+        item["rewardYenHint"] = card["rewardPoints"]
+        found.append(item)
+        if len(found) >= max(1, min(int(limit or 8), 20)):
+            break
+    return found
+
+
+def inspect_gmo_point_offer(raw, requested_url, final_url, aliases):
+    """Verify current GMO Poikatsu reward, OS and detailed achievement terms."""
+    try:
+        offer_id = gmo_point_offer_id(requested_url)
+        if gmo_point_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        try:
+            root = EvidenceHTML(raw or "").root
+        except (TypeError, ValueError, RecursionError):
+            raise ValueError("invalid_offer_payload")
+
+        canonicals = [
+            node for node in root.find(tag="link")
+            if "canonical" in node.attrs.get("rel", "").split()
+        ]
+        if len(canonicals) != 1:
+            raise ValueError("missing_or_ambiguous_canonical")
+        canonical = urljoin(final_url, canonicals[0].attrs.get("href", ""))
+        if gmo_point_offer_id(canonical) != offer_id:
+            raise ValueError("canonical_offer_mismatch")
+
+        title_nodes = root.find(tag="title")
+        titles = [evidence_text(node).strip() for node in title_nodes if evidence_text(node).strip()]
+        titles = list(dict.fromkeys(titles))
+        if len(titles) != 1:
+            raise ValueError("missing_or_ambiguous_offer_title")
+        title = titles[0]
+        title_match = re.fullmatch(
+            r"(.+?)\s*\|\s*ポイントサイトのGMOポイ活なら"
+            r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)P還元",
+            title,
+        )
+        if not title_match:
+            raise ValueError("unexpected_offer_title")
+        name = title_match.group(1).strip()
+        title_points = int(title_match.group(2).replace(",", ""))
+
+        descriptions = []
+        for node in root.find(tag="meta"):
+            if node.attrs.get("name", "").casefold() == "description":
+                value = html.unescape(node.attrs.get("content", "")).strip()
+                if value:
+                    descriptions.append(value)
+        descriptions = list(dict.fromkeys(descriptions))
+        if len(descriptions) != 1:
+            raise ValueError("missing_or_ambiguous_meta_description")
+        desc = descriptions[0]
+        desc_match = re.search(
+            r"案件に参加すると、([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)"
+            r"ポイントをプレゼント！1P=1円相当",
+            desc,
+        )
+        if not desc_match:
+            raise ValueError("missing_current_reward_contract")
+        desc_points = int(desc_match.group(1).replace(",", ""))
+        if title_points != desc_points:
+            raise ValueError("reward_crosscheck_mismatch")
+        points = title_points
+        if not 0 < points <= 5_000_000:
+            raise ValueError("invalid_reward")
+
+        if not target_present(name, aliases):
+            name_key = normalized_game_title_key(name)
+            alias_keys = [
+                normalized_game_title_key(alias)
+                for alias in aliases if str(alias or "").strip()
+            ]
+            if not any(
+                key and name_key and len(min(key, name_key, key=len)) >= 4
+                and (key.startswith(name_key) or name_key.startswith(key))
+                for key in alias_keys
+            ):
+                raise ValueError("offer_title_mismatch")
+
+        platform = platform_hint(name)
+        if platform not in {"iOS", "Android"}:
+            raise ValueError("missing_offer_platform")
+
+        term_sections = [
+            node for node in root.find(tag="section")
+            if {"program__tab__item", "condition"} <= set(node.attrs.get("class", "").split())
+        ]
+        if len(term_sections) != 1:
+            raise ValueError("missing_or_ambiguous_offer_terms")
+        terms = re.sub(r"\s+", " ", evidence_text(term_sections[0])).strip()
+        if len(terms) < 180 or "ポイント獲得条件" not in terms:
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in (
+            "対象外", "獲得対象外", "成果対象外", "ポイント配布の対象外"
+        )):
+            raise ValueError("incomplete_offer_terms")
+        if not any(marker in terms for marker in ("問い合わせ", "お問い合わせ", "お問合せ")):
+            raise ValueError("incomplete_offer_terms")
+
+        condition_body = terms
+        condition_body = re.sub(r"^.*?ポイント獲得条件\s*", "", condition_body, count=1)
+        cut_positions = [
+            pos for marker in ("【ポイント配布の対象外】", "■注意事項", "【注意事項】", "■獲得対象外条件")
+            for pos in [condition_body.find(marker)] if pos > 0
+        ]
+        if cut_positions:
+            condition_body = condition_body[:min(cut_positions)]
+        condition = re.sub(r"\s+", " ", condition_body).strip(" ・")
+        if len(condition) < 4:
+            raise ValueError("missing_offer_condition")
+
+        page_text = visible_text(raw)
+        if not re.search(r"1\s*ポイント\s*=\s*1\s*円分", page_text):
+            raise ValueError("missing_face_value_contract")
+
+        payload_out = {
+            "offerId": offer_id,
+            "name": name,
+            "platform": platform,
+            "displayedRewardPoints": points,
+            "verifiedCurrentRewardYen": points,
+            "rewardUnit": "GMO-point",
+            "sourcePointRate": "1P=1JPY",
+            "conditionText": condition[:4000],
+            "termsText": terms[:16000],
+            "downstreamTermsRequired": False,
+            "candidateOnly": True,
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload_out, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "gmo-point-detail-review-v1",
+            **payload_out,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def trima_offer_id(url):
     """Return the stable UUID identity for one public first-party Trima offer."""
     try:
@@ -4136,6 +4491,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "mikoshi": inspect_mikoshi_offer,
         "trima": inspect_trima_offer,
         "nifty_point": inspect_nifty_offer,
+        "gmo_point": inspect_gmo_point_offer,
     }
     if source.get("id") in structured_parsers:
         if source.get("id") == "hapitas":
