@@ -555,7 +555,7 @@
     {
       "id": "gmo_point",
       "name": "GMOポイ活",
-      "start_url": "https://colleee.net/",
+      "start_url": "https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
       "search_domains": [
         "colleee.net",
         "www.colleee.net",
@@ -566,12 +566,33 @@
       "discovery_only": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [],
-      "direct_listing_limit": 0,
+      "direct_listing_urls": [
+        "https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0"
+      ],
+      "direct_listing_limit": 1,
       "direct_detail_limit": 0,
-      "direct_detail_url_hints": [],
+      "direct_detail_url_hints": [
+        "/programs/"
+      ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Discovery-only source until a stable anonymous first-party app/game search or detail route is validated."
+      "scheduled_fetch_reason": "Current anonymous first-party GMO Poikatsu game keyword listing exposes a paginated game offer universe with stable /programs/<id> identities and exact P rewards. Reviewed first-party details expose 1P=1JPY, OS, achievement conditions and exclusion/inquiry terms. Keep candidate-only; publication remains disabled.",
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "full_paginated_game_keyword_listing",
+      "coverage_candidate_limit": 8,
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 4,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "gmo-point-detail-review-v1",
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 200,
+      "new_game_discovery_min_detail_identities_first_page": 1,
+      "new_game_discovery_page_url_template": "https://colleee.net/programs/list/0/{page}?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
+      "new_game_discovery_max_pages": 12,
+      "new_game_discovery_scope": "full_paginated_game_keyword_listing",
+      "reviewedAt": "2026-09-25",
+      "discoveryNote": "2026-09-25 live GitHub Actions audit: the public GMO Poikatsu game search reported 91 related offers. First-party detail pages for current game offers exposed exact P reward, 1 point = 1 yen face value, platform suffix, achievement terms, exclusions and inquiry rules."
     },
     {
       "id": "powl",
