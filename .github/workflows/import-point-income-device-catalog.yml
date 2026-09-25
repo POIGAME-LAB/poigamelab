@@ -1,0 +1,48 @@
+name: Import Point Income device catalog
+
+on:
+  workflow_dispatch:
+    inputs:
+      point_income_catalog_base64:
+        description: Base64 JSON from residential iPhone/Pythonista capture
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Decode device payload
+        env:
+          POINT_INCOME_CATALOG_BASE64: ${{ inputs.point_income_catalog_base64 }}
+        run: |
+          python - <<'PY'
+          import base64, os
+          raw = base64.b64decode(
+              os.environ["POINT_INCOME_CATALOG_BASE64"],
+              validate=True,
+          )
+          if len(raw) > 250000:
+              raise SystemExit("payload too large")
+          open("/tmp/point-income-device.json", "wb").write(raw)
+          PY
+
+      - name: Validate fail-closed catalog
+        run: >-
+          python scripts/import-point-income-device-catalog.py
+          /tmp/point-income-device.json
+          /tmp/point-income-device-accepted.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: point-income-device-catalog
+          path: /tmp/point-income-device-accepted.json
+          retention-days: 3
