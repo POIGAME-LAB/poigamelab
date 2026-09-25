@@ -25,7 +25,7 @@
 <main class="app">
   <div class="top">
     <div class="brand"><div class="orb">P</div><div><h1>POIGAME LAB COMMAND CENTER</h1><div class="sub">GA4 × Search Console を1画面で</div></div></div>
-    <div class="actions"><button class="btn" id="diag">接続確認</button><button class="btn primary" id="refresh">↻ 最新に更新</button></div>
+    <div class="actions"><button class="btn" id="diag">接続確認</button><button class="btn" id="shareChapi">📤 ちゃぴに渡す</button><button class="btn primary" id="refresh">↻ 最新に更新</button></div>
   </div>
   <div id="errors"></div><div class="status" id="status"></div>
   <section class="hero">
@@ -53,7 +53,7 @@
 </main>
 <script>
 (function(){
-  var range='7d', nf=new Intl.NumberFormat('ja-JP');
+  var range='7d', nf=new Intl.NumberFormat('ja-JP'), latestDashboard=null;
   function el(id){return document.getElementById(id);}
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function fmt(v){return nf.format(Math.round(Number(v)||0));}
@@ -62,7 +62,7 @@
   function busy(on){el('loading').hidden=!on;el('content').hidden=on;el('refresh').disabled=on;el('diag').disabled=on;}
   function load(force){busy(true);el('errors').innerHTML='';google.script.run.withSuccessHandler(render).withFailureHandler(fatal).getDashboard(range,!!force);}
   function fatal(e){busy(false);el('content').hidden=true;el('errors').innerHTML='<div class="error">'+esc(e&&e.message?e.message:e)+'</div>';}
-  function render(d){busy(false);el('generated').textContent=(d.days===28?'過去28日':'過去7日')+' ｜ 更新 '+d.generatedAt;el('errors').innerHTML=(d.errors||[]).map(function(x){return'<div class="error"><b>'+esc(x.source)+'</b>：'+esc(x.message)+'</div>';}).join('')+(d.warnings||[]).map(function(x){return'<div class="opp" style="margin-bottom:10px;background:#fffaf0;border-color:#f3df9a"><span class="tag">'+esc(x.source)+'</span><strong>一部機能のみ</strong><p>'+esc(x.message)+'</p></div>';}).join('');status(d);metrics(d);analysis(d);opps(d);cta(d);queries(d);pages(d);}
+  function render(d){latestDashboard=d;busy(false);el('generated').textContent=(d.days===28?'過去28日':'過去7日')+' ｜ 更新 '+d.generatedAt;el('errors').innerHTML=(d.errors||[]).map(function(x){return'<div class="error"><b>'+esc(x.source)+'</b>：'+esc(x.message)+'</div>';}).join('')+(d.warnings||[]).map(function(x){return'<div class="opp" style="margin-bottom:10px;background:#fffaf0;border-color:#f3df9a"><span class="tag">'+esc(x.source)+'</span><strong>一部機能のみ</strong><p>'+esc(x.message)+'</p></div>';}).join('');status(d);metrics(d);analysis(d);opps(d);cta(d);queries(d);pages(d);}
   function status(d){var a=[];a.push('<span class="pill '+(d.ga4?'good':'bad')+'">GA4 '+(d.ga4?'接続OK':'失敗')+'</span>');if(d.gsc){var label=d.gsc.source==='search-console-api'?'Console API 接続OK':d.gsc.source==='ga4-search-console-link'?'検索データ GA4経由':'検索データ 接続OK';a.push('<span class="pill good">'+label+'</span>');}else{a.push('<span class="pill bad">検索データ 失敗</span>');}if(d.gsc&&d.gsc.latestDate)a.push('<span class="pill">Console最新 '+esc(d.gsc.latestDate)+'</span>');if(d.ga4&&d.ga4.ctaError)a.push('<span class="pill bad">CTA反映待ち/エラー</span>');el('status').innerHTML=a.join('');}
   function metrics(d){var gc=d.ga4&&d.ga4.current||{},gp=d.ga4&&d.ga4.previous||{},sc=d.gsc&&d.gsc.current||{},sp=d.gsc&&d.gsc.previous||{};var defs=[['👥 Users',gc.activeUsers,gp.activeUsers,fmt],['👀 PV',gc.screenPageViews,gp.screenPageViews,fmt],['🧭 Sessions',gc.sessions,gp.sessions,fmt],['🔎 検索Click',sc.clicks,sp.clicks,fmt],['📢 表示回数',sc.impressions,sp.impressions,fmt],['🎯 検索CTR',sc.ctr,sp.ctr,pct]];el('metrics').innerHTML=defs.map(function(x){if(x[1]===null||x[1]===undefined){return'<div class="metric"><div class="k">'+x[0]+'</div><div class="v">未取得</div><div class="d">接続後に表示</div></div>';}var z=delta(x[1],x[2]);return'<div class="metric"><div class="k">'+x[0]+'</div><div class="v">'+x[3](x[1])+'</div><div class="d '+z.cls+'">'+z.text+'</div></div>';}).join('');}
   function analysis(d){var s=d.combined&&d.combined.summary||{},priority=s.priority||[],protect=s.protect||[];el('analysisHeadline').textContent=s.headline||'データ確認中';el('analysisLines').innerHTML=(s.lines||[]).map(function(x){return'<div class="analysis-line">'+esc(x)+'</div>';}).join('')||'<div class="analysis-line">まだ判定に十分なデータがありません。</div>';el('analysisPriority').innerHTML=priority.length?priority.map(function(x){return'<div class="analysis-item"><b>'+esc(x.title)+'｜'+esc(x.label)+'</b><small>'+esc(x.detail)+'</small></div>';}).join(''):'<div class="empty">強い改善候補なし</div>';el('analysisProtect').innerHTML=protect.length?protect.map(function(x){return'<div class="analysis-item"><b>'+esc(x.path)+'</b><small>'+esc(x.detail)+'</small></div>';}).join(''):'<div class="empty">保護候補はまだ判定待ち</div>';}
@@ -70,7 +70,67 @@
   function cta(d){var g=d.ga4||{},r=g.cta||[];if(!r.length){el('cta').innerHTML='<div class="empty">'+(g.ctaError?'cta_locationの反映待ち、またはまだデータがありません。':'まだinvite_clickデータがありません。')+'</div>';return;}var m=Math.max.apply(null,r.map(function(x){return x.clicks;}));el('cta').innerHTML=r.slice(0,12).map(function(x){return'<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:800"><span>'+esc(x.location)+'</span><span>'+fmt(x.clicks)+'</span></div><div class="bar" style="margin-top:5px"><i style="width:'+Math.max(3,x.clicks/m*100)+'%"></i></div></div>';}).join('');}
   function queries(d){if(d.gsc&&d.gsc.source==='ga4-search-console-link'){el('queries').innerHTML='<tr><td colspan="5" style="white-space:normal;text-align:left">検索語一覧はSearch Console API接続時のみ取得できます。現在はGA4連携経由で検索Click・表示・CTR・平均順位と、ページ別検索データを表示中です。</td></tr>';return;}var r=d.gsc&&d.gsc.queries||[];el('queries').innerHTML=r.slice(0,50).map(function(x){return'<tr><td title="'+esc(x.query)+'">'+esc(x.query)+'</td><td>'+fmt(x.clicks)+'</td><td>'+fmt(x.impressions)+'</td><td>'+pct(x.ctr)+'</td><td>'+Number(x.position||0).toFixed(1)+'</td></tr>';}).join('')||'<tr><td colspan="5">未取得</td></tr>';}
   function pages(d){var r=d.combined&&d.combined.pages||[];el('pages').innerHTML=r.map(function(x){return'<tr><td title="'+esc(x.path)+'">'+esc(x.path)+'</td><td>'+fmt(x.searchClicks)+'</td><td>'+fmt(x.impressions)+'</td><td>'+(x.position===null||x.position===undefined?'未取得':Number(x.position).toFixed(1))+'</td><td>'+fmt(x.views)+'</td><td>'+fmt(x.users)+'</td><td>'+fmt(x.ctaClicks)+'</td></tr>';}).join('')||'<tr><td colspan="7">未取得</td></tr>';}
+  function snapshotText(d){
+    if(!d)return 'POIGAME LAB COMMAND CENTERのデータがまだ読み込まれていません。';
+    var ga=d.ga4&&d.ga4.current||{}, sc=d.gsc&&d.gsc.current||{}, sum=d.combined&&d.combined.summary||{};
+    var priority=sum.priority||[], protect=sum.protect||[], cta=d.ga4&&d.ga4.cta||[];
+    var lines=[
+      'POIGAME LAB 最新分析スナップショット',
+      '期間: 過去'+d.days+'日',
+      '更新: '+d.generatedAt,
+      '',
+      '【主要指標】',
+      'Users: '+fmt(ga.activeUsers),
+      'PV: '+fmt(ga.screenPageViews),
+      'Sessions: '+fmt(ga.sessions),
+      '検索Click: '+fmt(sc.clicks),
+      '表示回数: '+fmt(sc.impressions),
+      '検索CTR: '+(sc.ctr===null||sc.ctr===undefined?'未取得':pct(sc.ctr)),
+      '平均順位: '+(sc.position===null||sc.position===undefined?'未取得':Number(sc.position).toFixed(1)),
+      '',
+      '【ちゃぴ分析】'
+    ];
+    (sum.lines||[]).forEach(function(x){lines.push('・'+x);});
+    lines.push('', '【改善する場所】');
+    if(priority.length){
+      priority.forEach(function(x){lines.push('・'+x.title+'｜'+x.label+'｜'+x.detail);});
+    }else lines.push('・強い改善候補なし');
+    lines.push('', '【守る場所】');
+    if(protect.length){
+      protect.forEach(function(x){lines.push('・'+x.path+'｜'+x.detail);});
+    }else lines.push('・保護候補はまだ判定待ち');
+    lines.push('', '【CTAクリック場所】');
+    if(cta.length){
+      cta.slice(0,12).forEach(function(x){lines.push('・'+x.location+': '+fmt(x.clicks));});
+    }else lines.push('・CTAクリックデータなし');
+    lines.push('', 'このスナップショットをもとに、POIGAME LABで今やるべき改善を優先順位つきで分析して。SEOが好調なページは壊さず、CTAだけ改善すべき場合はその範囲を分けて。');
+    return lines.join('\n');
+  }
+
+  async function shareToChapi(){
+    var btn=el('shareChapi');
+    var text=snapshotText(latestDashboard);
+    btn.disabled=true;
+    var old=btn.textContent;
+    try{
+      if(navigator.share){
+        await navigator.share({title:'POIGAME LAB 最新分析',text:text});
+      }else if(navigator.clipboard&&navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        alert('ちゃぴ用スナップショットをコピーしました。ChatGPTに貼り付けて送ってね🥰');
+      }else{
+        var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+        alert('ちゃぴ用スナップショットをコピーしました。ChatGPTに貼り付けて送ってね🥰');
+      }
+    }catch(e){
+      if(e&&e.name!=='AbortError') alert('共有できませんでした。もう一度試してください。');
+    }finally{
+      btn.disabled=false;btn.textContent=old;
+    }
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll('[data-r]'),function(b){b.addEventListener('click',function(){Array.prototype.forEach.call(document.querySelectorAll('[data-r]'),function(x){x.classList.remove('active');});b.classList.add('active');range=b.getAttribute('data-r');load(false);});});
+  el('shareChapi').addEventListener('click',shareToChapi);
   el('refresh').addEventListener('click',function(){load(true);});
   el('diag').addEventListener('click',function(){el('diag').disabled=true;google.script.run.withSuccessHandler(function(r){el('diag').disabled=false;alert(r.map(function(x){return(x.ok?'✅ ':'❌ ')+x.source+': '+x.detail;}).join('\n'));}).withFailureHandler(function(e){el('diag').disabled=false;alert(e&&e.message?e.message:e);}).diagnose();});
   load(false);
