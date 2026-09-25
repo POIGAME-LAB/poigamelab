@@ -735,3 +735,41 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
     assert daily.explicit_yen(evidence) == 210
     evidence["verifiedCurrentRewardYen"] = 209
     assert daily.explicit_yen(evidence) is None
+
+
+def test_gmo_point_reviewed_reward_uses_one_to_one_yen_contract():
+    source = {
+        "id": "gmo_point",
+        "search_domains": ["colleee.net"],
+        "direct_detail_url_hints": ["/programs/"],
+        "scheduled_fetch_enabled": False,
+        "coverage_detail_review_enabled": True,
+        "coverage_detail_review_mode": "candidate_only",
+    }
+    assert daily.direct.source_participates_in_new_game_ranking(source) is True
+
+    registry = {
+        "gmo_point": {
+            "status": "verified_face_value",
+            "yenPerPoint": 1,
+        }
+    }
+    item = {
+        "source": "gmo_point",
+        "titleHint": "スーパーラッキーカジノ",
+        "listingRewardText": "5,820 P",
+    }
+    assert daily.listing_reward_upper_bound_yen(item, registry=registry) == 5820
+
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "gmo-point-detail-review-v1",
+        "displayedRewardPoints": 5820,
+        "verifiedCurrentRewardYen": 5820,
+        "rewardUnit": "GMO-point",
+        "sourcePointRate": "1P=1JPY",
+        "downstreamTermsRequired": False,
+    }
+    assert daily.explicit_yen(evidence) == 5820
+    evidence["verifiedCurrentRewardYen"] = 5819
+    assert daily.explicit_yen(evidence) is None
