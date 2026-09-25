@@ -573,6 +573,8 @@ def test_nightly_rate_policy_is_fail_closed_for_unknown_sources():
     assert daily.point_rate_policy("kurashiru_reward")["yenPerPoint"] == 0.01
     assert daily.point_rate_policy("powl")["yenPerPoint"] == 0.1
     assert daily.point_rate_policy("powl")["status"] == "verified"
+    assert daily.point_rate_policy("point_income")["yenPerPoint"] == 0.1
+    assert daily.point_rate_policy("point_income")["status"] == "verified_face_value"
     assert daily.point_rate_policy("not-a-site")["status"] == "unsupported"
 
 
