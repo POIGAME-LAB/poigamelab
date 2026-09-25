@@ -700,7 +700,7 @@ def test_trima_listing_upper_bound_uses_face_value_but_detail_uses_displayed_yen
 
 
 def test_nifty_live_diagnostic_20260925():
-    """Temporary live diagnostic for Nifty Point Club app/game offer surfaces."""
+    """Temporary focused live diagnostic for Nifty app/game listing/detail routes."""
     import json as _json
     import re as _re
     from html import unescape as _unescape
@@ -714,10 +714,10 @@ def test_nifty_live_diagnostic_20260925():
         "Mobile/15E148 Safari/604.1"
     )
 
-    def fetch(url, accept="text/html,application/xhtml+xml"):
+    def fetch(url):
         req = _Request(url, headers={
             "User-Agent": ua,
-            "Accept": accept,
+            "Accept": "text/html,application/xhtml+xml",
             "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
         })
         try:
@@ -732,90 +732,88 @@ def test_nifty_live_diagnostic_20260925():
                 }
         except _HTTPError as exc:
             return {
-                "ok": False,
-                "status": exc.code,
-                "error": "HTTPError",
+                "ok": False, "status": exc.code, "error": "HTTPError",
                 "text": exc.read(500_000).decode("utf-8", "replace"),
             }
         except Exception as exc:
-            return {
-                "ok": False,
-                "error": type(exc).__name__ + ":" + str(exc)[:180],
-                "text": "",
-            }
+            return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
 
-    urls = [
-        "https://api.point.nifty.com/",
-        "https://api.point.nifty.com/service/",
+    def visible(raw):
+        x = _re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw)
+        x = _re.sub(r"(?s)<[^>]+>", " ", x)
+        return _re.sub(r"\\s+", " ", _unescape(x)).strip()
+
+    listing_urls = [
+        "https://api.point.nifty.com/service/alist/spapp",
         "https://api.point.nifty.com/service/app/",
-        "https://api.point.nifty.com/service/appli/",
-        "https://api.point.nifty.com/app/",
-        "https://api.point.nifty.com/apps/",
-        "https://api.point.nifty.com/robots.txt",
-        "https://api.point.nifty.com/sitemap.xml",
+        "https://api.point.nifty.com/service/app/2",
+        "https://api.point.nifty.com/service/app/3",
+        "https://api.point.nifty.com/service/game/",
+        "https://api.point.nifty.com/service/alist/game",
     ]
-    pages = []
-    scripts = []
-    for url in urls:
+    listings = []
+    detail_urls = []
+    for url in listing_urls:
         r = fetch(url)
         raw = r.get("text", "")
-        hrefs = sorted(set(_re.findall(r'href=["\\\']([^"\\\']+)', raw)))
-        srcs = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
-        scripts.extend(_urljoin(r.get("final") or url, x) for x in srcs)
-        interesting_links = []
-        for href in hrefs:
-            absolute = _urljoin(r.get("final") or url, href)
-            low = absolute.lower()
-            if any(k in low for k in (
-                "app", "appli", "game", "offer", "reward", "campaign",
-                "service/detail", "skyflag", "smaad", "mychips"
-            )):
-                interesting_links.append(absolute)
-        visible = _re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw)
-        visible = _re.sub(r"(?s)<[^>]+>", " ", visible)
-        visible = _re.sub(r"\\s+", " ", _unescape(visible)).strip()
-        pages.append({
+        page_detail = []
+        for m in _re.finditer(r'href=["\\\']([^"\\\']*?/service/detail/[^"\\\']+)["\\\']', raw):
+            absolute = _urljoin(r.get("final") or url, _unescape(m.group(1)))
+            around = raw[max(0, m.start()-1100):m.end()+1100]
+            context = visible(around)
+            page_detail.append({"url": absolute, "context": context[:1000]})
+            detail_urls.append(absolute)
+        paging = sorted(set(
+            _urljoin(r.get("final") or url, _unescape(x))
+            for x in _re.findall(r'href=["\\\']([^"\\\']+)["\\\']', raw)
+            if "/service/app" in x or "/service/alist/spapp" in x
+        ))
+        listings.append({
             "url": url,
             "final": r.get("final"),
             "ok": r.get("ok"),
             "status": r.get("status"),
-            "contentType": r.get("contentType"),
             "bytes": len(raw.encode("utf-8")),
-            "interestingLinks": interesting_links[:120],
-            "keywords": {k: (k in visible) for k in [
-                "アプリで貯める", "アプリ", "ゲーム", "SKYFLAG", "SmaAD", "案件"
-            ]},
-            "excerpt": visible[:2200],
+            "detailCount": len({x["url"] for x in page_detail}),
+            "detailSample": page_detail[:12],
+            "paging": paging[:30],
+            "excerpt": visible(raw)[:2200],
         })
 
-    bundle_contexts = []
-    seen = set()
-    for su in scripts:
-        if su in seen or len(bundle_contexts) >= 100:
-            continue
-        seen.add(su)
-        if not any(host in su for host in ("point.nifty.com", "lifemedia.jp")):
-            continue
-        r = fetch(su, "*/*")
-        body = r.get("text", "")
-        for needle in (
-            "アプリで貯める", "skyflag", "smaad", "offerwall", "/api/",
-            "service/detail", "application", "app/", "campaign"
-        ):
-            start = 0
-            while len(bundle_contexts) < 100:
-                pos = body.lower().find(needle.lower(), start)
-                if pos < 0:
+    unique_details = list(dict.fromkeys(detail_urls))
+    details = []
+    for url in unique_details[:16]:
+        r = fetch(url)
+        raw = r.get("text", "")
+        text = visible(raw)
+        title_match = _re.search(r"(?is)<title[^>]*>(.*?)</title>", raw)
+        point_contexts = []
+        for pat in [
+            r"[0-9][0-9,]*\\s*(?:ポイント|pt|P)(?:獲得|還元)?",
+            r"(?:iOS|Android|アプリインストール|新規インストール|レベル|ステージ|ゲーム)",
+        ]:
+            for m in _re.finditer(pat, text, _re.I):
+                point_contexts.append(text[max(0,m.start()-180):m.end()+420])
+                if len(point_contexts) >= 12:
                     break
-                bundle_contexts.append({
-                    "script": su,
-                    "needle": needle,
-                    "context": body[max(0, pos-650):pos+1600],
-                })
-                start = pos + len(needle)
+            if len(point_contexts) >= 12:
+                break
+        details.append({
+            "url": url,
+            "ok": r.get("ok"),
+            "status": r.get("status"),
+            "bytes": len(raw.encode("utf-8")),
+            "title": visible(title_match.group(1)) if title_match else "",
+            "contexts": point_contexts[:12],
+            "hasIOS": bool(_re.search(r"\\biOS\\b|iPhone", text, _re.I)),
+            "hasAndroid": bool(_re.search(r"Android", text, _re.I)),
+            "hasInstall": "インストール" in text,
+            "hasLevel": "レベル" in text,
+            "excerpt": text[:1800],
+        })
 
-    assert False, "NIFTY_LIVE_DIAGNOSTIC=" + _json.dumps({
-        "pages": pages,
-        "scriptCount": len(set(scripts)),
-        "bundleContexts": bundle_contexts,
+    assert False, "NIFTY_LIVE_DIAGNOSTIC_V2=" + _json.dumps({
+        "listings": listings,
+        "uniqueDetailCount": len(unique_details),
+        "details": details,
     }, ensure_ascii=False, sort_keys=True)
