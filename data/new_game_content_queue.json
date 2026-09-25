@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-24T20:46:33+00:00",
+  "checkedAt": "2026-09-25T20:02:47+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -12,9 +12,9 @@
     {
       "rank": 1,
       "game": "天地英雄伝",
-      "maxObservedRewardYen": 451871,
+      "maxObservedRewardYen": 419677,
       "confirmedSourceCount": 2,
-      "listingSourceCount": 4,
+      "listingSourceCount": 3,
       "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
         {
@@ -50,25 +50,18 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/35087",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 451871
+          "rewardYen": 419677
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/35086",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 451871
+          "rewardYen": 419677
         },
         {
           "source": "kurashiru_reward",
           "url": "https://www.rewards.kurashiru.com/ads/18815",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "powl",
-          "url": "https://web.powl.jp/reward/26400",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -94,7 +87,7 @@
     {
       "rank": 2,
       "game": "ロックンキャッシュカジノ-スロットゲーム",
-      "maxObservedRewardYen": 158224,
+      "maxObservedRewardYen": 147395,
       "confirmedSourceCount": 1,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 1,
@@ -118,14 +111,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/33937",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 152754
+          "rewardYen": 142315
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/33934",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 158224
+          "rewardYen": 147395
         },
         {
           "source": "kurashiru_reward",
@@ -162,7 +155,7 @@
     {
       "rank": 3,
       "game": "Slot Mate（スロットメイト）- ベガススロットカジノ",
-      "maxObservedRewardYen": 112186,
+      "maxObservedRewardYen": 104428,
       "confirmedSourceCount": 1,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 1,
@@ -179,14 +172,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34282",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 112186
+          "rewardYen": 104428
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/31607",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 46012
+          "rewardYen": 43106
         },
         {
           "source": "kurashiru_reward",
@@ -216,10 +209,10 @@
     {
       "rank": 4,
       "game": "マフィア・シティ-極道風雲",
-      "maxObservedRewardYen": 98704,
-      "confirmedSourceCount": 3,
-      "listingSourceCount": 4,
-      "verifiedRewardSourceCount": 3,
+      "maxObservedRewardYen": 91828,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
         {
           "source": "warau",
@@ -254,14 +247,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/28487",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 98704
+          "rewardYen": 91828
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/27809",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 46434
+          "rewardYen": 43346
         },
         {
           "source": "kurashiru_reward",
@@ -269,13 +262,6 @@
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
-        },
-        {
-          "source": "powl",
-          "url": "https://web.powl.jp/reward/19311",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 47170
         }
       ],
       "researchQueries": {
@@ -298,7 +284,7 @@
     {
       "rank": 5,
       "game": "Wild Survival",
-      "maxObservedRewardYen": 93918,
+      "maxObservedRewardYen": 87395,
       "confirmedSourceCount": 2,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 2,
@@ -329,7 +315,7 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34646",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 93918
+          "rewardYen": 87395
         },
         {
           "source": "kurashiru_reward",

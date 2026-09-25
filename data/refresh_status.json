@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-24T20:46:33+00:00",
-  "finishedAt": "2026-09-24T20:46:33+00:00",
+  "startedAt": "2026-09-25T20:02:47+00:00",
+  "finishedAt": "2026-09-25T20:02:47+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -85,7 +85,7 @@
     {
       "game": "パズル＆サバイバル",
       "returncode": 0,
-      "publishableCount": 6,
+      "publishableCount": 5,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 3,
@@ -105,12 +105,12 @@
     {
       "game": "放置少女",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
