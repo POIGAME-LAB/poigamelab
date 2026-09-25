@@ -735,3 +735,123 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
     assert daily.explicit_yen(evidence) == 210
     evidence["verifiedCurrentRewardYen"] = 209
     assert daily.explicit_yen(evidence) is None
+
+
+def test_gmo_point_live_diagnostic_20260925():
+    """Temporary live diagnostic for GMO Poikatsu public app/game offer surfaces."""
+    import json as _json
+    import re as _re
+    from html import unescape as _unescape
+    from urllib.error import HTTPError as _HTTPError
+    from urllib.parse import urljoin as _urljoin
+    from urllib.request import Request as _Request, urlopen as _urlopen
+
+    ua = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
+        "Mobile/15E148 Safari/604.1"
+    )
+
+    def fetch(url, accept="text/html,application/xhtml+xml"):
+        req = _Request(url, headers={
+            "User-Agent": ua,
+            "Accept": accept,
+            "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
+        })
+        try:
+            with _urlopen(req, timeout=25) as r:
+                data = r.read(5_000_000)
+                return {
+                    "ok": True,
+                    "status": getattr(r, "status", None),
+                    "final": r.geturl(),
+                    "contentType": r.headers.get("Content-Type"),
+                    "text": data.decode("utf-8", "replace"),
+                }
+        except _HTTPError as exc:
+            return {
+                "ok": False, "status": exc.code, "error": "HTTPError",
+                "text": exc.read(500_000).decode("utf-8", "replace"),
+            }
+        except Exception as exc:
+            return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
+
+    urls = [
+        "https://colleee.net/",
+        "https://static.colleee.net/",
+        "https://colleee.net/robots.txt",
+        "https://colleee.net/sitemap.xml",
+        "https://colleee.net/programs",
+        "https://colleee.net/services",
+        "https://colleee.net/search",
+    ]
+    pages = []
+    scripts = []
+    for url in urls:
+        r = fetch(url)
+        raw = r.get("text", "")
+        hrefs = sorted(set(_re.findall(r'href=["\\\']([^"\\\']+)', raw)))
+        srcs = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
+        scripts.extend(_urljoin(r.get("final") or url, x) for x in srcs)
+        interesting = []
+        for href in hrefs:
+            absolute = _urljoin(r.get("final") or url, _unescape(href))
+            low = absolute.lower()
+            if any(k in low for k in (
+                "app", "game", "program", "service", "search", "category",
+                "campaign", "offer", "entry", "point"
+            )):
+                interesting.append(absolute)
+        text = _re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw)
+        text = _re.sub(r"(?s)<[^>]+>", " ", text)
+        text = _re.sub(r"\\s+", " ", _unescape(text)).strip()
+        forms = []
+        for m in _re.finditer(r"(?is)<form\\b([^>]*)>(.*?)</form>", raw):
+            attrs = m.group(1)
+            action = (_re.search(r'action=["\\\']([^"\\\']+)', attrs) or [None, ""])[1]
+            method = (_re.search(r'method=["\\\']([^"\\\']+)', attrs) or [None, ""])[1]
+            inputs = _re.findall(r'name=["\\\']([^"\\\']+)', m.group(2))
+            forms.append({"action": action, "method": method, "inputs": inputs[:30]})
+        pages.append({
+            "url": url, "final": r.get("final"), "ok": r.get("ok"),
+            "status": r.get("status"), "contentType": r.get("contentType"),
+            "bytes": len(raw.encode("utf-8")),
+            "interestingLinks": interesting[:180],
+            "forms": forms[:20],
+            "keywords": {k: (k in text) for k in [
+                "ゲームアプリ", "アプリDL", "無料アプリ", "アプリ", "ゲーム", "ポイントを獲得"
+            ]},
+            "excerpt": text[:2600],
+        })
+
+    contexts = []
+    seen = set()
+    for su in scripts:
+        if su in seen or len(contexts) >= 120:
+            continue
+        seen.add(su)
+        if not any(host in su for host in ("colleee.net", "static.colleee.net")):
+            continue
+        r = fetch(su, "*/*")
+        body = r.get("text", "")
+        for needle in (
+            "add_program", "/program", "/service", "/search", "category",
+            "game", "application", "app", "offer", "campaign", "/api/"
+        ):
+            start = 0
+            while len(contexts) < 120:
+                pos = body.lower().find(needle.lower(), start)
+                if pos < 0:
+                    break
+                contexts.append({
+                    "script": su,
+                    "needle": needle,
+                    "context": body[max(0,pos-650):pos+1600],
+                })
+                start = pos + len(needle)
+
+    assert False, "GMO_POINT_LIVE_DIAGNOSTIC=" + _json.dumps({
+        "pages": pages,
+        "scriptCount": len(set(scripts)),
+        "bundleContexts": contexts,
+    }, ensure_ascii=False, sort_keys=True)
