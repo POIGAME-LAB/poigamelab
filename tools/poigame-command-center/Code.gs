@@ -206,10 +206,10 @@ function combine_(ga,gsc){
       opp.push({type:'page_content',score:page.impressions/Math.max(1,page.position),title:'SEO強化候補',label:k,detail:Math.round(page.impressions)+'表示 / 順位 '+page.position.toFixed(1)+'。内容追記・内部リンク改善候補'});
     }
     if(page.searchClicks>=3&&page.users>=5&&page.ctaClicks===0){
-      opp.push({type:'cta',score:page.searchClicks+page.users/5,title:'CTA改善候補',label:k,detail:'検索 '+Math.round(page.searchClicks)+'クリック / GA4 '+Math.round(page.users)+'ユーザー / CTA 0'});
+      opp.push({type:'cta',score:page.searchClicks+page.users/5,title:'CTAだけ改善',label:k,detail:'検索 '+Math.round(page.searchClicks)+'クリック / GA4 '+Math.round(page.users)+'ユーザー / CTA 0。SEOタイトル・本文構成は大きく変えず、CTA位置・文言・導線を改善'});
     }
     if(page.position!==null&&page.position<=10&&page.ctr!==null&&page.ctr>=0.05&&page.searchClicks>=3){
-      stable.push({score:page.searchClicks+(page.ctaClicks>0?3:0),path:k,detail:'順位 '+page.position.toFixed(1)+' / CTR '+pct_(page.ctr)+' / 検索 '+Math.round(page.searchClicks)+'クリック'+(page.ctaClicks>0?' / CTA '+Math.round(page.ctaClicks):'')});
+      stable.push({score:page.searchClicks+(page.ctaClicks>0?3:0),path:k,detail:'SEO・本文は維持。順位 '+page.position.toFixed(1)+' / CTR '+pct_(page.ctr)+' / 検索 '+Math.round(page.searchClicks)+'クリック'+(page.ctaClicks>0?' / CTA '+Math.round(page.ctaClicks):'')});
     }
   });
 
@@ -239,7 +239,7 @@ function buildSummary_(ga,gsc,opp,stable){
   }
 
   if(pvDelta!==null&&pvDelta<=-0.2) lines.push('PVは前期比で減少。検索だけでなく流入後の内部回遊も確認候補。');
-  if(opp.some(function(x){return x.type==='cta';})) lines.push('検索流入があるのにCTAクリック0のページあり。CTA位置・文言・導線を優先確認。');
+  if(opp.some(function(x){return x.type==='cta';})) lines.push('検索流入があるのにCTAクリック0のページあり。検索順位やCTRが良いページはSEO面を維持し、CTA位置・文言・導線だけを優先改善。');
   if(stable.length) lines.push('成績が良いページもあります。上位ページは不用意にタイトルや構成を大きく変えない。');
 
   return{
