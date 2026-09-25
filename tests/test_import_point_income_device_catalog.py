@@ -183,7 +183,12 @@ def test_dispatch_request_targets_only_expected_workflow():
     seen = {}
 
     class Response:
-        status = 204
+        status = 200
+        def read(self):
+            return json.dumps({
+                "workflow_run_id": 123456,
+                "html_url": "https://github.com/POIGAME-LAB/poigamelab/actions/runs/123456",
+            }).encode("utf-8")
         def __enter__(self):
             return self
         def __exit__(self, *args):
@@ -196,7 +201,13 @@ def test_dispatch_request_targets_only_expected_workflow():
         seen["body"] = json.loads(request.data.decode("utf-8"))
         return Response()
 
-    assert capture.dispatch_to_github("abc123", "github_pat_test_token_1234567890", open_url=fake_open)
+    result = capture.dispatch_to_github(
+        "abc123",
+        "github_pat_test_token_1234567890",
+        open_url=fake_open,
+    )
+    assert result["status"] == 200
+    assert result["workflowRunId"] == 123456
     assert seen["url"] == (
         "https://api.github.com/repos/POIGAME-LAB/poigamelab/"
         "actions/workflows/import-point-income-device-catalog.yml/dispatches"
