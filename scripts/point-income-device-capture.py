@@ -318,13 +318,14 @@ def dispatch_to_github(encoded, token, *, open_url=urlopen):
             "Authorization": "Bearer " + token,
             "Accept": "application/vnd.github+json",
             "Content-Type": "application/json",
-            "X-GitHub-Api-Version": "2022-11-28",
+            "X-GitHub-Api-Version": "2026-03-10",
             "User-Agent": "POIGAMELAB-PointIncome-iPhone/1.0",
         },
     )
     try:
         with open_url(request, timeout=30) as response:
-            status = getattr(response, "status", 204)
+            status = getattr(response, "status", 200)
+            body = response.read() if hasattr(response, "read") else b""
     except HTTPError as exc:
         if exc.code in {401, 403, 404}:
             raise SystemExit(
@@ -335,9 +336,21 @@ def dispatch_to_github(encoded, token, *, open_url=urlopen):
     except URLError as exc:
         raise SystemExit("GitHubへ接続できませんでした: " + str(exc.reason))
 
-    if status != 204:
+    if status not in {200, 204}:
         raise SystemExit(f"GitHub送信が完了しませんでした（HTTP {status}）。")
-    return True
+
+    result = {"status": status}
+    if status == 200 and body:
+        try:
+            response_data = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            response_data = {}
+        if isinstance(response_data, dict):
+            if response_data.get("workflow_run_id") is not None:
+                result["workflowRunId"] = response_data.get("workflow_run_id")
+            if response_data.get("html_url"):
+                result["workflowUrl"] = response_data.get("html_url")
+    return result
 
 
 def manual_fallback(encoded):
@@ -377,12 +390,14 @@ def main():
         return
 
     try:
-        dispatch_to_github(encoded, token)
+        dispatch_result = dispatch_to_github(encoded, token)
     except SystemExit:
         manual_fallback(encoded)
         raise
 
     print("\n送信完了 ✅")
+    if dispatch_result.get("workflowRunId"):
+        print("GitHub Actions run:", dispatch_result["workflowRunId"])
     print("POIGAME LAB側で検証・既存ゲーム照合・未掲載候補分離を自動実行します。")
     print("次回からはこのスクリプトの▶︎を押すだけです。")
 
