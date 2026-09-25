@@ -619,11 +619,16 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
         'https://www.rewards.kurashiru.com/categories/3'
     ]
     assert by_id['trima']['scheduled_fetch_enabled'] is False
-    for source_id in ('point_income', 'nifty_point'):
-        assert by_id[source_id]['discovery_only'] is True
-        assert by_id[source_id]['scheduled_fetch_enabled'] is False
-        assert by_id[source_id]['direct_listing_limit'] == 0
-        assert by_id[source_id]['direct_detail_limit'] == 0
+    assert by_id['point_income']['discovery_only'] is True
+    assert by_id['point_income']['scheduled_fetch_enabled'] is False
+    assert by_id['point_income']['direct_listing_limit'] == 0
+    assert by_id['point_income']['direct_detail_limit'] == 0
+    assert by_id['nifty_point']['discovery_only'] is True
+    assert by_id['nifty_point']['scheduled_fetch_enabled'] is False
+    assert by_id['nifty_point']['coverage_first_party_listing_enabled'] is True
+    assert by_id['nifty_point']['coverage_detail_review_mode'] == 'candidate_only'
+    assert by_id['nifty_point']['direct_listing_limit'] == 1
+    assert by_id['nifty_point']['direct_detail_limit'] == 0
     assert by_id['amefuri']['discovery_only'] is True
     assert by_id['amefuri']['scheduled_fetch_enabled'] is False
     assert by_id['amefuri']['coverage_first_party_listing_enabled'] is True
@@ -650,7 +655,7 @@ def test_repository_coverage_discovery_v2_is_candidate_only_and_registers_missin
     assert by_id['amefuri']['start_url'] == 'https://www.amefri.net/'
     assert by_id['point_town']['start_url'] == 'https://www.pointtown.com/'
     assert by_id['ec_navi']['start_url'] == 'https://ecnavi.jp/'
-    assert by_id['nifty_point']['start_url'] == 'https://api.point.nifty.com/'
+    assert by_id['nifty_point']['start_url'] == 'https://api.point.nifty.com/service/alist/spapp'
     for source_id in ('gmo_point', 'powl'):
         assert by_id[source_id]['discovery_only'] is True
         assert by_id[source_id]['scheduled_fetch_enabled'] is False
@@ -4541,3 +4546,193 @@ def test_repository_trima_uses_full_paginated_candidate_only_catalog():
     assert source["new_game_discovery_min_detail_identities_first_page"] >= 20
     assert source["direct_detail_url_hints"] == ["/ad/"]
     assert direct.source_participates_in_new_game_ranking(source) is True
+
+
+
+NIFTY_LISTING = "https://api.point.nifty.com/service/alist/spapp"
+NIFTY_DETAIL = "https://api.point.nifty.com/service/detail/000127712000"
+
+
+def nifty_source_fixture():
+    return {
+        "id": "nifty_point",
+        "name": "ニフティポイントクラブ",
+        "search_domains": ["api.point.nifty.com", "lifemedia.jp"],
+        "direct_detail_url_hints": ["/service/detail/"],
+        "full_catalog_discovery_enabled": True,
+        "new_game_discovery_scope": "current_first_party_smartphone_app_listing",
+    }
+
+
+def nifty_listing_fixture():
+    return """
+    <html><body>
+      <ul class="alist-item stack" id="alist_item">
+        <li class="alist-list stack__item">
+          <a href="/service/detail/000127712000" class="stack__item__inner mod-link">
+            <dl class="alist-detail">
+              <dt class="ttl fsize-mplus f-bold">ギシギシ：マッチパズル</dt>
+              <dd>
+                <div class="detail item__unit">
+                  <p class="item__unit"><span class="f-point"><span>210</span>P</span></p>
+                  <p class="item__unit mod-sub">木のブロックを組み合わせてラインを完成させるマッチパズルゲーム。</p>
+                </div>
+              </dd>
+            </dl>
+          </a>
+        </li>
+        <li class="alist-list stack__item">
+          <a href="/service/detail/000121342000" class="stack__item__inner mod-link">
+            <dl class="alist-detail">
+              <dt class="ttl fsize-mplus f-bold">マイ ニフティ</dt>
+              <dd>
+                <div class="detail item__unit">
+                  <p class="item__unit"><span class="f-point"><span>200</span>P</span></p>
+                  <p class="item__unit mod-sub">料金確認やメールに使える会員向けアプリ。</p>
+                </div>
+              </dd>
+            </dl>
+          </a>
+        </li>
+      </ul>
+    </body></html>
+    """
+
+
+def nifty_detail_fixture(*, yen=210, platform="Androidのみ"):
+    return f"""
+    <html><body>
+      <h1 class="contents__title">ギシギシ：マッチパズル</h1>
+      <div>
+        <p>獲得条件：新規アプリインストール後、14日以内に3500点到達</p>
+        <p>@niftyの接続サービスをご利用の方
+          <span class="f-point"><span>210</span>P</span>
+          <span>(210円相当)</span>
+        </p>
+        <p>通常会員
+          <span class="f-point"><span>210</span>P</span>
+          <span>({yen}円相当)</span>
+        </p>
+      </div>
+      <div class="mrg-dish dtl-texts">
+        <h2>獲得条件詳細</h2>
+        新規アプリインストール後、14日以内に3500点到達
+        <h2>対象端末</h2>
+        {platform}
+        <h2>必ずお読みください</h2>
+        本広告は日ごとに申し込み数に上限があります。
+        アプリ起動後、ブラウザが起動するまでお待ちください。
+        キャリア回線の利用を推奨します。
+        <h2>ポイント付与NG条件</h2>
+        過去に同一アプリをダウンロードした場合は対象外です。
+        回線が不安定な状態でのインストールは対象外です。
+        日本国外からのアクセスは対象外です。
+        <h2>問い合わせについて</h2>
+        ポイントに関する問い合わせはニフティポイントクラブまでお願いします。
+      </div>
+      <h2>ヘルプ</h2>
+    </body></html>
+    """
+
+
+def test_nifty_smartphone_app_listing_and_detail_contract():
+    source = nifty_source_fixture()
+    candidates = direct.discover_new_game_listing_candidates(
+        nifty_listing_fixture(), NIFTY_LISTING, source, [], limit=20
+    )
+    assert [x["titleHint"] for x in candidates] == [
+        "ギシギシ：マッチパズル", "マイ ニフティ"
+    ]
+    assert candidates[0]["listingRewardPoints"] == 210
+    assert candidates[0]["listingRewardText"] == "210 P"
+    assert candidates[0]["firstPartyCandidateUrl"] == NIFTY_DETAIL
+    assert candidates[0]["offerIdentity"] == "nifty_point:pathid:000127712000"
+    assert candidates[0]["candidateOnly"] is True
+    assert candidates[0]["publicationAuthorized"] is False
+
+    signature = direct.listing_detail_identity_signature(
+        nifty_listing_fixture(), NIFTY_LISTING, source
+    )
+    assert signature == (
+        "nifty_point:pathid:000121342000",
+        "nifty_point:pathid:000127712000",
+    )
+
+    evidence = direct.inspect_nifty_offer(
+        nifty_detail_fixture(), NIFTY_DETAIL, NIFTY_DETAIL,
+        ["ギシギシ：マッチパズル"],
+    )
+    assert evidence["state"] == "parsed"
+    assert evidence["parserVersion"] == "nifty-point-detail-review-v1"
+    assert evidence["offerId"] == "000127712000"
+    assert evidence["name"] == "ギシギシ：マッチパズル"
+    assert evidence["platform"] == "Android"
+    assert evidence["displayedRewardPoints"] == 210
+    assert evidence["verifiedCurrentRewardYen"] == 210
+    assert evidence["rewardUnit"] == "Nifty-P"
+    assert evidence["sourcePointRate"] == "1P=1JPY"
+    assert "3500点到達" in evidence["conditionText"]
+    assert evidence["candidateOnly"] is True
+    assert evidence["publicationAuthorized"] is False
+    assert len(evidence["evidenceFingerprint"]) == 64
+
+
+def test_nifty_known_game_coverage_and_fail_closed_guards():
+    source = nifty_source_fixture()
+    found = direct.discover_first_party_listing_candidates(
+        nifty_listing_fixture(), NIFTY_LISTING, source,
+        ["ギシギシ：マッチパズル"], limit=8,
+    )
+    assert len(found) == 1
+    assert found[0]["firstPartyCandidateUrl"] == NIFTY_DETAIL
+    assert found[0]["rewardYenHint"] == 210
+
+    bad_reward = direct.inspect_nifty_offer(
+        nifty_detail_fixture(yen=209), NIFTY_DETAIL, NIFTY_DETAIL,
+        ["ギシギシ：マッチパズル"],
+    )
+    assert bad_reward["state"] == "review_required"
+    assert bad_reward["reason"] == "point_yen_contract_mismatch"
+
+    bad_platform = direct.inspect_nifty_offer(
+        nifty_detail_fixture(platform="対象OSの記載なし"),
+        NIFTY_DETAIL, NIFTY_DETAIL, ["ギシギシ：マッチパズル"],
+    )
+    assert bad_platform["state"] == "review_required"
+    assert bad_platform["reason"] == "missing_offer_platform"
+
+
+def test_nifty_offer_identity_is_strict_and_query_free():
+    assert direct.nifty_offer_id(NIFTY_DETAIL) == "000127712000"
+    assert direct.offer_identity_key(NIFTY_DETAIL, "nifty_point") == (
+        "nifty_point:pathid:000127712000"
+    )
+    import pytest
+    with pytest.raises(ValueError):
+        direct.nifty_offer_id(NIFTY_DETAIL + "?x=1")
+    with pytest.raises(ValueError):
+        direct.nifty_offer_id("https://example.com/service/detail/000127712000")
+
+
+def test_repository_nifty_uses_current_candidate_only_smartphone_app_listing():
+    payload = json.loads((ROOT / "config/point_sources.json").read_text(encoding="utf-8"))
+    source = next(x for x in payload["sources"] if x["id"] == "nifty_point")
+    assert source["start_url"] == NIFTY_LISTING
+    assert source["direct_listing_urls"] == [NIFTY_LISTING]
+    assert source["direct_detail_url_hints"] == ["/service/detail/"]
+    assert source["coverage_first_party_listing_enabled"] is True
+    assert source["coverage_detail_review_enabled"] is True
+    assert source["coverage_detail_review_mode"] == "candidate_only"
+    assert source["coverage_detail_review_parser"] == "nifty-point-detail-review-v1"
+    assert source["full_catalog_discovery_enabled"] is True
+    assert source["new_game_discovery_enabled"] is True
+    assert source["new_game_discovery_listing_limit"] == 1
+    assert source["new_game_discovery_min_detail_identities_first_page"] >= 1
+    assert source["scheduled_fetch_enabled"] is False
+    assert direct.source_participates_in_new_game_ranking(source) is True
+
+    rates = json.loads(
+        (ROOT / "config/point_value_rates.json").read_text(encoding="utf-8")
+    )["sources"]["nifty_point"]
+    assert rates["status"] == "verified"
+    assert rates["yenPerPoint"] == 1
