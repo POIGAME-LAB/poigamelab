@@ -216,10 +216,27 @@ def main():
     payload = capture()
     raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     encoded = base64.b64encode(raw).decode("ascii")
+    copied = False
+    try:
+        import clipboard  # Pythonista-only convenience module
+        clipboard.set(encoded)
+        copied = True
+    except (ImportError, AttributeError):
+        pass
+
     print("POINT_INCOME_CATALOG_V2")
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
-    print("\nPOINT_INCOME_BASE64")
-    print(encoded)
+    print(json.dumps({
+        "count": payload["count"],
+        "pageCount": payload["pageCount"],
+        "stoppedBecause": payload["stoppedBecause"],
+        "pointRate": payload["pointRate"],
+    }, ensure_ascii=False, indent=2))
+    if copied:
+        print("\nPOINT_INCOME_BASE64 をクリップボードへコピーしました。")
+        print("このままChatGPTへ貼り付けてください。")
+    else:
+        print("\nPOINT_INCOME_BASE64")
+        print(encoded)
     print("\n※ HTML・Cookie・ログイン情報は出力していません。")
 
 
