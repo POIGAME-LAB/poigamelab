@@ -22,9 +22,11 @@ then walks numbered listing pages until an empty or repeated page appears.
 Create a GitHub fine-grained personal access token with repository access limited
 to `POIGAME-LAB/poigamelab` and repository permission **Actions: Read and write**.
 
-On the first run of `scripts/point-income-device-capture.py`, paste that token
-into the secure prompt. Pythonista stores it in the iOS Keychain. It is never
-added to the captured payload or printed.
+Copy the token in GitHub, then run `scripts/point-income-device-capture.py`.
+The script recognizes a GitHub token on the clipboard, stores it in the iOS
+Keychain, clears the clipboard, and continues. No console typing is required.
+It refuses oversized/Base64-looking values so a captured offer payload cannot
+accidentally become an Authorization header.
 
 To replace the token later, run the script with `--clear-token` once, then run
 it normally and enter the new token.
@@ -60,5 +62,6 @@ review queue rather than being published automatically.
 
 ## Recovery mode
 
-If GitHub dispatch fails, the script copies the compressed Base64 payload to the
-clipboard as a recovery path. `--manual` forces this mode without dispatching.
+A normal dispatch failure does not overwrite the clipboard. `--manual` is the
+explicit recovery mode that copies the compressed Base64 payload to the
+clipboard without dispatching.
