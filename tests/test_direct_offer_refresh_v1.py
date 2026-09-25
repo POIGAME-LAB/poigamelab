@@ -4791,6 +4791,13 @@ def gmo_listing_fixture():
             <p class="programs_list__detail__point"><span class="large">504</span><span>P</span></p>
           </a>
         </li>
+        <li>
+          <a href="https://colleee.net/programs/11662">
+            <p class="programs_list__detail__txt">GAME LAB_初月無料お試しコース登録完了</p>
+            <dl class="programs_list__detail__chart"><dd>有料ゲームサービスのコース登録完了</dd></dl>
+            <p class="programs_list__detail__point"><span class="large">120</span><span>P</span></p>
+          </a>
+        </li>
       </ul>
     </body></html>
     """
@@ -4837,6 +4844,7 @@ def test_gmo_point_game_listing_and_detail_contract():
         "【ステップアップ】スーパーラッキーカジノ_プレイヤーレベル500到達(iOS)",
         "Puzzle Spy（ミッション1000クリア）(iOS)",
     ]
+    assert all("GAME LAB" not in x["titleHint"] for x in candidates)
     assert candidates[0]["listingRewardPoints"] == 5820
     assert candidates[0]["listingRewardText"] == "5,820 P"
     assert candidates[0]["platformHint"] == "iOS"
@@ -4850,6 +4858,7 @@ def test_gmo_point_game_listing_and_detail_contract():
     assert signature == (
         "gmo_point:pathid:11495",
         "gmo_point:pathid:11521",
+        "gmo_point:pathid:11662",
     )
 
     evidence = direct.inspect_gmo_point_offer(
