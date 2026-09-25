@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 MAX_OFFERS = 2000
-AD_RE = re.compile(r"^/ad/(\\d+)/?$")
+AD_RE = re.compile(r"^/ad/(\d+)/?$")
 ALLOWED_HOSTS = {"pointi.jp", "www.pointi.jp", "sp.pointi.jp"}
 PLATFORMS = {"", "iOS", "Android", "iOS|Android"}
 
