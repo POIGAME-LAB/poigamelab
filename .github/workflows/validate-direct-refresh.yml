@@ -29,6 +29,10 @@ on:
       - "scripts/generate_warau_baseline_candidates.py"
       - "scripts/build_public_site.py"
       - "scripts/append_offer_history.py"
+      - "scripts/point-income-device-capture.py"
+      - "scripts/import-point-income-device-catalog.py"
+      - ".github/workflows/import-point-income-device-catalog.yml"
+      - "tests/test_import_point_income_device_catalog.py"
       - "tests/test_direct_offer_refresh_v1.py"
       - "tests/test_daily_scan_review.py"
       - "tests/test_daily_scan_review_recall.py"
@@ -72,6 +76,9 @@ jobs:
           python -m py_compile scripts/generate_warau_baseline_candidates.py
           python -m py_compile scripts/build_public_site.py
           python -m py_compile scripts/append_offer_history.py
+          python -m py_compile scripts/point-income-device-capture.py
+          python -m py_compile scripts/import-point-income-device-catalog.py
+          python -m py_compile tests/test_import_point_income_device_catalog.py
           python -m py_compile tests/test_daily_scan_review.py
           python -m py_compile tests/test_daily_scan_review_recall.py
           python -m py_compile tests/test_structured_publication.py
