@@ -41,8 +41,8 @@ UA = (
     "Mobile/15E148 Safari/604.1"
 )
 ALLOWED_HOSTS = {"pointi.jp", "www.pointi.jp", "sp.pointi.jp"}
-AD_RE = re.compile(r"^/ad/(\\d+)/?$")
-POINT_RE = re.compile(r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\\s*pt", re.I)
+AD_RE = re.compile(r"^/ad/(\d+)/?$")
+POINT_RE = re.compile(r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt", re.I)
 MAX_PAGES = 50
 MAX_BYTES = 5_000_000
 MAX_DISPATCH_CHARS = 60_000
@@ -69,7 +69,7 @@ class LinkParser(HTMLParser):
 
     def handle_endtag(self, tag):
         if tag == "a" and self._href is not None:
-            text = re.sub(r"\\s+", " ", " ".join(self._text)).strip()
+            text = re.sub(r"\s+", " ", " ".join(self._text)).strip()
             self.links.append((self._href, text))
             self._href = None
             self._text = []
@@ -119,8 +119,8 @@ def fetch(url, ajax=False):
 
 
 def platform_from_title(title):
-    has_ios = bool(re.search(r"(?:iOS|iPhone)\\s*用", title, re.I))
-    has_android = bool(re.search(r"Android\\s*用", title, re.I))
+    has_ios = bool(re.search(r"(?:iOS|iPhone)\s*用", title, re.I))
+    has_android = bool(re.search(r"Android\s*用", title, re.I))
     if has_ios and has_android:
         return "iOS|Android"
     if has_ios:
@@ -133,7 +133,7 @@ def platform_from_title(title):
 def clean_title(text):
     match = POINT_RE.search(text)
     title = text[:match.start()].strip() if match else text.strip()
-    title = re.sub(r"\\s+[0-9][0-9,]*円\\(税込\\)の商品ご購入で$", "", title)
+    title = re.sub(r"\s+[0-9][0-9,]*円\(税込\)の商品ご購入で$", "", title)
     return title[:260].strip()
 
 
