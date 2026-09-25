@@ -79,11 +79,12 @@
     },
     "point_income": {
       "unit": "pt",
-      "pointsPerYen": null,
-      "yenPerPoint": null,
-      "status": "unsupported",
-      "evidenceUrl": null,
-      "note": "Do not infer a conversion until a current first-party rate page and reviewed parser contract are added."
+      "pointsPerYen": 10,
+      "yenPerPoint": 0.1,
+      "status": "verified_face_value",
+      "evidenceUrl": "https://pointi.jp/otokulife365/detail/2/",
+      "reviewedAt": "2026-09-25",
+      "note": "Current first-party Point Income editorial content states 10 points = 1 yen. This rate may normalize reviewed offer points, but no cloud offer parser is authorized because GitHub Actions is redirected to the domestic-only access-control page."
     },
     "amefuri": {
       "unit": "pt",
