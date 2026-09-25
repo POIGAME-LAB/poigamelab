@@ -797,7 +797,7 @@ def test_gmo_point_live_diagnostic_20260925():
         # Also inspect likely list-card class names around first visible reward-ish markers.
         reward_contexts=[]
         for pat in (r"[0-9][0-9,]*\\s*(?:P|ポイント)",r"アプリ(?:DL|インストール)",r"ゲーム"):
-            m=_re.search(pat,raw,re.I)
+            m=_re.search(pat,raw,_re.I)
             if m:
                 around=raw[max(0,m.start()-1800):m.end()+3000]
                 reward_contexts.append({"pattern":pat,"visible":visible(around)[:1600],"raw":around[:5000]})
