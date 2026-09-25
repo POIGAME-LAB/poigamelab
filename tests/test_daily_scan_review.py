@@ -773,3 +773,87 @@ def test_gmo_point_reviewed_reward_uses_one_to_one_yen_contract():
     assert daily.explicit_yen(evidence) == 5820
     evidence["verifiedCurrentRewardYen"] = 5819
     assert daily.explicit_yen(evidence) is None
+
+
+
+def test_point_income_live_diagnostic_20260925():
+    """Temporary live diagnostic for Point Income public app/game routes."""
+    import json as _json
+    import re as _re
+    from html import unescape as _unescape
+    from urllib.error import HTTPError as _HTTPError
+    from urllib.parse import urljoin as _urljoin, urlparse as _urlparse
+    from urllib.request import Request as _Request, urlopen as _urlopen
+
+    ua=("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1")
+
+    def fetch(url):
+        req=_Request(url,headers={
+            "User-Agent":ua,
+            "Accept":"text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+            "Accept-Language":"ja,en-US;q=0.8,en;q=0.5",
+        })
+        try:
+            with _urlopen(req,timeout=25) as r:
+                data=r.read(5_000_000)
+                return {"ok":True,"status":getattr(r,"status",None),"final":r.geturl(),
+                        "contentType":r.headers.get("Content-Type"),
+                        "text":data.decode("utf-8","replace")}
+        except _HTTPError as exc:
+            return {"ok":False,"status":exc.code,"final":url,
+                    "text":exc.read(500_000).decode("utf-8","replace")}
+        except Exception as exc:
+            return {"ok":False,"status":None,"final":url,"text":"",
+                    "error":type(exc).__name__+":"+str(exc)[:180]}
+
+    urls=[
+        "https://pointi.jp/",
+        "https://sp.pointi.jp/",
+        "https://pointi.jp/robots.txt",
+        "https://pointi.jp/sitemap.xml",
+        "https://pointi.jp/search.php",
+        "https://pointi.jp/list.php",
+        "https://pointi.jp/list.php?category=game",
+        "https://pointi.jp/list.php?category=app",
+    ]
+    pages=[]
+    for url in urls:
+        r=fetch(url); raw=r.get("text","")
+        hrefs=_re.findall(r'href=["\\\']([^"\\\']+)["\\\']',raw,_re.I)
+        links=[]
+        for href in hrefs:
+            absolute=_urljoin(r.get("final") or url,_unescape(href)).split("#",1)[0]
+            host=(_urlparse(absolute).hostname or "").lower()
+            if host.endswith("pointi.jp"):
+                links.append(absolute)
+        links=list(dict.fromkeys(links))
+        interesting=[x for x in links if any(k in x.lower() for k in (
+            "game","app","appli","search","list","category","service","ad","point","campaign"
+        ))]
+        visible=daily.direct.visible_text(raw)
+        title=(_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0]
+        forms=[]
+        for m in _re.finditer(r"(?is)<form\\b([^>]*)>(.*?)</form>",raw):
+            attrs=m.group(1); body=m.group(2)
+            action=(_re.search(r'action=["\\\']([^"\\\']+)',attrs) or [None,""])[1]
+            method=(_re.search(r'method=["\\\']([^"\\\']+)',attrs) or [None,""])[1]
+            names=_re.findall(r'name=["\\\']([^"\\\']+)',body)
+            forms.append({"action":action,"method":method,"inputs":names[:30]})
+        scripts=[_urljoin(r.get("final") or url,x) for x in _re.findall(
+            r'<script[^>]+src=["\\\']([^"\\\']+)',raw,_re.I
+        )]
+        pages.append({
+            "url":url,"final":r.get("final"),"ok":r.get("ok"),"status":r.get("status"),
+            "contentType":r.get("contentType"),"bytes":len(raw.encode("utf-8")),
+            "title":title[:300],"interestingLinks":interesting[:180],
+            "forms":forms[:30],"scripts":scripts[:50],
+            "keywords":{k:(k in visible) for k in [
+                "ゲーム","アプリ","スマホ","ポイント獲得","広告利用","ゲームアプリ"
+            ]},
+            "excerpt":visible[:2800],
+        })
+
+    assert False,"POINT_INCOME_LIVE_DIAGNOSTIC="+_json.dumps(
+        {"pages":pages},ensure_ascii=False,sort_keys=True
+    )
