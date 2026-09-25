@@ -780,7 +780,7 @@ def test_gmo_point_live_diagnostic_20260925():
         data_urls=list(dict.fromkeys(
             _unescape(x) for x in _re.findall(
                 r'(?:data-(?:href|url)|onclick)=["\\\']([^"\\\']*programs[^"\\\']*)["\\\']',
-                raw,re.I
+                raw,_re.I
             )
         ))
         raw_program_tokens=list(dict.fromkeys(
