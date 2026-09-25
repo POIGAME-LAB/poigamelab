@@ -738,12 +738,11 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
 
 
 def test_gmo_point_live_diagnostic_20260925():
-    """Temporary focused diagnostic for GMO Poikatsu program listings/details."""
+    """Temporary structural diagnostic for GMO Poikatsu app/game search result HTML."""
     import json as _json
     import re as _re
     from html import unescape as _unescape
     from urllib.error import HTTPError as _HTTPError
-    from urllib.parse import urljoin as _urljoin
     from urllib.request import Request as _Request, urlopen as _urlopen
 
     ua = (
@@ -753,138 +752,66 @@ def test_gmo_point_live_diagnostic_20260925():
     )
 
     def fetch(url):
-        req = _Request(url, headers={
-            "User-Agent": ua,
-            "Accept": "text/html,application/xhtml+xml",
-            "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
-        })
+        req = _Request(url, headers={"User-Agent": ua, "Accept-Language":"ja,en-US;q=0.8"})
         try:
             with _urlopen(req, timeout=25) as r:
-                data = r.read(5_000_000)
-                return {
-                    "ok": True,
-                    "status": getattr(r, "status", None),
-                    "final": r.geturl(),
-                    "contentType": r.headers.get("Content-Type"),
-                    "text": data.decode("utf-8", "replace"),
-                }
+                return r.read(5_000_000).decode("utf-8","replace")
         except _HTTPError as exc:
-            return {
-                "ok": False, "status": exc.code, "error": "HTTPError",
-                "text": exc.read(500_000).decode("utf-8", "replace"),
-            }
-        except Exception as exc:
-            return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
+            return exc.read(500_000).decode("utf-8","replace")
 
     def visible(raw):
-        x = _re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw)
-        x = _re.sub(r"(?s)<[^>]+>", " ", x)
-        return _re.sub(r"\\s+", " ", _unescape(x)).strip()
+        x=_re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
+        x=_re.sub(r"(?s)<[^>]+>"," ",x)
+        return _re.sub(r"\\s+"," ",_unescape(x)).strip()
 
-    listing_urls = [
+    urls=[
         "https://colleee.net/programs/list?keywords=%E3%82%A2%E3%83%97%E3%83%AA",
         "https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
-        "https://colleee.net/programs/list/2?keywords=%E3%82%A2%E3%83%97%E3%83%AA",
-        "https://colleee.net/programs/list/2?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
+        "https://colleee.net/programs/list/0/2?keywords=%E3%82%A2%E3%83%97%E3%83%AA",
+        "https://colleee.net/programs/list/0/2?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
     ]
-    listings = []
-    candidate_ids = []
-    for url in listing_urls:
-        r = fetch(url)
-        raw = r.get("text", "")
-        hrefs = _re.findall(r'href=["\\\']([^"\\\']+)["\\\']', raw)
-        program_links = []
-        for href in hrefs:
-            absolute = _urljoin(r.get("final") or url, _unescape(href)).split("#",1)[0]
-            if _re.fullmatch(r"https://(?:www\\.)?colleee\\.net/programs/\\d+(?:/\\d+)?/?", absolute):
-                program_links.append(absolute)
-        program_links = list(dict.fromkeys(program_links))
-        candidate_ids.extend(program_links)
-
-        paging = sorted(set(
-            _urljoin(r.get("final") or url, _unescape(href))
-            for href in hrefs
-            if "/programs/list" in href
+    pages=[]
+    for url in urls:
+        raw=fetch(url)
+        hrefs=_re.findall(r'href=["\\\']([^"\\\']+)["\\\']',raw)
+        program_hrefs=list(dict.fromkeys(
+            _unescape(h) for h in hrefs if "/programs/" in h and "/programs/list" not in h
         ))
-
-        samples = []
-        for absolute in program_links[:25]:
-            pos = raw.find(absolute)
-            if pos < 0:
-                rel = _re.sub(r"^https://(?:www\\.)?colleee\\.net", "", absolute)
-                pos = raw.find(rel)
-            around = raw[max(0,pos-1800):pos+3200] if pos >= 0 else ""
-            samples.append({
-                "url": absolute,
-                "context": visible(around)[:1600],
-                "raw": around[:5000],
-            })
-
-        listings.append({
-            "url": url,
-            "final": r.get("final"),
-            "ok": r.get("ok"),
-            "status": r.get("status"),
-            "bytes": len(raw.encode("utf-8")),
-            "programCount": len(program_links),
-            "programSample": samples,
-            "paging": paging[:60],
-            "excerpt": visible(raw)[:2500],
+        data_urls=list(dict.fromkeys(
+            _unescape(x) for x in _re.findall(
+                r'(?:data-(?:href|url)|onclick)=["\\\']([^"\\\']*programs[^"\\\']*)["\\\']',
+                raw,re.I
+            )
+        ))
+        raw_program_tokens=list(dict.fromkeys(
+            _re.findall(r'(?:https://(?:www\\.)?colleee\\.net)?/programs/[A-Za-z0-9_?=&%./-]+',raw)
+        ))
+        contexts=[]
+        tokens=(program_hrefs+data_urls+raw_program_tokens)[:30]
+        for token in tokens:
+            p=raw.find(token)
+            if p<0:
+                p=raw.find(_unescape(token))
+            around=raw[max(0,p-1400):p+2600] if p>=0 else ""
+            contexts.append({"token":token,"visible":visible(around)[:1400],"raw":around[:4000]})
+        # Also inspect likely list-card class names around first visible reward-ish markers.
+        reward_contexts=[]
+        for pat in (r"[0-9][0-9,]*\\s*(?:P|ポイント)",r"アプリ(?:DL|インストール)",r"ゲーム"):
+            m=_re.search(pat,raw,re.I)
+            if m:
+                around=raw[max(0,m.start()-1800):m.end()+3000]
+                reward_contexts.append({"pattern":pat,"visible":visible(around)[:1600],"raw":around[:5000]})
+        pages.append({
+            "url":url,
+            "bytes":len(raw.encode("utf-8")),
+            "programHrefs":program_hrefs[:100],
+            "dataUrls":data_urls[:100],
+            "rawProgramTokens":raw_program_tokens[:100],
+            "contexts":contexts,
+            "rewardContexts":reward_contexts,
+            "title":(_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0],
         })
 
-    unique_programs = list(dict.fromkeys(candidate_ids))
-    # Prefer game-shaped listing context, then fill from the first public programs.
-    scored = []
-    for page in listings:
-        for row in page.get("programSample", []):
-            ctx = row.get("context", "")
-            score = sum(1 for token in (
-                "ゲーム", "レベル", "ステージ", "インストール", "アプリDL",
-                "パズル", "RPG", "放置", "達成"
-            ) if token.lower() in ctx.lower())
-            scored.append((score, row["url"], ctx))
-    chosen = []
-    for _, url, _ in sorted(scored, key=lambda x: (-x[0], x[1])):
-        if url not in chosen:
-            chosen.append(url)
-        if len(chosen) >= 10:
-            break
-    for url in unique_programs:
-        if url not in chosen:
-            chosen.append(url)
-        if len(chosen) >= 14:
-            break
-
-    details = []
-    for url in chosen:
-        r = fetch(url)
-        raw = r.get("text", "")
-        text = visible(raw)
-        title = (_re.findall(r"(?is)<title[^>]*>(.*?)</title>", raw) or [""])[0]
-        contexts = []
-        for needle in (
-            "ポイント獲得条件", "獲得条件", "ポイント数", "ポイント",
-            "iOS", "Android", "インストール", "対象外", "お問い合わせ"
-        ):
-            pos = text.find(needle)
-            if pos >= 0:
-                contexts.append({
-                    "needle": needle,
-                    "context": text[max(0,pos-450):pos+1600],
-                })
-        details.append({
-            "url": url,
-            "ok": r.get("ok"),
-            "status": r.get("status"),
-            "bytes": len(raw.encode("utf-8")),
-            "title": visible(title),
-            "contexts": contexts[:12],
-            "excerpt": text[:2600],
-            "canonical": (_re.findall(r'<link[^>]+rel=["\\\']canonical["\\\'][^>]+href=["\\\']([^"\\\']+)', raw) or [""])[0],
-        })
-
-    assert False, "GMO_POINT_LIVE_DIAGNOSTIC_V2=" + _json.dumps({
-        "listings": listings,
-        "uniqueProgramCount": len(unique_programs),
-        "chosenDetails": details,
-    }, ensure_ascii=False, sort_keys=True)
+    assert False, "GMO_POINT_LIVE_DIAGNOSTIC_V3=" + _json.dumps(
+        {"pages":pages},ensure_ascii=False,sort_keys=True
+    )
