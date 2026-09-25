@@ -375,7 +375,9 @@
       "direct_detail_limit": 0,
       "direct_detail_url_hints": [],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Discovery-only source until a stable anonymous first-party app/game listing or detail route is validated."
+      "scheduled_fetch_reason": "2026-09-25 GitHub Actions live audit: every tested public Point Income route was redirected to the first-party domestic-only access-control page (sp.pointi.jp/information.php?cn=2&sn=1). Keep cloud fetching disabled; current offer retrieval requires a Japan-residential/device path before parser/ranking integration.",
+      "reviewedAt": "2026-09-25",
+      "discoveryNote": "Cloud audit confirmed regional access control rather than an HTTP transport failure. Do not treat HTTP 200 on the access-control page as offer retrieval success. Existing iPhone/domestic-network collection is the appropriate next retrieval candidate."
     },
     {
       "id": "amefuri",
