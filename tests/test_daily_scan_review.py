@@ -738,93 +738,37 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
 
 
 def test_gmo_point_live_diagnostic_20260925():
-    """Temporary robust live diagnostic for GMO Poikatsu game pages/details."""
+    """Temporary structural diagnostic for GMO card/detail DOM classes."""
     import json as _json
     import re as _re
-    from html import unescape as _unescape
-    from urllib.error import HTTPError as _HTTPError
     from urllib.request import Request as _Request, urlopen as _urlopen
 
-    ua=(
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
-        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
-        "Mobile/15E148 Safari/604.1"
-    )
+    ua=("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1")
     def fetch(url):
-        req=_Request(url,headers={"User-Agent":ua,"Accept-Language":"ja,en-US;q=0.8"})
-        try:
-            with _urlopen(req,timeout=25) as r:
-                return {"status":getattr(r,"status",None),"final":r.geturl(),
-                        "text":r.read(5_000_000).decode("utf-8","replace")}
-        except _HTTPError as exc:
-            return {"status":exc.code,"final":url,
-                    "text":exc.read(500_000).decode("utf-8","replace")}
-        except Exception as exc:
-            return {"status":None,"final":url,"text":"",
-                    "error":type(exc).__name__+":"+str(exc)[:160]}
+        req=_Request(url,headers={"User-Agent":ua,"Accept-Language":"ja"})
+        with _urlopen(req,timeout=25) as r:
+            return r.read(5_000_000).decode("utf-8","replace")
 
-    def visible(raw):
-        x=_re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
-        x=_re.sub(r"(?s)<[^>]+>"," ",x)
-        return _re.sub(r"\\s+"," ",_unescape(x)).strip()
+    listing=fetch("https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0")
+    detail=fetch("https://colleee.net/programs/11521")
 
-    encoded="%E3%82%B2%E3%83%BC%E3%83%A0"
-    pages=[]
-    identities=[]
-    seen=set()
-    total=None
-    fixed_details=[
-        "https://colleee.net/programs/11521",
-        "https://colleee.net/programs/11495",
-        "https://colleee.net/programs/11004",
-    ]
-    for page in range(1,13):
-        url=("https://colleee.net/programs/list?keywords="+encoded
-             if page==1 else f"https://colleee.net/programs/list/0/{page}?keywords="+encoded)
-        r=fetch(url); raw=r["text"]; txt=visible(raw)
-        tm=_re.search(r"全\\s*([0-9,]+)\\s*件",txt)
-        if tm: total=int(tm.group(1).replace(",",""))
-        hrefs=_re.findall(
-            r'href=["\\\'](https://colleee\\.net/programs/[0-9]+(?:/[0-9A-Za-z]+)?/?)["\\\']',
-            raw,_re.I
-        )
-        hrefs=list(dict.fromkeys(hrefs))
-        for href in hrefs:
-            if href not in seen:
-                seen.add(href); identities.append(href)
-        snippets=[]
-        for href in hrefs[:8]:
-            p=raw.find(href)
-            around=raw[max(0,p-900):p+2600] if p>=0 else ""
-            snippets.append({"url":href,"visible":visible(around)[:1300],"raw":around[:3600]})
-        pages.append({"page":page,"url":url,"status":r["status"],"hrefCount":len(hrefs),
-                      "hrefs":hrefs[:20],"snippets":snippets})
-        if page>1 and not hrefs: break
-        if total and len(identities)>=total: break
+    def around(raw, needle, before=2200, after=4200):
+        p=raw.find(needle)
+        return raw[max(0,p-before):p+after] if p>=0 else ""
 
-    for href in identities[:8]:
-        if href not in fixed_details: fixed_details.append(href)
-    details=[]
-    for url in fixed_details[:12]:
-        r=fetch(url); raw=r["text"]; txt=visible(raw)
-        contexts=[]
-        for needle in (
-            "ポイント獲得条件","獲得条件","獲得ポイント","ポイント",
-            "iOS","Android","インストール","ステップアップ",
-            "対象外","成果対象外","問い合わせ","お問い合わせ"
-        ):
-            p=txt.find(needle)
-            if p>=0:
-                contexts.append({"needle":needle,"context":txt[max(0,p-500):p+2000]})
-        details.append({
-            "url":url,"status":r["status"],"final":r["final"],
-            "title":visible((_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0]),
-            "canonical":(_re.findall(r'<link[^>]+rel=["\\\']canonical["\\\'][^>]+href=["\\\']([^"\\\']+)',raw,_re.I) or [""])[0],
-            "contexts":contexts[:14],"excerpt":txt[:3400],
-            "programTokens":list(dict.fromkeys(_re.findall(r'/programs/[0-9]+(?:/[0-9A-Za-z]+)?',raw)))[:30],
-        })
-
-    assert False,"GMO_POINT_LIVE_DIAGNOSTIC_V5="+_json.dumps({
-        "reportedTotal":total,"uniqueIdentityCount":len(identities),
-        "identities":identities[:120],"pages":pages,"details":details
-    },ensure_ascii=False,sort_keys=True)
+    # Keep output compact and centered on exact reviewed structural markers.
+    report={
+        "listingTitle": around(listing,"スーパーラッキーカジノ",1800,3000),
+        "listingTotal": around(listing,"全 91 件",700,800),
+        "listingPaging": around(listing,"/programs/list/0/2?keywords=",800,1600),
+        "detailTitle": around(detail,"スーパーラッキーカジノ",1800,2800),
+        "detailReward": around(detail,"5,820",2200,3200),
+        "detailCondition": around(detail,"ポイント獲得条件",1600,3800),
+        "detailRate": around(detail,"1ポイント=1円分",900,1200),
+        "classesNearReward": list(dict.fromkeys(_re.findall(
+            r'class=["\\\']([^"\\\']+)["\\\']',
+            around(detail,"5,820",3000,4000)
+        )))[:80],
+    }
+    assert False,"GMO_POINT_LIVE_DIAGNOSTIC_V6="+_json.dumps(report,ensure_ascii=False,sort_keys=True)
