@@ -700,12 +700,10 @@ def test_trima_listing_upper_bound_uses_face_value_but_detail_uses_displayed_yen
 
 
 def test_nifty_live_diagnostic_20260925():
-    """Temporary focused live diagnostic for Nifty app/game listing/detail routes."""
+    """Temporary structural diagnostic for one live Nifty game card/detail."""
     import json as _json
     import re as _re
-    from html import unescape as _unescape
     from urllib.error import HTTPError as _HTTPError
-    from urllib.parse import urljoin as _urljoin
     from urllib.request import Request as _Request, urlopen as _urlopen
 
     ua = (
@@ -722,98 +720,29 @@ def test_nifty_live_diagnostic_20260925():
         })
         try:
             with _urlopen(req, timeout=20) as r:
-                data = r.read(5_000_000)
-                return {
-                    "ok": True,
-                    "status": getattr(r, "status", None),
-                    "final": r.geturl(),
-                    "contentType": r.headers.get("Content-Type"),
-                    "text": data.decode("utf-8", "replace"),
-                }
+                return r.read(5_000_000).decode("utf-8", "replace")
         except _HTTPError as exc:
-            return {
-                "ok": False, "status": exc.code, "error": "HTTPError",
-                "text": exc.read(500_000).decode("utf-8", "replace"),
-            }
-        except Exception as exc:
-            return {"ok": False, "error": type(exc).__name__ + ":" + str(exc)[:180], "text": ""}
+            return exc.read(500_000).decode("utf-8", "replace")
 
-    def visible(raw):
-        x = _re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw)
-        x = _re.sub(r"(?s)<[^>]+>", " ", x)
-        return _re.sub(r"\\s+", " ", _unescape(x)).strip()
+    listing = fetch("https://api.point.nifty.com/service/alist/spapp")
+    needle = "/service/detail/000127712000"
+    pos = listing.find(needle)
+    card_raw = listing[max(0, pos-2600):pos+5200] if pos >= 0 else ""
 
-    listing_urls = [
-        "https://api.point.nifty.com/service/alist/spapp",
-        "https://api.point.nifty.com/service/app/",
-        "https://api.point.nifty.com/service/app/2",
-        "https://api.point.nifty.com/service/app/3",
-        "https://api.point.nifty.com/service/game/",
-        "https://api.point.nifty.com/service/alist/game",
-    ]
-    listings = []
-    detail_urls = []
-    for url in listing_urls:
-        r = fetch(url)
-        raw = r.get("text", "")
-        page_detail = []
-        for m in _re.finditer(r'href=["\\\']([^"\\\']*?/service/detail/[^"\\\']+)["\\\']', raw):
-            absolute = _urljoin(r.get("final") or url, _unescape(m.group(1)))
-            around = raw[max(0, m.start()-1100):m.end()+1100]
-            context = visible(around)
-            page_detail.append({"url": absolute, "context": context[:1000]})
-            detail_urls.append(absolute)
-        paging = sorted(set(
-            _urljoin(r.get("final") or url, _unescape(x))
-            for x in _re.findall(r'href=["\\\']([^"\\\']+)["\\\']', raw)
-            if "/service/app" in x or "/service/alist/spapp" in x
-        ))
-        listings.append({
-            "url": url,
-            "final": r.get("final"),
-            "ok": r.get("ok"),
-            "status": r.get("status"),
-            "bytes": len(raw.encode("utf-8")),
-            "detailCount": len({x["url"] for x in page_detail}),
-            "detailSample": page_detail[:12],
-            "paging": paging[:30],
-            "excerpt": visible(raw)[:2200],
+    detail = fetch("https://api.point.nifty.com/service/detail/000127712000")
+    terms_needles = ["ギシギシ：マッチパズル", "210 P", "獲得条件", "対象端末", "Androidのみ", "ポイント付与NG条件"]
+    detail_contexts = []
+    for n in terms_needles:
+        p = detail.find(n)
+        detail_contexts.append({
+            "needle": n,
+            "found": p >= 0,
+            "raw": detail[max(0,p-1000):p+2500] if p >= 0 else "",
         })
 
-    unique_details = list(dict.fromkeys(detail_urls))
-    details = []
-    for url in unique_details[:16]:
-        r = fetch(url)
-        raw = r.get("text", "")
-        text = visible(raw)
-        title_match = _re.search(r"(?is)<title[^>]*>(.*?)</title>", raw)
-        point_contexts = []
-        for pat in [
-            r"[0-9][0-9,]*\\s*(?:ポイント|pt|P)(?:獲得|還元)?",
-            r"(?:iOS|Android|アプリインストール|新規インストール|レベル|ステージ|ゲーム)",
-        ]:
-            for m in _re.finditer(pat, text, _re.I):
-                point_contexts.append(text[max(0,m.start()-180):m.end()+420])
-                if len(point_contexts) >= 12:
-                    break
-            if len(point_contexts) >= 12:
-                break
-        details.append({
-            "url": url,
-            "ok": r.get("ok"),
-            "status": r.get("status"),
-            "bytes": len(raw.encode("utf-8")),
-            "title": visible(title_match.group(1)) if title_match else "",
-            "contexts": point_contexts[:12],
-            "hasIOS": bool(_re.search(r"\\biOS\\b|iPhone", text, _re.I)),
-            "hasAndroid": bool(_re.search(r"Android", text, _re.I)),
-            "hasInstall": "インストール" in text,
-            "hasLevel": "レベル" in text,
-            "excerpt": text[:1800],
-        })
-
-    assert False, "NIFTY_LIVE_DIAGNOSTIC_V2=" + _json.dumps({
-        "listings": listings,
-        "uniqueDetailCount": len(unique_details),
-        "details": details,
+    classes = sorted(set(_re.findall(r'class=["\\\']([^"\\\']+)["\\\']', card_raw)))
+    assert False, "NIFTY_LIVE_DIAGNOSTIC_V3=" + _json.dumps({
+        "listingCardRaw": card_raw,
+        "listingCardClasses": classes,
+        "detailContexts": detail_contexts,
     }, ensure_ascii=False, sort_keys=True)
