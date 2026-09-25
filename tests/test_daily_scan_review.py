@@ -738,11 +738,12 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
 
 
 def test_gmo_point_live_diagnostic_20260925():
-    """Temporary structural diagnostic for GMO Poikatsu app/game search result HTML."""
+    """Temporary live diagnostic for the current GMO Poikatsu game search universe."""
     import json as _json
     import re as _re
     from html import unescape as _unescape
     from urllib.error import HTTPError as _HTTPError
+    from urllib.parse import urljoin as _urljoin
     from urllib.request import Request as _Request, urlopen as _urlopen
 
     ua = (
@@ -752,66 +753,126 @@ def test_gmo_point_live_diagnostic_20260925():
     )
 
     def fetch(url):
-        req = _Request(url, headers={"User-Agent": ua, "Accept-Language":"ja,en-US;q=0.8"})
+        req = _Request(url, headers={
+            "User-Agent": ua,
+            "Accept": "text/html,application/xhtml+xml",
+            "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
+        })
         try:
             with _urlopen(req, timeout=25) as r:
-                return r.read(5_000_000).decode("utf-8","replace")
+                data = r.read(5_000_000)
+                return {
+                    "ok": True, "status": getattr(r,"status",None),
+                    "final": r.geturl(), "text": data.decode("utf-8","replace"),
+                }
         except _HTTPError as exc:
-            return exc.read(500_000).decode("utf-8","replace")
+            return {
+                "ok": False, "status": exc.code,
+                "text": exc.read(500_000).decode("utf-8","replace"),
+            }
+        except Exception as exc:
+            return {"ok": False, "error": type(exc).__name__+":"+str(exc)[:160], "text":""}
 
     def visible(raw):
         x=_re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
         x=_re.sub(r"(?s)<[^>]+>"," ",x)
         return _re.sub(r"\\s+"," ",_unescape(x)).strip()
 
-    urls=[
-        "https://colleee.net/programs/list?keywords=%E3%82%A2%E3%83%97%E3%83%AA",
-        "https://colleee.net/programs/list?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
-        "https://colleee.net/programs/list/0/2?keywords=%E3%82%A2%E3%83%97%E3%83%AA",
-        "https://colleee.net/programs/list/0/2?keywords=%E3%82%B2%E3%83%BC%E3%83%A0",
-    ]
+    def page_url(page):
+        encoded="%E3%82%B2%E3%83%BC%E3%83%A0"
+        if page == 1:
+            return "https://colleee.net/programs/list?keywords="+encoded
+        return f"https://colleee.net/programs/list/0/{page}?keywords="+encoded
+
     pages=[]
-    for url in urls:
-        raw=fetch(url)
-        hrefs=_re.findall(r'href=["\\\']([^"\\\']+)["\\\']',raw)
-        program_hrefs=list(dict.fromkeys(
-            _unescape(h) for h in hrefs if "/programs/" in h and "/programs/list" not in h
-        ))
-        data_urls=list(dict.fromkeys(
-            _unescape(x) for x in _re.findall(
-                r'(?:data-(?:href|url)|onclick)=["\\\']([^"\\\']*programs[^"\\\']*)["\\\']',
-                raw,_re.I
+    offers=[]
+    seen=set()
+    total=None
+    for page in range(1, 13):
+        url=page_url(page)
+        r=fetch(url)
+        raw=r.get("text","")
+        text=visible(raw)
+        total_match=_re.search(r"全\\s*([0-9,]+)\\s*件",text)
+        if total_match:
+            total=int(total_match.group(1).replace(",",""))
+
+        page_rows=[]
+        for m in _re.finditer(
+            r'(?is)<li>\\s*<a href=["\\\'](https://colleee\\.net/programs/([0-9]+)(?:/([0-9A-Za-z]+))?)["\\\']>(.*?)</a>\\s*</li>',
+            raw,
+        ):
+            url_abs=m.group(1)
+            base_id=m.group(2)
+            variant=m.group(3) or ""
+            block=m.group(4)
+            title_match=_re.search(r'class=["\\\']programs_list__detail__txt["\\\'][^>]*>(.*?)</p>',block,_re.S)
+            cond_match=_re.search(r'<dl class=["\\\']programs_list__detail__chart["\\\']>.*?<dd>(.*?)</dd>',block,_re.S)
+            point_match=_re.search(
+                r'class=["\\\']programs_list__detail__point["\\\'].*?'
+                r'<span class=["\\\']large["\\\']>\\s*([0-9,]+)\\s*</span>\\s*<span>\\s*P\\s*</span>',
+                block,_re.S
             )
-        ))
-        raw_program_tokens=list(dict.fromkeys(
-            _re.findall(r'(?:https://(?:www\\.)?colleee\\.net)?/programs/[A-Za-z0-9_?=&%./-]+',raw)
-        ))
-        contexts=[]
-        tokens=(program_hrefs+data_urls+raw_program_tokens)[:30]
-        for token in tokens:
-            p=raw.find(token)
-            if p<0:
-                p=raw.find(_unescape(token))
-            around=raw[max(0,p-1400):p+2600] if p>=0 else ""
-            contexts.append({"token":token,"visible":visible(around)[:1400],"raw":around[:4000]})
-        # Also inspect likely list-card class names around first visible reward-ish markers.
-        reward_contexts=[]
-        for pat in (r"[0-9][0-9,]*\\s*(?:P|ポイント)",r"アプリ(?:DL|インストール)",r"ゲーム"):
-            m=_re.search(pat,raw,_re.I)
-            if m:
-                around=raw[max(0,m.start()-1800):m.end()+3000]
-                reward_contexts.append({"pattern":pat,"visible":visible(around)[:1600],"raw":around[:5000]})
+            title=visible(title_match.group(1)) if title_match else ""
+            condition=visible(cond_match.group(1)) if cond_match else ""
+            points=int(point_match.group(1).replace(",","")) if point_match else None
+            row={
+                "url":url_abs, "baseId":base_id, "variant":variant,
+                "title":title, "condition":condition, "points":points,
+            }
+            page_rows.append(row)
+            key=(base_id,variant)
+            if key not in seen:
+                seen.add(key); offers.append(row)
+
         pages.append({
-            "url":url,
-            "bytes":len(raw.encode("utf-8")),
-            "programHrefs":program_hrefs[:100],
-            "dataUrls":data_urls[:100],
-            "rawProgramTokens":raw_program_tokens[:100],
-            "contexts":contexts,
-            "rewardContexts":reward_contexts,
-            "title":(_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0],
+            "page":page, "url":url, "ok":r.get("ok"), "status":r.get("status"),
+            "rowCount":len(page_rows), "rows":page_rows[:15],
+        })
+        if total is not None and len(offers) >= total:
+            break
+        if page > 1 and not page_rows:
+            break
+
+    # Inspect a few game-shaped current offers, favoring StepUp/level/stage conditions.
+    scored=[]
+    for row in offers:
+        hay=(row["title"]+" "+row["condition"]).lower()
+        score=sum(1 for token in (
+            "ステップアップ","レベル","ステージ","ミッション","プレイヤー","城","パズル","rpg","放置"
+        ) if token.lower() in hay)
+        scored.append((score,row))
+    chosen=[row for _,row in sorted(scored,key=lambda x:(-x[0],x[1]["url"]))[:8]]
+
+    details=[]
+    for row in chosen:
+        r=fetch(row["url"])
+        raw=r.get("text","")
+        text=visible(raw)
+        title=visible((_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0])
+        canonical=(_re.findall(
+            r'<link[^>]+rel=["\\\']canonical["\\\'][^>]+href=["\\\']([^"\\\']+)',
+            raw,re.I
+        ) or [""])[0]
+        contexts=[]
+        for needle in (
+            "ポイント獲得条件","獲得条件","ポイント獲得","ポイント数",
+            "iOS","Android","インストール","対象外","成果対象外",
+            "お問い合わせ","問い合わせ"
+        ):
+            pos=text.find(needle)
+            if pos>=0:
+                contexts.append({"needle":needle,"context":text[max(0,pos-450):pos+1900]})
+        details.append({
+            "listing":row, "ok":r.get("ok"), "status":r.get("status"),
+            "title":title, "canonical":canonical,
+            "contexts":contexts[:12], "excerpt":text[:3200],
         })
 
-    assert False, "GMO_POINT_LIVE_DIAGNOSTIC_V3=" + _json.dumps(
-        {"pages":pages},ensure_ascii=False,sort_keys=True
-    )
+    assert False, "GMO_POINT_LIVE_DIAGNOSTIC_V4=" + _json.dumps({
+        "reportedTotal":total,
+        "uniqueOfferCount":len(offers),
+        "pages":pages,
+        "offerSample":offers[:30],
+        "detailSamples":details,
+    },ensure_ascii=False,sort_keys=True)
