@@ -697,3 +697,125 @@ def test_trima_listing_upper_bound_uses_face_value_but_detail_uses_displayed_yen
     }
     assert daily.explicit_yen(evidence) == 366
 
+
+
+def test_nifty_live_diagnostic_20260925():
+    """Temporary live diagnostic for Nifty Point Club app/game offer surfaces."""
+    import json as _json
+    import re as _re
+    from html import unescape as _unescape
+    from urllib.error import HTTPError as _HTTPError
+    from urllib.parse import urljoin as _urljoin
+    from urllib.request import Request as _Request, urlopen as _urlopen
+
+    ua = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
+        "Mobile/15E148 Safari/604.1"
+    )
+
+    def fetch(url, accept="text/html,application/xhtml+xml"):
+        req = _Request(url, headers={
+            "User-Agent": ua,
+            "Accept": accept,
+            "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
+        })
+        try:
+            with _urlopen(req, timeout=20) as r:
+                data = r.read(5_000_000)
+                return {
+                    "ok": True,
+                    "status": getattr(r, "status", None),
+                    "final": r.geturl(),
+                    "contentType": r.headers.get("Content-Type"),
+                    "text": data.decode("utf-8", "replace"),
+                }
+        except _HTTPError as exc:
+            return {
+                "ok": False,
+                "status": exc.code,
+                "error": "HTTPError",
+                "text": exc.read(500_000).decode("utf-8", "replace"),
+            }
+        except Exception as exc:
+            return {
+                "ok": False,
+                "error": type(exc).__name__ + ":" + str(exc)[:180],
+                "text": "",
+            }
+
+    urls = [
+        "https://api.point.nifty.com/",
+        "https://api.point.nifty.com/service/",
+        "https://api.point.nifty.com/service/app/",
+        "https://api.point.nifty.com/service/appli/",
+        "https://api.point.nifty.com/app/",
+        "https://api.point.nifty.com/apps/",
+        "https://api.point.nifty.com/robots.txt",
+        "https://api.point.nifty.com/sitemap.xml",
+    ]
+    pages = []
+    scripts = []
+    for url in urls:
+        r = fetch(url)
+        raw = r.get("text", "")
+        hrefs = sorted(set(_re.findall(r'href=["\\\']([^"\\\']+)', raw)))
+        srcs = sorted(set(_re.findall(r'<script[^>]+src=["\\\']([^"\\\']+)', raw)))
+        scripts.extend(_urljoin(r.get("final") or url, x) for x in srcs)
+        interesting_links = []
+        for href in hrefs:
+            absolute = _urljoin(r.get("final") or url, href)
+            low = absolute.lower()
+            if any(k in low for k in (
+                "app", "appli", "game", "offer", "reward", "campaign",
+                "service/detail", "skyflag", "smaad", "mychips"
+            )):
+                interesting_links.append(absolute)
+        visible = _re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>", " ", raw)
+        visible = _re.sub(r"(?s)<[^>]+>", " ", visible)
+        visible = _re.sub(r"\\s+", " ", _unescape(visible)).strip()
+        pages.append({
+            "url": url,
+            "final": r.get("final"),
+            "ok": r.get("ok"),
+            "status": r.get("status"),
+            "contentType": r.get("contentType"),
+            "bytes": len(raw.encode("utf-8")),
+            "interestingLinks": interesting_links[:120],
+            "keywords": {k: (k in visible) for k in [
+                "アプリで貯める", "アプリ", "ゲーム", "SKYFLAG", "SmaAD", "案件"
+            ]},
+            "excerpt": visible[:2200],
+        })
+
+    bundle_contexts = []
+    seen = set()
+    for su in scripts:
+        if su in seen or len(bundle_contexts) >= 100:
+            continue
+        seen.add(su)
+        if not any(host in su for host in ("point.nifty.com", "lifemedia.jp")):
+            continue
+        r = fetch(su, "*/*")
+        body = r.get("text", "")
+        for needle in (
+            "アプリで貯める", "skyflag", "smaad", "offerwall", "/api/",
+            "service/detail", "application", "app/", "campaign"
+        ):
+            start = 0
+            while len(bundle_contexts) < 100:
+                pos = body.lower().find(needle.lower(), start)
+                if pos < 0:
+                    break
+                bundle_contexts.append({
+                    "script": su,
+                    "needle": needle,
+                    "context": body[max(0, pos-650):pos+1600],
+                })
+                start = pos + len(needle)
+
+    assert False, "NIFTY_LIVE_DIAGNOSTIC=" + _json.dumps({
+        "pages": pages,
+        "scriptCount": len(set(scripts)),
+        "bundleContexts": bundle_contexts,
+    }, ensure_ascii=False, sort_keys=True)
