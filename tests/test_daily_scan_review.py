@@ -738,141 +738,93 @@ def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
 
 
 def test_gmo_point_live_diagnostic_20260925():
-    """Temporary live diagnostic for the current GMO Poikatsu game search universe."""
+    """Temporary robust live diagnostic for GMO Poikatsu game pages/details."""
     import json as _json
     import re as _re
     from html import unescape as _unescape
     from urllib.error import HTTPError as _HTTPError
-    from urllib.parse import urljoin as _urljoin
     from urllib.request import Request as _Request, urlopen as _urlopen
 
-    ua = (
+    ua=(
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
         "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
         "Mobile/15E148 Safari/604.1"
     )
-
     def fetch(url):
-        req = _Request(url, headers={
-            "User-Agent": ua,
-            "Accept": "text/html,application/xhtml+xml",
-            "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
-        })
+        req=_Request(url,headers={"User-Agent":ua,"Accept-Language":"ja,en-US;q=0.8"})
         try:
-            with _urlopen(req, timeout=25) as r:
-                data = r.read(5_000_000)
-                return {
-                    "ok": True, "status": getattr(r,"status",None),
-                    "final": r.geturl(), "text": data.decode("utf-8","replace"),
-                }
+            with _urlopen(req,timeout=25) as r:
+                return {"status":getattr(r,"status",None),"final":r.geturl(),
+                        "text":r.read(5_000_000).decode("utf-8","replace")}
         except _HTTPError as exc:
-            return {
-                "ok": False, "status": exc.code,
-                "text": exc.read(500_000).decode("utf-8","replace"),
-            }
+            return {"status":exc.code,"final":url,
+                    "text":exc.read(500_000).decode("utf-8","replace")}
         except Exception as exc:
-            return {"ok": False, "error": type(exc).__name__+":"+str(exc)[:160], "text":""}
+            return {"status":None,"final":url,"text":"",
+                    "error":type(exc).__name__+":"+str(exc)[:160]}
 
     def visible(raw):
         x=_re.sub(r"(?is)<(?:script|style|noscript|svg)\\b[^>]*>.*?</(?:script|style|noscript|svg)>"," ",raw)
         x=_re.sub(r"(?s)<[^>]+>"," ",x)
         return _re.sub(r"\\s+"," ",_unescape(x)).strip()
 
-    def page_url(page):
-        encoded="%E3%82%B2%E3%83%BC%E3%83%A0"
-        if page == 1:
-            return "https://colleee.net/programs/list?keywords="+encoded
-        return f"https://colleee.net/programs/list/0/{page}?keywords="+encoded
-
+    encoded="%E3%82%B2%E3%83%BC%E3%83%A0"
     pages=[]
-    offers=[]
+    identities=[]
     seen=set()
     total=None
-    for page in range(1, 13):
-        url=page_url(page)
-        r=fetch(url)
-        raw=r.get("text","")
-        text=visible(raw)
-        total_match=_re.search(r"全\\s*([0-9,]+)\\s*件",text)
-        if total_match:
-            total=int(total_match.group(1).replace(",",""))
+    fixed_details=[
+        "https://colleee.net/programs/11521",
+        "https://colleee.net/programs/11495",
+        "https://colleee.net/programs/11004",
+    ]
+    for page in range(1,13):
+        url=("https://colleee.net/programs/list?keywords="+encoded
+             if page==1 else f"https://colleee.net/programs/list/0/{page}?keywords="+encoded)
+        r=fetch(url); raw=r["text"]; txt=visible(raw)
+        tm=_re.search(r"全\\s*([0-9,]+)\\s*件",txt)
+        if tm: total=int(tm.group(1).replace(",",""))
+        hrefs=_re.findall(
+            r'href=["\\\'](https://colleee\\.net/programs/[0-9]+(?:/[0-9A-Za-z]+)?/?)["\\\']',
+            raw,_re.I
+        )
+        hrefs=list(dict.fromkeys(hrefs))
+        for href in hrefs:
+            if href not in seen:
+                seen.add(href); identities.append(href)
+        snippets=[]
+        for href in hrefs[:8]:
+            p=raw.find(href)
+            around=raw[max(0,p-900):p+2600] if p>=0 else ""
+            snippets.append({"url":href,"visible":visible(around)[:1300],"raw":around[:3600]})
+        pages.append({"page":page,"url":url,"status":r["status"],"hrefCount":len(hrefs),
+                      "hrefs":hrefs[:20],"snippets":snippets})
+        if page>1 and not hrefs: break
+        if total and len(identities)>=total: break
 
-        page_rows=[]
-        for m in _re.finditer(
-            r'(?is)<li>\\s*<a href=["\\\'](https://colleee\\.net/programs/([0-9]+)(?:/([0-9A-Za-z]+))?)["\\\']>(.*?)</a>\\s*</li>',
-            raw,
-        ):
-            url_abs=m.group(1)
-            base_id=m.group(2)
-            variant=m.group(3) or ""
-            block=m.group(4)
-            title_match=_re.search(r'class=["\\\']programs_list__detail__txt["\\\'][^>]*>(.*?)</p>',block,_re.S)
-            cond_match=_re.search(r'<dl class=["\\\']programs_list__detail__chart["\\\']>.*?<dd>(.*?)</dd>',block,_re.S)
-            point_match=_re.search(
-                r'class=["\\\']programs_list__detail__point["\\\'].*?'
-                r'<span class=["\\\']large["\\\']>\\s*([0-9,]+)\\s*</span>\\s*<span>\\s*P\\s*</span>',
-                block,_re.S
-            )
-            title=visible(title_match.group(1)) if title_match else ""
-            condition=visible(cond_match.group(1)) if cond_match else ""
-            points=int(point_match.group(1).replace(",","")) if point_match else None
-            row={
-                "url":url_abs, "baseId":base_id, "variant":variant,
-                "title":title, "condition":condition, "points":points,
-            }
-            page_rows.append(row)
-            key=(base_id,variant)
-            if key not in seen:
-                seen.add(key); offers.append(row)
-
-        pages.append({
-            "page":page, "url":url, "ok":r.get("ok"), "status":r.get("status"),
-            "rowCount":len(page_rows), "rows":page_rows[:15],
-        })
-        if total is not None and len(offers) >= total:
-            break
-        if page > 1 and not page_rows:
-            break
-
-    # Inspect a few game-shaped current offers, favoring StepUp/level/stage conditions.
-    scored=[]
-    for row in offers:
-        hay=(row["title"]+" "+row["condition"]).lower()
-        score=sum(1 for token in (
-            "ステップアップ","レベル","ステージ","ミッション","プレイヤー","城","パズル","rpg","放置"
-        ) if token.lower() in hay)
-        scored.append((score,row))
-    chosen=[row for _,row in sorted(scored,key=lambda x:(-x[0],x[1]["url"]))[:8]]
-
+    for href in identities[:8]:
+        if href not in fixed_details: fixed_details.append(href)
     details=[]
-    for row in chosen:
-        r=fetch(row["url"])
-        raw=r.get("text","")
-        text=visible(raw)
-        title=visible((_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0])
-        canonical=(_re.findall(
-            r'<link[^>]+rel=["\\\']canonical["\\\'][^>]+href=["\\\']([^"\\\']+)',
-            raw,re.I
-        ) or [""])[0]
+    for url in fixed_details[:12]:
+        r=fetch(url); raw=r["text"]; txt=visible(raw)
         contexts=[]
         for needle in (
-            "ポイント獲得条件","獲得条件","ポイント獲得","ポイント数",
-            "iOS","Android","インストール","対象外","成果対象外",
-            "お問い合わせ","問い合わせ"
+            "ポイント獲得条件","獲得条件","獲得ポイント","ポイント",
+            "iOS","Android","インストール","ステップアップ",
+            "対象外","成果対象外","問い合わせ","お問い合わせ"
         ):
-            pos=text.find(needle)
-            if pos>=0:
-                contexts.append({"needle":needle,"context":text[max(0,pos-450):pos+1900]})
+            p=txt.find(needle)
+            if p>=0:
+                contexts.append({"needle":needle,"context":txt[max(0,p-500):p+2000]})
         details.append({
-            "listing":row, "ok":r.get("ok"), "status":r.get("status"),
-            "title":title, "canonical":canonical,
-            "contexts":contexts[:12], "excerpt":text[:3200],
+            "url":url,"status":r["status"],"final":r["final"],
+            "title":visible((_re.findall(r"(?is)<title[^>]*>(.*?)</title>",raw) or [""])[0]),
+            "canonical":(_re.findall(r'<link[^>]+rel=["\\\']canonical["\\\'][^>]+href=["\\\']([^"\\\']+)',raw,_re.I) or [""])[0],
+            "contexts":contexts[:14],"excerpt":txt[:3400],
+            "programTokens":list(dict.fromkeys(_re.findall(r'/programs/[0-9]+(?:/[0-9A-Za-z]+)?',raw)))[:30],
         })
 
-    assert False, "GMO_POINT_LIVE_DIAGNOSTIC_V4=" + _json.dumps({
-        "reportedTotal":total,
-        "uniqueOfferCount":len(offers),
-        "pages":pages,
-        "offerSample":offers[:30],
-        "detailSamples":details,
+    assert False,"GMO_POINT_LIVE_DIAGNOSTIC_V5="+_json.dumps({
+        "reportedTotal":total,"uniqueIdentityCount":len(identities),
+        "identities":identities[:120],"pages":pages,"details":details
     },ensure_ascii=False,sort_keys=True)
