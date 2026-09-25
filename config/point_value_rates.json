@@ -119,12 +119,13 @@
       "note": "Official FAQ states 1 point = 1 yen equivalent."
     },
     "gmo_point": {
-      "unit": "point",
-      "pointsPerYen": null,
-      "yenPerPoint": null,
-      "status": "unsupported",
-      "evidenceUrl": null,
-      "note": "Do not infer a conversion until a current first-party rate page and reviewed parser contract are added."
+      "unit": "GMO-point",
+      "pointsPerYen": 1,
+      "yenPerPoint": 1,
+      "status": "verified_face_value",
+      "evidenceUrl": "https://colleee.net/programs/11521",
+      "reviewedAt": "2026-09-25",
+      "note": "Current first-party GMO Poikatsu game detail states 1P=1 yen equivalent and the site guide states 1 point = 1 yen worth. Rank reviewed standard offer points at 1:1; do not add member-rank bonuses."
     },
     "powl": {
       "unit": "pt",
