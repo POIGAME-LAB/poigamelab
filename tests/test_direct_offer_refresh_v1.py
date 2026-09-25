@@ -4424,6 +4424,24 @@ def test_trima_listing_url_identity_and_offset_pagination_are_strict():
         direct.trima_offer_id(TRIMA_DETAIL + "?x=1")
 
 
+def test_trima_rule_progress_prioritizes_games_without_misclassifying_generic_missions():
+    game = direct.classify_new_game_candidate({
+        "source": "trima",
+        "titleHint": "Neo Bubble Shooter",
+        "descriptionHint": "新規インストール後起動→ステージ300クリア",
+    })
+    assert game["classification"] == "likely_game"
+    assert "positive:condition_game_progress" in game["classificationReasons"]
+
+    generic_app = direct.classify_new_game_candidate({
+        "source": "trima",
+        "titleHint": "Pococha",
+        "descriptionHint": "初心者限定！チュートリアルミッション全クリア後にコインをすべて受け取る",
+    })
+    assert generic_app["classification"] == "review"
+    assert "positive:condition_game_progress" not in generic_app["classificationReasons"]
+
+
 def test_trima_json_catalog_preserves_miles_and_uuid_candidates():
     source = trima_source_fixture()
     raw = trima_listing_fixture()

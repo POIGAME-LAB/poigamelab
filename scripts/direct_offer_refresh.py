@@ -387,9 +387,11 @@ def classify_new_game_candidate(item):
     """Assign a conservative review score for whether a new candidate is a game.
 
     This classifier never deletes candidates and never authorizes publication.
-    It only prioritizes review by explicit positive/negative title signals.
+    It prioritizes review from explicit title signals plus tightly-scoped
+    gameplay progress language exposed by first-party listing conditions.
     """
     title = str((item or {}).get("titleHint") or "").strip()
+    description = str((item or {}).get("descriptionHint") or "").strip()
     normalized = normalized_text(title)
     score = 0
     reasons = []
@@ -437,6 +439,21 @@ def classify_new_game_candidate(item):
     if any(re.search(pattern, title, re.I) for pattern in progress_patterns):
         score += 2
         reasons.append("positive:explicit_game_progress")
+
+    # App catalogs such as Trima often keep the game name clean and put the
+    # actual progression target in a separate rule field. Count only strongly
+    # game-shaped progress conditions here. Generic "mission complete" text is
+    # intentionally excluded because non-game apps also use that wording.
+    condition_progress_patterns = (
+        r"(?:プレイヤー|プレーヤー)?レベル\s*\d+\s*(?:到達|クリア|突破)",
+        r"(?:ステージ|チャプター|フロア|ワールド|難易度)\s*\d+\s*(?:到達|クリア|突破)",
+        r"マップ\s*\d+\s*(?:到達|クリア|アンロック)",
+        r"(?:城|本部|司令部)\s*(?:レベル|lv)?\s*\d+\s*(?:到達|突破|建設|クリア)?",
+        r"\d+\s*(?:レベル|ステージ)\s*(?:到達|クリア|突破)",
+    )
+    if any(re.search(pattern, description, re.I) for pattern in condition_progress_patterns):
+        score += 2
+        reasons.append("positive:condition_game_progress")
 
     if re.search(r"(?:step\s*up|stepup|各成果地点到達|各ミッションクリア|ミッション全クリア)", title, re.I):
         score += 2
