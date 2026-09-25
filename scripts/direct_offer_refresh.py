@@ -3432,6 +3432,15 @@ def _gmo_point_listing_cards(raw, base_url, source):
     return cards
 
 
+def _gmo_point_is_app_game_card(card):
+    """Require an app-shaped signal before promoting keyword-search rows as game candidates."""
+    platform = str((card or {}).get("platformHint") or "")
+    if platform in {"iOS", "Android", "iOS|Android"}:
+        return True
+    condition = normalized_text((card or {}).get("condition") or "")
+    return "アプリ" in condition and "インストール" in condition
+
+
 def gmo_point_listing_detail_identity_signature(raw, base_url, source, limit=5000):
     identities = []
     seen = set()
@@ -3490,6 +3499,8 @@ def discover_gmo_point_listing_candidates(raw, base_url, source, targets, limit=
         identity = offer_identity_key(card["detailUrl"], "gmo_point")
         if not identity or identity in known_identities or identity in seen:
             continue
+        if not _gmo_point_is_app_game_card(card):
+            continue
         if context_matches_known_game(card["title"], targets):
             continue
         seen.add(identity)
@@ -3503,6 +3514,8 @@ def discover_gmo_point_target_listing_candidates(raw, base_url, source, aliases,
     """Find known-game GMO cards using only bounded first-party search cards."""
     found = []
     for card in _gmo_point_listing_cards(raw, base_url, source):
+        if not _gmo_point_is_app_game_card(card):
+            continue
         if not target_present(card["title"], aliases):
             continue
         item = _gmo_point_candidate(card, source)
