@@ -303,6 +303,13 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
     listing page. Reward, platform, conditions, and publication eligibility
     remain unverified until the detail is independently reviewed.
     """
+    if str(source.get("id") or "") == "nifty_point":
+        try:
+            return discover_nifty_target_listing_candidates(
+                raw, base_url, source, aliases, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
     if str(source.get("id") or "") == "trima":
         try:
             return discover_trima_target_listing_candidates(
@@ -662,6 +669,10 @@ def listing_detail_identity_signature(raw, base_url, source, limit=5000):
         return trima_listing_detail_identity_signature(
             raw, base_url, source, limit=limit
         )
+    if source_id == "nifty_point":
+        return nifty_listing_detail_identity_signature(
+            raw, base_url, source, limit=limit
+        )
     identities = []
     seen = set()
     try:
@@ -729,6 +740,13 @@ def discover_new_game_listing_candidates(raw, base_url, source, targets, limit=5
     if source_id == "trima":
         try:
             return discover_trima_listing_candidates(
+                raw, base_url, source, targets, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
+    if source_id == "nifty_point":
+        try:
+            return discover_nifty_listing_candidates(
                 raw, base_url, source, targets, limit=limit
             )
         except (ValueError, TypeError, RecursionError):
@@ -1292,6 +1310,10 @@ def offer_identity_key(url, source_id):
         )
         if match:
             return f"trima:pathuuid:{match.group(1).lower()}"
+    if str(source_id or "") == "nifty_point":
+        match = re.fullmatch(r"/service/detail/([0-9A-Za-z]{12})/?", path)
+        if match:
+            return f"nifty_point:pathid:{match.group(1).upper()}"
     for pattern in (
         r"/ad_details/(\d+)",
         r"/campaigns/details/(\d+)",
@@ -2975,6 +2997,308 @@ TRIMA_UUID_RE = (
 )
 
 
+def nifty_offer_id(url):
+    """Return the stable 12-character first-party Nifty campaign identity."""
+    try:
+        parsed = urlparse(str(url or ""))
+        port = parsed.port
+    except (TypeError, ValueError):
+        raise ValueError("unexpected_offer_url")
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname not in {"api.point.nifty.com", "lifemedia.jp"}
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in {None, 443}
+        or parse_qs(parsed.query, keep_blank_values=True)
+    ):
+        raise ValueError("unexpected_offer_url")
+    match = re.fullmatch(r"/service/detail/([0-9A-Za-z]{12})/?", parsed.path or "")
+    if not match:
+        raise ValueError("unexpected_offer_url")
+    return match.group(1).upper()
+
+
+def _nifty_listing_cards(raw, base_url, source):
+    """Parse only the reviewed Nifty smartphone-app result-card container."""
+    try:
+        root = EvidenceHTML(raw or "").root
+    except (TypeError, ValueError, RecursionError):
+        raise ValueError("invalid_listing_payload")
+    cards = []
+    for card in root.find(tag="li"):
+        classes = set(card.attrs.get("class", "").split())
+        if "alist-list" not in classes:
+            continue
+
+        link_rows = []
+        for anchor in card.find(tag="a"):
+            href = html.unescape(anchor.attrs.get("href", "")).strip()
+            absolute = urljoin(base_url, href).split("#", 1)[0]
+            if not source_host_allowed(absolute, source):
+                continue
+            try:
+                offer_id = nifty_offer_id(absolute)
+            except ValueError:
+                continue
+            link_rows.append((offer_id, absolute))
+        unique_links = list(dict.fromkeys(link_rows))
+        if len(unique_links) != 1:
+            continue
+        offer_id, detail_url = unique_links[0]
+
+        titles = [
+            evidence_text(node).strip()
+            for node in card.find(tag="dt")
+            if "ttl" in node.attrs.get("class", "").split()
+            and evidence_text(node).strip()
+        ]
+        if len(titles) != 1 or not 2 <= len(titles[0]) <= 240:
+            continue
+        title = titles[0]
+
+        rewards = []
+        for node in card.find(cls="f-point"):
+            match = re.fullmatch(
+                r"(?:最大\s*)?([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*P",
+                evidence_text(node).strip(),
+                re.I,
+            )
+            if match:
+                value = int(match.group(1).replace(",", ""))
+                if 0 < value <= 5_000_000:
+                    rewards.append(value)
+        rewards = list(dict.fromkeys(rewards))
+        if len(rewards) != 1:
+            continue
+
+        descriptions = [
+            evidence_text(node).strip()
+            for node in card.find(tag="p")
+            if "mod-sub" in node.attrs.get("class", "").split()
+            and evidence_text(node).strip()
+        ]
+        description = descriptions[0][:900] if len(descriptions) == 1 else ""
+
+        cards.append({
+            "offerId": offer_id,
+            "detailUrl": detail_url,
+            "title": title,
+            "rewardPoints": rewards[0],
+            "description": description,
+            "platformHint": platform_hint(title),
+        })
+    return cards
+
+
+def nifty_listing_detail_identity_signature(raw, base_url, source, limit=5000):
+    identities = []
+    seen = set()
+    for card in _nifty_listing_cards(raw, base_url, source):
+        identity = offer_identity_key(card["detailUrl"], "nifty_point")
+        if identity and identity not in seen:
+            seen.add(identity)
+            identities.append(identity)
+        if len(identities) >= max(1, min(int(limit or 5000), 5000)):
+            break
+    return tuple(sorted(identities))
+
+
+def _nifty_known_identities(targets):
+    known = set()
+    for target in targets or []:
+        for url in (target.get("known_urls_by_source") or {}).get("nifty_point", []) or []:
+            identity = offer_identity_key(url, "nifty_point")
+            if identity:
+                known.add(identity)
+    return known
+
+
+def _nifty_candidate(card, source):
+    points = card["rewardPoints"]
+    return {
+        "source": "nifty_point",
+        "sourceLabel": str(source.get("name") or "ニフティポイントクラブ"),
+        "titleHint": card["title"],
+        "descriptionHint": card["description"],
+        "platformHint": card["platformHint"],
+        "listingRewardPoints": points,
+        "listingRewardText": f"{points:,} P",
+        "firstPartyCandidateUrl": card["detailUrl"],
+        "offerIdentity": offer_identity_key(card["detailUrl"], "nifty_point"),
+        "discoveryEvidence": "first_party_smartphone_app_listing",
+        "discoveryScope": str(
+            source.get("new_game_discovery_scope")
+            or source.get("coverage_scope")
+            or "current_first_party_smartphone_app_listing"
+        ),
+        "fullCatalogObserved": source.get("full_catalog_discovery_enabled") is True,
+        "candidateOnly": True,
+        "firstPartyVerificationRequired": True,
+        "autoCreateAuthorized": False,
+        "publicationAuthorized": False,
+    }
+
+
+def discover_nifty_listing_candidates(raw, base_url, source, targets, limit=500):
+    """Convert current Nifty smartphone-app cards into review-only candidates."""
+    known_identities = _nifty_known_identities(targets)
+    found = []
+    seen = set()
+    for card in _nifty_listing_cards(raw, base_url, source):
+        identity = offer_identity_key(card["detailUrl"], "nifty_point")
+        if not identity or identity in known_identities or identity in seen:
+            continue
+        if context_matches_known_game(card["title"], targets):
+            continue
+        seen.add(identity)
+        found.append(_nifty_candidate(card, source))
+        if len(found) >= max(1, min(int(limit or 500), 2000)):
+            break
+    return found
+
+
+def discover_nifty_target_listing_candidates(raw, base_url, source, aliases, limit=8):
+    """Find known-game Nifty cards using only the bounded smartphone-app card."""
+    found = []
+    for card in _nifty_listing_cards(raw, base_url, source):
+        if not target_present(card["title"], aliases):
+            continue
+        item = _nifty_candidate(card, source)
+        item["gameLabel"] = next(
+            (str(value).strip() for value in aliases if str(value).strip()), ""
+        )
+        item["rewardYenHint"] = card["rewardPoints"]
+        found.append(item)
+        if len(found) >= max(1, min(int(limit or 8), 20)):
+            break
+    return found
+
+
+def inspect_nifty_offer(raw, requested_url, final_url, aliases):
+    """Verify current Nifty reward, platform, condition and first-party terms."""
+    try:
+        offer_id = nifty_offer_id(requested_url)
+        if nifty_offer_id(final_url) != offer_id:
+            raise ValueError("redirected_to_different_offer")
+
+        try:
+            root = EvidenceHTML(raw or "").root
+        except (TypeError, ValueError, RecursionError):
+            raise ValueError("invalid_offer_payload")
+
+        titles = [
+            evidence_text(node).strip()
+            for node in root.find(tag="h1")
+            if "contents__title" in node.attrs.get("class", "").split()
+            and evidence_text(node).strip()
+        ]
+        if len(titles) != 1 or not 2 <= len(titles[0]) <= 240:
+            raise ValueError("missing_offer_title")
+        name = titles[0]
+        if not target_present(name, aliases):
+            name_key = normalized_game_title_key(name)
+            alias_keys = [
+                normalized_game_title_key(alias)
+                for alias in aliases
+                if str(alias or "").strip()
+            ]
+            if not any(
+                key and len(key) >= 4
+                and (key.startswith(name_key) or name_key.startswith(key))
+                for key in alias_keys
+            ):
+                raise ValueError("offer_title_mismatch")
+
+        text = visible_text(raw)
+        standard_matches = re.findall(
+            r"通常会員\s+(?:最大\s*)?([1-9][0-9,]*)\s*P\s*"
+            r"\(\s*([1-9][0-9,]*)\s*円相当\s*\)",
+            text,
+            re.I,
+        )
+        reward_pairs = {
+            (int(points.replace(",", "")), int(yen.replace(",", "")))
+            for points, yen in standard_matches
+            if 0 < int(points.replace(",", "")) <= 5_000_000
+            and 0 < int(yen.replace(",", "")) <= 5_000_000
+        }
+        if len(reward_pairs) != 1:
+            raise ValueError("ambiguous_standard_member_reward")
+        points, yen = next(iter(reward_pairs))
+        if points != yen:
+            raise ValueError("point_yen_contract_mismatch")
+
+        terms_start = text.find("獲得条件詳細")
+        terms_end = text.find("ヘルプ", terms_start + 1) if terms_start >= 0 else -1
+        if terms_start < 0:
+            raise ValueError("missing_offer_terms")
+        if terms_end < 0:
+            terms_end = min(len(text), terms_start + 18000)
+        terms = text[terms_start:terms_end].strip()
+        if len(terms) < 120:
+            raise ValueError("incomplete_offer_terms")
+        for marker in ("対象端末", "ポイント付与NG条件", "問い合わせ"):
+            if marker not in terms:
+                raise ValueError("incomplete_offer_terms")
+
+        condition_match = re.search(
+            r"獲得条件詳細\s*(.+?)\s*対象端末",
+            terms,
+            re.S,
+        )
+        if not condition_match:
+            raise ValueError("missing_offer_condition")
+        condition = re.sub(r"\s+", " ", condition_match.group(1)).strip()
+        if len(condition) < 4:
+            raise ValueError("missing_offer_condition")
+
+        platform_match = re.search(
+            r"対象端末\s*(.+?)\s*必ずお読みください",
+            terms,
+            re.S,
+        )
+        if not platform_match:
+            raise ValueError("missing_offer_platform")
+        platform_text = re.sub(r"\s+", " ", platform_match.group(1)).strip()
+        has_ios = bool(re.search(r"iOS|iPhone", platform_text, re.I))
+        has_android = bool(re.search(r"Android", platform_text, re.I))
+        if has_android and not has_ios:
+            platform = "Android"
+        elif has_ios and not has_android:
+            platform = "iOS"
+        elif has_ios and has_android:
+            platform = "iOS|Android"
+        else:
+            raise ValueError("missing_offer_platform")
+
+        payload_out = {
+            "offerId": offer_id,
+            "name": name,
+            "platform": platform,
+            "displayedRewardPoints": points,
+            "verifiedCurrentRewardYen": yen,
+            "rewardUnit": "Nifty-P",
+            "sourcePointRate": "1P=1JPY",
+            "conditionText": condition,
+            "termsText": terms[:16000],
+            "downstreamTermsRequired": False,
+            "candidateOnly": True,
+            "publicationAuthorized": False,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(payload_out, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        return {
+            "state": "parsed",
+            "parserVersion": "nifty-point-detail-review-v1",
+            **payload_out,
+            "evidenceFingerprint": fingerprint,
+        }
+    except (ValueError, TypeError, RecursionError) as error:
+        return {"state": "review_required", "reason": str(error)[:120]}
+
+
 def trima_offer_id(url):
     """Return the stable UUID identity for one public first-party Trima offer."""
     try:
@@ -3811,6 +4135,7 @@ def inspect_detail(url, source, aliases, fetcher=None, provider_label_registry=N
         "kurashiru_reward": inspect_kurashiru_reward_offer,
         "mikoshi": inspect_mikoshi_offer,
         "trima": inspect_trima_offer,
+        "nifty_point": inspect_nifty_offer,
     }
     if source.get("id") in structured_parsers:
         if source.get("id") == "hapitas":

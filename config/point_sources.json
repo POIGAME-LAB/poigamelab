@@ -515,7 +515,7 @@
     {
       "id": "nifty_point",
       "name": "ニフティポイントクラブ",
-      "start_url": "https://api.point.nifty.com/",
+      "start_url": "https://api.point.nifty.com/service/alist/spapp",
       "search_domains": [
         "api.point.nifty.com",
         "point.nifty.com",
@@ -526,12 +526,31 @@
       "discovery_only": true,
       "known_target_urls": [],
       "prefer_known_pages": false,
-      "direct_listing_urls": [],
-      "direct_listing_limit": 0,
+      "direct_listing_urls": [
+        "https://api.point.nifty.com/service/alist/spapp"
+      ],
+      "direct_listing_limit": 1,
       "direct_detail_limit": 0,
-      "direct_detail_url_hints": [],
+      "direct_detail_url_hints": [
+        "/service/detail/"
+      ],
       "scheduled_fetch_enabled": false,
-      "scheduled_fetch_reason": "Discovery-only source until a stable first-party app/game listing or detail route is validated."
+      "scheduled_fetch_reason": "Current anonymous first-party Nifty smartphone-app listing exposes the complete current category with stable detail identities and exact points. Reviewed public detail pages expose standard-member reward, target OS, condition, exclusions and inquiry terms. Keep candidate-only; publication remains disabled.",
+      "coverage_first_party_listing_enabled": true,
+      "coverage_scope": "current_first_party_smartphone_app_listing",
+      "coverage_candidate_limit": 8,
+      "coverage_detail_review_enabled": true,
+      "coverage_detail_review_limit_per_game": 4,
+      "coverage_detail_review_mode": "candidate_only",
+      "coverage_detail_review_parser": "nifty-point-detail-review-v1",
+      "full_catalog_discovery_enabled": true,
+      "new_game_discovery_enabled": true,
+      "new_game_discovery_listing_limit": 1,
+      "new_game_discovery_candidate_limit": 100,
+      "new_game_discovery_min_detail_identities_first_page": 1,
+      "new_game_discovery_scope": "current_first_party_smartphone_app_listing",
+      "reviewedAt": "2026-09-25",
+      "discoveryNote": "2026-09-25 live Actions audit: anonymous GET /service/alist/spapp returned the full current smartphone-app category (2 offers at review time), including a game offer with stable /service/detail/<12-char-id>, exact P reward and first-party description. The reviewed game detail exposed 210P = 210 yen equivalent for a normal member, Android-only targeting, achievement condition and full exclusion/inquiry terms."
     },
     {
       "id": "gmo_point",

@@ -156,6 +156,24 @@ def _mikoshi_explicit_yen(evidence):
     return None
 
 
+def _nifty_explicit_yen(evidence):
+    """Accept Nifty yen only under the reviewed standard-member 1P=1JPY contract."""
+    if evidence.get("parserVersion") != "nifty-point-detail-review-v1":
+        return None
+    points = evidence.get("displayedRewardPoints")
+    yen = evidence.get("verifiedCurrentRewardYen")
+    if (
+        type(points) is int
+        and type(yen) is int
+        and points > 0
+        and points == yen
+        and evidence.get("rewardUnit") == "Nifty-P"
+        and evidence.get("sourcePointRate") == "1P=1JPY"
+    ):
+        return yen
+    return None
+
+
 def explicit_yen(evidence, warau_rate_confirmed=False):
     """Do not equate raw pt/P with yen or sum OS/site alternative offers."""
     if evidence.get("state") != "parsed" or evidence.get("downstreamTermsRequired"):
@@ -177,6 +195,8 @@ def explicit_yen(evidence, warau_rate_confirmed=False):
         return _kurashiru_reward_explicit_yen(evidence)
     if evidence.get("parserVersion") == "mikoshi-skyflag-detail-review-v3":
         return _mikoshi_explicit_yen(evidence)
+    if evidence.get("parserVersion") == "nifty-point-detail-review-v1":
+        return _nifty_explicit_yen(evidence)
     contracts = {
         "chobirich-numbered-stepup-v1": "observedRewardYen",
         "coincome-detail-review-v2": "displayedRewardYen",
