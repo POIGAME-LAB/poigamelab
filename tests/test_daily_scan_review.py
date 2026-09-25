@@ -697,3 +697,41 @@ def test_trima_listing_upper_bound_uses_face_value_but_detail_uses_displayed_yen
     }
     assert daily.explicit_yen(evidence) == 366
 
+
+
+def test_nifty_reviewed_standard_member_reward_uses_one_to_one_yen_contract():
+    source = {
+        "id": "nifty_point",
+        "search_domains": ["api.point.nifty.com", "lifemedia.jp"],
+        "direct_detail_url_hints": ["/service/detail/"],
+        "scheduled_fetch_enabled": False,
+        "coverage_detail_review_enabled": True,
+        "coverage_detail_review_mode": "candidate_only",
+    }
+    assert daily.direct.source_participates_in_new_game_ranking(source) is True
+
+    registry = {
+        "nifty_point": {
+            "status": "verified",
+            "yenPerPoint": 1,
+        }
+    }
+    item = {
+        "source": "nifty_point",
+        "titleHint": "ギシギシ：マッチパズル",
+        "listingRewardText": "210 P",
+    }
+    assert daily.listing_reward_upper_bound_yen(item, registry=registry) == 210
+
+    evidence = {
+        "state": "parsed",
+        "parserVersion": "nifty-point-detail-review-v1",
+        "displayedRewardPoints": 210,
+        "verifiedCurrentRewardYen": 210,
+        "rewardUnit": "Nifty-P",
+        "sourcePointRate": "1P=1JPY",
+        "downstreamTermsRequired": False,
+    }
+    assert daily.explicit_yen(evidence) == 210
+    evidence["verifiedCurrentRewardYen"] = 209
+    assert daily.explicit_yen(evidence) is None
