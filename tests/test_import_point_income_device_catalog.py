@@ -145,3 +145,64 @@ def test_capture_detects_first_party_hosts_and_rejects_lookalikes():
     assert capture.first_party("https://sp.pointi.jp/ad/1/") is True
     assert capture.first_party("https://pointi.jp.evil.example/ad/1/") is False
     assert capture.first_party("http://pointi.jp/ad/1/") is False
+
+
+def test_capture_dispatch_payload_is_gzip_and_bounded():
+    import base64
+    import gzip
+
+    capture = load_capture_module()
+    payload = {
+        "schemaVersion": 2,
+        "source": "point_income",
+        "offers": [
+            {
+                "adId": str(150000 + i),
+                "url": f"https://sp.pointi.jp/ad/{150000 + i}/",
+                "title": f"テストゲーム {i}（iOS用）",
+                "platform": "iOS",
+                "currentPoints": 1000 + i,
+                "currentYen": (1000 + i) / 10,
+                "rewardText": f"{1000 + i:,}pt",
+            }
+            for i in range(300)
+        ],
+        "count": 300,
+    }
+    encoded = capture.encode_dispatch_payload(payload)
+    assert len(encoded) < capture.MAX_DISPATCH_CHARS
+    packed = base64.b64decode(encoded, validate=True)
+    raw = gzip.decompress(packed)
+    decoded = json.loads(raw.decode("utf-8"))
+    assert decoded["count"] == 300
+    assert len(decoded["offers"]) == 300
+
+
+def test_dispatch_request_targets_only_expected_workflow():
+    capture = load_capture_module()
+    seen = {}
+
+    class Response:
+        status = 204
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+
+    def fake_open(request, timeout):
+        seen["url"] = request.full_url
+        seen["timeout"] = timeout
+        seen["authorization"] = request.headers.get("Authorization")
+        seen["body"] = json.loads(request.data.decode("utf-8"))
+        return Response()
+
+    assert capture.dispatch_to_github("abc123", "github_pat_test_token_1234567890", open_url=fake_open)
+    assert seen["url"] == (
+        "https://api.github.com/repos/POIGAME-LAB/poigamelab/"
+        "actions/workflows/import-point-income-device-catalog.yml/dispatches"
+    )
+    assert seen["authorization"] == "Bearer github_pat_test_token_1234567890"
+    assert seen["body"] == {
+        "ref": "main",
+        "inputs": {"point_income_catalog_base64": "abc123"},
+    }

@@ -1,34 +1,51 @@
 #!/usr/bin/env python3
-"""Capture the current public Point Income category-68 catalog on an iPhone.
+"""Capture Point Income category 68 on an iPhone and hand it to POIGAME LAB.
 
-Point Income geo-gates cloud CI, so this is intentionally designed for a
-Japan-residential iPhone/Pythonista run. It transmits only public offer fields:
-ad id/url, title, platform and displayed current points. No HTML, cookies,
-credentials or account state are emitted.
+Point Income geo-gates cloud CI, so public offer discovery is performed from a
+Japan-residential iPhone/Pythonista session. After one-time GitHub token setup,
+a normal run is one tap: capture -> gzip/base64 -> GitHub Actions dispatch.
+
+Only public offer fields are transmitted. Raw HTML, cookies, credentials,
+account state and the GitHub token are never included in the payload.
 """
 import base64
+import gzip
 import json
 import re
+import sys
 import time
 from html import unescape
 from html.parser import HTMLParser
 from http.cookiejar import CookieJar
+from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse
-from urllib.request import Request, build_opener, HTTPCookieProcessor
+from urllib.request import Request, build_opener, HTTPCookieProcessor, urlopen
 
 BASE = "https://sp.pointi.jp"
 START_URL = BASE + "/list.php?cat_no=68"
 LISTING_TEMPLATE = BASE + "/ajax_load/load_list_site.php?page={page}&cat_no=68&od=1"
+GITHUB_REPOSITORY = "POIGAME-LAB/poigamelab"
+GITHUB_WORKFLOW = "import-point-income-device-catalog.yml"
+GITHUB_API = (
+    "https://api.github.com/repos/"
+    + GITHUB_REPOSITORY
+    + "/actions/workflows/"
+    + GITHUB_WORKFLOW
+    + "/dispatches"
+)
+KEYCHAIN_SERVICE = "POIGAMELAB"
+KEYCHAIN_ACCOUNT = "github_actions_dispatch_token"
 UA = (
     "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
     "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
     "Mobile/15E148 Safari/604.1"
 )
 ALLOWED_HOSTS = {"pointi.jp", "www.pointi.jp", "sp.pointi.jp"}
-AD_RE = re.compile(r"^/ad/(\\d+)/?$")
-POINT_RE = re.compile(r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\\s*pt", re.I)
+AD_RE = re.compile(r"^/ad/(\d+)/?$")
+POINT_RE = re.compile(r"([1-9][0-9]{0,2}(?:,[0-9]{3})*|[1-9][0-9]*)\s*pt", re.I)
 MAX_PAGES = 50
 MAX_BYTES = 5_000_000
+MAX_DISPATCH_CHARS = 60_000
 
 jar = CookieJar()
 opener = build_opener(HTTPCookieProcessor(jar))
@@ -52,7 +69,7 @@ class LinkParser(HTMLParser):
 
     def handle_endtag(self, tag):
         if tag == "a" and self._href is not None:
-            text = re.sub(r"\\s+", " ", " ".join(self._text)).strip()
+            text = re.sub(r"\s+", " ", " ".join(self._text)).strip()
             self.links.append((self._href, text))
             self._href = None
             self._text = []
@@ -102,8 +119,8 @@ def fetch(url, ajax=False):
 
 
 def platform_from_title(title):
-    has_ios = bool(re.search(r"(?:iOS|iPhone)\\s*用", title, re.I))
-    has_android = bool(re.search(r"Android\\s*用", title, re.I))
+    has_ios = bool(re.search(r"(?:iOS|iPhone)\s*用", title, re.I))
+    has_android = bool(re.search(r"Android\s*用", title, re.I))
     if has_ios and has_android:
         return "iOS|Android"
     if has_ios:
@@ -116,7 +133,7 @@ def platform_from_title(title):
 def clean_title(text):
     match = POINT_RE.search(text)
     title = text[:match.start()].strip() if match else text.strip()
-    title = re.sub(r"\\s+[0-9][0-9,]*円\\(税込\\)の商品ご購入で$", "", title)
+    title = re.sub(r"\s+[0-9][0-9,]*円\(税込\)の商品ご購入で$", "", title)
     return title[:260].strip()
 
 
@@ -136,10 +153,7 @@ def parse_listing_page(raw, final_url):
         ad_id = match.group(1)
         if ad_id in seen:
             continue
-        points = [
-            int(value.replace(",", ""))
-            for value in POINT_RE.findall(text)
-        ]
+        points = [int(value.replace(",", "")) for value in POINT_RE.findall(text)]
         if not points:
             continue
         current_points = points[-1]
@@ -212,32 +226,165 @@ def capture():
     }
 
 
-def main():
-    payload = capture()
-    raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
-    encoded = base64.b64encode(raw).decode("ascii")
-    copied = False
+def encode_dispatch_payload(payload):
+    raw = json.dumps(
+        payload,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    compressed = gzip.compress(raw, compresslevel=9, mtime=0)
+    encoded = base64.b64encode(compressed).decode("ascii")
+    if len(encoded) > MAX_DISPATCH_CHARS:
+        raise SystemExit(
+            "圧縮後データがGitHub送信上限を超えました。"
+            " 手動送信用JSONへ切り替えてください。"
+        )
+    return encoded
+
+
+def _pythonista_keychain():
     try:
-        import clipboard  # Pythonista-only convenience module
-        clipboard.set(encoded)
-        copied = True
+        import keychain
+        return keychain
+    except ImportError:
+        return None
+
+
+def _secure_input(prompt):
+    try:
+        import console
+        return str(console.secure_input(prompt) or "").strip()
     except (ImportError, AttributeError):
+        try:
+            import getpass
+            return str(getpass.getpass(prompt) or "").strip()
+        except Exception:
+            return str(input(prompt) or "").strip()
+
+
+def stored_github_token():
+    keychain = _pythonista_keychain()
+    if keychain is None:
+        return ""
+    try:
+        return str(keychain.get_password(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT) or "").strip()
+    except Exception:
+        return ""
+
+
+def save_github_token(token):
+    keychain = _pythonista_keychain()
+    if keychain is None:
+        raise SystemExit(
+            "PythonistaのKeychainを利用できません。"
+            " この端末では自動送信を設定できません。"
+        )
+    keychain.set_password(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT, token)
+
+
+def clear_github_token():
+    keychain = _pythonista_keychain()
+    if keychain is None:
+        return
+    try:
+        keychain.delete_password(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT)
+    except Exception:
         pass
 
-    print("POINT_INCOME_CATALOG_V2")
+
+def setup_github_token():
+    print("初回だけGitHubトークンを登録します。")
+    print("POIGAME-LAB/poigamelab の Actions: Read and write だけを許可した")
+    print("Fine-grained token を入力してください。入力内容は画面に表示しません。")
+    token = _secure_input("GitHub token: ")
+    if not token or len(token) < 20:
+        raise SystemExit("GitHub token が空または短すぎるため保存しませんでした。")
+    save_github_token(token)
+    return token
+
+
+def dispatch_to_github(encoded, token, *, open_url=urlopen):
+    body = json.dumps({
+        "ref": "main",
+        "inputs": {
+            "point_income_catalog_base64": encoded,
+        },
+    }, separators=(",", ":")).encode("utf-8")
+    request = Request(
+        GITHUB_API,
+        data=body,
+        method="POST",
+        headers={
+            "Authorization": "Bearer " + token,
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "POIGAMELAB-PointIncome-iPhone/1.0",
+        },
+    )
+    try:
+        with open_url(request, timeout=30) as response:
+            status = getattr(response, "status", 204)
+    except HTTPError as exc:
+        if exc.code in {401, 403, 404}:
+            raise SystemExit(
+                "GitHubへの送信権限を確認できませんでした。"
+                " トークンのリポジトリ指定と Actions: Read and write を確認してください。"
+            )
+        raise SystemExit(f"GitHub送信に失敗しました（HTTP {exc.code}）。")
+    except URLError as exc:
+        raise SystemExit("GitHubへ接続できませんでした: " + str(exc.reason))
+
+    if status != 204:
+        raise SystemExit(f"GitHub送信が完了しませんでした（HTTP {status}）。")
+    return True
+
+
+def manual_fallback(encoded):
+    try:
+        import clipboard
+        clipboard.set(encoded)
+        print("圧縮済みBase64をクリップボードへコピーしました。")
+    except (ImportError, AttributeError):
+        print("POINT_INCOME_GZIP_BASE64")
+        print(encoded)
+
+
+def main():
+    if "--clear-token" in sys.argv:
+        clear_github_token()
+        print("保存済みGitHubトークンを削除しました。")
+        return
+
+    token = stored_github_token()
+    if "--setup-token" in sys.argv or not token:
+        token = setup_github_token()
+
+    print("Point Incomeを取得しています…")
+    payload = capture()
+    encoded = encode_dispatch_payload(payload)
+
     print(json.dumps({
         "count": payload["count"],
         "pageCount": payload["pageCount"],
         "stoppedBecause": payload["stoppedBecause"],
         "pointRate": payload["pointRate"],
+        "compressedChars": len(encoded),
     }, ensure_ascii=False, indent=2))
-    if copied:
-        print("\nPOINT_INCOME_BASE64 をクリップボードへコピーしました。")
-        print("このままChatGPTへ貼り付けてください。")
-    else:
-        print("\nPOINT_INCOME_BASE64")
-        print(encoded)
-    print("\n※ HTML・Cookie・ログイン情報は出力していません。")
+
+    if "--manual" in sys.argv:
+        manual_fallback(encoded)
+        return
+
+    try:
+        dispatch_to_github(encoded, token)
+    except SystemExit:
+        manual_fallback(encoded)
+        raise
+
+    print("\n送信完了 ✅")
+    print("POIGAME LAB側で検証・既存ゲーム照合・未掲載候補分離を自動実行します。")
+    print("次回からはこのスクリプトの▶︎を押すだけです。")
 
 
 if __name__ == "__main__":
