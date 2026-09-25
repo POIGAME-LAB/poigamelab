@@ -37,7 +37,7 @@ function diagnose(){
   try{r.push({source:'Search Console API',ok:true,detail:gscSite_()});}
   catch(e){
     try{
-      ga4_({dateRanges:[{startDate:'7daysAgo',endDate:'today'}],metrics:[{name:'organicGoogleSearchClicks'},{name:'organicGoogleSearchImpressions'}],limit:1});
+      ga4_({dateRanges:[{startDate:'7daysAgo',endDate:'today'}],dimensions:[{name:'landingPagePlusQueryString'}],metrics:[{name:'organicGoogleSearchClicks'},{name:'organicGoogleSearchImpressions'}],limit:10});
       r.push({source:'検索データ',ok:true,detail:'Search Console APIは未接続ですが、GA4連携経由で検索指標を取得できます'});
     }catch(f){r.push({source:'検索データ',ok:false,detail:'Search Console API: '+safeErr_(e)+' / GA4連携: '+safeErr_(f)});}
   }
@@ -60,27 +60,52 @@ function ga4Bundle_(w){
 
 function gscViaGa4Bundle_(w){
   var names=['organicGoogleSearchClicks','organicGoogleSearchImpressions','organicGoogleSearchClickThroughRate','organicGoogleSearchAveragePosition'];
-  var cur=ga4_({dateRanges:[w.cur],metrics:names.map(function(n){return{name:n};}),limit:1});
-  var prev=ga4_({dateRanges:[w.prev],metrics:names.map(function(n){return{name:n};}),limit:1});
+  var dims=[{name:'landingPagePlusQueryString'}];
+  var cur=ga4_({dateRanges:[w.cur],dimensions:dims,metrics:names.map(function(n){return{name:n};}),limit:10000});
+  var prev=ga4_({dateRanges:[w.prev],dimensions:dims,metrics:names.map(function(n){return{name:n};}),limit:10000});
   return{
     siteUrl:'GA4 linked Search Console',
     latestDate:null,
     current:gaSearchSummary_(cur),
     previous:gaSearchSummary_(prev),
     queries:null,
-    pages:null,
+    pages:gaSearchPages_(cur),
     limited:true
   };
 }
 
 function gaSearchSummary_(r){
-  var row=gaRows_(r)[0]||{m:{}};
+  var rows=gaRows_(r), clicks=0, impressions=0, weightedPosition=0, positionWeight=0;
+  rows.forEach(function(x){
+    var c=nullableNum_(x.m.organicGoogleSearchClicks), i=nullableNum_(x.m.organicGoogleSearchImpressions), p=nullableNum_(x.m.organicGoogleSearchAveragePosition);
+    if(c!==null) clicks+=c;
+    if(i!==null){
+      impressions+=i;
+      if(p!==null){weightedPosition+=p*i;positionWeight+=i;}
+    }
+  });
   return{
-    clicks:nullableNum_(row.m.organicGoogleSearchClicks),
-    impressions:nullableNum_(row.m.organicGoogleSearchImpressions),
-    ctr:nullableNum_(row.m.organicGoogleSearchClickThroughRate),
-    position:nullableNum_(row.m.organicGoogleSearchAveragePosition)
+    clicks:clicks,
+    impressions:impressions,
+    ctr:impressions>0?clicks/impressions:null,
+    position:positionWeight>0?weightedPosition/positionWeight:null
   };
+}
+
+function gaSearchPages_(r){
+  return gaRows_(r).map(function(x){
+    var path=x.d.landingPagePlusQueryString||'/';
+    return{
+      url:path,
+      path:npath_(path),
+      clicks:nullableNum_(x.m.organicGoogleSearchClicks),
+      impressions:nullableNum_(x.m.organicGoogleSearchImpressions),
+      ctr:nullableNum_(x.m.organicGoogleSearchClickThroughRate),
+      position:nullableNum_(x.m.organicGoogleSearchAveragePosition)
+    };
+  }).filter(function(x){
+    return (x.clicks||0)>0||(x.impressions||0)>0;
+  });
 }
 
 function gscBundle_(w){
