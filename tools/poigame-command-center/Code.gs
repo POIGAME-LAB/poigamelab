@@ -184,21 +184,76 @@ function gscBundle_(w){
 }
 
 function combine_(ga,gsc){
-  var opp=[],pages=[],gaMap={},ctaMap={};
+  var opp=[],pages=[],gaMap={},ctaMap={},stable=[];
   (ga&&ga.pages||[]).forEach(function(x){gaMap[npath_(x.path)]=x;});
   (ga&&ga.ctaByPage||[]).forEach(function(x){ctaMap[npath_(x.path)]=x;});
+
   (gsc&&gsc.queries||[]).forEach(function(x){
     if(x.impressions>=20&&x.position>=3&&x.position<=10&&x.ctr<0.03) opp.push({type:'ctr',score:x.impressions*Math.max(1,12-x.position),title:'CTR改善候補',label:x.query,detail:Math.round(x.impressions)+'表示 / '+Math.round(x.clicks)+'クリック / CTR '+pct_(x.ctr)+' / 順位 '+x.position.toFixed(1)});
     else if(x.impressions>=20&&x.position>10&&x.position<=20) opp.push({type:'content',score:x.impressions/Math.max(1,x.position),title:'追記・強化候補',label:x.query,detail:Math.round(x.impressions)+'表示 / 順位 '+x.position.toFixed(1)});
     if(x.prevClicks>0&&x.clicks>=x.prevClicks*1.5&&x.clicks-x.prevClicks>=3) opp.push({type:'growth',score:x.clicks-x.prevClicks,title:'伸びている検索',label:x.query,detail:Math.round(x.prevClicks)+' → '+Math.round(x.clicks)+'クリック'});
   });
+
   (gsc&&gsc.pages||[]).forEach(function(x){
-    var k=npath_(x.path), g=gaMap[k]||{views:0,users:0,sessions:0}, c=ctaMap[k]||{clicks:0};
-    pages.push({path:k,searchClicks:x.clicks,impressions:x.impressions,ctr:x.ctr,position:x.position,views:g.views,users:g.users,ctaClicks:c.clicks});
-    if(x.clicks>=3&&g.users>=5&&c.clicks===0) opp.push({type:'cta',score:x.clicks+g.users/5,title:'CTA確認候補',label:k,detail:'検索 '+Math.round(x.clicks)+'クリック / GA4 '+Math.round(g.users)+'ユーザー / CTA 0'});
+    var k=npath_(x.path), g=gaMap[k]||{views:0,users:0,sessions:0}, ct=ctaMap[k]||{clicks:0};
+    var page={path:k,searchClicks:num_(x.clicks),impressions:num_(x.impressions),ctr:x.ctr===null||x.ctr===undefined?null:num_(x.ctr),position:x.position===null||x.position===undefined?null:num_(x.position),views:num_(g.views),users:num_(g.users),ctaClicks:num_(ct.clicks)};
+    pages.push(page);
+
+    if(page.impressions>=20&&page.position!==null&&page.position>=3&&page.position<=10&&page.ctr!==null&&page.ctr<0.03){
+      opp.push({type:'page_ctr',score:page.impressions*Math.max(1,12-page.position),title:'ページCTR改善',label:k,detail:Math.round(page.impressions)+'表示 / '+Math.round(page.searchClicks)+'クリック / CTR '+pct_(page.ctr)+' / 順位 '+page.position.toFixed(1)});
+    }
+    if(page.impressions>=20&&page.position!==null&&page.position>10&&page.position<=20){
+      opp.push({type:'page_content',score:page.impressions/Math.max(1,page.position),title:'SEO強化候補',label:k,detail:Math.round(page.impressions)+'表示 / 順位 '+page.position.toFixed(1)+'。内容追記・内部リンク改善候補'});
+    }
+    if(page.searchClicks>=3&&page.users>=5&&page.ctaClicks===0){
+      opp.push({type:'cta',score:page.searchClicks+page.users/5,title:'CTA改善候補',label:k,detail:'検索 '+Math.round(page.searchClicks)+'クリック / GA4 '+Math.round(page.users)+'ユーザー / CTA 0'});
+    }
+    if(page.position!==null&&page.position<=10&&page.ctr!==null&&page.ctr>=0.05&&page.searchClicks>=3){
+      stable.push({score:page.searchClicks+(page.ctaClicks>0?3:0),path:k,detail:'順位 '+page.position.toFixed(1)+' / CTR '+pct_(page.ctr)+' / 検索 '+Math.round(page.searchClicks)+'クリック'+(page.ctaClicks>0?' / CTA '+Math.round(page.ctaClicks):'')});
+    }
   });
-  opp.sort(function(a,b){return b.score-a.score;}); pages.sort(function(a,b){return b.searchClicks-a.searchClicks||b.views-a.views;});
-  return{opportunities:dedupe_(opp).slice(0,12),pages:pages.slice(0,40)};
+
+  opp=dedupe_(opp).sort(function(a,b){return b.score-a.score;});
+  stable.sort(function(a,b){return b.score-a.score;});
+  pages.sort(function(a,b){return b.searchClicks-a.searchClicks||b.views-a.views;});
+  return{
+    opportunities:opp.slice(0,12),
+    stablePages:stable.slice(0,5),
+    pages:pages.slice(0,40),
+    summary:buildSummary_(ga,gsc,opp,stable)
+  };
+}
+
+function buildSummary_(ga,gsc,opp,stable){
+  var gc=ga&&ga.current||{}, gp=ga&&ga.previous||{}, sc=gsc&&gsc.current||{}, sp=gsc&&gsc.previous||{};
+  var lines=[];
+  var clickDelta=rateDelta_(sc.clicks,sp.clicks), impDelta=rateDelta_(sc.impressions,sp.impressions), pvDelta=rateDelta_(gc.screenPageViews,gp.screenPageViews);
+
+  if(clickDelta!==null&&clickDelta<=-0.2){
+    if(impDelta!==null&&impDelta>-0.1) lines.push('検索表示は大きく落ちていないのにクリックが減っています。タイトル・説明文・CTR改善を優先。');
+    else lines.push('検索クリックが前期より減少。まず表示回数が落ちたページと順位11〜20位のページを確認。');
+  }else if(clickDelta!==null&&clickDelta>=0.2){
+    lines.push('検索クリックは前期より伸びています。伸びているページは大きく触らず、CTA改善を優先。');
+  }else{
+    lines.push('検索流入は大きな急変なし。上位の改善候補から小さく直すのが安全。');
+  }
+
+  if(pvDelta!==null&&pvDelta<=-0.2) lines.push('PVは前期比で減少。検索だけでなく流入後の内部回遊も確認候補。');
+  if(opp.some(function(x){return x.type==='cta';})) lines.push('検索流入があるのにCTAクリック0のページあり。CTA位置・文言・導線を優先確認。');
+  if(stable.length) lines.push('成績が良いページもあります。上位ページは不用意にタイトルや構成を大きく変えない。');
+
+  return{
+    headline:opp.length?'改善候補あり':'大きな警戒サインなし',
+    lines:lines.slice(0,4),
+    priority:opp.slice(0,3),
+    protect:stable.slice(0,3)
+  };
+}
+
+function rateDelta_(cur,prev){
+  cur=nullableNum_(cur);prev=nullableNum_(prev);
+  if(cur===null||prev===null||prev===0)return null;
+  return(cur-prev)/Math.abs(prev);
 }
 
 function ga4_(body){return AnalyticsData.Properties.runReport(body,'properties/'+CFG.ga4PropertyId);}
