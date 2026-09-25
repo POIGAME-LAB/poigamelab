@@ -107,6 +107,18 @@
     return lines.join('\n');
   }
 
+  async function copySnapshot_(text){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    var ta=document.createElement('textarea');
+    ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    var ok=document.execCommand('copy');ta.remove();
+    return ok;
+  }
+
   async function shareToChapi(){
     var btn=el('shareChapi');
     var text=snapshotText(latestDashboard);
@@ -114,16 +126,15 @@
     var old=btn.textContent;
     try{
       if(navigator.share){
-        await navigator.share({title:'POIGAME LAB 最新分析',text:text});
-      }else if(navigator.clipboard&&navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(text);
-        alert('ちゃぴ用スナップショットをコピーしました。ChatGPTに貼り付けて送ってね🥰');
-      }else{
-        var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
-        alert('ちゃぴ用スナップショットをコピーしました。ChatGPTに貼り付けて送ってね🥰');
+        try{
+          await navigator.share({title:'POIGAME LAB 最新分析',text:text});
+          return;
+        }catch(e){
+          if(e&&e.name==='AbortError')return;
+        }
       }
-    }catch(e){
-      if(e&&e.name!=='AbortError') alert('共有できませんでした。もう一度試してください。');
+      var copied=await copySnapshot_(text);
+      alert(copied?'ちゃぴ用スナップショットをコピーしました。ChatGPTに貼り付けて送ってね🥰':'共有もコピーもできませんでした。');
     }finally{
       btn.disabled=false;btn.textContent=old;
     }
