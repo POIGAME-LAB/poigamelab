@@ -7,6 +7,11 @@ on:
         description: gzip+Base64 JSON from residential iPhone/Pythonista capture
         required: true
         type: string
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/point-income-replay-once-20260926.txt"
 
 permissions:
   contents: write
@@ -32,6 +37,7 @@ jobs:
           python-version: "3.12"
 
       - name: Decode device payload
+        if: github.event_name == 'workflow_dispatch'
         env:
           POINT_INCOME_CATALOG_BASE64: ${{ inputs.point_income_catalog_base64 }}
         run: |
@@ -60,6 +66,23 @@ jobs:
               raise SystemExit("payload too large")
           open("/tmp/point-income-device.json", "wb").write(raw)
           PY
+
+      - name: Restore latest accepted Point Income capture for one-time rollout
+        if: github.event_name == 'push'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+          aws s3 cp             "s3://${R2_BUCKET}/device/point-income/latest/point-income-device-accepted.json.gz"             /tmp/point-income-device-accepted.json.gz             --endpoint-url "${R2_ENDPOINT}"             --only-show-errors
+          gzip -dc /tmp/point-income-device-accepted.json.gz > /tmp/point-income-device.json
 
       - name: Validate fail-closed catalog
         run: >-
