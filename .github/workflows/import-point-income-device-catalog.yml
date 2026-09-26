@@ -110,6 +110,12 @@ jobs:
           /tmp/point-income-detail-review.json
           data/published_offers.csv
 
+      - name: Refresh already-verified Point Income rewards from exact listing identities
+        run: >-
+          python scripts/refresh-point-income-listing-only.py
+          /tmp/point-income-device-accepted.json
+          data/published_offers.csv
+
       - name: Append reward history when values changed
         run: python scripts/append_offer_history.py
 
