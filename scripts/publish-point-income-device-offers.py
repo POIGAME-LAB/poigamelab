@@ -63,7 +63,12 @@ def row_from_item(item, updated_at):
     reward = item.get("verifiedCurrentRewardYen")
     if not game or platform not in {"iOS", "Android"} or not url:
         return None
-    if isinstance(reward, bool) or not isinstance(reward, (int, float)) or not 0 < reward <= 5_000_000:
+    if (
+        isinstance(reward, bool)
+        or not isinstance(reward, (int, float))
+        or not 0 < reward <= 5_000_000
+        or not float(reward).is_integer()
+    ):
         return None
     if not condition or len(condition) > 2000 or not deadline or len(deadline) > 300:
         return None
@@ -73,7 +78,7 @@ def row_from_item(item, updated_at):
         "game": game,
         "site": SITE,
         "provider": "",
-        "reward": str(int(reward)) if float(reward).is_integer() else ("%.1f" % reward).rstrip("0").rstrip("."),
+        "reward": str(int(reward)),
         "condition": condition,
         "platform": platform,
         "type": "通常",
