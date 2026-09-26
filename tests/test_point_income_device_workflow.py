@@ -11,7 +11,7 @@ def text():
 def test_device_import_accepts_gzip_base64_and_keeps_size_guards():
     value = text()
     assert "gzip.decompress" in value
-    assert 'packed[:2] == b"\\\\x1f\\\\x8b"' in value
+    assert 'packed[:2] == bytes.fromhex("1f8b")' in value
     assert "compressed payload too large" in value
     assert "payload too large" in value
 
