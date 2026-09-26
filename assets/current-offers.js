@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const siteNames = {warau: "ワラウ", chobirich: "ちょびリッチ", moppy: "モッピー", hapitas: "ハピタス", pointtown: "ポイントタウン", coincome: "COINCOME", ecnavi: "ECナビ", amefuri: "アメフリ", gendama: "げん玉"};
+  const siteNames = {warau: "ワラウ", chobirich: "ちょびリッチ", moppy: "モッピー", hapitas: "ハピタス", pointtown: "ポイントタウン", coincome: "COINCOME", ecnavi: "ECナビ", amefuri: "アメフリ", gendama: "げん玉", point_income: "ポイントインカム"};
   const pages = {
     "township-lv60.html": "Township", "township-lv70.html": "Township",
     "kinoko-guide.html": "きのこ伝説", "mementomori-guide.html": "メメントモリ",

@@ -376,12 +376,16 @@
       "direct_detail_url_hints": [],
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "2026-09-25 GitHub Actions live audit: every tested public Point Income route was redirected to the first-party domestic-only access-control page (sp.pointi.jp/information.php?cn=2&sn=1). Keep cloud fetching disabled; current offer retrieval requires a Japan-residential/device path before parser/ranking integration.",
-      "reviewedAt": "2026-09-25",
-      "discoveryNote": "2026-09-25 iPhone/Pythonista live verification: category 68 loads current offers from /ajax_load/load_list_site.php?page=N&cat_no=68&od=1. Four observed pages returned 10 stable /ad/<id>/ cards each with title and current points, including Township 308,302pt, ATLAS:EARTH 279,405pt and Evertale 2,500pt. Cloud CI remains geo-gated, so the candidate-only residential-device capture now walks numbered pages and exports structured public offer rows. Category 68 also contains non-game apps, so publication still requires classification/review.",
+      "reviewedAt": "2026-09-26",
+      "discoveryNote": "2026-09-26 iPhone/Pythonista live verification: category 68 paginated to an empty page after 299 current cards. Sanitized detail evidence was captured for 15 known-game offers. The reviewed device parser binds exact /ad/<id>/ identity, title, OS, current points, Point Income's 10pt=1JPY face-value display, achievement condition and support/target-exclusion terms. Offers whose own shell says a destination page controls points or conditions remain candidate-only; only self-contained first-party terms may enter publication. Cloud CI remains geo-gated.",
       "device_capture_enabled": true,
       "device_capture_listing_endpoint": "https://sp.pointi.jp/ajax_load/load_list_site.php?page={page}&cat_no=68&od=1",
       "device_capture_page_size_observed": 10,
-      "device_capture_point_rate": "10pt=1JPY"
+      "device_capture_point_rate": "10pt=1JPY",
+      "device_detail_review_enabled": true,
+      "device_detail_review_parser": "point-income-device-detail-review-v1",
+      "device_direct_publication_enabled": true,
+      "device_downstream_authority_fail_closed": true
     },
     {
       "id": "amefuri",

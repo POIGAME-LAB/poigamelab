@@ -7,20 +7,37 @@ on:
         description: gzip+Base64 JSON from residential iPhone/Pythonista capture
         required: true
         type: string
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/point-income-replay-once-20260926.txt"
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: poigamelab-production-writer
+  cancel-in-progress: false
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Preserve publication baseline
+        run: cp data/published_offers.csv "${RUNNER_TEMP}/published-before.csv"
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Decode device payload
+        if: github.event_name == 'workflow_dispatch'
         env:
           POINT_INCOME_CATALOG_BASE64: ${{ inputs.point_income_catalog_base64 }}
         run: |
@@ -50,6 +67,23 @@ jobs:
           open("/tmp/point-income-device.json", "wb").write(raw)
           PY
 
+      - name: Restore latest accepted Point Income capture for one-time rollout
+        if: github.event_name == 'push'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_EC2_METADATA_DISABLED: "true"
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          test -n "${AWS_ACCESS_KEY_ID}"
+          test -n "${AWS_SECRET_ACCESS_KEY}"
+          test -n "${R2_ENDPOINT}"
+          test -n "${R2_BUCKET}"
+          aws s3 cp             "s3://${R2_BUCKET}/device/point-income/latest/point-income-device-accepted.json.gz"             /tmp/point-income-device-accepted.json.gz             --endpoint-url "${R2_ENDPOINT}"             --only-show-errors
+          gzip -dc /tmp/point-income-device-accepted.json.gz > /tmp/point-income-device.json
+
       - name: Validate fail-closed catalog
         run: >-
           python scripts/import-point-income-device-catalog.py
@@ -63,6 +97,28 @@ jobs:
           games.csv
           /tmp/point-income-existing-game-candidates.json
           /tmp/point-income-unmatched-app-candidates.json
+
+      - name: Verify captured first-party detail evidence
+        run: >-
+          python scripts/verify-point-income-device-details.py
+          /tmp/point-income-device-accepted.json
+          /tmp/point-income-detail-review.json
+
+      - name: Publish only direct first-party authorized Point Income rows
+        run: >-
+          python scripts/publish-point-income-device-offers.py
+          /tmp/point-income-detail-review.json
+          data/published_offers.csv
+
+      - name: Append reward history when values changed
+        run: python scripts/append_offer_history.py
+
+      - name: Build and validate exact public output
+        run: |
+          python scripts/build_public_site.py
+          python scripts/validate_daily_publication.py --baseline "${RUNNER_TEMP}/published-before.csv"
+          node tests/test_site_data_v24.js
+          node tests/test_site_health_v25.js
 
       - name: Persist accepted device catalog to Cloudflare R2
         env:
@@ -85,7 +141,8 @@ jobs:
           for path in \
             /tmp/point-income-device-accepted.json \
             /tmp/point-income-existing-game-candidates.json \
-            /tmp/point-income-unmatched-app-candidates.json
+            /tmp/point-income-unmatched-app-candidates.json \
+            /tmp/point-income-detail-review.json
           do
             base="$(basename "${path}")"
             gzip -9 -c "${path}" > "${archive_dir}/${base}.gz"
@@ -115,4 +172,16 @@ jobs:
             /tmp/point-income-device-accepted.json
             /tmp/point-income-existing-game-candidates.json
             /tmp/point-income-unmatched-app-candidates.json
+            /tmp/point-income-detail-review.json
           retention-days: 3
+
+      - name: Commit verified Point Income publication updates
+        run: |
+          set -euo pipefail
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published_offers.csv data/offer_history.csv
+          git diff --cached --quiet || git commit -m "chore: refresh Point Income device offers"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main

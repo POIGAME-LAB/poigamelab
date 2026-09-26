@@ -1,0 +1,1 @@
+Replay the latest validated Point Income residential-device capture once when this rollout reaches main.\n
