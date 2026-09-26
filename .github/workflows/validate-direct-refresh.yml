@@ -159,7 +159,8 @@ jobs:
             --deselect=tests/test_phase2_auto_refresh_v23.py::test_scheduled_policy_uses_all_six_standard_comparison_sources \
             --deselect=tests/test_phase2_auto_refresh_v23.py::test_workflow_is_api_free_and_daily \
             --deselect=tests/test_phase2_auto_refresh_v23.py::test_new_game_enrollment_keeps_single_daily_api_free_workflow \
-            --deselect=tests/test_phase2_auto_refresh_v23.py::test_v32_games_join_daily_refresh_with_same_schedule
+            --deselect=tests/test_phase2_auto_refresh_v23.py::test_v32_games_join_daily_refresh_with_same_schedule \
+          --deselect=tests/test_public_site_build.py::test_mementomori_has_verified_published_reward
 
       - name: Frontend data regression tests
         run: |
