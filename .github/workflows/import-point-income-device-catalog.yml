@@ -27,17 +27,25 @@ jobs:
           python - <<'PY'
           import base64
           import gzip
+          import io
           import os
+
+          MAX_COMPRESSED_BYTES = 100_000
+          MAX_RAW_BYTES = 750_000
 
           packed = base64.b64decode(
               os.environ["POINT_INCOME_CATALOG_BASE64"],
               validate=True,
           )
-          if len(packed) > 100000:
+          if len(packed) > MAX_COMPRESSED_BYTES:
               raise SystemExit("compressed payload too large")
 
-          raw = gzip.decompress(packed) if packed[:2] == bytes.fromhex("1f8b") else packed
-          if len(raw) > 250000:
+          if packed[:2] == bytes.fromhex("1f8b"):
+              with gzip.GzipFile(fileobj=io.BytesIO(packed)) as stream:
+                  raw = stream.read(MAX_RAW_BYTES + 1)
+          else:
+              raw = packed
+          if len(raw) > MAX_RAW_BYTES:
               raise SystemExit("payload too large")
           open("/tmp/point-income-device.json", "wb").write(raw)
           PY

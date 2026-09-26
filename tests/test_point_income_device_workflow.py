@@ -10,10 +10,13 @@ def text():
 
 def test_device_import_accepts_gzip_base64_and_keeps_size_guards():
     value = text()
-    assert "gzip.decompress" in value
+    assert "gzip.GzipFile" in value
     assert 'packed[:2] == bytes.fromhex("1f8b")' in value
     assert "compressed payload too large" in value
     assert "payload too large" in value
+    assert "MAX_COMPRESSED_BYTES = 100_000" in value
+    assert "MAX_RAW_BYTES = 750_000" in value
+    assert "stream.read(MAX_RAW_BYTES + 1)" in value
 
 
 def test_device_import_persists_only_validated_outputs_to_r2():
