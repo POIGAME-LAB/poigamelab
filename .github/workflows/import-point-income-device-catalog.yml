@@ -9,13 +9,24 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: poigamelab-production-writer
+  cancel-in-progress: false
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Preserve publication baseline
+        run: cp data/published_offers.csv "${RUNNER_TEMP}/published-before.csv"
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -64,6 +75,28 @@ jobs:
           /tmp/point-income-existing-game-candidates.json
           /tmp/point-income-unmatched-app-candidates.json
 
+      - name: Verify captured first-party detail evidence
+        run: >-
+          python scripts/verify-point-income-device-details.py
+          /tmp/point-income-device-accepted.json
+          /tmp/point-income-detail-review.json
+
+      - name: Publish only direct first-party authorized Point Income rows
+        run: >-
+          python scripts/publish-point-income-device-offers.py
+          /tmp/point-income-detail-review.json
+          data/published_offers.csv
+
+      - name: Append reward history when values changed
+        run: python scripts/append_offer_history.py
+
+      - name: Build and validate exact public output
+        run: |
+          python scripts/build_public_site.py
+          python scripts/validate_daily_publication.py --baseline "${RUNNER_TEMP}/published-before.csv"
+          node tests/test_site_data_v24.js
+          node tests/test_site_health_v25.js
+
       - name: Persist accepted device catalog to Cloudflare R2
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -85,7 +118,8 @@ jobs:
           for path in \
             /tmp/point-income-device-accepted.json \
             /tmp/point-income-existing-game-candidates.json \
-            /tmp/point-income-unmatched-app-candidates.json
+            /tmp/point-income-unmatched-app-candidates.json \
+            /tmp/point-income-detail-review.json
           do
             base="$(basename "${path}")"
             gzip -9 -c "${path}" > "${archive_dir}/${base}.gz"
@@ -115,4 +149,16 @@ jobs:
             /tmp/point-income-device-accepted.json
             /tmp/point-income-existing-game-candidates.json
             /tmp/point-income-unmatched-app-candidates.json
+            /tmp/point-income-detail-review.json
           retention-days: 3
+
+      - name: Commit verified Point Income publication updates
+        run: |
+          set -euo pipefail
+          git config user.name "poigamelab-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/published_offers.csv data/offer_history.csv
+          git diff --cached --quiet || git commit -m "chore: refresh Point Income device offers"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
