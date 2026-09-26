@@ -1,0 +1,501 @@
+{
+  "slug": "grand-mafia",
+  "name": "ザ・グランドマフィア",
+  "aliases": [],
+  "gameId": "com.yottagames.gameofmafiajp",
+  "selectionReason": "高還元だが段階別期限が異なる。別荘と監禁所・投資センターを混同しない解説が必要。",
+  "schemaVersion": 2,
+  "researchDate": "2026-09-27",
+  "sources": [
+    {
+      "id": "g1",
+      "url": "https://note.com/maf252/n/n9f1f3332aa7c",
+      "title": "maf252：監禁所攻略メモ",
+      "publishedAt": "2025-12-09",
+      "playerKey": "note:maf252",
+      "summary": "最初の記録では約5500円課金、監禁所25に22日。ゴールドを足枷に使い、建築・装備・組織の支援を活用。他のアカウントの実例は独立人数に数えない。",
+      "observations": [
+        {
+          "target": "監禁所Lv25",
+          "days": 22,
+          "spendYen": 5500,
+          "playHours": null,
+          "outcome": "達成",
+          "context": "複数アカウント記録のうち最初の1件のみ。規約に反する複数参加やエミュレータ利用は攻略手順に採用しない。"
+        }
+      ],
+      "kind": "player",
+      "locator": "maf252：監禁所攻略メモ",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.gameofmafiajp",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "g2",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207048",
+      "title": "ワラウ：じろうさんの投稿",
+      "publishedAt": "2026-09-13",
+      "playerKey": "warau:jiro:20260913",
+      "summary": "監禁所25を24日で達成。課金あり、総額不明。別荘25の報酬で発展プランを購入、ゴールドを足枷に使用。",
+      "observations": [
+        {
+          "target": "監禁所Lv25",
+          "days": 24,
+          "spendYen": null,
+          "playHours": null,
+          "outcome": "達成",
+          "context": "課金あり。金額は投稿に記載なし。"
+        }
+      ],
+      "kind": "player",
+      "locator": "クチコミ／じろう／2026-09-13",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.gameofmafiajp",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "g3",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207048",
+      "title": "ワラウ：にゃすさんの投稿",
+      "publishedAt": "2026-09-11",
+      "playerKey": "warau:nyasu:20260911",
+      "summary": "無課金で別荘17とTier3を6日目に達成。前提施設の建築待ちと加速不足が負担。",
+      "observations": [
+        {
+          "target": "別荘Lv17・Tier3",
+          "days": 6,
+          "spendYen": 0,
+          "playHours": null,
+          "outcome": "達成",
+          "context": ""
+        }
+      ],
+      "kind": "player",
+      "locator": "クチコミ／にゃす／2026-09-11",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.gameofmafiajp",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "official",
+      "url": "https://play.google.com/store/apps/details?hl=ja&id=com.yottagames.gameofmafiajp",
+      "title": "ゲーム公式・公式ストア",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "ザ・グランドマフィアは協力型ストラテジー。マフィア・シティとは別アプリ。",
+      "observations": [],
+      "kind": "official",
+      "locator": "ゲーム公式・公式ストア",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.gameofmafiajp",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-207048",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207048",
+      "title": "確認済み案件詳細",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "55500円相当。インストール日から各Stepの7・15・30日以内。OS：Android。各Step合計と表示総額の一致を確認。",
+      "observations": [
+        {
+          "rewardYen": 55500,
+          "steps": [
+            {
+              "condition": "7日以内に別荘LV.9に到達",
+              "rewardYen": 130,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "7日以内にいずれかのTier2隊員をアンロック",
+              "rewardYen": 300,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "7日以内に別荘LV.17に到達",
+              "rewardYen": 800,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "7日以内にいずれかのTier3隊員をアンロック",
+              "rewardYen": 770,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "7日以内に別荘LV.21に到達",
+              "rewardYen": 2000,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "15日以内に別荘LV.23に到達",
+              "rewardYen": 2200,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "30日以内に別荘LV.25に到達",
+              "rewardYen": 2800,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "【高難易度】30日以内に監禁所LV.25に到達",
+              "rewardYen": 5500,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "【高難易度】30日以内に投資センターLV.25に到達",
+              "rewardYen": 11000,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "【高難易度】30日以内にいずれかのTier4隊員をアンロック",
+              "rewardYen": 30000,
+              "purchaseRequired": false
+            }
+          ],
+          "deadline": "インストール日から各Stepの7・15・30日以内"
+        }
+      ],
+      "kind": "offer",
+      "locator": "案件名・OS表示・StepUp表・獲得条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.gameofmafiajp",
+      "dateKind": "undated_official_or_live_offer"
+    }
+  ],
+  "research": {
+    "official": {
+      "status": "body_verified",
+      "queries": [
+        "ザ・グランドマフィア 公式"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "web": {
+      "status": "body_verified",
+      "queries": [
+        "ザ・グランドマフィア ポイ活 攻略 達成 撤退"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "x": {
+      "status": "access_limited",
+      "queries": [
+        "ザ・グランドマフィア site:x.com ポイ活 達成"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "youtube": {
+      "status": "no_usable_result",
+      "queries": [
+        "ザ・グランドマフィア site:youtube.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "instagram": {
+      "status": "no_usable_result",
+      "queries": [
+        "ザ・グランドマフィア site:instagram.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "pointSites": {
+      "status": "body_verified",
+      "queries": [
+        "ザ・グランドマフィア 案件詳細・口コミ"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    }
+  },
+  "offers": [
+    {
+      "gameId": "com.yottagames.gameofmafiajp",
+      "site": "warau",
+      "platform": "Android",
+      "rewardYen": 55500,
+      "condition": "新規インストール後、下表の各条件を達成",
+      "deadline": "インストール日から各Stepの7・15・30日以内",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207048",
+      "retrievedAt": "2026-09-26T15:16:24.297742+00:00",
+      "evidenceSha256": "f3b5589d226533ebd4ee3f6202f917107abf54d02c33027fe991ae61d62c6b6e",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "7日以内に別荘LV.9に到達",
+          "rewardYen": 130,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "7日以内にいずれかのTier2隊員をアンロック",
+          "rewardYen": 300,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "7日以内に別荘LV.17に到達",
+          "rewardYen": 800,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "7日以内にいずれかのTier3隊員をアンロック",
+          "rewardYen": 770,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "7日以内に別荘LV.21に到達",
+          "rewardYen": 2000,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "15日以内に別荘LV.23に到達",
+          "rewardYen": 2200,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に別荘LV.25に到達",
+          "rewardYen": 2800,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "【高難易度】30日以内に監禁所LV.25に到達",
+          "rewardYen": 5500,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "【高難易度】30日以内に投資センターLV.25に到達",
+          "rewardYen": 11000,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "【高難易度】30日以内にいずれかのTier4隊員をアンロック",
+          "rewardYen": 30000,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "1pt=1円・config/point_value_rates.json",
+        "rateEvidenceUrl": "https://www.warau.jp/help/qa/128/"
+      }
+    }
+  ],
+  "progress": [
+    {
+      "sourceRef": "g1",
+      "observation": {
+        "target": "監禁所Lv25",
+        "days": 22,
+        "spendYen": 5500,
+        "playHours": null,
+        "outcome": "達成",
+        "context": "複数アカウント記録のうち最初の1件のみ。規約に反する複数参加やエミュレータ利用は攻略手順に採用しない。"
+      }
+    },
+    {
+      "sourceRef": "g2",
+      "observation": {
+        "target": "監禁所Lv25",
+        "days": 24,
+        "spendYen": null,
+        "playHours": null,
+        "outcome": "達成",
+        "context": "課金あり。金額は投稿に記載なし。"
+      }
+    },
+    {
+      "sourceRef": "g3",
+      "observation": {
+        "target": "別荘Lv17・Tier3",
+        "days": 6,
+        "spendYen": 0,
+        "playHours": null,
+        "outcome": "達成",
+        "context": ""
+      }
+    }
+  ],
+  "image": {
+    "mode": "original_typographic_card",
+    "rightsConfirmed": true,
+    "note": "第三者画像は使わず、自作の文字と配色によるヒーロー表示。既存画像ファイルには書き込まない。"
+  },
+  "lead": "現在の案件条件と、条件別の実到達ペースを照合して、どこまで狙うかを判断するための攻略です。",
+  "guide": {
+    "overview": [
+      {
+        "text": "ザ・グランドマフィアは、組織に所属しながら別荘や施設、隊員を育成するストラテジーです。「マフィア・シティ」と名前や画面の雰囲気が似ていても別アプリなので、攻略や案件の報酬を混ぜないでください。今回確認したワラウAndroid案件は、建物と隊員の解放を組み合わせたStepUpです。",
+        "sourceRefs": [
+          "official",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "合計額の大きさに対して、報酬の多くが後半の高難易度条件へ偏っています。別荘、監禁所、投資センター、Tier4はそれぞれ独立した確認項目です。別荘だけを育てれば全額を受け取れる案件として紹介することはできません。",
+        "sourceRefs": [
+          "official",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "difficulty": [
+      {
+        "text": "到達目標によって難易度は大きく変わります。無課金で別荘Lv17とTier3を進めた例と、課金して監禁所Lv25まで進めた例は分けて参考にします。この記事の実例は、高額な投資センターやTier4まで達成できるという根拠ではありません。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "特に短い期限が設定された序盤の条件は、のんびり遊べるかとは別の問題です。前提施設の待ちが重なると進行が止まるので、開始前にまとまった操作時間を確保できるか判断してください。全期間を使える後半条件と同じ感覚で、序盤の期限を後回しにはできません。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "strategy": [
+      {
+        "text": "開始時は報酬表を上から読み、期限ごとにやることを分けます。別荘のレベル条件だけでなく、隊員を解放するための投資も目標に入れます。施設を建てた時点と投資が終わった時点を区別し、報酬を受け取る条件がどちらなのか確認してください。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "序盤から組織の活動状況を確認します。支援やイベントの恩恵を得られる組織を選ぶことは、実例に共通する重要な準備です。ただし加入できる組織はサーバーで異なります。攻略者と同じ環境を前提にせず、実際のヘルプや報酬の状況を見ながら予定を調整します。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "別荘の次のレベルが要求する施設を確認したら、その施設の前提も調べます。前提が連鎖しているため、別荘だけの表示時間を残日数と比べても不十分です。建築枠で順番に進める必要がある部分は、まとめて待ち時間を見積もってください。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "監禁所まで狙う場合は、別荘到達の延長として何となく進めず、足枷の確保を別の計画にします。課金達成者の記録ではゴールドの使い道が重要でした。前半の小さな待ちをすべてゴールドで消すと、後から必要になる用途へ回せない可能性があります。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "次の高難易度ステップへ移る前に、前提施設と必要な資源を見直します。既に別荘を達成していることと、投資センターまで間に合うことは同義ではありません。終わった条件の報酬を確保し、追加投資をせずに終了する選択も残しておきます。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "g3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "efficiency": [
+      {
+        "text": "建築・投資・隊員のどれを進めるかを、直近の期限に合わせて決めます。日課を大量にこなしても、成果条件に必要な前提を放置していると間に合いません。ログイン時には最初に建築と投資の終了を確認し、それから報酬やイベントを回収する順にすると目標がぶれにくくなります。",
+        "sourceRefs": [
+          "g1",
+          "g3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "装備やスキルを使った短縮は、建築を実行する前に準備を確認します。実例の細かな数値をそのまま再現するより、自分の画面で待ち時間がどう変わるかを見ることが大切です。イベントや組織条件が違うため、同じ課金額でも同じ日数になるとは限りません。",
+        "sourceRefs": [
+          "g1",
+          "g3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "spending": [
+      {
+        "text": "監禁所の課金実例はありますが、支出額が明記された記録と「多少の課金」とだけ書かれた記録を一緒にはできません。後者の利益は計算できないため、黒字例としては扱いません。今回の比較では購入を成果条件とするStepがなくても、時短のために自発的な課金をする可能性があります。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "損益は「自分が実際に達成した段階の報酬合計－実際の支出」で考えます。まだクリアしていない高難易度の報酬を先に収入へ含めないでください。途中で報酬が入ったことも、次の購入が得になる保証にはなりません。購入前に追加で狙う条件と必要な金額を別々に確認します。",
+        "sourceRefs": [
+          "g1",
+          "g2",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "warnings": [
+      {
+        "text": "今回のワラウ条件には7日、15日、30日と異なる期限があります。すべてインストール日起算なので、前のStepを終えた日から数え直してはいけません。条件ごとに終了日を控え、ゲーム画面と通帳の両方で達成を確かめてください。",
+        "sourceRefs": [
+          "offer-207048",
+          "g1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "出典に複数アカウントやエミュレータの記述があっても、案件の参加方法として採用していません。自分のポイントサイトの新規参加条件に従ってください。同じ投稿者の複数アカウントを独立した複数人の成功例として水増しすることもしていません。",
+        "sourceRefs": [
+          "offer-207048",
+          "g1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "failures": [
+      {
+        "text": "監禁所に到達した投稿者も、投資センターは多くの施設を育てる必要があるとして、その先を難しいと判断しています。監禁所の達成日数だけを使って投資センターやTier4の予定を作ることは避けてください。",
+        "sourceRefs": [
+          "g2",
+          "g3",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "今回、最終条件について支出・日数までそろった複数の完走例は確保していません。そのため全額獲得の難易度を断定する記事にはしていません。前提施設の待ちが残期間を超えそうなら、追加の購入前に立ち止まり、既に達成できた条件で終える判断が必要です。",
+        "sourceRefs": [
+          "g2",
+          "g3",
+          "offer-207048"
+        ],
+        "kind": "fact"
+      }
+    ]
+  },
+  "comparisonNote": "取得済み候補のうち、今回詳細と条件を確認できた案件のみ掲載しています。未確認の他コースは最高額の算定に含めていません。",
+  "unresolved": []
+}

@@ -1,0 +1,172 @@
+{
+  "checkedAt": "2026-09-26T22:41:48.005698+00:00",
+  "publicationWrites": 0,
+  "externalAiCalls": 0,
+  "results": [
+    {
+      "slug": "grand-mafia",
+      "name": "ザ・グランドマフィア",
+      "status": "review_required",
+      "issues": [
+        "editorial_signoff_required"
+      ],
+      "currentMaxObservedYen": 55500,
+      "verifiedOfferCount": 1,
+      "verifiedOfferDigests": [
+        "66f7fa83c5db9f582e3454ebfa30f2dfe9811429f8ef2dc43c8cfd4043ea0825"
+      ],
+      "verifiedProgressDigests": [
+        "0c7fc9e728911871d69b6b5c97a915a1173ff47e919bf48410ed2f3e40eec136",
+        "f301752a455367aa4888ab51cc3cfebac7c41560a745fb6fd94069ccc02191d8",
+        "19404dbda19c68f43ea6bba9265c2919ee5658b3e94a34e746bed0530b15ba43"
+      ],
+      "independentPlayerCount": 3,
+      "editorialCharacters": 1990,
+      "publicationAuthorized": false,
+      "contentDigest": "3ab405dc88323e2226f210967ceeb0e458ddeb93fcb973042b563fdc865af4d9",
+      "priority": {
+        "score": 90.47,
+        "components": {
+          "verifiedReward": 28.47,
+          "independentPace": 40,
+          "listingBreadthProxy": 12,
+          "currentTerms": 10
+        },
+        "searchDemand": "not_measured",
+        "scope": "reviewed_identities_only"
+      }
+    },
+    {
+      "slug": "puzzles-chaos",
+      "name": "パズル＆カオス",
+      "status": "review_required",
+      "issues": [
+        "editorial_signoff_required"
+      ],
+      "currentMaxObservedYen": 16002,
+      "verifiedOfferCount": 1,
+      "verifiedOfferDigests": [
+        "52d037531ea4b5ad8198fa744212e559569b1b8b3728ea93291ccead60405611"
+      ],
+      "verifiedProgressDigests": [
+        "d1d6863ca58d8caa16c071b4a2baf5b6a6bc8e7ab1b33f335870e60874a33cf8",
+        "783a53e4e57d88f390f66f59c354290793aede8438161d2b7b9aab3ca9184c69"
+      ],
+      "independentPlayerCount": 2,
+      "editorialCharacters": 2079,
+      "publicationAuthorized": false,
+      "contentDigest": "45a6fe2d148356e0a689e705d4098801918b0650684ce82b782f41a144dc7756",
+      "priority": {
+        "score": 87.23,
+        "components": {
+          "verifiedReward": 25.23,
+          "independentPace": 40,
+          "listingBreadthProxy": 12,
+          "currentTerms": 10
+        },
+        "searchDemand": "not_measured",
+        "scope": "reviewed_identities_only"
+      }
+    },
+    {
+      "slug": "mafia-city",
+      "name": "マフィア・シティ-極道風雲",
+      "status": "review_required",
+      "issues": [
+        "editorial_signoff_required"
+      ],
+      "currentMaxObservedYen": 91828,
+      "verifiedOfferCount": 4,
+      "verifiedOfferDigests": [
+        "3b415f6604aad9822be2b4aab809b74acbcbded6971236d8758183dd61e15c37",
+        "35215c936ba044082324b3c263e9d9db3d2fbff4dfd3c7deff3feb7488449c27",
+        "2aacd8d2a1251d14a2ea297be6ed6ac46747090e9cb366183f523f53756d1217",
+        "8259c0354b72334db1c713dabab93a3875bddafbf983a4a04d97a289bfed0b9c"
+      ],
+      "verifiedProgressDigests": [
+        "d3cc1258310478119d6ceea47aabc0409b354ea85cf46d0ed01d7e4e26d91d74",
+        "9d5ba78d6bb052ca436db7e31f293a07c3300e2a5d827a251ebf9ec4211d9bff",
+        "3726f8aa6b5e210b2ca7b6ce611fa2a1c81a4ac9e02f4c4cdde715572c517a4e"
+      ],
+      "independentPlayerCount": 3,
+      "editorialCharacters": 2063,
+      "publicationAuthorized": false,
+      "contentDigest": "7f1129d3a8a941594e9b0fed3fbc9c177679ec20b8b0122518d6289507c3fe1c",
+      "priority": {
+        "score": 83.78,
+        "components": {
+          "verifiedReward": 29.78,
+          "independentPace": 40,
+          "listingBreadthProxy": 4,
+          "currentTerms": 10
+        },
+        "searchDemand": "not_measured",
+        "scope": "reviewed_identities_only"
+      }
+    },
+    {
+      "slug": "viking-rise",
+      "name": "ヴァイキングライズ",
+      "status": "review_required",
+      "issues": [
+        "editorial_signoff_required"
+      ],
+      "currentMaxObservedYen": 15200,
+      "verifiedOfferCount": 1,
+      "verifiedOfferDigests": [
+        "b1efc8865a65a05b4fa315bbb700bf8af307683ed7de4fa2fb3436f2efe1559b"
+      ],
+      "verifiedProgressDigests": [
+        "f51d50c13567f42e1d223ab4b54fa6a80b2924a40bc8c9b46157eb5a0a0dcf7e",
+        "a39bb3758dd160cd23f803ed62218bbdc1034a7fca10bffb1f028bd6697a5258"
+      ],
+      "independentPlayerCount": 2,
+      "editorialCharacters": 2080,
+      "publicationAuthorized": false,
+      "contentDigest": "40a6e8c224f9326e15c7d39f79f4613d6ae0c31916e4aa66e20c3c68d5d9f614",
+      "priority": {
+        "score": 79.09,
+        "components": {
+          "verifiedReward": 25.09,
+          "independentPace": 40,
+          "listingBreadthProxy": 4,
+          "currentTerms": 10
+        },
+        "searchDemand": "not_measured",
+        "scope": "reviewed_identities_only"
+      }
+    },
+    {
+      "slug": "royal-match",
+      "name": "ロイヤルマッチ",
+      "status": "review_required",
+      "issues": [
+        "editorial_signoff_required"
+      ],
+      "currentMaxObservedYen": 7120,
+      "verifiedOfferCount": 1,
+      "verifiedOfferDigests": [
+        "0b9c4a2bf4ea0c092610f1fb7227c9eaae0ec25ea02b3fc95375044a723e9e74"
+      ],
+      "verifiedProgressDigests": [
+        "df5297cbd6279b13bf88919e34e98c3dff0780eed8764647bffbc6cfc986cca5",
+        "b050d890e6db472cc909e1fe94dbdbe78bec951ea766c1fda5a4ed7840e7a6c5"
+      ],
+      "independentPlayerCount": 2,
+      "editorialCharacters": 2106,
+      "publicationAuthorized": false,
+      "contentDigest": "f534a68da079e5d340df4f019eb1a991fd08155bdf9662ceb0743f06eece0a07",
+      "priority": {
+        "score": 77.12,
+        "components": {
+          "verifiedReward": 23.12,
+          "independentPace": 40,
+          "listingBreadthProxy": 4,
+          "currentTerms": 10
+        },
+        "searchDemand": "not_measured",
+        "scope": "reviewed_identities_only"
+      }
+    }
+  ]
+}
