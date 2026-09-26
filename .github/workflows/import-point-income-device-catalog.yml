@@ -36,7 +36,7 @@ jobs:
           if len(packed) > 100000:
               raise SystemExit("compressed payload too large")
 
-          raw = gzip.decompress(packed) if packed[:2] == b"\\x1f\\x8b" else packed
+          raw = gzip.decompress(packed) if packed[:2] == bytes.fromhex("1f8b") else packed
           if len(raw) > 250000:
               raise SystemExit("payload too large")
           open("/tmp/point-income-device.json", "wb").write(raw)
