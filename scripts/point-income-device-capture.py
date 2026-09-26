@@ -14,6 +14,7 @@ import json
 import re
 import sys
 import time
+import unicodedata
 from html import unescape
 from html.parser import HTMLParser
 from http.cookiejar import CookieJar
@@ -35,6 +36,15 @@ GITHUB_API = (
 )
 KEYCHAIN_SERVICE = "POIGAMELAB"
 KEYCHAIN_ACCOUNT = "github_actions_dispatch_token"
+TARGET_CONFIG_URL = (
+    "https://raw.githubusercontent.com/POIGAME-LAB/poigamelab/main/"
+    "config/point_income_game_aliases.json"
+)
+TARGET_CONFIG_HOST = "raw.githubusercontent.com"
+MAX_DETAIL_OFFERS = 40
+MAX_DETAIL_SNIPPETS = 4
+MAX_DETAIL_SNIPPET_CHARS = 1800
+MAX_DETAIL_LEAD_CHARS = 2400
 UA = (
     "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
     "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 "
@@ -76,6 +86,295 @@ class LinkParser(HTMLParser):
             self.links.append((self._href, text))
             self._href = None
             self._text = []
+
+
+
+class PublicDetailParser(HTMLParser):
+    """Extract only public visible text/metadata from an anonymous detail page."""
+
+    SKIP_TAGS = {"script", "style", "noscript", "svg"}
+
+    def __init__(self):
+        super().__init__()
+        self.skip_depth = 0
+        self.in_title = False
+        self.heading_tag = ""
+        self.heading_parts = []
+        self.title_parts = []
+        self.text_parts = []
+        self.headings = []
+        self.canonical = ""
+        self.meta_description = ""
+
+    def handle_starttag(self, tag, attrs):
+        tag = (tag or "").lower()
+        attrs_map = {str(k).lower(): str(v or "") for k, v in attrs}
+        if tag in self.SKIP_TAGS:
+            self.skip_depth += 1
+            return
+        if self.skip_depth:
+            return
+        if tag == "title":
+            self.in_title = True
+        if tag in {"h1", "h2", "h3"}:
+            self.heading_tag = tag
+            self.heading_parts = []
+        if tag == "link":
+            rel = {x.casefold() for x in attrs_map.get("rel", "").split()}
+            if "canonical" in rel and not self.canonical:
+                self.canonical = attrs_map.get("href", "").strip()
+        if tag == "meta":
+            if attrs_map.get("name", "").casefold() == "description" and not self.meta_description:
+                self.meta_description = attrs_map.get("content", "").strip()
+        if tag in {"br", "p", "div", "li", "section", "article", "dt", "dd"}:
+            self.text_parts.append(" ")
+
+    def handle_endtag(self, tag):
+        tag = (tag or "").lower()
+        if tag in self.SKIP_TAGS:
+            if self.skip_depth:
+                self.skip_depth -= 1
+            return
+        if self.skip_depth:
+            return
+        if tag == "title":
+            self.in_title = False
+        if tag == self.heading_tag:
+            value = normalize_space(" ".join(self.heading_parts))
+            if value and value not in self.headings:
+                self.headings.append(value[:240])
+            self.heading_tag = ""
+            self.heading_parts = []
+        if tag in {"p", "div", "li", "section", "article", "dt", "dd"}:
+            self.text_parts.append(" ")
+
+    def handle_data(self, data):
+        if self.skip_depth:
+            return
+        value = str(data or "")
+        self.text_parts.append(value)
+        if self.in_title:
+            self.title_parts.append(value)
+        if self.heading_tag:
+            self.heading_parts.append(value)
+
+
+def normalize_space(value):
+    return re.sub(r"\s+", " ", unescape(str(value or ""))).strip()
+
+
+def normalized_game_key(value):
+    text = unicodedata.normalize("NFKC", str(value or "")).casefold()
+    for pattern in (
+        r"【[^】]*】",
+        r"\[[^\]]*\]",
+        r"（(?:iOS|Android|iPhone)用）",
+        r"\((?:iOS|Android|iPhone)用\)",
+    ):
+        text = re.sub(pattern, " ", text, flags=re.I)
+    text = text.replace("＆", "&")
+    text = re.sub(r"\s+", "", text)
+    text = re.sub(r"[・･·／/｜|：:‐-‒–—―_\-]+", "", text)
+    text = re.sub(r"[【】\[\]（）()「」『』〈〉《》]", "", text)
+    return text[:320]
+
+
+FALLBACK_TARGETS = [
+    {"game": "Township", "aliases": ["Township", "タウンシップ"]},
+    {"game": "きのこ伝説", "aliases": ["きのこ伝説"]},
+    {"game": "メメントモリ", "aliases": ["メメントモリ", "MementoMori", "Memento Mori"]},
+    {"game": "ワーキングヒーロー", "aliases": ["ワーキングヒーロー", "Working Hero"]},
+    {"game": "ホワイトアウト・サバイバル", "aliases": ["ホワイトアウト・サバイバル", "Whiteout Survival"]},
+    {"game": "東京ディバンカー", "aliases": ["東京ディバンカー", "Tokyo Debunker"]},
+    {"game": "パズル＆サバイバル", "aliases": ["パズル＆サバイバル", "パズル&サバイバル", "Puzzles & Survival", "Puzzles and Survival"]},
+    {"game": "キングショット", "aliases": ["キングショット", "Kingshot"]},
+    {"game": "放置少女", "aliases": ["放置少女"]},
+    {"game": "エバーテイル", "aliases": ["エバーテイル", "Evertale"]},
+    {"game": "ATLAS: EARTH", "aliases": ["ATLAS: EARTH", "ATLAS:EARTH", "ATLAS EARTH"]},
+    {"game": "ファミリーファームの冒険", "aliases": ["ファミリーファームの冒険", "Family Farm Adventure"]},
+    {"game": "クロンダイクの冒険", "aliases": ["クロンダイクの冒険", "Klondike Adventures"]},
+    {"game": "Merge Help: ホームデザインパズル", "aliases": ["Merge Help", "ホームデザインパズル"]},
+    {"game": "マジックジグソーパズル", "aliases": ["マジックジグソーパズル", "Magic Jigsaw Puzzles"]},
+    {"game": "Sea Block 1010", "aliases": ["Sea Block 1010"]},
+    {"game": "さる山温泉旅館", "aliases": ["さる山温泉旅館"]},
+    {"game": "インポッシブルカート", "aliases": ["インポッシブルカート", "Impossible Cart"]},
+    {"game": "天地英雄伝", "aliases": ["天地英雄伝"]},
+    {"game": "High Roller Vegas", "aliases": ["High Roller Vegas", "ハイローラーベガス"]},
+]
+
+
+def validate_target_config(data):
+    if not isinstance(data, dict) or data.get("version") != 1:
+        return []
+    rows = data.get("games")
+    if not isinstance(rows, list) or not 1 <= len(rows) <= 100:
+        return []
+    out = []
+    seen = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            return []
+        game = str(row.get("game") or "").strip()
+        aliases = row.get("aliases")
+        if not 1 <= len(game) <= 120 or not isinstance(aliases, list):
+            return []
+        cleaned = []
+        for alias in aliases:
+            alias = str(alias or "").strip()
+            if not 1 <= len(alias) <= 120:
+                return []
+            if alias not in cleaned:
+                cleaned.append(alias)
+        if not cleaned or game in seen:
+            return []
+        seen.add(game)
+        out.append({"game": game, "aliases": cleaned})
+    return out
+
+
+def load_target_config(open_url=urlopen):
+    request = Request(
+        TARGET_CONFIG_URL,
+        headers={
+            "User-Agent": "POIGAMELAB-PointIncome-iPhone/1.1",
+            "Accept": "application/json",
+        },
+    )
+    try:
+        with open_url(request, timeout=15) as response:
+            final = response.geturl() if hasattr(response, "geturl") else TARGET_CONFIG_URL
+            parsed = urlparse(final)
+            if parsed.scheme != "https" or (parsed.hostname or "").lower() != TARGET_CONFIG_HOST:
+                return list(FALLBACK_TARGETS)
+            raw = response.read(40_001)
+        if len(raw) > 40_000:
+            return list(FALLBACK_TARGETS)
+        value = validate_target_config(json.loads(raw.decode("utf-8")))
+        return value or list(FALLBACK_TARGETS)
+    except Exception:
+        return list(FALLBACK_TARGETS)
+
+
+def match_target_game(title, targets):
+    key = normalized_game_key(title)
+    hits = []
+    for row in targets:
+        aliases = [
+            normalized_game_key(alias)
+            for alias in row.get("aliases", [])
+            if str(alias or "").strip()
+        ]
+        if any(alias and alias in key for alias in aliases):
+            hits.append(row["game"])
+    return hits[0] if len(hits) == 1 else ""
+
+
+def detail_keyword_snippets(text):
+    markers = (
+        "ポイント獲得条件",
+        "獲得条件",
+        "成果条件",
+        "獲得対象外",
+        "対象外",
+        "注意事項",
+        "お問い合わせ",
+        "承認期間",
+    )
+    spans = []
+    for marker in markers:
+        start = 0
+        while True:
+            pos = text.find(marker, start)
+            if pos < 0:
+                break
+            left = max(0, pos - 250)
+            right = min(len(text), pos + MAX_DETAIL_SNIPPET_CHARS - 250)
+            if not any(not (right <= a or left >= b) for a, b in spans):
+                spans.append((left, right))
+            start = pos + len(marker)
+            if len(spans) >= MAX_DETAIL_SNIPPETS:
+                break
+        if len(spans) >= MAX_DETAIL_SNIPPETS:
+            break
+    return [text[a:b] for a, b in spans[:MAX_DETAIL_SNIPPETS]]
+
+
+def parse_public_detail_evidence(raw, requested_url, final_url, offer, game):
+    requested = urlparse(requested_url)
+    final = urlparse(final_url)
+    requested_match = AD_RE.fullmatch(requested.path or "")
+    final_match = AD_RE.fullmatch(final.path or "")
+    if (
+        not requested_match
+        or not final_match
+        or requested_match.group(1) != final_match.group(1)
+        or not first_party(final_url)
+    ):
+        raise ValueError("detail_identity_mismatch")
+
+    parser = PublicDetailParser()
+    parser.feed(raw)
+    text = normalize_space(" ".join(parser.text_parts))
+    canonical = urljoin(final_url, parser.canonical) if parser.canonical else ""
+    if canonical:
+        canonical_parsed = urlparse(canonical)
+        canonical_match = AD_RE.fullmatch(canonical_parsed.path or "")
+        if (
+            not first_party(canonical)
+            or not canonical_match
+            or canonical_match.group(1) != requested_match.group(1)
+        ):
+            canonical = ""
+
+    return {
+        "evidenceVersion": 1,
+        "adId": requested_match.group(1),
+        "gameHint": game,
+        "url": requested_url,
+        "finalUrl": final_url,
+        "canonicalUrl": canonical,
+        "listingTitle": str(offer.get("title") or "")[:260],
+        "listingPlatform": str(offer.get("platform") or ""),
+        "listingCurrentPoints": offer.get("currentPoints"),
+        "pageTitle": normalize_space(" ".join(parser.title_parts))[:500],
+        "metaDescription": normalize_space(parser.meta_description)[:1000],
+        "headings": parser.headings[:24],
+        "leadText": text[:MAX_DETAIL_LEAD_CHARS],
+        "keywordSnippets": detail_keyword_snippets(text),
+        "textLength": len(text),
+        "candidateOnly": True,
+        "publicationAuthorized": False,
+    }
+
+
+def capture_detail_evidence(offers):
+    targets = load_target_config()
+    evidence = []
+    for offer in offers:
+        game = match_target_game(offer.get("title"), targets)
+        if not game:
+            continue
+        if len(evidence) >= MAX_DETAIL_OFFERS:
+            break
+        try:
+            raw, final = fetch(offer["url"], ajax=False)
+            item = parse_public_detail_evidence(raw, offer["url"], final, offer, game)
+        except SystemExit:
+            raise
+        except Exception:
+            item = {
+                "evidenceVersion": 1,
+                "adId": str(offer.get("adId") or ""),
+                "gameHint": game,
+                "url": str(offer.get("url") or ""),
+                "state": "review_required",
+                "reason": "detail_fetch_or_parse_failed",
+                "candidateOnly": True,
+                "publicationAuthorized": False,
+            }
+        evidence.append(item)
+        time.sleep(0.12)
+    return evidence
 
 
 def first_party(url):
@@ -211,8 +510,10 @@ def capture():
     if not all_offers:
         raise SystemExit("案件を1件も取得できなかったため停止しました。")
 
+    detail_evidence = capture_detail_evidence(all_offers)
+
     return {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "source": "point_income",
         "sourceUrl": START_URL,
         "listingEndpoint": "/ajax_load/load_list_site.php",
@@ -226,6 +527,8 @@ def capture():
         "catalogCompleteClaim": False,
         "offers": all_offers,
         "count": len(all_offers),
+        "detailEvidence": detail_evidence,
+        "detailEvidenceCount": len(detail_evidence),
     }
 
 
@@ -413,6 +716,7 @@ def main():
         "pageCount": payload["pageCount"],
         "stoppedBecause": payload["stoppedBecause"],
         "pointRate": payload["pointRate"],
+        "detailEvidenceCount": payload.get("detailEvidenceCount", 0),
         "compressedChars": len(encoded),
     }, ensure_ascii=False, indent=2))
 

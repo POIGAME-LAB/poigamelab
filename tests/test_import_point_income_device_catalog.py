@@ -243,3 +243,134 @@ def test_dispatch_rejects_invalid_token_before_network_call():
         raise AssertionError("invalid token must fail closed")
 
     assert called["value"] is False
+
+
+def test_capture_matches_reviewed_remote_aliases_and_parses_public_detail():
+    capture = load_capture_module()
+    targets = capture.validate_target_config({
+        "version": 1,
+        "games": [
+            {"game": "Township", "aliases": ["Township", "タウンシップ"]},
+            {"game": "エバーテイル", "aliases": ["エバーテイル", "Evertale"]},
+        ],
+    })
+    assert capture.match_target_game(
+        "タウンシップ【アプリ利用でptゲット/iOS用】",
+        targets,
+    ) == "Township"
+
+    raw = """
+    <html>
+      <head>
+        <title>タウンシップ | ポイントインカム</title>
+        <meta name="description" content="タウンシップのポイント獲得案件">
+        <link rel="canonical" href="https://pointi.jp/ad/156226/">
+        <script>github_pat_NOT_PUBLIC_SHOULD_NOT_APPEAR</script>
+      </head>
+      <body>
+        <h1>タウンシップ</h1>
+        <h2>ポイント獲得条件</h2>
+        <div>新規アプリインストール後、指定条件を達成</div>
+        <h2>獲得対象外</h2>
+        <div>過去に利用したことがある場合は対象外</div>
+        <h2>注意事項</h2>
+        <div>ポイントに関するお問い合わせはポイントインカムへ。</div>
+      </body>
+    </html>
+    """
+    offer = {
+        "adId": "156226",
+        "url": "https://sp.pointi.jp/ad/156226/",
+        "title": "タウンシップ【アプリ利用でptゲット/iOS用】",
+        "platform": "iOS",
+        "currentPoints": 308302,
+    }
+    detail = capture.parse_public_detail_evidence(
+        raw,
+        offer["url"],
+        offer["url"],
+        offer,
+        "Township",
+    )
+    assert detail["adId"] == "156226"
+    assert detail["gameHint"] == "Township"
+    assert detail["canonicalUrl"] == "https://pointi.jp/ad/156226/"
+    assert detail["pageTitle"] == "タウンシップ | ポイントインカム"
+    assert "ポイント獲得条件" in detail["headings"]
+    combined = detail["leadText"] + " ".join(detail["keywordSnippets"])
+    assert "新規アプリインストール後" in combined
+    assert "github_pat_NOT_PUBLIC" not in combined
+    assert detail["publicationAuthorized"] is False
+
+
+def test_importer_preserves_bounded_public_detail_evidence(tmp_path):
+    payload = {
+        "schemaVersion": 3,
+        "source": "point_income",
+        "sourceUrl": "https://sp.pointi.jp/list.php?cat_no=68",
+        "pageCount": 31,
+        "stoppedBecause": "empty_page",
+        "offers": [{
+            "adId": "156226",
+            "url": "https://sp.pointi.jp/ad/156226/",
+            "title": "タウンシップ【アプリ利用でptゲット/iOS用】",
+            "platform": "iOS",
+            "currentPoints": 308302,
+        }],
+        "detailEvidence": [{
+            "evidenceVersion": 1,
+            "adId": "156226",
+            "gameHint": "Township",
+            "url": "https://sp.pointi.jp/ad/156226/",
+            "finalUrl": "https://sp.pointi.jp/ad/156226/",
+            "canonicalUrl": "https://pointi.jp/ad/156226/",
+            "pageTitle": "タウンシップ | ポイントインカム",
+            "metaDescription": "タウンシップのポイント獲得案件",
+            "headings": ["ポイント獲得条件", "獲得対象外", "注意事項"],
+            "leadText": "タウンシップ 308,302pt ポイント獲得条件",
+            "keywordSnippets": [
+                "ポイント獲得条件 新規アプリインストール後、指定条件を達成",
+                "獲得対象外 過去に利用した場合",
+            ],
+            "textLength": 4200,
+        }],
+    }
+    result, out = run_importer(tmp_path, payload)
+    assert result.returncode == 0
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["schemaVersion"] == 3
+    assert data["detailEvidenceCount"] == 1
+    detail = data["detailEvidence"][0]
+    assert detail["adId"] == "156226"
+    assert detail["listingCurrentPoints"] == 308302
+    assert detail["state"] == "captured"
+    assert detail["publicationAuthorized"] is False
+
+
+def test_importer_drops_detail_evidence_for_different_offer_identity(tmp_path):
+    payload = {
+        "source": "point_income",
+        "sourceUrl": "https://sp.pointi.jp/list.php?cat_no=68",
+        "offers": [{
+            "adId": "156226",
+            "title": "タウンシップ（iOS用）",
+            "platform": "iOS",
+            "currentPoints": 308302,
+        }],
+        "detailEvidence": [{
+            "adId": "156226",
+            "gameHint": "Township",
+            "url": "https://sp.pointi.jp/ad/156226/",
+            "finalUrl": "https://sp.pointi.jp/ad/999999/",
+            "pageTitle": "wrong",
+            "metaDescription": "",
+            "headings": [],
+            "leadText": "wrong",
+            "keywordSnippets": [],
+            "textLength": 5,
+        }],
+    }
+    result, out = run_importer(tmp_path, payload)
+    assert result.returncode == 0
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert data["detailEvidenceCount"] == 0
