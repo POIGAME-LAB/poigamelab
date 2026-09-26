@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "games": [
+    {
+      "game": "Township",
+      "aliases": [
+        "Township",
+        "タウンシップ"
+      ]
+    },
+    {
+      "game": "きのこ伝説",
+      "aliases": [
+        "きのこ伝説"
+      ]
+    },
+    {
+      "game": "メメントモリ",
+      "aliases": [
+        "メメントモリ",
+        "MementoMori",
+        "Memento Mori"
+      ]
+    },
+    {
+      "game": "ワーキングヒーロー",
+      "aliases": [
+        "ワーキングヒーロー",
+        "Working Hero"
+      ]
+    },
+    {
+      "game": "ホワイトアウト・サバイバル",
+      "aliases": [
+        "ホワイトアウト・サバイバル",
+        "Whiteout Survival"
+      ]
+    },
+    {
+      "game": "東京ディバンカー",
+      "aliases": [
+        "東京ディバンカー",
+        "Tokyo Debunker"
+      ]
+    },
+    {
+      "game": "パズル＆サバイバル",
+      "aliases": [
+        "パズル＆サバイバル",
+        "パズル&サバイバル",
+        "Puzzles & Survival",
+        "Puzzles and Survival"
+      ]
+    },
+    {
+      "game": "キングショット",
+      "aliases": [
+        "キングショット",
+        "Kingshot"
+      ]
+    },
+    {
+      "game": "放置少女",
+      "aliases": [
+        "放置少女"
+      ]
+    },
+    {
+      "game": "エバーテイル",
+      "aliases": [
+        "エバーテイル",
+        "Evertale"
+      ]
+    },
+    {
+      "game": "ATLAS: EARTH",
+      "aliases": [
+        "ATLAS: EARTH",
+        "ATLAS:EARTH",
+        "ATLAS EARTH"
+      ]
+    },
+    {
+      "game": "ファミリーファームの冒険",
+      "aliases": [
+        "ファミリーファームの冒険",
+        "Family Farm Adventure"
+      ]
+    },
+    {
+      "game": "クロンダイクの冒険",
+      "aliases": [
+        "クロンダイクの冒険",
+        "Klondike Adventures"
+      ]
+    },
+    {
+      "game": "Merge Help: ホームデザインパズル",
+      "aliases": [
+        "Merge Help",
+        "ホームデザインパズル"
+      ]
+    },
+    {
+      "game": "マジックジグソーパズル",
+      "aliases": [
+        "マジックジグソーパズル",
+        "Magic Jigsaw Puzzles"
+      ]
+    },
+    {
+      "game": "Sea Block 1010",
+      "aliases": [
+        "Sea Block 1010"
+      ]
+    },
+    {
+      "game": "さる山温泉旅館",
+      "aliases": [
+        "さる山温泉旅館"
+      ]
+    },
+    {
+      "game": "インポッシブルカート",
+      "aliases": [
+        "インポッシブルカート",
+        "Impossible Cart"
+      ]
+    },
+    {
+      "game": "天地英雄伝",
+      "aliases": [
+        "天地英雄伝"
+      ]
+    },
+    {
+      "game": "High Roller Vegas",
+      "aliases": [
+        "High Roller Vegas",
+        "ハイローラーベガス"
+      ]
+    }
+  ]
+}
