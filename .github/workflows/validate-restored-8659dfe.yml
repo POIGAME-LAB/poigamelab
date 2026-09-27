@@ -1,0 +1,79 @@
+name: Validate restored Work commit 8659dfe
+
+on:
+  push:
+    branches:
+      - validation/8659dfe-evidence-first
+
+permissions:
+  contents: read
+
+jobs:
+  validate-restored-work:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install --disable-pip-version-check pytest pillow
+      - name: Verify exact restored commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESTORED=8659dfed8007239714f239674215c123198d9249
+          BASE=bab0fad794c1d129759d2125ab030082ebc3372d
+          test "$(git rev-parse "$RESTORED^")" = "$BASE"
+          test "$(git diff --name-only "$BASE" "$RESTORED" | wc -l)" -eq 20
+          test -z "$(git diff --name-status "$BASE" "$RESTORED" | grep -v '^A' || true)"
+          test -z "$(git diff --name-only "$BASE" "$RESTORED" | grep '^\.rescue/' || true)"
+      - name: Syntax checks for restored pipeline
+        shell: bash
+        run: |
+          set -euo pipefail
+          git worktree add -q --detach /tmp/restored 8659dfed8007239714f239674215c123198d9249
+          cd /tmp/restored
+          python -m py_compile             scripts/collect_editorial_evidence.py             scripts/new_game_pipeline.py             tests/test_editorial_pipeline.py
+      - name: Run new editorial pipeline tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/restored
+          python -m pytest -q tests/test_editorial_pipeline.py
+      - name: Compare existing regression failures against main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git worktree add -q --detach /tmp/main-base origin/main
+          COMMON=(
+            tests/test_new_game_content_gate.py
+            tests/test_build_new_game_content_packages.py
+            tests/test_public_site_build.py
+            tests/test_game_art_high_quality_hashes.py
+          )
+          run_suite() {
+            local dir="$1"
+            local prefix="$2"
+            set +e
+            (cd "$dir" && python -m pytest -q -rf "${COMMON[@]}") > "/tmp/${prefix}.log" 2>&1
+            local ec=$?
+            set -e
+            cat "/tmp/${prefix}.log"
+            grep -E '^(FAILED|ERROR) ' "/tmp/${prefix}.log"               | sed -E 's/^(FAILED|ERROR) //'               | sed 's/ - .*//'               | sort -u > "/tmp/${prefix}.failed" || true
+            echo "${prefix}_exit_code=${ec}"
+          }
+          run_suite /tmp/main-base main
+          run_suite /tmp/restored restored
+          echo "=== New failures only on restored commit ==="
+          comm -13 /tmp/main.failed /tmp/restored.failed | tee /tmp/new.failed
+          echo "=== Failures shared with main ==="
+          comm -12 /tmp/main.failed /tmp/restored.failed | tee /tmp/shared.failed
+          if [ -s /tmp/new.failed ]; then
+            echo "Restored commit introduced new regression failures."
+            exit 1
+          fi
