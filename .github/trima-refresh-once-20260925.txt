@@ -1,1 +1,2 @@
 Trigger one production refresh after Trima first-party catalog integration.
+Manual refresh requested 2026-09-28 JST after verified-offer freshness check.
