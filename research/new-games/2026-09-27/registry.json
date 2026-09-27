@@ -1,0 +1,45 @@
+[
+  {
+    "slug": "mafia-city",
+    "name": "マフィア・シティ-極道風雲",
+    "aliases": [
+      "マフィア・シティ - 極道風雲",
+      "マフィア・シティ"
+    ],
+    "gameId": "com.yottagames.mafiawar",
+    "selectionReason": "課金あり・無課金・撤退の比較が可能。高額表示と現実的な別荘目標を分ける価値が高い。"
+  },
+  {
+    "slug": "grand-mafia",
+    "name": "ザ・グランドマフィア",
+    "aliases": [],
+    "gameId": "com.yottagames.gameofmafiajp",
+    "selectionReason": "高還元だが段階別期限が異なる。別荘と監禁所・投資センターを混同しない解説が必要。"
+  },
+  {
+    "slug": "viking-rise",
+    "name": "ヴァイキングライズ",
+    "aliases": [],
+    "gameId": "com.igg.android.vikingriseglobal",
+    "selectionReason": "最近の実例があり、無課金と課金付き本部条件の違いを説明できる。",
+    "discoveryEvidence": [{"titleHint":"iOS_ヴァイキングライズ(StepUp) アプリ利用でキャッシュバック 15,200円 9,261円","source":"coincome","discoveryScope":"partial_current_app_category_listing","firstPartyCandidateUrl":"https://cimcome.jp/campaigns/details/10058","checkedAt":"2026-09-25T20:02:47+00:00","originCommit":"cc0a968ab3f7bff14d6afc2ecc5ad4ad883cd5bb"}]
+  },
+  {
+    "slug": "puzzles-chaos",
+    "name": "パズル＆カオス",
+    "aliases": [
+      "Puzzles & Chaos"
+    ],
+    "gameId": "com.global.pnck",
+    "selectionReason": "無課金で期限を超えた記録と課金達成記録を比較でき、撤退判断に価値がある。"
+  },
+  {
+    "slug": "royal-match",
+    "name": "ロイヤルマッチ",
+    "aliases": [
+      "Royal Match"
+    ],
+    "gameId": "com.dreamgames.royalmatch",
+    "selectionReason": "城ゲーム以外の比較枠。到達とエリア完了の違い、手動操作時間を示せる。"
+  }
+]

@@ -1,0 +1,255 @@
+[
+  {
+    "slug": "mafia-city",
+    "gameId": "com.yottagames.mafiawar",
+    "game": "マフィア・シティ-極道風雲",
+    "aliases": [
+      "マフィア・シティ - 極道風雲",
+      "マフィア・シティ"
+    ],
+    "queries": {
+      "official": [
+        "マフィア・シティ-極道風雲 公式 ゲーム"
+      ],
+      "web": [
+        "マフィア・シティ-極道風雲 ポイ活 達成 日数 課金 撤退"
+      ],
+      "x": [
+        "マフィア・シティ-極道風雲 site:x.com ポイ活 達成 日目"
+      ],
+      "youtube": [
+        "マフィア・シティ-極道風雲 site:youtube.com ポイ活 攻略"
+      ],
+      "instagram": [
+        "マフィア・シティ-極道風雲 site:instagram.com ポイ活"
+      ],
+      "pointSites": [
+        "マフィア・シティ-極道風雲 ポイ活 案件 条件 期限"
+      ]
+    },
+    "offerJobs": [
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202183&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198935&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=192965&pl=pc_categoryService"
+      }
+    ],
+    "requirements": [
+      "Record actual URL, source date, access status and relevant heading.",
+      "At least two independent player identities with target, days, spend, play time.",
+      "Never treat a search snippet as body evidence.",
+      "Use schemaVersion 2 dossiers. Missing fields stay null; do not guess."
+    ]
+  },
+  {
+    "slug": "grand-mafia",
+    "gameId": "com.yottagames.gameofmafiajp",
+    "game": "ザ・グランドマフィア",
+    "aliases": [],
+    "queries": {
+      "official": [
+        "ザ・グランドマフィア 公式 ゲーム"
+      ],
+      "web": [
+        "ザ・グランドマフィア ポイ活 達成 日数 課金 撤退"
+      ],
+      "x": [
+        "ザ・グランドマフィア site:x.com ポイ活 達成 日目"
+      ],
+      "youtube": [
+        "ザ・グランドマフィア site:youtube.com ポイ活 攻略"
+      ],
+      "instagram": [
+        "ザ・グランドマフィア site:instagram.com ポイ活"
+      ],
+      "pointSites": [
+        "ザ・グランドマフィア ポイ活 案件 条件 期限"
+      ]
+    },
+    "offerJobs": [
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206538&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206539&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205590&pl=pc_categoryService"
+      },
+      {
+        "source": "amefuri",
+        "url": "https://www.amefri.net/detail/id/137656"
+      },
+      {
+        "source": "moppy",
+        "url": "https://pc.moppy.jp/ad/detail.php?s_id=157476&track_ref=category"
+      },
+      {
+        "source": "moppy",
+        "url": "https://pc.moppy.jp/ad/detail.php?s_id=161772&track_ref=category"
+      }
+    ],
+    "requirements": [
+      "Record actual URL, source date, access status and relevant heading.",
+      "At least two independent player identities with target, days, spend, play time.",
+      "Never treat a search snippet as body evidence.",
+      "Use schemaVersion 2 dossiers. Missing fields stay null; do not guess."
+    ]
+  },
+  {
+    "slug": "viking-rise",
+    "gameId": "com.igg.android.vikingriseglobal",
+    "game": "ヴァイキングライズ",
+    "aliases": [],
+    "queries": {
+      "official": [
+        "ヴァイキングライズ 公式 ゲーム"
+      ],
+      "web": [
+        "ヴァイキングライズ ポイ活 達成 日数 課金 撤退"
+      ],
+      "x": [
+        "ヴァイキングライズ site:x.com ポイ活 達成 日目"
+      ],
+      "youtube": [
+        "ヴァイキングライズ site:youtube.com ポイ活 攻略"
+      ],
+      "instagram": [
+        "ヴァイキングライズ site:instagram.com ポイ活"
+      ],
+      "pointSites": [
+        "ヴァイキングライズ ポイ活 案件 条件 期限"
+      ]
+    },
+    "offerJobs": [
+      {
+        "source": "coincome",
+        "url": "https://cimcome.jp/campaigns/details/10058"
+      }
+    ],
+    "requirements": [
+      "Record actual URL, source date, access status and relevant heading.",
+      "At least two independent player identities with target, days, spend, play time.",
+      "Never treat a search snippet as body evidence.",
+      "Use schemaVersion 2 dossiers. Missing fields stay null; do not guess."
+    ]
+  },
+  {
+    "slug": "puzzles-chaos",
+    "gameId": "com.global.pnck",
+    "game": "パズル＆カオス",
+    "aliases": [
+      "Puzzles & Chaos"
+    ],
+    "queries": {
+      "official": [
+        "パズル＆カオス 公式 ゲーム"
+      ],
+      "web": [
+        "パズル＆カオス ポイ活 達成 日数 課金 撤退"
+      ],
+      "x": [
+        "パズル＆カオス site:x.com ポイ活 達成 日目"
+      ],
+      "youtube": [
+        "パズル＆カオス site:youtube.com ポイ活 攻略"
+      ],
+      "instagram": [
+        "パズル＆カオス site:instagram.com ポイ活"
+      ],
+      "pointSites": [
+        "パズル＆カオス ポイ活 案件 条件 期限"
+      ]
+    },
+    "offerJobs": [
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202194&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199031&pl=pc_categoryService"
+      },
+      {
+        "source": "amefuri",
+        "url": "https://www.amefri.net/detail/id/139772"
+      },
+      {
+        "source": "moppy",
+        "url": "https://pc.moppy.jp/ad/detail.php?s_id=159716&track_ref=category"
+      }
+    ],
+    "requirements": [
+      "Record actual URL, source date, access status and relevant heading.",
+      "At least two independent player identities with target, days, spend, play time.",
+      "Never treat a search snippet as body evidence.",
+      "Use schemaVersion 2 dossiers. Missing fields stay null; do not guess."
+    ]
+  },
+  {
+    "slug": "royal-match",
+    "gameId": "com.dreamgames.royalmatch",
+    "game": "ロイヤルマッチ",
+    "aliases": [
+      "Royal Match"
+    ],
+    "queries": {
+      "official": [
+        "ロイヤルマッチ 公式 ゲーム"
+      ],
+      "web": [
+        "ロイヤルマッチ ポイ活 達成 日数 課金 撤退"
+      ],
+      "x": [
+        "ロイヤルマッチ site:x.com ポイ活 達成 日目"
+      ],
+      "youtube": [
+        "ロイヤルマッチ site:youtube.com ポイ活 攻略"
+      ],
+      "instagram": [
+        "ロイヤルマッチ site:instagram.com ポイ活"
+      ],
+      "pointSites": [
+        "ロイヤルマッチ ポイ活 案件 条件 期限"
+      ]
+    },
+    "offerJobs": [
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206119&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204268&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205235&pl=pc_categoryService"
+      },
+      {
+        "source": "warau",
+        "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199246&pl=pc_categoryService"
+      }
+    ],
+    "requirements": [
+      "Record actual URL, source date, access status and relevant heading.",
+      "At least two independent player identities with target, days, spend, play time.",
+      "Never treat a search snippet as body evidence.",
+      "Use schemaVersion 2 dossiers. Missing fields stay null; do not guess."
+    ]
+  }
+]

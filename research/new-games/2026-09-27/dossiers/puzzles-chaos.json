@@ -1,0 +1,411 @@
+{
+  "slug": "puzzles-chaos",
+  "name": "パズル＆カオス",
+  "aliases": [
+    "Puzzles & Chaos"
+  ],
+  "gameId": "com.global.pnck",
+  "selectionReason": "無課金で期限を超えた記録と課金達成記録を比較でき、撤退判断に価値がある。",
+  "schemaVersion": 2,
+  "researchDate": "2026-09-27",
+  "sources": [
+    {
+      "id": "p1",
+      "url": "https://okanega-naiyo.com/【ポイ活】puzzles-chaosパズル＆カオス　キャッスルレ/",
+      "title": "スキマぶろぐ：無課金検証",
+      "publishedAt": "2026-09-01",
+      "playerKey": "okanega-naiyo:kanetaro",
+      "summary": "無課金で城17は5日、城22は22日、城24は34日、城25は37日。城25は30日期限を超えた。採集と前提建築が重要。",
+      "observations": [
+        {
+          "target": "センターキャッスルLv25",
+          "days": 37,
+          "spendYen": 0,
+          "playHours": null,
+          "outcome": "30日期限を超過",
+          "context": "ゲーム内到達と案件の期限内達成は別。"
+        }
+      ],
+      "kind": "player",
+      "locator": "スキマぶろぐ：無課金検証",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.global.pnck",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "p2",
+      "url": "https://memopanda.com/puzzles-and-chaos-poikatu/",
+      "title": "めもぱんだ：城25記録",
+      "publishedAt": "2026-03-18",
+      "playerKey": "memopanda",
+      "summary": "建設マスター800円を購入する攻略。表に城23は18日、城24は22日、城25は26日。資源特に石材、同盟、建築資源軽減を重視。",
+      "observations": [
+        {
+          "target": "センターキャッスルLv25",
+          "days": 26,
+          "spendYen": null,
+          "playHours": null,
+          "outcome": "達成",
+          "context": "課金あり。建設マスター800円の記述はあるが、総支出としては断定しない。"
+        }
+      ],
+      "kind": "player",
+      "locator": "めもぱんだ：城25記録",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.global.pnck",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "official",
+      "url": "https://play.google.com/store/apps/details?hl=ja&id=com.global.pnck",
+      "title": "ゲーム公式・公式ストア",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "37GAMESのパズルと城育成を組み合わせたゲーム。パズル＆サバイバルとは別アプリ。",
+      "observations": [],
+      "kind": "official",
+      "locator": "ゲーム公式・公式ストア",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.global.pnck",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-35471",
+      "url": "https://web.mikoshi.jp/v2/skyflag/ads/35471",
+      "title": "MIKOSHI 案件詳細（調査出典・申込リンクではありません）",
+      "publishedAt": null,
+      "kind": "offer",
+      "locator": "ゲーム名・OS・全Step・参加条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:30:31.412048+00:00",
+      "gameId": "com.global.pnck",
+      "summary": "16002円相当。インストール日から40日以内（2026/9/25以降の参加条件）。40日以内にセンターキャッスルレベル10到達 157円。40日以内に「永久建物隊列」を購入 540円。40日以内にセンターキャッスルレベル15到達 419円。40日以内に「初チャージギフト」を購入 540円。40日以内にセンターキャッスルレベル17到達 564円。40日以内にセンターキャッスルレベル19到達 848円。40日以内にセンターキャッスルレベル22到達 1100円。40日以内に「シルバー週間パス」を購入 314円。40日以内にセンターキャッスルレベル24到達 1361円。40日以内にセンターキャッスルレベル27到達 1780円。40日以内に「ゴールデン月間パス」を購入 3142円。40日以内にセンターキャッスルレベル28到達 2409円。40日以内にセンターキャッスルレベル30到達 2828円",
+      "observations": [],
+      "evidenceSha256": "5c977379be0590934c6db59fe19016e3e027fa466f3daa699352c1e92a396c2f"
+    }
+  ],
+  "research": {
+    "official": {
+      "status": "body_verified",
+      "queries": [
+        "パズル＆カオス 公式"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "web": {
+      "status": "body_verified",
+      "queries": [
+        "パズル＆カオス ポイ活 攻略 達成 撤退"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "x": {
+      "status": "no_usable_result",
+      "queries": [
+        "パズル＆カオス site:x.com ポイ活 達成"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "youtube": {
+      "status": "no_usable_result",
+      "queries": [
+        "パズル＆カオス site:youtube.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "instagram": {
+      "status": "no_usable_result",
+      "queries": [
+        "パズル＆カオス site:instagram.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "pointSites": {
+      "status": "body_verified",
+      "queries": [
+        "パズル＆カオス 案件詳細・口コミ"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    }
+  },
+  "offers": [
+    {
+      "gameId": "com.global.pnck",
+      "site": "mikoshi",
+      "platform": "Android",
+      "rewardYen": 16002,
+      "condition": "新規インストール後、各Stepを達成。参加はMIKOSHI内の正式な導線から行う",
+      "deadline": "インストール日から40日以内（2026/9/25以降の参加条件）",
+      "url": "https://web.mikoshi.jp/v2/skyflag/ads/35471",
+      "retrievedAt": "2026-09-26T15:30:31.412048+00:00",
+      "evidenceSha256": "5c977379be0590934c6db59fe19016e3e027fa466f3daa699352c1e92a396c2f",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "40日以内にセンターキャッスルレベル10到達",
+          "rewardYen": 157,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内に「永久建物隊列」を購入",
+          "rewardYen": 540,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル15到達",
+          "rewardYen": 419,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内に「初チャージギフト」を購入",
+          "rewardYen": 540,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル17到達",
+          "rewardYen": 564,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル19到達",
+          "rewardYen": 848,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル22到達",
+          "rewardYen": 1100,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内に「シルバー週間パス」を購入",
+          "rewardYen": 314,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル24到達",
+          "rewardYen": 1361,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル27到達",
+          "rewardYen": 1780,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内に「ゴールデン月間パス」を購入",
+          "rewardYen": 3142,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル28到達",
+          "rewardYen": 2409,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "40日以内にセンターキャッスルレベル30到達",
+          "rewardYen": 2828,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "既存の確認済み額面レート1pt=1円。交換先・手数料による受取額は別途確認",
+        "rateEvidenceUrl": "https://www.atpress.ne.jp/news/334278"
+      }
+    }
+  ],
+  "progress": [
+    {
+      "sourceRef": "p1",
+      "observation": {
+        "target": "センターキャッスルLv25",
+        "days": 37,
+        "spendYen": 0,
+        "playHours": null,
+        "outcome": "30日期限を超過",
+        "context": "ゲーム内到達と案件の期限内達成は別。"
+      }
+    },
+    {
+      "sourceRef": "p2",
+      "observation": {
+        "target": "センターキャッスルLv25",
+        "days": 26,
+        "spendYen": null,
+        "playHours": null,
+        "outcome": "達成",
+        "context": "課金あり。建設マスター800円の記述はあるが、総支出としては断定しない。"
+      }
+    }
+  ],
+  "image": {
+    "mode": "original_typographic_card",
+    "rightsConfirmed": true,
+    "note": "第三者画像は使わず、自作の文字と配色によるヒーロー表示。既存画像ファイルには書き込まない。"
+  },
+  "lead": "現在の案件条件と、条件別の実到達ペースを照合して、どこまで狙うかを判断するための攻略です。",
+  "guide": {
+    "overview": [
+      {
+        "text": "パズル＆カオスは、パズルの戦闘と城・英雄の育成を組み合わせたゲームです。ポイ活で城の条件を狙う場合は、パズルを解くこと自体より、センターキャッスルと前提施設を育てる資源計画が重要になります。パズル＆サバイバルとは別ゲームです。",
+        "sourceRefs": [
+          "official",
+          "p1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "今回詳細を確認したMIKOSHIのAndroid案件は、40日以内の育成と購入を組み合わせたStepUpです。合計16,002円相当には城Lv30と複数の購入条件を含みます。城Lv25はこのコースの独立した報酬地点ではありません。過去の城Lv25の記録は途中の進行を判断する参考であり、最大報酬を達成できる根拠には使えません。",
+        "sourceRefs": [
+          "offer-35471",
+          "p1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "difficulty": [
+      {
+        "text": "難易度は、城の途中地点と後半で分けて判断する必要があります。無課金で城Lv25へ進んだ実例は37日で、30日の条件なら期限を超えています。一方、課金を含む別の記録では城Lv25へ26日で到達しています。これらを平均して「約何日で達成」と案内することはできません。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "課金の有無だけで差が決まるとは限らず、イベントや同盟、操作時間も関係します。特に支出総額が不明な記録を使って「この金額だけ買えば達成」とは言えません。自分の期限と次の前提施設を見ながら、途中の城レベルで区切る判断を残してください。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "strategy": [
+      {
+        "text": "序盤はセンターキャッスルが次に要求する施設を確認して、建築の順番を決めます。パズルの進行だけを追うと、城の前提施設や採集の準備が遅れることがあります。ゲーム内の目標を見つつ、今回狙う成果条件に関係する建築を優先します。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "同盟へ参加したら、支援と採集に使える仕組みを確認します。資源のために無理な対人戦を始める必要があるとは考えず、所属先のルールに従って安全に育成できる環境を探します。活動している人数と支援の状況を見て、名前や順位だけで決めないようにします。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "中盤は石材など不足する資源を見ながら採集先を変えます。すべての資源を同じ量だけ集めるのではなく、次の城と前提施設に何が必要かを確認します。資源アイテムと採集で補える分を整理し、足りない種類だけを把握しておくと判断しやすくなります。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "建築時間の短縮と、建築に必要な資源を減らす効果は別です。装備や研究を確認するときは、待ち時間に効くのか、消費資源に効くのかを区別します。課金装備の効果についても、購入画面を読まずに攻略記事の古い価格だけで購入しないでください。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "後半は次の城を上げた時に残り期間がどうなるかを確認します。無課金実例では城Lv24が34日、Lv25が37日です。今回の40日期限とは区別して読み、そこから城Lv27・28・30への日数を推定しないでください。余った加速だけでなく資源の不足も点検し、実例が確認できた途中地点と未確認の後半を分けます。",
+        "sourceRefs": [
+          "p1",
+          "p2",
+          "offer-35471"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "efficiency": [
+      {
+        "text": "ログイン時は建築の終了確認、採集の回収と再出発、目標に使う報酬の受け取りをひとまとまりにします。イベントを利用する場合も、次の城に必要な資源を増やせるかで優先度を考えます。目標と関係の薄い強化へ資源を広く使う前に、本部の前提を確認してください。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "採集を続けても不足が埋まらない場合は、必要量と期限の両方を見直します。単にログイン回数を増やすだけで解決するとは限りません。手持ち資源・回収予定・必要な建築時間を並べ、追加で何をする必要があるか分かる状態にしてから進めます。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "spending": [
+      {
+        "text": "課金を含む攻略記事では建設マスターの記載がありますが、現在のOS別価格と、記録全体の支出総額は確定していません。購入Stepの報酬があっても、現在の購入価格を引かなければ損益は分かりません。育成Stepの未達リスクも残るため、合計報酬をそのまま利益とは案内しません。",
+        "sourceRefs": [
+          "p2",
+          "p1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "損益を考えるときは、購入条件の報酬と、購入によって狙いやすくなる育成条件の報酬を分けます。後者は達成前には確定収入ではありません。既に支出した金額を取り返すために、さらに高い未確認条件を追うという進め方は避けてください。",
+        "sourceRefs": [
+          "p2",
+          "p1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "warnings": [
+      {
+        "text": "ゲーム内で城レベルに到達することと、案件期限内に到達することは別です。今回の無課金記録も、ゲームでは目標へ到達していますが、30日の案件なら達成扱いにはできません。実例表ではこの違いが分かるよう、期限超過を成功例に混ぜず記載しています。",
+        "sourceRefs": [
+          "p1",
+          "p2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "今回の条件は2026/9/25以降のインストールに適用されます。過去の参加者は開始時の条件を優先してください。広告クリックから1時間以内の初回起動が求められています。MIKOSHI内の正式な申込導線を使い、コピーされたキャンペーンURLから参加しないでください。",
+        "sourceRefs": [
+          "offer-35471"
+        ],
+        "kind": "editorial"
+      }
+    ],
+    "failures": [
+      {
+        "text": "無課金で城Lv25に37日を要した実例は、短い期限を考えるうえで重要です。「最後には到達できた」という結論だけを見ず、条件の終了日までにどこまで進めたかを確認してください。この例では、城Lv24も34日という記録でした。",
+        "sourceRefs": [
+          "p1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "今回の40日期限に照らすと、城Lv24が34日の記録は途中報酬を検討する材料になります。ただし、別プレイヤーが同じ期間で達成する保証ではありません。城Lv30までの完走例は今回確認できておらず、最大額を取り切れるとは判断しません。",
+        "sourceRefs": [
+          "p1",
+          "offer-35471"
+        ],
+        "kind": "fact"
+      }
+    ]
+  },
+  "comparisonNote": "取得済み候補のうち、今回詳細と条件を確認できた案件のみ掲載しています。未確認の他コースは最高額の算定に含めていません。",
+  "unresolved": []
+}

@@ -1,0 +1,764 @@
+{
+  "slug": "mafia-city",
+  "name": "マフィア・シティ-極道風雲",
+  "aliases": [
+    "マフィア・シティ - 極道風雲",
+    "マフィア・シティ"
+  ],
+  "gameId": "com.yottagames.mafiawar",
+  "selectionReason": "課金あり・無課金・撤退の比較が可能。高額表示と現実的な別荘目標を分ける価値が高い。",
+  "schemaVersion": 2,
+  "researchDate": "2026-09-27",
+  "sources": [
+    {
+      "id": "m1",
+      "url": "https://www.npd-ruru-rarara.com/entry/2026/02/05/104127",
+      "title": "るる：別荘レベル25の実プレイ記録",
+      "publishedAt": "2026-02-05",
+      "playerKey": "npd-ruru-rarara",
+      "summary": "初回豪華特権3060円のみ購入。別荘10は2日、15は6日、20は9日、25は18日。建築の前提施設・加速と資源を管理した記録。",
+      "observations": [
+        {
+          "target": "別荘Lv25",
+          "days": 18,
+          "spendYen": 3060,
+          "playHours": null,
+          "outcome": "達成",
+          "context": "掲載時のパック価格。現在のOS別価格と同一とは限らない。"
+        }
+      ],
+      "kind": "player",
+      "locator": "るる：別荘レベル25の実プレイ記録",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "m2",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936",
+      "title": "ワラウ：りんさんの投稿",
+      "publishedAt": "2026-07-11",
+      "playerKey": "warau:rin:20260711",
+      "summary": "無課金で別荘20まで23日という報告。高レベル完成には長い建築時間が必要。",
+      "observations": [
+        {
+          "target": "別荘Lv20",
+          "days": 23,
+          "spendYen": 0,
+          "playHours": null,
+          "outcome": "達成",
+          "context": ""
+        }
+      ],
+      "kind": "player",
+      "locator": "クチコミ／りん／2026-07-11",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "m3",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936",
+      "title": "ワラウ：すばらしい麦茶さんの投稿",
+      "publishedAt": "2026-01-22",
+      "playerKey": "warau:mugicha:20260122",
+      "summary": "無課金で約3週で別荘15。残り期間に20は困難と判断し撤退。",
+      "observations": [
+        {
+          "target": "別荘Lv15",
+          "days": 21,
+          "spendYen": 0,
+          "playHours": null,
+          "outcome": "Lv20を断念",
+          "context": "原記録の約3週間を約21日として換算。"
+        }
+      ],
+      "kind": "player",
+      "locator": "クチコミ／すばらしい麦茶／2026-01-22",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "official",
+      "url": "https://play.google.com/store/apps/details?hl=ja&id=com.yottagames.mafiawar",
+      "title": "ゲーム公式・公式ストア",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "Phantix Gamesのマフィア・シティ。別荘と組織を発展させるストラテジー。",
+      "observations": [],
+      "kind": "official",
+      "locator": "ゲーム公式・公式ストア",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-198936",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936",
+      "title": "確認済み案件詳細",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "17150円相当。インストール日から30日以内。OS：Android。各Step合計と表示総額の一致を確認。 高級特権のみの差額はAndroid 2300-3060=-760円、iOS 2300-4000=-1700円（段階報酬と条件記載価格から計算）。",
+      "observations": [
+        {
+          "rewardYen": 17150,
+          "steps": [
+            {
+              "condition": "別荘がLv.7に到達",
+              "rewardYen": 80,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "初めて『ゴッドの秘宝-建築資源パック』を購入",
+              "rewardYen": 420,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "別荘がLv.15に到達",
+              "rewardYen": 550,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "別荘がLv.20に到達",
+              "rewardYen": 800,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "別荘がLv.25に到達",
+              "rewardYen": 1000,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "初めて『スーパー月間パス - 高級特権（3,060円）』を購入",
+              "rewardYen": 2300,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "【高難易度】別荘がLv.30に到達",
+              "rewardYen": 4000,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "【高難易度】別荘がLv.35に到達",
+              "rewardYen": 8000,
+              "purchaseRequired": false
+            }
+          ],
+          "deadline": "インストール日から30日以内"
+        }
+      ],
+      "kind": "offer",
+      "locator": "案件名・OS表示・StepUp表・獲得条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-198935",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198935",
+      "title": "確認済み案件詳細",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "17150円相当。インストール日から30日以内。OS：iOS。各Step合計と表示総額の一致を確認。 高級特権のみの差額はAndroid 2300-3060=-760円、iOS 2300-4000=-1700円（段階報酬と条件記載価格から計算）。",
+      "observations": [
+        {
+          "rewardYen": 17150,
+          "steps": [
+            {
+              "condition": "別荘がLv.7に到達",
+              "rewardYen": 80,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "初めて『ゴッドの秘宝-建築資源パック』を購入",
+              "rewardYen": 420,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "別荘がLv.15に到達",
+              "rewardYen": 550,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "別荘がLv.20に到達",
+              "rewardYen": 800,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "別荘がLv.25に到達",
+              "rewardYen": 1000,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "初めて『スーパー月間パス - 高級特権（4,000円）』を購入",
+              "rewardYen": 2300,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "【高難易度】別荘がLv.30に到達",
+              "rewardYen": 4000,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "【高難易度】別荘がLv.35に到達",
+              "rewardYen": 8000,
+              "purchaseRequired": false
+            }
+          ],
+          "deadline": "インストール日から30日以内"
+        }
+      ],
+      "kind": "offer",
+      "locator": "案件名・OS表示・StepUp表・獲得条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-28487",
+      "url": "https://web.mikoshi.jp/v2/skyflag/ads/28487",
+      "title": "MIKOSHI 案件詳細（調査出典・申込リンクではありません）",
+      "publishedAt": null,
+      "kind": "offer",
+      "locator": "ゲーム名・OS・全Step・参加条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:30:31.997224+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "summary": "91828円相当。育成60日・ゴッドの秘宝7日・高級特権30日以内。60日以内に別荘Lv.5に到達 216円。60日以内に別荘Lv.10に到達 359円。60日以内に別荘Lv.15に到達 719円。7日以内に「ゴッドの秘宝-建築資源パック」を初回購入 414円。60日以内に別荘Lv.20に到達 1940円。30日以内に「スーパー月間パス-高級特権」を初回購入 1989円。60日以内に別荘Lv.30に到達 15802円。60日以内に別荘Lv.35に到達 20111円。60日以内に別荘Lv.36に到達 50278円",
+      "observations": [],
+      "evidenceSha256": "22466262d67aa471cd1669019d538f06c3894b0120bd3e9da66be8532218064a"
+    },
+    {
+      "id": "offer-27809",
+      "url": "https://web.mikoshi.jp/v2/skyflag/ads/27809",
+      "title": "MIKOSHI 案件詳細（調査出典・申込リンクではありません）",
+      "publishedAt": null,
+      "kind": "offer",
+      "locator": "ゲーム名・OS・全Step・参加条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:30:31.403255+00:00",
+      "gameId": "com.yottagames.mafiawar",
+      "summary": "43346円相当。育成と高級特権30日・ゴッドの秘宝7日以内。30日以内に別荘Lv.5に到達 86円。30日以内に別荘Lv.7に到達 86円。30日以内に別荘Lv.15に到達 503円。7日以内に「ゴッドの秘宝-建築資源パック」を初回購入 530円。30日以内に別荘Lv.20に到達 862円。30日以内に別荘Lv.25に到達 933円。30日以内に「スーパー月間パス-高級特権」を初回購入 2652円。30日以内に別荘Lv.30に到達 4597円。30日以内に別荘Lv.35に到達 8275円。30日以内に別荘Lv.36に到達 24822円",
+      "observations": [],
+      "evidenceSha256": "b74b1b2ae764f0358a762067eda17429b68e379243577eabb854c71e30584404"
+    }
+  ],
+  "research": {
+    "official": {
+      "status": "body_verified",
+      "queries": [
+        "マフィア・シティ-極道風雲 公式"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "web": {
+      "status": "body_verified",
+      "queries": [
+        "マフィア・シティ-極道風雲 ポイ活 攻略 達成 撤退"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "x": {
+      "status": "no_usable_result",
+      "queries": [
+        "マフィア・シティ-極道風雲 site:x.com ポイ活 達成"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "youtube": {
+      "status": "access_limited",
+      "queries": [
+        "マフィア・シティ-極道風雲 site:youtube.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "https://www.youtube.com/watch?v=ZPKdXUQ87ak は古い別条件の動画。本文取得制限もあり、現在の到達根拠に不採用。"
+    },
+    "instagram": {
+      "status": "no_usable_result",
+      "queries": [
+        "マフィア・シティ-極道風雲 site:instagram.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "pointSites": {
+      "status": "body_verified",
+      "queries": [
+        "マフィア・シティ-極道風雲 案件詳細・口コミ"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    }
+  },
+  "offers": [
+    {
+      "gameId": "com.yottagames.mafiawar",
+      "site": "warau",
+      "platform": "Android",
+      "rewardYen": 17150,
+      "condition": "新規インストール後、下表の各条件を達成",
+      "deadline": "インストール日から30日以内",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936",
+      "retrievedAt": "2026-09-26T15:16:24.007368+00:00",
+      "evidenceSha256": "9329a2cd47e3eea8e461a447b49eb7abe1ad59728d862b86ea88524614f6e777",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "別荘がLv.7に到達",
+          "rewardYen": 80,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "初めて『ゴッドの秘宝-建築資源パック』を購入",
+          "rewardYen": 420,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "別荘がLv.15に到達",
+          "rewardYen": 550,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "別荘がLv.20に到達",
+          "rewardYen": 800,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "別荘がLv.25に到達",
+          "rewardYen": 1000,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "初めて『スーパー月間パス - 高級特権（3,060円）』を購入",
+          "rewardYen": 2300,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "【高難易度】別荘がLv.30に到達",
+          "rewardYen": 4000,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "【高難易度】別荘がLv.35に到達",
+          "rewardYen": 8000,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "1pt=1円・config/point_value_rates.json",
+        "rateEvidenceUrl": "https://www.warau.jp/help/qa/128/"
+      }
+    },
+    {
+      "gameId": "com.yottagames.mafiawar",
+      "site": "warau",
+      "platform": "iOS",
+      "rewardYen": 17150,
+      "condition": "新規インストール後、下表の各条件を達成",
+      "deadline": "インストール日から30日以内",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198935",
+      "retrievedAt": "2026-09-26T15:16:24.627095+00:00",
+      "evidenceSha256": "0934b4ad8ee73f9a258998dec10ac877f994c1130326a59d215fcd31dfe24f00",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "別荘がLv.7に到達",
+          "rewardYen": 80,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "初めて『ゴッドの秘宝-建築資源パック』を購入",
+          "rewardYen": 420,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "別荘がLv.15に到達",
+          "rewardYen": 550,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "別荘がLv.20に到達",
+          "rewardYen": 800,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "別荘がLv.25に到達",
+          "rewardYen": 1000,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "初めて『スーパー月間パス - 高級特権（4,000円）』を購入",
+          "rewardYen": 2300,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "【高難易度】別荘がLv.30に到達",
+          "rewardYen": 4000,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "【高難易度】別荘がLv.35に到達",
+          "rewardYen": 8000,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "1pt=1円・config/point_value_rates.json",
+        "rateEvidenceUrl": "https://www.warau.jp/help/qa/128/"
+      }
+    },
+    {
+      "gameId": "com.yottagames.mafiawar",
+      "site": "mikoshi",
+      "platform": "Android",
+      "rewardYen": 91828,
+      "condition": "新規インストール後、各Stepを達成。参加はMIKOSHI内の正式な導線から行う",
+      "deadline": "育成60日・ゴッドの秘宝7日・高級特権30日以内",
+      "url": "https://web.mikoshi.jp/v2/skyflag/ads/28487",
+      "retrievedAt": "2026-09-26T15:30:31.997224+00:00",
+      "evidenceSha256": "22466262d67aa471cd1669019d538f06c3894b0120bd3e9da66be8532218064a",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "60日以内に別荘Lv.5に到達",
+          "rewardYen": 216,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "60日以内に別荘Lv.10に到達",
+          "rewardYen": 359,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "60日以内に別荘Lv.15に到達",
+          "rewardYen": 719,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "7日以内に「ゴッドの秘宝-建築資源パック」を初回購入",
+          "rewardYen": 414,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "60日以内に別荘Lv.20に到達",
+          "rewardYen": 1940,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に「スーパー月間パス-高級特権」を初回購入",
+          "rewardYen": 1989,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "60日以内に別荘Lv.30に到達",
+          "rewardYen": 15802,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "60日以内に別荘Lv.35に到達",
+          "rewardYen": 20111,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "60日以内に別荘Lv.36に到達",
+          "rewardYen": 50278,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "既存の確認済み額面レート1pt=1円。交換先・手数料による受取額は別途確認",
+        "rateEvidenceUrl": "https://www.atpress.ne.jp/news/334278"
+      }
+    },
+    {
+      "gameId": "com.yottagames.mafiawar",
+      "site": "mikoshi",
+      "platform": "iOS",
+      "rewardYen": 43346,
+      "condition": "新規インストール後、各Stepを達成。参加はMIKOSHI内の正式な導線から行う",
+      "deadline": "育成と高級特権30日・ゴッドの秘宝7日以内",
+      "url": "https://web.mikoshi.jp/v2/skyflag/ads/27809",
+      "retrievedAt": "2026-09-26T15:30:31.403255+00:00",
+      "evidenceSha256": "b74b1b2ae764f0358a762067eda17429b68e379243577eabb854c71e30584404",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "30日以内に別荘Lv.5に到達",
+          "rewardYen": 86,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に別荘Lv.7に到達",
+          "rewardYen": 86,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に別荘Lv.15に到達",
+          "rewardYen": 503,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "7日以内に「ゴッドの秘宝-建築資源パック」を初回購入",
+          "rewardYen": 530,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "30日以内に別荘Lv.20に到達",
+          "rewardYen": 862,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に別荘Lv.25に到達",
+          "rewardYen": 933,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に「スーパー月間パス-高級特権」を初回購入",
+          "rewardYen": 2652,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "30日以内に別荘Lv.30に到達",
+          "rewardYen": 4597,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に別荘Lv.35に到達",
+          "rewardYen": 8275,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "30日以内に別荘Lv.36に到達",
+          "rewardYen": 24822,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "既存の確認済み額面レート1pt=1円。交換先・手数料による受取額は別途確認",
+        "rateEvidenceUrl": "https://www.atpress.ne.jp/news/334278"
+      }
+    }
+  ],
+  "progress": [
+    {
+      "sourceRef": "m1",
+      "observation": {
+        "target": "別荘Lv25",
+        "days": 18,
+        "spendYen": 3060,
+        "playHours": null,
+        "outcome": "達成",
+        "context": "掲載時のパック価格。現在のOS別価格と同一とは限らない。"
+      }
+    },
+    {
+      "sourceRef": "m2",
+      "observation": {
+        "target": "別荘Lv20",
+        "days": 23,
+        "spendYen": 0,
+        "playHours": null,
+        "outcome": "達成",
+        "context": ""
+      }
+    },
+    {
+      "sourceRef": "m3",
+      "observation": {
+        "target": "別荘Lv15",
+        "days": 21,
+        "spendYen": 0,
+        "playHours": null,
+        "outcome": "Lv20を断念",
+        "context": "原記録の約3週間を約21日として換算。"
+      }
+    }
+  ],
+  "image": {
+    "mode": "original_typographic_card",
+    "rightsConfirmed": true,
+    "note": "第三者画像は使わず、自作の文字と配色によるヒーロー表示。既存画像ファイルには書き込まない。"
+  },
+  "lead": "現在の案件条件と、条件別の実到達ペースを照合して、どこまで狙うかを判断するための攻略です。",
+  "guide": {
+    "overview": [
+      {
+        "text": "マフィア・シティは、別荘と周囲の施設を育て、組織の仲間と進める城育成型のゲームです。今回確認した案件は別荘のレベル上げと購入条件の組み合わせ。リーダーレベルや戦力を上げても、別荘の指定レベル到達の代わりにはなりません。",
+        "sourceRefs": [
+          "official",
+          "offer-198936"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "案件を選ぶ際は最大額より、まず自分が狙う別荘レベルまでの段階報酬を合計してください。別荘の低い段階と高難易度の後半では必要な準備が異なります。この記事では無課金の途中撤退例も示し、最後まで走り切る前提では判断しません。",
+        "sourceRefs": [
+          "official",
+          "offer-198936"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "今回の最大額はMIKOSHIのAndroidコースですが、別荘Lv36までを含む育成60日条件です。iOSの育成30日コースやワラウとは期限も報酬地点も異なります。今回集めた実例は別荘Lv25以下であり、Lv36完走の再現性は確認できていません。大きな総額だけを理由に最終条件を推奨しません。",
+        "sourceRefs": [
+          "offer-28487",
+          "offer-27809",
+          "m1"
+        ],
+        "kind": "editorial"
+      }
+    ],
+    "difficulty": [
+      {
+        "text": "難易度は「待ち時間を管理する負担が大きく、到達目標で変わる」と評価します。別荘Lv20の無課金記録と、課金してLv25へ進めた記録を同じ速度として扱うことはできません。組織の活動状況や確保できる時間も異なり、最短の投稿だけを予定表に使わないでください。",
+        "sourceRefs": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "掲載した実例には、無課金でLv20に23日かかった人と、約3週間でLv15まで進みLv20を断念した人がいます。低い目標でも日数に幅があるため、自分の建築待ちが長くなった時点で到達目標を見直すのが現実的です。高額な最終ステップの完走実例は今回確保していません。",
+        "sourceRefs": [
+          "m1",
+          "m2",
+          "m3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "strategy": [
+      {
+        "text": "序盤は別荘をタップし、次のレベルに必要な施設を先に確認します。別荘だけを見て待つのではなく、前提施設が別の施設を要求していないかも調べ、建築の順番を書き出します。見た目を整えるための施設強化は、目標への経路を確認してから判断してください。",
+        "sourceRefs": [
+          "m1",
+          "m3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "組織が使えるようになったら、支援を受けられる活動中の組織を探します。参加条件やルールを読んで、無理なく協力できるところを選びます。入った後も人が減って支援が止まっていないか確認し、所属しているだけで進行が速くなるとは考えないようにします。",
+        "sourceRefs": [
+          "m1",
+          "m3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "中盤は資源と建築加速を別々に管理します。資源が足りても建築時間が残れば達成できません。次の別荘と前提施設に必要な資源、完成までの時間、手持ちの加速を並べ、足りない方を埋めます。報酬の資源アイテムは必要な建築に使うタイミングで開けると整理しやすくなります。",
+        "sourceRefs": [
+          "m1",
+          "m3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "終了が近づいたら、最終建築を開始できるかではなく、期限内に完成できるかで判断します。既に使った時間や課金が惜しいという理由で目標を上げず、残っている段階報酬と追加負担を比較してください。",
+        "sourceRefs": [
+          "m1",
+          "m3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "efficiency": [
+      {
+        "text": "建築の前提条件を確認する作業は、短いログイン時間でも先に済ませておくと次の操作を迷いにくくなります。放置前に長い建築を開始し、戻った時に次へ進めるよう資源を準備する、という順序で管理します。これは到達日数を短く保証する方法ではなく、建築枠を空けてしまう時間を減らすための整理です。",
+        "sourceRefs": [
+          "m1",
+          "m2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "加速を見つけたら即座に使うのではなく、別荘の完成に必要な前提施設まで含めて配分します。序盤の短い待ちを消しても、後半の長い建築が残る場合があります。日々のイベントや組織で資源を受け取る際も、最終的に不足するものを意識してください。",
+        "sourceRefs": [
+          "m1",
+          "m2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "spending": [
+      {
+        "text": "今回の確認では高級特権の段階報酬は2,300円相当ですが、条件欄の価格はAndroidが3,060円、iOSが4,000円です。この購入条件だけを見ると、それぞれ760円、1,700円の持ち出しになります。ゲーム内の購入画面でも価格と商品名を確認してください。",
+        "sourceRefs": [
+          "offer-198936",
+          "offer-198935",
+          "m1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "別荘到達を早める効果まで含めて購入を考える場合でも、追加で取れると判断した報酬と支出を比較します。全ステップ最大額から一部の課金だけを引いて「利益」とはしません。Lv25達成者の購入額はその人の条件であり、現在のiOSで同じ価格になる根拠には使えません。",
+        "sourceRefs": [
+          "offer-198936",
+          "offer-198935",
+          "m1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "warnings": [
+      {
+        "text": "ワラウの今回の条件では、開始後の通帳記載を確かめてから進める必要があります。条件画面、OS、インストール日を保存し、ゲーム内の別荘レベルが分かる画面も残してください。途中で掲載額が変わっても、自分が開始した時点の条件を追跡できるようにします。",
+        "sourceRefs": [
+          "offer-198936",
+          "offer-198935"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "別のポイントサイトの条件や、古い「美女獲得」の攻略を、今回の別荘StepUpと混ぜないでください。期限内に建築を開始しただけでは条件の到達と同じではありません。ポイント未反映時は利用したポイントサイトの指定窓口・期限に従い、確認が終わる前にアプリを消さないようにします。",
+        "sourceRefs": [
+          "offer-198936",
+          "offer-198935"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "failures": [
+      {
+        "text": "無課金で別荘Lv15まで進み、残り期間ではLv20は難しいとして撤退した投稿が確認できました。これはゲーム内の操作ミスを示すものではなく、資源・加速・残日数の組み合わせで次の条件が間に合わない例です。「他の人が到達したから自分も間に合う」とは判断できません。",
+        "sourceRefs": [
+          "m3",
+          "m2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "実例表は成功確率の統計ではありません。途中でやめた人の全体数も分からないため、達成者の数から難易度を低く見積もらず、自分の次の建築がいつ完成するかを基準に続行を決めてください。",
+        "sourceRefs": [
+          "m3",
+          "m2"
+        ],
+        "kind": "fact"
+      }
+    ]
+  },
+  "comparisonNote": "取得済み候補のうち、今回詳細と条件を確認できた案件のみ掲載しています。未確認の他コースは最高額の算定に含めていません。",
+  "unresolved": []
+}

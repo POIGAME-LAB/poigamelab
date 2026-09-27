@@ -1,0 +1,551 @@
+{
+  "slug": "viking-rise",
+  "name": "ヴァイキングライズ",
+  "aliases": [],
+  "gameId": "com.igg.android.vikingriseglobal",
+  "selectionReason": "最近の実例があり、無課金と課金付き本部条件の違いを説明できる。",
+  "schemaVersion": 2,
+  "researchDate": "2026-09-27",
+  "sources": [
+    {
+      "id": "v1",
+      "url": "https://kochalog.com/viking-rise-lv15/",
+      "title": "こちゃログ：本部24の記録",
+      "publishedAt": "2026-09-17",
+      "playerKey": "kochalog",
+      "summary": "本部20は7日、本部23は22日、本部24は31日。上級宝箱を800・800・1600・3200円で購入。合計6400円は記載額の加算。上位クラン、建設ヘルプ、採集が重要。",
+      "observations": [
+        {
+          "target": "首領本部Lv24",
+          "days": 31,
+          "spendYen": 6400,
+          "playHours": null,
+          "outcome": "達成",
+          "context": "4件の記載購入額の合計。現在のCOINCOMEの課金回数条件とは異なる。"
+        }
+      ],
+      "kind": "player",
+      "locator": "こちゃログ：本部24の記録",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.igg.android.vikingriseglobal",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "v2",
+      "url": "https://okanega-naiyo.com/【ポイ活】ヴァイライ-無課金20日で本部レベル20達/",
+      "title": "スキマぶろぐ：無課金本部20記録",
+      "publishedAt": "2026-08-29",
+      "playerKey": "okanega-naiyo:kanetaro",
+      "summary": "無課金で本部18は16日、本部20は20日。本文表の総プレイ時間は34時間50分。クラン採集場とヘルプを使い、ジェムは建築加速に残した。",
+      "observations": [
+        {
+          "target": "首領本部Lv20",
+          "days": 20,
+          "spendYen": 0,
+          "playHours": "約34時間50分",
+          "outcome": "達成",
+          "context": ""
+        }
+      ],
+      "kind": "player",
+      "locator": "スキマぶろぐ：無課金本部20記録",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.igg.android.vikingriseglobal",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "official",
+      "url": "https://vr.igg.com/?lang=jpn",
+      "title": "ゲーム公式・公式ストア",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "IGGのリアルタイム戦略ゲーム。部族・英雄・同盟で領地を発展させる。",
+      "observations": [],
+      "kind": "official",
+      "locator": "ゲーム公式・公式ストア",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.igg.android.vikingriseglobal",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-10058",
+      "url": "https://cimcome.jp/campaigns/details/10058",
+      "title": "確認済み案件詳細",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "15200円相当。新規インストール後45日以内。OS：iOS。各Step合計と表示総額の一致を確認。",
+      "observations": [
+        {
+          "rewardYen": 15200,
+          "steps": [
+            {
+              "condition": "首領本部レベル2に到達",
+              "rewardYen": 12,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル3に到達",
+              "rewardYen": 24,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル5に到達",
+              "rewardYen": 60,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル7に到達",
+              "rewardYen": 96,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル8に到達",
+              "rewardYen": 108,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル11に到達",
+              "rewardYen": 144,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル14に到達",
+              "rewardYen": 168,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル17に到達",
+              "rewardYen": 240,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル20に到達",
+              "rewardYen": 385,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル21に到達",
+              "rewardYen": 482,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル23に到達",
+              "rewardYen": 1205,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "首領本部レベル24に到達",
+              "rewardYen": 2415,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "累計1回課金後、首領本部ﾚﾍﾞﾙ 9到達",
+              "rewardYen": 195,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "累計3回課金後、首領本部ﾚﾍﾞﾙ 16到達",
+              "rewardYen": 793,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "累計6回課金後、首領本部ﾚﾍﾞﾙ 19到達",
+              "rewardYen": 1490,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "累計9回課金後、首領本部ﾚﾍﾞﾙ 22到達",
+              "rewardYen": 4967,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "上級宝箱繁栄度ﾚﾍﾞﾙ2購入(首領本部ﾚﾍﾞﾙ2到達後購入可能)",
+              "rewardYen": 402,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "上級宝箱繁栄度ﾚﾍﾞﾙ3購入(首領本部ﾚﾍﾞﾙ2到達後購入可能)",
+              "rewardYen": 754,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "上級宝箱繁栄度ﾚﾍﾞﾙ4購入(首領本部ﾚﾍﾞﾙ2到達後購入可能)",
+              "rewardYen": 1260,
+              "purchaseRequired": true
+            }
+          ],
+          "deadline": "新規インストール後45日以内"
+        }
+      ],
+      "kind": "offer",
+      "locator": "案件名・OS表示・StepUp表・獲得条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.igg.android.vikingriseglobal",
+      "dateKind": "undated_official_or_live_offer"
+    }
+  ],
+  "research": {
+    "official": {
+      "status": "body_verified",
+      "queries": [
+        "ヴァイキングライズ 公式"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "web": {
+      "status": "body_verified",
+      "queries": [
+        "ヴァイキングライズ ポイ活 攻略 達成 撤退"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "x": {
+      "status": "no_usable_result",
+      "queries": [
+        "ヴァイキングライズ site:x.com ポイ活 達成"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "youtube": {
+      "status": "no_usable_result",
+      "queries": [
+        "ヴァイキングライズ site:youtube.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "instagram": {
+      "status": "no_usable_result",
+      "queries": [
+        "ヴァイキングライズ site:instagram.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "pointSites": {
+      "status": "body_verified",
+      "queries": [
+        "ヴァイキングライズ 案件詳細・口コミ"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    }
+  },
+  "offers": [
+    {
+      "gameId": "com.igg.android.vikingriseglobal",
+      "site": "coincome",
+      "platform": "iOS",
+      "rewardYen": 15200,
+      "condition": "新規インストール後、下表の各条件を達成",
+      "deadline": "新規インストール後45日以内",
+      "url": "https://cimcome.jp/campaigns/details/10058",
+      "retrievedAt": "2026-09-26T15:16:33.002637+00:00",
+      "evidenceSha256": "01c3596c7381a83804c365a0da6bbbaecaa959cd44d596822159d8a405c04fed",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "首領本部レベル2に到達",
+          "rewardYen": 12,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル3に到達",
+          "rewardYen": 24,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル5に到達",
+          "rewardYen": 60,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル7に到達",
+          "rewardYen": 96,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル8に到達",
+          "rewardYen": 108,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル11に到達",
+          "rewardYen": 144,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル14に到達",
+          "rewardYen": 168,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル17に到達",
+          "rewardYen": 240,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル20に到達",
+          "rewardYen": 385,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル21に到達",
+          "rewardYen": 482,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル23に到達",
+          "rewardYen": 1205,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "首領本部レベル24に到達",
+          "rewardYen": 2415,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "累計1回課金後、首領本部ﾚﾍﾞﾙ 9到達",
+          "rewardYen": 195,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "累計3回課金後、首領本部ﾚﾍﾞﾙ 16到達",
+          "rewardYen": 793,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "累計6回課金後、首領本部ﾚﾍﾞﾙ 19到達",
+          "rewardYen": 1490,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "累計9回課金後、首領本部ﾚﾍﾞﾙ 22到達",
+          "rewardYen": 4967,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "上級宝箱繁栄度ﾚﾍﾞﾙ2購入(首領本部ﾚﾍﾞﾙ2到達後購入可能)",
+          "rewardYen": 402,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "上級宝箱繁栄度ﾚﾍﾞﾙ3購入(首領本部ﾚﾍﾞﾙ2到達後購入可能)",
+          "rewardYen": 754,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "上級宝箱繁栄度ﾚﾍﾞﾙ4購入(首領本部ﾚﾍﾞﾙ2到達後購入可能)",
+          "rewardYen": 1260,
+          "purchaseRequired": true
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "公式表示の円相当",
+        "rateEvidenceUrl": "https://cimcome.jp/campaigns/details/10058"
+      }
+    }
+  ],
+  "progress": [
+    {
+      "sourceRef": "v1",
+      "observation": {
+        "target": "首領本部Lv24",
+        "days": 31,
+        "spendYen": 6400,
+        "playHours": null,
+        "outcome": "達成",
+        "context": "4件の記載購入額の合計。現在のCOINCOMEの課金回数条件とは異なる。"
+      }
+    },
+    {
+      "sourceRef": "v2",
+      "observation": {
+        "target": "首領本部Lv20",
+        "days": 20,
+        "spendYen": 0,
+        "playHours": "約34時間50分",
+        "outcome": "達成",
+        "context": ""
+      }
+    }
+  ],
+  "image": {
+    "mode": "original_typographic_card",
+    "rightsConfirmed": true,
+    "note": "第三者画像は使わず、自作の文字と配色によるヒーロー表示。既存画像ファイルには書き込まない。"
+  },
+  "lead": "現在の案件条件と、条件別の実到達ペースを照合して、どこまで狙うかを判断するための攻略です。",
+  "guide": {
+    "overview": [
+      {
+        "text": "ヴァイキングライズは、首領本部を中心に領地を発展させ、クランの仲間と進めるリアルタイム戦略ゲームです。今回確認したCOINCOMEのiOS案件は、本部レベル到達、課金回数を伴う本部到達、宝箱購入が同じStepUpに含まれています。",
+        "sourceRefs": [
+          "official",
+          "offer-10058"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "この組み合わせでは、総額をそのまま「無課金で狙える報酬」と読むことはできません。レベル到達のみの条件と購入条件を分けた表を作り、自分が参加するOSとコースの内容を確認してから始めてください。",
+        "sourceRefs": [
+          "official",
+          "offer-10058"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "difficulty": [
+      {
+        "text": "城育成の経験やクランの活動状況で進行に差が出る案件です。無課金で本部Lv20へ進んだ実例と、複数の宝箱を購入して本部Lv24へ進めた実例があります。目標も課金条件も異なるため、単純にどちらが速いと比較することはできません。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "無課金記録では総操作時間も示されており、建築待ちだけで進むゲームではないことが分かります。毎日長時間張り付けるかだけでなく、採集や建築の回収を繰り返せるかを考えてください。高い本部レベルまでの日数を、序盤の進行速度から比例計算するのは避けます。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "strategy": [
+      {
+        "text": "序盤はチャプターの案内に沿って領地を整え、クランへ参加できるところまで進めます。建築をばらばらに増やすより、チャプター報酬を次の本部育成へつなげていきます。強いクランに入れるかは環境次第なので、加入条件と活動時間を読んで無理なく参加できるところを選びます。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "クラン加入後は、ヘルプを受けた建築とそうでない建築を区別して進めます。仲間が多く活動している時間に援助を受けられると、加速を使う量を抑えやすくなります。支援を受ける前に待ち時間をすべて消してしまわず、実際にどの程度短縮されたか確認してください。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "中盤は採集を止めないことと、次の本部の前提施設を準備することを並行します。今の本部が完成してから必要な資源を調べるのではなく、先に不足する資源を確認して採集先を選びます。採集場を使う際はクランのルールを守り、他のメンバーとの利用にも配慮します。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "後半で待ち時間が長くなったら、ジェムや加速を何に使うかを決めます。必要な前提建築を残したまま本部だけの完成を目指すことはできません。資源不足と時間不足を分け、どちらを補うための消費なのかを明確にしてください。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "達成が近くなったら、レベル単独のStepと課金回数付きのStepを個別に照合します。本部レベルが足りていても購入回数が足りない条件は別です。課金していたつもり、という記憶だけで進めず、購入履歴と案件の文言で確認します。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "efficiency": [
+      {
+        "text": "短いログインでは、建築・採集・受け取りの順番を決めておくと操作を散らしにくくなります。今回の実例ではクランのヘルプや採集が進行に関係しています。表示されるお知らせをすべて追うより、次の本部へ必要な資源と前提施設を優先するのがこの記事の整理です。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "ジェムは小さな不足が出るたびに使い切らず、終盤の建築待ちに備えて残す使い方が実例にあります。ただし交換内容や必要量は自分の画面で確認してください。古いギフトコードを有効と断定して掲載せず、使う場合は公式の配布状況と期限を確認します。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "spending": [
+      {
+        "text": "現在確認したCOINCOMEでは、課金回数付きの条件が累計1回・3回・6回・9回と分かれています。一方、実例にある別コースの購入条件は同じではありません。実例の支出額だけで現在案件も最後まで取れると考えることはできません。",
+        "sourceRefs": [
+          "offer-10058",
+          "v1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "レベル到達のみの段階報酬、回数条件の段階報酬、宝箱購入の段階報酬を分けて計算します。同じ購入が複数の条件に関係する場合でも、支出を二重に引いたり、報酬を二重に足したりしないよう注意します。実際に何回の購入として数えられるかは、案件条件と購入履歴で確認してください。",
+        "sourceRefs": [
+          "offer-10058",
+          "v1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "宝箱の最低購入総額や各購入の現在価格をすべて確定できていないため、全額達成時の純利益は断定しません。課金前には、既に受け取った報酬とこれから必要な支出を分け、追加支出に見合う確実性があるか判断します。",
+        "sourceRefs": [
+          "offer-10058",
+          "v1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "warnings": [
+      {
+        "text": "今回確認した期限は新規インストール後45日以内です。実例が別のポイントサイトを使っている場合、報酬の反映タイミングや問い合わせ期限まで同じとは限りません。利用前に条件を保存し、開始日、購入履歴、到達画面を一緒に管理してください。",
+        "sourceRefs": [
+          "offer-10058",
+          "v1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "本部到達とポイント承認は同時とは限りません。実例には反映まで時間がかかったという記述がありますが、それを理由に自分の問い合わせ期限まで放置しないでください。利用先の窓口と期限を優先し、途中で別端末へ引き継いだり再インストールしたりしないよう条件を確認します。",
+        "sourceRefs": [
+          "offer-10058",
+          "v1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "failures": [
+      {
+        "text": "今回採用した二人の記録は目標地点への到達例であり、同じ現在コースの失敗率を計算できる資料ではありません。期限切れの十分な実例は今回確認できていません。失敗例が見つからなかったことを、失敗しにくい根拠には使わないでください。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "クランが活発でない、採集を回収できない、前提施設の待ちが長い場合は、掲載された日数より遅れる可能性があります。自分の本部を次へ上げる時点で残日数を確認し、購入回数の多い高額条件を追うよりレベル単独の途中条件で終了する選択も検討します。",
+        "sourceRefs": [
+          "v1",
+          "v2"
+        ],
+        "kind": "fact"
+      }
+    ]
+  },
+  "comparisonNote": "取得済み候補のうち、今回詳細と条件を確認できた案件のみ掲載しています。未確認の他コースは最高額の算定に含めていません。",
+  "unresolved": []
+}

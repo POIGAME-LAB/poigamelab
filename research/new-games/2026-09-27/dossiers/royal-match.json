@@ -1,0 +1,540 @@
+{
+  "slug": "royal-match",
+  "name": "ロイヤルマッチ",
+  "aliases": [
+    "Royal Match"
+  ],
+  "gameId": "com.dreamgames.royalmatch",
+  "selectionReason": "城ゲーム以外の比較枠。到達とエリア完了の違い、手動操作時間を示せる。",
+  "schemaVersion": 2,
+  "researchDate": "2026-09-27",
+  "sources": [
+    {
+      "id": "r1",
+      "url": "https://kochalog.com/royal-match/",
+      "title": "こちゃログ：エリア到達記録",
+      "publishedAt": "2026-02-16",
+      "playerKey": "kochalog",
+      "summary": "無課金でエリア12は3日9時間、15は5日16時間、16は7日18時間。手動パズルでブースターの組み合わせを使う。",
+      "observations": [
+        {
+          "target": "エリア16到達",
+          "days": 7,
+          "spendYen": 0,
+          "playHours": "18時間",
+          "outcome": "達成",
+          "context": "エリア到達の旧条件。現在のエリア完了条件に読み替えない。"
+        }
+      ],
+      "kind": "player",
+      "locator": "こちゃログ：エリア到達記録",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.dreamgames.royalmatch",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "r2",
+      "url": "https://okanega-naiyo.com/【ポイ活】ロイヤルマッチ　エリア15到達　エリア/",
+      "title": "スキマぶろぐ：エリア19記録",
+      "publishedAt": "2026-06-01",
+      "playerKey": "okanega-naiyo:kanetaro",
+      "summary": "無課金でエリア15は5日約14時間、エリア19は7日約20時間。後半ほどパズルの個人差が広がる。",
+      "observations": [
+        {
+          "target": "エリア19到達",
+          "days": 7,
+          "spendYen": 0,
+          "playHours": "約20時間",
+          "outcome": "達成",
+          "context": "エリア到達の記録。鉄道の車両完了の実例ではない。"
+        }
+      ],
+      "kind": "player",
+      "locator": "スキマぶろぐ：エリア19記録",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.dreamgames.royalmatch",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "r3",
+      "url": "https://diary.re-search-365.com/royalmatch/",
+      "title": "ひとり暮らし日記：時計塔完了",
+      "publishedAt": "2026-05-05",
+      "playerKey": "diary.re-search-365",
+      "summary": "時計塔完了に約16時間。ハート無限をまとまった時間に使い、アイテムを後半に残す。",
+      "observations": [],
+      "kind": "strategy",
+      "locator": "ひとり暮らし日記：時計塔完了",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.dreamgames.royalmatch",
+      "dateKind": "article_or_review_date"
+    },
+    {
+      "id": "official",
+      "url": "https://dreamgames.helpshift.com/hc/ja/3-royal-match/",
+      "title": "ゲーム公式・公式ストア",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "Dream GamesのRoyal Match。公式ヘルプにステージ、ブースター、チーム、ライフの説明がある。",
+      "observations": [],
+      "kind": "official",
+      "locator": "ゲーム公式・公式ストア",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.dreamgames.royalmatch",
+      "dateKind": "undated_official_or_live_offer"
+    },
+    {
+      "id": "offer-206119",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206119",
+      "title": "確認済み案件詳細",
+      "publishedAt": null,
+      "playerKey": null,
+      "summary": "7120円相当。インストール日から60日以内。OS：iOS。各Step合計と表示総額の一致を確認。",
+      "observations": [
+        {
+          "rewardYen": 7120,
+          "steps": [
+            {
+              "condition": "「城」エリアを完了",
+              "rewardYen": 20,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「玉座の間」エリアを完了",
+              "rewardYen": 25,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「プール」エリアを完了",
+              "rewardYen": 35,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "ロイヤルパスを起動(課金)",
+              "rewardYen": 300,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "「バスルーム」エリアを完了",
+              "rewardYen": 70,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「時計塔」エリアを完了",
+              "rewardYen": 110,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「天文台」エリアを完了",
+              "rewardYen": 130,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「理髪店」エリアを完了",
+              "rewardYen": 180,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「ビーチ」エリアを完了",
+              "rewardYen": 250,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「ボウリング場」エリアを完了",
+              "rewardYen": 330,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「テラス」エリアを完了",
+              "rewardYen": 500,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "10回以上の課金（金額指定なし）",
+              "rewardYen": 700,
+              "purchaseRequired": true
+            },
+            {
+              "condition": "「アウトドアシネマ」を完了",
+              "rewardYen": 770,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「執事の部屋」を完了",
+              "rewardYen": 1200,
+              "purchaseRequired": false
+            },
+            {
+              "condition": "「鉄道の車両」エリアを完了",
+              "rewardYen": 2500,
+              "purchaseRequired": false
+            }
+          ],
+          "deadline": "インストール日から60日以内"
+        }
+      ],
+      "kind": "offer",
+      "locator": "案件名・OS表示・StepUp表・獲得条件",
+      "access": "body_verified",
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "gameId": "com.dreamgames.royalmatch",
+      "dateKind": "undated_official_or_live_offer"
+    }
+  ],
+  "research": {
+    "official": {
+      "status": "body_verified",
+      "queries": [
+        "ロイヤルマッチ 公式"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "web": {
+      "status": "body_verified",
+      "queries": [
+        "ロイヤルマッチ ポイ活 攻略 達成 撤退"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "x": {
+      "status": "no_usable_result",
+      "queries": [
+        "ロイヤルマッチ site:x.com ポイ活 達成"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "youtube": {
+      "status": "no_usable_result",
+      "queries": [
+        "ロイヤルマッチ site:youtube.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "instagram": {
+      "status": "no_usable_result",
+      "queries": [
+        "ロイヤルマッチ site:instagram.com ポイ活"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    },
+    "pointSites": {
+      "status": "body_verified",
+      "queries": [
+        "ロイヤルマッチ 案件詳細・口コミ"
+      ],
+      "checkedAt": "2026-09-26T15:24:07.646582+00:00",
+      "note": "公開本文を確認した記録のみ採用。検索の該当なしは存在しないことを意味しない。"
+    }
+  },
+  "offers": [
+    {
+      "gameId": "com.dreamgames.royalmatch",
+      "site": "warau",
+      "platform": "iOS",
+      "rewardYen": 7120,
+      "condition": "新規インストール後、下表の各条件を達成",
+      "deadline": "インストール日から60日以内",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206119",
+      "retrievedAt": "2026-09-26T15:16:33.937722+00:00",
+      "evidenceSha256": "703321a48bd08571fb3025129e43a58fb5f02461a74888178ddbd4bd89597740",
+      "identityReviewed": true,
+      "termsReviewed": true,
+      "parserState": "parsed",
+      "steps": [
+        {
+          "condition": "「城」エリアを完了",
+          "rewardYen": 20,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「玉座の間」エリアを完了",
+          "rewardYen": 25,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「プール」エリアを完了",
+          "rewardYen": 35,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "ロイヤルパスを起動(課金)",
+          "rewardYen": 300,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "「バスルーム」エリアを完了",
+          "rewardYen": 70,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「時計塔」エリアを完了",
+          "rewardYen": 110,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「天文台」エリアを完了",
+          "rewardYen": 130,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「理髪店」エリアを完了",
+          "rewardYen": 180,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「ビーチ」エリアを完了",
+          "rewardYen": 250,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「ボウリング場」エリアを完了",
+          "rewardYen": 330,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「テラス」エリアを完了",
+          "rewardYen": 500,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "10回以上の課金（金額指定なし）",
+          "rewardYen": 700,
+          "purchaseRequired": true
+        },
+        {
+          "condition": "「アウトドアシネマ」を完了",
+          "rewardYen": 770,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「執事の部屋」を完了",
+          "rewardYen": 1200,
+          "purchaseRequired": false
+        },
+        {
+          "condition": "「鉄道の車両」エリアを完了",
+          "rewardYen": 2500,
+          "purchaseRequired": false
+        }
+      ],
+      "conversion": {
+        "verified": true,
+        "basis": "1pt=1円・config/point_value_rates.json",
+        "rateEvidenceUrl": "https://www.warau.jp/help/qa/128/"
+      }
+    }
+  ],
+  "progress": [
+    {
+      "sourceRef": "r1",
+      "observation": {
+        "target": "エリア16到達",
+        "days": 7,
+        "spendYen": 0,
+        "playHours": "18時間",
+        "outcome": "達成",
+        "context": "エリア到達の旧条件。現在のエリア完了条件に読み替えない。"
+      }
+    },
+    {
+      "sourceRef": "r2",
+      "observation": {
+        "target": "エリア19到達",
+        "days": 7,
+        "spendYen": 0,
+        "playHours": "約20時間",
+        "outcome": "達成",
+        "context": "エリア到達の記録。鉄道の車両完了の実例ではない。"
+      }
+    }
+  ],
+  "image": {
+    "mode": "original_typographic_card",
+    "rightsConfirmed": true,
+    "note": "第三者画像は使わず、自作の文字と配色によるヒーロー表示。既存画像ファイルには書き込まない。"
+  },
+  "lead": "現在の案件条件と、条件別の実到達ペースを照合して、どこまで狙うかを判断するための攻略です。",
+  "guide": {
+    "overview": [
+      {
+        "text": "ロイヤルマッチは、パズルを解いてエリアを進めるゲームです。今回確認したワラウiOS案件は、複数のエリア完了と課金条件を含むStepUp。放置で進むゲームとは異なり、パズルを操作する時間そのものを確保する必要があります。",
+        "sourceRefs": [
+          "official",
+          "offer-206119"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "最も注意したいのは「エリア到達」と「エリア完了」の違いです。過去のプレイヤー記録には到達を条件とするものがありますが、現在確認した案件は完了が条件です。ステージ数だけを見て、過去記事と同じところで終了してよいとは判断しないでください。",
+        "sourceRefs": [
+          "official",
+          "offer-206119"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "difficulty": [
+      {
+        "text": "難易度はパズルへの慣れと手動プレイ時間で変わります。今回の実例では無課金のエリア到達に、まとまった総操作時間が記録されています。短期間で達成した人でも、操作時間が少なかったという意味ではありません。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "同じ日数の実例でも到達したエリアと総プレイ時間は異なります。後半ほど盤面によるつまずきもあり、序盤のステージを進めた速度が続くとは限りません。鉄道の車両までの現在条件を完走した複数例は今回確保できていないため、全ステップの必要日数は提示していません。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "strategy": [
+      {
+        "text": "序盤は、ステージの目的を先に読み、スペシャルピースの作り方と組み合わせを覚えます。単に同じ色がそろう場所を消すのではなく、クリアに必要な対象へ届く動きを優先します。クリアのたびに得た星とエリアの進行も確認し、パズルだけ進めて完了操作を忘れないようにします。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "まとまった時間が取れるときに、ハート無限の報酬を活用する進め方が体験記事にあります。短い空き時間に受け取って使い切れなくなるのを避けるため、報酬を受け取る前に時間を確認します。ただし受け取りを後に回せるか、いつ発動するかはゲーム内の表示を優先してください。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "中盤で詰まったら、同じ盤面で何が残るかを見直します。必要な対象を消せないまま手数を減らすより、スペシャルピース同士を組み合わせて広い範囲を処理する方法を考えます。どの盤面でも同じ組み合わせが最適という意味ではなく、ステージの目的に合わせて使い分けます。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "アイテムは、詰まるたびに無条件で使うのではなく、あと少しで目標に届くかを見て判断します。使ってもクリアの見通しがない盤面に続けて投入すると、後で必要な場面で不足する可能性があります。残りの手数と未達の対象を見てから使ってください。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "区切りごとにエリアの完了状態とポイント通帳を確認します。過去記事のエリア番号と、現在の案件に書かれたエリア名を混ぜず、自分の画面で達成対象を確認します。次の高いエリアを狙う前に、実際のプレイ時間と残日数を見直します。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "efficiency": [
+      {
+        "text": "操作の効率を上げるには、盤面を急いで動かすより、何を消せば目標へ近づくかを確認します。スペシャルピースを作れる形、組み合わせる位置、残りの対象を見比べてから進めると、同じ手を繰り返すだけになりにくくなります。",
+        "sourceRefs": [
+          "r1",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "無限ハートの時間と自分が遊べる時間を合わせ、短い時間ではエリアの進行や報酬を確認するなど、作業を分けて考えます。無限ハートがあってもステージを自動でクリアできるわけではありません。体験談の達成日数だけでなく、総操作時間を判断材料にしてください。",
+        "sourceRefs": [
+          "r1",
+          "r3"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "spending": [
+      {
+        "text": "今回の案件にはロイヤルパスと課金回数の条件が含まれています。無課金でエリア到達した人の記録は、こうした購入条件も含めて全額獲得した例ではありません。現在の購入価格を確認できていないため、購入条件の純利益は確定していません。",
+        "sourceRefs": [
+          "offer-206119",
+          "r1",
+          "r2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "パスの報酬と複数回課金の報酬を足す前に、対象となる購入内容・回数を条件画面で確認してください。少額商品を何度買う想定なのか、必要な商品がいつでも同じ価格であるかも分かりません。エリア完了でもらう報酬まで、購入だけで確定する収入として計算しないでください。",
+        "sourceRefs": [
+          "offer-206119",
+          "r1",
+          "r2"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "無課金で進める場合は、購入を伴わないエリア報酬を別に合計します。ただし合計できることと全部のエリアへ到達できることは別です。手動操作に使える時間が限られる場合は、途中のエリアまでにかかる自分の時間を測ってから続行を判断する方が具体的です。",
+        "sourceRefs": [
+          "offer-206119",
+          "r1",
+          "r2"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "warnings": [
+      {
+        "text": "今回の条件はインストール日から60日以内で、エリア完了が対象だと明記されています。古い攻略でステージを進めただけで承認されたという記録があっても、現在案件に適用できるとは考えないでください。条件文と完了したエリアが分かる画面を保存します。",
+        "sourceRefs": [
+          "offer-206119",
+          "r1"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "開始時の通帳記載や端末条件も確認してください。ポイント未反映の際は利用したサイトの指定する窓口へ、到達状態とユーザーIDなど必要な情報を提出することになります。問い合わせ中に削除・引き継ぎをしないよう、利用先の注意事項を優先します。",
+        "sourceRefs": [
+          "offer-206119",
+          "r1"
+        ],
+        "kind": "fact"
+      }
+    ],
+    "failures": [
+      {
+        "text": "今回採用した記録は途中エリアの到達・完了例が中心で、現在の最終エリアに対する未達率は分かりません。期限内完走を保証する材料はありません。数日の到達例を、難しい後半エリアまで同じ速度で延ばして計算することはしていません。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      },
+      {
+        "text": "パズルに詰まって操作時間が増えた場合は、課金して続ける前に残っている報酬と必要な時間を見直します。ここまで遊んだから最後まで、という理由だけで目標を上げないでください。総操作時間が書かれた実例を使い、自分が無理なく遊べる範囲を決めるための記事です。",
+        "sourceRefs": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "kind": "fact"
+      }
+    ]
+  },
+  "comparisonNote": "取得済み候補のうち、今回詳細と条件を確認できた案件のみ掲載しています。未確認の他コースは最高額の算定に含めていません。",
+  "unresolved": []
+}
