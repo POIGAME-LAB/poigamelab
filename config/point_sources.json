@@ -78,6 +78,7 @@
     },
     {
       "id": "chobirich",
+      "acquisition_lane": "device",
       "name": "ちょびリッチ",
       "start_url": "https://www.chobirich.com/smartphone?pos=app",
       "search_domains": [
@@ -359,6 +360,7 @@
     },
     {
       "id": "point_income",
+      "acquisition_lane": "device",
       "name": "ポイントインカム",
       "start_url": "https://sp.pointi.jp/list.php?cat_no=68",
       "search_domains": [

@@ -114,9 +114,11 @@
   },
   "structuredPublication": {
     "enabled": true,
+    "verifiedExistingGameGate": true,
+    "allowVerifiedExistingGameNewRows": true,
     "sources": [
       "warau",
-      "chobirich",
+      "moppy",
       "hapitas",
       "coincome",
       "point_town",

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 import direct_offer_refresh as direct
+from structured_publication import published_row_fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -48,11 +49,27 @@ def validate(root, baseline, artifact):
     sources = {s["id"]: s for s in json.loads((root / "config/point_sources.json").read_text())["sources"]}
     errors = []
     by_key = {}
+    old_keys = {row.get("offerKey") for row in old}
+    try:
+        report = json.loads((root / "data/daily_scan_review.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        report = {}
+    addition_decisions = (report.get("existingPublication") or {}).get("decisions", [])
     for row in rows:
         key = row.get("offerKey")
         if not key or key in by_key:
             errors.append("missing_or_duplicate_offer_key")
         by_key[key] = row
+        if key not in old_keys:
+            matches = [d for d in addition_decisions if d.get("offerKey") == key]
+            if not (len(matches) == 1 and matches[0].get("added") is True
+                    and matches[0].get("publicationMode") == "verified_existing_game"
+                    and matches[0].get("publicationEligible") is True
+                    and not matches[0].get("holdReason")
+                    and matches[0].get("rowFingerprint") == published_row_fingerprint(row)):
+                errors.append("new_offer_without_verified_gate_decision")
+            if row.get("platform") not in {"iOS", "Android"} or not row.get("deadline"):
+                errors.append("new_offer_missing_platform_or_deadline")
         if row.get("game") not in games:
             errors.append("unknown_catalog_game")
         if not str(row.get("reward", "")).isdigit() or int(row["reward"]) <= 0:

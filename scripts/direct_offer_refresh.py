@@ -41,6 +41,44 @@ def now_iso():
 def today_jst():
     return (datetime.now(timezone.utc) + timedelta(hours=9)).date().isoformat()
 
+
+def device_only(source):
+    return source.get("acquisition_lane") == "device"
+
+
+def source_health(sources, fetch_cache, snapshots, decisions, candidates):
+    """Independent dimensions: transport success is not publication success.
+
+    Requests include shared listings/ranking; parse counts cover existing-game
+    details only. Deduplicate repeated inspection of the same cached page.
+    """
+    health = []
+    for sid, source in sources.items():
+        requests = [value for (source_id, _), value in fetch_cache.items() if source_id == sid]
+        parsed = {offer_identity_key(i.get("url"), sid) for i in snapshots
+                  if i.get("source") == sid and (i.get("sourceEvidence") or {}).get("state") == "parsed"}
+        eligible = {d.get("identity") for d in decisions
+                    if d.get("source") == sid and d.get("publicationEligible") is True}
+        pending = {offer_identity_key(i.get("firstPartyCandidateUrl"), sid) for i in candidates if i.get("source") == sid}
+        pending |= parsed - eligible
+        pending.discard("")
+        pending.discard(None)
+        pending -= eligible
+        failed = sum(error is not None for _, error in requests)
+        successful = len(requests) - failed
+        health.append({
+            "source": sid, "lane": "device" if device_only(source) else "cloud",
+            "deviceOnly": device_only(source), "fetchSuccess": successful,
+            "fetchFailed": failed, "parseSuccess": len(parsed),
+            "parseScope": "existing_game_details", "publicationEligible": len(eligible),
+            "candidateOnly": len(pending),
+            "state": ("device_only" if device_only(source) else "publication_eligible" if eligible
+                      else "candidate_only" if pending else "parsed" if parsed
+                      else "fetch_failed" if failed and not successful
+                      else "fetched" if successful else "not_attempted"),
+        })
+    return health
+
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -125,7 +163,7 @@ def fetch_first_party(url, source, timeout=15, max_bytes=1200000, *, opener=None
 
 def source_participates_in_new_game_ranking(source):
     """Whether discovery health from this source can affect reward ranking."""
-    return (
+    return not device_only(source) and (
         source.get("scheduled_fetch_enabled", True) is True
         or (
             source.get("coverage_detail_review_enabled") is True
@@ -1763,6 +1801,12 @@ def inspect_coincome_offer(raw, requested_url, final_url, aliases):
             "parserVersion": "coincome-detail-review-v2",
             **payload,
             "evidenceFingerprint": fingerprint,
+            # Preserve the already-parsed bounded description for the stricter
+            # publication layer; the legacy reward-only fingerprint is stable.
+            "publicationStepText": description,
+            "publicationStepFingerprint": hashlib.sha256(
+                (fingerprint + "\n" + description).encode("utf-8")
+            ).hexdigest(),
         }
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
@@ -2562,6 +2606,10 @@ def inspect_amefuri_offer(raw, requested_url, final_url, aliases):
             "parserVersion": "amefuri-detail-review-v2",
             **payload,
             "evidenceFingerprint": fingerprint,
+            "publicationStepText": step_text if reward_mode == "StepUp" else "",
+            "publicationStepFingerprint": hashlib.sha256(
+                (fingerprint + "\n" + (step_text if reward_mode == "StepUp" else "")).encode("utf-8")
+            ).hexdigest(),
         }
     except (ValueError, TypeError, RecursionError) as error:
         return {"state": "review_required", "reason": str(error)[:120]}
@@ -4871,12 +4919,14 @@ def main(after_scan=None):
         if isinstance(x, dict)
         and x.get("discovery_only") is True
         and x.get("coverage_first_party_listing_enabled") is True
+        and not device_only(x)
         and str(x.get("id") or "").strip()
     ]
     new_game_discovery_sources = [
         x for x in sources.values()
         if isinstance(x, dict)
         and x.get("new_game_discovery_enabled") is True
+        and not device_only(x)
         and str(x.get("id") or "").strip()
     ]
     try:
@@ -4935,6 +4985,7 @@ def main(after_scan=None):
     original_published = PUBLISHED.read_bytes() if PUBLISHED.exists() else None
     previous_new_game_history = load_new_game_history(NEW_GAME_HISTORY)
     rows = read_published()
+    original_row_count = len(rows)
     row_by_identity = {
         (
             str(r.get("game") or ""),
@@ -4944,8 +4995,10 @@ def main(after_scan=None):
         for r in rows
         if r.get("url") and offer_identity_key(r.get("url"), str(r.get("site") or ""))
     }
-    changed = 0  # kept for status compatibility; scheduled mode never changes reward values
+    changed = 0  # reward changes are counted by stable offerKey after the gate
     review = []
+    detail_snapshots = []
+    strict_publication = (policy.get("structuredPublication") or {}).get("verifiedExistingGameGate") is True
     coverage_candidate_queue = []
     coverage_candidate_seen = set()
     new_game_candidate_queue = []
@@ -4960,6 +5013,8 @@ def main(after_scan=None):
 
     def fetch_once(url, source):
         nonlocal listing_session_bootstrap_requests
+        if device_only(source):
+            raise ValueError("device_only_source_cloud_fetch_disabled")
         key = (source.get("id"), exact_url_key(url))
         if key not in fetch_cache:
             try:
@@ -5224,6 +5279,13 @@ def main(after_scan=None):
                 continue
             source = sources[source_id]
             is_standard = source_id in unified_daily_sources
+            if device_only(source):
+                game_result["sources"].append({
+                    "source": source_id, "standard": is_standard, "state": "device_only",
+                    "knownOrDiscoveredUrls": 0, "confirmedOffers": 0,
+                    "updatedRows": 0, "reviewRequired": 0,
+                })
+                continue
             current_rows = [
                 r for r in rows
                 if str(r.get("game") or "") == game and str(r.get("site") or "") == source_id
@@ -5406,6 +5468,11 @@ def main(after_scan=None):
 
                 evidence = detail.get("sourceEvidence")
                 if evidence is not None:
+                    detail_snapshots.append({
+                        "origin": "current_first_party_detail", "game": game,
+                        "source": source_id, "requestedUrl": url, "url": detail["url"],
+                        "sourceEvidence": evidence, "checkedAt": checked_at,
+                    })
                     if evidence.get("state") == "parsed" and evidence.get("downstreamTermsRequired") is True:
                         provider_candidates = offerwall_provider_candidates_from_text(
                             evidence.get("termsText", ""), offerwall_provider_label_registry
@@ -5460,26 +5527,15 @@ def main(after_scan=None):
                                         "point_get_destination_reward",
                                         "complete_terms_vs_published_row",
                                     ]
-                            if source_id == "warau":
+                            if after_scan is not None and strict_publication:
+                                reason = "verified_publication_gate_pending"
+                            elif source_id == "warau":
                                 reason = approved_refresh_reason(existing, evidence,
                                     approvals.get(existing.get("offerKey")), checked_at)
                             elif source_id == "moppy":
-                                # Moppy's audited parser binds the stable offer identity and
-                                # current reward to dedicated first-party DOM. Reward-only refresh
-                                # is safe; terms/platform summaries remain untouched.
-                                if evidence.get("parserVersion") not in {
-                                    "moppy-detail-review-v2", "moppy-detail-review-v3"
-                                }:
-                                    reason = "source_evidence_not_supported"
-                                elif type(evidence.get("displayedRewardPoints")) is not int:
-                                    reason = "missing_current_reward"
-                                elif existing.get("verified") != "true":
-                                    reason = "published_row_not_verified"
-                                else:
-                                    existing["reward"] = str(evidence["displayedRewardPoints"])
-                                    item["candidateOnly"] = False
-                                    item["publicationAuthorized"] = True
-                                    reason = None
+                                # Publication is owned by the strict daily gate,
+                                # never by a shell/current-points shortcut.
+                                reason = "verified_publication_gate_required"
                             else:
                                 reason = "source_refresh_not_enabled"
                             identity_rows = [r for r in current_rows
@@ -5737,6 +5793,13 @@ def main(after_scan=None):
                                         provider_label_registry=offerwall_provider_label_registry,
                                     )
                                     evidence = detail.get("sourceEvidence")
+                                    if isinstance(evidence, dict):
+                                        detail_snapshots.append({
+                                            "origin": "current_first_party_detail", "game": game,
+                                            "source": discovery_source["id"], "requestedUrl": candidate_url,
+                                            "url": detail.get("url") or candidate_url,
+                                            "sourceEvidence": evidence, "checkedAt": checked_at,
+                                        })
                                     coverage_summary["detailReviewCount"] += 1
                                     if (
                                         isinstance(evidence, dict)
@@ -5831,13 +5894,16 @@ def main(after_scan=None):
 
     # Consume the same in-memory snapshots before they are released. The hook
     # is optional, cannot silently fail, and runs before any publication write.
+    hook_result = {}
     if after_scan is not None:
         before_hook = [dict(row) for row in rows]
         hook_result = after_scan(items=new_game_candidate_queue, sources=sources, targets=targets,
                    rows=rows, checked_at=checked_at, fetcher=fetch_once,
-                   review_items=review, publication_policy=policy.get("structuredPublication", {})) or {}
+                   review_items=review, publication_policy=policy.get("structuredPublication", {}),
+                   detail_snapshots=detail_snapshots) or {}
         publication_changed = publication_changed or before_hook != rows
-        changed = sum(old.get("reward") != new.get("reward") for old, new in zip(before_hook, rows))
+        old_rewards = {row.get("offerKey"): row.get("reward") for row in before_hook}
+        changed = sum(row.get("offerKey") in old_rewards and old_rewards[row["offerKey"]] != row.get("reward") for row in rows)
         confirmed_keys = set(hook_result.get("confirmedOfferKeys", []))
         refreshed.update(confirmed_keys)
         for game_result in results:
@@ -5846,7 +5912,11 @@ def main(after_scan=None):
                     if row.get("game") == game_result["game"] and row.get("site") == source_result["source"])
                 if confirmed:
                     source_result["confirmedOffers"] = max(source_result["confirmedOffers"], confirmed)
-                    source_result["updatedRows"] = max(source_result["updatedRows"], confirmed)
+                    source_decisions = [d for d in hook_result.get("publicationDecisions", [])
+                                        if d.get("game") == game_result["game"] and d.get("source") == source_result["source"]]
+                    source_result["publicationEligible"] = confirmed
+                    source_result["updatedRows"] = sum(d.get("updated") is True and not d.get("added") for d in source_decisions)
+                    source_result["addedRows"] = sum(d.get("added") is True for d in source_decisions)
                     source_result["state"] = "confirmed"
             game_result["standardConfirmed"] = sum(s.get("standard") is True and s["state"] == "confirmed"
                                                      for s in game_result["sources"])
@@ -5868,6 +5938,10 @@ def main(after_scan=None):
         "unifiedDailySources": unified_daily_sources,
         "apiCalls": 0,
         "publishedRewardChanges": changed,
+        "publishedRowsBefore": original_row_count,
+        "publishedRowsAfter": len(rows),
+        "sourceHealth": source_health(sources, fetch_cache, detail_snapshots,
+                                      hook_result.get("publicationDecisions", []), new_game_candidate_queue),
         "refreshedRows": len(refreshed),
         "reviewCount": len(review),
         "existingRewardChangeCandidateCount": sum(
@@ -6018,8 +6092,10 @@ def main(after_scan=None):
     print("API calls: 0")
     print("Reward changes:", changed)
     print("Review items:", len(review))
-    for g in results:
-        print(f"{g['game']}: standard confirmed {g['standardConfirmed']}/{g['standardTotal']}")
+    for health in status["sourceHealth"]:
+        print(f"{health['source']}: fetch成功={health['fetchSuccess']} parse成功={health['parseSuccess']} "
+              f"publication可能={health['publicationEligible']} candidate-only={health['candidateOnly']} "
+              f"device-only={health['deviceOnly']} fetch失敗={health['fetchFailed']}")
     return 0
 
 if __name__ == "__main__":

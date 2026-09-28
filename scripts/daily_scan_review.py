@@ -9,6 +9,7 @@ structuredPublication policy; old date-only approvals are never renewed.
 """
 from __future__ import annotations
 
+import csv
 import json
 import re
 from pathlib import Path
@@ -580,17 +581,40 @@ def main():
     review_path = ROOT / "data/daily_scan_review.json"
 
     def consume(**kwargs):
-        from structured_publication import prepare
+        from structured_publication import prepare, prepare_verified
         evidence_items = kwargs.pop("review_items")
         publication_policy = kwargs.pop("publication_policy")
+        detail_snapshots = kwargs.pop("detail_snapshots", [])
         report = review_scan(**kwargs)
-        updated_rows, publication = prepare(kwargs["rows"], evidence_items, kwargs["sources"],
-            kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
+        if publication_policy.get("verifiedExistingGameGate") is True:
+            # A missing/invalid catalog must fail before any CSV publication.
+            with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+                catalog = {row["name"] for row in csv.DictReader(handle)}
+            if not catalog:
+                raise ValueError("empty_catalog_no_publication")
+            if (not report["warauBaseRate"]["confirmed"]
+                    and any(i.get("source") == "warau" for i in detail_snapshots)):
+                # Needed also when the first Warau offer for an existing game
+                # is discovered; the shared fetch cache prevents extra requests.
+                try:
+                    raw, final_url = kwargs["fetcher"](report["warauBaseRate"]["sourceUrl"], kwargs["sources"]["warau"])
+                    report["warauBaseRate"]["confirmed"] = bool(
+                        direct.source_host_allowed(final_url, kwargs["sources"]["warau"])
+                        and re.search(r"原則として\s*1ポイント\s*[=＝]\s*1円", direct.visible_text(raw)))
+                except Exception:
+                    pass
+            updated_rows, publication = prepare_verified(
+                kwargs["rows"], detail_snapshots, kwargs["sources"], kwargs["checked_at"],
+                publication_policy, catalog, kwargs["targets"], report["warauBaseRate"]["confirmed"])
+        else:
+            updated_rows, publication = prepare(kwargs["rows"], evidence_items, kwargs["sources"],
+                kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
         report["existingPublication"] = publication
         kwargs["rows"][:] = updated_rows
         _write_report(review_path, report)
         return {"confirmedOfferKeys": [d["offerKey"] for d in publication["decisions"]
-                                      if "holdReason" not in d]}
+                                      if "holdReason" not in d],
+                "publicationDecisions": publication["decisions"]}
 
     result = direct.main(after_scan=consume)
     if result != 0:
