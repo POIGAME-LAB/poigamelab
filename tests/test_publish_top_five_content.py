@@ -49,6 +49,10 @@ class TestPublishTopFiveContent(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "outside_queue"):
             p.validate_handoff(queue(), bad)
 
+    def test_existing_catalog_game_is_rejected_at_publication_boundary(self):
+        with self.assertRaisesRegex(ValueError, "contains_existing_game"):
+            p.validate_handoff(queue(), adoptions(), existing_games={"Game 1"})
+
     def test_bridge_marks_missing_v30_result_as_hold(self):
         rows = p.bridge_rows(adoptions(), {"results": [{"game": "Game 1", "adopted": True}]})
         self.assertEqual(rows[0]["status"], "adopted")
