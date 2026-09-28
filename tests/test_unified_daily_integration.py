@@ -57,6 +57,7 @@ def test_one_warau_listing_scan_drives_discovery_and_listed_reward_update(
     module, _ = setup_refresh(tmp_path, monkeypatch, count=0)
     monkeypatch.setattr(daily, "direct", module)
     monkeypatch.setattr(daily, "ROOT", tmp_path)
+    (tmp_path / "games.csv").write_text("name,image\nテストゲーム,test.png\n", encoding="utf-8")
 
     module.POLICY.write_text(json.dumps({
         "comparisonSources": ["warau"],
