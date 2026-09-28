@@ -54,6 +54,26 @@ def test_build_keeps_rank_order_and_never_authorizes_publication():
     assert all(set(x["requiredResearchChannels"]) == {"web", "x", "youtube", "instagram", "pointSites"} for x in out["items"])
 
 
+def test_catalogued_game_is_skipped_and_next_new_candidate_is_promoted():
+    out = queue.build(report(), existing_games={"Game 6"})
+    assert out["count"] == 5
+    assert [x["game"] for x in out["items"]] == [f"Game {i}" for i in (5, 4, 3, 2, 1)]
+    assert [x["rank"] for x in out["items"]] == [1, 2, 3, 4, 5]
+
+
+def test_write_reads_games_csv_and_excludes_existing_game():
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        inp = td / "review.json"
+        outp = td / "queue.json"
+        catalog = td / "games.csv"
+        inp.write_text(json.dumps(report()), encoding="utf-8")
+        catalog.write_text("name,image\nGame 6,old.png\n", encoding="utf-8")
+        saved = queue.write(inp, outp, catalog)
+        assert saved["count"] == 5
+        assert [x["game"] for x in saved["items"]] == [f"Game {i}" for i in (5, 4, 3, 2, 1)]
+
+
 def test_write_is_atomic_compact_handoff():
     with tempfile.TemporaryDirectory() as td:
         td = Path(td); inp = td / "review.json"; outp = td / "queue.json"

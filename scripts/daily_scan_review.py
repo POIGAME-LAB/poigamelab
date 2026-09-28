@@ -329,8 +329,13 @@ def research_queries(game):
 
 
 def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
-                max_groups=MAX_GROUPS, max_details=MAX_DETAILS):
+                existing_games=None, max_groups=MAX_GROUPS, max_details=MAX_DETAILS):
     families = source_families(sources)
+    existing_game_keys = {
+        direct.normalized_text(name)
+        for name in (existing_games or [])
+        if str(name or "").strip()
+    }
     groups = {}
     for item in items:
         # Ambiguous titles stay eligible for strict two-site verification.
@@ -338,7 +343,9 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
         if item.get("classification") == "likely_non_game":
             continue
         name = discovery_name(item.get("titleHint"))
-        if not name or direct.context_matches_known_game(name, targets):
+        if (not name
+                or direct.context_matches_known_game(name, targets)
+                or direct.normalized_text(name) in existing_game_keys):
             continue
         sid, url = item.get("source"), item.get("firstPartyCandidateUrl")
         if (sid not in sources or not direct.source_host_allowed(url, sources[sid])
@@ -585,13 +592,19 @@ def main():
         evidence_items = kwargs.pop("review_items")
         publication_policy = kwargs.pop("publication_policy")
         detail_snapshots = kwargs.pop("detail_snapshots", [])
-        report = review_scan(**kwargs)
+        # games.csv is the public catalog. A game already present there is not a
+        # "new game", even when it has not yet been added to game_targets.json.
+        with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+            catalog = {
+                str(row.get("name") or "").strip()
+                for row in csv.DictReader(handle)
+                if str(row.get("name") or "").strip()
+            }
+        if not catalog:
+            raise ValueError("empty_catalog_no_publication")
+        report = review_scan(**kwargs, existing_games=catalog)
         if publication_policy.get("verifiedExistingGameGate") is True:
             # A missing/invalid catalog must fail before any CSV publication.
-            with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
-                catalog = {row["name"] for row in csv.DictReader(handle)}
-            if not catalog:
-                raise ValueError("empty_catalog_no_publication")
             if (not report["warauBaseRate"]["confirmed"]
                     and any(i.get("source") == "warau" for i in detail_snapshots)):
                 # Needed also when the first Warau offer for an existing game

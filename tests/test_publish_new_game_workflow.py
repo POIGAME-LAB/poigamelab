@@ -1,7 +1,10 @@
+import sys
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+import publish_top_five_content as publisher
 WORKFLOW = ROOT / ".github" / "workflows" / "publish-researched-new-games.yml"
 
 
@@ -27,6 +30,20 @@ class TestPublishNewGameWorkflow(unittest.TestCase):
         self.assertNotIn("GEMINI_API_KEY", text)
         self.assertNotIn("FIRECRAWL_API_KEY", text)
         self.assertIn("python scripts/publish_top_five_content.py", text)
+
+    def test_publication_boundary_rejects_already_catalogued_game(self):
+        queue = {
+            "phase": "NEW_GAME_CONTENT_QUEUE_V1",
+            "checkedAt": "2026-09-28T01:17:00+09:00",
+            "items": [{"rank": 1, "game": "天地英雄伝"}],
+        }
+        adoptions = {
+            "phase": "TOP_FIVE_CONTENT_ADOPTION_GATE_V1",
+            "sourceQueueCheckedAt": "2026-09-28T01:17:00+09:00",
+            "items": [{"game": "天地英雄伝", "eligible": True, "status": "adoption_ready"}],
+        }
+        with self.assertRaisesRegex(ValueError, "contains_existing_game"):
+            publisher.validate_handoff(queue, adoptions, existing_games={"天地英雄伝"})
 
     def test_private_research_artifacts_are_not_staged(self):
         text = WORKFLOW.read_text(encoding="utf-8")

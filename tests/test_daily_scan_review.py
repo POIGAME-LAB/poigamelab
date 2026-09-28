@@ -88,6 +88,14 @@ def test_two_details_are_candidates_but_not_publication_permission(monkeypatch):
     assert result["publishedGames"] == result["publicationWrites"] == result["apiCalls"] == 0
 
 
+def test_already_listed_game_is_excluded_even_when_missing_from_targets(monkeypatch):
+    result = scan(candidates("天地英雄伝"), monkeypatch, existing_games={"天地英雄伝"})
+    assert result["listingGroups"] == 0
+    assert result["reviewedGroups"] == 0
+    assert result["topFiveReviewCandidates"] == []
+    assert result["results"] == []
+
+
 @pytest.mark.parametrize("failure", ["exception", "partial", "shell", "redirect", "missing_terms", "missing_os"])
 def test_failed_or_ambiguous_second_source_is_retained_for_research(monkeypatch, failure):
     def changed(url, source, aliases, fetcher):

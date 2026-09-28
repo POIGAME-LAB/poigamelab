@@ -290,6 +290,7 @@ def test_daily_entrypoint_writes_valid_snapshot_once(tmp_path, monkeypatch, wara
     module, _ = setup_refresh(tmp_path, monkeypatch, count=0)
     monkeypatch.setattr(daily, "direct", module)
     monkeypatch.setattr(daily, "ROOT", tmp_path)
+    (tmp_path / "games.csv").write_text("name,image\nテストゲーム,test.png\n", encoding="utf-8")
     module.POLICY.write_text(json.dumps({"comparisonSources": ["warau"],
         "games": {"テストゲーム": {"enabled": True}}, "structuredPublication": POLICY}))
     module.TARGETS.write_text(json.dumps({"games": [{"game": "テストゲーム", "aliases": ["テストゲーム"]}]}))

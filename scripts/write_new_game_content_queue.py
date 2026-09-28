@@ -9,18 +9,40 @@ candidate cannot be mislabeled as a daily top-five game.
 """
 from __future__ import annotations
 
+import csv
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "data" / "daily_scan_review.json"
 OUTPUT = ROOT / "data" / "new_game_content_queue.json"
+CATALOG = ROOT / "games.csv"
 REQUIRED_CHANNELS = ["web", "x", "youtube", "instagram", "pointSites"]
 
 
 def load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def game_key(value):
+    return re.sub(r"\s+", "", str(value or "")).casefold()
+
+
+def load_catalog_games(path=CATALOG):
+    path = Path(path)
+    if not path.is_file():
+        raise ValueError("public_game_catalog_missing")
+    with path.open(encoding="utf-8", newline="") as handle:
+        games = {
+            str(row.get("name") or "").strip()
+            for row in csv.DictReader(handle)
+            if str(row.get("name") or "").strip()
+        }
+    if not games:
+        raise ValueError("public_game_catalog_empty")
+    return games
 
 
 def safe_https(value):
@@ -48,7 +70,7 @@ def empty_handoff(report, reason):
     }
 
 
-def build(report):
+def build(report, existing_games=None):
     if not isinstance(report, dict) or report.get("phase") != "DAILY_SAME_SCAN_REVIEW_V1":
         raise ValueError("daily_review_phase_mismatch")
     top = report.get("topFiveReviewCandidates")
@@ -63,9 +85,47 @@ def build(report):
         return empty_handoff(report, "ranking_incomplete")
 
     by_game = {str(row.get("game") or ""): row for row in results if isinstance(row, dict)}
-    items = []
-    for rank, game in enumerate(top[:5], 1):
+    existing_keys = {
+        game_key(game)
+        for game in (existing_games or [])
+        if str(game or "").strip()
+    }
+
+    # topFiveReviewCandidates is authoritative for the current run, but a
+    # stale/generated report can still contain a catalogued game. Extend the
+    # pool with the remaining ranked results so skipping an existing game can
+    # safely promote the next genuinely new candidate instead of shrinking the
+    # handoff unnecessarily.
+    ranked_pool = []
+    seen = set()
+    for game in top:
         game = str(game or "").strip()
+        if game and game not in seen:
+            ranked_pool.append(game)
+            seen.add(game)
+    remainder = sorted(
+        (
+            row for row in results
+            if isinstance(row, dict)
+            and row.get("candidateEligible") is True
+            and type(row.get("maxObservedRewardYen")) is int
+            and row.get("maxObservedRewardYen") > 0
+        ),
+        key=lambda row: (-row["maxObservedRewardYen"], str(row.get("game") or "")),
+    )
+    for row in remainder:
+        game = str(row.get("game") or "").strip()
+        if game and game not in seen:
+            ranked_pool.append(game)
+            seen.add(game)
+
+    items = []
+    for game in ranked_pool:
+        if len(items) >= 5:
+            break
+        game = str(game or "").strip()
+        if game_key(game) in existing_keys:
+            continue
         row = by_game.get(game)
         if not game or not isinstance(row, dict):
             raise ValueError("ranked_game_missing_from_results")
@@ -104,7 +164,7 @@ def build(report):
         if verified_reward_sources < 1:
             raise ValueError("ranked_game_verified_reward_missing")
         items.append({
-            "rank": rank,
+            "rank": len(items) + 1,
             "game": game,
             "maxObservedRewardYen": amount,
             "confirmedSourceCount": int(row.get("confirmedSourceCount") or 0),
@@ -136,8 +196,8 @@ def build(report):
     }
 
 
-def write(input_path=INPUT, output_path=OUTPUT):
-    out = build(load(input_path))
+def write(input_path=INPUT, output_path=OUTPUT, catalog_path=CATALOG):
+    out = build(load(input_path), existing_games=load_catalog_games(catalog_path))
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")

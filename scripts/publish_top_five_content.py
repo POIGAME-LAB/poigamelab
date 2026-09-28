@@ -9,6 +9,7 @@ only compact guide metadata. No network or AI calls occur here.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import adopt_verified_games as v30
@@ -30,6 +31,10 @@ def load(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
+def game_key(value):
+    return re.sub(r"\s+", "", str(value or "")).casefold()
+
+
 def atomic_json(path, payload):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -38,7 +43,7 @@ def atomic_json(path, payload):
     tmp.replace(path)
 
 
-def validate_handoff(queue, adoptions):
+def validate_handoff(queue, adoptions, existing_games=None):
     if queue.get("phase") != "NEW_GAME_CONTENT_QUEUE_V1":
         raise ValueError("publication_queue_phase_mismatch")
     if adoptions.get("phase") != "TOP_FIVE_CONTENT_ADOPTION_GATE_V1":
@@ -49,6 +54,13 @@ def validate_handoff(queue, adoptions):
     ranked = [str(x.get("game") or "").strip() for x in (queue.get("items") or [])[:5]]
     if len(ranked) != len(set(ranked)) or any(not x for x in ranked):
         raise ValueError("publication_queue_game_identity_invalid")
+    existing_keys = {
+        game_key(game)
+        for game in (existing_games or [])
+        if str(game or "").strip()
+    }
+    if any(game_key(game) in existing_keys for game in ranked):
+        raise ValueError("publication_queue_contains_existing_game")
     allowed = set(ranked)
     for row in adoptions.get("items") or []:
         game = str((row or {}).get("game") or "").strip() if isinstance(row, dict) else ""
@@ -83,8 +95,8 @@ def run(queue_path=QUEUE, adoptions_path=ADOPTIONS, results_dir=RESULTS, content
     sitemap = Path(sitemap) if sitemap else root / "sitemap.xml"
     queue = load(queue_path)
     adoptions = load(adoptions_path)
-    ranked = validate_handoff(queue, adoptions)
     before = {str(x.get("name") or "").strip() for x in v30.read_csv(root / "games.csv")}
+    ranked = validate_handoff(queue, adoptions, existing_games=before)
 
     v30_status = v30.run(
         adoptions_path=adoptions_path,
