@@ -32,7 +32,7 @@ def load(path):
 
 
 def game_key(value):
-    return re.sub(r"\\s+", "", str(value or "")).casefold()
+    return re.sub(r"\s+", "", str(value or "")).casefold()
 
 
 def atomic_json(path, payload):
