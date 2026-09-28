@@ -58,6 +58,17 @@ def test_strict_new_existing_game_offer_added_once_and_conditions_preserved(wara
     assert again == out and report["addedRows"] == report["updatedRows"] == 0
 
 
+def test_warau_deadline_keeps_explicit_install_origin(warau_markup):
+    markup = warau_markup.replace(
+        "<p>獲得対象外：再利用</p>",
+        "<p>すべてインストール日から起算した期日となります。</p><p>獲得対象外：再利用</p>",
+    )
+    _, item = sample(markup)
+    out, report = run([], [envelope(item)])
+    assert report["addedRows"] == 1
+    assert out[0]["deadline"] == "インストール日から起算して10日／20日以内（ステップ別）"
+
+
 @pytest.mark.parametrize("failure", ["candidate", "veto", "comparison", "stale", "os",
     "identity", "url", "redirect", "rate", "fingerprint", "parser", "conflict", "duplicate",
     "other_game", "new_game", "alias_collision", "provider", "device", "deadline", "disabled_add", "nested_candidate"])

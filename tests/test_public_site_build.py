@@ -151,8 +151,8 @@ def test_mementomori_has_current_hapitas_comparison_pair(output_dir):
         if row["game"] == "メメントモリ" and row["site"] == "hapitas"
     ]
     assert {(row["platform"], row["reward"]) for row in matches} == {
-        ("iOS", "5317"),
-        ("Android", "5317"),
+        ("iOS", "5316"),
+        ("Android", "5316"),
     }
     assert {row["url"] for row in matches} == {
         "https://hapitas.jp/item/detail/itemid/99420",

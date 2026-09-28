@@ -244,7 +244,7 @@ def full_snapshot(item, sources, checked_at, rate_confirmed=False):
     return {
         "reward": str(points),
         "condition": condition,
-        "deadline": "条件欄の各ステップ期限を参照",
+        "deadline": publication_deadline(e, sid),
         "platform": e["platform"],
         "type": "StepUp",
         "updatedAt": _current_jst_date(checked_at),
@@ -578,6 +578,34 @@ def achievement_deadline(evidence):
         r"(?:\d+\s*(?:日|時間)以内|翌日以内|当日中)", scope
     )), "achievement_deadline_not_explicit")
     return scope
+
+
+def publication_deadline(evidence, source):
+    """Summarize only achievement deadlines proven by the current first-party snapshot."""
+    scope = achievement_deadline(evidence)
+    tokens = []
+    for match in re.finditer(r"(?:\d+\s*(?:日|時間)以内|翌日以内|当日中)", scope):
+        token = re.sub(r"\s+", "", match.group(0))
+        if token not in tokens:
+            tokens.append(token)
+    require(bool(tokens), "achievement_deadline_not_explicit")
+
+    origin = "インストール日から起算して" if (
+        source == "warau" and "インストール日から起算" in scope
+    ) else ""
+    day_values = []
+    for token in tokens:
+        match = re.fullmatch(r"(\d+)日以内", token)
+        if not match:
+            day_values = []
+            break
+        day_values.append(match.group(1))
+    if day_values:
+        body = "／".join(f"{value}日" for value in day_values) + "以内"
+    else:
+        body = "／".join(tokens)
+    suffix = "（ステップ別）" if len(tokens) > 1 else ""
+    return origin + body + suffix
 
 
 def addition_snapshot(item, update):
