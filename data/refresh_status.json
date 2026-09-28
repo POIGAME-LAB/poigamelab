@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-28T07:50:24+00:00",
-  "finishedAt": "2026-09-28T07:50:24+00:00",
+  "startedAt": "2026-09-28T08:06:31+00:00",
+  "finishedAt": "2026-09-28T08:06:31+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -45,7 +45,7 @@
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -67,7 +67,7 @@
     {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -89,7 +89,7 @@
     {
       "game": "パズル＆サバイバル",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 2,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -98,7 +98,7 @@
     {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 2,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -162,7 +162,7 @@
     {
       "game": "Merge Help: ホームデザインパズル",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 1,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
