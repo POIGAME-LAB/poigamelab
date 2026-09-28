@@ -711,7 +711,8 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def isolate_module_paths(tmp_path, monkeypatch):
-    for name in ('ROOT', 'POLICY', 'TARGETS', 'SOURCES', 'PUBLISHED', 'STATUS', 'LEGACY_STATUS', 'REVIEW'):
+    for name in ('ROOT', 'POLICY', 'TARGETS', 'SOURCES', 'PUBLISHED', 'STATUS', 'LEGACY_STATUS', 'REVIEW',
+                 'NEW_GAME_QUEUE', 'NEW_GAME_HISTORY', 'EXISTING_GAME_QUEUE'):
         monkeypatch.setattr(direct, name, tmp_path if name == 'ROOT' else tmp_path / getattr(direct, name).name)
 
 
@@ -2327,7 +2328,7 @@ def test_moppy_terms_change_invalidates_fingerprint(moppy_markup):
 
 
 @pytest.mark.parametrize('fetch_fails', [False, True])
-def test_moppy_audited_detail_can_refresh_verified_published_reward(
+def test_moppy_shell_never_bypasses_verified_daily_gate(
         moppy_markup, monkeypatch, fetch_fails):
     direct.POLICY.write_text(json.dumps({
         'comparisonSources': ['moppy'], 'minimumConfirmedSourcesForComparison': 2,
@@ -2361,7 +2362,10 @@ def test_moppy_audited_detail_can_refresh_verified_published_reward(
         refreshed=direct.read_published()[0]
         assert refreshed['reward']=='600'
         assert refreshed['verified']=='true'
-        assert refreshed['updatedAt']!='2026-08-31'
+        assert refreshed['updatedAt']=='2026-08-31'
+        assert direct.PUBLISHED.read_bytes()==before
+        items=json.loads(direct.REVIEW.read_text())['items']
+        assert any(item.get('approvalHoldReason')=='verified_publication_gate_required' for item in items)
 
 
 def test_moppy_first_party_terms_map_appdriver_without_external_fetch(moppy_markup, monkeypatch):
