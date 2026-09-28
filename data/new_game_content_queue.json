@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-28T08:06:31+00:00",
+  "checkedAt": "2026-09-28T22:07:10+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -11,81 +11,6 @@
   "items": [
     {
       "rank": 1,
-      "game": "天地英雄伝",
-      "maxObservedRewardYen": 451871,
-      "confirmedSourceCount": 2,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 2,
-      "pointSiteEvidence": [
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206522&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206523&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206561&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 1460
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206554&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 1460
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35087",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 451871
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35086",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 451871
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18815",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        }
-      ],
-      "researchQueries": {
-        "web": "\"天地英雄伝\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"天地英雄伝\" ポイ活 日目",
-        "youtube": "site:youtube.com \"天地英雄伝\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"天地英雄伝\" ポイ活",
-        "pointSites": "\"天地英雄伝\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 2,
       "game": "ロックンキャッシュカジノ-スロットゲーム",
       "maxObservedRewardYen": 158224,
       "confirmedSourceCount": 1,
@@ -141,6 +66,46 @@
         "youtube": "site:youtube.com \"ロックンキャッシュカジノ-スロットゲーム\" ポイ活 攻略",
         "instagram": "site:instagram.com \"ロックンキャッシュカジノ-スロットゲーム\" ポイ活",
         "pointSites": "\"ロックンキャッシュカジノ-スロットゲーム\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 2,
+      "game": "Rise of Kingdoms ―万国覚醒―",
+      "maxObservedRewardYen": 114050,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/10352",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 114050
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19199",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Rise of Kingdoms ―万国覚醒―\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Rise of Kingdoms ―万国覚醒―\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Rise of Kingdoms ―万国覚醒―\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Rise of Kingdoms ―万国覚醒―\" ポイ活",
+        "pointSites": "\"Rise of Kingdoms ―万国覚醒―\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
