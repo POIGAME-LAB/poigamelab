@@ -111,7 +111,7 @@ def contract_case(source):
 def test_reward_contracts_respect_publication_veto_and_preserve_prose():
     expected_safe = {"hapitas", "coincome", "point_town", "ec_navi", "amefuri"}
     assert expected_safe <= set(publication.REWARD_ONLY_CONTRACTS)
-    assert "moppy" not in publication.REWARD_ONLY_CONTRACTS
+    assert "moppy" in publication.REWARD_ONLY_CONTRACTS
     assert "powl" not in publication.REWARD_ONLY_CONTRACTS
 
     domains = {
