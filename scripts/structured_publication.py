@@ -583,15 +583,39 @@ def achievement_deadline(evidence):
 def publication_deadline(evidence, source):
     """Summarize only achievement deadlines proven by the current first-party snapshot."""
     scope = achievement_deadline(evidence)
-    tokens = []
-    for match in re.finditer(r"(?:\d+\s*(?:日|時間)以内|翌日以内|当日中)", scope):
-        token = re.sub(r"\s+", "", match.group(0))
-        if token not in tokens:
-            tokens.append(token)
+
+    def deadline_tokens(text):
+        values = []
+        for match in re.finditer(r"(?:\d+\s*(?:日|時間)以内|翌日以内|当日中)", text or ""):
+            token = re.sub(r"\s+", "", match.group(0))
+            if token not in values:
+                values.append(token)
+        return values
+
+    if source == "warau":
+        # Prefer the actual Step conditions. Warau's terms also contain an
+        # operational "click -> launch within 1 hour" tracking rule; that is
+        # not the achievement deadline and must never be prefixed as if it
+        # were measured from installation.
+        step_scope = " ".join(
+            str(step.get("condition") or "")
+            for step in evidence.get("steps", [])
+            if isinstance(step, dict)
+        )
+        tokens = deadline_tokens(step_scope)
+        if not tokens:
+            achievement_intro = re.split(r"※|■獲得対象外|獲得対象外", scope, maxsplit=1)[0]
+            tokens = deadline_tokens(achievement_intro)
+    else:
+        tokens = deadline_tokens(scope)
+
     require(bool(tokens), "achievement_deadline_not_explicit")
 
     origin = "インストール日から起算して" if (
-        source == "warau" and "インストール日から起算" in scope
+        source == "warau" and (
+            "インストール日から起算" in scope
+            or "すべてインストール日から起算" in scope
+        )
     ) else ""
     day_values = []
     for token in tokens:
