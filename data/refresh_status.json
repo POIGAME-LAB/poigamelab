@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-09-27T19:47:23+00:00",
-  "finishedAt": "2026-09-27T19:47:23+00:00",
+  "startedAt": "2026-09-28T07:50:24+00:00",
+  "finishedAt": "2026-09-28T07:50:24+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -23,10 +23,12 @@
     {
       "game": "メメントモリ",
       "returncode": 0,
-      "publishableCount": 4,
-      "collectionComplete": true,
-      "degradedReasons": [],
-      "standardConfirmed": 2,
+      "publishableCount": 2,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
@@ -43,6 +45,17 @@
     {
       "game": "Township",
       "returncode": 0,
+      "publishableCount": 1,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
+      "standardTotal": 10
+    },
+    {
+      "game": "ワーキングヒーロー",
+      "returncode": 0,
       "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
@@ -52,9 +65,9 @@
       "standardTotal": 10
     },
     {
-      "game": "ワーキングヒーロー",
+      "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 1,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -63,43 +76,32 @@
       "standardTotal": 10
     },
     {
-      "game": "ホワイトアウト・サバイバル",
+      "game": "東京ディバンカー",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 10
+    },
+    {
+      "game": "パズル＆サバイバル",
+      "returncode": 0,
+      "publishableCount": 1,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
       "standardTotal": 10
     },
     {
-      "game": "東京ディバンカー",
-      "returncode": 0,
-      "publishableCount": 2,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "comparison_sources_below_minimum"
-      ],
-      "standardConfirmed": 1,
-      "standardTotal": 10
-    },
-    {
-      "game": "パズル＆サバイバル",
-      "returncode": 0,
-      "publishableCount": 5,
-      "collectionComplete": true,
-      "degradedReasons": [],
-      "standardConfirmed": 3,
-      "standardTotal": 10
-    },
-    {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 2,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "comparison_sources_below_minimum"
-      ],
-      "standardConfirmed": 1,
+      "publishableCount": 0,
+      "collectionComplete": true,
+      "degradedReasons": [],
+      "standardConfirmed": 2,
       "standardTotal": 10
     },
     {
@@ -116,21 +118,23 @@
     {
       "game": "エバーテイル",
       "returncode": 0,
-      "publishableCount": 6,
-      "collectionComplete": true,
-      "degradedReasons": [],
-      "standardConfirmed": 2,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
       "game": "ATLAS: EARTH",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
@@ -141,7 +145,7 @@
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
@@ -163,7 +167,7 @@
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
