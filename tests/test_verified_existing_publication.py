@@ -69,6 +69,39 @@ def test_warau_deadline_keeps_explicit_install_origin(warau_markup):
     assert out[0]["deadline"] == "インストール日から起算して10日／20日以内（ステップ別）"
 
 
+def test_warau_deadline_excludes_one_hour_launch_tracking_window(warau_markup):
+    markup = warau_markup.replace(
+        "<p>獲得対象外：再利用</p>",
+        "<p>すべてインストール日から起算した期日となります。</p>"
+        "<p>※ポイントを貯めるをタップした後、1時間以内にアプリを起動してください。</p>"
+        "<p>獲得対象外：再利用</p>",
+    )
+    _, item = sample(markup)
+    out, report = run([], [envelope(item)])
+    assert report["addedRows"] == 1
+    assert out[0]["deadline"] == "インストール日から起算して10日／20日以内（ステップ別）"
+    assert "1時間以内" not in out[0]["deadline"]
+
+
+def test_warau_global_deadline_excludes_one_hour_launch_tracking_window(warau_markup):
+    markup = (
+        warau_markup
+        .replace("10日以内にレベル5到達", "レベル5到達")
+        .replace("20日以内にレベル10到達", "レベル10到達")
+        .replace(
+            "<p>獲得対象外：再利用</p>",
+            "<p>インストール日から起算して60日以内にStepUpミッションを達成</p>"
+            "<p>※ポイントを貯めるをタップした後、1時間以内にアプリを起動してください。</p>"
+            "<p>獲得対象外：再利用</p>",
+        )
+    )
+    _, item = sample(markup)
+    out, report = run([], [envelope(item)])
+    assert report["addedRows"] == 1
+    assert out[0]["deadline"] == "インストール日から起算して60日以内"
+    assert "1時間以内" not in out[0]["deadline"]
+
+
 @pytest.mark.parametrize("failure", ["candidate", "veto", "comparison", "stale", "os",
     "identity", "url", "redirect", "rate", "fingerprint", "parser", "conflict", "duplicate",
     "other_game", "new_game", "alias_collision", "provider", "device", "deadline", "disabled_add", "nested_candidate"])
