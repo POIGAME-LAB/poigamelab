@@ -4890,6 +4890,14 @@ def main(after_scan=None):
         return 2
     policy = load_json(POLICY)
     targets = load_json(TARGETS).get("games") or []
+    try:
+        import verified_offer_urls
+        verified_offer_urls.merge_into_targets(
+            targets, verified_offer_urls.load(Path(ROOT) / "data" / "verified_offer_urls.json"))
+    except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+        # The remembered list only adds pages to recheck; without it the
+        # refresh runs exactly as before.
+        print(f"WARN: verified offer URL list unavailable: {type(exc).__name__}", file=sys.stderr)
     source_cfg = load_json(SOURCES)
     sources = {str(x.get("id") or ""): x for x in (source_cfg.get("sources") or [])}
     offerwall_domains = [
