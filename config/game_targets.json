@@ -101,13 +101,17 @@
     },
     {
       "game": "クロンダイクの冒険",
-      "aliases": ["クロンダイクの冒険", "Klondike Adventures", "Klondike Adventure"],
-      "known_urls_by_source": {}
+      "aliases": ["クロンダイクの冒険", "Klondike Adventures", "Klondike Adventure", "ウエスタン農場 - クロンダイクの冒険"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205043", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205042"]
+      }
     },
     {
       "game": "Merge Help: ホームデザインパズル",
-      "aliases": ["Merge Help: ホームデザインパズル", "Merge Help", "ホームデザインパズル"],
-      "known_urls_by_source": {}
+      "aliases": ["Merge Help: ホームデザインパズル", "Merge Help", "ホームデザインパズル", "Merge Help - Warm Family"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=207045", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207041"]
+      }
     },
     {
       "game": "マジックジグソーパズル",
