@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-28T22:07:10+00:00",
+  "checkedAt": "2026-09-29T20:52:46+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -79,46 +79,6 @@
     },
     {
       "rank": 2,
-      "game": "Rise of Kingdoms ―万国覚醒―",
-      "maxObservedRewardYen": 114050,
-      "confirmedSourceCount": 1,
-      "listingSourceCount": 2,
-      "verifiedRewardSourceCount": 1,
-      "pointSiteEvidence": [
-        {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/10352",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 114050
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/19199",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        }
-      ],
-      "researchQueries": {
-        "web": "\"Rise of Kingdoms ―万国覚醒―\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Rise of Kingdoms ―万国覚醒―\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Rise of Kingdoms ―万国覚醒―\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Rise of Kingdoms ―万国覚醒―\" ポイ活",
-        "pointSites": "\"Rise of Kingdoms ―万国覚醒―\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 3,
       "game": "Slot Mate（スロットメイト）- ベガススロットカジノ",
       "maxObservedRewardYen": 112186,
       "confirmedSourceCount": 1,
@@ -172,82 +132,7 @@
       "publicationAuthorized": false
     },
     {
-      "rank": 4,
-      "game": "マフィア・シティ-極道風雲",
-      "maxObservedRewardYen": 98704,
-      "confirmedSourceCount": 2,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 2,
-      "pointSiteEvidence": [
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=202183&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 17150
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198935&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 17150
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=192965&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/28487",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 98704
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/27809",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 46434
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/13557",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        }
-      ],
-      "researchQueries": {
-        "web": "\"マフィア・シティ-極道風雲\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"マフィア・シティ-極道風雲\" ポイ活 日目",
-        "youtube": "site:youtube.com \"マフィア・シティ-極道風雲\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"マフィア・シティ-極道風雲\" ポイ活",
-        "pointSites": "\"マフィア・シティ-極道風雲\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 5,
+      "rank": 3,
       "game": "Wild Survival",
       "maxObservedRewardYen": 93918,
       "confirmedSourceCount": 2,
@@ -303,6 +188,107 @@
         "youtube": "site:youtube.com \"Wild Survival\" ポイ活 攻略",
         "instagram": "site:instagram.com \"Wild Survival\" ポイ活",
         "pointSites": "\"Wild Survival\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 4,
+      "game": "Wild Survival - 野蛮な生存者：最後の戦い",
+      "maxObservedRewardYen": 93918,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205761&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34647",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 93918
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Wild Survival - 野蛮な生存者：最後の戦い\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Wild Survival - 野蛮な生存者：最後の戦い\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Wild Survival - 野蛮な生存者：最後の戦い\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Wild Survival - 野蛮な生存者：最後の戦い\" ポイ活",
+        "pointSites": "\"Wild Survival - 野蛮な生存者：最後の戦い\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 5,
+      "game": "ベガス クレイズ カジノ",
+      "maxObservedRewardYen": 90925,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205629&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 90925
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34570",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 87143
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/18242",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ベガス クレイズ カジノ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ベガス クレイズ カジノ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ベガス クレイズ カジノ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ベガス クレイズ カジノ\" ポイ活",
+        "pointSites": "\"ベガス クレイズ カジノ\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
