@@ -27,7 +27,19 @@ DOMAIN_FILTERS = {
     "youtube": {"youtube.com", "www.youtube.com", "youtu.be", "m.youtube.com"},
     "instagram": {"instagram.com", "www.instagram.com"},
 }
+# Auth, plan-limit and rate-limit responses repeat for every later query, so
+# retrying or moving on to the next game only burns API calls.
+# 432/433 are Tavily's plan / pay-as-you-go limit responses.
+FATAL_SEARCH_HTTP = frozenset({401, 403, 429, 432, 433})
 POI_MARKERS = ("ポイ活", "案件", "達成", "レベル", "lv", "無課金", "課金", "日目", "クリア", "報酬", "ポイント")
+
+
+class SearchAborted(RuntimeError):
+    """Stop the whole run: further searches would fail the same way."""
+
+    def __init__(self, reason):
+        super().__init__(reason)
+        self.reason = reason
 
 
 def load(path):
@@ -111,7 +123,8 @@ def _fetch(url):
 
 def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher=_fetch,
                      max_results=5, max_fetches=4, max_search_attempts=2,
-                     sleeper=time.sleep):
+                     sleeper=None):
+    sleeper = sleeper or time.sleep
     lane = {
         "searched": True,
         "complete": False,
@@ -133,8 +146,11 @@ def research_channel(game, channel, query, api_key, *, searcher=_search, fetcher
                 raise ValueError("search_results_invalid")
             rows = candidate_rows
             break
-        except Exception:
+        except Exception as exc:
             lane["searchErrors"] += 1
+            code = getattr(exc, "code", None)
+            if isinstance(code, int) and code in FATAL_SEARCH_HTTP:
+                raise SearchAborted(f"search_http_{code}") from None
             if attempt + 1 < max(1, int(max_search_attempts)):
                 sleeper(5)
     if rows is None:
@@ -224,10 +240,15 @@ def research_item(item, api_key, *, searcher=_search, fetcher=_fetch):
         "research": {},
     }
     for channel in ("web", "x", "youtube", "instagram"):
-        result["research"][channel] = research_channel(
+        lane = research_channel(
             game, channel, queries.get(channel, ""), api_key,
             searcher=searcher, fetcher=fetcher,
         )
+        if not lane.get("complete") and lane.get("searchErrors"):
+            # The bounded retry also failed: stop instead of spending the
+            # remaining channels and games on a provider that is not answering.
+            raise SearchAborted("search_failed_after_retry")
+        result["research"][channel] = lane
     result["research"]["pointSites"] = point_site_lane(item)
     result["complete"] = all(result["research"][c].get("complete") is True for c in CHANNELS)
     result["apiCalls"] = sum(int(result["research"][c].get("searchCalls") or 0) for c in CHANNELS)
@@ -244,12 +265,29 @@ def run(queue=None, api_key=None, *, searcher=_search, fetcher=_fetch, out_dir=O
     items = (queue.get("items") or [])[:5]
     outputs = []
     failures = []
-    for item in items:
+    calls = {"count": 0}
+    abort_reason = None
+    skipped = 0
+
+    def counted_searcher(query, key, max_results):
+        calls["count"] += 1
+        return searcher(query, key, max_results)
+
+    for index, item in enumerate(items):
         try:
-            result = research_item(item, api_key, searcher=searcher, fetcher=fetcher)
+            result = research_item(item, api_key, searcher=counted_searcher, fetcher=fetcher)
             path = Path(out_dir) / f"{safe_slug(result['game'])}.json"
             atomic_json(path, result)
             outputs.append(result)
+        except SearchAborted as exc:
+            abort_reason = exc.reason
+            failures.append({
+                "game": str((item or {}).get("game") or ""),
+                "error": "SearchAborted",
+                "reason": exc.reason,
+            })
+            skipped = len(items) - index - 1
+            break
         except Exception as exc:
             failures.append({
                 "game": str((item or {}).get("game") or ""),
@@ -268,7 +306,10 @@ def run(queue=None, api_key=None, *, searcher=_search, fetcher=_fetch, out_dir=O
         "heldGames": max(0, len(items) - complete_games),
         "failed": len(failures),
         "failures": failures,
-        "apiCalls": sum(int(x.get("apiCalls") or 0) for x in outputs),
+        "aborted": abort_reason is not None,
+        "abortReason": abort_reason,
+        "skippedGames": skipped,
+        "apiCalls": calls["count"],
         "publicationWrites": 0,
     }
     atomic_json(STATUS, status)
