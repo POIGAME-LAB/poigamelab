@@ -15,6 +15,7 @@ import re
 from pathlib import Path
 
 import direct_offer_refresh as direct
+import verified_offer_urls
 
 ROOT = Path(__file__).resolve().parents[1]
 # A 2026-09-24 live queue audit measured 273 handoff-eligible groups after the
@@ -586,12 +587,12 @@ def _write_report(path, report):
 
 def remember_verified_urls(decisions, checked_at, path=None):
     """Keep gate-verified offer URLs for rechecking; never blocks publication."""
-    import verified_offer_urls as vou
     path = path or ROOT / "data" / "verified_offer_urls.json"
     try:
-        entries, changed = vou.register(vou.load(path), decisions, checked_at)
+        entries, changed = verified_offer_urls.register(
+            verified_offer_urls.load(path), decisions, checked_at)
         if changed:
-            vou.save(entries, path)
+            verified_offer_urls.save(entries, path)
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
         # A corrupt list is left untouched for review instead of overwritten.
         print(f"WARN: verified offer URLs not updated: {type(exc).__name__}")

@@ -19,14 +19,7 @@ PATH = ROOT / "data" / "verified_offer_urls.json"
 
 def load(path=PATH):
     """Return the entry list. A missing file is empty; a corrupt one raises."""
-    path = Path(path)
-    if not path.exists():
-        return []
-    doc = json.loads(path.read_text(encoding="utf-8"))
-    entries = doc.get("entries") if isinstance(doc, dict) else None
-    if not isinstance(entries, list):
-        raise ValueError("verified_offer_urls_invalid")
-    return entries
+    return direct.load_verified_offer_urls(path)
 
 
 def register(entries, decisions, checked_at):
@@ -66,14 +59,4 @@ def save(entries, path=PATH):
 
 def merge_into_targets(targets, entries):
     """Add remembered URLs to each target's known URLs (in memory only)."""
-    by_game = {t.get("game"): t for t in targets}
-    for e in entries:
-        target = by_game.get(e.get("game"))
-        source, url = e.get("source"), e.get("url")
-        if target is None or not source or not url:
-            continue
-        known = target.setdefault("known_urls_by_source", {}).setdefault(source, [])
-        have = {direct.offer_identity_key(u, source) for u in known}
-        if direct.offer_identity_key(url, source) not in have:
-            known.append(url)
-    return targets
+    return direct.merge_verified_offer_urls(targets, entries)
