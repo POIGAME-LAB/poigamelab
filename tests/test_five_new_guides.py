@@ -156,7 +156,17 @@ def test_reference_rewards_are_display_only_until_verified_offer_exists():
     assert "verified: false" in bootstrap
     assert "gamesWithVerifiedOffer.has(gameName)" in bootstrap
 
+    # The nightly strict gate may add verified offers for any of these games,
+    # so check the rule rather than a fixed snapshot of which games have one.
     with (ROOT / "data" / "published_offers.csv").open(encoding="utf-8", newline="") as handle:
-        published_games = {row["game"] for row in csv.DictReader(handle)}
-    assert published_games.intersection(GUIDES) == {"ATLAS: EARTH"}
-    assert (set(GUIDES) - {"ATLAS: EARTH"}).isdisjoint(published_games)
+        rows = [row for row in csv.DictReader(handle) if row["game"] in GUIDES]
+    verified = {row["game"] for row in rows if row["verified"] == "true"}
+    assert "ATLAS: EARTH" in verified
+    for row in rows:
+        assert row["url"].startswith("https://"), row["offerKey"]
+
+    with (ROOT / "games.csv").open(encoding="utf-8", newline="") as handle:
+        catalog = {row["name"]: row for row in csv.DictReader(handle)}
+    for name in set(GUIDES) - verified:
+        # Without a verified offer the card may only show the reference reward.
+        assert int(catalog[name]["provisionalReward"] or 0) > 0, name
