@@ -36,6 +36,7 @@ ROOT_FILES = (
     "sea-block-1010-guide.html",
     "saruyama-onsen-guide.html",
     "impossible-kart-guide.html",
+    "mafia-city-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

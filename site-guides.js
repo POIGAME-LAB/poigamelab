@@ -133,5 +133,10 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "インポッシブルカート ポイ活攻略",
     description: "5-4ステージクリア案件について、操作と難所の進め方を整理しています。",
     links: [{ label: "5-4攻略を読む →", href: "impossible-kart-guide.html" }]
+  },
+  "マフィア・シティ-極道風雲": {
+    title: "マフィア・シティ ポイ活攻略",
+    description: "別荘Lv20・25の実際の到達ペースと、前提施設・資源と加速・課金ステップの判断をまとめています。",
+    links: [{ label: "別荘攻略を読む →", href: "mafia-city-guide.html" }]
   }
 });
