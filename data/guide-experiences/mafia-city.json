@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "game": "マフィア・シティ-極道風雲",
+  "updatedAt": "2026-09-29",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されている攻略記事・ポイントサイトの口コミから、日数が確認できた記録を同じプレイヤーごとにまとめています。全員同じ案件条件ではないため、平均ではなく実例として見てください。",
+  "notice": "※確認できた実例は別荘Lv25まで。Lv30・35・36の高難易度ステップは完走ペースを確認できていません。",
+  "footnote": "到達日数は課金・プレイ時間・組織（同盟）の状況・開始時期などで変わります。1年以上前の記録や、日数・レベルが本文で確認できない投稿は掲載していません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "別荘Lv25を18日で達成",
+      "milestones": [
+        {"day": 2, "label": "別荘Lv10"},
+        {"day": 6, "label": "別荘Lv15"},
+        {"day": 9, "label": "別荘Lv20"},
+        {"day": 18, "label": "別荘Lv25達成", "detail": "課金は高級特権3,060円のみ"}
+      ],
+      "note": "Lv20までは9日。Lv20→25に9日かかっており、後半は1レベルごとの建築時間が伸びる実例。",
+      "sources": ["https://www.npd-ruru-rarara.com/entry/2026/02/05/104127"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "約17日目に別荘Lv20到達",
+      "milestones": [
+        {"dayLabel": "約17日目", "label": "別荘Lv20", "detail": "高級特権を購入"}
+      ],
+      "note": "別荘Lv19→20の建築開始時点で完成まで5日間と表示された記録。高レベルは1回の建築が数日単位になる。",
+      "sources": ["https://www.warau.jp/sp/point/review/detail/24456"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "無課金で別荘Lv20を23日で達成",
+      "milestones": [
+        {"day": 23, "label": "別荘Lv20達成", "detail": "無課金"}
+      ],
+      "note": "無課金でLv20まで到達した実例。高レベルの完成には長い建築時間が必要という記録。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "約3週間で別荘Lv15・Lv20は撤退",
+      "milestones": [
+        {"dayLabel": "約3週間", "label": "別荘Lv15", "detail": "無課金"}
+      ],
+      "note": "残りの期間ではLv20が間に合わないと判断して撤退した実例。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936"]
+    }
+  ]
+}
