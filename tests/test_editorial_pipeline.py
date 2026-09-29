@@ -78,7 +78,9 @@ def test_existing_game_exclusion():
     ]
     s = p.select(ROOT, regs)
     assert "tenchi" not in {r["slug"] for r in s["candidates"]}
-    assert len(s["candidates"]) == 5
+    # mafia-city has since been published, so only four remain candidates.
+    assert "mafia-city" not in {r["slug"] for r in s["candidates"]}
+    assert len(s["candidates"]) == 4
     assert s["unresolved"]  # Unknown identity does not silently become a game.
 
 
@@ -184,8 +186,9 @@ def test_research_never_enters_public_artifact(tmp_path):
     assert not any(
         x.endswith(g + "-guide.html")
         for x in copied
+        # mafia-city-guide.html is the separately reviewed live page, not a
+        # research preview, so it is intentionally allowed here.
         for g in (
-            "mafia-city",
             "grand-mafia",
             "viking-rise",
             "puzzles-chaos",

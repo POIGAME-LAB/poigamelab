@@ -9,7 +9,8 @@
     "kingshot-guide.html": "キングショット", "houchishojo-guide.html": "放置少女", "evertale-guide.html": "エバーテイル",
     "atlas-earth-guide.html": "ATLAS: EARTH", "family-farm-adventure-guide.html": "ファミリーファームの冒険",
     "klondike-adventures-guide.html": "クロンダイクの冒険", "merge-help-guide.html": "Merge Help: ホームデザインパズル",
-    "magic-jigsaw-puzzles-guide.html": "マジックジグソーパズル"
+    "magic-jigsaw-puzzles-guide.html": "マジックジグソーパズル",
+    "mafia-city-guide.html": "マフィア・シティ-極道風雲"
   };
   const main = document.querySelector("main");
   const game = main?.getAttribute("data-current-offers-game") || pages[location.pathname.split("/").pop()];

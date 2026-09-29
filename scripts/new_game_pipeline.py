@@ -520,10 +520,19 @@ def run(root, folder, now):
     atomic(folder / "selection.json", selection)
     results = []
     slugs = {c["slug"] for c in selection["candidates"]}
+    existing = {norm(x["name"]) for x in catalog(root)}
+    listed = {
+        g["slug"] for g in registry
+        if any(norm(a) in existing for a in [g["name"], *g["aliases"]])
+    }
     for file in sorted((folder / "dossiers").glob("*.json")):
         p = read(file)
         if not re.fullmatch("[a-z0-9]+(?:-[a-z0-9]+)*", p.get("slug", "")):
             raise ValueError("unsafe_slug")
+        if p.get("slug") in listed:
+            # Published since this run was researched; the live page supersedes
+            # the quarantined preview, so it is no longer a candidate.
+            continue
         if p.get("slug") not in slugs:
             raise ValueError("dossier_not_in_discovered_candidates")
         result = evaluate(p, now)
