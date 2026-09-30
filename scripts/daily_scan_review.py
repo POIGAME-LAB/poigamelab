@@ -686,6 +686,70 @@ def remember_verified_urls(decisions, checked_at, path=None, snapshots=None):
         print(f"WARN: verified offer URLs not updated: {type(exc).__name__}")
 
 
+def count_unavailable_runs(state, snapshots, checked_at):
+    """Update per-offer counts of nightly runs that read the offer as ended.
+
+    ``state`` maps offer identity -> {"runs", "lastUnavailableAt"}. An identity
+    counts only when every reading of it in this run says ended; a live reading
+    clears it, and no reading or an unclear one leaves it unchanged. Returns
+    (new_state, runs_by_identity_for_this_run).
+    """
+    readings = {}
+    for item in snapshots or []:
+        if not isinstance(item, dict) or item.get("checkedAt") != checked_at:
+            continue
+        sid = item.get("source")
+        identity = direct.offer_identity_key(item.get("url"), sid) if item.get("url") and sid else None
+        if identity:
+            readings.setdefault(identity, []).append(item.get("sourceEvidence") or {})
+    out = {k: dict(v) for k, v in (state or {}).items() if isinstance(v, dict)}
+    current = {}
+    for identity, evidence in readings.items():
+        if all(e.get("state") == "unavailable" and e.get("reason") == "source_offer_unavailable"
+               for e in evidence):
+            entry = out.setdefault(identity, {"runs": 0})
+            if entry.get("lastUnavailableAt") != checked_at:
+                entry["runs"] = int(entry.get("runs") or 0) + 1
+                entry["lastUnavailableAt"] = checked_at
+            current[identity] = entry["runs"]
+        elif any(e.get("state") == "parsed" for e in evidence):
+            out.pop(identity, None)
+    return out, current
+
+
+def track_unavailable_runs(snapshots, checked_at, path=None):
+    """Annotate this run's ended readings with their consecutive-run count.
+
+    Any problem with the count file leaves snapshots unannotated, which keeps
+    every published row held rather than retired.
+    """
+    path = Path(path or ROOT / "data" / "offer_unavailable_runs.json")
+    try:
+        state = {}
+        if path.exists():
+            doc = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(doc, dict) or not isinstance(doc.get("offers"), dict):
+                raise ValueError("offer_unavailable_runs_shape")
+            state = doc["offers"]
+        new_state, current = count_unavailable_runs(state, snapshots, checked_at)
+        if new_state != state:
+            tmp = path.with_suffix(path.suffix + ".tmp")
+            tmp.write_text(json.dumps({"schemaVersion": 1, "offers": dict(sorted(new_state.items()))},
+                                      ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            tmp.replace(path)
+    except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+        print(f"WARN: ended-offer counts not updated: {type(exc).__name__}")
+        return list(snapshots or [])
+    annotated = []
+    for item in snapshots or []:
+        identity = (direct.offer_identity_key(item.get("url"), item.get("source"))
+                    if isinstance(item, dict) and item.get("url") and item.get("source") else None)
+        if identity in current and item.get("checkedAt") == checked_at:
+            item = {**item, "consecutiveUnavailableRuns": current[identity]}
+        annotated.append(item)
+    return annotated
+
+
 def main():
     review_path = ROOT / "data/daily_scan_review.json"
 
@@ -718,6 +782,7 @@ def main():
                         and re.search(r"原則として\s*1ポイント\s*[=＝]\s*1円", direct.visible_text(raw)))
                 except Exception:
                     pass
+            detail_snapshots = track_unavailable_runs(detail_snapshots, kwargs["checked_at"])
             updated_rows, publication = prepare_verified(
                 kwargs["rows"], detail_snapshots, kwargs["sources"], kwargs["checked_at"],
                 publication_policy, catalog, kwargs["targets"], report["warauBaseRate"]["confirmed"])

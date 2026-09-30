@@ -654,6 +654,48 @@ def addition_snapshot(item, update):
             "type": "StepUp" if is_step else "Single"}
 
 
+# A published row is removed only after the source's own detail page read as
+# "offer ended" on this many separate nightly runs in a row (the count is kept
+# by daily_scan_review.track_unavailable_runs). Paused or unclear pages, fetch
+# errors and parser doubts never count, so they keep holding the row instead.
+UNAVAILABLE_RUNS_BEFORE_RETIREMENT = 3
+RETIRABLE_UNAVAILABLE_SOURCES = {
+    "warau": direct.warau_offer_id,
+    "hapitas": direct.hapitas_offer_id,
+}
+
+
+def _evidence(item):
+    return item.get("sourceEvidence") or item.get("evidence") or {}
+
+
+def retire_confirmed_unavailable(existing, items, sid, sources, checked_at, decision):
+    """Mark one published row retired, or raise Hold to keep it as it is."""
+    require(sid in RETIRABLE_UNAVAILABLE_SOURCES, "source_offer_unavailable")
+    require(len(existing) == 1, "unavailable_offer_not_published")
+    row = existing[0]
+    runs = []
+    for item in items:
+        e = _evidence(item)
+        require(e.get("state") == "unavailable"
+                and e.get("reason") == "source_offer_unavailable", "conflicting_current_evidence")
+        require(item.get("origin") == "current_first_party_detail", "not_current_detail")
+        require(item.get("checkedAt") == checked_at, "not_current_scan")
+        require(item.get("game") == row.get("game"), "game_identity_changed")
+        url = item.get("url") or ""
+        require(direct.source_host_allowed(url, sources[sid]), "unregistered_url")
+        require(RETIRABLE_UNAVAILABLE_SOURCES[sid](url) == str(e.get("offerId") or ""),
+                "offer_identity_mismatch")
+        count = item.get("consecutiveUnavailableRuns")
+        require(type(count) is int, "unavailable_not_yet_confirmed")
+        runs.append(count)
+    require(min(runs) >= UNAVAILABLE_RUNS_BEFORE_RETIREMENT, "unavailable_not_yet_confirmed")
+    decision.update(offerKey=row.get("offerKey"), updated=True, retired=True,
+                    publicationMode="confirmed_unavailable_retirement",
+                    consecutiveUnavailableRuns=min(runs), url=row.get("url"),
+                    checkedAt=checked_at)
+
+
 def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
                      catalog_games, targets, rate_confirmed=False):
     """Only fresh, in-process detail responses enter this separate gate.
@@ -680,6 +722,7 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
     for row in output:
         published[(row.get("site"), direct.offer_identity_key(row.get("url"), row.get("site")))].append(row)
     offer_keys = Counter(row.get("offerKey") for row in output)
+    retired_offer_keys = set()
     for (sid, identity), items in by_identity.items():
         first = items[0]
         decision = {"game": first.get("game"), "source": sid, "identity": identity,
@@ -692,6 +735,11 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
             require(sources[sid].get("acquisition_lane") != "device", "device_only")
             require(bool(identity), "offer_identity_missing")
             require(len(existing) <= 1, "ambiguous_published_identity")
+            if any(_evidence(item).get("state") == "unavailable" for item in items):
+                retire_confirmed_unavailable(existing, items, sid, sources, checked_at, decision)
+                retired_offer_keys.add(existing[0].get("offerKey"))
+                decisions.append(decision)
+                continue
             updates = []
             for item in items:
                 require(item.get("origin") == "current_first_party_detail", "not_current_detail")
@@ -748,11 +796,13 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
         except (Hold, ValueError, TypeError, KeyError) as exc:
             decision["holdReason"] = str(exc) if isinstance(exc, Hold) else "invalid_snapshot"
         decisions.append(decision)
+    output = [row for row in output if row.get("offerKey") not in retired_offer_keys]
     return output, {
         "mode": "verified_existing_game_v1", "apiCalls": 0,
-        "updatedRows": sum(d["updated"] and not d["added"] for d in decisions),
+        "updatedRows": sum(d["updated"] and not d["added"] and not d.get("retired") for d in decisions),
         "addedRows": sum(d["added"] for d in decisions),
         "rewardChanges": sum(d.get("rewardChanged", False) for d in decisions),
-        "heldRows": sum("holdReason" in d for d in decisions), "retiredRows": 0,
+        "heldRows": sum("holdReason" in d for d in decisions),
+        "retiredRows": sum(d.get("retired", False) for d in decisions),
         "decisions": decisions,
     }
