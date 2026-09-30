@@ -4882,6 +4882,32 @@ def build_existing_game_candidate_queue(review_items, checked_at):
     }
 
 
+def load_verified_offer_urls(path):
+    """Entries from data/verified_offer_urls.json; missing is empty, corrupt raises."""
+    path = Path(path)
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    entries = doc.get("entries") if isinstance(doc, dict) else None
+    if not isinstance(entries, list):
+        raise ValueError("verified_offer_urls_invalid")
+    return entries
+
+
+def merge_verified_offer_urls(targets, entries):
+    """Add gate-verified offer URLs to each target's known URLs (in memory only)."""
+    by_game = {t.get("game"): t for t in targets}
+    for e in entries:
+        target = by_game.get(e.get("game")) if isinstance(e, dict) else None
+        source, url = (e.get("source"), e.get("url")) if target is not None else (None, None)
+        if not source or not url:
+            continue
+        known = target.setdefault("known_urls_by_source", {}).setdefault(source, [])
+        if offer_identity_key(url, source) not in {offer_identity_key(u, source) for u in known}:
+            known.append(url)
+    return targets
+
+
 def main(after_scan=None):
     try:
         approvals = load_refresh_approvals()
@@ -4890,6 +4916,13 @@ def main(after_scan=None):
         return 2
     policy = load_json(POLICY)
     targets = load_json(TARGETS).get("games") or []
+    try:
+        merge_verified_offer_urls(
+            targets, load_verified_offer_urls(Path(ROOT) / "data" / "verified_offer_urls.json"))
+    except (OSError, ValueError, TypeError) as exc:
+        # The remembered list only adds pages to recheck; without it the
+        # refresh runs exactly as before.
+        print(f"WARN: verified offer URL list unavailable: {type(exc).__name__}", file=sys.stderr)
     source_cfg = load_json(SOURCES)
     sources = {str(x.get("id") or ""): x for x in (source_cfg.get("sources") or [])}
     offerwall_domains = [

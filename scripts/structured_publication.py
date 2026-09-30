@@ -743,7 +743,7 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
                 offer_keys[key] += 1
                 decision.update(offerKey=key, added=True, updated=True)
             decision.update(publicationMode="verified_existing_game", evidenceFingerprint=fingerprint,
-                            checkedAt=checked_at, publicationEligible=True,
+                            checkedAt=checked_at, publicationEligible=True, url=row.get("url"),
                             rowFingerprint=published_row_fingerprint(row))
         except (Hold, ValueError, TypeError, KeyError) as exc:
             decision["holdReason"] = str(exc) if isinstance(exc, Hold) else "invalid_snapshot"

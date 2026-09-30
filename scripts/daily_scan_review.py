@@ -15,6 +15,7 @@ import re
 from pathlib import Path
 
 import direct_offer_refresh as direct
+import verified_offer_urls
 
 ROOT = Path(__file__).resolve().parents[1]
 # A 2026-09-24 live queue audit measured 273 handoff-eligible groups after the
@@ -584,6 +585,19 @@ def _write_report(path, report):
     temporary.replace(path)
 
 
+def remember_verified_urls(decisions, checked_at, path=None):
+    """Keep gate-verified offer URLs for rechecking; never blocks publication."""
+    path = path or ROOT / "data" / "verified_offer_urls.json"
+    try:
+        entries, changed = verified_offer_urls.register(
+            verified_offer_urls.load(path), decisions, checked_at)
+        if changed:
+            verified_offer_urls.save(entries, path)
+    except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+        # A corrupt list is left untouched for review instead of overwritten.
+        print(f"WARN: verified offer URLs not updated: {type(exc).__name__}")
+
+
 def main():
     review_path = ROOT / "data/daily_scan_review.json"
 
@@ -619,6 +633,7 @@ def main():
             updated_rows, publication = prepare_verified(
                 kwargs["rows"], detail_snapshots, kwargs["sources"], kwargs["checked_at"],
                 publication_policy, catalog, kwargs["targets"], report["warauBaseRate"]["confirmed"])
+            remember_verified_urls(publication["decisions"], kwargs["checked_at"])
         else:
             updated_rows, publication = prepare(kwargs["rows"], evidence_items, kwargs["sources"],
                 kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
