@@ -243,6 +243,27 @@ function makeContext(fetchImpl) {
     [11500, 12500, 0]
   );
 
+  // An offer that comes back after a period with no listing is compared with
+  // the last listed amount, not with the 0 recorded for the gap.
+  const gapHistory = gameTrendHistory.concat([
+    { observedAt: '2026-09-04T00:00:00Z', game: 'Other Game', site: 'warau', platform: 'Android', reward: 5100 },
+  ]);
+  const backOffers = [{ gameName: 'Game X', site: 'warau', platform: ['Android'], reward: 13750 }];
+  const returnedGameTrend = api.buildGameRewardTrend(gapHistory, backOffers, 'Game X', 'Android');
+  assert.strictEqual(returnedGameTrend.previousReward, 12500);
+  assert.strictEqual(returnedGameTrend.changeAmount, 1250);
+  assert.ok(Math.abs(returnedGameTrend.changePercent - 10) < 0.001);
+  assert.strictEqual(returnedGameTrend.previousHigh, 12500);
+  assert.deepStrictEqual(
+    Array.from(returnedGameTrend.changes).map(item => item.reward),
+    [11500, 12500, 0, 13750]
+  );
+  const sameAgainTrend = api.buildGameRewardTrend(
+    gapHistory, [{ ...backOffers[0], reward: 12500 }], 'Game X', 'Android');
+  assert.strictEqual(sameAgainTrend.previousReward, 12500);
+  assert.strictEqual(sameAgainTrend.changeAmount, 0);
+  assert.strictEqual(sameAgainTrend.changePercent, 0);
+
   const actualHistory = api.rowsToObjects(api.parseCsv(fs.readFileSync('data/offer_history.csv', 'utf8')));
   assert.ok(actualHistory.length > 0);
   assert.ok(actualHistory.some(row =>

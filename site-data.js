@@ -410,10 +410,18 @@
       changes.push({ observedAt: new Date().toISOString(), reward: currentReward });
     }
 
+    // A 0 entry only means no offer was listed for a while. When an offer is
+    // back, compare with the last listed amount before that gap instead.
     let previousReward = null;
+    let skippedGap = false;
     for (let i = changes.length - 2; i >= 0; i -= 1) {
-      if (changes[i].reward !== currentReward) {
-        previousReward = changes[i].reward;
+      const reward = changes[i].reward;
+      if (currentReward > 0 && reward <= 0) {
+        skippedGap = true;
+        continue;
+      }
+      if (skippedGap || reward !== currentReward) {
+        previousReward = reward;
         break;
       }
     }
