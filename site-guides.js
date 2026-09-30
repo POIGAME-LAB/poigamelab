@@ -138,5 +138,20 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "マフィア・シティ ポイ活攻略",
     description: "別荘Lv20・25の実際の到達ペースと、前提施設・資源と加速・課金ステップの判断をまとめています。",
     links: [{ label: "別荘攻略を読む →", href: "mafia-city-guide.html" }]
+  },
+  "ロックンキャッシュカジノ-スロットゲーム": {
+    title: "ロックンキャッシュカジノ ポイ活攻略",
+    description: "Lv40・Lv100の実際の到達ペースと、ベット額の上げ方・当たらない時期の過ごし方・課金ステップの判断をまとめています。",
+    links: [{ label: "レベル攻略を読む →", href: "rock-n-cash-casino-guide.html" }]
+  },
+  "Slot Mate（スロットメイト）- ベガススロットカジノ": {
+    title: "Slot Mate ポイ活攻略",
+    description: "Lv90・120・160の実際の到達ペースと、破産しにくいベット額・無料コインの集め方をまとめています。",
+    links: [{ label: "レベル攻略を読む →", href: "slot-mate-guide.html" }]
+  },
+  "Wild Survival": {
+    title: "Wild Survival ポイ活攻略",
+    description: "難易度1・R300から難易度14・R350までの実際の到達ペースと、ゲームスピード研究・防御強化の進め方をまとめています。",
+    links: [{ label: "難易度攻略を読む →", href: "wild-survival-guide.html" }]
   }
 });
