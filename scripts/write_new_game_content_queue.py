@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "data" / "daily_scan_review.json"
 OUTPUT = ROOT / "data" / "new_game_content_queue.json"
 CATALOG = ROOT / "games.csv"
+TARGETS = ROOT / "config" / "game_targets.json"
 REQUIRED_CHANNELS = ["web", "x", "youtube", "instagram", "pointSites"]
 
 
@@ -43,6 +44,24 @@ def load_catalog_games(path=CATALOG):
     if not games:
         raise ValueError("public_game_catalog_empty")
     return games
+
+
+def load_target_aliases(path=TARGETS):
+    """Reviewed names of listed games, e.g. a subtitled store title.
+
+    A missing file adds nothing; games.csv stays the authoritative catalog.
+    """
+    path = Path(path)
+    if not path.is_file():
+        return set()
+    names = set()
+    for target in (load(path).get("games") or []):
+        if not isinstance(target, dict):
+            continue
+        for name in [target.get("game")] + list(target.get("aliases") or []):
+            if str(name or "").strip():
+                names.add(str(name).strip())
+    return names
 
 
 def safe_https(value):
@@ -196,8 +215,9 @@ def build(report, existing_games=None):
     }
 
 
-def write(input_path=INPUT, output_path=OUTPUT, catalog_path=CATALOG):
-    out = build(load(input_path), existing_games=load_catalog_games(catalog_path))
+def write(input_path=INPUT, output_path=OUTPUT, catalog_path=CATALOG, targets_path=TARGETS):
+    existing = load_catalog_games(catalog_path) | load_target_aliases(targets_path)
+    out = build(load(input_path), existing_games=existing)
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")

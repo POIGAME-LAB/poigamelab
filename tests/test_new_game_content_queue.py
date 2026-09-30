@@ -110,3 +110,20 @@ def test_workflow_writes_archives_and_commits_queue_once():
     assert "python scripts/write_new_game_content_queue.py" in workflow
     assert "data/new_game_content_queue.json" in workflow
     assert workflow.count("git add data/new_game_content_queue.json") == 1
+
+
+def test_write_treats_reviewed_target_aliases_as_listed_games():
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        inp, outp, catalog, targets = (td / n for n in ("review.json", "queue.json", "games.csv", "targets.json"))
+        inp.write_text(json.dumps(report()), encoding="utf-8")
+        catalog.write_text("name,image\nListed Game,\n", encoding="utf-8")
+        targets.write_text(json.dumps({"games": [
+            {"game": "Listed Game", "aliases": ["Listed Game", "Game 6"], "known_urls_by_source": {}}]}),
+            encoding="utf-8")
+        saved = queue.write(inp, outp, catalog, targets)
+        assert [x["game"] for x in saved["items"]] == [f"Game {i}" for i in (5, 4, 3, 2, 1)]
+
+
+def test_real_targets_mark_the_subtitled_wild_survival_title_as_listed():
+    assert "Wild Survival - 野蛮な生存者：最後の戦い" in queue.load_target_aliases()

@@ -108,3 +108,88 @@ def test_strict_gate_decision_carries_url_and_only_passing_offers_register(warau
     _, held = run([], [envelope(item)], catalog={"別のゲーム"})
     assert "holdReason" in held["decisions"][0]
     assert vou.register([], held["decisions"], "t1") == ([], False)
+
+
+ENDED_PAGE = """<html><head><title>ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト</title>
+<link rel="canonical" href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=204347" />
+</head><body><div class="commonError-Body"><div class="sw-frameMessage commonError-frameMessage">
+<p class="commonError-Paragraph">こちらのページは表示できません</p></div>
+<a href="/" class="commonError-BtnBack">ワラウホームへ戻る</a></div></body></html>"""
+
+
+def reading(point_id, state, checked_at, game="クロンダイクの冒険"):
+    evidence = {"state": state}
+    if state == "unavailable":
+        evidence.update(reason="source_offer_unavailable", offerId=str(point_id))
+    return {"origin": "current_first_party_detail", "game": game, "source": "warau",
+            "requestedUrl": WARAU + str(point_id), "url": WARAU + str(point_id),
+            "sourceEvidence": evidence, "checkedAt": checked_at}
+
+
+def test_warau_ended_error_page_is_read_as_unavailable():
+    url = WARAU + "204347"
+    evidence = direct.inspect_warau_offer(ENDED_PAGE, url, url, ["ロックンキャッシュカジノ"])
+    assert evidence["state"] == "unavailable"
+    assert evidence["reason"] == "source_offer_unavailable"
+    assert evidence["offerId"] == "204347"
+    # The same error body for a different offer id is not this offer ending.
+    other = WARAU + "999"
+    assert direct.inspect_warau_offer(ENDED_PAGE, other, other, ["x"])["state"] == "review_required"
+
+
+def test_url_is_removed_only_after_three_runs_that_read_the_offer_as_ended():
+    entries, _ = vou.register([], [decision(1), decision(2)], "t0")
+    for run, checked_at in enumerate(("t1", "t2"), 1):
+        entries, changed, removed = vou.retire(entries, [reading(1, "unavailable", checked_at)], checked_at)
+        assert changed and not removed
+        assert entries[0]["unavailableStreak"] == run
+    # A second pass over the same run never double counts.
+    entries, changed, _ = vou.retire(entries, [reading(1, "unavailable", "t2")], "t2")
+    assert not changed and entries[0]["unavailableStreak"] == 2
+    entries, changed, removed = vou.retire(entries, [reading(1, "unavailable", "t3")], "t3")
+    assert [e["url"] for e in removed] == [WARAU + "1"]
+    assert [e["url"] for e in entries] == [WARAU + "2"]
+
+
+@pytest.mark.parametrize("snapshots", [
+    [],  # page not opened this run (fetch error, budget)
+    [reading(1, "review_required", "t2")],  # parser doubt is not "ended"
+    [reading(1, "unavailable", "t2"), reading(1, "review_required", "t2")],  # conflicting readings
+    [reading(1, "unavailable", "stale")],  # a reading from another run
+    [reading(1, "unavailable", "t2", game="別のゲーム")],  # another game's reading
+])
+def test_missing_or_unclear_readings_never_count_toward_removal(snapshots):
+    entries, _ = vou.register([], [decision(1)], "t0")
+    entries, _, _ = vou.retire(entries, [reading(1, "unavailable", "t1")], "t1")
+    entries, changed, removed = vou.retire(entries, snapshots, "t2")
+    assert not changed and not removed
+    assert entries[0]["unavailableStreak"] == 1
+
+
+def test_live_reading_restarts_the_count():
+    entries, _ = vou.register([], [decision(1)], "t0")
+    entries, _, _ = vou.retire(entries, [reading(1, "unavailable", "t1")], "t1")
+    entries, changed, _ = vou.retire(entries, [reading(1, "parsed", "t2")], "t2")
+    assert changed and "unavailableStreak" not in entries[0] and "lastUnavailableAt" not in entries[0]
+    entries, _, _ = vou.retire(entries, [reading(1, "unavailable", "t1")], "t1")
+    entries, changed = vou.register(entries, [decision(1)], "t3")
+    assert changed and "unavailableStreak" not in entries[0]
+
+
+def test_nightly_hook_saves_the_count_and_drops_the_ended_url(tmp_path, capsys):
+    path = tmp_path / "verified_offer_urls.json"
+    daily_scan_review.remember_verified_urls([decision(1), decision(2)], "t0", path=path)
+    for checked_at in ("t1", "t2", "t3"):
+        daily_scan_review.remember_verified_urls(
+            [], checked_at, path=path, snapshots=[reading(1, "unavailable", checked_at)])
+    assert [e["url"] for e in vou.load(path)] == [WARAU + "2"]
+    assert "ended offer URL removed from recheck list" in capsys.readouterr().out
+
+
+def test_ended_reading_holds_the_published_row_instead_of_deleting_it(warau_markup):
+    row, item = sample(warau_markup)
+    ended = dict(item, sourceEvidence={"state": "unavailable", "reason": "source_offer_unavailable",
+                                       "offerId": "101"})
+    out, report = run([row], [envelope(ended)])
+    assert out == [row]
+    assert report["decisions"][0].get("holdReason")

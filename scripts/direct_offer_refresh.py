@@ -1464,6 +1464,9 @@ def one(nodes):
     return nodes[0]
 
 
+WARAU_UNAVAILABLE_MARKER = "こちらのページは表示できません"
+
+
 def warau_offer_id(url):
     p = urlparse(url)
     if (p.scheme != "https" or p.hostname not in {"www.warau.jp", "ssl.warau.jp"}
@@ -1504,6 +1507,13 @@ def inspect_warau_offer(raw, requested_url, final_url, aliases):
         if doc.find(cls="pointEntranceNone-Main") or "掲載終了のご案内" in title:
             return {"state": "unavailable", "reason": "source_offer_unavailable",
                     "offerId": offer_id}
+        # Since 2026-09 an ended offer keeps its canonical URL but renders only
+        # the shared error body instead of the offer detail block.
+        if not doc.find(ident="pointEntrancePointDetail") and any(
+                evidence_text(node) == WARAU_UNAVAILABLE_MARKER
+                for node in doc.find(cls="commonError-Paragraph")):
+            return {"state": "unavailable", "reason": "source_offer_unavailable",
+                    "offerId": offer_id, "unavailableMarker": WARAU_UNAVAILABLE_MARKER}
         root = one(doc.find(ident="pointEntrancePointDetail"))
         header = one(root.find(ident="innerEntranceBox"))
         name = evidence_text(one(header.find(cls="pointEntrance-Head_Title")))
