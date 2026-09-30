@@ -783,3 +783,46 @@ def test_gmo_point_reviewed_reward_uses_one_to_one_yen_contract():
     assert daily.explicit_yen(evidence) == 5820
     evidence["verifiedCurrentRewardYen"] = 5819
     assert daily.explicit_yen(evidence) is None
+
+
+STEPS = [{"condition": f"30日以内に難易度レベル {n} 最高ラウンド300 に到達"} for n in (1, 3, 6, 9)]
+
+
+def _stepped(steps_by_title):
+    def inspector(url, source, aliases, fetcher):
+        value = inspect(url, source, aliases, fetcher)
+        value["sourceEvidence"]["steps"] = steps_by_title[aliases[0]]
+        return value
+    return inspector
+
+
+def _titled(name, offer_id):
+    items = candidates(name)
+    for item in items:
+        item["firstPartyCandidateUrl"] = item["firstPartyCandidateUrl"].replace("id=1", f"id={offer_id}")
+    return items
+
+
+def test_subtitled_title_with_same_steps_is_one_ranked_game(monkeypatch):
+    long_title = "Wild Survival - 野蛮な生存者：最後の戦い"
+    items = _titled("Wild Survival", 1) + _titled(long_title, 2)
+    result = scan(items, monkeypatch, inspector=_stepped({"Wild Survival": STEPS, long_title: STEPS}))
+    assert result["topFiveReviewCandidates"] == ["Wild Survival"]
+    by_game = {r["game"]: r for r in result["results"]}
+    assert by_game[long_title]["candidateEligible"] is False
+    assert by_game[long_title]["duplicateOf"] == "Wild Survival"
+    assert by_game["Wild Survival"]["duplicateTitles"] == [long_title]
+    assert len(by_game["Wild Survival"]["details"]) == 4
+
+
+@pytest.mark.parametrize("other,other_steps", [
+    ("Wild Survival - 野蛮な生存者：最後の戦い", STEPS[:3] + [{"condition": "別の条件"}]),
+    ("Wild Survival Idle", STEPS),
+    ("Wild Survival - 野蛮な生存者：最後の戦い", STEPS[:2]),
+])
+def test_prefix_alone_or_different_steps_never_merge_games(monkeypatch, other, other_steps):
+    items = _titled("Wild Survival", 1) + _titled(other, 2)
+    steps = {"Wild Survival": STEPS if len(other_steps) != 2 else STEPS[:2], other: other_steps}
+    result = scan(items, monkeypatch, inspector=_stepped(steps))
+    assert sorted(result["topFiveReviewCandidates"]) == sorted(["Wild Survival", other])
+    assert not any("duplicateOf" in r for r in result["results"])

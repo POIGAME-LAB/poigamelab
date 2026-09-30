@@ -61,6 +61,85 @@ def discovery_name(title):
     return value.strip()
 
 
+TITLE_SUBTITLE_SEPARATORS = ("-", "－", "—", "–", "：", ":", "（", "(", "|", "｜")
+MIN_SHARED_STEPS = 3
+
+
+def _title_key(value):
+    return re.sub(r"\s+", "", str(value or "")).casefold()
+
+
+def title_extends(base, longer):
+    """True when ``longer`` is ``base`` followed by a subtitle separator.
+
+    "Wild Survival" / "Wild Survival - 野蛮な生存者：最後の戦い" qualify;
+    "Wild Survival Idle" or an unrelated prefix never does on its own.
+    """
+    b, l = _title_key(base), _title_key(longer)
+    return bool(b) and len(l) > len(b) and l.startswith(b) and l[len(b)] in TITLE_SUBTITLE_SEPARATORS
+
+
+def step_signatures(result):
+    """Normalized parsed StepUp condition lists from confirmed details."""
+    signatures = set()
+    for detail in result.get("details") or []:
+        evidence = detail.get("evidence") or {}
+        if not detail.get("detailConfirmed") or evidence.get("state") != "parsed":
+            continue
+        steps = evidence.get("steps")
+        if not isinstance(steps, list):
+            continue
+        conditions = tuple(
+            _title_key(step.get("condition")) for step in steps if isinstance(step, dict)
+        )
+        if len(conditions) >= MIN_SHARED_STEPS and all(conditions):
+            signatures.add((detail.get("sourceFamily") or detail.get("source"), conditions))
+    return signatures
+
+
+def merge_same_game_results(results):
+    """Fold listing titles that name one game into a single ranking entry.
+
+    Point sites list the same app under a short and a subtitled name. Two
+    ranked results are merged only when the longer title extends the shorter
+    one with a subtitle separator AND both carry an identical parsed step list
+    from the same source family, so a coincidental prefix never merges. The
+    longer title stays in the report, excluded from ranking, pointing at the
+    game it was folded into.
+    """
+    eligible = [
+        r for r in results
+        if r.get("candidateEligible") and r.get("maxObservedRewardYen") is not None
+    ]
+    eligible.sort(key=lambda r: (len(_title_key(r["game"])), r["game"]))
+    for i, base in enumerate(eligible):
+        if not base.get("candidateEligible"):
+            continue
+        base_signatures = step_signatures(base)
+        if not base_signatures:
+            continue
+        for other in eligible[i + 1:]:
+            if not other.get("candidateEligible") or not title_extends(base["game"], other["game"]):
+                continue
+            if not base_signatures & step_signatures(other):
+                continue
+            other["candidateEligible"] = False
+            other["duplicateOf"] = base["game"]
+            other["holdReasons"] = ["duplicate_listing_title"] + list(other.get("holdReasons") or [])
+            base.setdefault("duplicateTitles", []).append(other["game"])
+            base["details"] = list(base.get("details") or []) + list(other.get("details") or [])
+            base["maxObservedRewardYen"] = max(base["maxObservedRewardYen"], other["maxObservedRewardYen"])
+            base["confirmedSourceCount"] = len({
+                d.get("sourceFamily") for d in base["details"] if d.get("detailConfirmed")})
+            base["verifiedRewardSourceCount"] = len({
+                d.get("sourceFamily") for d in base["details"] if d.get("rewardYen") is not None})
+            base["listingSourceCount"] = max(
+                base.get("listingSourceCount") or 0, other.get("listingSourceCount") or 0,
+                len({d.get("sourceFamily") for d in base["details"]}))
+            base_signatures |= step_signatures(other)
+    return results
+
+
 def source_families(sources):
     """Overlapping registered domains are one source, even with multiple IDs."""
     families = {sid: {sid} for sid in sources}
@@ -506,6 +585,7 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
                         "publicationAuthorized": False, "holdReasons": reasons,
                         "researchStatus": "not_started", "researchQueries": research_queries(group["game"]),
                         "details": details})
+    merge_same_game_results(results)
     ranked = [g for g in results if g["candidateEligible"] and g["maxObservedRewardYen"] is not None
               and "detail_budget_reached" not in g["holdReasons"]]
     ranked.sort(key=lambda g: (-g["maxObservedRewardYen"], g["game"]))
@@ -585,13 +665,21 @@ def _write_report(path, report):
     temporary.replace(path)
 
 
-def remember_verified_urls(decisions, checked_at, path=None):
-    """Keep gate-verified offer URLs for rechecking; never blocks publication."""
+def remember_verified_urls(decisions, checked_at, path=None, snapshots=None):
+    """Keep gate-verified offer URLs for rechecking; never blocks publication.
+
+    URLs whose source page kept saying the offer ended are dropped from the
+    list (see verified_offer_urls.retire). Published rows are not touched here.
+    """
     path = path or ROOT / "data" / "verified_offer_urls.json"
     try:
         entries, changed = verified_offer_urls.register(
             verified_offer_urls.load(path), decisions, checked_at)
-        if changed:
+        entries, retired_changed, removed = verified_offer_urls.retire(
+            entries, snapshots, checked_at)
+        for entry in removed:
+            print(f"INFO: ended offer URL removed from recheck list: {entry.get('url')}")
+        if changed or retired_changed:
             verified_offer_urls.save(entries, path)
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
         # A corrupt list is left untouched for review instead of overwritten.
@@ -633,7 +721,8 @@ def main():
             updated_rows, publication = prepare_verified(
                 kwargs["rows"], detail_snapshots, kwargs["sources"], kwargs["checked_at"],
                 publication_policy, catalog, kwargs["targets"], report["warauBaseRate"]["confirmed"])
-            remember_verified_urls(publication["decisions"], kwargs["checked_at"])
+            remember_verified_urls(publication["decisions"], kwargs["checked_at"],
+                                   snapshots=detail_snapshots)
         else:
             updated_rows, publication = prepare(kwargs["rows"], evidence_items, kwargs["sources"],
                 kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
