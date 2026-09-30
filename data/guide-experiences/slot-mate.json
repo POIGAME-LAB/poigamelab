@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "game": "Slot Mate（スロットメイト）- ベガススロットカジノ",
+  "updatedAt": "2026-09-30",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されている攻略記事・プレイヤーの投稿から、日数が確認できた記録を同じプレイヤーごとにまとめています。全員同じ案件条件ではないため、平均ではなく実例として見てください。",
+  "notice": "※確認できた実例はLv160まで。Lv200・300・500・700の完走ペースは確認できていません。",
+  "footnote": "到達日数は当たりの運・ベット額・プレイ時間で大きく変わります。1年以上前の記録は、目標レベルと期限（60日以内）が現在の案件と同じものだけ掲載しています。日数とレベルが本文で確認できない投稿は掲載していません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "40日目にLv120達成",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv15"
+        },
+        {
+          "day": 2,
+          "label": "Lv30・Lv50"
+        },
+        {
+          "day": 8,
+          "label": "Lv70"
+        },
+        {
+          "day": 15,
+          "label": "Lv90"
+        },
+        {
+          "day": 22,
+          "label": "Lv107"
+        },
+        {
+          "day": 36,
+          "label": "Lv116"
+        },
+        {
+          "day": 40,
+          "label": "Lv120達成"
+        }
+      ],
+      "note": "Lv90以降は伸びが鈍り、途中で2回破産。広告視聴の報酬とフリーコインは毎日取れるだけ取った方がよいと振り返っている。",
+      "sources": [
+        "https://x.com/onozaki_lala/status/2028741258466959736",
+        "https://x.com/onozaki_lala/status/2020467729468141924",
+        "https://x.com/onozaki_lala/status/2015016871792455786"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "Lv160を29日で達成",
+      "milestones": [
+        {
+          "day": 29,
+          "label": "Lv160達成",
+          "detail": "サブスマホで放置プレイ"
+        }
+      ],
+      "note": "Lv30〜160の5ステップ案件。1,000〜2,000回転できるベット額で回し続け、チーム（クラブ）とカードのウィールでコインを補った。",
+      "sources": [
+        "https://masas-record-storage-container.com/2025/10/18/slotmate/"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "retired",
+      "summary": "約31日でLv100・Lv120は断念",
+      "milestones": [
+        {
+          "dayLabel": "約31日",
+          "label": "Lv100",
+          "detail": "30日目の大当たりで到達"
+        }
+      ],
+      "note": "60日以内の案件。Lv100から急に上がりにくくなり、Lv120も難しいと判断。1日15分〜1時間程度のプレイで、課金は効果が薄そうだったと振り返っている。",
+      "sources": [
+        "https://yuri98765.com/20251009-2/"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "ongoing",
+      "summary": "18日目にLv90",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv25"
+        },
+        {
+          "day": 10,
+          "label": "Lv70"
+        },
+        {
+          "day": 18,
+          "label": "Lv90"
+        }
+      ],
+      "note": "所持コインの1,000〜2,000分の1のベットで回し続けた記録。18日目以降の到達状況は記事内で確認できない。2024年1月の記録（60日以内・Lv70/Lv90は現在の案件にもある条件）。",
+      "sources": [
+        "https://www.yakipanblog.com/slot-mate_poikatsu/"
+      ]
+    }
+  ]
+}

@@ -10,7 +10,10 @@
     "atlas-earth-guide.html": "ATLAS: EARTH", "family-farm-adventure-guide.html": "ファミリーファームの冒険",
     "klondike-adventures-guide.html": "クロンダイクの冒険", "merge-help-guide.html": "Merge Help: ホームデザインパズル",
     "magic-jigsaw-puzzles-guide.html": "マジックジグソーパズル",
-    "mafia-city-guide.html": "マフィア・シティ-極道風雲"
+    "mafia-city-guide.html": "マフィア・シティ-極道風雲",
+    "rock-n-cash-casino-guide.html": "ロックンキャッシュカジノ-スロットゲーム",
+    "slot-mate-guide.html": "Slot Mate（スロットメイト）- ベガススロットカジノ",
+    "wild-survival-guide.html": "Wild Survival"
   };
   const main = document.querySelector("main");
   const game = main?.getAttribute("data-current-offers-game") || pages[location.pathname.split("/").pop()];
