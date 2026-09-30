@@ -117,6 +117,30 @@
       "game": "マジックジグソーパズル",
       "aliases": ["マジックジグソーパズル", "Magic Jigsaw Puzzles", "Magic Jigsaw"],
       "known_urls_by_source": {}
+    },
+    {
+      "game": "マフィア・シティ-極道風雲",
+      "aliases": ["マフィア・シティ-極道風雲", "マフィア・シティ - 極道風雲", "マフィア・シティ"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=198935", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936"]
+      }
+    },
+    {
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "aliases": ["ロックンキャッシュカジノ-スロットゲーム", "ロックンキャッシュカジノ", "Rock N' Cash Casino", "Rock N Cash Casino"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "Slot Mate（スロットメイト）- ベガススロットカジノ",
+      "aliases": ["Slot Mate（スロットメイト）- ベガススロットカジノ", "Slot Mate（スロットメイト）", "スロットメイト", "Slot Mate - Vegas Slot Casino"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "Wild Survival",
+      "aliases": ["Wild Survival", "Wild Survival - 野蛮な生存者：最後の戦い", "野蛮な生存者：最後の戦い"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205785", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205786"]
+      }
     }
   ]
 }
