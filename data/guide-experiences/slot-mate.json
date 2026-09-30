@@ -86,8 +86,8 @@
     {
       "id": "D",
       "label": "プレイヤーD",
-      "status": "ongoing",
-      "summary": "18日目にLv90",
+      "status": "completed",
+      "summary": "Lv90を18日で達成",
       "milestones": [
         {
           "day": 1,

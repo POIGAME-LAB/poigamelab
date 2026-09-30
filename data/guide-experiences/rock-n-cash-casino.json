@@ -43,8 +43,8 @@
     {
       "id": "C",
       "label": "プレイヤーC",
-      "status": "ongoing",
-      "summary": "6日目にLv40",
+      "status": "completed",
+      "summary": "Lv40を6日で達成",
       "milestones": [
         {
           "day": 6,
