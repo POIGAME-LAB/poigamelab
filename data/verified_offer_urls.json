@@ -7,7 +7,7 @@
       "identity": "warau:point_id:207041",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207041",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "Merge Help: ホームデザインパズル",
@@ -15,7 +15,7 @@
       "identity": "warau:point_id:207045",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207045&pl=pc_categoryService",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "Township",
@@ -23,7 +23,9 @@
       "identity": "warau:point_id:204645",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=204645",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-09-30T20:51:00+00:00",
+      "unavailableStreak": 1,
+      "lastUnavailableAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "Township",
@@ -31,7 +33,15 @@
       "identity": "warau:point_id:207049",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207049&pl=pc_categoryService",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
+    },
+    {
+      "game": "Township",
+      "source": "warau",
+      "identity": "warau:point_id:207406",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207406&pl=pc_categoryService",
+      "firstVerifiedAt": "2026-10-01T21:04:14+00:00",
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "Wild Survival",
@@ -39,7 +49,7 @@
       "identity": "warau:point_id:205785",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205785",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "Wild Survival",
@@ -47,7 +57,7 @@
       "identity": "warau:point_id:205786",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205786",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "キングショット",
@@ -55,7 +65,7 @@
       "identity": "coincome:pathid:10267",
       "url": "https://cimcome.jp/campaigns/details/10267",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "キングショット",
@@ -63,7 +73,7 @@
       "identity": "warau:point_id:206609",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206609&pl=pc_categoryService",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "キングショット",
@@ -71,7 +81,7 @@
       "identity": "warau:point_id:206610",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206610&pl=pc_categoryService",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "クロンダイクの冒険",
@@ -79,7 +89,7 @@
       "identity": "warau:point_id:205042",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205042",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "クロンダイクの冒険",
@@ -87,7 +97,7 @@
       "identity": "warau:point_id:205043",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205043",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "パズル＆サバイバル",
@@ -95,7 +105,7 @@
       "identity": "ec_navi:pathid:10712650",
       "url": "https://ecnavi.jp/ad/10712650/show/?frame=category",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "パズル＆サバイバル",
@@ -103,7 +113,7 @@
       "identity": "warau:point_id:205361",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205361",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "パズル＆サバイバル",
@@ -111,7 +121,7 @@
       "identity": "warau:point_id:207160",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207160&pl=pc_categoryService",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "ファミリーファームの冒険",
@@ -119,7 +129,7 @@
       "identity": "ec_navi:pathid:10720018",
       "url": "https://ecnavi.jp/ad/10720018/show/?frame=category",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "ホワイトアウト・サバイバル",
@@ -127,7 +137,7 @@
       "identity": "warau:point_id:201862",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201862",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "ホワイトアウト・サバイバル",
@@ -135,7 +145,7 @@
       "identity": "warau:point_id:201872",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201872&pl=pc_categoryService",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "マフィア・シティ-極道風雲",
@@ -143,7 +153,7 @@
       "identity": "warau:point_id:198935",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198935",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "マフィア・シティ-極道風雲",
@@ -151,7 +161,7 @@
       "identity": "warau:point_id:198936",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=198936",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "メメントモリ",
@@ -159,7 +169,7 @@
       "identity": "warau:point_id:205982",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205982",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     },
     {
       "game": "メメントモリ",
@@ -167,7 +177,15 @@
       "identity": "warau:point_id:206037",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037",
       "firstVerifiedAt": "2026-09-30T20:51:00+00:00",
-      "lastVerifiedAt": "2026-09-30T20:51:00+00:00"
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
+    },
+    {
+      "game": "ロックンキャッシュカジノ-スロットゲーム",
+      "source": "coincome",
+      "identity": "coincome:pathid:9782",
+      "url": "https://cimcome.jp/campaigns/details/9782",
+      "firstVerifiedAt": "2026-10-01T21:04:14+00:00",
+      "lastVerifiedAt": "2026-10-01T21:04:14+00:00"
     }
   ]
 }

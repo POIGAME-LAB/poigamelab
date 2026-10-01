@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-09-30T20:51:00+00:00",
+  "checkedAt": "2026-10-01T21:04:14+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -95,9 +95,9 @@
       "rank": 2,
       "game": "ベガス クレイズ カジノ",
       "maxObservedRewardYen": 65793,
-      "confirmedSourceCount": 1,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 1,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 4,
+      "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
         {
           "source": "warau",
@@ -112,6 +112,13 @@
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/10061",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 62750
         },
         {
           "source": "mikoshi",
@@ -155,7 +162,7 @@
     {
       "rank": 3,
       "game": "ペタペタペンギン団",
-      "maxObservedRewardYen": 55641,
+      "maxObservedRewardYen": 52992,
       "confirmedSourceCount": 4,
       "listingSourceCount": 4,
       "verifiedRewardSourceCount": 4,
@@ -249,7 +256,7 @@
           "url": "https://www.amefri.net/detail/id/141107",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 55641
+          "rewardYen": 52992
         }
       ],
       "researchQueries": {
@@ -283,6 +290,13 @@
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19185",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 23088
         },
         {
           "source": "kurashiru_reward",
@@ -333,14 +347,14 @@
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206635&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206636&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206636&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206635&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
