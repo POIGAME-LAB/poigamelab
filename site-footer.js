@@ -37,6 +37,11 @@
         text-decoration: none;
       }
       .poigame-footer a:hover { text-decoration: underline; }
+      .poigame-footer__contact {
+        margin: 0 auto 12px;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+      }
       .poigame-footer__note {
         max-width: 760px;
         margin: 0 auto 10px;
@@ -57,6 +62,9 @@
       <a href="privacy.html">プライバシーポリシー</a>
       <a href="contact.html">お問い合わせ</a>
     </nav>
+    <p class="poigame-footer__contact">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScJ41ZmYTZeLrnxVbMCzMkbjE3WIE68zHuXlVV8Gxi1sJYiyg/viewform" target="_blank" rel="noopener noreferrer">ご質問・情報提供・掲載依頼はこちら</a>
+    </p>
     <p class="poigame-footer__note">
       案件の報酬・条件・掲載状況は変動します。申込み前に必ずリンク先のポイントサイトで最新条件をご確認ください。
     </p>
