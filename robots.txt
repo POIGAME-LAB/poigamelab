@@ -1,5 +1,11 @@
 User-agent: *
 Allow: /
+# Public data the pages load to render offers, reward trends and play records.
+Allow: /data/guide-experiences/
+Allow: /data/published_offers.csv
+Allow: /data/offer_history.csv
+Allow: /data/refresh_status.json
+Allow: /config/refresh_policy.json
 Disallow: /data/
 Disallow: /config/
 Disallow: /docs/
