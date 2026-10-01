@@ -2547,23 +2547,15 @@ def test_repository_puzzles_current_warau_29500_offer_is_published():
     assert row['verified'] == 'true'
 
 
-def test_repository_township_current_chobirich_reward_is_published():
+def test_repository_ended_township_chobirich_offer_is_not_published():
+    # Ad 1894712 returned Chobirich's "page not found" on 2026-09-30 and
+    # 2026-10-01 and was removed from the published data.
     rows = list(csv.DictReader(
         (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
     ))
-    matches = [
-        row for row in rows
-        if row['game'] == 'Township'
-        and row['site'] == 'chobirich'
-        and row['url'] == 'https://www.chobirich.com/ad_details/1894712'
-    ]
-    assert len(matches) == 1
-    row = matches[0]
-    assert row['platform'] == 'Android'
-    assert row['reward'] == '31030'
-    assert row['updatedAt'] >= '2026-09-08'
-    assert row['deadline'] == 'インストール日から起算して60日以内'
-    assert row['verified'] == 'true'
+    assert not any(
+        row['url'] == 'https://www.chobirich.com/ad_details/1894712' for row in rows
+    )
 
 
 def test_repository_kinoko_chobirich_rows_are_current_android():
@@ -2574,8 +2566,9 @@ def test_repository_kinoko_chobirich_rows_are_current_android():
         row for row in rows
         if row['game'] == 'きのこ伝説' and row['site'] == 'chobirich'
     ]
+    # Ad 1883822 (3,831) ended and was removed on 2026-10-01; these two were
+    # live again with the same amounts that day.
     assert {(row['platform'], row['reward'], row['url']) for row in matches} == {
-        ('Android', '3831', 'https://www.chobirich.com/ad_details/1883822'),
         ('Android', '17880', 'https://www.chobirich.com/ad_details/1896200'),
         ('Android', '13409', 'https://www.chobirich.com/ad_details/1896275'),
     }

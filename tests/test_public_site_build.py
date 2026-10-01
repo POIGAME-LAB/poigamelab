@@ -441,25 +441,16 @@ def test_current_reviewed_warau_comparison_rows_match_source_evidence(output_dir
     assert row["updatedAt"] >= "2026-09-08"
 
 
-def test_township_has_current_chobirich_reward(output_dir):
+def test_township_ended_chobirich_offer_is_not_published(output_dir):
     builder.build_public_site(output_dir)
     import csv
 
     rows = list(csv.DictReader(
         (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
     ))
-    matches = [
-        row for row in rows
-        if row["game"] == "Township"
-        and row["site"] == "chobirich"
-        and row["url"] == "https://www.chobirich.com/ad_details/1894712"
-    ]
-    assert len(matches) == 1
-    row = matches[0]
-    assert row["reward"] == "31030"
-    assert row["platform"] == "Android"
-    assert row["updatedAt"] >= "2026-09-08"
-    assert row["verified"].lower() == "true"
+    assert not any(
+        row["url"] == "https://www.chobirich.com/ad_details/1894712" for row in rows
+    )
 
 
 def test_kinoko_chobirich_rows_are_current_android(output_dir):
@@ -474,7 +465,6 @@ def test_kinoko_chobirich_rows_are_current_android(output_dir):
         if row["game"] == "きのこ伝説" and row["site"] == "chobirich"
     ]
     assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("Android", "3831", "https://www.chobirich.com/ad_details/1883822"),
         ("Android", "17880", "https://www.chobirich.com/ad_details/1896200"),
         ("Android", "13409", "https://www.chobirich.com/ad_details/1896275"),
     }
