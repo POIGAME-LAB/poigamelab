@@ -31,8 +31,14 @@ def reviewed_retirement_keys(root):
         str(decision.get("offerKey") or "")
         for decision in decisions
         if (
-            decision.get("source") == "hapitas"
-            and decision.get("publicationMode") == "explicit_unavailable_retirement"
+            (
+                (decision.get("source") == "hapitas"
+                 and decision.get("publicationMode") == "explicit_unavailable_retirement")
+                or (decision.get("source") in {"warau", "hapitas"}
+                    and decision.get("publicationMode") == "confirmed_unavailable_retirement"
+                    and type(decision.get("consecutiveUnavailableRuns")) is int
+                    and decision["consecutiveUnavailableRuns"] >= 3)
+            )
             and decision.get("retired") is True
             and decision.get("updated") is True
             and not decision.get("holdReason")

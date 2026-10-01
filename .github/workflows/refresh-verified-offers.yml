@@ -176,6 +176,7 @@ jobs:
           if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
           git add data/new_game_monitor.json data/existing_game_monitor.json
           if [ -f data/verified_offer_urls.json ]; then git add data/verified_offer_urls.json; fi
+          if [ -f data/offer_unavailable_runs.json ]; then git add data/offer_unavailable_runs.json; fi
 
           for path in \
             data/daily_scan_review.json \
