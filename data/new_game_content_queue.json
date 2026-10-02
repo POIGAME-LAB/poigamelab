@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-10-01T21:04:14+00:00",
+  "checkedAt": "2026-10-02T20:47:52+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -11,6 +11,67 @@
   "items": [
     {
       "rank": 1,
+      "game": "ベガス クレイズ カジノ",
+      "maxObservedRewardYen": 95769,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205629&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 95769
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34570",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 91896
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/18242",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ベガス クレイズ カジノ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ベガス クレイズ カジノ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ベガス クレイズ カジノ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ベガス クレイズ カジノ\" ポイ活",
+        "pointSites": "\"ベガス クレイズ カジノ\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 2,
       "game": "ザ・グランドマフィア",
       "maxObservedRewardYen": 70824,
       "confirmedSourceCount": 3,
@@ -92,74 +153,6 @@
       "publicationAuthorized": false
     },
     {
-      "rank": 2,
-      "game": "ベガス クレイズ カジノ",
-      "maxObservedRewardYen": 65793,
-      "confirmedSourceCount": 2,
-      "listingSourceCount": 4,
-      "verifiedRewardSourceCount": 2,
-      "pointSiteEvidence": [
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205629&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/10061",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 62750
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 65793
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34570",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 62628
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18242",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        }
-      ],
-      "researchQueries": {
-        "web": "\"ベガス クレイズ カジノ\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"ベガス クレイズ カジノ\" ポイ活 日目",
-        "youtube": "site:youtube.com \"ベガス クレイズ カジノ\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"ベガス クレイズ カジノ\" ポイ活",
-        "pointSites": "\"ベガス クレイズ カジノ\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
       "rank": 3,
       "game": "ペタペタペンギン団",
       "maxObservedRewardYen": 52992,
@@ -214,14 +207,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/33538",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 9727
+          "rewardYen": 13796
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/33537",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 9727
+          "rewardYen": 13796
         },
         {
           "source": "kurashiru_reward",
@@ -340,21 +333,21 @@
     {
       "rank": 5,
       "game": "Heroes vs Crazy Wiggler",
-      "maxObservedRewardYen": 22237,
+      "maxObservedRewardYen": 32777,
       "confirmedSourceCount": 3,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 3,
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206636&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206635&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206635&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206636&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -392,14 +385,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34631",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 22237
+          "rewardYen": 32777
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34630",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 22237
+          "rewardYen": 32777
         },
         {
           "source": "kurashiru_reward",

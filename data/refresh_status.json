@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-10-01T21:04:14+00:00",
-  "finishedAt": "2026-10-01T21:04:14+00:00",
+  "startedAt": "2026-10-02T20:47:52+00:00",
+  "finishedAt": "2026-10-02T20:47:52+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -49,7 +49,7 @@
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -199,7 +199,7 @@
     {
       "game": "ロックンキャッシュカジノ-スロットゲーム",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 1,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
