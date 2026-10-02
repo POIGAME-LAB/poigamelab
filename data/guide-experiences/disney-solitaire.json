@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "game": "Disney Solitaire - ディズニー ソリティア",
+  "updatedAt": "2026-10-02",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "ワラウの案件ページに投稿された、日付つきのクチコミから、シーンや日数が書かれているものを同じ投稿者ごとにまとめています。投稿時期により報酬額が違うため、日数だけを比べ、金額は現在の案件ページで確認してください。",
+  "notice": "※シーン15以上に到達した記録は今回確認できていません。最も進んだ記録はシーン11（25日・約40日）です。",
+  "footnote": "クチコミは自己申告です。シーン数は案件ページ記載のシーン名（例：シーン9＝シンデレラ）に基づきます。1年以上前の投稿は載せていません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "シーン11を25日で達成",
+      "milestones": [
+        {"day": 7, "label": "シーン7"},
+        {"day": 14, "label": "シーン9"},
+        {"day": 25, "label": "シーン11", "detail": "累計660ステージ"}
+      ],
+      "note": "シーンごとに必要なステージ数が増え、シーン11でも報酬の合計は大きくないため、シーン30までは無理だと書いている。コストパフォーマンスが悪いと評価。2025年10月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "約40日でシーン11を達成",
+      "milestones": [
+        {"dayLabel": "約1か月10日", "label": "シーン11", "detail": "クリア720ステージ"}
+      ],
+      "note": "空き時間に少しずつプレイ。失敗を重ねるとクリアしやすくなる印象で、5回目ぐらいまでには1クリアできたと書いている。2025年12月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "期限ギリギリでシーン9（シンデレラ）",
+      "milestones": [
+        {"dayLabel": "期限ギリギリ", "label": "シーン9", "detail": "周年記念の増量ログインボーナスで乗り切った"}
+      ],
+      "note": "通常時は厳しいように思うと書いている。ポイントよりゲームを遊びたい人向けの使い方になるという感想。2026年6月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "60日目ギリギリでシーン9、そこで終了",
+      "milestones": [
+        {"day": 60, "label": "シーン9（シンデレラ）", "detail": "本人は「60日目ギリギリ」と記載"}
+      ],
+      "note": "なかなか難しいと書いている。2026年7月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "ongoing",
+      "summary": "14日目にシーン7",
+      "milestones": [
+        {"day": 14, "label": "シーン7"}
+      ],
+      "note": "1時間ごとにログインしてコインを回収し、イベントに合わせて進めないとコインがすぐ底をつくと書いている。2026年1月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "retired",
+      "summary": "シーン11を達成して終了",
+      "milestones": [
+        {"dayLabel": "日数記載なし", "label": "シーン11"}
+      ],
+      "note": "昔より難しくなったと感じ、コインがすぐなくなる点を挙げている。アプリが重くなり開かなくなったことも終了の理由。2026年3月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "ongoing",
+      "summary": "4日目にシーン5（150ステージ）",
+      "milestones": [
+        {"day": 4, "label": "シーン5", "detail": "シーン4まで100ステージ、シーン5まで150ステージ"}
+      ],
+      "note": "広告がなくシンプルで楽しめるが、後半〜最終ステップは難しいと予想している。1時間ごとに1プレイ分程度のコインが配布されると書いている。2025年10月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "retired",
+      "summary": "3回課金だけして終了",
+      "milestones": [
+        {"dayLabel": "日数記載なし", "label": "3回目の課金"}
+      ],
+      "note": "最小課金額が300円でプラスマイナスゼロだったと書いている。Google Playポイントの100円引きクーポンを使い、割引を使ってもポイントは入った。最初の1ステップにもかなり時間がかかったとのこと。2025年10月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033"]
+    }
+  ]
+}

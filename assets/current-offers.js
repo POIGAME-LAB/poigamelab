@@ -13,7 +13,9 @@
     "mafia-city-guide.html": "マフィア・シティ-極道風雲",
     "rock-n-cash-casino-guide.html": "ロックンキャッシュカジノ-スロットゲーム",
     "slot-mate-guide.html": "Slot Mate（スロットメイト）- ベガススロットカジノ",
-    "wild-survival-guide.html": "Wild Survival"
+    "wild-survival-guide.html": "Wild Survival",
+    "dice-dreams-guide.html": "Dice Dreams",
+    "disney-solitaire-guide.html": "Disney Solitaire - ディズニー ソリティア"
   };
   const main = document.querySelector("main");
   const game = main?.getAttribute("data-current-offers-game") || pages[location.pathname.split("/").pop()];
