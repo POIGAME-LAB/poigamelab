@@ -73,3 +73,25 @@ def test_2026_09_30_guides_are_refreshed_with_only_reviewed_offer_urls():
         assert name in by_name[name]["aliases"]
         assert by_name[name]["known_urls_by_source"] == reviewed.get(name, {})
         assert policy["games"][name]["enabled"] is True
+
+
+GUIDE_2026_10_02 = {
+    "Dice Dreams": ["200960", "200961"],
+    "Disney Solitaire - ディズニー ソリティア": ["206033", "199824"],
+}
+
+
+def test_2026_10_02_guides_are_refreshed_with_only_reviewed_offer_urls():
+    targets = json.loads((ROOT / "config" / "game_targets.json").read_text(encoding="utf-8"))
+    policy = json.loads((ROOT / "config" / "refresh_policy.json").read_text(encoding="utf-8"))
+    catalog = (ROOT / "games.csv").read_text(encoding="utf-8")
+    by_name = {item["game"]: item for item in targets["games"]}
+
+    # 2026-10-02: these Warau iOS/Android pages were opened and parsed with
+    # warau-stepup-v1 (OS, step total and game name matched).
+    warau = "https://www.warau.jp/contents/point/pointEntrance.php?point_id="
+    for name, ids in GUIDE_2026_10_02.items():
+        assert f"\n{name}," in catalog
+        assert name in by_name[name]["aliases"]
+        assert by_name[name]["known_urls_by_source"] == {"warau": [warau + i for i in ids]}
+        assert policy["games"][name]["enabled"] is True

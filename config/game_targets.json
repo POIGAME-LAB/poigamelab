@@ -141,6 +141,20 @@
       "known_urls_by_source": {
         "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205785", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205786"]
       }
+    },
+    {
+      "game": "Dice Dreams",
+      "aliases": ["Dice Dreams", "Dice Dreams（ダイスドリームズ）", "ダイスドリームズ"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=200961"]
+      }
+    },
+    {
+      "game": "Disney Solitaire - ディズニー ソリティア",
+      "aliases": ["Disney Solitaire - ディズニー ソリティア", "Disney Solitaire ディズニー ソリティア", "Disney Solitaire", "ディズニー ソリティア", "ディズニーソリティア"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206033", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199824"]
+      }
     }
   ]
 }
