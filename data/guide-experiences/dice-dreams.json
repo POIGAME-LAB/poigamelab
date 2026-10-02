@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "game": "Dice Dreams",
+  "updatedAt": "2026-10-02",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "ワラウの案件ページに投稿された、日付つきのクチコミから、国数や日数が書かれているものを同じ投稿者ごとにまとめています。全員が同じ案件条件・同じ課金額ではないため、平均ではなく実例として見てください。",
+  "notice": "※クチコミは自己申告で、日数が書かれていない記録も含みます。スペシャルミッション（2〜23日以内の短期限）を達成した記録は今回確認できていません。",
+  "footnote": "国数や日数は運・課金・開始時期のイベントで変わります。1年以上前の投稿は載せていません。投稿者名はワラウ上のニックネームのため掲載していません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "残り約20日の時点で77国を修復",
+      "milestones": [
+        {"dayLabel": "序盤", "label": "軽い課金あり", "detail": "50国までは広告視聴の機会なし"},
+        {"dayLabel": "50国すぎ", "label": "広告視聴が出現", "detail": "全部見ると1時間以上。ながら視聴でダイスを貯めた"},
+        {"dayLabel": "約1週間", "label": "45国→77国", "detail": "朝と夜の2回のプレイ"},
+        {"dayLabel": "残り約20日", "label": "77国修復", "detail": "ダイスが余り85国付近まで進めた"}
+      ],
+      "note": "広告視聴でダイスを貯めてから進めたことで、45国から77国までが1週間。2026年4月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "無課金・1日2回で77国を修復",
+      "milestones": [
+        {"dayLabel": "序盤", "label": "広告視聴が出るまでは進まない"},
+        {"dayLabel": "日数記載なし", "label": "77国修復", "detail": "1日2回のログイン・無課金"}
+      ],
+      "note": "広告視聴が出てからダイスを貯めておき、「30%OFFの金のハンマー」の前後でまとめて振って建築した。2026年2月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "125国までは朝晩2回で到達",
+      "milestones": [
+        {"dayLabel": "日数記載なし", "label": "125国", "detail": "朝と夜の2回程度のプレイ"}
+      ],
+      "note": "「125までは楽にいけました」と書いている。日数や課金額は書かれていない。2026年9月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "9日で「80」に到達（本人表記）",
+      "milestones": [
+        {"day": 9, "label": "「80」に到達", "detail": "本文は「レベル80」と表記"}
+      ],
+      "note": "80付近までは広告視聴で何度もダイスが手に入るが、その先は課金が必須になるため、ここで辞めるのが利益が出ると書いている。表記が国数と同じ意味かは本文だけでは確認できない。2026年2月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "軽い課金で65国まで到達",
+      "milestones": [
+        {"dayLabel": "日数記載なし", "label": "65国", "detail": "コツコツログインしてロールを増やした"}
+      ],
+      "note": "たまにバグが出たため、無課金か150円程度の軽い課金までが良いと書いている。2026年5月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "5日目に21国（課金あり）",
+      "milestones": [
+        {"day": 5, "label": "21国修復"}
+      ],
+      "note": "150円の課金を2回、ダイスが多くもらえる500円の課金を1回。ランキング1位で約1,000〜2,000個のダイスをもらえたと書いている。毎日1〜2時間見る必要があるかもしれないとのこと。2025年10月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "retired",
+      "summary": "19国で3回目の課金、20国で終える予定",
+      "milestones": [
+        {"dayLabel": "日数記載なし", "label": "18〜19国", "detail": "150円の課金が3回目に表示された"}
+      ],
+      "note": "150円の課金は2回目まで早く表示されたが、3回目はしばらく300円のものしか出なかった。時期で変わる可能性があると書いている。フレンド0・チーム未加入。2026年4月の投稿。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "ongoing",
+      "summary": "60国台で停滞（運の影響が大きいと報告）",
+      "milestones": [
+        {"dayLabel": "日数記載なし", "label": "60国台"}
+      ],
+      "note": "コインが貯まらず1日1国も修復できないと書いている。スペシャルミッションは始めてすぐに課金すれば届くかもしれないと推測。2026年1月の投稿。始めた時期の77国の報酬は180ptだったと書いている。",
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=200960"]
+    }
+  ]
+}

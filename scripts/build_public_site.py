@@ -40,6 +40,8 @@ ROOT_FILES = (
     "rock-n-cash-casino-guide.html",
     "slot-mate-guide.html",
     "wild-survival-guide.html",
+    "dice-dreams-guide.html",
+    "disney-solitaire-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

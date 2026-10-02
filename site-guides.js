@@ -153,5 +153,15 @@ window.POIGAME_GUIDES = Object.freeze({
     title: "Wild Survival ポイ活攻略",
     description: "難易度1・R300から難易度14・R350までの実際の到達ペースと、ゲームスピード研究・防御強化の進め方をまとめています。",
     links: [{ label: "難易度攻略を読む →", href: "wild-survival-guide.html" }]
+  },
+  "Dice Dreams": {
+    title: "Dice Dreams ポイ活攻略",
+    description: "45国・77国の到達ペースと、広告視聴・ダイスのまとめ使い・課金ステップの判断をまとめています。",
+    links: [{ label: "王国修復攻略を読む →", href: "dice-dreams-guide.html" }]
+  },
+  "Disney Solitaire - ディズニー ソリティア": {
+    title: "ディズニーソリティア ポイ活攻略",
+    description: "シーン7・11の到達ペースと、コインの管理・課金ステップの判断をまとめています。",
+    links: [{ label: "シーン攻略を読む →", href: "disney-solitaire-guide.html" }]
   }
 });
