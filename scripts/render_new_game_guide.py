@@ -85,7 +85,7 @@ def render_html(payload, validated):
 </style>
 </head>
 <body>
-<div data-poigame-header></div>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
 <script src="site-header.js"></script>
 <main class="page" data-current-offers-game="{esc(game)}">
 <section class="hero"><div class="hero-grid"><img src="{esc(image)}" alt="{esc(game)}"><div class="hero-copy"><div class="eyebrow">POIGAME LAB 攻略</div><h1>{esc(title)}</h1><p class="lead">{esc(guide["intro"])}</p><div class="meta"><span class="pill">達成目安 {esc(validated["days"])}</span><span class="pill">難易度 {esc(validated["difficulty"])}</span></div><a class="compare" href="{esc(compare)}">現在の案件を比較する</a></div></div></section>
@@ -94,6 +94,7 @@ def render_html(payload, validated):
 <section class="section"><h2>みんなの進捗</h2><p class="notice">公開投稿・公開ページから確認できた個人の進捗例です。プレイ時間や課金状況で差が出るため、保証値ではありません。</p><ul class="progress">{''.join(progress)}</ul></section>
 <section class="section"><h2>調査した出典</h2><ul class="sources">{''.join(source_rows)}</ul></section>
 </main>
+<footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
 <script src="site-footer.js"></script>
 </body>
 </html>
