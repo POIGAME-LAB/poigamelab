@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "offers": {
     "hapitas:pathid:101349": {
-      "runs": 4,
-      "lastUnavailableAt": "2026-10-10T20:08:08+00:00"
+      "runs": 5,
+      "lastUnavailableAt": "2026-10-11T20:21:41+00:00"
     },
     "hapitas:pathid:101453": {
-      "runs": 4,
-      "lastUnavailableAt": "2026-10-10T20:08:08+00:00"
+      "runs": 5,
+      "lastUnavailableAt": "2026-10-11T20:21:41+00:00"
     },
     "hapitas:pathid:101454": {
-      "runs": 4,
-      "lastUnavailableAt": "2026-10-10T20:08:08+00:00"
+      "runs": 5,
+      "lastUnavailableAt": "2026-10-11T20:21:41+00:00"
     },
     "hapitas:pathid:99850": {
-      "runs": 4,
-      "lastUnavailableAt": "2026-10-10T20:08:08+00:00"
+      "runs": 5,
+      "lastUnavailableAt": "2026-10-11T20:21:41+00:00"
     },
     "warau:point_id:177327": {
       "runs": 2,
