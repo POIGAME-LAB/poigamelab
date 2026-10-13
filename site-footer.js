@@ -3,6 +3,9 @@
 
   if (document.querySelector("[data-poigame-footer]")) return;
 
+  // JS無効・クローラー向けの静的リンク。通常表示ではここで差し替える。
+  document.querySelectorAll("[data-poigame-footer-fallback]").forEach((node) => node.remove());
+
   if (!document.querySelector('link[rel="icon"]')) {
     const icon = document.createElement("link");
     icon.rel = "icon";
