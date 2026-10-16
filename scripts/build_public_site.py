@@ -42,6 +42,8 @@ ROOT_FILES = (
     "wild-survival-guide.html",
     "dice-dreams-guide.html",
     "disney-solitaire-guide.html",
+    "topwar-guide.html",
+    "doomsday-last-survivor-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

@@ -33,5 +33,19 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "コイン攻略を読む →", href: "magic-jigsaw-puzzles-guide.html" }
     ]
+  },
+  "トップウォー": {
+    title: "トップウォー ポイ活攻略",
+    description: "ユーザーレベル55・65・75の実際の到達ペースと、科学研究・バトルハンマー・連盟選び・課金の損得をまとめています。",
+    links: [
+      { label: "Lv55〜75攻略を読む →", href: "topwar-guide.html" }
+    ]
+  },
+  "ドゥームズデイ：ラストサバイバー": {
+    title: "ドゥームズデイ ポイ活攻略",
+    description: "本部レベル14（15日以内）の到達実例と、前提施設・建設時間・スピードアップ・同盟の使い方、Lv18以上へ進む判断をまとめています。",
+    links: [
+      { label: "本部レベル攻略を読む →", href: "doomsday-last-survivor-guide.html" }
+    ]
   }
 });

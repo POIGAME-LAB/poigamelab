@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "game": "ドゥームズデイ：ラストサバイバー",
+  "updatedAt": "2026-10-16",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数が書かれているものを同じ人ごとにまとめています。案件の期限や段階（Lv14・18・25）は記録ごとに異なるため、平均ではなく実例として見てください。",
+  "notice": "※2025年の記録は、現在の「15日以内」とは別の期限だった時期のものを含みます。Lv25を30日以内に完成させた例は確認できていません。",
+  "footnote": "日数はイベント・スピードアップの量・課金で変わります。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "5日目に本部Lv14（無課金）・Lv25は断念",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "本部Lv12"
+        },
+        {
+          "day": 5,
+          "label": "本部Lv14",
+          "detail": "無課金"
+        },
+        {
+          "day": 9,
+          "label": "本部Lv16"
+        },
+        {
+          "day": 14,
+          "label": "本部Lv18",
+          "detail": "7日目に2つ目のキューパックを購入"
+        }
+      ],
+      "note": "Lv14時点の6日目ごろにスピードアップが不足。Lv25は期限内に間に合わないと判断して断念。2026年2月の記録。",
+      "sources": [
+        "https://kochalog.com/doomsday/"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "Lv11を3日、Lv14を11日で達成",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "本部Lv11"
+        },
+        {
+          "day": 11,
+          "label": "本部Lv14達成"
+        }
+      ],
+      "note": "Lv11までは3日。続きからLv14まではあと8日かかった。建設時間が長いため、研究所の建設キットを早めに解放するよう勧めている。2026年6月更新の記録。",
+      "sources": [
+        "https://www.yumatti.com/poi-katsu-doomsday-last-survivor/"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "retired",
+      "summary": "無課金でLv14に19日・Lv19は撤退",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "本部Lv8"
+        },
+        {
+          "day": 8,
+          "label": "本部Lv12"
+        },
+        {
+          "day": 19,
+          "label": "本部Lv14達成",
+          "detail": "獲得420円分"
+        }
+      ],
+      "note": "2025年の記録。当時の日数の基準は現在の15日以内とは異なると記事に書かれている。Lv19は課金が実質必須と判断して撤退。2026年9月の記事。",
+      "sources": [
+        "https://wakupen.com/doomsday_review/"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "700円課金でLv18に16日・Lv19に18日",
+      "milestones": [
+        {
+          "day": 16,
+          "label": "本部Lv18"
+        },
+        {
+          "day": 18,
+          "label": "本部Lv19"
+        }
+      ],
+      "note": "2つ目の建設枠（700円のパック）に課金。StepUp案件で、複数回の課金が必要なステップがあった。2026年10月の記録。",
+      "sources": [
+        "https://point-kasegu.net/doomsday/"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "700円課金でLv23の完成に33日・Lv25は55日",
+      "milestones": [
+        {
+          "dayLabel": "30日以内",
+          "label": "本部Lv23の着工"
+        },
+        {
+          "day": 33,
+          "label": "本部Lv23完成"
+        },
+        {
+          "day": 42,
+          "label": "本部Lv24完成"
+        },
+        {
+          "day": 55,
+          "label": "本部Lv25完成"
+        }
+      ],
+      "note": "オレンジヒーロー獲得の条件でプレイし、建設キュー（700円）に課金。完成を30日以内に求める条件ならLv25は不可能だが、着工でよいなら届く可能性があると書いている。2025年3月の記録。",
+      "sources": [
+        "https://chokinhuyasu.com/dls_japan-25.html"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "3日で本部Lv14",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "本部Lv14達成"
+        }
+      ],
+      "note": "加速アイテムは使い切ったが、資材もダイヤも余っていた。ミッションに沿って進行。一方でサーバーでは同盟の統廃合が早く、襲撃を受ける可能性も感じた。2026年6月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689"
+      ]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "4日（約5時間）で本部Lv14",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "本部Lv14達成",
+          "detail": "プレイ時間は約5時間"
+        }
+      ],
+      "note": "初めての城ゲーム。広告はなく、チャプターミッションに沿って進めた。資源は手持ちで足りた。2026年5月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689"
+      ]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "無課金で6日目に本部Lv14",
+      "milestones": [
+        {
+          "day": 6,
+          "label": "本部Lv14達成"
+        }
+      ],
+      "note": "終盤に建設の加速が足りなくなったため、商店の加速をダイヤで毎日買った。ポイントの反映も早かった。2026年3月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689"
+      ]
+    },
+    {
+      "id": "I",
+      "label": "プレイヤーI",
+      "status": "completed",
+      "summary": "約12時間のプレイで本部Lv14",
+      "milestones": [
+        {
+          "dayLabel": "日数の記載なし",
+          "label": "本部Lv14達成",
+          "detail": "プレイ時間は約12時間"
+        }
+      ],
+      "note": "アイテムとダイヤを使い切った頃にコラボイベントに気づき、交換所のスピードアップで一気に到達。2026年5月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689"
+      ]
+    },
+    {
+      "id": "J",
+      "label": "プレイヤーJ",
+      "status": "completed",
+      "summary": "1週間で本部Lv14",
+      "milestones": [
+        {
+          "dayLabel": "約1週間",
+          "label": "本部Lv14達成"
+        }
+      ],
+      "note": "進められるところまで進める・戦力をこまめに上げる・赤い通知を忘れない、の3点を意識。施設の一括強化が助かったという。2026年3月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689"
+      ]
+    }
+  ]
+}
