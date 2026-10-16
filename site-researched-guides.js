@@ -54,5 +54,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "勢力15,000攻略を読む →", href: "sangokushi-shinsen-guide.html" }
     ]
+  },
+  "商人放浪記": {
+    title: "商人放浪記 ポイ活攻略",
+    description: "ワラウAndroid案件（Lv37まで）の条件と、Lv30・Lv37に届いた実例の日数、旧サーバーと商会の選び方、声望・体力薬の集め方、課金ステップの収支をまとめています。",
+    links: [
+      { label: "Lv30・37攻略を読む →", href: "shounin-hourouki-guide.html" }
+    ]
   }
 });

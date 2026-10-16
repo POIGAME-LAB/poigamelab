@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "game": "商人放浪記",
+  "updatedAt": "2026-10-16",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。始めたサーバーや商会、課金の有無は人によって違うため、平均ではなく実例として見てください。",
+  "notice": "※Lv30は12〜30日、Lv37は19〜30日の実例です。30日以内に届かず中止した記録と、リタイアした記録も含めています。",
+  "footnote": "日数はサーバー・商会・課金・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件（Lv30やLv32まで）のものを含みます。",
+  "initialVisible": 6,
+  "players": [
+    {
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "19日でLv37（旧サーバー・商会で張り付き）",
+      "milestones": [
+        {
+          "dayLabel": "Lv30の約2日前",
+          "label": "Lv30到達",
+          "detail": "行商は900前後"
+        },
+        {
+          "day": 19,
+          "label": "Lv37達成",
+          "detail": "行商1,885まで進めた"
+        }
+      ],
+      "note": "旧サーバーで活発な商会に入り、かなり張り付いたと書いている。Lv30から37は約2日で、宝庫のガチャで告天子が星4になってから行商をオートで進めた。2026年10月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "A"
+    },
+    {
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "20日でLv37（Lv30は13日目）",
+      "milestones": [
+        {
+          "day": 2,
+          "label": "Lv21",
+          "detail": "全国盛宴と商会Lv7が大きかった"
+        },
+        {
+          "day": 4,
+          "label": "Lv24"
+        },
+        {
+          "day": 7,
+          "label": "Lv27"
+        },
+        {
+          "day": 13,
+          "label": "Lv30",
+          "detail": "出稼ぎ1,200位まで進行済みで銀両が不足"
+        },
+        {
+          "day": 20,
+          "label": "Lv37達成",
+          "detail": "出稼ぎ1,816"
+        }
+      ],
+      "note": "最新サーバーが約S380だったためS260で開始。23時ごろに始めてしまい、日付が変わってから始めればよかったと振り返っている。商会Lv7の組合商店街で体力薬を毎日48個もらえた。2026年4月の投稿で、日付から日数を数えている。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "B"
+    },
+    {
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "無課金でLv30は12日目、Lv37は24日目",
+      "milestones": [
+        {
+          "day": 12,
+          "label": "Lv30",
+          "detail": "行商1,100ステージ"
+        },
+        {
+          "day": 24,
+          "label": "Lv37達成"
+        }
+      ],
+      "note": "やり込み要素が多くログイン回数も多めで、時間はかかったと書いている。Lv30到達時の行商は1,100で、900くらいで止めればよかったと振り返っている。旧サーバーを選び、チュートリアル終了後にサーバーを移動。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "C"
+    },
+    {
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "Lv37が22日（Lv30からは3〜4日）",
+      "milestones": [
+        {
+          "dayLabel": "Lv37の3〜4日前",
+          "label": "Lv30到達"
+        },
+        {
+          "day": 22,
+          "label": "Lv37達成"
+        }
+      ],
+      "note": "Lv30までは行商の回数を約400回前後に抑え、宝庫の解放後に出稼ぎをフル回転。序盤に取り損ねたアイテムは多かったが、旧サーバーと宴会ラッシュ、22時ごろの元宝イベントを重視した。2026年6月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "D"
+    },
+    {
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "無課金でLv37が27日（Lv30は25日目）",
+      "milestones": [
+        {
+          "day": 25,
+          "label": "Lv30",
+          "detail": "体力薬を集めて歴遊と酒坊で稼いだ"
+        },
+        {
+          "day": 27,
+          "label": "Lv37達成",
+          "detail": "告天子はLv4"
+        }
+      ],
+      "note": "行商は妙音坊の解放で止め、以後は1日1回のみ。宝庫が開いてからは行商をオート放置で回した。Lv30からの行商のオート放置が長く、10時間以上だったと思う（記憶は曖昧）と書いている。2026年4月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "E"
+    },
+    {
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "無課金でLv37が25日（Lv30以降は銀両不足）",
+      "milestones": [
+        {
+          "day": 25,
+          "label": "Lv37達成",
+          "detail": "Lv30以降に銀両不足で放置時間が増えた"
+        }
+      ],
+      "note": "旧サーバーで商会Lv7に入った。分間札・時間札をLv30以降まで残していれば早かったかもしれないと振り返っている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "F"
+    },
+    {
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "月々札のみ課金でLv37が29日（商会加入が遅れた）",
+      "milestones": [
+        {
+          "day": 10,
+          "label": "Lv7の商会に加入",
+          "detail": "開始から約10日後"
+        },
+        {
+          "day": 29,
+          "label": "Lv37達成"
+        }
+      ],
+      "note": "商会のレベルが低いからと行商を進めすぎ、Lv35付近から銀両が不足したと書いている。26日ごろまでにLv30に届けば37は余裕、と助言している。2026年5月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "G"
+    },
+    {
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "Lv37が30日目（月々・年間特権と160円のみ課金）",
+      "milestones": [
+        {
+          "day": 29,
+          "label": "体力薬5個が買える商店が出現",
+          "detail": "元宝288"
+        },
+        {
+          "day": 30,
+          "label": "Lv37達成"
+        }
+      ],
+      "note": "間に合わないと思ったが、29日目の商店で体力薬を買えたおかげで届いたという。宝庫の告天子は星3止まり。銀両は常に不足気味で、分間札を最初から交換していればよかったと振り返っている。2026年4月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "H"
+    },
+    {
+      "label": "プレイヤーI",
+      "status": "completed",
+      "summary": "Lv37が30日目ギリギリ（宝漁り札が少なかった）",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv37達成",
+          "detail": "ギリギリ"
+        }
+      ],
+      "note": "Lv30到達時の宝漁り札が1,600枚ほどしか取れず、思ったように強化できなかったと書き、自分で厳しい道を選んでしまったと振り返っている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "I"
+    },
+    {
+      "label": "プレイヤーK",
+      "status": "completed",
+      "summary": "新サーバーのまま無課金でLv30（30日目）",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv30到達",
+          "detail": "Lv37には届かなかった"
+        }
+      ],
+      "note": "チュートリアル後そのまま新サーバーで進めた。Lv37に必要な宝庫などのコンテンツが新サーバーでは解放されず、理論上達成できないと書いている。2026年6月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "J"
+    },
+    {
+      "label": "プレイヤーL",
+      "status": "completed",
+      "summary": "14日でLv30とLv32（月々・年間特権を購入）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv13"
+        },
+        {
+          "day": 3,
+          "label": "Lv21"
+        },
+        {
+          "day": 4,
+          "label": "Lv24"
+        },
+        {
+          "day": 7,
+          "label": "Lv27"
+        },
+        {
+          "day": 14,
+          "label": "Lv30とLv32",
+          "detail": "同じ日に到達"
+        }
+      ],
+      "note": "月々特権を1日目、年間特権を2日目に購入。Lv30の宝庫で家来収入が6,300万から1.9億になり、Lv32まで続けて到達した。過去のLv32案件での記録。",
+      "sources": [
+        "https://kochalog.com/shounin-hourouki/"
+      ],
+      "id": "K"
+    },
+    {
+      "label": "プレイヤーM",
+      "status": "completed",
+      "summary": "21日でLv30（約1,000円の課金・コラボ期間中）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv15"
+        },
+        {
+          "day": 5,
+          "label": "Lv21"
+        },
+        {
+          "day": 7,
+          "label": "Lv24"
+        },
+        {
+          "day": 15,
+          "label": "Lv27"
+        },
+        {
+          "day": 21,
+          "label": "Lv30"
+        }
+      ],
+      "note": "約1,000円の課金を前提にした最短の進め方と書いている。コラボ期間でアイテムやコラボキャラがもらえたため、低課金でも早く終えられたと本人が書いており、同じ条件は再現できない可能性がある。2024年8月の記事。",
+      "sources": [
+        "https://otegoro-gekiyasu.com/archives/118527"
+      ],
+      "id": "L"
+    },
+    {
+      "label": "プレイヤーN",
+      "status": "completed",
+      "summary": "30日目の残り約7時間でLv30（2023年の記録）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv13",
+          "detail": "約3時間プレイ"
+        },
+        {
+          "day": 5,
+          "label": "Lv21"
+        },
+        {
+          "day": 9,
+          "label": "Lv24"
+        },
+        {
+          "day": 11,
+          "label": "Lv25"
+        },
+        {
+          "day": 18,
+          "label": "Lv27"
+        },
+        {
+          "day": 21,
+          "label": "Lv28"
+        },
+        {
+          "day": 26,
+          "label": "Lv29"
+        },
+        {
+          "day": 30,
+          "label": "Lv30"
+        }
+      ],
+      "note": "初日に月々特典と8,000円の元宝（合計8,650円）を購入。毎日1〜6時間に1回ほどのログインで、Lv28に5日、Lv29に4日かかった。最終日は貯めていたアイテムをすべて使い切って届いた。当時のLv30案件での記録。",
+      "sources": [
+        "https://okakosodate.com/syoninhoroki/"
+      ],
+      "id": "M"
+    },
+    {
+      "label": "プレイヤーO",
+      "status": "completed",
+      "summary": "30日でLv30（少額課金・1日1時間ほど）",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv30達成"
+        }
+      ],
+      "note": "最後に少額の課金をして30日目にLv30。Lv27までは毎日1時間ほどのプレイで余裕を持って進められる、と書いている。2024年9月に開始した記録。",
+      "sources": [
+        "https://note.com/hisoc_poikatsu/n/n769275c97e65"
+      ],
+      "id": "N"
+    },
+    {
+      "label": "プレイヤーP",
+      "status": "ongoing",
+      "summary": "8日目でLv27（その後の結果は記載なし）",
+      "milestones": [
+        {
+          "day": 8,
+          "label": "Lv27達成"
+        }
+      ],
+      "note": "古いサーバーで強い商会に入り、サクサク進んだと書いている。毎日ある程度のプレイ時間が必要で、時間に余裕のある人向けとしている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "O"
+    },
+    {
+      "label": "プレイヤーQ",
+      "status": "retired",
+      "summary": "日数が足りないと判断して中止（声望不足）",
+      "milestones": [
+        {
+          "dayLabel": "中止時",
+          "label": "中止",
+          "detail": "「28」の時点と記載"
+        }
+      ],
+      "note": "途中までは生産力不足を感じ、後半は声望（上のゲージ）が圧倒的に足りなくなったという。声望を上げる方法が限られるため、序盤から意識しないと日数が足りなくなると書いている。2026年8月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "P"
+    },
+    {
+      "label": "プレイヤーR",
+      "status": "retired",
+      "summary": "Lv37の宝庫ガチャで★が上がらず撤退",
+      "milestones": [
+        {
+          "dayLabel": "中止時",
+          "label": "Lv37を断念",
+          "detail": "告天子の★は1回のみ"
+        }
+      ],
+      "note": "旧サーバーならLv30は達成できるはずと書きつつ、Lv37を目指すなら行商の進行を止める必要があり、宝庫の★上げに上振れ・下振れがあるとしている。2026年4月の投稿。到達レベルは記載なし。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "Q"
+    },
+    {
+      "label": "プレイヤーS",
+      "status": "retired",
+      "summary": "何をすればよいか分からずリタイア",
+      "milestones": [
+        {
+          "dayLabel": "序盤",
+          "label": "リタイア"
+        }
+      ],
+      "note": "ゲーム性が合わなかったとも書いている。2026年9月の投稿（星1の評価）。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
+      ],
+      "id": "R"
+    }
+  ]
+}

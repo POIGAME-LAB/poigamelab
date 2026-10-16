@@ -45,6 +45,7 @@ ROOT_FILES = (
     "topwar-guide.html",
     "doomsday-last-survivor-guide.html",
     "sangokushi-shinsen-guide.html",
+    "shounin-hourouki-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",
