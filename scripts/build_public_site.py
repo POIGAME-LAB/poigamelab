@@ -47,6 +47,7 @@ ROOT_FILES = (
     "sangokushi-shinsen-guide.html",
     "shounin-hourouki-guide.html",
     "momantime-guide.html",
+    "hero-wars-alliance-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

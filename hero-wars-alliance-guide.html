@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/hero-wars-alliance-guide.html">
+<meta name="description" content="ヒーローウォーズ：アライアンスのポイ活攻略。ワラウStepUp（60日以内・チームレベル120まで）の条件と、Lv80・Lv90・Lv100に届いた実例の日数、レイドの課金、エネルギーとエメラルドの集め方、獲得ptの大きさを整理。">
+<title>ヒーローウォーズ アライアンス ポイ活攻略｜チームレベル80・100を60日で目指す進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ヒーローウォーズ：アライアンス 攻略ガイド</span>
+    <a href="offers.html">案件一覧を見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ヒーローウォーズ：アライアンス ポイ活攻略</h1>
+<p class="lead">ワラウのStepUp案件（60日以内、チームレベル5〜120）を想定し、Lv80に届いた人、Lv100に届いた人、途中でやめた人の記録を日数ごとに並べました。レベルごとの獲得ptと、1日に取れる経験値の目安も整理しています。</p>
+<div class="stats"><div class="stat"><span>実例：Lv80</span><strong>22〜46日</strong></div><div class="stat"><span>実例：Lv100</span><strong>45・49日</strong></div><div class="stat"><span>実例：Lv120</span><strong>届いた例なし</strong></div></div>
+<p class="hero-note">Lv80は22日から46日で届いた記録が複数あります。Lv100は課金や別ゲームでの稼ぎを使った2人だけで、Lv120に届いた実例は確認できていません。到達を保証するものではありません。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#system">レベルが上がる仕組み</a></li><li><a href="#raid">レイドと課金</a></li><li><a href="#energy">エネルギーの集め方</a></li><li><a href="#flow">序盤・中盤・終盤</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#stuck">詰まりやすい所</a></li><li><a href="#target">どこまで目指すか</a></li><li><a href="#money">獲得ptと課金ステップ</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（ワラウAndroid・2026年10月16日確認）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>案件</td><td>ヒーローウォーズ：アライアンス - 放置系RPG（StepUp）</td></tr>
+<tr><td>対応OS</td><td>Android（iOS版は別ページ。Lv30のptが80pt）</td></tr>
+<tr><td>条件</td><td>新規アプリインストール後、StepUpミッションの各達成条件をクリア（期限はステップごとに違い、すべてインストール日から起算）</td></tr>
+<tr><td>獲得pt（ワラウ表記）</td><td>全ステップ合計16,030pt（レベル到達のみなら15,100pt）</td></tr>
+<tr><td>クチコミ</td><td>評価3.4、15件（ワラウ表記）</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>ステップ</th><th>期限</th><th>獲得pt</th><th>レベルのみの累計</th></tr></thead>
+<tbody>
+<tr><td>チームレベル5到達</td><td>60日以内</td><td>10pt</td><td>10pt</td></tr>
+<tr><td>チームレベル10到達</td><td>60日以内</td><td>20pt</td><td>30pt</td></tr>
+<tr><td>チームレベル30到達</td><td>60日以内</td><td>110pt</td><td>140pt</td></tr>
+<tr><td>チームレベル60到達</td><td>60日以内</td><td>260pt</td><td>400pt</td></tr>
+<tr><td>チームレベル80到達</td><td>60日以内</td><td>700pt</td><td>1,100pt</td></tr>
+<tr><td>【高難易度】チームレベル100到達</td><td>60日以内</td><td>2,000pt</td><td>3,100pt</td></tr>
+<tr><td>【高難易度】チームレベル120到達</td><td>60日以内</td><td>12,000pt</td><td>15,100pt</td></tr>
+<tr><td>累計10ドル（1,749円）以上購入</td><td>30日以内</td><td>220pt</td><td>（課金）</td></tr>
+<tr><td>累計30ドル（4,928円）以上購入</td><td>30日以内</td><td>710pt</td><td>（課金）</td></tr>
+</tbody>
+</table></div>
+<div class="warning">ほかのポイントサイトには、到達レベルや金額が異なる案件があります。この表はワラウのAndroid案件ページの内容で、開始前に利用先で最新の条件をご確認ください。</div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/hero-wars-alliance.json" aria-live="polite"></section>
+<section class="section" id="system"><h2>レベルが上がる仕組み｜エネルギーを使い、デイリークエストを消化する</h2>
+<p>チームレベルは、キャンペーン（メインストーリー）でエネルギーを消費して勝利すると、消費したエネルギーと同じ量の経験値が入って上がります。エネルギー1につき経験値1なので、どのステージを周回しても同じです。難しいステージに進む必要はありません。</p>
+<ul class="lab-list">
+<li>エネルギーを使う：キャンペーンの周回。毎日、エネルギーを無駄にしない</li>
+<li>デイリークエスト：経験値がもらえるクエストが12項目あり、合計795。慣れれば約10分</li>
+<li>チームレベルが上がるとエネルギー上限が増え、30エネルギーももらえる</li>
+</ul>
+<p>必要な経験値は、レベルが上がるほど増えます。Lv80で1レベルあたり4,000、そこから1レベルごとに50ずつ増え、Lv80→90で合計42,250、Lv90→100で合計47,250が必要でした。</p>
+<div class="key">Lv80からLv100までに必要な経験値は合計89,500。1日に取れる経験値を1,700〜1,800と見ると、約50日分です。Lv80に届いた時点で、残り日数ではLv100は届かないことが分かります。</div>
+</section>
+<section class="section" id="raid"><h2>レイドと課金｜最低額の課金が事実上の前提</h2>
+<p>「レイド」は、星3でクリア済みのキャンペーンの戦闘を省略して一気に終わらせる機能です。チケットでも使えますが数に限りがあり、無制限に使うには課金が必要です。複数の記録が「ポイ活では最低額の課金がほぼ前提」と書いています。</p>
+<ul class="lab-list">
+<li>最低額の課金（Androidで150円、iOSで190円と書かれている記録が多い）でVIP1になり、レイドが永久に使える。2日目以降に課金しても問題ない、とこちゃログは書いている</li>
+<li>290円の「ヴァルキューレの寵愛」は、14日間だけ戦闘速度2倍などが付く。レイドの永久化も含まれる。選ぶなら、初日の最低額の課金よりこちらがよかった、と書いた人がいる</li>
+<li>課金は、ポイントサイトで「判定中」になっていることを確認してから行う</li>
+<li>2026年9月のクチコミには、最低課金額が300円に上がっているとの記載がある。ストアで現在の価格を確認する</li>
+</ul>
+<div class="warning">この課金（150〜300円ほど）は、ワラウのステップの対象になる「累計10ドル（1,749円）以上」には届きません。つまり、レイドのための課金は、ステップのptでは戻りません。</div>
+</section>
+<section class="section" id="energy"><h2>エネルギーの集め方｜7つの回復方法</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>方法</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>時間経過</td><td>6分で1回復（1日約240）</td></tr>
+<tr><td>エメラルド</td><td>エネルギー120を、1〜2回目はエメラルド50、3〜7回目は100、8回目以降は150で購入。毎日14:00にリセット。毎日2回は必ず</td></tr>
+<tr><td>イベント</td><td>報酬としてエネルギーやエネルギーボトルがもらえるものがある。切り替わるたびに確認</td></tr>
+<tr><td>クエスト</td><td>デイリーで1日3回、60エネルギー（8〜11時、13〜16時、20〜23時）。ほかにチームレベル到達の実績でも</td></tr>
+<tr><td>エメラルドオファー</td><td>デイリーでエネルギー30を2回（1回は広告視聴）。毎日11:00にリセット</td></tr>
+<tr><td>広告視聴</td><td>シアターで広告を見て、エネルギー12に交換。1日8回まで</td></tr>
+<tr><td>メールボックス</td><td>エネルギーが届くことがある。受け取り期限に注意</td></tr>
+</tbody>
+</table></div>
+<p>1日に取れる経験値は、デイリークエスト795、エメラルド2回分240、時間経過240、クエスト180、エメラルドオファー60、広告視聴96、そのほか合わせて約1,700〜1,800と見積もられています。</p>
+</section>
+<section class="section" id="flow"><h2>序盤・中盤・終盤でやること</h2>
+<h3>序盤（Lv30まで・1〜2日）</h3>
+<ul class="lab-list">
+<li>Lv30には1〜2日で届いた記録が複数ある（1日目、2日目）</li>
+<li>最初の1時間ほどは操作に慣れる時間になる。キャンペーンはチャプター3が終わるまで進めておくと、報酬や装備が整う</li>
+<li>ヒーローは、どれを使っても大きくは変わらない。こちゃログの筆者はほとんど強化しなかった</li>
+</ul>
+<h3>中盤（Lv30〜60・約1週間）</h3>
+<ul class="lab-list">
+<li>Lv50は5日目、Lv60は7日目と、ここまでは速い</li>
+<li>ギルドに入れるようになったら入る。Lv60以上を条件にしたギルドが出てくるので、そこで入り直すとよい、という記録がある</li>
+</ul>
+<h3>終盤（Lv60〜80）</h3>
+<ul class="lab-list">
+<li>Lv60を過ぎると、必要な経験値が増えていく。Lv65の時点で、1日1レベルが限界になりつつあり、別ゲームがなければ2日で1レベルになりそう、と書いた人がいる</li>
+<li>Lv80は22日から46日。プレイヤーDは、Lv75（26日目）からLv80（36日目）まで10日かかった</li>
+</ul>
+<h3>日ごとのレベルの伸び（Lv80に届いた記録）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>目安</th><th>プレイヤーB</th><th>プレイヤーA</th><th>プレイヤーD</th></tr></thead>
+<tbody>
+<tr><td>Lv30</td><td>1日目（Lv35）</td><td>1日目</td><td>2日目</td></tr>
+<tr><td>Lv50〜51</td><td>4日目（Lv51）</td><td>5日目</td><td>—</td></tr>
+<tr><td>Lv60〜63</td><td>9日目（Lv63）</td><td>7日目</td><td>7日目</td></tr>
+<tr><td>Lv80</td><td>22日目</td><td>29日目</td><td>36日目</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>デイリークエストの経験値がもらえる12項目を消化する（毎日14:00にリセット）</li>
+<li>エネルギーを使い切る。ログインのたびにキャンペーンの周回（レイド）で消費する</li>
+<li>1日3回のエネルギー受け取り（朝8〜11時、昼13〜16時、夜20〜23時）。デイリークエストの中で最も難しいのは、この3回のログインだと書いた人がいる</li>
+<li>エメラルドで毎日2回はエネルギーを買う（エメラルド50）</li>
+<li>広告視聴（1日8回）、エメラルドオファーのデイリー、メールボックスを確認する</li>
+<li>公式SNSで毎日公開される指定ステージをクリアすると、エネルギー20がもらえる（余裕があれば）</li>
+<li>エネルギーがもらえるイベントが出たら参加する</li>
+</ul>
+</section>
+<section class="section" id="stuck"><h2>詰まりやすい所と対処</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>詰まる所</th><th>実例</th><th>対処</th></tr></thead>
+<tbody>
+<tr><td>Lv30以降で伸びにくい</td><td>30を超えたあたりから上がりづらくなった、という投稿が複数</td><td>デイリークエストとエネルギーの消費を、毎日欠かさない</td></tr>
+<tr><td>エネルギーが足りない</td><td>Lv65の時点で、Lv100までにエメラルド2.5万個以上が必要と計算した例</td><td>イベントのエネルギーを逃さない。エメラルドの使い方を考える</td></tr>
+<tr><td>エメラルドを誤って使う</td><td>スキルボタンの連打でゴールド購入画面に移り、800個を交換した例。子供がガチャで使った例</td><td>重要なエメラルドは、別の画面を開くときに特に注意する</td></tr>
+<tr><td>1日3回のログインを忘れる</td><td>筆者の1人は、1日3回を毎日できるとは思わない方がよい、と書いている</td><td>できる範囲で受け取り、残りはエメラルドや広告視聴で補う</td></tr>
+<tr><td>レイドなしで時間がかかる</td><td>無課金だと周回にかなりの時間がかかる</td><td>最低額の課金を検討する</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="target"><h2>どこまで目指すか</h2>
+<div class="decision">
+<div class="decision-card"><strong>Lv30まで（レベル到達のみ140pt）</strong>1〜2日で届く。獲得ptは小さい。ここまでで終える人もいる。</div>
+<div class="decision-card"><strong>Lv60まで（レベル到達のみ400pt）</strong>7日目に届いた記録が複数ある（プレイヤーA・D）。</div>
+<div class="decision-card"><strong>Lv80まで（レベル到達のみ1,100pt）</strong>22日から46日と幅がある。60日の期限には余裕があるが、アクシデントで間に合わなくなった例（Lv74）もある。</div>
+<div class="decision-card"><strong>Lv100以上</strong>Lv100に届いたのは2人だけで、1人は別ゲームで集めたエメラルドを使い、もう1人は1,500円の7日間ギフトを買っている。Lv120は届いた実例が確認できていない。</div>
+</div>
+<div class="warning">ステップのptは、ステップごとに通帳へ追加されます（ワラウの案件ページ）。Lv80で撤退した記録が複数あり、無理にLv100や120を狙わない判断も一般的です。</div>
+</section>
+<section class="section" id="money"><h2>獲得ptと課金ステップ</h2>
+<p>ワラウでは、ptは1pt=1円です。レベルのステップは、Lv80までは合計1,100ptと小さく、大きいのはLv120の12,000ptです。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>到達レベル</th><th>レベルのみの累計</th><th>実例の日数</th></tr></thead>
+<tbody>
+<tr><td>Lv30</td><td>140pt</td><td>1〜2日</td></tr>
+<tr><td>Lv60</td><td>400pt</td><td>7日</td></tr>
+<tr><td>Lv80</td><td>1,100pt</td><td>22〜46日</td></tr>
+<tr><td>Lv100</td><td>3,100pt</td><td>45日・49日（2人）</td></tr>
+<tr><td>Lv120</td><td>15,100pt</td><td>届いた例なし</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>課金ステップ</th><th>支払額</th><th>ワラウの獲得pt</th><th>差額（1pt=1円）</th></tr></thead>
+<tbody>
+<tr><td>累計10ドル（1,749円）以上購入</td><td>1,749円</td><td>220pt</td><td>−1,529円</td></tr>
+<tr><td>累計30ドル（4,928円）以上購入</td><td>4,928円</td><td>220pt＋710pt</td><td>−3,998円</td></tr>
+</tbody>
+</table></div>
+<div class="key">課金ステップは、いずれも支払額がポイントを大きく上回ります。レイドのための150〜300円の課金は、ステップ対象外です。</div>
+<ul class="lab-list">
+<li>Lv80までの1,100ptのために、22日から46日の毎日のプレイが必要になる</li>
+<li>Lv100の2,000ptと、Lv120の12,000ptは、実例が少なく、課金や別ゲームを使った記録しかない</li>
+<li>課金は任意です。この記事は課金を勧めるものではありません</li>
+</ul>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（ワラウの案件ページより）</h2>
+<ul class="lab-list">
+<li>ポイント通帳の判定状態に「判定中」の記載があることを確認してから、アプリを進める。課金もその後にする</li>
+<li>「ポイントを貯める」をタップしてから1時間以内にアプリを起動する。その間に他のアプリやサイトを開かず、モバイル回線とWi-Fiの切り替えもしない</li>
+<li>広告ブロッカー、広告IDの削除・リセット、日本国外のIP、公共Wi-Fiは、反映されない原因になる</li>
+<li>過去にインストールした端末、再インストール、別端末へのデータ引き継ぎは対象外</li>
+<li>条件達成からポイント付与まで最大24時間</li>
+<li>あんしん保証制度の申請期限は、インストール日から起算して80日以内</li>
+<li>チームレベルのステップには、ホーム画面とプロフィール画面のスクリーンショットとアカウントIDが必要。課金のステップには購入履歴の画面が必要</li>
+<li>保証が完了するまでアプリを削除しない</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜ヒーローウォーズは「毎日の積み重ね」でLv80が現実的</h2>
+<ul class="lab-list">
+<li>条件は60日以内のStepUp。ワラウのAndroid案件はLv120まで、レベル到達のみで15,100pt</li>
+<li>実例はLv80が22〜46日。Lv100は2人だけ、Lv120は届いた例なし</li>
+<li>毎日エネルギーを使い切り、デイリークエストを消化する</li>
+<li>最低額の課金で使えるレイドが、時間を大きく減らす（ステップのptでは戻らない）</li>
+<li>Lv80で撤退する判断は、複数の記録に見られる</li>
+</ul>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353" target="_blank" rel="noopener">ワラウ案件ページ（条件・クチコミ）</a></span>
+<span class="source-line"><a href="https://kochalog.com/hero-wars-alliance-rpg/" target="_blank" rel="noopener">Lv80を29日で達成・攻略（こちゃログ）</a></span>
+<span class="source-line"><a href="https://note.com/doto_yatowarenai/n/na0595ffd0112" target="_blank" rel="noopener">Lv100を45日で達成（そば屋 note）</a></span>
+<span class="source-line"><a href="https://yuri98765.com/20250616-2/" target="_blank" rel="noopener">Lv100を49日で達成（ゲームとポイ活+α）</a></span>
+<span class="source-line"><a href="https://choipoi.com/hero-wars-alliance-rpg/" target="_blank" rel="noopener">Lv80を36日で達成（ポイ活ゲーム攻略）</a></span>
+<span class="source-line"><a href="https://ferirogu.com/herowars/" target="_blank" rel="noopener">Lv74でリタイア（ふぇりろぐ）</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。ブログの記録は当時の案件条件（Lv100まで、Lv120までなど）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウのAndroid案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

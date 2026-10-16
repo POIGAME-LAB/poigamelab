@@ -68,5 +68,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Lv94攻略を読む →", href: "momantime-guide.html" }
     ]
+  },
+  "ヒーローウォーズ：アライアンス": {
+    title: "ヒーローウォーズ：アライアンス ポイ活攻略",
+    description: "ワラウStepUp（60日以内・チームレベル120まで）の条件と、Lv80・Lv100に届いた実例の日数、レイドの課金、エネルギーの集め方、獲得ptの大きさをまとめています。",
+    links: [
+      { label: "Lv80・100攻略を読む →", href: "hero-wars-alliance-guide.html" }
+    ]
   }
 });
