@@ -82,5 +82,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "ステージ35攻略を読む →", href: "zombie-panic-guide.html" }
     ]
+  },
+  "ザ・アンツ": {
+    title: "ザ・アンツ ポイ活攻略",
+    description: "アメフリiOS案件（30日以内・女王アリLv20まで）の条件と、Lv18〜22の実例の日数、必要資源と建築時間、アライアンスの選び方、ギフトパック課金の収支をまとめています。",
+    links: [
+      { label: "Lv18・20攻略を読む →", href: "the-ants-guide.html" }
+    ]
   }
 });

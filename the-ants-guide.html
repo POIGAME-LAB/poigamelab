@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/the-ants-guide.html">
+<meta name="description" content="ザ・アンツ：アンダーグラウンド キングダムのポイ活攻略。アメフリiOS案件（30日以内・女王アリLv20まで）の条件と、Lv17〜22に届いた実例の日数、レベルごとの必要資源と建築時間、アライアンスの選び方、ギフトパック課金の収支を整理。">
+<title>ザ・アンツ ポイ活攻略｜女王アリLv20・18を30日以内に目指す進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ザ・アンツ 攻略ガイド</span>
+    <a href="offers.html">案件一覧を見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ザ・アンツ ポイ活攻略</h1>
+<p class="lead">アメフリのiOS案件（30日以内、女王アリLv8〜20、ギフトパック購入3つ）を想定し、女王アリのレベルごとの実例と、必要な資源・建築時間を整理しました。ワラウの案件は2026年10月16日時点で掲載終了のため、現在確認できるアメフリの案件を基準にしています。</p>
+<div class="stats"><div class="stat"><span>実例：Lv18</span><strong>8〜23日</strong></div><div class="stat"><span>実例：Lv22</span><strong>29日（1人）</strong></div><div class="stat"><span>無課金の到達</span><strong>Lv18〜19</strong></div></div>
+<p class="hero-note">Lv18までは10日から23日の実例が複数ありますが、Lv20以降は資源の要求が一気に重くなります。期限内に届かなかった記録は今回確認できておらず、到達を保証するものではありません。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#system">レベルが上がる仕組み</a></li><li><a href="#cost">必要資源と建築時間</a></li><li><a href="#alliance">アライアンスと保護</a></li><li><a href="#flow">序盤・中盤・終盤</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#stuck">詰まりやすい所</a></li><li><a href="#money">ギフトパック課金の収支</a></li><li><a href="#target">どこまで目指すか</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（アメフリiOS・2026年10月16日確認）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>案件</td><td>ザ・アンツ：アンダーグラウンド キングダム_マルチ（多段階）</td></tr>
+<tr><td>対応OS</td><td>iOS（アメフリの案件ページの表記）</td></tr>
+<tr><td>条件</td><td>新規アプリインストール後、30日以内（720時間）に各ステップを達成</td></tr>
+<tr><td>獲得pt（アメフリ表記）</td><td>全ステップ合計64,640pt＝6,464円（10pt＝1円）</td></tr>
+<tr><td>サイトの記載する到達目安</td><td>Lv8は20分、Lv10は1日、Lv12は2日、Lv16は5日、Lv18は10日、Lv20は18日</td></tr>
+<tr><td>ワラウの案件</td><td>2026年10月16日時点で掲載終了</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>ステップ</th><th>獲得pt</th><th>円換算</th></tr></thead>
+<tbody>
+<tr><td>女王アリをLv.8にUP</td><td>480pt</td><td>48円</td></tr>
+<tr><td>一括で任意の160円のギフトパックを購入</td><td>1,760pt</td><td>176円</td></tr>
+<tr><td>一括で任意の800円のギフトパックを購入</td><td>6,400pt</td><td>640円</td></tr>
+<tr><td>女王アリをLv.10にUP</td><td>1,760pt</td><td>176円</td></tr>
+<tr><td>女王アリをLv.12にUP</td><td>2,640pt</td><td>264円</td></tr>
+<tr><td>女王アリをLv.16にUP</td><td>4,400pt</td><td>440円</td></tr>
+<tr><td>女王アリをLv.18にUP</td><td>7,200pt</td><td>720円</td></tr>
+<tr><td>女王アリをLv.20にUP</td><td>9,600pt</td><td>960円</td></tr>
+<tr><td>一括で任意の3200円のギフトパックを購入（Lv20到達が必須）</td><td>30,400pt</td><td>3,040円</td></tr>
+</tbody>
+</table></div>
+<div class="warning">アメフリには、ほぼ同じ構成の別のiOS案件もあり、合計は52,070pt（5,207円）です。ポイントサイトや案件によって条件と金額が異なります。開始前に利用先で最新情報をご確認ください。</div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/the-ants.json" aria-live="polite"></section>
+<section class="section" id="system"><h2>レベルが上がる仕組み｜女王アリを育て、資源の壁を越える</h2>
+<p>ザ・アンツは、アリの巣を拡張する戦略シミュレーションです。女王アリのレベルを上げるには、決まった施設のレベルを先に上げ、肉・植物・菌類・湿土・砂・甘露の6種類の資源をそろえて建築します。資源には保有上限があり、貯蔵庫のレベルを上げないと保管できません。</p>
+<ul class="lab-list">
+<li>餌場に、肉と水を毎日輸送する。餌が尽きるとコロニー規模（アリの数）が減っていく</li>
+<li>菌類は、ハキリアリに植物を運ぶことで作られる。菌が足りないときは、ハキリアリへの輸送が止まっていないか確認する</li>
+<li>習性は女王アリがLv7になると選べる。「栽培」を選ぶのが無難という記録が複数ある</li>
+<li>第11章までタスクを進めれば序盤は十分で、それ以降はクリア条件に直接関係ないタスクが増える、という記録がある</li>
+<li>デイリータスクを使うには、アライアンスへの加入が必要</li>
+</ul>
+<div class="key">レベル18までは、資源の回収と建築指示を毎日欠かさなければ進みます。Lv19以降は要求される資源の桁が変わり、別のゲームのように重くなります。</div>
+</section>
+<section class="section" id="cost"><h2>必要資源と建築時間｜Lv13からLv18まで</h2>
+<p>初心者保護が消えるLv13から目標のLv18までの、女王アリのレベルアップに必要な資源と、前提になる施設の建築時間です（ポイ活ブログの筆者が海外wikiを参考にまとめた値で、アライアンスの建築バフなどで誤差が出ます）。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>女王アリLv</th><th>必要な資源（肉/植物/菌類/湿土/砂/甘露）</th><th>前提の施設</th><th>建築時間</th></tr></thead>
+<tbody>
+<tr><td>Lv13</td><td>260k/260k/94k/480k/400k/600k</td><td>湿土採集地Lv12</td><td>12時間17分</td></tr>
+<tr><td>Lv14</td><td>420k/400k/140k/820k/580k/840k</td><td>シューターアリ孵化地Lv13</td><td>16時間08分</td></tr>
+<tr><td>Lv15</td><td>720k/740k/200k/1M/1M/1.2M</td><td>油虫Lv14</td><td>22時間09分</td></tr>
+<tr><td>Lv16</td><td>1M/1M/300k/2M/1.4M/1.6M</td><td>アライアンスアリ生息地Lv15</td><td>1日6時間16分</td></tr>
+<tr><td>Lv17</td><td>2M/2M/480k/3M/2.4M/2.6M</td><td>キャリアーアリ孵化地Lv16</td><td>1日20時間20分</td></tr>
+<tr><td>Lv18</td><td>4.2M/4M/680k/4.8M/4M/4.6M</td><td>肉採集地Lv17</td><td>2日12時間47分</td></tr>
+</tbody>
+</table></div>
+<div class="key">この6回の建築時間を足すと、約7日18時間です。無課金の実例で最短の10日は、建築時間の合計に近い日数です。課金して建造枠を増やした記録では、Lv18が8日目、Lv17が7日目でした。</div>
+<ul class="lab-list">
+<li>Lv16にはコロニー規模70,000が必要</li>
+<li>Lv17は、キャリアーアリ孵化地をLv16に上げるための植物の消費が大きく、植物が不足した記録がある</li>
+<li>ゆまのポイ活攻略の時間目安は、Lv18が7〜14日（30〜50時間）、Lv19が10〜17日（50〜70時間）、Lv22が40〜60日（100〜200時間）</li>
+</ul>
+</section>
+<section class="section" id="alliance"><h2>アライアンスと保護｜上位のアクティブな同盟に入る</h2>
+<ul class="lab-list">
+<li>アライアンスに入ると、メンバーのヘルプで建設時間を短縮でき、ギフト報酬（加速アイテムなど）も受け取れる。人数が多くアクティブな同盟ほど有利</li>
+<li>初心者保護は7日間有効で、女王アリがLv13になると消える。保護が消える前に、上位の同盟への移籍を検討する</li>
+<li>下位の同盟は、上位の同盟から攻撃されることがある。上位1〜4位のアクティブな同盟を勧める記録がある</li>
+<li>同盟の移籍は、デイリーリセット（翌日の朝9時）までは新しい同盟のタスクに参加できない。移籍前に、元の同盟のタスクを終わらせる</li>
+<li>攻撃に備えて、蟻塚出口の「駐屯」で「守衛に参加」のチェックを外すと、兵士を減らさずに済む（資源は奪われる）</li>
+<li>初期の名前のままだと追い出されることがある。名前を変更するとダイヤがもらえる</li>
+</ul>
+<div class="warning">すみすのポイ活ラボの記録には、詐欺メール（Discordに誘導するもの）が毎日のように届いた、という報告があります。ゲーム内のメッセージのリンクには注意してください。</div>
+</section>
+<section class="section" id="flow"><h2>序盤・中盤・終盤でやること</h2>
+<h3>序盤（Lv1〜10・2日ほど）</h3>
+<ul class="lab-list">
+<li>Lv3・Lv7は初日、Lv10は2日目に届いた記録がある</li>
+<li>初日のうちにLv10を目指す。巣穴は狭いので、光っている土をタップして掘り進め、拠点を広げる</li>
+<li>初心者シールドがあるうちに資源を確保し、進化菌の群れのレベルを上げ、アライアンスに入る</li>
+</ul>
+<h3>中盤（Lv11〜15・1週間ほど）</h3>
+<ul class="lab-list">
+<li>Lv13は3日目、Lv15は7日目に届いた記録がある</li>
+<li>コロニー行動（1時間ごとに更新される資源やアイテムの獲得イベント）で、加速・資源・ダイヤを得る。全部をクリアしなくてよい</li>
+<li>進化（研究）は、急速生産と蟻塚発展のカテゴリーを優先する。基礎戦闘の「エクストラ略奪」は、中立生物を倒したときの資源が最大40％増える</li>
+</ul>
+<h3>終盤（Lv16〜18・約1週間）</h3>
+<ul class="lab-list">
+<li>Lv18は8〜10日目に届いた記録がある一方、20〜23日かかった記録もある</li>
+<li>最後は加速アイテムと資源アイテムをまとめて使う</li>
+<li>「開始20日時点で女王アリLv15以下なら撤退を視野に」という目安を書いた人がいる</li>
+</ul>
+<h3>日ごとのレベル（2人の記録）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>日</th><th>プレイヤーB</th><th>プレイヤーD</th></tr></thead>
+<tbody>
+<tr><td>1日目</td><td>Lv3・Lv7</td><td>—</td></tr>
+<tr><td>2日目</td><td>Lv10</td><td>—</td></tr>
+<tr><td>3日目</td><td>—</td><td>Lv13</td></tr>
+<tr><td>7日目</td><td>Lv15</td><td>—</td></tr>
+<tr><td>8日目</td><td>—</td><td>Lv18</td></tr>
+<tr><td>14日目</td><td>Lv19</td><td>—</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>ログインのたびに、餌場へ肉と水、ハキリアリへ植物を補充する</li>
+<li>デイリータスクを500ptまで消化する（豪華な報酬）</li>
+<li>中立生物を毎日20体ほど狩る。楽に倒せるレベル（Lv10〜15）で</li>
+<li>コロニー行動で、ランク1か2を狙えるときは狙う</li>
+<li>進化（研究）と建設を、空きなく動かす</li>
+<li>スタミナは編成ごとに最大100で、1回復に8分。資源採取・中立生物狩りはスタミナ10消費</li>
+<li>リザード討伐でダイヤがもらえる。1日1回</li>
+<li>旅虫生息地の資源・甘露の交換（朝9時にリセット）</li>
+<li>アライアンスのヘルプとギフトを受け取る</li>
+</ul>
+<p>働きアリ孵化地につながる道を埋めると、餌場の肉と水の消費を大きく抑えられる、という記録があります。レベルアップするときだけ、通路をつなぎ直します。</p>
+</section>
+<section class="section" id="stuck"><h2>詰まりやすい所と対処</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>詰まる所</th><th>実例</th><th>対処</th></tr></thead>
+<tbody>
+<tr><td>甘露が足りない</td><td>Lv13〜18で甘露の要求が大きい（Lv18は4.6M）</td><td>鉱坑ショップや旅虫生息地で甘露を交換。急速生産の研究を優先する</td></tr>
+<tr><td>植物が足りない</td><td>Lv17でキャリアーアリ孵化地を上げるとき、植物が不足した</td><td>Lv16を上げる前に植物を貯めておく</td></tr>
+<tr><td>菌が足りない</td><td>生産施設のレベルが低いうちは不足しがち</td><td>ハキリアリへの植物輸送が止まっていないか確認</td></tr>
+<tr><td>上位の同盟から攻撃される</td><td>下位の同盟は頻繁に狙われる</td><td>上位のアクティブな同盟に入る。守衛の参加設定を外す</td></tr>
+<tr><td>Lv19以降で資源が重い</td><td>Lv20で「これは無理だ」と悟ってLv18で終えた例</td><td>Lv18またはLv20を目標にする</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="money"><h2>ギフトパック課金の収支</h2>
+<p>アメフリのこの案件には、「一括で任意の160円／800円／3200円のギフトパックを購入」という課金ステップが3つあります。差額は、支払額とアメフリのptを10pt＝1円で比べた計算です。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>課金ステップ</th><th>支払額</th><th>獲得pt（円換算）</th><th>差額</th></tr></thead>
+<tbody>
+<tr><td>160円のギフトパック</td><td>160円</td><td>1,760pt（176円）</td><td>＋16円</td></tr>
+<tr><td>800円のギフトパック</td><td>800円</td><td>6,400pt（640円）</td><td>−160円</td></tr>
+<tr><td>3200円のギフトパック（Lv20必須）</td><td>3,200円</td><td>30,400pt（3,040円）</td><td>−160円</td></tr>
+<tr><td>3つの合計</td><td>4,160円</td><td>3,856円</td><td>−304円</td></tr>
+</tbody>
+</table></div>
+<div class="key">3つの課金ステップは合計で304円の赤字です。レベルのステップだけなら、2,608円（Lv8から20まで）です。</div>
+<ul class="lab-list">
+<li>スーパー働きアリI・II・IIIは、2026年3月12日時点でギフトパックと判定されたという記載がある（ゆまのポイ活攻略）</li>
+<li>スーパー働きアリは建造枠が増えるため、序盤に買うと施設のレベルが上げやすい、と書かれている。1匹800円</li>
+<li>こちゃログの筆者は、黒字になる案件はなさそうで、課金する意味は無さそう、と書いている</li>
+<li>すみすのポイ活ラボは、課金ミッションは赤字だった、Lv18までがおすすめ、と書いている</li>
+<li>課金は任意です。この記事は課金を勧めるものではありません。ギフトパックの対象は変わる場合があります</li>
+</ul>
+</section>
+<section class="section" id="target"><h2>どこまで目指すか</h2>
+<div class="decision">
+<div class="decision-card"><strong>Lv12まで（レベルのみ488円）</strong>Lv8は20分、Lv10は1日、Lv12は2日が目安。ここまでは短時間で届く。</div>
+<div class="decision-card"><strong>Lv18まで（レベルのみ1,648円）</strong>10日から23日の実例が複数ある。毎日の資源回収と建築指示を欠かさなければ届く。建築時間だけで約7日18時間かかる。</div>
+<div class="decision-card"><strong>Lv20まで（レベルのみ2,608円）</strong>サイトの目安は18日。Lv19から資源の要求が変わり、Lv20で「これは無理」と判断して終えた人がいる。実例は22日目にLv20（途中）の1人。</div>
+<div class="decision-card"><strong>Lv22（他サイトの案件）</strong>29日で届いた実例が1人。総プレイ時間は約60時間で、本人もLv18での撤退を勧めている。</div>
+</div>
+<div class="warning">複数の記録が「Lv18で撤退するのが現実的」としています。期限内に届かなかった記録は今回確認できていません。</div>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（アメフリの案件ページより）</h2>
+<ul class="lab-list">
+<li>広告をクリックしてから1時間以内にアプリの起動まで完了する。1時間を超える場合は、起動前に再度広告をクリックする</li>
+<li>30日（720時間）以内の達成が条件。アプリをインストールした日を起算日とする</li>
+<li>広告をクリックした端末でインストールし、その端末で達成する。他の端末へのデータ引き継ぎは対象外</li>
+<li>広告をクリックしてから達成するまでに、ブラウザや通信環境を変更しない。公共Wi-Fi、不安定な回線、オフラインは対象外</li>
+<li>iOS15以降でiCloud+のプライベートリレーをONにしていると、正常に計測されないことがある</li>
+<li>「Appからのトラッキング要求を許可」をONにする</li>
+<li>同じアプリでの広告利用は1人1回まで。過去にインストールしたことがあると対象外</li>
+<li>未付与の調査には、達成したことが分かる画面、アプリTOP画面、ユーザーID、購入履歴（課金の場合）が必要</li>
+<li>報酬が付与されない場合の調査受付期限は、インストール日から45日以内（アメフリ表記）</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜ザ・アンツは「Lv18までを確実に」</h2>
+<ul class="lab-list">
+<li>条件は30日以内。アメフリのiOS案件は女王アリLv20まで、合計6,464円（課金ステップを含む）</li>
+<li>実例はLv18が10〜23日、Lv22は29日の1人</li>
+<li>建築時間だけでLv13〜18に約7日18時間。アライアンスのヘルプで短縮できる</li>
+<li>上位のアクティブなアライアンスに入る。保護が消えるLv13までに</li>
+<li>課金ステップは合計304円の赤字。任意</li>
+</ul>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.amefri.net/detail/id/140497" target="_blank" rel="noopener">アメフリ iOS案件（現在の条件）</a></span>
+<span class="source-line"><a href="https://www.amefri.net/detail/id/138239" target="_blank" rel="noopener">アメフリ iOS案件（別構成）</a></span>
+<span class="source-line"><a href="https://point-kasegu.net/the-ants/" target="_blank" rel="noopener">Lv18を10日で達成・必要資源（ネットで稼ぐポイント生活）</a></span>
+<span class="source-line"><a href="https://kochalog.com/the-ants/" target="_blank" rel="noopener">Lv19を14日で達成（こちゃログ）</a></span>
+<span class="source-line"><a href="https://nomoney-poilog.com/posts/2026/0215-the-ants-level18/" target="_blank" rel="noopener">Lv18の攻略とLv22の壁（のーまね）</a></span>
+<span class="source-line"><a href="https://poikatusmith3.hatenablog.com/entry/2026/05/02/130000" target="_blank" rel="noopener">Lv22を29日で達成（すみすのポイ活ラボ）</a></span>
+<span class="source-line"><a href="https://www.yumatti.com/point-earning-activities-at-the-ants/" target="_blank" rel="noopener">Lv17を7日で達成（ゆまのポイ活攻略）</a></span>
+<span class="source-line"><a href="https://x.com/nyanreimama/status/2008188401393295440" target="_blank" rel="noopener">22日目にLv20（X投稿）</a></span>
+<span class="source-line"><a href="https://rakumokeblog.com/money-game20" target="_blank" rel="noopener">Lv18を20日で達成（RakumokeBlog）</a></span>
+<span class="source-line"><a href="https://www.pokopoi.com/entry/the_ants" target="_blank" rel="noopener">Lv18を23日で達成・2021年（ぽこのポイ活にっき）</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・SNS）を整理しています。ワラウの案件は2026年10月16日時点で掲載終了のため、現在確認できるアメフリの案件を基準にしました。ブログの記録は当時の案件条件（Lv18まで、Lv22までなど）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にアメフリの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>
