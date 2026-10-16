@@ -1046,7 +1046,7 @@
       </a>
       ${guideHref
         ? `<a href="${guideHref}" class="card-action card-action--guide">攻略を見る</a>`
-        : `<span class="card-action is-disabled">攻略準備中</span>`
+        : `<a href="game.html?game=${encodeURIComponent(game.name)}" class="card-action card-action--guide">詳細を見る</a>`
       }
     </div>
 
@@ -1064,7 +1064,7 @@
         `
         : `
           <span class="offer-button disabled">
-            💰 案件リンク準備中
+            💰 案件リンクは未確認
           </span>
         `
     }

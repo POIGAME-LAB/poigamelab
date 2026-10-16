@@ -841,6 +841,23 @@
       font-size: 13px;
       line-height: 1.8;
     }
+  
+    .game-summary ul {
+      margin: 10px 0 12px;
+      padding-left: 20px;
+    }
+
+    .game-summary li {
+      margin: 0 0 6px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .game-summary .summary-note {
+      margin: 0;
+      font-size: 12px;
+      color: #776f85;
+    }
   </style>
 </head>
 
@@ -885,6 +902,13 @@
           </div>
         </div>
       </div>
+    </section>
+
+
+    <section class="section game-summary" id="gameSummary" hidden>
+      <h2>📌 比較サマリー</h2>
+      <ul id="gameSummaryList"></ul>
+      <p class="summary-note">掲載中の案件データから自動で集計した内容です。申込み前に、各ポイントサイトで最新の条件をご確認ください。</p>
     </section>
 
     <section class="section" id="comparison">
@@ -976,7 +1000,7 @@
       <ul>
         <li><strong>還元額</strong>：各ポイントサイトが案件ページに表示している金額（円換算）です。同じゲームでも、サイトやOSによって金額も条件も異なります。</li>
         <li><strong>条件・締切</strong>：「レベル○到達」などの成果条件と、インストール日から数えた達成期限です。金額だけでなく、期限内に達成できるかを「達成目安」「難易度」と見比べてください。</li>
-        <li><strong>更新日・（参考）表示</strong>：案件ごとの更新日は、POIGAME LABが最後に確認した日です。「（参考）」は一次情報での確認が完了していない値で、最高還元には含めていません。</li>
+        <li><strong>更新日・（参考）表示</strong>：案件ごとの更新日は、POIGAME LABが最後に確認した日です。「（参考）」「参考掲載」は、一次情報での確認が完了していない参考値です。検証済みの案件がないゲームでは、参考値が最高還元の欄に表示されることがあります。</li>
         <li><strong>課金が必要な条件</strong>：条件に購入が含まれる案件は「還元額 − 購入額」で損得を計算してください。</li>
         <li><strong>［PR］表示</strong>：［PR］のリンクは紹介リンクで、経由した登録・申込みにより運営者が報酬を受け取る場合があります。掲載順や検証基準とは分けて管理しています。</li>
       </ul>
@@ -1096,10 +1120,10 @@
         if (gameDifficulty) gameDifficulty.textContent = game.difficulty;
 
         const overview = document.getElementById("gameOverview");
-        if (overview) overview.textContent = game.overview || "ゲーム概要は準備中です。";
+        if (overview) overview.textContent = game.overview || "ゲーム概要はまだ登録されていません。";
 
         const tips = document.getElementById("gameTips");
-        if (tips) tips.textContent = game.tips || "攻略情報を整理中です。";
+        if (tips) tips.textContent = game.tips || "攻略のコツはまだ登録されていません。";
 
         const guideCta = document.getElementById("gameGuideCta");
         const guideTitle = document.getElementById("gameGuideTitle");
@@ -1141,6 +1165,18 @@
         }
 
         const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+
+        const summaryBox = document.getElementById("gameSummary");
+        const summaryList = document.getElementById("gameSummaryList");
+        if (summaryBox && summaryList) {
+          const summary = POIGAME_DATA.summarizeGameOffers(game.offers, (site) => pointSites[site] || site);
+          summaryList.replaceChildren(...summary.lines.map((line) => {
+            const item = document.createElement("li");
+            item.textContent = line;
+            return item;
+          }));
+          summaryBox.hidden = false;
+        }
         const tableBody = document.getElementById("offerTableBody");
         const offerCards = document.getElementById("offerCards");
         const platformButtons = [...document.querySelectorAll(".os-filter button")];
@@ -1409,7 +1445,7 @@
                 <td>
                   ${safeUrl
                     ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
-                    : "準備中"}
+                    : "リンク未確認"}
                   ${referralMarkup}
                 </td>
               `;
@@ -1432,7 +1468,7 @@
                 </div>
                 ${safeUrl
                   ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>`
-                  : '<span class="coming-soon">リンク準備中</span>'}
+                  : '<span class="coming-soon">リンク未確認</span>'}
                 ${referralMarkup}
               `;
               offerCards.appendChild(card);

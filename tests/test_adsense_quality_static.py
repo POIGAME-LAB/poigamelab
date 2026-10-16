@@ -94,6 +94,43 @@ def test_index_dynamic_cards_do_not_show_dash_placeholders():
 
 def test_about_page_explains_data_method_and_reading_rules():
     html = (ROOT / "about.html").read_text(encoding="utf-8")
-    for heading in ("案件情報の集め方と検証方法", "更新日・参考表示の見方", "攻略記事について", "誤りの訂正について"):
+    for heading in ("案件情報の集め方と検証方法", "自動化・AIの利用について", "更新日・参考表示の見方", "攻略記事について", "誤りの訂正について"):
         assert f"<h2>{heading}</h2>" in html, heading
     assert "ca-pub-" not in html  # privacy/about pages stay free of ad code
+
+
+def test_about_page_discloses_external_services_accurately():
+    """about.html must not claim that no external AI/API is used anywhere.
+
+    The scheduled daily refresh (refresh-verified-offers.yml) is API-free, but the new-game
+    discovery/research/guide-package workflows use Firecrawl, Tavily and Gemini.
+    """
+    html = (ROOT / "about.html").read_text(encoding="utf-8")
+    text = _visible(html)
+    assert "外部の生成AIサービスやAPI課金型サービスを使用していません" not in text
+    for service in ("Firecrawl", "Tavily", "Gemini"):
+        assert service in text, service
+    assert "日次の案件更新" not in text or "含まれていません" in text
+    assert "最高還元やランキングの根拠として扱っていません" not in text
+    assert "参考値が最高還元の欄に表示されることがあります" in text
+
+
+def test_game_page_reading_guide_matches_reference_value_behaviour():
+    html = (ROOT / "game.html").read_text(encoding="utf-8")
+    assert "最高還元には含めていません" not in html
+    assert "参考値が最高還元の欄に表示されることがあります" in html
+    assert 'id="gameSummary" hidden' in html  # filled by JS from loaded data only; no static numbers
+
+
+def test_no_unfinished_labels_in_user_facing_scripts():
+    for name in ("index.html", "game.html"):
+        text = (ROOT / name).read_text(encoding="utf-8")
+        for token in ("案件リンク準備中", "リンク準備中", "攻略準備中", "ゲーム概要は準備中です", "攻略情報を整理中です"):
+            assert token not in text, (name, token)
+
+
+def test_game_offer_summary_node_unit_tests():
+    import subprocess
+
+    result = subprocess.run(["node", "tests/test_game_offer_summary.js"], cwd=ROOT, capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
