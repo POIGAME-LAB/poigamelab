@@ -89,5 +89,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Lv18・20攻略を読む →", href: "the-ants-guide.html" }
     ]
+  },
+  "杖と剣の伝説": {
+    title: "杖と剣の伝説 ポイ活攻略",
+    description: "アメフリiOS案件（30日以内・二次職業とレベル58）の条件、7〜15日で達成した実例、ワラウ利用者約670件の達成率、二次転職の条件、課金パックの収支をまとめています。",
+    links: [
+      { label: "二次転職・Lv58攻略を読む →", href: "tsue-to-ken-guide.html" }
+    ]
   }
 });

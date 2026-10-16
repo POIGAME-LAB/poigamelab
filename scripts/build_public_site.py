@@ -50,6 +50,7 @@ ROOT_FILES = (
     "hero-wars-alliance-guide.html",
     "zombie-panic-guide.html",
     "the-ants-guide.html",
+    "tsue-to-ken-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",
