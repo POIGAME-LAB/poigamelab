@@ -116,6 +116,11 @@
         ? `<p class="experience-footnote">${escapeHtml(data.footnote)}</p>`
         : ""
       }
+
+      ${/^\d{4}-\d{2}-\d{2}$/.test(String(data.updatedAt || ""))
+        ? `<p class="experience-footnote">実例データの最終更新：${escapeHtml(data.updatedAt)}</p>`
+        : ""
+      }
     `;
 
     const button = root.querySelector(".experience-more-button");

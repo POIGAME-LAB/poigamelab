@@ -42,8 +42,9 @@
 
   <section id="experience" class="experience-panel" aria-live="polite"></section>
   <section id="emptyState" class="empty" hidden>
-    <h2>公開プレイ記録を収集中です</h2>
+    <h2 id="emptyTitle">公開プレイ記録を収集中です</h2>
     <p id="emptyText">このゲームは、同一プレイヤーとして追える公開記録をまだ十分に確認できていません。</p>
+    <ul id="emptyList" hidden></ul>
     <div class="empty-note">記録が見つかり次第、到達日数・途中レベル・課金有無など、確認できた範囲だけを追加します。推測の進捗は作りません。</div>
   </section>
   <a class="back" href="guides.html">← 攻略一覧へ戻る</a>
@@ -81,6 +82,24 @@
   const src = datasets[game];
   if (!src) {
     root.hidden = true;
+    // No record to show: keep this URL out of the index so it is never a thin page.
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots) robots.setAttribute('content', 'noindex,follow');
+    if (!game) {
+      title.textContent = 'みんなの進捗（ゲームを選んでください）';
+      document.getElementById('emptyTitle').textContent = '公開プレイ記録があるゲーム';
+      document.getElementById('emptyText').textContent = '同一プレイヤーの公開記録を確認できているゲームです。';
+      const list = document.getElementById('emptyList');
+      Object.keys(datasets).forEach((name) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = 'progress.html?game=' + encodeURIComponent(name);
+        a.textContent = name;
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      list.hidden = false;
+    }
     empty.hidden = false;
     return;
   }
