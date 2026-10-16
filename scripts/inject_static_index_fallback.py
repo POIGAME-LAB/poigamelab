@@ -8,8 +8,10 @@ from pathlib import Path
 from urllib.parse import quote
 
 TARGET = Path("_site/index.html")
+OFFERS_TARGET = Path("_site/offers.html")
 GAMES_CSV = Path("_site/games.csv")
 MARKER = "POIGAME_STATIC_INDEX_FALLBACK_V1"
+OFFERS_MARKER = "POIGAME_STATIC_OFFERS_FALLBACK_V1"
 
 
 def _read_games(path: Path) -> list[dict[str, str]]:
@@ -34,6 +36,17 @@ def _thumbnail_path(raw_value: object) -> str:
     return f"assets/game-thumbs/{stem.lower()}.jpg"
 
 
+def _overview_excerpt(game: dict[str, str], limit: int = 90) -> str:
+    """First sentence of the catalog overview (games.csv), trimmed for a card."""
+    text = str(game.get("overview") or "").strip()
+    if not text:
+        return ""
+    sentence = text.split("。")[0].strip()
+    if len(sentence) > limit:
+        sentence = sentence[: limit - 1].rstrip() + "…"
+    return sentence
+
+
 def _build_cards(games: list[dict[str, str]]) -> str:
     cards: list[str] = []
     for index, game in enumerate(games):
@@ -42,6 +55,7 @@ def _build_cards(games: list[dict[str, str]]) -> str:
         days = str(game.get("days") or "").strip() or "調査中"
         difficulty = str(game.get("difficulty") or "").strip() or "調査中"
         featured = str(game.get("featured") or "").strip().lower() == "true"
+        overview_markup = escape(_overview_excerpt(game)) or "ポイントサイト別の還元額と条件を比較できます"
         image = _thumbnail_path(game.get("image"))
         detail_href = f"game.html?game={quote(name, safe='')}"
 
@@ -70,8 +84,8 @@ def _build_cards(games: list[dict[str, str]]) -> str:
     <div class="card-rank-row">{badge}</div>
     <h3><a class="game-title-link" href="{detail_href}">{escape(name)}</a></h3>
     <p class="game-condition">{escape(condition)}</p>
-    <div class="reward-box"><span>最高還元</span><strong>確認中</strong></div>
-    <p class="point-site">最新案件データを読み込み中</p>
+    <div class="reward-box"><span>最高還元</span><strong>詳細で比較</strong></div>
+    <p class="point-site">{overview_markup}</p>
     <div class="game-meta">
       <span>⏱ 達成目安：{escape(days)}</span>
       <span>🎮 難易度：{escape(difficulty)}</span>
@@ -158,12 +172,88 @@ def inject_static_fallback(index_path: Path = TARGET, games_path: Path = GAMES_C
     return {"alreadyPatched": False, "gameCount": len(games)}
 
 
+def _build_offer_cards(games: list[dict[str, str]]) -> str:
+    cards: list[str] = []
+    for game in games:
+        name = str(game.get("name") or "").strip()
+        condition = str(game.get("condition") or "").strip() or "指定条件クリア"
+        days = str(game.get("days") or "").strip() or "調査中"
+        difficulty = str(game.get("difficulty") or "").strip() or "調査中"
+        overview = str(game.get("overview") or "").strip()
+        detail_href = f"game.html?game={quote(name, safe='')}"
+        overview_markup = f'\n          <p class="condition">{escape(overview)}</p>' if overview else ""
+        cards.append(
+            f'''<article class="card" data-static-fallback="1">
+        <div class="body">
+          <h2><a href="{detail_href}">{escape(name)}</a></h2>
+          <p class="condition">{escape(condition)}</p>{overview_markup}
+          <div class="meta"><span>⏱ {escape(days)}</span><span>🎮 {escape(difficulty)}</span></div>
+          <div class="actions">
+            <a class="compare" href="{detail_href}#comparison">比較を見る</a>
+            <a class="guide" href="{detail_href}">詳細を見る</a>
+          </div>
+        </div>
+      </article>'''
+        )
+    return "\n      ".join(cards)
+
+
+def inject_offers_fallback(offers_path: Path = OFFERS_TARGET, games_path: Path = GAMES_CSV) -> dict[str, object]:
+    """Put the catalog (games.csv only: no reward figures) into offers.html's first HTML.
+
+    The page's own script replaces the grid on load (``grid.replaceChildren()``), so
+    nothing is duplicated once JavaScript has rendered the verified reward data.
+    """
+    if not offers_path.exists():
+        raise RuntimeError(f"missing target: {offers_path}")
+    if not games_path.exists():
+        raise RuntimeError(f"missing games CSV: {games_path}")
+
+    html = offers_path.read_text(encoding="utf-8")
+    if OFFERS_MARKER in html:
+        return {"alreadyPatched": True}
+
+    games = _read_games(games_path)
+    if not games:
+        raise RuntimeError("refusing to publish an empty static offers fallback")
+
+    grid = '<section id="offerGrid" class="grid" aria-live="polite"></section>'
+    if html.count(grid) != 1:
+        raise RuntimeError("expected exactly one empty #offerGrid in built offers.html")
+    html = html.replace(
+        grid,
+        f'<section id="offerGrid" class="grid" aria-live="polite">\n      <!-- {OFFERS_MARKER} -->\n      '
+        f'{_build_offer_cards(games)}\n  </section>',
+        1,
+    )
+
+    count_placeholder = '<div id="offerCount" class="count">-- 件</div>'
+    if count_placeholder not in html:
+        raise RuntimeError("offer-count placeholder changed unexpectedly")
+    html = html.replace(
+        count_placeholder,
+        f'<div id="offerCount" class="count">{len(games)} 件</div>',
+        1,
+    )
+
+    if "grid.replaceChildren();" not in html:
+        raise RuntimeError("offers.html no longer replaces the grid on render; static cards would duplicate")
+
+    offers_path.write_text(html, encoding="utf-8")
+    return {"alreadyPatched": False, "gameCount": len(games)}
+
+
 def main() -> int:
     summary = inject_static_fallback()
     if summary.get("alreadyPatched"):
         print("static index fallback already present")
     else:
         print(f"injected static index fallback: games={summary['gameCount']}")
+    offers_summary = inject_offers_fallback()
+    if offers_summary.get("alreadyPatched"):
+        print("static offers fallback already present")
+    else:
+        print(f"injected static offers fallback: games={offers_summary['gameCount']}")
     return 0
 
 

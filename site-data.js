@@ -592,6 +592,64 @@
     }
   }
 
+  function summarizeGameOffers(offers, labelOf) {
+    const label = typeof labelOf === "function" ? labelOf : (site) => site;
+    const yen = (value) => `${Number(value).toLocaleString("ja-JP")}円`;
+    const usable = (Array.isArray(offers) ? offers : [])
+      .filter((offer) => offer && Number(offer.reward) > 0);
+    const verified = usable.filter((offer) => offer.verified);
+    const reference = usable.filter((offer) => !offer.verified);
+    const lines = [];
+
+    if (verified.length > 0) {
+      const rewards = verified.map((offer) => Number(offer.reward));
+      const min = Math.min(...rewards);
+      const max = Math.max(...rewards);
+      const best = verified.reduce((top, offer) => (Number(offer.reward) > Number(top.reward) ? offer : top));
+      const sites = [...new Set(verified.map((offer) => label(offer.site) || offer.site).filter(Boolean))];
+      lines.push(`検証済みの案件を${verified.length}件掲載しています（${sites.join("・")}、${sites.length}サイト）。`);
+
+      lines.push(min === max ? `還元額は${yen(max)}です。` : `還元額は${yen(min)}〜${yen(max)}です。`);
+
+      const bestPlatforms = (best.platform || []).filter((item) => item && item !== "不明");
+      let bestCondition = summarizeOfferCondition(best.condition, best.type);
+      if (bestCondition.length > 40) bestCondition = `${bestCondition.slice(0, 39)}…`;
+      lines.push(
+        `最高額の案件：${label(best.site) || best.site}${bestPlatforms.length ? `・${bestPlatforms.join("・")}` : ""}／${bestCondition}。`
+      );
+
+      const byPlatform = {};
+      verified.forEach((offer) => {
+        (offer.platform || []).forEach((name) => {
+          if (name === "iOS" || name === "Android") {
+            byPlatform[name] = Math.max(byPlatform[name] || 0, Number(offer.reward));
+          }
+        });
+      });
+      const platformParts = ["iOS", "Android"].filter((name) => byPlatform[name]).map((name) => `${name} ${yen(byPlatform[name])}`);
+      if (platformParts.length) lines.push(`OS別の最高額：${platformParts.join("／")}（OSが明記された案件のみ）。`);
+
+      const dates = verified.map((offer) => String(offer.updatedAt || "").trim()).filter(Boolean).sort();
+      if (dates.length) lines.push(`最新の確認日：${dates[dates.length - 1]}。`);
+    } else if (reference.length > 0) {
+      const rewards = reference.map((offer) => Number(offer.reward));
+      const min = Math.min(...rewards);
+      const max = Math.max(...rewards);
+      lines.push("検証済みの案件データはまだありません。");
+      lines.push(
+        `参考値として${reference.length}件（${min === max ? yen(max) : `${yen(min)}〜${yen(max)}`}）を表示していますが、一次情報での確認は完了していません。`
+      );
+    } else {
+      lines.push("確認済みの案件データはまだありません。");
+    }
+
+    return {
+      verifiedCount: verified.length,
+      referenceCount: reference.length,
+      lines
+    };
+  }
+
   window.POIGAME_DATA = {
     parseCsv,
     rowsToObjects,
@@ -610,6 +668,7 @@
     buildRewardTrends,
     buildGameRewardTrend,
     summarizeOfferCondition,
+    summarizeGameOffers,
     escapeHtml,
     safeHttpUrl
   };

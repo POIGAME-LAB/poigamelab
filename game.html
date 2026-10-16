@@ -825,6 +825,39 @@
       }
     }
 
+  
+    .how-to-read ul {
+      margin: 10px 0 14px;
+      padding-left: 20px;
+    }
+
+    .how-to-read li {
+      margin: 0 0 8px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .how-to-read p {
+      font-size: 13px;
+      line-height: 1.8;
+    }
+  
+    .game-summary ul {
+      margin: 10px 0 12px;
+      padding-left: 20px;
+    }
+
+    .game-summary li {
+      margin: 0 0 6px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .game-summary .summary-note {
+      margin: 0;
+      font-size: 12px;
+      color: #776f85;
+    }
   </style>
 </head>
 
@@ -848,16 +881,16 @@
         </div>
 
         <div class="game-header-copy">
-          <h1 id="gameName">ゲーム名</h1>
+          <h1 id="gameName">ポイ活ゲーム案件の詳細</h1>
 
-          <p id="gameCondition">条件を読み込み中</p>
+          <p id="gameCondition">ポイントサイトごとの還元額・条件・対応OS・締切を比較できます。</p>
 
           <div class="best-offer">
             <span id="bestRewardLabel">最高還元</span>
 
-            <strong id="bestReward">--- 円</strong>
+            <strong id="bestReward">確認中</strong>
 
-            <p id="bestSite">ポイントサイト：調査中</p>
+            <p id="bestSite">ポイントサイト：確認中</p>
             <p id="bestVerified" class="best-verified"></p>
             <p id="dataHealthBox" class="data-health-box" hidden></p>
           </div>
@@ -869,6 +902,13 @@
           </div>
         </div>
       </div>
+    </section>
+
+
+    <section class="section game-summary" id="gameSummary" hidden>
+      <h2>📌 比較サマリー</h2>
+      <ul id="gameSummaryList"></ul>
+      <p class="summary-note">掲載中の案件データから自動で集計した内容です。申込み前に、各ポイントサイトで最新の条件をご確認ください。</p>
     </section>
 
     <section class="section" id="comparison">
@@ -924,28 +964,28 @@
     <details class="section collapsible-section" open>
       <summary>🎮 ゲーム概要</summary>
       <div class="collapsible-content">
-        <p id="gameOverview">読み込み中</p>
+        <p id="gameOverview">ゲームの概要と遊び方の特徴を表示します。</p>
       </div>
     </details>
 
     <details class="section collapsible-section" open>
       <summary>⏱ 達成目安</summary>
       <div class="collapsible-content">
-        <p id="gameDays">読み込み中</p>
+        <p id="gameDays">到達までの日数の目安を表示します。</p>
       </div>
     </details>
 
     <details class="section collapsible-section" open>
       <summary>⭐ 難易度</summary>
       <div class="collapsible-content">
-        <p id="gameDifficulty">読み込み中</p>
+        <p id="gameDifficulty">達成の難しさの目安を表示します。</p>
       </div>
     </details>
 
     <details class="section collapsible-section" open>
       <summary>💡 攻略・達成のコツ</summary>
       <div class="collapsible-content">
-        <p id="gameTips">読み込み中</p>
+        <p id="gameTips">達成のコツをまとめて表示します。</p>
 
       <div id="gameGuideCta" class="guide-cta">
         <strong id="gameGuideTitle">ポイ活攻略</strong>
@@ -954,6 +994,18 @@
       </div>
       </div>
     </details>
+
+    <section class="section how-to-read" id="how-to-read">
+      <h2>📖 この比較ページの見方</h2>
+      <ul>
+        <li><strong>還元額</strong>：各ポイントサイトが案件ページに表示している金額（円換算）です。同じゲームでも、サイトやOSによって金額も条件も異なります。</li>
+        <li><strong>条件・締切</strong>：「レベル○到達」などの成果条件と、インストール日から数えた達成期限です。金額だけでなく、期限内に達成できるかを「達成目安」「難易度」と見比べてください。</li>
+        <li><strong>更新日・（参考）表示</strong>：案件ごとの更新日は、POIGAME LABが最後に確認した日です。「（参考）」「参考掲載」は、一次情報での確認が完了していない参考値です。検証済みの案件がないゲームでは、参考値が最高還元の欄に表示されることがあります。</li>
+        <li><strong>課金が必要な条件</strong>：条件に購入が含まれる案件は「還元額 − 購入額」で損得を計算してください。</li>
+        <li><strong>［PR］表示</strong>：［PR］のリンクは紹介リンクで、経由した登録・申込みにより運営者が報酬を受け取る場合があります。掲載順や検証基準とは分けて管理しています。</li>
+      </ul>
+      <p>データの集め方と検証方法は <a href="about.html">運営情報・免責事項</a> に掲載しています。申込み前に、必ずリンク先で最新の条件をご確認ください。</p>
+    </section>
 
   </main>
 
@@ -967,12 +1019,37 @@
     const params = new URLSearchParams(window.location.search);
     const gameName = params.get("game");
 
+    function setHeadTag(selector, create, attrs) {
+      let node = document.head.querySelector(selector);
+      if (!node) {
+        node = document.createElement(create);
+        document.head.appendChild(node);
+      }
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+    }
+
+    function applyGameSeo(game) {
+      const canonicalUrl = `https://poigamelab.com/game.html?game=${encodeURIComponent(game.name)}`;
+      const firstSentence = String(game.overview || "").split("。")[0].trim();
+      const offerCount = game.offers.length;
+      const offerPart = offerCount > 0
+        ? `ポイントサイト${offerCount}件の掲載枠の還元額・条件・対応OS・締切を比較。`
+        : "ポイントサイト別の還元額・条件・対応OS・締切の確認状況をまとめています。";
+      const description = `${game.name}のポイ活案件。${firstSentence ? firstSentence + "。" : ""}${offerPart}達成目安と攻略情報もあわせて確認できます。`;
+      setHeadTag('link[rel="canonical"]', "link", { rel: "canonical", href: canonicalUrl });
+      setHeadTag('meta[name="description"]', "meta", { name: "description", content: description });
+      setHeadTag('meta[property="og:title"]', "meta", { property: "og:title", content: document.title });
+      setHeadTag('meta[property="og:url"]', "meta", { property: "og:url", content: canonicalUrl });
+      setHeadTag('meta[property="og:description"]', "meta", { property: "og:description", content: description });
+    }
+
     async function loadGameDetail() {
       try {
         const gameRows = await POIGAME_DATA.fetchCsv("games.csv");
         const sourceGame = gameRows.find((row) => String(row.name || "").trim() === gameName);
 
         if (!sourceGame) {
+          setHeadTag('meta[name="robots"]', "meta", { name: "robots", content: "noindex" });
           document.body.innerHTML = `
             <main class="detail-page">
               <h1>ゲームが見つかりませんでした。</h1>
@@ -1011,7 +1088,8 @@
           game.name
         );
 
-        document.title = `${game.name} | POIGAME LAB`;
+        document.title = `${game.name} ポイ活案件の比較 | POIGAME LAB`;
+        applyGameSeo(game);
         document.getElementById("gameName").textContent = game.name;
         document.getElementById("gameCondition").textContent = game.condition;
 
@@ -1042,10 +1120,10 @@
         if (gameDifficulty) gameDifficulty.textContent = game.difficulty;
 
         const overview = document.getElementById("gameOverview");
-        if (overview) overview.textContent = game.overview || "ゲーム概要は準備中です。";
+        if (overview) overview.textContent = game.overview || "ゲーム概要はまだ登録されていません。";
 
         const tips = document.getElementById("gameTips");
-        if (tips) tips.textContent = game.tips || "攻略情報を整理中です。";
+        if (tips) tips.textContent = game.tips || "攻略のコツはまだ登録されていません。";
 
         const guideCta = document.getElementById("gameGuideCta");
         const guideTitle = document.getElementById("gameGuideTitle");
@@ -1087,6 +1165,18 @@
         }
 
         const sortedOffers = [...game.offers].sort((a, b) => b.reward - a.reward);
+
+        const summaryBox = document.getElementById("gameSummary");
+        const summaryList = document.getElementById("gameSummaryList");
+        if (summaryBox && summaryList) {
+          const summary = POIGAME_DATA.summarizeGameOffers(game.offers, (site) => pointSites[site] || site);
+          summaryList.replaceChildren(...summary.lines.map((line) => {
+            const item = document.createElement("li");
+            item.textContent = line;
+            return item;
+          }));
+          summaryBox.hidden = false;
+        }
         const tableBody = document.getElementById("offerTableBody");
         const offerCards = document.getElementById("offerCards");
         const platformButtons = [...document.querySelectorAll(".os-filter button")];
@@ -1355,7 +1445,7 @@
                 <td>
                   ${safeUrl
                     ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
-                    : "準備中"}
+                    : "リンク未確認"}
                   ${referralMarkup}
                 </td>
               `;
@@ -1378,7 +1468,7 @@
                 </div>
                 ${safeUrl
                   ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>`
-                  : '<span class="coming-soon">リンク準備中</span>'}
+                  : '<span class="coming-soon">リンク未確認</span>'}
                 ${referralMarkup}
               `;
               offerCards.appendChild(card);

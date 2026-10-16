@@ -748,11 +748,11 @@
         </div>
         <div class="dashboard-stat highlight">
           <span>掲載中の最高還元</span>
-          <strong id="statMaxReward">-- 円</strong>
+          <strong id="statMaxReward">確認中</strong>
         </div>
         <div class="dashboard-stat">
           <span>データ最終更新</span>
-          <strong id="statUpdated">----</strong>
+          <strong id="statUpdated">確認中</strong>
           <small id="statHealth" class="dashboard-health-note"></small>
         </div>
       </div>
@@ -970,11 +970,11 @@
 
       const rewardText = bestOffer
         ? bestOffer.reward.toLocaleString() + " 円"
-        : "--- 円";
+        : "確認中";
 
-      const pointSiteText = bestOffer
-        ? pointSites[bestOffer.site] || bestOffer.site
-        : "調査中";
+      const pointSiteLine = bestOffer
+        ? "おすすめポイントサイト：" + (pointSites[bestOffer.site] || bestOffer.site)
+        : "確認済みの案件データはまだありません";
 
       const referral = bestOffer
         ? window.POIGAME_REFERRALS?.get(bestOffer.site) || null
@@ -1023,7 +1023,7 @@
     </div>
 
     <p class="point-site">
-      おすすめポイントサイト：${POIGAME_DATA.escapeHtml(pointSiteText)}
+      ${POIGAME_DATA.escapeHtml(pointSiteLine)}
     </p>
 
     ${
@@ -1046,7 +1046,7 @@
       </a>
       ${guideHref
         ? `<a href="${guideHref}" class="card-action card-action--guide">攻略を見る</a>`
-        : `<span class="card-action is-disabled">攻略準備中</span>`
+        : `<a href="game.html?game=${encodeURIComponent(game.name)}" class="card-action card-action--guide">詳細を見る</a>`
       }
     </div>
 
@@ -1064,7 +1064,7 @@
         `
         : `
           <span class="offer-button disabled">
-            💰 案件リンク準備中
+            💰 案件リンクは未確認
           </span>
         `
     }

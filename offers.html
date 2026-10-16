@@ -110,7 +110,7 @@
           <div class="meta"><span>⏱ ${POIGAME_DATA.escapeHtml(game.days)}</span><span>🎮 ${POIGAME_DATA.escapeHtml(game.difficulty)}</span></div>
           <div class="actions">
             <a class="compare" href="game.html?game=${encodeURIComponent(game.name)}#comparison">比較を見る</a>
-            ${guideHref ? `<a class="guide" href="${guideHref}">攻略を見る</a>` : '<span class="disabled">攻略準備中</span>'}
+            ${guideHref ? `<a class="guide" href="${guideHref}">攻略を見る</a>` : `<a class="guide" href="game.html?game=${encodeURIComponent(game.name)}">詳細を見る</a>`}
           </div>
         </div>
       `;
