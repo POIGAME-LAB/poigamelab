@@ -48,6 +48,7 @@ ROOT_FILES = (
     "shounin-hourouki-guide.html",
     "momantime-guide.html",
     "hero-wars-alliance-guide.html",
+    "zombie-panic-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

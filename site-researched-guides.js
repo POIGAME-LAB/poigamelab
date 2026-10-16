@@ -75,5 +75,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Lv80・100攻略を読む →", href: "hero-wars-alliance-guide.html" }
     ]
+  },
+  "ゾンビ・パニック": {
+    title: "ゾンビ・パニック ポイ活攻略",
+    description: "ワラウStepUp（30日以内・ステージ35まで）の条件と、ステージ35に届いた実例の日数、7日間チャレンジの武器、戦力の上げ方、広告視聴と課金の収支をまとめています。",
+    links: [
+      { label: "ステージ35攻略を読む →", href: "zombie-panic-guide.html" }
+    ]
   }
 });
