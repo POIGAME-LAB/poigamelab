@@ -47,5 +47,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "本部レベル攻略を読む →", href: "doomsday-last-survivor-guide.html" }
     ]
+  },
+  "三國志 真戦": {
+    title: "三國志 真戦 ポイ活攻略",
+    description: "勢力15,000（30日以内）の到達実例と、新サーバーの開始時期・初心者保護48時間・土地レベル別の勢力値・農耕と造幣所の使い方をまとめています。",
+    links: [
+      { label: "勢力15,000攻略を読む →", href: "sangokushi-shinsen-guide.html" }
+    ]
   }
 });

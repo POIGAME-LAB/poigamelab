@@ -44,6 +44,7 @@ ROOT_FILES = (
     "disney-solitaire-guide.html",
     "topwar-guide.html",
     "doomsday-last-survivor-guide.html",
+    "sangokushi-shinsen-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",
