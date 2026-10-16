@@ -87,9 +87,13 @@ def validate(spec: dict) -> list[str]:
             errs.append(f"toc_must_include:{must}")
     if "condition" not in ids:
         errs.append("section_missing:condition")
+    source_urls = {s.get("url") for s in spec["sources"]}
     for sec in spec["sections"]:
         if sec["id"] not in toc_ids:
             errs.append(f"section_not_in_toc:{sec['id']}")
+        for ref in sec.get("sourceRefs", []):
+            if ref not in source_urls:
+                errs.append(f"section_source_ref_not_in_sources:{sec['id']}:{ref}")
         for b in sec.get("blocks", []):
             if b.get("t") not in BLOCK_TYPES:
                 errs.append(f"bad_block:{b.get('t')}")
