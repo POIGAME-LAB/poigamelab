@@ -51,6 +51,7 @@ ROOT_FILES = (
     "zombie-panic-guide.html",
     "the-ants-guide.html",
     "tsue-to-ken-guide.html",
+    "last-asylum-plague-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

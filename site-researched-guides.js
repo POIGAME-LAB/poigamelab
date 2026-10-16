@@ -96,5 +96,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "二次転職・Lv58攻略を読む →", href: "tsue-to-ken-guide.html" }
     ]
+  },
+  "ラストアサイラム：プレイグ": {
+    title: "ラストアサイラム：プレイグ ポイ活攻略",
+    description: "ワラウStepUp（教会Lv28・UR英雄8星）の条件と、Lv18・Lv24・Lv28の実例の日数、レベルごとの建設時間、ギルドと加速アイテム、課金ステップの収支をまとめています。",
+    links: [
+      { label: "Lv18・24攻略を読む →", href: "last-asylum-plague-guide.html" }
+    ]
   }
 });
