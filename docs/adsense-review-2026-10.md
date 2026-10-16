@@ -55,3 +55,33 @@
 3. 攻略記事の著者・確認日・実プレイ記録の拡充（実際の記録のみ。架空は不可）
 4. `progress.html` の扱い（1.とあわせて判断）
 5. AdSenseタグの設置場所（運営者の判断）
+
+## 追補（2026-10-16 ChatGPT監査を受けた再確認）
+
+### 1. 運営情報のAI/API説明の訂正
+
+初版の `about.html` は「日次の案件更新には外部の生成AIサービスやAPI課金型サービスを使用していません」と書いたが、
+範囲の説明が不十分だった。コードとワークフローを再確認した結果:
+
+| 工程 | 外部AI/APIの使用 | 根拠 |
+| --- | --- | --- |
+| 毎日の既存案件更新（`refresh-verified-offers.yml`、cron `17 16 * * *`＝01:17 JST） | **使用しない**。`daily_scan_review.py` とその推移的な import 9モジュールに Firecrawl/Gemini/Tavily の参照なし。ワークフローにもそれらのSecretsを渡していない | 静的解析（import閉包の全文検索）とワークフロー定義の確認 |
+| `scripts/auto_refresh.py`（`FIRECRAWL_API_KEY`/`GEMINI_API_KEY` 必須） | 現行ワークフローからは**呼び出されていない**旧V23の入口。README.md の「自動更新フロー」はこの旧構成のまま（記述が古い） | `.github/workflows/*.yml` を検索しても参照なし。テストの deselect のみ |
+| `research-new-game-content.yml`（日次更新成功後に自動起動） | `data/new_game_content_queue.json` の件数が0なら API 呼び出しなし（最新コミットの count は 0）。件数が1以上のときは Tavily / Gemini / Firecrawl を使用。リポジトリ変数 `ENABLE_NEW_GAME_CONTENT_RESEARCH` が `false` なら起動しない（変数の実値は未確認） | ワークフロー定義、`data/new_game_content_queue.json` |
+| `publish-researched-new-games.yml` | 直近の実行は全て skipped。API呼び出しなし（`publish_top_five_content.py` は "No network or AI calls"）。`ENABLE_NEW_GAME_AUTO_PUBLISH` の実値は未確認 | 実行履歴、スクリプトの docstring |
+| `discover-trending-games.yml` / `adopt-high-reward-games.yml` / `collect-guide-evidence.yml` | 手動実行のみ。Firecrawl/Gemini/Tavily を使用 | ワークフロー定義（`on: workflow_dispatch`）。discoverの最後の定期実行は 2026-09-16 |
+
+Secrets・リポジトリ変数の実際の設定値は確認できない（権限なし）。`about.html` は「使う場合があります」と、確認できた範囲で書き直した。
+
+### 2. 「（参考）は最高還元に含めていない」は誤りだった
+
+`games.js` はカタログの参考値（`provisionalReward`）、`site-data.js` は旧 `offers.csv` の参考行を、検証済み案件のないゲームに限り
+最高還元の欄に（参考／参考掲載ラベル付きで）表示する。トップの「掲載中の最高還元」の集計だけが検証済み金額のみ。
+`about.html` と `game.html` の説明を実際の挙動に合わせて訂正した。
+
+### 3. ゲーム詳細ページの再評価
+
+- 初期HTML: 依然として全ゲーム共通の説明のみ（ゲーム固有情報はJS実行後）。
+- JS実行後の本文量: 26ゲームで 約1,250〜3,000字（修正前）。検証済み案件のない9ゲームは約1,250〜1,450字で、固有の本文は概要1文と達成目安のみで薄い。
+- 追加改善（安全な範囲）: 読み込んだ案件データだけから作る「比較サマリー」（件数・サイト数・還元額の幅・最高額の案件・OS別最高額・最新確認日）を追加。新しい数値や推測は作らない。
+- 提案のみ: ゲームごとの静的ページ化（SSG相当）、検証済み案件のないゲームの扱い（noindex/統合）。
