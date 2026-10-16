@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "game": "モーマンタイム",
+  "updatedAt": "2026-10-16",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。始めた時期の条件、課金の有無、同盟の有無は人によって違うため、平均ではなく実例として見てください。",
+  "notice": "※Lv94の実例は13〜23日です。現在の期限は25日で、中盤でリタイアした記録と序盤でやめた記録も含めています。",
+  "footnote": "日数は同盟・課金・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件（Lv135までなど）のものを含みます。",
+  "initialVisible": 6,
+  "players": [
+    {
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "無課金でLv94が15日目（Lv135は断念）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv28",
+          "detail": "青銅器時代"
+        },
+        {
+          "day": 3,
+          "label": "Lv50"
+        },
+        {
+          "day": 5,
+          "label": "Lv61"
+        },
+        {
+          "day": 7,
+          "label": "Lv73"
+        },
+        {
+          "day": 9,
+          "label": "Lv81",
+          "detail": "Lv79は9日目に到達"
+        },
+        {
+          "day": 11,
+          "label": "Lv86"
+        },
+        {
+          "day": 13,
+          "label": "Lv90"
+        },
+        {
+          "day": 15,
+          "label": "Lv94達成",
+          "detail": "帝王時代 後期"
+        }
+      ],
+      "note": "同盟には1日目に入れず2日目に加入、5日目に上位同盟へ移籍した。無双名士を引けたのは7日目で、そこから征戦が楽になったという。Lv135は無課金では期限内に届かないと判断してリタイア。2026年2月16日付の記事。",
+      "sources": [
+        "https://kochalog.com/momantime/"
+      ],
+      "id": "A"
+    },
+    {
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "無課金でLv94が16日目（1日約2時間）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv35"
+        },
+        {
+          "day": 7,
+          "label": "Lv66"
+        },
+        {
+          "day": 11,
+          "label": "Lv79"
+        },
+        {
+          "day": 14,
+          "label": "Lv87"
+        },
+        {
+          "day": 16,
+          "label": "Lv94達成"
+        }
+      ],
+      "note": "4日目ごろから1日の作業量が減った。時代昇格では研究だけが終わらず足止めされることが多く、研究を止めないようにしたと書いている。Lv94で終了し、それ以上は試していない。2025年8月の記録。",
+      "sources": [
+        "https://chinopoilog2.hatenadiary.jp/entry/moman-taimu"
+      ],
+      "id": "B"
+    },
+    {
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "Lv94が14日目（160円の初回チャージで同盟を設立）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv30"
+        },
+        {
+          "day": 2,
+          "label": "Lv46"
+        },
+        {
+          "day": 4,
+          "label": "Lv58"
+        },
+        {
+          "day": 6,
+          "label": "Lv69",
+          "detail": "鉱山・製鉄の素材が不足"
+        },
+        {
+          "day": 10,
+          "label": "Lv83",
+          "detail": "土地売買証書を使い切った"
+        },
+        {
+          "day": 13,
+          "label": "Lv93",
+          "detail": "手持ちのアイテムを使い切った"
+        },
+        {
+          "day": 14,
+          "label": "Lv94達成",
+          "detail": "領土が足りず翌朝まで待った"
+        }
+      ],
+      "note": "空いている同盟が見つからず、160円の初回チャージを購入して自分で同盟を設立。10日目あたりからレベルの伸びが鈍り、資源は満タンにせず調整したと書いている。2025年10月のワラウのクチコミにも、同じ開始時期・160円の初回チャージ・同盟設立・2週間という内容の投稿があるため、1人分にまとめた。当時の期限は35日以内。",
+      "sources": [
+        "https://ameblo.jp/mononofwu/entry-12936054899.html",
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "C"
+    },
+    {
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "Lv94が13日目（月間札・年間パスを購入）",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "Lv56",
+          "detail": "残り約7時間で加速アイテムを購入"
+        },
+        {
+          "day": 7,
+          "label": "Lv79",
+          "detail": "最後に160円課金して一気に進めた"
+        },
+        {
+          "day": 13,
+          "label": "Lv94達成"
+        }
+      ],
+      "note": "時間制限が厳しく資源も加速も足りないため、1日160円を目安に適度に課金しながら進めたと書いている。Lv79以降は加速が余った。Lv135は無理そうで、Lv149も割に合わないとして断念。別のポイントサイト（freecash）の案件での記録で、2025年9月。",
+      "sources": [
+        "https://poitan.hatenablog.jp/entry/2025/09/11/214435"
+      ],
+      "id": "D"
+    },
+    {
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "Lv94が13日目（Lv33は1日目、Lv56は4日目）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv33"
+        },
+        {
+          "day": 4,
+          "label": "Lv56"
+        },
+        {
+          "day": 13,
+          "label": "Lv94達成"
+        }
+      ],
+      "note": "Lv90を超えたあたりから1日で1〜2レベルずつ上がるペースだった。30日でLv120くらいが目安と書いている。同盟の加入は必須としている。2025年7月の記事。",
+      "sources": [
+        "https://itsudemogaming.com/momantime_efficiently_proceeding/"
+      ],
+      "id": "E"
+    },
+    {
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "旧条件（50日以内）でLv159を45日目に達成",
+      "milestones": [
+        {
+          "day": 45,
+          "label": "Lv159達成",
+          "detail": "当時の期限は50日以内"
+        }
+      ],
+      "note": "最初は進みが速いが、だんだん土地が足りなくなり、最終的には人口が不足してレベルが上がりにくくなったという。月間札を買い、毎日戸籍を100得ないとLv159は厳しいかもしれず、買うなら20日目までにと書いている。現在の期限は25日で、同じ進め方は使えない。2025年8月の記録。",
+      "sources": [
+        "https://yuri98765.com/20250826-2/"
+      ],
+      "id": "F"
+    },
+    {
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "Lv94が23日目（のんびり・月間札を購入）",
+      "milestones": [
+        {
+          "day": 23,
+          "label": "Lv94達成"
+        }
+      ],
+      "note": "画面左下のミッションを頼りに進め、序盤から土地売買証書をたくさん買った。800円の月間札で広告がなくなり、なければLv94の手前で諦めていたと思う、と書いている。2026年1月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "G"
+    },
+    {
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "同盟なしでLv94が15日目",
+      "milestones": [
+        {
+          "day": 15,
+          "label": "Lv94達成"
+        }
+      ],
+      "note": "同盟には一度も入らなかった。同盟に入らないと任務報酬が途中で止まり、参加できるイベントも少なくなるという。月間札は購入。2026年1月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "H"
+    },
+    {
+      "label": "プレイヤーI",
+      "status": "completed",
+      "summary": "Lv94が限界だった（日数の記載なし）",
+      "milestones": [
+        {
+          "dayLabel": "終了時",
+          "label": "Lv94",
+          "detail": "ステップの課金もしたがLv94が限界"
+        }
+      ],
+      "note": "始めた時に同盟がなく、課金して同盟を作成。同盟ランキングは3位まで上がり、目処がついたところでメンバーに同盟リーダーを譲渡した。2026年8月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "I"
+    },
+    {
+      "label": "プレイヤーJ",
+      "status": "completed",
+      "summary": "Lv123まで到達（ポイント反映に時間がかかった）",
+      "milestones": [
+        {
+          "dayLabel": "期限内",
+          "label": "Lv123到達"
+        }
+      ],
+      "note": "初回チャージのポイント反映に時間がかかり（あんしん保証を利用）、Lv123のステップは投稿時点で未反映だったという。Lv123のあんしん保証の期限がステップの達成期限から数日しかなく、申請できなかったと書いている。2026年10月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "J"
+    },
+    {
+      "label": "プレイヤーK",
+      "status": "completed",
+      "summary": "朝晩1回ずつの操作でLv94（日数の記載なし）",
+      "milestones": [
+        {
+          "dayLabel": "期限内",
+          "label": "Lv94達成"
+        }
+      ],
+      "note": "任意の広告とやることは多いが、朝晩に1回ずつ触るだけで期限内にLv94まで行けたと書いている。2026年5月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "K"
+    },
+    {
+      "label": "プレイヤーL",
+      "status": "ongoing",
+      "summary": "1週間でLv55（Lv56で止めるか検討中）",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "Lv55"
+        }
+      ],
+      "note": "月800円を課金。Lv56のステップで辞めるか考えているが、課金分のバフが残るので続けてもよいかと書いている。投稿時点での結果は不明。2026年7月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "L"
+    },
+    {
+      "label": "プレイヤーM",
+      "status": "completed",
+      "summary": "Lv56は1週間かからず到達",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "Lv56",
+          "detail": "1週間かからなかった"
+        }
+      ],
+      "note": "このタイプのゲームが苦手な人は、メインミッションの指示どおりにLv56までがんばればよいかも、と書いている。2026年4月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "M"
+    },
+    {
+      "label": "プレイヤーN",
+      "status": "retired",
+      "summary": "中盤で資源が足りずリタイア",
+      "milestones": [
+        {
+          "dayLabel": "中盤",
+          "label": "リタイア",
+          "detail": "人口の増加に資源の確保が追いつかなかった"
+        }
+      ],
+      "note": "中盤へ進むと人口が急に増える一方、資源の確保が追いつかず、根気が続かなかったという。2026年3月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "N"
+    },
+    {
+      "label": "プレイヤーO",
+      "status": "retired",
+      "summary": "序盤でやめた（報酬レベルまで遠いため）",
+      "milestones": [
+        {
+          "dayLabel": "序盤",
+          "label": "中止",
+          "detail": "ゲーム性が合わなかった"
+        }
+      ],
+      "note": "最初のレベルはすんなり進むが、報酬のレベルまで数十レベル上げる必要があり、つまらなくてやめたと書いている。2025年10月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+      ],
+      "id": "O"
+    }
+  ]
+}

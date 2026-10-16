@@ -61,5 +61,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Lv30・37攻略を読む →", href: "shounin-hourouki-guide.html" }
     ]
+  },
+  "モーマンタイム": {
+    title: "モーマンタイム ポイ活攻略",
+    description: "ワラウStepUp（25日以内・Lv159まで）の条件と、Lv94に13〜23日で届いた実例、ワラウの達成率データ、土地と人口の集め方、同盟、課金ステップの収支をまとめています。",
+    links: [
+      { label: "Lv94攻略を読む →", href: "momantime-guide.html" }
+    ]
   }
 });
