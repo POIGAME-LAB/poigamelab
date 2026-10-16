@@ -38,7 +38,7 @@
 
 ## 検証
 
-- 全テスト: main 62 failed / 1,245 passed → PR 62 failed / 1,256 passed。失敗の集合は同一（既存課題）。
+- 全テスト: origin/main(698d6c5) 62 failed / 1,250 passed → PR 62 failed / 1,260 passed。失敗の集合は同一（既存課題）。増えた10件は新規テスト。初版の記録は古いローカルmainとの比較で数値が誤っていたため訂正。
 - `node tests/test_site_data_v24.js` / `test_site_health_v25.js`: PASS
 - 本番と同じビルド手順の成果物を Chromium（PC 1280px / スマホ 390px）で13ページ確認: JSエラー0、横スクロール0
 - 未実施: 本番での実表示確認、Search ConsoleのURL検査、PageSpeed、iPhone実機
