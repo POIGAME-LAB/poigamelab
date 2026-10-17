@@ -136,10 +136,13 @@ def test_game_offer_summary_node_unit_tests():
     assert result.returncode == 0, result.stdout + result.stderr
 
 
-def test_progress_page_is_noindex_in_the_first_html():
+def test_progress_page_keeps_indexing_for_pages_with_records_and_redirects_empty_ones():
     html = (ROOT / "progress.html").read_text(encoding="utf-8")
-    assert '<meta name="robots" content="noindex,follow">' in html
-    assert "setAttribute('content'" not in html
+    # Pages that have player records stay indexable (unchanged from the live site); a static noindex would
+    # also hit them. Empty/unknown states are never rendered: they redirect to the guide list.
+    assert '<meta name="robots" content="index,follow">' in html
+    assert "noindex" not in html
+    assert "location.replace('guides.html')" in html
 
 
 def test_experience_panel_shows_update_date_only_when_it_is_a_real_date():

@@ -18,7 +18,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex,follow">
+  <meta name="robots" content="index,follow">
   <meta name="description" content="ポイ活ゲームの実際のプレイヤー進捗を、同一人物ごとの時系列で整理。平均ではなく公開されている実例として比較できます。">
   <title>みんなの進捗 | POIGAME LAB</title>
   <link rel="stylesheet" href="assets/guide-experience.css?v=20260914-1">
@@ -42,9 +42,8 @@
 
   <section id="experience" class="experience-panel" aria-live="polite"></section>
   <section id="emptyState" class="empty" hidden>
-    <h2 id="emptyTitle">公開プレイ記録を収集中です</h2>
+    <h2>公開プレイ記録を収集中です</h2>
     <p id="emptyText">このゲームは、同一プレイヤーとして追える公開記録をまだ十分に確認できていません。</p>
-    <ul id="emptyList" hidden></ul>
     <div class="empty-note">記録が見つかり次第、到達日数・途中レベル・課金有無など、確認できた範囲だけを追加します。推測の進捗は作りません。</div>
   </section>
   <a class="back" href="guides.html">← 攻略一覧へ戻る</a>
@@ -81,23 +80,9 @@
 
   const src = datasets[game];
   if (!src) {
+    // No public record for this game (or no game given): never show a thin page; send people to the guide list.
     root.hidden = true;
-    if (!game) {
-      title.textContent = 'みんなの進捗（ゲームを選んでください）';
-      document.getElementById('emptyTitle').textContent = '公開プレイ記録があるゲーム';
-      document.getElementById('emptyText').textContent = '同一プレイヤーの公開記録を確認できているゲームです。';
-      const list = document.getElementById('emptyList');
-      Object.keys(datasets).forEach((name) => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = 'progress.html?game=' + encodeURIComponent(name);
-        a.textContent = name;
-        li.appendChild(a);
-        list.appendChild(li);
-      });
-      list.hidden = false;
-    }
-    empty.hidden = false;
+    location.replace('guides.html');
     return;
   }
 
