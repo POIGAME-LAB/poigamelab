@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "game": "ヒーローウォーズ：アライアンス",
+  "updatedAt": "2026-10-16",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。課金の有無や稼ぎ方は人によって違うため、平均ではなく実例として見てください。",
+  "notice": "※Lv80の実例は22〜46日、Lv100に届いたのは2人です。途中でやめた記録も含めています。",
+  "footnote": "日数は課金・イベント・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
+  "initialVisible": 6,
+  "players": [
+    {
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "150円の課金でLv80が29日目（Lv100は断念）",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv30"
+        },
+        {
+          "day": 5,
+          "label": "Lv50"
+        },
+        {
+          "day": 7,
+          "label": "Lv60"
+        },
+        {
+          "day": 29,
+          "label": "Lv80達成"
+        },
+        {
+          "dayLabel": "29日目以降",
+          "label": "Lv100は断念",
+          "detail": "計算上60日に間に合わない"
+        }
+      ],
+      "note": "150円のエメラルドパックを初日に購入。ヒーローはほとんど強化せず、エネルギーの消費とデイリークエストを毎日続けた。Lv80時点で1レベルに必要な経験値は4,000で、1日に取れる経験値は約1,700〜1,800と見積もっている。2026年2月16日付の記事。",
+      "sources": [
+        "https://kochalog.com/hero-wars-alliance-rpg/"
+      ],
+      "id": "A"
+    },
+    {
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "150円の課金でLv100が45日目",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv35"
+        },
+        {
+          "day": 4,
+          "label": "Lv51"
+        },
+        {
+          "day": 9,
+          "label": "Lv63"
+        },
+        {
+          "day": 22,
+          "label": "Lv80"
+        },
+        {
+          "day": 37,
+          "label": "Lv90"
+        },
+        {
+          "day": 45,
+          "label": "Lv100達成",
+          "detail": "エメラルドをほぼ使い切って"
+        }
+      ],
+      "note": "エメラルドを大量に稼ぐため、ゲーム内の「無料」欄から別のゲームを複数インストールして遊び、合計37,683個を集めた。毎日エメラルド約600個でエネルギーを買ってレイドを繰り返した。本人は、その別ゲームの不具合も使ったと書いており、同じ方法は再現できない可能性がある。2025年7月の記事。",
+      "sources": [
+        "https://note.com/doto_yatowarenai/n/na0595ffd0112"
+      ],
+      "id": "B"
+    },
+    {
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "1,500円の課金でLv100が49日目",
+      "milestones": [
+        {
+          "day": 49,
+          "label": "Lv100達成"
+        }
+      ],
+      "note": "課金支援の対象になっており、実質500円で1,500円の7日間ギフトを購入できたため、Lv100を目指したと書いている。Lv90までは無課金でも終わるが、Lv100はある程度の課金が必要、としている。2025年6月の記事。",
+      "sources": [
+        "https://yuri98765.com/20250616-2/"
+      ],
+      "id": "C"
+    },
+    {
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "Lv80が36日目でリタイア",
+      "milestones": [
+        {
+          "day": 2,
+          "label": "Lv30"
+        },
+        {
+          "day": 7,
+          "label": "Lv60"
+        },
+        {
+          "day": 16,
+          "label": "Lv68"
+        },
+        {
+          "day": 26,
+          "label": "Lv75"
+        },
+        {
+          "day": 33,
+          "label": "Lv79"
+        },
+        {
+          "day": 36,
+          "label": "Lv80達成",
+          "detail": "Lv100は計算上間に合わないと撤退"
+        }
+      ],
+      "note": "Lv100は計算上間に合わないと判断してLv80で撤退。フルでやってもLv90に届かないと見ている。2025年1月の記録で、当時はLv120までの案件だった。",
+      "sources": [
+        "https://choipoi.com/hero-wars-alliance-rpg/"
+      ],
+      "id": "D"
+    },
+    {
+      "label": "プレイヤーE",
+      "status": "retired",
+      "summary": "Lv74でリタイア（貯めたエメラルドを失った）",
+      "milestones": [
+        {
+          "dayLabel": "終了時",
+          "label": "Lv74",
+          "detail": "Lv80を目安に挑戦していた"
+        }
+      ],
+      "note": "まったりプレイで貯めていたエメラルドを、子供がガチャに使ってしまい、気持ちが折れたという。アクシデントがなければLv80までは60日以内に届いたと思う、と書いている。2025年6月の記事。",
+      "sources": [
+        "https://ferirogu.com/herowars/"
+      ],
+      "id": "E"
+    },
+    {
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "Lv80が46日目（1日1時間ほど）",
+      "milestones": [
+        {
+          "day": 46,
+          "label": "Lv80達成"
+        }
+      ],
+      "note": "最初の3日はめんどうだが、その後は日課だけで、毎日1時間程度は触る必要があったと書いている。期間が60日なので気楽にできた、としている。2025年7月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "F",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/07/17｜男性・50代｜「地道にコツコツと！」"
+      ]
+    },
+    {
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "150円の課金でLv90（約50日）",
+      "milestones": [
+        {
+          "day": 50,
+          "label": "Lv90達成",
+          "detail": "約50日"
+        },
+        {
+          "dayLabel": "残り10日",
+          "label": "Lv100は無理と判断"
+        }
+      ],
+      "note": "最低額の150円だけ課金。ネットで150円の課金でLv100に50日より早く届いた記事を見つけたが、見つけるのが遅かったという。2025年10月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "G",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/10/18｜男性・40代｜「攻略記事を探してからやると効率的です」"
+      ]
+    },
+    {
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "160円の課金でLv90（Lv100は難しい）",
+      "milestones": [
+        {
+          "dayLabel": "終了時",
+          "label": "Lv90"
+        }
+      ],
+      "note": "レイドを使いたくて160円を課金。Lv70まではどんどん上がって楽しかったと書いている。ぎりぎりまで粘るがLv100は無理かな、としている。2025年7月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "H",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/07/01｜女性・40代｜「どんどんレベルが上がるので楽しかった」"
+      ]
+    },
+    {
+      "label": "プレイヤーI",
+      "status": "completed",
+      "summary": "レイドの課金後、イベントを活用してLv80",
+      "milestones": [
+        {
+          "dayLabel": "終了時",
+          "label": "Lv80"
+        }
+      ],
+      "note": "レイドが使えるように少し課金し、エネルギーがもらえるイベントも積極的にやってレイドを繰り返したと書いている。2025年6月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "I",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/06/03｜女性・40代｜「コツは」"
+      ]
+    },
+    {
+      "label": "プレイヤーJ",
+      "status": "ongoing",
+      "summary": "290円の課金後もLv38で諦めることを検討",
+      "milestones": [
+        {
+          "dayLabel": "投稿時",
+          "label": "Lv38",
+          "detail": "他のゲームに時間を使うことを検討"
+        }
+      ],
+      "note": "レイドに加入できてから、2倍速とAUTOが使える290円の課金（14日間のみ）をした。それでもサクサク進まず、もらえる経験値も少ないと書いている。2025年11月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "J",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/11/12｜女性・50代｜「オススメしません！」"
+      ]
+    },
+    {
+      "label": "プレイヤーK",
+      "status": "retired",
+      "summary": "Lv30で止めた（獲得ptが小さい）",
+      "milestones": [
+        {
+          "dayLabel": "終了時",
+          "label": "Lv30"
+        }
+      ],
+      "note": "やるべきことが多いのに獲得ポイントが5や10で、やっとLv30まで上げても30ポイントだったという。30を過ぎるとほとんど上がらなくなり、やめた。当時の案件でのポイント。2025年5月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "K",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/05/19｜女性・50代｜「コスパが悪すぎです。」"
+      ]
+    },
+    {
+      "label": "プレイヤーL",
+      "status": "ongoing",
+      "summary": "Lv65で、残りは期限内に間に合わないと計算",
+      "milestones": [
+        {
+          "dayLabel": "投稿時",
+          "label": "Lv65",
+          "detail": "Lv100まであと35レベル"
+        }
+      ],
+      "note": "1レベルに2,000の経験値が必要で、スタミナ1につき経験値1。Lv100までに70,000以上の経験値が必要と見て、エメラルドを2.5万個以上集めないと届かないと計算している。投稿時点での最終結果は不明。2025年8月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
+      ],
+      "id": "L",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/08/17｜男性・20代｜「楽しいのだが」"
+      ]
+    }
+  ]
+}

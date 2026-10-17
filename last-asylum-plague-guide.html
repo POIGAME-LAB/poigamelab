@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/last-asylum-plague-guide.html">
+<meta name="description" content="ラストアサイラム：プレイグのポイ活攻略。ワラウStepUp（教会Lv28・UR英雄8星・45日以内）の条件と、Lv18・Lv21・Lv24・Lv28に届いた実例の日数、レベルごとの建設時間、ギルドと加速アイテムの集め方、課金ステップの収支を整理。">
+<title>ラストアサイラム：プレイグ ポイ活攻略｜教会Lv24・Lv28を30〜45日で目指す進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ラストアサイラム：プレイグ 攻略ガイド</span>
+    <a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011" target="_blank" rel="noopener nofollow">ワラウの現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ラストアサイラム：プレイグ ポイ活攻略</h1>
+<p class="lead">ワラウのStepUp案件（教会Lv4〜28、UR英雄の星、課金ステップ4つ）を想定し、Lv24やLv28に届いた人と、途中で撤退した人の記録を日数ごとに並べました。教会のレベルごとの建設時間も整理しています。</p>
+<div class="stats"><div class="stat"><span>実例：Lv18</span><strong>5〜8日</strong></div><div class="stat"><span>実例：Lv24</span><strong>23〜30日</strong></div><div class="stat"><span>実例：Lv28</span><strong>42日（1人）</strong></div></div>
+<p class="hero-note">Lv18までは1週間前後で届く記録が複数ありますが、Lv21以降は建設時間が長くなり、Lv24に届かず撤退した記録も多くあります。Lv28は届いた実例が1人だけで、到達を保証するものではありません。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#system">レベルが上がる仕組み</a></li><li><a href="#time">レベルごとの建設時間</a></li><li><a href="#guild">ギルドと加速アイテム</a></li><li><a href="#flow">序盤・中盤・終盤</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#stuck">詰まりやすい所</a></li><li><a href="#money">課金ステップの収支</a></li><li><a href="#target">どこまで目指すか</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（ワラウAndroid・2026年10月17日確認）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>案件</td><td>ラストアサイラム：プレイグ（StepUp）</td></tr>
+<tr><td>対応OS</td><td>Android（iOS版は別ページで、ステップ数は13、合計10,000pt。UR英雄の星のptが低い）</td></tr>
+<tr><td>条件</td><td>新規アプリインストール後、StepUpミッションの各達成条件をクリア（期限はステップごと。すべてインストール日から起算）</td></tr>
+<tr><td>獲得pt（ワラウ表記）</td><td>全ステップ合計13,100pt（課金ステップを除くと10,590pt）</td></tr>
+<tr><td>クチコミ</td><td>評価3.6、53件（ワラウ表記）</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>ステップ</th><th>期限</th><th>獲得pt</th></tr></thead>
+<tbody>
+<tr><td>教会Lv.4に到達</td><td>1日以内</td><td>10pt</td></tr>
+<tr><td>UR英雄を購入</td><td>3日以内</td><td>60pt（課金）</td></tr>
+<tr><td>教会Lv.7に到達</td><td>2日以内</td><td>25pt</td></tr>
+<tr><td>教会Lv.11に到達</td><td>7日以内</td><td>35pt</td></tr>
+<tr><td>教会Lv.14に到達</td><td>10日以内</td><td>40pt</td></tr>
+<tr><td>第2建設隊列を購入</td><td>30日以内</td><td>120pt（課金）</td></tr>
+<tr><td>UR英雄5星にレベルアップ</td><td>7日以内</td><td>50pt</td></tr>
+<tr><td>教会Lv.18に到達</td><td>30日以内</td><td>230pt</td></tr>
+<tr><td>第2研究隊列を購入</td><td>30日以内</td><td>730pt（課金）</td></tr>
+<tr><td>UR英雄7星にレベルアップ</td><td>15日以内</td><td>90pt</td></tr>
+<tr><td>教会Lv.21に到達</td><td>21日以内</td><td>640pt</td></tr>
+<tr><td>教会Lv.24に到達</td><td>30日以内</td><td>1,900pt</td></tr>
+<tr><td>プレミアム月パスを購入</td><td>30日以内</td><td>1,600pt（課金）</td></tr>
+<tr><td>UR英雄8星にレベルアップ</td><td>45日以内</td><td>1,070pt</td></tr>
+<tr><td>教会Lv.28に到達</td><td>45日以内</td><td>6,500pt</td></tr>
+</tbody>
+</table></div>
+<div class="warning">ワラウの案件ページには、「第2研究隊列」はレベル8と密林14に到達して研究室が解放されてから購入できる、「UR英雄の星」は複数のUR英雄を持っている場合は任意の1体の最高星数になる、と書かれています。条件や金額は途中で変わることがあります。このゲームの案件ページは2026年10月16日から17日にかけて新しいものに差し替わり、UR英雄の星のポイントが下がりました。クチコミにも条件の変更や金額の低下を指摘する投稿があります。開始前に最新情報をご確認ください。</div>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011" target="_blank" rel="noopener nofollow">ワラウの案件ページ（iOS）</a></li><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012" target="_blank" rel="noopener nofollow">ワラウの案件ページ（Android）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/last-asylum-plague.json" aria-live="polite"></section>
+<section class="section" id="system"><h2>レベルが上がる仕組み｜施設を先に上げ、資源と加速で教会を建てる</h2>
+<p>ラストアサイラム：プレイグは、ペストが広がった村を救う城ゲーです。ポイ活の目的は、資源と加速アイテムを集めて「教会」のレベルを上げることです。教会をレベルアップするには、前提になる施設（研究室、訓練場、防壁、ギルド連絡所など）を先に決まったレベルまで上げます。</p>
+<ul class="lab-list">
+<li>教会のレベルの上限は、集めた「星」の数で決まる。序盤は病院の施設を上げて星を集める</li>
+<li>密林探索をクリアしても星が手に入る。勝てるところまでは進める</li>
+<li>ポイントは建造完了時に付与される。建設を始めただけでは承認されない</li>
+<li>資源の多くはイベントで集める。イベントに参加することが、そのまま攻略になる</li>
+<li>無課金だと建設枠が1つなので、資源が余りやすい。壁になるのは建設時間と加速アイテム</li>
+</ul>
+<div class="key">Lv18までは資源に困らず進めます。Lv20以降は建設時間が一気に長くなり、足りなくなるのは資源より加速アイテムです。</div>
+</section>
+<section class="section" id="time"><h2>レベルごとの建設時間｜Lv18からLv28まで</h2>
+<p>教会をそのレベルにするための建設時間（バフなし）と、必要な資源（食糧/木材/薬草）です。こちゃログの記事の値で、研究やVIPなどの建設速度のバフで短くできます。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>教会Lv</th><th>建設時間（バフなし）</th><th>必要資源（食糧/木材/薬草）</th></tr></thead>
+<tbody>
+<tr><td>Lv18</td><td>2日13時間3分</td><td>27.1M/27.1M/8M</td></tr>
+<tr><td>Lv19</td><td>3日13時間28分</td><td>31.1M/31.1M/10.8M</td></tr>
+<tr><td>Lv20</td><td>4日23時間40分</td><td>57M/57M/17.5M</td></tr>
+<tr><td>Lv21</td><td>6日16時間20分</td><td>81.2M/81.2M/26.3M</td></tr>
+<tr><td>Lv22</td><td>8日16時間26分</td><td>104M/104M/34.3M</td></tr>
+<tr><td>Lv23</td><td>11日6時間58分</td><td>136M/136M/40M</td></tr>
+<tr><td>Lv24</td><td>15日19時間21分</td><td>160M/160M/54.5M</td></tr>
+<tr><td>Lv25</td><td>22日3時間5分</td><td>258M/258M/90.7M</td></tr>
+<tr><td>Lv26</td><td>30日23時間32分</td><td>360M/360M/114M</td></tr>
+<tr><td>Lv27</td><td>43日8時間57分</td><td>510M/510M/157M</td></tr>
+<tr><td>Lv28</td><td>60日17時間20分</td><td>682M/682M/220M</td></tr>
+</tbody>
+</table></div>
+<div class="key">Lv21からLv24までの建設時間を足すと、バフなしで約42日です。Lv28の建設だけで約61日かかるため、45日の期限には研究・VIP・加速アイテムなどで大きく短縮する必要があります。</div>
+<ul class="lab-list">
+<li>建設速度の研究と、建設資源削減の研究を最大まで進める</li>
+<li>VIPレベルが1つ上がるごとに建設速度が5%上がる、と書かれている（挑戦時の仕様）</li>
+<li>建設大臣に任命されてから建てると、5分間だけバフが付く（王城争奪戦のあとに使える機能）</li>
+<li>教会を建てている間に、2つ目・3つ目の建設枠で前提の建物を先に建てておく</li>
+</ul>
+</section>
+<section class="section" id="guild"><h2>ギルドと加速アイテム｜成否を分けるもの</h2>
+<ul class="lab-list">
+<li>上位のギルドに入れるかどうかで、Lv28に届くかが大きく変わる、とこちゃログは書いている。ギルドギフトにはVIP経験値も入る</li>
+<li>都市の初回占拠報酬も、上位のギルドに入っていると受け取れる。都市を占拠できているギルドかを確認する</li>
+<li>ギルドショップで、建設ブースト（1時間・8時間）や加速アイテムを買える。月曜日にリセットされるので、土日や金曜日に始めると購入回数を増やせる、という投稿がある</li>
+<li>集結やファルコンタワーを協力して、加速アイテムが手に入る敵を倒す</li>
+<li>日本のギルドに入ったが育成が滞り、上位のギルドに移った、という投稿がある</li>
+</ul>
+<div class="warning">同盟選びは運に左右されます。ギルドを移ると、元のギルドの特典を失います。ギルドのルールを確認してから動いてください。</div>
+</section>
+<section class="section" id="flow"><h2>序盤・中盤・終盤でやること</h2>
+<h3>序盤（Lv1〜12・2日）</h3>
+<ul class="lab-list">
+<li>Lv3・Lv5・Lv7は初日、Lv12は2日目に届いた記録がある</li>
+<li>最初の2日間、特に最初の3時間でどこまで進められるかが鍵、と書いた人がいる</li>
+<li>ゲームの推奨アクション通りに進めると遠回りになることがある、とも書かれている</li>
+<li>初日に教会Lv7まで上げて、第2建築枠を課金で解放した人がいる</li>
+</ul>
+<h3>中盤（Lv13〜21・約2週間）</h3>
+<ul class="lab-list">
+<li>Lv18は5〜8日目に届いた記録が多い</li>
+<li>Lv21は11日目、14日目、15日目、17日目、18日目の記録がある</li>
+<li>Lv21の建造はバフなしで約6日16時間かかるため、約14日目までに建設を始めないと、21日以内には間に合わない計算になる</li>
+</ul>
+<h3>終盤（Lv22〜28）</h3>
+<ul class="lab-list">
+<li>Lv24は23日目、25日目、29日目、30日目の記録がある一方、Lv23までで終えた人もいる</li>
+<li>Lv28は、建設だけで約60日かかる計算。届いた実例は42日目の1人だけ</li>
+<li>UR英雄8星は、6日目（SSR英雄）、20日目、26日目の記録がある</li>
+</ul>
+<h3>日ごとの教会レベル（3人の記録）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>目安</th><th>プレイヤーA</th><th>プレイヤーB</th><th>プレイヤーC</th></tr></thead>
+<tbody>
+<tr><td>Lv18</td><td>5日目</td><td>8日目</td><td>7日目</td></tr>
+<tr><td>Lv21</td><td>11日目</td><td>14日目</td><td>15日目</td></tr>
+<tr><td>Lv24</td><td>23日目</td><td>30日目</td><td>届かず</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>ログインのたびに、素材探索や採集で資源を回収する（2〜3時間ほどで回収できる）</li>
+<li>イベント（盗賊追跡、海賊遺産、サバイバルバトルなど）に参加する。資源や加速アイテムの多くはイベントで集める</li>
+<li>ギルドギフトとギルドショップを確認する</li>
+<li>研究を止めずに動かす。建設関連の研究を優先する</li>
+<li>英雄は星ランクが上がりやすい英雄を優先して育成する</li>
+<li>ダイヤは序盤・中盤・終盤で使い道を変える。VIPレベルを上げるか、直前の加速に使うかを考える</li>
+<li>VIPショップで、序盤は資源、中盤以降は加速を購入する</li>
+</ul>
+</section>
+<section class="section" id="stuck"><h2>詰まりやすい所と対処</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>詰まる所</th><th>実例</th><th>対処</th></tr></thead>
+<tbody>
+<tr><td>建設時間が長い</td><td>Lv20からLv21の建設に、加速アイテムなしで4日かかった</td><td>建設関連の研究、VIP、建設大臣、第2建設枠で短縮する</td></tr>
+<tr><td>加速アイテムが足りない</td><td>加速が圧倒的に足りず、Lv23で諦めた、Lv24に届かなかった例が複数</td><td>ギルドショップ、イベント、協力して敵を倒すことで集める</td></tr>
+<tr><td>資源が足りない（序盤）</td><td>序盤は資源不足、後半は加速不足という投稿</td><td>活発なギルドの集結に乗る。素材探索を定期的に回収する</td></tr>
+<tr><td>ポイントが付かない</td><td>教会Lv14のステップからポイントが付かず撤退した例。付与まで2週間以上かかった保証申請の例</td><td>判定中の表示を確認。付かないときは早めに保証申請をする</td></tr>
+<tr><td>UR英雄の星が上がらない</td><td>SSR英雄の星8でポイントが付いた例と、付かなかった例</td><td>ワラウの案件ページの記載どおり、UR英雄で進める</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="money"><h2>課金ステップの収支</h2>
+<p>ワラウのステップ表には課金のステップが4つあります。価格は、こちゃログの記事（建設隊列320円、第2研究隊列1,600円、プレミアム月パス4,000円）を使った計算です。第2建設隊列は、180円や360円と書いた記事・投稿もあり、時期で違います。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>課金ステップ</th><th>価格の記載</th><th>ワラウの獲得pt</th><th>差額（1pt=1円）</th></tr></thead>
+<tbody>
+<tr><td>UR英雄を購入</td><td>記載なし</td><td>60pt</td><td>—</td></tr>
+<tr><td>第2建設隊列</td><td>180〜360円</td><td>120pt</td><td>−60円〜−240円</td></tr>
+<tr><td>第2研究隊列</td><td>1,600円</td><td>730pt</td><td>−870円</td></tr>
+<tr><td>プレミアム月パス</td><td>4,000円</td><td>1,600pt</td><td>−2,400円</td></tr>
+</tbody>
+</table></div>
+<div class="key">価格が分かる3つは、いずれも獲得ptより支払額が大きく、合計で約3,300〜3,500円の赤字です。ただし、第2建設隊列は、Lv24を目指すなら欠かせない、という声が複数あります。</div>
+<ul class="lab-list">
+<li>第2建設隊列は、Lv24以上を目指すなら必須級。ステップに入っていなくても必要、とこちゃログは書いている</li>
+<li>ダイヤで第2建設枠を使えるのは1時間500ダイヤのみ。永久にするには課金</li>
+<li>プレミアム月パスは、建設速度5%アップと、毎日5時間相当の加速などが付く。Lv28を目指すなら検討する価値がある、と書かれている</li>
+<li>無課金でLv24が25日目に届いた記録もある（プレイヤーF）</li>
+<li>課金は任意です。この記事は課金を勧めるものではありません</li>
+</ul>
+</section>
+<section class="section" id="target"><h2>どこまで目指すか</h2>
+<div class="decision">
+<div class="decision-card"><strong>Lv18まで（英雄5星を含む390pt）</strong>5〜8日目に届いた記録が複数ある。多くの記録が「Lv18までは無難」と書いている。</div>
+<div class="decision-card"><strong>Lv21まで（英雄7星を含む1,120pt）</strong>11日から18日の記録が多い。21日以内の条件は、建設を約14日目までに始めないと厳しい計算になる。</div>
+<div class="decision-card"><strong>Lv24まで（3,020pt）</strong>23日から30日の記録があるが、Lv23までで撤退した人も複数いる。第2建設隊列とVIP、ギルドが前提になりやすい。</div>
+<div class="decision-card"><strong>Lv28・UR英雄8星（合計10,590pt）</strong>Lv28は42日目に届いた1人だけ。建設だけで約60日かかる計算で、多くの記録がLv28は断念している。</div>
+</div>
+<div class="warning">UR英雄8星は1,070ptです（2026年10月16日の表示では2,600ptでした）。星の条件の扱い（SSR英雄でも承認されたか）は時期で違いました。ワラウの案件ページの記載を確認してください。</div>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（ワラウの案件ページより）</h2>
+<ul class="lab-list">
+<li>ポイント通帳の判定状態に「判定中」の記載があることを確認してから、アプリを進める</li>
+<li>「ポイントを貯める」をタップしてから1時間以内にアプリを起動する。その間に他のアプリやサイトを開かず、モバイル回線とWi-Fiの切り替えもしない</li>
+<li>達成期限は各ステップで異なり、すべてインストール日から起算した期日</li>
+<li>あんしん保証制度の申請期限は、インストール日から起算して80日以内</li>
+<li>教会レベルのステップには教会画面のスクリーンショット、課金のステップには購入履歴の画面が必要</li>
+<li>UR英雄の購入には、UR英雄画面（Day1タブ）のスクリーンショットも必要</li>
+<li>保証が完了するまでアプリを削除しない</li>
+<li>クチコミには、教会Lv14のステップからポイントが付かなかった、付与に時間がかかった、という投稿がある</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜ラストアサイラムは「Lv18までを確実に、Lv24は準備して」</h2>
+<ul class="lab-list">
+<li>条件はステップごとの期限。ワラウのAndroid案件は教会Lv28まで、課金を除くと10,590pt</li>
+<li>実例はLv18が5〜8日、Lv24が23〜30日、Lv28は42日の1人</li>
+<li>Lv21以降は建設時間と加速アイテムが壁。ギルドと第2建設枠、VIPが分かれ目</li>
+<li>Lv24に届かず撤退した記録が複数ある</li>
+<li>課金ステップは価格が分かる3つで赤字。任意</li>
+</ul>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012" target="_blank" rel="noopener">ワラウ案件ページ・Android（条件・クチコミ）</a></span>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011" target="_blank" rel="noopener">ワラウ案件ページ・iOS</a></span>
+<span class="source-line"><a href="https://kochalog.com/last-asylum/" target="_blank" rel="noopener">Lv28を42日で達成・建設時間表（こちゃログ）</a></span>
+<span class="source-line"><a href="https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%A9%E3%82%B9%E3%83%88%E3%82%A2%E3%82%B5%E3%82%A4%E3%83%A9%E3%83%A0%EF%BC%9A%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B0%EF%BC%88%E5%A4%9A%E6%AE%B5%E9%9A%8E/" target="_blank" rel="noopener">Lv24を30日で達成（うっしーのポイ活日記）</a></span>
+<span class="source-line"><a href="https://chinopoilog2.hatenadiary.jp/entry/last-asylum-plague" target="_blank" rel="noopener">Lv21とUR英雄8星を達成（ちーのポイログ）</a></span>
+<span class="source-line"><a href="https://ameblo.jp/gohobi-tabi/entry-12978716612.html" target="_blank" rel="noopener">無課金でLv23・所要時間（大猫コトラの旅行）</a></span>
+<span class="source-line"><a href="https://www.yumatti.com/point-earning-activity-last-asylum/" target="_blank" rel="noopener">Lv18を7日で達成（ゆまのポイ活攻略）</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。ブログの記録は当時の案件条件（期限、金額）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月17日にワラウの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "game": "トップウォー",
+  "updatedAt": "2026-10-16",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログ・note・Xの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数や課金額が書かれているものを同じ人ごとにまとめています。全員が同じ案件条件・同じ課金額ではないため、平均ではなく実例として見てください。",
+  "notice": "※Lv75まで到達した実例は今回確認できていません。Lv55は8〜27日、Lv65は無課金の27日例があります。",
+  "footnote": "日数はプレイ時間・課金・連盟・サーバーの状況で変わります。ワラウのクチコミは自己申告で、投稿者名はワラウ上のニックネームのため掲載していません。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
+  "initialVisible": 5,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "17日目にLv55（160円課金・Lv75は見送り）",
+      "milestones": [
+        {
+          "day": 1,
+          "level": 18,
+          "label": "Lv18"
+        },
+        {
+          "day": 3,
+          "level": 30,
+          "label": "Lv30"
+        },
+        {
+          "day": 7,
+          "level": 40,
+          "label": "Lv40"
+        },
+        {
+          "day": 13,
+          "level": 50,
+          "label": "Lv50"
+        },
+        {
+          "day": 17,
+          "level": 55,
+          "label": "Lv55達成"
+        }
+      ],
+      "note": "プレイ時間は1〜2日目が2〜3時間、3日目以降は30分〜1時間。8日目にサーバー上位の連盟へ移籍。Lv75は30日では届かないと判断してLv55で終了。2025年10月の記録。",
+      "sources": [
+        "https://kochalog.com/topwar/",
+        "https://x.com/kochablog/status/1973658335456145540"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "8日目にLv55（課金あり・サーバー1位の連盟）",
+      "milestones": [
+        {
+          "day": 8,
+          "level": 55,
+          "label": "Lv55達成"
+        }
+      ],
+      "note": "ダイアナ関連のパックと精鋭パスに課金。1位の連盟に所属し、連盟イベントはほぼ不参加。偽バッジで設計図を集められたのが大きかったと書いている。Lv65は行けるがLv75は際どいという見立て。2026年4月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"
+      ],
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/04/02｜男性・30代｜「8日目で55レベル達成 ダイアナと精鋭...」"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "無課金・17日目で計15時間42分でLv55",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv5の連盟に加入"
+        },
+        {
+          "day": 17,
+          "level": 55,
+          "label": "Lv55達成",
+          "detail": "累計プレイ15時間42分"
+        },
+        {
+          "day": 30,
+          "level": 59,
+          "label": "Lv59",
+          "detail": "金貨バンバン宝箱が1,878個余った"
+        }
+      ],
+      "note": "旧サーバーで、初日にLv5の連盟へ加入。基地や部隊の強化はミッションに必要な分だけにして、金貨バンバン宝箱と快速作戦の周回で進めた。2025年9月の記録。",
+      "sources": [
+        "https://note.com/natsuhiro0715/n/n4509f95c27d1"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "19日目にLv55（160円課金）",
+      "milestones": [
+        {
+          "day": 19,
+          "level": 55,
+          "label": "Lv55達成"
+        }
+      ],
+      "note": "サーバー切り替え直後で日本の同盟が少なく、毎日の作業は数回のログイン、集結自動参加ON、バトルハンマー、レーダー任務、科学研究が中心。操作量は城ゲームの中では少なめと感じた。2025年8月の記録。",
+      "sources": [
+        "https://mahoukinoko.site/2025/08/10/topwar/"
+      ]
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "retired",
+      "summary": "18日目にLv55・課金4,200円でもLv75は届かず",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "4,200円を課金"
+        },
+        {
+          "day": 18,
+          "level": 55,
+          "label": "Lv55達成"
+        },
+        {
+          "dayLabel": "30日以内",
+          "label": "Lv75は未達"
+        }
+      ],
+      "note": "毎日2〜5時間プレイし、懸賞任務・レーダー任務・連盟集結（1日最低10回）・加速アイテムなどを使っても、金貨と欠片が足りなかった。2026年1月の記録。",
+      "sources": [
+        "https://kentatenchogames.com/2026/01/09/poikatu-topwar/"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "27日目にLv55到達（課金あり）",
+      "milestones": [
+        {
+          "day": 27,
+          "level": 55,
+          "label": "Lv55達成",
+          "detail": "同日の朝にLv54に到達"
+        }
+      ],
+      "note": "貯めていたダイヤで施設のレベルアップアイテムを買い、ためていたアイテムを使って55に到達。購入ステップは、先に1,300円のギフトを買う必要があると書いている。2026年5月の投稿。",
+      "sources": [
+        "https://x.com/onozaki_lala/status/2060163250562682883"
+      ]
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "無課金で27日目にLv65",
+      "milestones": [
+        {
+          "day": 27,
+          "level": 65,
+          "label": "Lv65達成"
+        }
+      ],
+      "note": "トップの連盟に入れるようになったら入るのがよいと書いている。Lv65までは後半に金貨が足りなくなり、金貨は採集してもあまり集まらないという。2026年4月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"
+      ],
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/04/25｜女性・40代｜「無課金で27日目でLv65まで到達できま...」"
+      ]
+    },
+    {
+      "id": "H",
+      "label": "プレイヤーH",
+      "status": "completed",
+      "summary": "無課金で約27日でLv65",
+      "milestones": [
+        {
+          "dayLabel": "最初の1週間",
+          "label": "日本語の連盟でレベル上げ"
+        },
+        {
+          "dayLabel": "18日経過ごろ",
+          "label": "サーバーのトップ連盟へ移る"
+        },
+        {
+          "dayLabel": "27日ごろ",
+          "level": 65,
+          "label": "Lv65達成"
+        }
+      ],
+      "note": "トップ連盟に移るのがかなり遅かった（18日ごろ）が、さぼらなければ25日もかからないと書いている。2026年3月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"
+      ],
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/03/05｜男性・40代｜「サーバー内のトップクランへ！」"
+      ]
+    },
+    {
+      "id": "I",
+      "label": "プレイヤーI",
+      "status": "ongoing",
+      "summary": "約7,000円課金で15日目にLv60",
+      "milestones": [
+        {
+          "day": 15,
+          "level": 60,
+          "label": "Lv60"
+        }
+      ],
+      "note": "サーバー1位の連盟に入れて最大の恩恵を受けたという。この時点でも、Lv75に届くかは分からないと書いている。2026年1月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"
+      ],
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/01/22｜男性・40代｜「おもしろい！」"
+      ]
+    },
+    {
+      "id": "J",
+      "label": "プレイヤーJ",
+      "status": "retired",
+      "summary": "Lv71で終了",
+      "milestones": [
+        {
+          "dayLabel": "日数の記載なし",
+          "level": 71,
+          "label": "Lv71で終了"
+        }
+      ],
+      "note": "ダイアナのパックだけではLv75は厳しいと感じた。ハンマーの周回や体力の購入を1つでも欠かすと届かないと書いている。2026年1月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"
+      ],
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/01/15｜男性・20代｜「80に希望はない、75はギリギリ」"
+      ]
+    }
+  ]
+}

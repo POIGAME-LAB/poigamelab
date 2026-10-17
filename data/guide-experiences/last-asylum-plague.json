@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "game": "ラストアサイラム：プレイグ",
+  "updatedAt": "2026-10-17",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログと、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。ギルド、課金、プレイ時間は人によって違うため、平均ではなく実例として見てください。",
+  "notice": "※Lv24は23〜30日の実例です。Lv23までで終えた記録、Lv21で間に合わなかった記録、途中で撤退した記録も含めています。",
+  "footnote": "日数は建設時間、加速アイテム、ギルドで変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
+  "initialVisible": 6,
+  "players": [
+    {
+      "summary": "Lv24が23日目、Lv28が42日目（3つの課金をすべて購入）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv7"
+        },
+        {
+          "day": 2,
+          "label": "Lv12"
+        },
+        {
+          "day": 5,
+          "label": "Lv18"
+        },
+        {
+          "day": 6,
+          "label": "英雄星8（SSR英雄で承認）"
+        },
+        {
+          "day": 11,
+          "label": "Lv21"
+        },
+        {
+          "day": 23,
+          "label": "Lv24"
+        },
+        {
+          "day": 42,
+          "label": "Lv28達成",
+          "detail": "期限45日の残り3日"
+        }
+      ],
+      "note": "当時の案件には、第2建設隊列（320円）、第2研究隊列（1,600円）、プレミアム月パス（4,000円）の購入が含まれ、すべて購入した。中盤以降はサーバー2位のギルドに入れたことが大きかったと書いている。UR英雄の星の条件は、当時はSSR英雄でも承認された。こちゃログの記事。",
+      "sources": [
+        "https://kochalog.com/last-asylum/"
+      ],
+      "id": "A",
+      "label": "プレイヤーA"
+    },
+    {
+      "summary": "Lv24が30日目ギリギリ（1日約2時間・Lv28は断念）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv7",
+          "detail": "初日に第2建築枠を320円で解放"
+        },
+        {
+          "day": 6,
+          "label": "Lv16"
+        },
+        {
+          "day": 8,
+          "label": "Lv18"
+        },
+        {
+          "day": 14,
+          "label": "Lv21"
+        },
+        {
+          "day": 30,
+          "label": "Lv24達成",
+          "detail": "建造完了時にポイントが付与"
+        }
+      ],
+      "note": "通勤の朝と夜以外はあまりプレイできず、1日のプレイ時間は2時間ほど。Lv21の建造にダイヤ1,000個でVIP6を解放し、建造時間を約17時間短くした。45日以内のLv28は困難と判断して撤退した。",
+      "sources": [
+        "https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%A9%E3%82%B9%E3%83%88%E3%82%A2%E3%82%B5%E3%82%A4%E3%83%A9%E3%83%A0%EF%BC%9A%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B0%EF%BC%88%E5%A4%9A%E6%AE%B5%E9%9A%8E/"
+      ],
+      "id": "B",
+      "label": "プレイヤーB"
+    },
+    {
+      "summary": "無課金でLv23が27日目、Lv24には届かず",
+      "status": "retired",
+      "milestones": [
+        {
+          "day": 0,
+          "label": "Lv3",
+          "detail": "20分"
+        },
+        {
+          "day": 1,
+          "label": "Lv12"
+        },
+        {
+          "day": 7,
+          "label": "Lv18"
+        },
+        {
+          "day": 15,
+          "label": "Lv21"
+        },
+        {
+          "day": 21,
+          "label": "Lv22"
+        },
+        {
+          "day": 27,
+          "label": "Lv23"
+        },
+        {
+          "dayLabel": "30日以内",
+          "label": "Lv24に届かず"
+        }
+      ],
+      "note": "開始初日を0日目として数えている。Lv18は余裕、Lv21は21日以内の条件ではかなり厳しく、Lv24はまず無理、と書いている。無課金では建設枠が1つのため、資源が余り、建設時間が最大の壁だった。",
+      "sources": [
+        "https://ameblo.jp/gohobi-tabi/entry-12978716612.html"
+      ],
+      "id": "C",
+      "label": "プレイヤーC"
+    },
+    {
+      "summary": "320円の課金でLv21が18日目、UR英雄8星が26日目（Lv22でリタイア）",
+      "status": "retired",
+      "milestones": [
+        {
+          "day": 18,
+          "label": "Lv21"
+        },
+        {
+          "day": 26,
+          "label": "UR英雄8星"
+        },
+        {
+          "dayLabel": "Lv22で終了",
+          "label": "Lv24は断念"
+        }
+      ],
+      "note": "320円で建築枠の2枠目を永久に解放した。中盤以降は資源より建築加速アイテムが足りないと感じ、Lv24は建築時間と加速アイテムの集まり方から期限内は難しいと判断した。2026年9月18日の記事。",
+      "sources": [
+        "https://chinopoilog2.hatenadiary.jp/entry/last-asylum-plague"
+      ],
+      "id": "D",
+      "label": "プレイヤーD"
+    },
+    {
+      "summary": "Lv18が7日目、Lv21が17日目（Lv24は継続して挑戦）",
+      "status": "ongoing",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "Lv18"
+        },
+        {
+          "day": 17,
+          "label": "Lv21"
+        }
+      ],
+      "note": "建設隊列を180円で購入できると書いている（ダイヤでの購入は1時間500ダイヤで非推奨）。素材探索の資源は2〜3時間ほどで回収できるので、定期的にログインして回収する。Lv24までは続けると書いており、結果は不明。",
+      "sources": [
+        "https://www.yumatti.com/point-earning-activity-last-asylum/"
+      ],
+      "id": "E",
+      "label": "プレイヤーE"
+    },
+    {
+      "summary": "無課金でLv24が25日目（総プレイ時間122時間）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 25,
+          "label": "Lv24達成",
+          "detail": "2026年10月16日の投稿"
+        }
+      ],
+      "note": "最初にVIPを30日分有効にするためにダイヤを1万使い、VIP8を目指した。上位20位以内の活発なギルドに入るのが前提と書いている。第2建築は1時間だけダイヤ500で買えるので、サバイバルバトルのときに購入し、1時間のうちに建築時間の短いものを先に上げた。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "F",
+      "label": "プレイヤーF",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/10/16｜男性・30代｜「無課金30日以内に24レベクリア」"
+      ]
+    },
+    {
+      "summary": "UR英雄8星が20日目、Lv24が25日目（Lv28は断念）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 20,
+          "label": "UR英雄8星"
+        },
+        {
+          "day": 25,
+          "label": "Lv24達成",
+          "detail": "Lv28は60日ほどかかる計算で断念"
+        }
+      ],
+      "note": "毎日のイベントに参加し、強いギルドの恩恵を受けた。加速アイテム3日分とダイヤ6万を余らせた、と書いている。SSR英雄を星8にしたがポイントが付かず、UR英雄のアーサーに欠片を入れて達成した。ここ数週間でポイントが下がり、条件も一部難しくなっていると感じている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "G",
+      "label": "プレイヤーG",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/18｜女性・20代｜「ポイント下がってます」"
+      ]
+    },
+    {
+      "summary": "29日でLv24（Lv28は無理と判断）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 29,
+          "label": "Lv24達成",
+          "detail": "次のLv28の建設に15日が必要"
+        }
+      ],
+      "note": "Lv18くらいまではスイスイ上がるが、そこからは建設の日数も材料も設備も面倒になる、と書いている。認証はレベル達成時で、建設を開始しても承認されない。2026年8月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "H",
+      "label": "プレイヤーH",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/08/18｜男性・40代｜「レベル24が現実的な目標かな」"
+      ]
+    },
+    {
+      "summary": "建造隊列を課金して2枠にし、14日でLv21（Lv23で諦めた）",
+      "status": "retired",
+      "milestones": [
+        {
+          "day": 14,
+          "label": "Lv21"
+        },
+        {
+          "dayLabel": "期限の3日前",
+          "label": "Lv23で諦める"
+        }
+      ],
+      "note": "資源より加速が圧倒的に足りなかった。毎日のサバイバルイベントも取りこぼさずやってギリギリ間に合うかどうか、という感覚だった。現実的な到達点はLv21と書いている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "I",
+      "label": "プレイヤーI",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/03｜男性・40代｜「24レベルは厳しい…」"
+      ]
+    },
+    {
+      "summary": "18日目にLv21、Lv24はリスクが高いとリタイア",
+      "status": "retired",
+      "milestones": [
+        {
+          "day": 18,
+          "label": "Lv21",
+          "detail": "最初の1週間をかなり雑にやってしまった"
+        }
+      ],
+      "note": "UR英雄の星8のほうが狙い目で、アーサーの欠片とフリーのパーツは頻繁に手に入る、と書いている。最初からLv24を目指すなら、土日に始めて第2建設隊列をすぐ購入し、ショップでは加速を優先する、としている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "J",
+      "label": "プレイヤーJ",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/29｜男性・50代｜「UR★8こそ狙い目」"
+      ]
+    },
+    {
+      "summary": "30日で教会Lv21に間に合わなかった",
+      "status": "retired",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv21に届かず"
+        }
+      ],
+      "note": "毎日デイリータスクの宝箱を全部もらえるくらいはやったが、Lv20からLv21の建設には加速アイテムなしで4日かかったという。活発なギルドに入って、加速アイテムが手に入る敵を協力して倒せばよかった、と書いている。2026年8月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "K",
+      "label": "プレイヤーK",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/08/21｜女性・30代｜「レベル18までが無難」"
+      ]
+    },
+    {
+      "summary": "20日目にLv22で断念（UR8星は半月）",
+      "status": "retired",
+      "milestones": [
+        {
+          "day": 15,
+          "label": "UR英雄8星",
+          "detail": "半月"
+        },
+        {
+          "day": 20,
+          "label": "Lv22で断念"
+        }
+      ],
+      "note": "1日4〜5回、合計3時間ほどログイン。上位のギルドに入り、イベントも極力参加したが、Lv24は高い壁を感じた、と書いている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "L",
+      "label": "プレイヤーL",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/17｜男性・30代｜「UR8星狙いがおすすめ」"
+      ]
+    },
+    {
+      "summary": "教会Lv14のステップからポイントが付かず撤退",
+      "status": "retired",
+      "milestones": [
+        {
+          "dayLabel": "序盤",
+          "label": "撤退",
+          "detail": "ポイント未付与"
+        }
+      ],
+      "note": "頻繁にログインしないといけないのにポイントが付かず、やる気が起きなかったという。以前の保証申請でも付与までに2週間以上かかったため、申請する気も起きなかったと書いている。2026年9月の投稿。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+      ],
+      "id": "M",
+      "label": "プレイヤーM",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/23｜男性・50代｜「ポイントつかない」"
+      ]
+    }
+  ]
+}

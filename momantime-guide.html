@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/momantime-guide.html">
+<meta name="description" content="モーマンタイムのポイ活攻略。ワラウStepUp（25日以内・Lv159まで・11,200pt）の条件と、Lv94に13〜23日で届いた実例、土地と人口の集め方、時代昇格の条件、同盟の入り方、初回チャージ・月間札・永久札の収支を整理。">
+<title>モーマンタイム ポイ活攻略｜レベル94を25日以内に目指す進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>モーマンタイム 攻略ガイド</span>
+    <a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071" target="_blank" rel="noopener nofollow">ワラウの現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>モーマンタイム ポイ活攻略</h1>
+<p class="lead">ワラウのStepUp案件（25日以内、Lv21〜159）を想定し、Lv94に届いた人、Lv123まで進んだ人、途中でやめた人の記録を日数ごとに並べました。ワラウが公開している達成率のデータも、実例とは分けて載せています。</p>
+<div class="stats"><div class="stat"><span>実例：Lv94</span><strong>13〜23日</strong></div><div class="stat"><span>ワラウ集計：Lv94</span><strong>到達率26%</strong></div><div class="stat"><span>実例：Lv123</span><strong>1人</strong></div></div>
+<p class="hero-note">Lv94までは13日から23日で届いた記録が複数ありますが、現在の期限は25日です。Lv142以上は届いた実例が確認できていません。到達を保証するものではありません。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#data">ワラウの達成率データ</a></li><li><a href="#system">レベルが上がる仕組み</a></li><li><a href="#alliance">同盟とサーバー</a></li><li><a href="#flow">序盤・中盤・終盤</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#stuck">詰まりやすい所</a></li><li><a href="#money">課金ステップの収支</a></li><li><a href="#target">どこまで目指すか</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（ワラウiOS・Android・2026年10月16日確認）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>案件</td><td>モーマンタイム（StepUp）</td></tr>
+<tr><td>対応OS</td><td>iOS・Android（どちらも同じ内容）</td></tr>
+<tr><td>条件</td><td>新規アプリインストール後、インストール日から起算して25日以内にStepUpミッションの各達成条件をクリア</td></tr>
+<tr><td>獲得pt（ワラウ表記）</td><td>全ステップ合計11,200pt（レベル到達のみなら6,420pt）</td></tr>
+<tr><td>達成期限の例</td><td>2026年10月16日にインストールした場合は11月9日</td></tr>
+<tr><td>反映の目安</td><td>条件達成後、ポイント付与まで最大24時間</td></tr>
+<tr><td>クチコミ</td><td>評価3.8、25件（ワラウ表記）</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>ステップ</th><th>獲得pt</th><th>レベルのみの累計</th></tr></thead>
+<tbody>
+<tr><td>プレイヤーレベル21に到達</td><td>100pt</td><td>100pt</td></tr>
+<tr><td>プレイヤーレベル33に到達</td><td>160pt</td><td>260pt</td></tr>
+<tr><td>プレイヤーレベル56に到達</td><td>260pt</td><td>520pt</td></tr>
+<tr><td>任意の『初回チャージ』を購入</td><td>680pt</td><td>（課金）</td></tr>
+<tr><td>初回月間札（800円）を購入</td><td>500pt</td><td>（課金）</td></tr>
+<tr><td>プレイヤーレベル94に到達</td><td>450pt</td><td>970pt</td></tr>
+<tr><td>プレイヤーレベル123に到達</td><td>1,350pt</td><td>2,320pt</td></tr>
+<tr><td>初回永久札（4,800円）を購入</td><td>3,600pt</td><td>（課金）</td></tr>
+<tr><td>【高難易度】プレイヤーレベル142に到達</td><td>1,600pt</td><td>3,920pt</td></tr>
+<tr><td>【高難易度】プレイヤーレベル159に到達</td><td>2,500pt</td><td>6,420pt</td></tr>
+</tbody>
+</table></div>
+<div class="warning">『初回チャージ』は『征戦の第3章』に到達すると購入でき、160円・480円・800円のどれか1つで条件達成になります。ほかのポイントサイトには、期限や到達レベル、金額が異なる案件があります。開始前に利用先で最新の条件をご確認ください。</div>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071" target="_blank" rel="noopener nofollow">ワラウの案件ページ（iOS）</a></li><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072" target="_blank" rel="noopener nofollow">ワラウの案件ページ（Android）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/momantime.json" aria-live="polite"></section>
+<section class="section" id="data"><h2>ワラウの達成率データ｜実例とは別のもの</h2>
+<p>ワラウは自社の記事で、モーマンタイムに取り組んだ利用者の達成率と所要期間を公開しています（2026年6月4日の記事）。個人の記録ではなく利用者全体の集計なので、上の実例とは分けて見てください。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>到達レベル</th><th>達成率</th><th>平均達成期間</th><th>中央値</th><th>最短の目安</th></tr></thead>
+<tbody>
+<tr><td>Lv21</td><td>71%</td><td>1日</td><td>6時間</td><td>1時間</td></tr>
+<tr><td>Lv33</td><td>64%</td><td>2日</td><td>1日</td><td>4時間</td></tr>
+<tr><td>Lv56</td><td>47%</td><td>7日</td><td>5日</td><td>2日</td></tr>
+<tr><td>Lv94</td><td>26%</td><td>20日</td><td>17日</td><td>12日</td></tr>
+<tr><td>Lv123</td><td>1%</td><td>40日</td><td>40日</td><td>40日</td></tr>
+<tr><td>Lv142・Lv159</td><td>0%</td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table></div>
+<div class="warning">「最短の目安」は上位10％のクリアタイムを平均した値と記事に書かれています。集計の期間や対象の条件は記載がなく、Lv123の40日は現在の期限（25日）を超えています。過去のより長い期限の利用者を含んでいる可能性があるため、目安として扱ってください。</div>
+<div class="key">この集計では、Lv94に届いた人は4人に1人ほどです。Lv94の平均は20日で、現在の期限25日には5日の余裕しかありません。</div>
+</section>
+<section class="section" id="system"><h2>レベルが上がる仕組み｜土地と人口、そして時代昇格</h2>
+<p>モーマンタイムは、氷河期から現代へ文明を発展させていく放置型の経営ゲームです。プレイヤーレベルは「人口」と「領土」が目標値に達すると上がりますが、レベルが一定以上になると、時代昇格をしないとそれ以上は上がりません。</p>
+<ul class="lab-list">
+<li>時代昇格に必要なのは5つ：技能（研究）、軍事（征戦）、領土、人口、経済（総生産量）</li>
+<li>研究は時間がかかり、ほかの条件を満たしても研究だけが終わらず昇格できなかった、という記録がある</li>
+<li>征戦は、相手の戦力が自分より高くても勝てることがあり、戦力差だけで判断せず挑戦するとよい、と複数の記録が書いている</li>
+<li>鉄器時代のあたりから、土地と人口が足りなくなる。鉄鉱石も不足しやすく、帝王時代に入ると紙も不足しやすい</li>
+</ul>
+<div class="key">レベル上げは「毎日、商店で土地売買証書と戸籍簿を上限まで買う」「研究を止めない」の2本が土台です。複数の記録がこの2つを最優先に挙げています。</div>
+</section>
+<section class="section" id="alliance"><h2>同盟とサーバー｜入れる同盟が少ない</h2>
+<ul class="lab-list">
+<li>同盟機能は青銅器時代に入るあたりで解放される。同盟に入ると研究のヘルプ、同盟商店、遠征の集結に参加できる</li>
+<li>同盟を設立できるのは、初回チャージのパックを購入したプレイヤーだけという仕様のため、プレイヤー数に対して同盟が少ない。最新サーバーでは空きのある同盟を見つけにくい</li>
+<li>こちゃログの筆者は1日目に入れず、2日目に加入。日数が経つとアクティブな人が減り、上位同盟にも空きが出るので、5日目に移籍した</li>
+<li>課金して自分の同盟を作った人が2人いる（プレイヤーCは160円の初回チャージ。プレイヤーIは金額の記載なしで、同盟ランキング3位まで育てた）</li>
+<li>同盟に入らずにLv94まで15日で届いた人もいるが、任務報酬が途中で止まり、参加できるイベントが減ったと書いている</li>
+<li>同盟に入ったら、商人取引の値引きと同盟建設（無料1回と広告2回）を毎日行う。貢献が足りない人やログインしない人は追放されることがある</li>
+</ul>
+<p>こちゃログの筆者は、最新サーバー（「新」と表示され、0時にオープン）を選ぶよう書いています。タイトル画面で、1つ古いサーバーが初期選択になっていないか確認してください。</p>
+</section>
+<section class="section" id="flow"><h2>序盤・中盤・終盤でやること</h2>
+<h3>序盤（1〜3日・Lv50前後まで）</h3>
+<ul class="lab-list">
+<li>初日はまとまった時間を確保する。ワラウのクチコミにも「開始から5時間はやることが終わらない。ゆっくりやると2日はかかる」とある</li>
+<li>チュートリアルのあとは、画面左下のメイン任務に従う。同盟などの重要コンテンツがここで解放される</li>
+<li>商店で土地売買証書と戸籍簿を毎日上限まで買う。同盟の商店でも買える</li>
+<li>伝説・卓越の名士を中心に強化する。優秀な名士は無理に上げなくてよい</li>
+<li>加速札は序盤に使い切らない。時代昇格が研究だけ残っているときなどに使う。広告視聴による時短は温存しなくてよい（2時間ごと）</li>
+</ul>
+<h3>中盤（Lv50〜80・約1週間）</h3>
+<ul class="lab-list">
+<li>3日目ごろから放置の時間が増え、1日の作業量が減る</li>
+<li>鉱山・製鉄の素材が足りなくなってくるので、製鉄所や鉄鉱石の屋台を優先して昇級する</li>
+<li>遠征は、領地・人口・鉄鉱石・龍甲片などがもらえる相手を選んで討伐する。スタミナはすぐなくなる</li>
+<li>顧問を選抜して、資源生産量や名士のステータスのバフを受ける。学識レベル5になると切り替えを自動化できる</li>
+</ul>
+<h3>終盤（Lv80〜94）</h3>
+<ul class="lab-list">
+<li>レベルの伸びが遅くなり、90を超えたあたりから1日1〜2レベルのペースになった記録がある</li>
+<li>領土が足りなくなる。巡回（1回1.6万）、土地売買証書（1枚1万）、征戦、遠征、南蛮侵入で補う</li>
+<li>帝王時代では紙も不足する。製紙場と紙の屋台を優先して昇級する</li>
+<li>最後の日に手持ちのアイテムを使い切って仕上げた記録がある（プレイヤーC）</li>
+</ul>
+<h3>日ごとのレベルの伸び（3人の記録）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>日</th><th>プレイヤーA</th><th>プレイヤーC</th><th>プレイヤーB</th></tr></thead>
+<tbody>
+<tr><td>1日目</td><td>Lv28</td><td>Lv30</td><td>Lv35</td></tr>
+<tr><td>3日目</td><td>Lv50</td><td>Lv54</td><td>—</td></tr>
+<tr><td>5日目</td><td>Lv61</td><td>Lv62</td><td>—</td></tr>
+<tr><td>7日目</td><td>Lv73</td><td>Lv74</td><td>Lv66</td></tr>
+<tr><td>9日目</td><td>Lv81</td><td>Lv79</td><td>—</td></tr>
+<tr><td>11日目</td><td>Lv86</td><td>Lv85</td><td>Lv79</td></tr>
+<tr><td>13日目</td><td>Lv90</td><td>Lv93</td><td>—</td></tr>
+<tr><td>14日目</td><td>Lv93</td><td>Lv94</td><td>Lv87</td></tr>
+</tbody>
+</table></div>
+<div class="key">プレイヤーAとCは、3日目でLv50〜54と、Lv94の半分を超えています。その後は1日あたりの伸びが小さくなり、Lv80台からは1日1〜2レベルです。序盤の数日に時間を取れるかどうかが、期限への余裕を左右します。</div>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>商店で土地売買証書・戸籍簿を上限まで購入（玉璧商店・同盟商店・演武商店）</li>
+<li>研究（技能）を常に動かす。終わったら次を始める</li>
+<li>巡回と遠征でスタミナを使い切る。同盟の集結に参加するとスタミナ0で土地売買証書などがもらえる</li>
+<li>奇観と移住ブーム（1日1回は無料）で人口を増やす。玉璧を使うなら、こちゃログの試算では、奇観は玉璧200までは損しない（観光客数による）</li>
+<li>広告視聴（1日5回）。任意だが、資源や人口のブーストになる（ワラウの記事）</li>
+<li>シルクロード、南蛮侵入（1日5回）、国策、泰山対決、時空探検を消化する</li>
+<li>サーバー開始記念祭のパックは、玉璧で戸籍簿・加速札・土地売買証書・資源札を安く買える。こちゃログの筆者は7日分を購入した</li>
+</ul>
+</section>
+<section class="section" id="stuck"><h2>詰まりやすい所と対処</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>詰まる所</th><th>実例</th><th>対処</th></tr></thead>
+<tbody>
+<tr><td>土地が足りない</td><td>プレイヤーCが10日目に土地売買証書を使い切り、13日目の領土不足で翌朝まで待った</td><td>序盤から毎日上限まで買って溜める。巡回や遠征、南蛮侵入でも領土を得る</td></tr>
+<tr><td>人口が足りない</td><td>終盤は人口不足でレベルが上がりにくくなった、中盤に資源が追いつかずリタイアした例</td><td>戸籍簿を毎日買う。奇観・移住ブーム・遠征の人口報酬も使う</td></tr>
+<tr><td>資源・素材が足りない</td><td>6日目に鉱山・製鉄の素材が不足した例。研究で紙が最も足りなかったという記録も</td><td>製鉄所・製紙場と市場の屋台を優先して昇級。資源札は鉄鉱石と紙が足りないときに使う</td></tr>
+<tr><td>時代昇格で止まる</td><td>他の条件を満たしても研究だけ終わらない</td><td>研究を止めない。残りが研究だけなら加速札を使う</td></tr>
+<tr><td>同盟に入れない</td><td>1日目に空きの同盟が見つからず、2日目に加入</td><td>自分で設立（初回チャージの購入が必要）するか、数日待って上位同盟の募集を探す</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="money"><h2>課金ステップの収支</h2>
+<p>ワラウのステップ表には課金のステップが3つあります。差額はステップの名前に書かれた金額（初回月間札800円、初回永久札4,800円、初回チャージ160円・480円・800円）とワラウのptを1pt=1円で比べた計算です。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>課金ステップ</th><th>支払額</th><th>ワラウの獲得pt</th><th>差額</th></tr></thead>
+<tbody>
+<tr><td>初回チャージ（160円を選ぶ）</td><td>160円</td><td>680pt</td><td>＋520円</td></tr>
+<tr><td>初回チャージ（480円を選ぶ）</td><td>480円</td><td>680pt</td><td>＋200円</td></tr>
+<tr><td>初回チャージ（800円を選ぶ）</td><td>800円</td><td>680pt</td><td>−120円</td></tr>
+<tr><td>初回月間札</td><td>800円</td><td>500pt</td><td>−300円</td></tr>
+<tr><td>初回永久札</td><td>4,800円</td><td>3,600pt</td><td>−1,200円</td></tr>
+</tbody>
+</table></div>
+<div class="key">収支がプラスになるのは、160円または480円の初回チャージだけです。月間札と永久札はポイントより支払いが大きくなります。</div>
+<ul class="lab-list">
+<li>初回チャージは、同盟を設立するためにも必要。プレイヤーCは160円の初回チャージで同盟を設立した</li>
+<li>月間札は広告のスキップや自動機能が使えるようになり、快適さが大きく変わるという声が複数ある。無課金でもLv94に届いた記録（プレイヤーA・B）はある</li>
+<li>永久札はステップの条件をクリアするうえであまり恩恵がない、というクチコミがある。ポイントの差額もマイナス</li>
+<li>プレイヤーDは、1日160円を目安に加速などへ課金しながら進めた。こうした追加の課金は、ステップの差額には含まれない</li>
+</ul>
+</section>
+<section class="section" id="target"><h2>どこまで目指すか</h2>
+<div class="decision">
+<div class="decision-card"><strong>Lv56まで（レベル到達のみ520pt）</strong>1週間かからずに届いた記録がある。ワラウの集計でも到達率は47%、中央値5日。まずここまでで続けるか決める人もいる。</div>
+<div class="decision-card"><strong>Lv94まで（レベル到達のみ970pt）</strong>13日から23日の実例が複数あるが、現在の期限は25日。ワラウの集計では到達率26%、平均20日。毎日の購入と研究を欠かさない前提。</div>
+<div class="decision-card"><strong>Lv123以上</strong>確認できた実例はプレイヤーJの1人だけで、ポイント反映にも時間がかかっている。Lv142・Lv159は届いた実例が確認できず、旧条件（50日以内）のLv159は45日かかっている。</div>
+</div>
+<div class="warning">こちゃログの筆者と別のブロガーは、Lv135を期限内に届かせるのは厳しいと判断して断念しています（いずれも当時の条件での記録）。現在のLv142・159はそれより高い条件です。Lv123はLv135より低いものの、ワラウの集計では到達率1%です。</div>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（ワラウの案件ページより）</h2>
+<ul class="lab-list">
+<li>ポイント通帳の判定状態に「判定中」の記載があることを確認してから、アプリを進める</li>
+<li>「ポイントを貯める」をタップしてから1時間以内にアプリを起動する。その間に他のアプリやサイトを開かず、モバイル回線とWi-Fiの切り替えもしない</li>
+<li>広告ブロッカー、広告IDの削除・リセット、日本国外のIP、公共Wi-Fiは、反映されない原因になる</li>
+<li>過去にインストールした端末、再インストール、別端末へのデータ引き継ぎは対象外</li>
+<li>条件達成からポイント付与まで最大24時間</li>
+<li>あんしん保証制度の申請期限は、インストール日から起算して30日以内。達成期限（25日）から数日しかないため、判定期間が過ぎたら早めに申請する</li>
+<li>Android案件ページでは、申請にゲーム内の37Games UID（タイトル画面の「ユーザーセンター」で確認）とデバイスID（GAID）が必要とされている</li>
+<li>保証が完了するまでアプリを削除しない</li>
+<li>クチコミには、初回チャージとLv123のポイント反映に時間がかかった例がある</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜モーマンタイムは「毎日の購入」と「研究を止めない」</h2>
+<ul class="lab-list">
+<li>条件は25日以内のStepUp。Lv21から159まで、全ステップ合計11,200pt（レベル到達のみ6,420pt）</li>
+<li>実例はLv94が13〜23日。ワラウの集計では到達率26%、平均20日</li>
+<li>毎日、土地売買証書と戸籍簿を上限まで買い、研究を止めない</li>
+<li>3日目でLv50台まで進んだ記録があり、その後はペースが落ちる</li>
+<li>同盟は設立に初回チャージが必要なため空きが少ない。早めに探す</li>
+<li>Lv123以上は実例が少なく、期限内に届く保証はない</li>
+</ul>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072" target="_blank" rel="noopener">ワラウ案件ページ（条件・クチコミ）</a></span>
+<span class="source-line"><a href="https://www.warau.jp/style/article/moman-time-159/" target="_blank" rel="noopener">ワラウ ポイ活スタイル（達成率データ）</a></span>
+<span class="source-line"><a href="https://kochalog.com/momantime/" target="_blank" rel="noopener">Lv94を15日で達成・日ごとの推移（こちゃログ）</a></span>
+<span class="source-line"><a href="https://chinopoilog2.hatenadiary.jp/entry/moman-taimu" target="_blank" rel="noopener">無課金でLv94を16日で達成（ちーのポイログ）</a></span>
+<span class="source-line"><a href="https://ameblo.jp/mononofwu/entry-12936054899.html" target="_blank" rel="noopener">Lv94を14日で達成・同盟設立（もののふう）</a></span>
+<span class="source-line"><a href="https://poitan.hatenablog.jp/entry/2025/09/11/214435" target="_blank" rel="noopener">Lv94を13日で達成（ぽいたんのポイ活日記）</a></span>
+<span class="source-line"><a href="https://itsudemogaming.com/momantime_efficiently_proceeding/" target="_blank" rel="noopener">Lv94を13日で達成（いつでもゲーミング）</a></span>
+<span class="source-line"><a href="https://yuri98765.com/20250826-2/" target="_blank" rel="noopener">Lv159を45日で達成・旧条件（ゲームとポイ活+α）</a></span>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071" target="_blank" rel="noopener">ワラウ案件ページ（iOS）</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウの達成率はワラウ自身が公開している集計で、個人の記録とは別です。ブログの記録は当時の案件条件（期限35日、50日など）のものを含みます。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

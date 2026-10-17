@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/topwar-guide.html">
+<meta name="description" content="トップウォーのポイ活攻略。ユーザーレベル55・65・75のStepUp案件について、実プレイヤー10人の到達日数と課金額、科学研究・バトルハンマー・連盟選びの進め方、課金の損得を整理。">
+<title>トップウォー ポイ活攻略｜レベル55・65・75の到達ペースと進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>トップウォー 攻略ガイド</span>
+    <a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031" target="_blank" rel="noopener nofollow">ワラウの現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>トップウォー ポイ活攻略</h1>
+<p class="lead">ユーザーレベルを条件にしたStepUp案件で、「どのレベルまで狙うか」を決めるための記事です。実際の到達日数・課金額・プレイ時間を人ごとに並べ、レベルの上げ方と課金の損得を整理しました。</p>
+<div class="stats"><div class="stat"><span>実例：Lv55</span><strong>8〜27日</strong></div><div class="stat"><span>実例：Lv65</span><strong>27日</strong></div><div class="stat"><span>Lv75</span><strong>到達例は未確認</strong></div></div>
+<p class="hero-note">日数はプレイ時間・課金額・連盟の活発さで大きく変わります。Lv55は複数人が到達していますが、Lv75まで届いた実例は今回確認できていないため、到達保証はせず個別の実例を基準に判断します。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#system">レベルの上がり方</a></li><li><a href="#alliance">連盟選びと自動参加</a></li><li><a href="#stamina">体力・ダイヤ・偽バッジ</a></li><li><a href="#gold">金貨の管理</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#target">どこまで狙う？</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（ワラウiOS・2026年10月16日確認）</h2>
+<p>ワラウのiOS向けStepUp案件の条件です。新規インストール後、インストール日から30日以内にステップごとの条件を達成するとポイントが付与されます。2026年10月16日にインストールした場合の達成期限は11月14日と表示されていました。金額はワラウの表記（pt）で、ほかのポイントサイトやAndroid向けの案件ではステップや金額が異なります。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>ステップ</th><th>獲得pt</th><th>補足</th></tr></thead>
+<tbody>
+<tr><td>ユーザーレベル18到達</td><td>20</td><td></td></tr>
+<tr><td>初心者ミッションの高級報酬を解禁</td><td>450</td><td>購入が必要。ユーザーレベル8到達後、14日以内のみ購入可能</td></tr>
+<tr><td>ユーザーレベル30到達</td><td>80</td><td></td></tr>
+<tr><td>ビギナー限定特典を購入</td><td>450</td><td>購入が必要</td></tr>
+<tr><td>ブラックカードパスを購入</td><td>980</td><td>購入が必要</td></tr>
+<tr><td>ユーザーレベル45到達</td><td>270</td><td></td></tr>
+<tr><td>Lv45限定ギフト（2,700円）を購入</td><td>1,800</td><td>対象レベル到達から24時間以内のみ購入可能。先に1,300円のギフトの購入が必要</td></tr>
+<tr><td>ユーザーレベル55到達</td><td>750</td><td></td></tr>
+<tr><td>ユーザーレベル65到達</td><td>1,200</td><td></td></tr>
+<tr><td>【高難易度】ユーザーレベル75到達</td><td>3,000</td><td></td></tr>
+<tr><td>【高難易度】ユーザーレベル80到達</td><td>5,000</td><td></td></tr>
+<tr><td>累計50ドル（8,100円）の商品を購入</td><td>430</td><td>購入が必要</td></tr>
+<tr><td>累計100ドル（16,200円）の商品を購入</td><td>3,000</td><td>購入が必要</td></tr>
+</tbody>
+</table></div>
+<p>ステップを全部合わせると17,430ptです。課金が要らないレベル到達だけを足すと、Lv55までは20＋80＋270＋750＝1,120pt、Lv65までで2,320ptになります。</p>
+<div class="warning">購入ステップは、ページに書かれた価格と獲得ptを比べると多くが購入額のほうが大きくなります（例：Lv45限定ギフトは先の1,300円と合わせて4,000円の購入で1,800pt、累計8,100円分の購入で430pt）。「高級報酬の解禁」「ビギナー限定特典」「ブラックカードパス」の価格はこのページに書かれていないため、購入前にゲーム内で金額を確認してください。</div>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031" target="_blank" rel="noopener nofollow">ワラウの案件ページ（iOS）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/topwar.json" aria-live="polite"></section>
+<section class="section" id="system"><h2>レベルの上がり方｜城ではなく「ユーザーレベル」を上げる</h2>
+<p>トップウォーはよくある城ゲーと違い、案件の条件は城レベルではなくユーザーレベルです。城ゲーでは資源を集めて建設時間を加速して進めますが、このゲームでは経験値を稼いでレベルを上げます。実例の筆者は、1日にやることが決まっているぶん取り組みやすい案件と書いています。</p>
+<ul class="lab-list">
+<li>経験値が大きいのは「科学研究」と「レーダー任務」</li>
+<li>「懸賞任務」（デイリー任務）もまとまった経験値になる</li>
+<li>施設建造と兵士訓練は経験値こそ少ないが、研究に使う設計図を集めるために最大レベルのものは作っておく</li>
+</ul>
+<div class="key">科学研究には「金貨」と「設計図・図面」が必要。レベル上げは、この2つをどれだけ切らさず集められるかで決まります。</div>
+<p>設計図・図面は暗黒軍団の討伐、バトルハンマー（連盟で集結して倒すボス）、帝国の財宝、レーダー任務、連盟協力、連盟商店などで手に入ります。同じレベルの敵なら、体力に対する報酬はバトルハンマーのほうが多いと報告されています。</p>
+<p>もう一人の実例は別の工夫をしています。金貨バンバン宝箱とイベント周回を中心にし、基地や部隊の強化はミッションに必要な分だけにとどめたうえで17日目にLv55へ到達しました。この記録では、AI指揮センターやバトルハンマーを使わなくてもLv55までの日数は変わらなかったと振り返っています。進め方は一通りではないので、自分の連盟の活発さに合わせて選んでください。</p>
+</section>
+<section class="section" id="alliance"><h2>連盟は「アクティブさ」で選ぶ</h2>
+<p>ほぼ全員が最初に挙げるのが連盟です。活発な連盟ほどバトルハンマーの集結や連盟ギフトで必要なアイテムが集まり、非活発な連盟では自分が始めた集結に人が集まらずレベル上げが止まります。</p>
+<ul class="lab-list">
+<li>連盟の「集結自動参加」をONにする。他のメンバーのバトルハンマー討伐に体力0で参加でき、オフラインでも参加される。ONの状態は8時間続くため、1日に数回ログインして入れ直す</li>
+<li>連盟メニューの軍事から自動参加を解禁して設定する</li>
+<li>入った連盟のログイン状況を見る。実例では、半分以上が「ログイン2日以上前」になった時点でサーバー上位の連盟へ移り、8日目に移籍した</li>
+<li>連盟移転のアイテムで、メンバーが集まっている地点へ移動する</li>
+<li>日本語だけのチャットルームがあると、翻訳に頼らず連携しやすいという声もある</li>
+</ul>
+<div class="warning">サーバーと連盟の環境は時期で変わります。実例の中には、旧サーバーで最初からレベル5以上の連盟に入れた人もいれば、サーバー切り替え直後で日本語の同盟がほとんどなく外国のプレイヤーが多かった人もいます。案件によってはサーバー移動を禁止している場合があるため、案件ページの注意事項を先に読んでください。</div>
+</section>
+<section class="section" id="stamina"><h2>体力・ダイヤ・偽バッジの使いどころ</h2>
+<p>暗黒軍団の攻撃は体力5、バトルハンマーは体力10を使います。設計図を集める体力は足りなくなりがちなので、体力回復が前提になります。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>ダイヤによる体力回復</th><th>必要なダイヤ</th></tr></thead>
+<tbody>
+<tr><td>1回目</td><td>50</td></tr>
+<tr><td>2回目</td><td>200</td></tr>
+<tr><td>3回目</td><td>500</td></tr>
+<tr><td>4回目</td><td>500</td></tr>
+<tr><td>5回目</td><td>1,000</td></tr>
+<tr><td>6〜8回目</td><td>各1,000</td></tr>
+</tbody>
+</table></div>
+<p>必要なダイヤは毎日リセットされます。実例の筆者は、最低でも1日3〜4回はダイヤで体力を回復していました。ワラウのクチコミにも、体力を毎日買い足すことを欠かさないのがLv75に近づく条件だと書いた人がいます。</p>
+<ul class="lab-list">
+<li>帝国の財宝は体力ではなく「偽バッジ」で攻撃する。偽バッジは12時間に1回復し、最大5つまで持てる</li>
+<li>「初心者向けのトーナメント」で上級挑戦者3まで上がると偽バッジの報酬が出る（トーナメントで15位以内が目安）</li>
+<li>毎日、ギフトショップの超級特典から広告を上限まで見る。視聴できる本数はユーザーレベルとともに増え、ダイヤや体力が手に入る</li>
+</ul>
+</section>
+<section class="section" id="gold"><h2>金貨の管理｜後半の壁はここ</h2>
+<p>序盤は金貨が余りますが、Lv45あたりから施設のレベルアップに必要な金貨が足りなくなると複数の実例が書いています。Lv62を超えたところで生産が追いつかなくなったという人もいます。</p>
+<ul class="lab-list">
+<li>金鉱は最大レベルのものを10個建てて維持する</li>
+<li>基地を作りすぎない。最大レベルのものが3か所あれば足りたという実例がある</li>
+<li>金貨パンパン袋やアイテムの赤い箱などは、Lv45以降の後半に使うほうが損をしにくいという声がある</li>
+<li>金貨は採集に出すより、イベントなどで集めたほうが効率が良いという声が多い。採集に部隊を出すとバトルハンマーの集結に参加できなくなる点にも注意</li>
+</ul>
+<p>実例のひとり（毎日2〜5時間、初日から4,200円課金）は、Lv55到達時点でも金貨と欠片が足りず、Lv75には届きませんでした。別の実例は、30日目の時点でLv59に達し、Lv75に必要な経験値を自分の試算では課金で用意すると数百万円規模になると見積もっています。この試算は個人の計算で、公式の数字ではありません。</p>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>懸賞任務を消化する（1日5回まで更新できる）</li>
+<li>レーダー任務を消化する。最大40個まで保存されるので、取りこぼさない</li>
+<li>連盟のバトルハンマーに参加し、集結自動参加をON</li>
+<li>体力をダイヤで回復し、バトルハンマーと暗黒軍団に使う</li>
+<li>科学研究の欠片がたまったら研究を進め、昇格した施設とユニットを作る</li>
+<li>偽バッジを使って帝国の財宝を攻撃する</li>
+<li>金貨の高速収穫、世界BOSS、指揮学院の研究、作戦リスト（模擬演習・遠征作戦）をチェック</li>
+<li>毎日、広告を上限まで見る</li>
+</ul>
+<div class="key">プレイ時間の実例：初日〜2日目は2〜3時間、3日目以降は30分〜1時間（17日でLv55の人）。毎日2〜5時間を使っても18日かかった人もいます。</div>
+</section>
+<section class="section" id="target"><h2>Lv55・65・75、どこまで狙う？</h2>
+<div class="decision">
+<div class="decision-card"><strong>Lv55</strong>実例では8日（課金あり）・17日（2人）・18日・19日・27日。多くが2〜3週間台で到達。購入ステップを使わなければ、ワラウでは1,120ptの案件。</div>
+<div class="decision-card"><strong>Lv65</strong>無課金で27日目に到達した投稿が2件。一方でLv60に15日目（約7,000円課金）、Lv59に30日目という例もあり、Lv55からは1日1レベル程度のペース。</div>
+<div class="decision-card"><strong>Lv75</strong>30日以内の到達例は確認できていません。Lv71で終えた人、Lv55到達後に届かなかった人、撤退した人がいます。重課金でも厳しいという投稿が複数。</div>
+</div>
+<div class="warning">Lv40あたりから1日に上がるのは1〜2レベルです（Lv55に17日の実例：Lv30は3日目、Lv40は7日目、Lv50は13日目）。序盤が速くても、同じ速さがLv75まで続くとは考えないでください。</div>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（ワラウの案件ページより）</h2>
+<ul class="lab-list">
+<li>「ポイントを貯める」をタップしてから1時間以内にアプリを起動する。その間に通信環境（Wi-Fi・モバイル回線）を切り替えたり、他のアプリやサイトを開いたりしない</li>
+<li>ポイント通帳の判定状態に「判定中」の表示があることを確認してから進める</li>
+<li>広告ブロッカー、広告IDの削除・リセット、トラッキングの制限（Safariの「サイト越えトラッキングを防ぐ」やAppのトラッキング拒否）は、反映されない原因になる</li>
+<li>ゲーム内の購入は、金塊を使った購入だと対象外</li>
+<li>過去にインストールしたことがある端末や、データを引き継いだ端末は対象外</li>
+<li>保証申請の期限はインストール日から50日以内。申請にはゲーム内のユーザーID・サーバーID・到達画面のスクリーンショットなどが必要なので、達成時に保存しておく</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜トップウォーは「連盟」と「体力」で決まる</h2>
+<ul class="lab-list">
+<li>条件はユーザーレベル。経験値は科学研究とレーダー任務が中心</li>
+<li>活発な連盟に入り、集結自動参加をONにして設計図を集める</li>
+<li>体力はダイヤで回復する。ダイヤの必要量は毎日リセット</li>
+<li>Lv45以降は金貨が足りなくなる。金鉱10個と宝箱の温存で備える</li>
+<li>Lv55は2〜3週間台の実例が多い。Lv75は到達例を確認できていない</li>
+</ul>
+<p>課金ステップは購入額が獲得ptを上回るものが多く、レベル到達だけを狙うなら無課金か少額にとどめる実例が目立ちます。どこまで続けるかは、Lv55到達時点の残り日数と、自分が毎日使える時間で決めてください。</p>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031" target="_blank" rel="noopener">ワラウ案件ページ（条件・クチコミ）</a></span>
+<span class="source-line"><a href="https://kochalog.com/topwar/" target="_blank" rel="noopener">Lv55・17日の記録（こちゃログ）</a></span>
+<span class="source-line"><a href="https://x.com/kochablog/status/1973658335456145540" target="_blank" rel="noopener">X進捗例（こちゃ）</a></span>
+<span class="source-line"><a href="https://note.com/natsuhiro0715/n/n4509f95c27d1" target="_blank" rel="noopener">Lv55・17日の記録（夏宏・note）</a></span>
+<span class="source-line"><a href="https://mahoukinoko.site/2025/08/10/topwar/" target="_blank" rel="noopener">Lv55・19日の記録</a></span>
+<span class="source-line"><a href="https://kentatenchogames.com/2026/01/09/poikatu-topwar/" target="_blank" rel="noopener">Lv55・18日と課金の記録</a></span>
+<span class="source-line"><a href="https://x.com/onozaki_lala/status/2060163250562682883" target="_blank" rel="noopener">X進捗例（27日目Lv55）</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・note・X・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウのiOS案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/doomsday-last-survivor-guide.html">
+<meta name="description" content="ドゥームズデイ：ラストサバイバーのポイ活攻略。本部レベル14（15日以内）の到達実例10人の日数・プレイ時間と、前提施設・建設時間・スピードアップ・同盟の使い方、Lv18以上へ進む判断材料を整理。">
+<title>ドゥームズデイ ポイ活攻略｜本部レベル14を15日以内に達成する進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ドゥームズデイ：ラストサバイバー 攻略ガイド</span>
+    <a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689" target="_blank" rel="noopener nofollow">ワラウの現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ドゥームズデイ：ラストサバイバー ポイ活攻略</h1>
+<p class="lead">ワラウで掲載中の「本部レベル14到達（15日以内）」を想定し、実プレイヤーの到達日数と、建設時間の壁をどう越えたかを整理しました。Lv18以上へ進むかどうかの判断材料も載せています。</p>
+<div class="stats"><div class="stat"><span>実例：Lv14</span><strong>3〜11日</strong></div><div class="stat"><span>実例：Lv18</span><strong>14〜16日</strong></div><div class="stat"><span>Lv25</span><strong>30日以内は未確認</strong></div></div>
+<p class="hero-note">Lv14は複数人が数日〜11日で到達していますが、2025年の記録には19日かかった例もあります。条件の日数が変わった時期の記録は、現在の15日以内と分けて読んでください。Lv18以上は課金を使った例が中心です。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#wall">建設時間の壁</a></li><li><a href="#speed">スピードアップと建設枠</a></li><li><a href="#alliance">同盟とヘルプ</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#target">Lv14で止める？ Lv18以上へ進む？</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（ワラウ・2026年10月16日確認）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>案件</td><td>ドゥームズデイ：ラストサバイバー（本部レベル14到達）</td></tr>
+<tr><td>対応OS</td><td>iOS・Androidの両方（案件ページが別）</td></tr>
+<tr><td>条件</td><td>新規アプリインストール後、インストール日から起算して15日以内に本部レベル14に到達</td></tr>
+<tr><td>獲得pt（ワラウ表記）</td><td>950pt（表示は「900pt → 950pt」）</td></tr>
+<tr><td>達成期限の例</td><td>2026年10月16日にインストールした場合は10月30日</td></tr>
+<tr><td>反映の目安</td><td>起動後、最短30分／条件達成後24時間以内に判定（ポイント通帳に記載）</td></tr>
+</tbody>
+</table></div>
+<div class="warning">課金ステップのない1段階の案件です。ほかのポイントサイトにはLv18以上までのStepUp案件もあり、条件・期限・購入ステップは別です。この記事のペースは、案件ごとの期限と照らして読んでください。</div>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689" target="_blank" rel="noopener nofollow">ワラウの案件ページ（iOS）</a></li><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=199690" target="_blank" rel="noopener nofollow">ワラウの案件ページ（Android）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/doomsday.json" aria-live="polite"></section>
+<section class="section" id="wall"><h2>建設時間の壁｜本部レベルは「待ち時間」で決まる</h2>
+<p>本部レベルを上げるには、前提になる施設のレベルを先に上げる必要があります。さらに、本部そのものの建設時間（スピードアップ前）が急に長くなります。2024年の仕様変更後にプレイした記録に載っている、前提施設と建設時間（スピードアップ前）の一覧が下の表です。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>本部レベル</th><th>必要な施設</th><th>本部の建設時間（加速前）</th></tr></thead>
+<tbody>
+<tr><td>Lv8</td><td>研究所Lv3・同盟センターLv7</td><td>6時間</td></tr>
+<tr><td>Lv9</td><td>研究所Lv8・警察署Lv8・車両兵舎Lv8</td><td>12時間</td></tr>
+<tr><td>Lv10</td><td>研究所Lv9・バリケードLv9・歩兵兵舎Lv9</td><td>22時間</td></tr>
+<tr><td>Lv11</td><td>研究所Lv10・倉庫Lv10・射撃兵舎Lv10</td><td>1日12時間</td></tr>
+<tr><td>Lv12</td><td>研究所Lv11・病院Lv11・騎兵兵舎Lv11</td><td>2日</td></tr>
+<tr><td>Lv13</td><td>研究所Lv12・偵察基地Lv12・車両兵舎Lv12</td><td>2日12時間</td></tr>
+<tr><td>Lv14</td><td>研究所Lv13・交易所Lv13・歩兵兵舎Lv13</td><td>3日</td></tr>
+</tbody>
+</table></div>
+<div class="key">Lv11からLv14までの本部だけで、加速前は合計9日分の建設時間です。15日以内に収めるには、資源よりスピードアップの確保が先に必要になります。</div>
+<p>実例でも、資源は集めていれば不足しなかったのに、スピードアップが先に足りなくなったという記録（6日目のLv14時点）や、「資源より加速が必要」と題した記録があります。</p>
+</section>
+<section class="section" id="speed"><h2>スピードアップと建設枠の使い方</h2>
+<ul class="lab-list">
+<li>研究所の経済技術にある「建設キット」を最優先で研究する（建設速度が15％上がる）。別の記録ではLv5まで上げるよう勧めている</li>
+<li>建設枠は無課金だと1つだけ。2つ目は「キューパック」の購入が必要で、価格は実例で300円（Android）、700円（別の記録）と報告が分かれている。ダイヤで2つ目を足すこともできるが、500ダイヤで2時間分とコスパが悪い</li>
+<li>チャプターミッションとデイリーミッション（100APで報酬、AM9:00更新）で、ダイヤ・資源・スピードアップを集める</li>
+<li>シューティングのミニゲームは時間のあるときに全クリアを目指す。生存者が仲間になり、建設の加速時間が増える</li>
+<li>ダイヤは基本的に建設の加速に使う。ワラウのクチコミでも、石（ダイヤ）は加速に使ったという声が多い</li>
+<li>VIPをLv3にすると、ショップで加速（30分×1日100個まで）をダイヤで買えるようになる。毎日リセットされるので、ダイヤはここに使うとよいという声がある</li>
+<li>開催中のイベントは必ず確認する。コラボイベントの交換所でスピードアップを大量に入手でき、約12時間のプレイでLv14に届いた人もいる</li>
+</ul>
+<p>本部を建てるときは、ダイヤで一気に建てず、建設を開始してから残り時間の短縮にダイヤを使うほうが消費が少なく済んだという投稿もあります。</p>
+</section>
+<section class="section" id="alliance"><h2>同盟に入り、ヘルプで時間を削る</h2>
+<p>チャプターミッションの5章あたりで同盟に入れます。初回加入で300ダイヤが入り、メンバーのヘルプで建設時間が縮み、同盟領地内の資源収集は30％速くなります。</p>
+<ul class="lab-list">
+<li>アクティブな同盟を選ぶ。実例の筆者は活発な同盟を探して5回移籍し、上位の同盟に入れなくても問題なかったと書いている</li>
+<li>同盟のメンバーが無言でも、ヘルプや領地の恩恵は受けられるという声がある</li>
+<li>同盟は何度でも入り直せる。脱退は［同盟］→［設定］→［脱退］</li>
+</ul>
+<div class="warning">サーバーによっては早い時期から同盟の統廃合が進み、活発だった同盟が突然解散した例があります。無所属や非アクティブな同盟を襲うプレイヤーも出ていたと報告されています。のんびり進めるより、早めに条件達成を狙うほうが安全です。</div>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>チャプターミッションを進める（ダイヤ・資源・スピードアップが入る）</li>
+<li>デイリーミッションを消化する</li>
+<li>レーダー基地で資源と加速アイテムを集める</li>
+<li>開催中のイベントのうち、達成できるものを進める</li>
+<li>フィールドの資源地で採取する。同盟の領地内がおすすめ。ログアウト前にも採取に出す</li>
+<li>兵舎で最低コストの兵（T1）を訓練する。T2以上を作る必要はない</li>
+<li>本部と前提施設の建設を、建設枠が空かないよう入れ続ける</li>
+</ul>
+<div class="key">プレイ時間の実例：約5時間で4日（初めての城ゲーム）、約12時間、1日1時間少しで1週間足らず。</div>
+</section>
+<section class="section" id="target"><h2>Lv14で止める？ Lv18以上へ進む？</h2>
+<div class="decision">
+<div class="decision-card"><strong>Lv14</strong>実例では3日・4日・5日・6日・約1週間・11日。2025年の無課金の記録では19日かかった例もあり、当時の条件と今の15日以内は別。</div>
+<div class="decision-card"><strong>Lv18</strong>14日（2つ目のキューパックを購入）と16日（700円の建設枠に課金）の実例。</div>
+<div class="decision-card"><strong>Lv19以上</strong>Lv19に18日目、Lv23の完成に33日、Lv24に42日、Lv25に55日という記録。無課金でLv14まで進み、Lv19は課金が必要と判断して撤退した人もいて、30日以内のLv25完成は確認できていない。</div>
+</div>
+<div class="warning">Lv18以上のStepUp案件を掲載しているサイトもありますが、今回は現在の掲載条件を確認していません。上のペースは記録当時の条件に基づくため、案件ごとの期限・購入ステップと照らし、課金額が獲得ptを上回らないかを先に計算してください。</div>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（ワラウの案件ページより）</h2>
+<ul class="lab-list">
+<li>「ポイントを貯める」をタップしてから1時間以内にアプリを起動する。通信環境の切り替えや、ほかのアプリ・サイトの閲覧はその間しない</li>
+<li>ポイント通帳の判定状態に「判定中」の表示があることを確認してから進める</li>
+<li>広告ブロッカー、広告IDの削除・リセット、トラッキングの制限は、反映されない原因になる</li>
+<li>過去にインストールした端末、再インストール、データ引き継ぎは対象外</li>
+<li>達成してもポイントが反映されない場合は、ワラウの「あんしん保証」を申請する。実例では、反映されなかったが保証の申請で付与された人がいる</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜ドゥームズデイは「加速を切らさない」が基本</h2>
+<ul class="lab-list">
+<li>現在のワラウ案件は本部レベル14を15日以内。950pt、課金ステップなし</li>
+<li>本部Lv11→14だけで加速前9日分。スピードアップの確保が最優先</li>
+<li>建設キットの研究、チャプターミッション、同盟のヘルプ、イベントでスピードアップを集める</li>
+<li>実例はLv14が3〜11日。19日かかった2025年の記録は当時の条件</li>
+<li>Lv18以上は課金ありの実例が中心。購入額と獲得ptを比べてから決める</li>
+</ul>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689" target="_blank" rel="noopener">ワラウ案件ページ（iOS）</a></span>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=199690" target="_blank" rel="noopener">ワラウ案件ページ（Android）</a></span>
+<span class="source-line"><a href="https://kochalog.com/doomsday/" target="_blank" rel="noopener">Lv12・14・16・18の記録（こちゃログ）</a></span>
+<span class="source-line"><a href="https://www.yumatti.com/poi-katsu-doomsday-last-survivor/" target="_blank" rel="noopener">Lv14を11日の記録（ゆま）</a></span>
+<span class="source-line"><a href="https://wakupen.com/doomsday_review/" target="_blank" rel="noopener">Lv14を19日・撤退の記録（Wakupen）</a></span>
+<span class="source-line"><a href="https://point-kasegu.net/doomsday/" target="_blank" rel="noopener">Lv18・19の記録（ポイント生活）</a></span>
+<span class="source-line"><a href="https://chokinhuyasu.com/dls_japan-25.html" target="_blank" rel="noopener">Lv23〜25の記録</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

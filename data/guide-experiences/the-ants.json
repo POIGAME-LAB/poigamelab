@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "game": "ザ・アンツ",
+  "updatedAt": "2026-10-16",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開されているブログとSNSの記録から、到達日数やレベルが書かれているものを同じ人ごとにまとめています。課金の有無、アライアンス、プレイ頻度は人によって違うため、平均ではなく実例として見てください。",
+  "notice": "※Lv18は10〜23日、Lv22は29日の1人です。期限内に届かなかった記録は確認できていません。ブログやSNSで公開される記録は達成した人が中心で、届かなかった人は書き残しにくいため、成功例に偏っています。",
+  "footnote": "日数は建築時間、アライアンス、プレイ頻度で変わります。ブログの記録は当時の案件条件のものを含みます。",
+  "initialVisible": 6,
+  "players": [
+    {
+      "summary": "無課金でLv18が10日目（2026年6月）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 10,
+          "label": "女王アリLv18達成"
+        }
+      ],
+      "note": "ワラウのAndroid案件（Lv18は30日以内、Lv22のみ60日以内）での記録。他の城ゲーよりやることが多く、資源管理が重要だったと書いている。強いアライアンスに入れたので、攻撃されたことは一度もなかった。Lv22は労力に対して効率が悪いと感じている。",
+      "sources": [
+        "https://point-kasegu.net/the-ants/"
+      ],
+      "id": "A",
+      "label": "プレイヤーA"
+    },
+    {
+      "summary": "無課金でLv19が14日目",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv3・Lv7"
+        },
+        {
+          "day": 2,
+          "label": "Lv10"
+        },
+        {
+          "day": 7,
+          "label": "Lv15"
+        },
+        {
+          "day": 14,
+          "label": "Lv19達成"
+        }
+      ],
+      "note": "スーパー働きアリは課金でしか入手できず、黒字になる案件は無さそうだったので、無課金で進めた。アライアンスは人数が多くアクティブなところほど、ヘルプやギフトで有利と書いている。こちゃログの記事（2026年2月16日付）。",
+      "sources": [
+        "https://kochalog.com/the-ants/"
+      ],
+      "id": "B",
+      "label": "プレイヤーB"
+    },
+    {
+      "summary": "無課金でLv18が30日以内（Lv20までは到達）",
+      "status": "completed",
+      "milestones": [
+        {
+          "dayLabel": "30日以内",
+          "label": "Lv18達成",
+          "detail": "途中でログイン頻度が落ちた期間があった"
+        },
+        {
+          "dayLabel": "Lv18のあと",
+          "label": "Lv20に到達",
+          "detail": "Lv22は無理と判断して終了"
+        }
+      ],
+      "note": "1日30分から1時間のプレイ。Lv19に上げる段階で資源の要求桁数が変わり、Lv20に到達したところで「これは無理だ」と悟ってLv18の挑戦で終えたと書いている。2026年2月の記事。",
+      "sources": [
+        "https://nomoney-poilog.com/posts/2026/0215-the-ants-level18/"
+      ],
+      "id": "C",
+      "label": "プレイヤーC"
+    },
+    {
+      "summary": "課金ありでLv22が29日目（総プレイ時間は約60時間）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "Lv13"
+        },
+        {
+          "day": 8,
+          "label": "Lv18"
+        },
+        {
+          "day": 29,
+          "label": "Lv22達成",
+          "detail": "課金ミッションはすべてクリア"
+        }
+      ],
+      "note": "ワラウのAndroid案件で、総プレイ時間は60時間28分。1日2〜3回のログインで資源の回収と建設を欠かさないのが基本だった。本人は「Lv18で撤退するのが正解」と書いており、Lv22は20日を過ぎたあたりから停滞感が強くなる、としている。2026年5月の記事。",
+      "sources": [
+        "https://poikatusmith3.hatenablog.com/entry/2026/05/02/130000"
+      ],
+      "id": "D",
+      "label": "プレイヤーD"
+    },
+    {
+      "summary": "Lv17が7日目（課金と並行・再プレイ）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "Lv17達成"
+        }
+      ],
+      "note": "以前にもプレイしていて仕様を把握していたことと、課金案件3つと並行したことが早さの理由と書いている。スーパー働きアリを3匹購入すると資源や加速アイテムも大量にもらえ、Lv13まで1日で届いたという。記事は2026年6月更新。",
+      "sources": [
+        "https://www.yumatti.com/point-earning-activities-at-the-ants/"
+      ],
+      "id": "E",
+      "label": "プレイヤーE"
+    },
+    {
+      "summary": "22日目にLv20（Lv22を目指している途中）",
+      "status": "ongoing",
+      "milestones": [
+        {
+          "day": 22,
+          "label": "Lv20",
+          "detail": "Lv22を目指す"
+        }
+      ],
+      "note": "資源が貯まるまで中立生物の孵化はお預け、と投稿している。この日は油虫救援、コロニーパーティー、最強戦域戦のイベントが始まり、多すぎて混乱したという。2026年1月の投稿。結果は不明。",
+      "sources": [
+        "https://x.com/nyanreimama/status/2008188401393295440"
+      ],
+      "id": "F",
+      "label": "プレイヤーF"
+    },
+    {
+      "summary": "無課金でLv18が20日目（2025年8月）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 20,
+          "label": "Lv18達成"
+        }
+      ],
+      "note": "難易度は星4つで、期間の30日には余裕をもってクリアできたと書いている。Lv25は期限30日以内では課金しないと無理だった、としている。",
+      "sources": [
+        "https://rakumokeblog.com/money-game20"
+      ],
+      "id": "G",
+      "label": "プレイヤーG"
+    },
+    {
+      "summary": "朝晩だけのプレイでLv18が23日目（2021年）",
+      "status": "completed",
+      "milestones": [
+        {
+          "day": 23,
+          "label": "Lv18達成",
+          "detail": "2021年11月13日"
+        }
+      ],
+      "note": "昼間は仕事で、朝と夜にしか触らなかった。もう少し頻度を高くすれば2週間ほどで届くと感じたという。当時の案件条件での記録。",
+      "sources": [
+        "https://www.pokopoi.com/entry/the_ants"
+      ],
+      "id": "H",
+      "label": "プレイヤーH"
+    }
+  ]
+}

@@ -54,6 +54,9 @@
           ${items}
         </div>
         ${player.note ? `<p class="player-note">${escapeHtml(player.note)}</p>` : ""}
+        ${Array.isArray(player.sourceDetails) && player.sourceDetails.length
+          ? `<p class="player-source-detail">出典の詳細：${player.sourceDetails.map(escapeHtml).join(" ／ ")}</p>`
+          : ""}
       </article>`;
   }
 

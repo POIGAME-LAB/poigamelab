@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/zombie-panic-guide.html">
+<meta name="description" content="ゾンビ・パニックのポイ活攻略。ワラウStepUp（30日以内・ステージ35まで・3,370pt）の条件と、ステージ35に9〜26日で届いた実例、7日間チャレンジの武器、戦力の上げ方、広告視聴と課金の収支、ステージ60の現実を整理。">
+<title>ゾンビ・パニック ポイ活攻略｜ステージ35を30日以内に目指す進め方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ゾンビ・パニック 攻略ガイド</span>
+    <a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455" target="_blank" rel="noopener nofollow">ワラウの現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ゾンビ・パニック ポイ活攻略</h1>
+<p class="lead">ワラウのStepUp案件（30日以内、ステージ3〜35）を想定し、ステージ35に届いた人と、途中で撤退した人の記録を日数ごとに並べました。他サイトの案件にあるステージ60の現実や、広告視聴・課金の収支も整理しています。</p>
+<div class="stats"><div class="stat"><span>実例：ステージ35</span><strong>9〜26日</strong></div><div class="stat"><span>途中で撤退した記録</span><strong>6人</strong></div><div class="stat"><span>ステージ60</span><strong>届いた例なし</strong></div></div>
+<p class="hero-note">ステージ35は9日から26日で届いた記録があり、課金の有無や戦力の集め方で差が出ています。一方、ステージ25やそれ以前で撤退した記録もあります。到達を保証するものではありません。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#system">クリアの仕組み</a></li><li><a href="#week">最初の7日間</a></li><li><a href="#power">戦力の上げ方</a></li><li><a href="#flow">序盤・中盤・終盤</a></li><li><a href="#daily">毎日やること</a></li><li><a href="#stuck">詰まりやすい所</a></li><li><a href="#money">広告視聴と課金の収支</a></li><li><a href="#target">どこまで目指すか</a></li><li><a href="#tracking">成果反映の注意</a></li><li><a href="#summary">まとめ</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件（ワラウAndroid・2026年10月16日確認）</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>項目</th><th>内容</th></tr></thead>
+<tbody>
+<tr><td>案件</td><td>ゾンビ・パニック（StepUp）</td></tr>
+<tr><td>対応OS</td><td>Android（iOS版は別ページ）</td></tr>
+<tr><td>条件</td><td>新規アプリインストール後、インストール日から起算して30日以内にStepUpミッションの各達成条件をクリア</td></tr>
+<tr><td>獲得pt（ワラウ表記）</td><td>全ステップ合計3,370pt（ステージのみなら2,770pt）</td></tr>
+<tr><td>達成期限の例</td><td>2026年10月16日にインストールした場合は11月14日</td></tr>
+<tr><td>反映の目安</td><td>条件達成後、ポイント付与まで最大24時間（ワラウ表記）</td></tr>
+<tr><td>クチコミ</td><td>評価3.3、44件（ワラウ表記）</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>ステップ</th><th>獲得pt</th><th>ステージのみの累計</th></tr></thead>
+<tbody>
+<tr><td>ステージ3クリア</td><td>50pt</td><td>50pt</td></tr>
+<tr><td>上級戦闘指令を購入</td><td>600pt</td><td>（課金）</td></tr>
+<tr><td>ステージ15クリア</td><td>300pt</td><td>350pt</td></tr>
+<tr><td>ステージ25クリア</td><td>720pt</td><td>1,070pt</td></tr>
+<tr><td>ステージ35クリア</td><td>1,700pt</td><td>2,770pt</td></tr>
+</tbody>
+</table></div>
+<div class="warning">アメフリのiOS案件（2026年10月16日確認）には、ステージ60まで含まれ、ステージ35までで3,300円（33,000pt）、ステージ60は246円（2,460pt）と表示されています。サイトの記載する到達目安は、ステージ3が1日、ステージ15が5日、ステージ25が11日、ステージ35が23日、ステージ60が30日程度です。ポイントサイトによって条件や金額が違うため、開始前に利用先で最新情報をご確認ください。</div>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455" target="_blank" rel="noopener nofollow">ワラウの案件ページ（iOS）</a></li><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456" target="_blank" rel="noopener nofollow">ワラウの案件ページ（Android）</a></li><li><a href="https://www.amefri.net/detail/id/124042" target="_blank" rel="noopener nofollow">アメフリの案件ページ（iOS）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/zombie-panic.json" aria-live="polite"></section>
+<section class="section" id="system"><h2>クリアの仕組み｜生き残れば勝ち</h2>
+<p>ゾンビ・パニックは、押し寄せるゾンビから一定時間生き残る「ヴァンサバ系」のゲームです。1ステージは12分で、クリア条件はボスを倒すことではなく、制限時間を生き残ることです。戦力が足りずボスを倒せなくても、逃げ回ればクリアできます。</p>
+<ul class="lab-list">
+<li>HPが0になっても、広告視聴または30ダイヤで1回だけ復活できる</li>
+<li>防御力という概念がなく、戦闘力は攻撃力。ステージの推奨戦力に足りないと警告が出る</li>
+<li>ステージ35の推奨戦力は350〜381kと書かれている。突破した実例は278〜370kで、推奨に満たなくてもクリアしている</li>
+<li>表記は12分でも、スキル選択を含めて実際は15〜20分かかったという記録がある</li>
+</ul>
+<div class="key">ポイ活の鍵は、戦力を上げる日課を毎日欠かさず積み重ねることと、1ステージに必要な時間を確保することです。ながらプレイはできません。</div>
+</section>
+<section class="section" id="week"><h2>最初の7日間｜ウインドライフルを逃さない</h2>
+<ul class="lab-list">
+<li>ゲーム開始から7日間限定の「初心者ミッション」（7日間チャレンジ）に、S級武器の「ウインドライフル」が含まれる</li>
+<li>複数の記事が、ウインドライフルをポイ活の最重要アイテムとしている。7日間チャレンジを達成できないとS級武器が手に入らず、難易度が大きく上がる、という記載もある</li>
+<li>ステージ7をクリアするとギルドに加入できる。アクティブなプレイヤーが多いギルドに早めに入るとよい</li>
+<li>初日と2日目はやることと覚えることが多い。休日前に始めるとスムーズ、という記載がある</li>
+</ul>
+</section>
+<section class="section" id="power"><h2>戦力の上げ方｜日常挑戦とキャンプ、そして強い装備</h2>
+<ul class="lab-list">
+<li>武器：金貨で強化し、ランクアップは武器チップと伝説のキューブで行う。S武器のランクアップには伝説のキューブが5個必要</li>
+<li>装備：部位ごとに種類があり、合成でランクアップする。S装備はオレンジまで育てると大幅に強くなる</li>
+<li>コンパス：日常挑戦の「時空救助」「チャレンジステージ」で入手。コアコンパスは戦闘力を大きく押し上げる</li>
+<li>天基武器：ステージ30クリアで解放される</li>
+<li>ボット、キャンプの建設、コレクションも戦闘力に関わる</li>
+<li>ギルドの団結ショップ・貢献ショップで装備やアイテムを交換する</li>
+</ul>
+<p>プレイヤーKは、S装備をオレンジまで育てたことで、装備1つで戦力が約26kから約100kに上がったと書いています。手詰まりの4日間のあと、一気に突破できた記録です。</p>
+<div class="warning">戦力を上げる要素の多くは、武器チップや伝説のキューブなどの素材が運に左右されます。プレイヤーNは、武器のランクアップに必要な素材がほぼ課金でしか手に入らないと感じて撤退しています。</div>
+</section>
+<section class="section" id="flow"><h2>序盤・中盤・終盤でやること</h2>
+<h3>序盤（ステージ1〜15・約1週間）</h3>
+<ul class="lab-list">
+<li>ステージ3は1日目、ステージ6は2日目、ステージ15は3〜4日目に届いた記録がある</li>
+<li>7日間チャレンジをこなし、ウインドライフルを手に入れる</li>
+<li>1ステージ12分。初日はまとまった時間が必要</li>
+</ul>
+<h3>中盤（ステージ15〜25・1週間前後）</h3>
+<ul class="lab-list">
+<li>ステージ25は6〜9日目の記録が複数ある</li>
+<li>5ステージごとにキャンプのレベルが上がり、ドロップ報酬にボーナスが付く</li>
+<li>ステージ25から先は戦力の要求が上がり、撤退する人が出始める</li>
+</ul>
+<h3>終盤（ステージ25〜35・1〜2週間）</h3>
+<ul class="lab-list">
+<li>ステージ35は、9日、11日、14日、15日、17日、20日、26日の記録がある</li>
+<li>戦力が推奨に届かない場合は、スキルの組み合わせや地形を使って突破した記録が複数ある</li>
+<li>日常挑戦やイベントの上位を狙うと、重要アイテムを得やすい</li>
+</ul>
+<h3>日ごとのステージ（3人の記録）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>目安</th><th>プレイヤーH</th><th>プレイヤーI</th><th>プレイヤーK</th></tr></thead>
+<tbody>
+<tr><td>ステージ15</td><td>4日目</td><td>3日目</td><td>—</td></tr>
+<tr><td>ステージ25</td><td>8日目</td><td>8日目</td><td>9日目</td></tr>
+<tr><td>ステージ35</td><td>11日目</td><td>17日目</td><td>26日目</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="daily"><h2>毎日やること</h2>
+<ul class="lab-list">
+<li>放置収益の受け取り（最大6時間分）。スタミナが余るので、掃討券とスタミナでクイック掃討する</li>
+<li>時空救助（コンパスと協力コイン）。協力コインは毎日の上限（1万）まで集める</li>
+<li>アリーナを5回（無料）</li>
+<li>ボス討伐戦を毎日1回。残りは掃討で報酬だけ受け取る</li>
+<li>限界挑戦を最低1回。デイリー・ウィークリー報酬を受け取る</li>
+<li>ギルド商人の値引きと購入</li>
+<li>デイリーとウィークリーのクエストを完了する</li>
+</ul>
+</section>
+<section class="section" id="stuck"><h2>詰まりやすい所と対処</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>詰まる所</th><th>実例</th><th>対処</th></tr></thead>
+<tbody>
+<tr><td>ステージ25前後で戦力が足りない</td><td>ステージ25が限界だった、ステージ25で撤退した、の投稿が複数</td><td>日常挑戦を進める。武器を変えると抜けられることがある</td></tr>
+<tr><td>推奨戦力に届かない</td><td>ステージ35を278k〜320kで突破した記録、256k/274kでステージ33を突破した記録</td><td>スキルの組み合わせと地形を使う。敵が来る方向が少ない場所を選ぶ</td></tr>
+<tr><td>強化素材が足りない</td><td>武器のランクアップがほぼ課金でしか手に入らないと感じた例</td><td>S装備を1つオレンジまで育てる。伝説のキューブを集める</td></tr>
+<tr><td>広告視聴が多い</td><td>1日数十回、1日60回以上と書かれている</td><td>経験値補助ボットや月間パスで減らせる。課金は収支を見て判断</td></tr>
+<tr><td>1ステージが長い</td><td>15分が長い、ながらプレイができない</td><td>まとまった時間を確保する。7日間は特に</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="section" id="money"><h2>広告視聴と課金の収支</h2>
+<p>ワラウの課金ステップは「上級戦闘指令を購入（600pt）」の1つです。価格は記事によって異なり、こちゃログとめもぱんだは720円、ゲームとポイ活+αは700円、2025年6月のクチコミは600円と書いています。ストアでステップ対象のものを確認してください。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>課金</th><th>価格の記載</th><th>ワラウの獲得pt</th><th>差額（1pt=1円）</th></tr></thead>
+<tbody>
+<tr><td>上級戦闘指令（ステップ対象）</td><td>600円〜720円</td><td>600pt</td><td>0円〜−120円</td></tr>
+</tbody>
+</table></div>
+<ul class="lab-list">
+<li>経験値補助ボットは100〜140円。周囲の経験値を自動で回収し、初日と2日目の広告視聴を減らせる、と書かれている</li>
+<li>スーパー月間パスは1,440円（Android）。広告非表示などの効果があるが、ステップのptでは戻らない</li>
+<li>こちゃログは、ポイ活では上級戦闘指令は不要としている。一方、ゲームとポイ活+αは、赤字が小さいのでステージ35を目指すなら買ってよいとしている</li>
+<li>無課金でステージ35に届いた実例がある（プレイヤーD・F）。広告スキップの課金をするとほぼ利益がなくなる、と書いた人もいる</li>
+<li>課金は任意です。この記事は課金を勧めるものではありません</li>
+</ul>
+</section>
+<section class="section" id="target"><h2>どこまで目指すか</h2>
+<div class="decision">
+<div class="decision-card"><strong>ステージ15まで（ステージのみ350pt）</strong>3〜6日目に届いた記録がある。ここで続けるか決める人もいる。</div>
+<div class="decision-card"><strong>ステージ25まで（ステージのみ1,070pt）</strong>6〜9日目に届いた記録が複数ある一方、ステージ25で終えた・撤退した人が3人いる（プレイヤーN・O・P）。ここが最初の分かれ目。</div>
+<div class="decision-card"><strong>ステージ35まで（ステージのみ2,770pt）</strong>9日から26日と幅が大きい。無課金で届いた記録と、30日ギリギリの記録がある。毎日の日課と、まとまった時間が前提。</div>
+<div class="decision-card"><strong>ステージ60（他サイトの案件）</strong>届いた実例が確認できていない。めもぱんだとゆまは、30日以内の達成は難しいとしている。</div>
+</div>
+<div class="warning">記録の多くは、ステージ35を目安にしています。ステージ60を狙った人はおらず、こちゃログの筆者もリタイアしています（当時の条件）。</div>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意（ワラウの案件ページより）</h2>
+<ul class="lab-list">
+<li>「ポイントを貯める」をタップしてから1時間以内にアプリを起動する。その間に他のアプリやサイトを開かず、モバイル回線とWi-Fiの切り替えもしない</li>
+<li>公共Wi-Fi、オフライン、日本国外のIPは、反映されない原因になる</li>
+<li>過去にインストールした端末、再インストール、別端末へのデータ引き継ぎは対象外</li>
+<li>条件達成からポイント付与まで最大24時間</li>
+<li>あんしん保証制度の申請期限は、インストール日から起算して50日以内。ステージのステップには、ステージクリアの画面、プレイヤーID、デバイスID（GAID）が必要</li>
+<li>上級戦闘指令のステップには、購入履歴の画面が必要</li>
+<li>保証が完了するまでアプリを削除しない</li>
+<li>クチコミには、毎回承認されないため保証制度を使い、約10日でポイントが入った例がある</li>
+</ul>
+</section>
+<section class="section" id="summary"><h2>まとめ｜ゾンビ・パニックは「時間」と「戦力の日課」</h2>
+<ul class="lab-list">
+<li>条件は30日以内のStepUp。ワラウのAndroid案件はステージ35まで、ステージのみで2,770pt</li>
+<li>ステージ35は9〜26日の実例。ステージ25で終えた・撤退した人も3人いる</li>
+<li>7日間チャレンジでウインドライフルを逃さない</li>
+<li>日常挑戦とキャンプで戦力を上げ、ギルドに早めに入る</li>
+<li>広告視聴が多く、1ステージ12分。まとまった時間が必要</li>
+</ul>
+</section>
+
+<section class="sources">
+<h2>調査ソース</h2>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456" target="_blank" rel="noopener">ワラウ案件ページ（条件・クチコミ）</a></span>
+<span class="source-line"><a href="https://www.amefri.net/detail/id/124042" target="_blank" rel="noopener">アメフリ iOS案件（ステージ60を含む）</a></span>
+<span class="source-line"><a href="https://kochalog.com/zombie-panic/" target="_blank" rel="noopener">ステージ35を11日で達成・攻略（こちゃログ）</a></span>
+<span class="source-line"><a href="https://yuri98765.com/20240618-2/" target="_blank" rel="noopener">ステージ35を20日で達成（ゲームとポイ活+α）</a></span>
+<span class="source-line"><a href="https://memopanda.com/zombie-waves-poikatu/" target="_blank" rel="noopener">ステージ35を17日で達成（めもぱんだ）</a></span>
+<span class="source-line"><a href="https://mahoukinoko.site/2024/04/29/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%82%BE%E3%83%B3%E3%83%93%E3%83%91%E3%83%8B%E3%83%83%E3%82%AF%E3%81%A8%E8%A8%80%E3%81%86%E8%A6%8B%E3%81%88%E3%81%A6%E3%82%8B%E5%9C%B0%E9%9B%B7%E3%81%AB/" target="_blank" rel="noopener">ステージ35を26日で達成（異世界きのこのゲーム飯）</a></span>
+<span class="source-line"><a href="https://www.yumatti.com/poikatsu-zombie-panic/" target="_blank" rel="noopener">無課金と課金で30日クリア（ゆまのポイ活攻略）</a></span>
+<span class="source-line"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455" target="_blank" rel="noopener">ワラウ案件ページ（iOS）</a></span>
+<div class="source-note">公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。ブログの記録は当時の案件条件（ステージ60までなど）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウとアメフリの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>
