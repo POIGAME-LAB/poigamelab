@@ -134,3 +134,14 @@ def test_game_offer_summary_node_unit_tests():
 
     result = subprocess.run(["node", "tests/test_game_offer_summary.js"], cwd=ROOT, capture_output=True, text=True)
     assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_progress_page_is_noindex_in_the_first_html():
+    html = (ROOT / "progress.html").read_text(encoding="utf-8")
+    assert '<meta name="robots" content="noindex,follow">' in html
+    assert "setAttribute('content'" not in html
+
+
+def test_experience_panel_shows_update_date_only_when_it_is_a_real_date():
+    js = (ROOT / "assets" / "guide-experience.js").read_text(encoding="utf-8")
+    assert r"\d{4}-\d{2}-\d{2}" in js and "実例データの最終更新" in js

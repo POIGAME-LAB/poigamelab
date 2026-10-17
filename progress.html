@@ -18,7 +18,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="index,follow">
+  <meta name="robots" content="noindex,follow">
   <meta name="description" content="ポイ活ゲームの実際のプレイヤー進捗を、同一人物ごとの時系列で整理。平均ではなく公開されている実例として比較できます。">
   <title>みんなの進捗 | POIGAME LAB</title>
   <link rel="stylesheet" href="assets/guide-experience.css?v=20260914-1">
@@ -82,9 +82,6 @@
   const src = datasets[game];
   if (!src) {
     root.hidden = true;
-    // No record to show: keep this URL out of the index so it is never a thin page.
-    const robots = document.querySelector('meta[name="robots"]');
-    if (robots) robots.setAttribute('content', 'noindex,follow');
     if (!game) {
       title.textContent = 'みんなの進捗（ゲームを選んでください）';
       document.getElementById('emptyTitle').textContent = '公開プレイ記録があるゲーム';

@@ -14,7 +14,7 @@
 ## A-2 ゲーム詳細ページの独自性（今回の変更）
 
 - `assets/guide-experience.js`：実例データに更新日（`updatedAt`、YYYY-MM-DD形式のときだけ）があれば、「実例データの最終更新：○○」を表示。値は各JSONに元からある日付で、新しい日付は作っていない（`updatedAt`が無い2件は表示しない）。
-- `progress.html`：公開記録のないゲーム（または`game`指定なし）では`noindex,follow`にし、薄いページをインデックスさせない。`game`指定なしのときは、記録があるゲームの一覧を表示する。sitemap.xmlには元から含まれていない。
+- `progress.html`：初期HTMLの時点で`noindex,follow`を指定（JavaScriptで後から切り替える方式は、検索エンジンが反映するとは限らないため採用しない）。同じ実例は各攻略ページの実例パネルに載っているため、このURL自体はインデックス不要と判断。`game`指定なしのときは、記録があるゲームの一覧を表示する。sitemap.xmlには元から含まれていない。
 - 変更していないもの：`data/` `config/` `games.csv` `offers.csv` `.github/` 広告タグ、紹介リンク。
 
 ### 提案のみ（実装していない。AGENTS.md §11により明示許可が必要）
