@@ -80,8 +80,9 @@
 
   const src = datasets[game];
   if (!src) {
+    // No public record for this game (or no game given): never show a thin page; send people to the guide list.
     root.hidden = true;
-    empty.hidden = false;
+    location.replace('guides.html');
     return;
   }
 
