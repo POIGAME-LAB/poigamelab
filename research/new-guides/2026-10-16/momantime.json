@@ -677,12 +677,16 @@
   {
    "label": "Lv159を45日で達成・旧条件（ゲームとポイ活+α）",
    "url": "https://yuri98765.com/20250826-2/"
+  },
+  {
+   "label": "ワラウ案件ページ（iOS）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071"
   }
  ],
  "sourceNote": "公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウの達成率はワラウ自身が公開している集計で、個人の記録とは別です。ブログの記録は当時の案件条件（期限35日、50日など）のものを含みます。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。",
  "context": {
-  "href": "offers.html",
-  "label": "案件一覧を見る →"
+  "href": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071",
+  "label": "ワラウの現在の案件ページを見る →"
  },
  "registry": {
   "title": "モーマンタイム ポイ活攻略",
@@ -694,7 +698,7 @@
   "title": "実例：プレイヤーの進捗記録",
   "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。始めた時期の条件、課金の有無、同盟の有無は人によって違うため、平均ではなく実例として見てください。",
   "notice": "※Lv94の実例は13〜23日です。現在の期限は25日で、中盤でリタイアした記録と序盤でやめた記録も含めています。",
-  "footnote": "日数は同盟・課金・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件（Lv135までなど）のものを含みます。",
+  "footnote": "日数は同盟・課金・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件（Lv135までなど）のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
   "initialVisible": 6,
   "players": [
    {
@@ -819,7 +823,10 @@
      "https://ameblo.jp/mononofwu/entry-12936054899.html",
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "C"
+    "id": "C",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/10/23｜女性・30代｜「94レベル目標であれば２週間ほどで達成」"
+    ]
    },
    {
     "label": "プレイヤーD",
@@ -902,7 +909,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "G"
+    "id": "G",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/01/08｜女性・40代｜「だんだん放置時間が増えます！」"
+    ]
    },
    {
     "label": "プレイヤーH",
@@ -918,7 +928,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "H"
+    "id": "H",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/01/02｜男性・40代｜「Lv94まで同盟なし」"
+    ]
    },
    {
     "label": "プレイヤーI",
@@ -935,7 +948,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "I"
+    "id": "I",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/08/10｜男性・50代｜「レベル94まで」"
+    ]
    },
    {
     "label": "プレイヤーJ",
@@ -951,7 +967,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "J"
+    "id": "J",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/10/09｜男性・40代｜「面白いがポイント反映されず」"
+    ]
    },
    {
     "label": "プレイヤーK",
@@ -967,7 +986,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "K"
+    "id": "K",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/05/24｜女性・40代｜「なんとか94までいけました！」"
+    ]
    },
    {
     "label": "プレイヤーL",
@@ -983,7 +1005,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "L"
+    "id": "L",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/07/05｜男性・30代｜「中華風の似たゲームに近いです」"
+    ]
    },
    {
     "label": "プレイヤーM",
@@ -1000,7 +1025,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "M"
+    "id": "M",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/04/29｜女性・40代｜「意外と楽しく進めてる」"
+    ]
    },
    {
     "label": "プレイヤーN",
@@ -1017,7 +1045,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "N"
+    "id": "N",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/03/31｜男性・40代｜「資源が不足します」"
+    ]
    },
    {
     "label": "プレイヤーO",
@@ -1034,8 +1065,21 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
     ],
-    "id": "O"
+    "id": "O",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/10/19｜男性・40代｜「商人とほぼ同じようなゲーム」"
+    ]
    }
   ]
- }
+ },
+ "offerLinks": [
+  {
+   "label": "ワラウの案件ページ（iOS）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071"
+  },
+  {
+   "label": "ワラウの案件ページ（Android）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"
+  }
+ ]
 }

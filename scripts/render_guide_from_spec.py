@@ -73,6 +73,18 @@ def validate(spec: dict) -> list[str]:
             errs.append(f"missing:{key}")
     if errs:
         return errs
+    links = spec.get("offerLinks") or []
+    if not links:
+        errs.append("offerLinks_required")
+    for link in links:
+        u = urlsplit(link.get("url", ""))
+        if u.scheme != "https" or not u.netloc or not link.get("label"):
+            errs.append(f"bad_offer_link:{link}")
+        if link.get("url") not in {x.get("url") for x in spec["sources"]}:
+            errs.append(f"offer_link_not_in_sources:{link.get('url')}")
+    ctx_url = urlsplit(spec["context"].get("href", ""))
+    if ctx_url.scheme != "https":
+        errs.append("context_href_must_be_external_offer_page")
     if not re.fullmatch(r"[a-z0-9-]+-guide\.html", spec["file"]):
         errs.append("bad_file_name")
     ids = [s["id"] for s in spec["sections"]]
@@ -166,6 +178,15 @@ def render(spec: dict) -> str:
         inner = "\n".join(render_block(b) for b in sec["blocks"])
         body_sections.append(f'<section class="section" id="{e(sec["id"])}"><h2>{e(sec["h2"])}</h2>\n{inner}\n</section>')
         if sec["id"] == "condition":
+            offer_items = "".join(
+                f'<li><a href="{e(l["url"])}" target="_blank" rel="noopener nofollow">{e(l["label"])}</a></li>' for l in spec["offerLinks"]
+            )
+            body_sections[-1] = body_sections[-1].replace(
+                "\n</section>",
+                '\n<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。'
+                "現在の条件・金額は、次の案件ページで直接ご確認ください。"
+                f'<ul class="lab-list">{offer_items}</ul></div>\n</section>',
+            )
             body_sections.append(
                 f'<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/{e(spec["slug"])}.json" aria-live="polite"></section>'
             )
@@ -178,7 +199,7 @@ def render(spec: dict) -> str:
 <div class="poigame-context-bar">
   <div class="poigame-context-bar__inner">
     <span>{e(spec['game'])} 攻略ガイド</span>
-    <a href="{e(ctx['href'])}">{e(ctx['label'])}</a>
+    <a href="{e(ctx['href'])}" target="_blank" rel="noopener nofollow">{e(ctx['label'])}</a>
   </div>
 </div>
 <main class="page">

@@ -30,6 +30,7 @@
 .timeline-item:last-child .timeline-dot{background:var(--accent)}
 .timeline-label{display:block;color:#2f2148;font-size:12px;font-weight:900;line-height:1.35}
 .timeline-sub{display:block;margin-top:3px;color:#8c8498;font-size:9.5px;line-height:1.35}
+.player-source-detail{margin:6px 0 0;color:#7d7391;font-size:10px;line-height:1.6;word-break:break-all}
 .player-note{margin:10px 0 0;padding:10px 12px;border-radius:11px;background:var(--accent-soft);color:#514466;font-size:11px;line-height:1.6}
 .experience-footnote{margin:14px 0 0;color:#8a8294;font-size:10px;line-height:1.55}
 

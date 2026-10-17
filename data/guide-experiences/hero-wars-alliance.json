@@ -5,7 +5,7 @@
   "title": "実例：プレイヤーの進捗記録",
   "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。課金の有無や稼ぎ方は人によって違うため、平均ではなく実例として見てください。",
   "notice": "※Lv80の実例は22〜46日、Lv100に届いたのは2人です。途中でやめた記録も含めています。",
-  "footnote": "日数は課金・イベント・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。",
+  "footnote": "日数は課金・イベント・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
   "initialVisible": 6,
   "players": [
     {
@@ -162,7 +162,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "F"
+      "id": "F",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/07/17｜男性・50代｜「地道にコツコツと！」"
+      ]
     },
     {
       "label": "プレイヤーG",
@@ -183,7 +186,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "G"
+      "id": "G",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/10/18｜男性・40代｜「攻略記事を探してからやると効率的です」"
+      ]
     },
     {
       "label": "プレイヤーH",
@@ -199,7 +205,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "H"
+      "id": "H",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/07/01｜女性・40代｜「どんどんレベルが上がるので楽しかった」"
+      ]
     },
     {
       "label": "プレイヤーI",
@@ -215,7 +224,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "I"
+      "id": "I",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/06/03｜女性・40代｜「コツは」"
+      ]
     },
     {
       "label": "プレイヤーJ",
@@ -232,7 +244,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "J"
+      "id": "J",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/11/12｜女性・50代｜「オススメしません！」"
+      ]
     },
     {
       "label": "プレイヤーK",
@@ -248,7 +263,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "K"
+      "id": "K",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/05/19｜女性・50代｜「コスパが悪すぎです。」"
+      ]
     },
     {
       "label": "プレイヤーL",
@@ -265,7 +283,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"
       ],
-      "id": "L"
+      "id": "L",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2025/08/17｜男性・20代｜「楽しいのだが」"
+      ]
     }
   ]
 }

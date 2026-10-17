@@ -534,12 +534,16 @@
   {
    "label": "無課金と課金で30日クリア（ゆまのポイ活攻略）",
    "url": "https://www.yumatti.com/poikatsu-zombie-panic/"
+  },
+  {
+   "label": "ワラウ案件ページ（iOS）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455"
   }
  ],
  "sourceNote": "公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。ブログの記録は当時の案件条件（ステージ60までなど）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウとアメフリの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。",
  "context": {
-  "href": "offers.html",
-  "label": "案件一覧を見る →"
+  "href": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455",
+  "label": "ワラウの現在の案件ページを見る →"
  },
  "registry": {
   "title": "ゾンビ・パニック ポイ活攻略",
@@ -551,7 +555,7 @@
   "title": "実例：プレイヤーの進捗記録",
   "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やステージが書かれているものを同じ人ごとにまとめています。課金の有無やプレイ時間は人によって違うため、平均ではなく実例として見てください。",
   "notice": "※ステージ35は9〜26日の実例です。ステージ25やそれ以前で撤退した記録も含めています。",
-  "footnote": "日数は戦力の集まり方（装備やスキルの運）で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。",
+  "footnote": "日数は戦力の集まり方（装備やスキルの運）で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
   "initialVisible": 6,
   "players": [
    {
@@ -569,7 +573,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "A"
+    "id": "A",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/08/16｜男性・30代｜「楽しい」"
+    ]
    },
    {
     "label": "プレイヤーB",
@@ -586,7 +593,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "B"
+    "id": "B",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/05/22｜男性・30代｜「簡単です」"
+    ]
    },
    {
     "label": "プレイヤーC",
@@ -603,7 +613,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "C"
+    "id": "C",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/01/06｜男性・50代｜「面白いよ」"
+    ]
    },
    {
     "label": "プレイヤーD",
@@ -619,7 +632,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "D"
+    "id": "D",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/08/09｜女性・30代｜「日常挑戦もやった方が進めやすい」"
+    ]
    },
    {
     "label": "プレイヤーE",
@@ -636,7 +652,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "E"
+    "id": "E",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/09/19｜女性・40代｜「全然ログインしないけどなんとかなった」"
+    ]
    },
    {
     "label": "プレイヤーF",
@@ -653,7 +672,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "F"
+    "id": "F",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/08/30｜男性・20代｜「時間はかかるがコツコツ進めればクリア可能」"
+    ]
    },
    {
     "label": "プレイヤーG",
@@ -669,7 +691,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "G"
+    "id": "G",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/07/13｜男性・30代｜「慣れてきたら、、、」"
+    ]
    },
    {
     "label": "プレイヤーH",
@@ -804,7 +829,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "M"
+    "id": "M",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/07/19｜男性・30代｜「まあ」"
+    ]
    },
    {
     "label": "プレイヤーN",
@@ -825,7 +853,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "N"
+    "id": "N",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/08/17｜男性・20代｜「難しい」"
+    ]
    },
    {
     "label": "プレイヤーO",
@@ -842,7 +873,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "O"
+    "id": "O",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/07/07｜男性・20代｜「他のポイ活アプリに時間を取られるのと、ア...」"
+    ]
    },
    {
     "label": "プレイヤーP",
@@ -858,7 +892,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "P"
+    "id": "P",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/07/15｜男性・30代｜「スナイパーで25までクリアしました。」"
+    ]
    },
    {
     "label": "プレイヤーQ",
@@ -874,7 +911,10 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "Q"
+    "id": "Q",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2025/10/18｜女性・40代｜「強制的な広告はないけど」"
+    ]
    },
    {
     "label": "プレイヤーR",
@@ -890,8 +930,25 @@
     "sources": [
      "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
     ],
-    "id": "R"
+    "id": "R",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/01/16｜男性・40代｜「広告視聴が苦行」"
+    ]
    }
   ]
- }
+ },
+ "offerLinks": [
+  {
+   "label": "ワラウの案件ページ（iOS）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455"
+  },
+  {
+   "label": "ワラウの案件ページ（Android）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"
+  },
+  {
+   "label": "アメフリの案件ページ（iOS）",
+   "url": "https://www.amefri.net/detail/id/124042"
+  }
+ ]
 }

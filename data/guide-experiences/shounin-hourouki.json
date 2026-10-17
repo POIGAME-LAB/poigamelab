@@ -5,7 +5,7 @@
   "title": "実例：プレイヤーの進捗記録",
   "intro": "公開されているブログの記録と、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。始めたサーバーや商会、課金の有無は人によって違うため、平均ではなく実例として見てください。",
   "notice": "※Lv30は12〜30日、Lv37は19〜30日の実例です。30日以内に届かず中止した記録と、リタイアした記録も含めています。",
-  "footnote": "日数はサーバー・商会・課金・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件（Lv30やLv32まで）のものを含みます。",
+  "footnote": "日数はサーバー・商会・課金・プレイ時間で変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件（Lv30やLv32まで）のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
   "initialVisible": 6,
   "players": [
     {
@@ -28,7 +28,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "A"
+      "id": "A",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/10/05｜女性・30代｜「19日でレベル37到達、旧鯖必須」"
+      ]
     },
     {
       "label": "プレイヤーB",
@@ -63,7 +66,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "B"
+      "id": "B",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/04/22｜男性・40代｜「レベル37 20日クリア」"
+      ]
     },
     {
       "label": "プレイヤーC",
@@ -84,7 +90,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "C"
+      "id": "C",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/03｜男性・30代｜「旧サバ めちゃ楽 必須と言って良いかも」"
+      ]
     },
     {
       "label": "プレイヤーD",
@@ -104,7 +113,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "D"
+      "id": "D",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/06/21｜男性・50代｜「レベル37」"
+      ]
     },
     {
       "label": "プレイヤーE",
@@ -126,7 +138,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "E"
+      "id": "E",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/04/28｜男性・30代｜「無課金27日でレベル37達成。 自分は...」"
+      ]
     },
     {
       "label": "プレイヤーF",
@@ -143,7 +158,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "F"
+      "id": "F",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/30｜男性・30代｜「意外と簡単で楽しくできた」"
+      ]
     },
     {
       "label": "プレイヤーG",
@@ -164,7 +182,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "G"
+      "id": "G",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/05/17｜男性・30代｜「焦らないで。」"
+      ]
     },
     {
       "label": "プレイヤーH",
@@ -185,7 +206,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "H"
+      "id": "H",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/04/22｜女性・60代｜「30日目に37達成」"
+      ]
     },
     {
       "label": "プレイヤーI",
@@ -202,7 +226,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "I"
+      "id": "I",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/29｜男性・20代｜「37チャレンジ」"
+      ]
     },
     {
       "label": "プレイヤーK",
@@ -219,7 +246,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "J"
+      "id": "J",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/06/19｜男性・40代｜「37を目指す方は必ず旧サーバで！」"
+      ]
     },
     {
       "label": "プレイヤーL",
@@ -361,7 +391,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "O"
+      "id": "O",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/07｜男性・30代｜「意外と早く終わる」"
+      ]
     },
     {
       "label": "プレイヤーQ",
@@ -378,7 +411,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "P"
+      "id": "P",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/08/28｜男性・40代｜「日数が足りない」"
+      ]
     },
     {
       "label": "プレイヤーR",
@@ -395,7 +431,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "Q"
+      "id": "Q",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/04/15｜男性・30代｜「旧サーバーで始めましょう」"
+      ]
     },
     {
       "label": "プレイヤーS",
@@ -411,7 +450,10 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"
       ],
-      "id": "R"
+      "id": "R",
+      "sourceDetails": [
+        "ワラウのクチコミ｜2026/09/29｜女性・30代｜「なにをすればいいのやら」"
+      ]
     }
   ]
 }

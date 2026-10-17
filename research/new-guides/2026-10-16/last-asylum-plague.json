@@ -73,10 +73,10 @@
  "sections": [
   {
    "id": "condition",
-   "h2": "現在の案件条件（ワラウAndroid・2026年10月16日確認）",
+   "h2": "現在の案件条件（ワラウAndroid・2026年10月17日確認）",
    "sourceRefs": [
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288",
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207286"
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012",
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011"
    ],
    "blocks": [
     {
@@ -92,7 +92,7 @@
       ],
       [
        "対応OS",
-       "Android（iOS版は別ページで、ステップ数は13、合計11,500pt）"
+       "Android（iOS版は別ページで、ステップ数は13、合計10,000pt。UR英雄の星のptが低い）"
       ],
       [
        "条件",
@@ -100,7 +100,7 @@
       ],
       [
        "獲得pt（ワラウ表記）",
-       "全ステップ合計14,840pt（課金ステップを除くと12,330pt）"
+       "全ステップ合計13,100pt（課金ステップを除くと10,590pt）"
       ],
       [
        "クチコミ",
@@ -149,12 +149,12 @@
       [
        "UR英雄5星にレベルアップ",
        "7日以内",
-       "130pt"
+       "50pt"
       ],
       [
        "教会Lv.18に到達",
        "30日以内",
-       "220pt"
+       "230pt"
       ],
       [
        "第2研究隊列を購入",
@@ -164,7 +164,7 @@
       [
        "UR英雄7星にレベルアップ",
        "15日以内",
-       "230pt"
+       "90pt"
       ],
       [
        "教会Lv.21に到達",
@@ -184,7 +184,7 @@
       [
        "UR英雄8星にレベルアップ",
        "45日以内",
-       "2,600pt"
+       "1,070pt"
       ],
       [
        "教会Lv.28に到達",
@@ -195,7 +195,7 @@
     },
     {
      "t": "warning",
-     "x": "ワラウの案件ページには、「第2研究隊列」はレベル8と密林14に到達して研究室が解放されてから購入できる、「UR英雄の星」は複数のUR英雄を持っている場合は任意の1体の最高星数になる、と書かれています。条件や金額は途中で変わることがあり、クチコミにも条件の変更や金額の低下を指摘する投稿があります。開始前に最新情報をご確認ください。"
+     "x": "ワラウの案件ページには、「第2研究隊列」はレベル8と密林14に到達して研究室が解放されてから購入できる、「UR英雄の星」は複数のUR英雄を持っている場合は任意の1体の最高星数になる、と書かれています。条件や金額は途中で変わることがあります。このゲームの案件ページは2026年10月16日から17日にかけて新しいものに差し替わり、UR英雄の星のポイントが下がりました。クチコミにも条件の変更や金額の低下を指摘する投稿があります。開始前に最新情報をご確認ください。"
     }
    ]
   },
@@ -325,7 +325,7 @@
    "h2": "ギルドと加速アイテム｜成否を分けるもの",
    "sourceRefs": [
     "https://kochalog.com/last-asylum/",
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288",
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012",
     "https://chinopoilog2.hatenadiary.jp/entry/last-asylum-plague"
    ],
    "blocks": [
@@ -453,7 +453,7 @@
    "id": "stuck",
    "h2": "詰まりやすい所と対処",
    "sourceRefs": [
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288",
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012",
     "https://kochalog.com/last-asylum/",
     "https://ameblo.jp/gohobi-tabi/entry-12978716612.html",
     "https://chinopoilog2.hatenadiary.jp/entry/last-asylum-plague"
@@ -500,7 +500,7 @@
    "id": "money",
    "h2": "課金ステップの収支",
    "sourceRefs": [
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288",
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012",
     "https://kochalog.com/last-asylum/",
     "https://www.yumatti.com/point-earning-activity-last-asylum/",
     "https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%A9%E3%82%B9%E3%83%88%E3%82%A2%E3%82%B5%E3%82%A4%E3%83%A9%E3%83%A0%EF%BC%9A%E3%83%97%E3%83%AC%E3%82%A4%E3%82%B0%EF%BC%88%E5%A4%9A%E6%AE%B5%E9%9A%8E/",
@@ -566,7 +566,7 @@
    "id": "target",
    "h2": "どこまで目指すか",
    "sourceRefs": [
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288",
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012",
     "https://kochalog.com/last-asylum/",
     "https://ameblo.jp/gohobi-tabi/entry-12978716612.html",
     "https://chinopoilog2.hatenadiary.jp/entry/last-asylum-plague",
@@ -577,26 +577,26 @@
      "t": "decision",
      "cards": [
       {
-       "h": "Lv18まで（英雄5星を含む460pt）",
+       "h": "Lv18まで（英雄5星を含む390pt）",
        "x": "5〜8日目に届いた記録が複数ある。多くの記録が「Lv18までは無難」と書いている。"
       },
       {
-       "h": "Lv21まで（英雄7星を含む1,330pt）",
+       "h": "Lv21まで（英雄7星を含む1,120pt）",
        "x": "11日から18日の記録が多い。21日以内の条件は、建設を約14日目までに始めないと厳しい計算になる。"
       },
       {
-       "h": "Lv24まで（3,230pt）",
+       "h": "Lv24まで（3,020pt）",
        "x": "23日から30日の記録があるが、Lv23までで撤退した人も複数いる。第2建設隊列とVIP、ギルドが前提になりやすい。"
       },
       {
-       "h": "Lv28・UR英雄8星（合計12,330pt）",
+       "h": "Lv28・UR英雄8星（合計10,590pt）",
        "x": "Lv28は42日目に届いた1人だけ。建設だけで約60日かかる計算で、多くの記録がLv28は断念している。"
       }
      ]
     },
     {
      "t": "warning",
-     "x": "UR英雄8星は2,600ptと大きい一方、星の条件の扱い（SSR英雄でも承認されたか）は時期で違いました。ワラウの案件ページの記載を確認してください。"
+     "x": "UR英雄8星は1,070ptです（2026年10月16日の表示では2,600ptでした）。星の条件の扱い（SSR英雄でも承認されたか）は時期で違いました。ワラウの案件ページの記載を確認してください。"
     }
    ]
   },
@@ -604,7 +604,7 @@
    "id": "tracking",
    "h2": "成果反映の注意（ワラウの案件ページより）",
    "sourceRefs": [
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
    ],
    "blocks": [
     {
@@ -626,14 +626,14 @@
    "id": "summary",
    "h2": "まとめ｜ラストアサイラムは「Lv18までを確実に、Lv24は準備して」",
    "sourceRefs": [
-    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288",
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012",
     "https://kochalog.com/last-asylum/"
    ],
    "blocks": [
     {
      "t": "ul",
      "items": [
-      "条件はステップごとの期限。ワラウのAndroid案件は教会Lv28まで、課金を除くと12,330pt",
+      "条件はステップごとの期限。ワラウのAndroid案件は教会Lv28まで、課金を除くと10,590pt",
       "実例はLv18が5〜8日、Lv24が23〜30日、Lv28は42日の1人",
       "Lv21以降は建設時間と加速アイテムが壁。ギルドと第2建設枠、VIPが分かれ目",
       "Lv24に届かず撤退した記録が複数ある",
@@ -646,11 +646,11 @@
  "sources": [
   {
    "label": "ワラウ案件ページ・Android（条件・クチコミ）",
-   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
   },
   {
    "label": "ワラウ案件ページ・iOS",
-   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207286"
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011"
   },
   {
    "label": "Lv28を42日で達成・建設時間表（こちゃログ）",
@@ -673,10 +673,10 @@
    "url": "https://www.yumatti.com/point-earning-activity-last-asylum/"
   }
  ],
- "sourceNote": "公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。ブログの記録は当時の案件条件（期限、金額）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。",
+ "sourceNote": "公開されている実プレイヤーの記録（ブログ・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。ワラウのクチコミは自己申告で、投稿者名はニックネームのため掲載していません。ブログの記録は当時の案件条件（期限、金額）のものを含みます。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月17日にワラウの案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。",
  "context": {
-  "href": "offers.html",
-  "label": "案件一覧を見る →"
+  "href": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011",
+  "label": "ワラウの現在の案件ページを見る →"
  },
  "registry": {
   "title": "ラストアサイラム：プレイグ ポイ活攻略",
@@ -684,11 +684,11 @@
   "label": "Lv18・24攻略を読む →"
  },
  "experience": {
-  "updatedAt": "2026-10-16",
+  "updatedAt": "2026-10-17",
   "title": "実例：プレイヤーの進捗記録",
   "intro": "公開されているブログと、ワラウの案件ページに日付つきで投稿されたクチコミから、到達日数やレベルが書かれているものを同じ人ごとにまとめています。ギルド、課金、プレイ時間は人によって違うため、平均ではなく実例として見てください。",
   "notice": "※Lv24は23〜30日の実例です。Lv23までで終えた記録、Lv21で間に合わなかった記録、途中で撤退した記録も含めています。",
-  "footnote": "日数は建設時間、加速アイテム、ギルドで変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。",
+  "footnote": "日数は建設時間、加速アイテム、ギルドで変わります。ワラウのクチコミは自己申告で、同じ人が複数回書いている可能性は確認できません。ブログの記録は当時の案件条件のものを含みます。 各カードの「出典の詳細」に、ワラウのクチコミの投稿日・投稿者表示・タイトルを記載しています（クチコミは後から削除・変更される場合があります）。",
   "initialVisible": 6,
   "players": [
    {
@@ -863,10 +863,13 @@
     ],
     "note": "最初にVIPを30日分有効にするためにダイヤを1万使い、VIP8を目指した。上位20位以内の活発なギルドに入るのが前提と書いている。第2建築は1時間だけダイヤ500で買えるので、サバイバルバトルのときに購入し、1時間のうちに建築時間の短いものを先に上げた。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "F",
-    "label": "プレイヤーF"
+    "label": "プレイヤーF",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/10/16｜男性・30代｜「無課金30日以内に24レベクリア」"
+    ]
    },
    {
     "summary": "UR英雄8星が20日目、Lv24が25日目（Lv28は断念）",
@@ -884,10 +887,13 @@
     ],
     "note": "毎日のイベントに参加し、強いギルドの恩恵を受けた。加速アイテム3日分とダイヤ6万を余らせた、と書いている。SSR英雄を星8にしたがポイントが付かず、UR英雄のアーサーに欠片を入れて達成した。ここ数週間でポイントが下がり、条件も一部難しくなっていると感じている。2026年9月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "G",
-    "label": "プレイヤーG"
+    "label": "プレイヤーG",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/09/18｜女性・20代｜「ポイント下がってます」"
+    ]
    },
    {
     "summary": "29日でLv24（Lv28は無理と判断）",
@@ -901,10 +907,13 @@
     ],
     "note": "Lv18くらいまではスイスイ上がるが、そこからは建設の日数も材料も設備も面倒になる、と書いている。認証はレベル達成時で、建設を開始しても承認されない。2026年8月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "H",
-    "label": "プレイヤーH"
+    "label": "プレイヤーH",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/08/18｜男性・40代｜「レベル24が現実的な目標かな」"
+    ]
    },
    {
     "summary": "建造隊列を課金して2枠にし、14日でLv21（Lv23で諦めた）",
@@ -921,10 +930,13 @@
     ],
     "note": "資源より加速が圧倒的に足りなかった。毎日のサバイバルイベントも取りこぼさずやってギリギリ間に合うかどうか、という感覚だった。現実的な到達点はLv21と書いている。2026年9月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "I",
-    "label": "プレイヤーI"
+    "label": "プレイヤーI",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/09/03｜男性・40代｜「24レベルは厳しい…」"
+    ]
    },
    {
     "summary": "18日目にLv21、Lv24はリスクが高いとリタイア",
@@ -938,10 +950,13 @@
     ],
     "note": "UR英雄の星8のほうが狙い目で、アーサーの欠片とフリーのパーツは頻繁に手に入る、と書いている。最初からLv24を目指すなら、土日に始めて第2建設隊列をすぐ購入し、ショップでは加速を優先する、としている。2026年9月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "J",
-    "label": "プレイヤーJ"
+    "label": "プレイヤーJ",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/09/29｜男性・50代｜「UR★8こそ狙い目」"
+    ]
    },
    {
     "summary": "30日で教会Lv21に間に合わなかった",
@@ -954,10 +969,13 @@
     ],
     "note": "毎日デイリータスクの宝箱を全部もらえるくらいはやったが、Lv20からLv21の建設には加速アイテムなしで4日かかったという。活発なギルドに入って、加速アイテムが手に入る敵を協力して倒せばよかった、と書いている。2026年8月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "K",
-    "label": "プレイヤーK"
+    "label": "プレイヤーK",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/08/21｜女性・30代｜「レベル18までが無難」"
+    ]
    },
    {
     "summary": "20日目にLv22で断念（UR8星は半月）",
@@ -975,10 +993,13 @@
     ],
     "note": "1日4〜5回、合計3時間ほどログイン。上位のギルドに入り、イベントも極力参加したが、Lv24は高い壁を感じた、と書いている。2026年9月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "L",
-    "label": "プレイヤーL"
+    "label": "プレイヤーL",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/09/17｜男性・30代｜「UR8星狙いがおすすめ」"
+    ]
    },
    {
     "summary": "教会Lv14のステップからポイントが付かず撤退",
@@ -992,11 +1013,24 @@
     ],
     "note": "頻繁にログインしないといけないのにポイントが付かず、やる気が起きなかったという。以前の保証申請でも付与までに2週間以上かかったため、申請する気も起きなかったと書いている。2026年9月の投稿。",
     "sources": [
-     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207288"
+     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
     ],
     "id": "M",
-    "label": "プレイヤーM"
+    "label": "プレイヤーM",
+    "sourceDetails": [
+     "ワラウのクチコミ｜2026/09/23｜男性・50代｜「ポイントつかない」"
+    ]
    }
   ]
- }
+ },
+ "offerLinks": [
+  {
+   "label": "ワラウの案件ページ（iOS）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011"
+  },
+  {
+   "label": "ワラウの案件ページ（Android）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"
+  }
+ ]
 }

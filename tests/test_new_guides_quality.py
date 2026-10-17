@@ -113,3 +113,38 @@ def test_guides_are_not_template_copies_of_each_other():
         for b in names[i + 1:]:
             ratio = SequenceMatcher(None, texts[a][:6000], texts[b][:6000], autojunk=False).quick_ratio()
             assert ratio < 0.85, (a, b, ratio)
+
+
+@pytest.mark.parametrize("path", SPECS, ids=lambda p: p.stem)
+def test_guide_points_to_real_current_offer_pages_not_missing_comparison_page(path):
+    spec = _spec(path)
+    html = (ROOT / spec["file"]).read_text(encoding="utf-8")
+    bar = re.search(r'<div class="poigame-context-bar">.*?</div>\s*</div>', html, flags=re.S).group(0)
+    assert 'href="offers.html"' not in bar and "game.html?game=" not in html
+    assert re.search(r'<a href="https://[^"]+" target="_blank" rel="noopener nofollow">', bar)
+    assert 'class="key offer-guide"' in html
+    for link in spec["offerLinks"]:
+        assert f'<a href="{link["url"]}" target="_blank" rel="noopener nofollow">{link["label"]}</a>' in html
+    assert spec["game"] not in (ROOT / "games.csv").read_text(encoding="utf-8-sig")
+
+
+def test_warau_review_based_records_stay_identifiable():
+    index = json.loads((SPEC_DIR / "evidence" / "warau-review-index.json").read_text(encoding="utf-8"))["reviews"]
+    keyed = {(r["guide"], r["player"]): r for r in index}
+    for path in SPECS:
+        spec = _spec(path)
+        for p in spec["experience"]["players"]:
+            if any("warau.jp" in u and "point_id=" in u for u in p["sources"]) and not p["sources"][0].startswith("https://www.warau.jp/style"):
+                detail = " ".join(p.get("sourceDetails", []))
+                assert detail, (spec["slug"], p["id"])
+                rec = keyed[(spec["slug"], p["id"])]
+                assert rec["postedOn"] in detail and rec["posterLabel"] in detail
+                assert len(rec["bodySha256"]) == 64
+    assert len(index) >= 60
+
+
+def test_guides_without_failed_cases_state_the_success_bias():
+    for slug in ("sangokushi-shinsen", "the-ants", "tsue-to-ken"):
+        exp = experience_json(_spec(SPEC_DIR / f"{slug}.json"))
+        assert all(p["status"] != "retired" for p in exp["players"])
+        assert "偏" in exp["notice"]
