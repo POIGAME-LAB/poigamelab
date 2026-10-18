@@ -6,6 +6,12 @@ identity, verified point-site reward ranking metadata, first-party detail URLs a
 research queries needed by the later content-research stage. If the bounded
 ranking scan is incomplete, the handoff is deliberately empty so an unreviewed
 candidate cannot be mislabeled as a daily top-five game.
+
+This stage is advisory for new-game research only. A single malformed candidate
+(for example a fractional-yen reward, which the downstream research stage would
+truncate) is held with a recorded reason instead of aborting the run, and an
+unreadable scan report degrades to the same empty, non-authorizing handoff. The
+existing-game offer refresh and its publication safeguards never depend on it.
 """
 from __future__ import annotations
 
@@ -75,6 +81,7 @@ def safe_https(value):
 
 
 def empty_handoff(report, reason):
+    report = report if isinstance(report, dict) else {}
     return {
         "schemaVersion": 1,
         "phase": "NEW_GAME_CONTENT_QUEUE_V1",
@@ -86,6 +93,65 @@ def empty_handoff(report, reason):
         "holdReason": reason,
         "count": 0,
         "items": [],
+    }
+
+
+def build_item(game, row, rank):
+    """Return one handoff item, or raise ValueError(<reason>) to hold the candidate."""
+    if not game or not isinstance(row, dict):
+        raise ValueError("ranked_game_missing_from_results")
+    if row.get("publicationAuthorized") is not False or row.get("candidateEligible") is not True:
+        raise ValueError("ranked_game_not_quarantined_candidate")
+    amount = row.get("maxObservedRewardYen")
+    if type(amount) is not int or amount <= 0:
+        raise ValueError("ranked_game_reward_invalid")
+    queries = row.get("researchQueries")
+    if not isinstance(queries, dict):
+        raise ValueError("ranked_game_queries_missing")
+    required_query_keys = {"web", "x", "youtube", "instagram", "point_site_reviews"}
+    if not required_query_keys.issubset(queries):
+        raise ValueError("ranked_game_queries_incomplete")
+    point_sites = []
+    verified_reward_sources = 0
+    for detail in row.get("details") or []:
+        if not isinstance(detail, dict):
+            continue
+        url = safe_https(detail.get("finalUrl") or detail.get("url"))
+        sid = str(detail.get("source") or "").strip()
+        reward = detail.get("rewardYen")
+        if url and sid:
+            point_sites.append({
+                "source": sid,
+                "url": url,
+                "detailConfirmed": detail.get("detailConfirmed") is True,
+                "rewardVerified": type(reward) is int and reward > 0,
+                "rewardYen": reward if type(reward) is int and reward > 0 else None,
+            })
+            if type(reward) is int and reward > 0:
+                verified_reward_sources += 1
+    dedup = {(x["source"], x["url"]): x for x in point_sites}
+    if len({x[0] for x in dedup}) < 2:
+        raise ValueError("ranked_game_listing_sources_below_two")
+    if verified_reward_sources < 1:
+        raise ValueError("ranked_game_verified_reward_missing")
+    return {
+        "rank": rank,
+        "game": game,
+        "maxObservedRewardYen": amount,
+        "confirmedSourceCount": int(row.get("confirmedSourceCount") or 0),
+        "listingSourceCount": int(row.get("listingSourceCount") or len({x[0] for x in dedup})),
+        "verifiedRewardSourceCount": int(row.get("verifiedRewardSourceCount") or verified_reward_sources),
+        "pointSiteEvidence": list(dedup.values()),
+        "researchQueries": {
+            "web": str(queries["web"]),
+            "x": str(queries["x"]),
+            "youtube": str(queries["youtube"]),
+            "instagram": str(queries["instagram"]),
+            "pointSites": str(queries["point_site_reviews"]),
+        },
+        "requiredResearchChannels": list(REQUIRED_CHANNELS),
+        "contentPackageStatus": "pending",
+        "publicationAuthorized": False,
     }
 
 
@@ -139,68 +205,21 @@ def build(report, existing_games=None):
             seen.add(game)
 
     items = []
+    held = []
     for game in ranked_pool:
         if len(items) >= 5:
             break
         game = str(game or "").strip()
         if game_key(game) in existing_keys:
             continue
-        row = by_game.get(game)
-        if not game or not isinstance(row, dict):
-            raise ValueError("ranked_game_missing_from_results")
-        if row.get("publicationAuthorized") is not False or row.get("candidateEligible") is not True:
-            raise ValueError("ranked_game_not_quarantined_candidate")
-        amount = row.get("maxObservedRewardYen")
-        if type(amount) is not int or amount <= 0:
-            raise ValueError("ranked_game_reward_invalid")
-        queries = row.get("researchQueries")
-        if not isinstance(queries, dict):
-            raise ValueError("ranked_game_queries_missing")
-        required_query_keys = {"web", "x", "youtube", "instagram", "point_site_reviews"}
-        if not required_query_keys.issubset(queries):
-            raise ValueError("ranked_game_queries_incomplete")
-        point_sites = []
-        verified_reward_sources = 0
-        for detail in row.get("details") or []:
-            if not isinstance(detail, dict):
-                continue
-            url = safe_https(detail.get("finalUrl") or detail.get("url"))
-            sid = str(detail.get("source") or "").strip()
-            reward = detail.get("rewardYen")
-            if url and sid:
-                point_sites.append({
-                    "source": sid,
-                    "url": url,
-                    "detailConfirmed": detail.get("detailConfirmed") is True,
-                    "rewardVerified": type(reward) is int and reward > 0,
-                    "rewardYen": reward if type(reward) is int and reward > 0 else None,
-                })
-                if type(reward) is int and reward > 0:
-                    verified_reward_sources += 1
-        dedup = {(x["source"], x["url"]): x for x in point_sites}
-        if len({x[0] for x in dedup}) < 2:
-            raise ValueError("ranked_game_listing_sources_below_two")
-        if verified_reward_sources < 1:
-            raise ValueError("ranked_game_verified_reward_missing")
-        items.append({
-            "rank": len(items) + 1,
-            "game": game,
-            "maxObservedRewardYen": amount,
-            "confirmedSourceCount": int(row.get("confirmedSourceCount") or 0),
-            "listingSourceCount": int(row.get("listingSourceCount") or len({x[0] for x in dedup})),
-            "verifiedRewardSourceCount": int(row.get("verifiedRewardSourceCount") or verified_reward_sources),
-            "pointSiteEvidence": list(dedup.values()),
-            "researchQueries": {
-                "web": str(queries["web"]),
-                "x": str(queries["x"]),
-                "youtube": str(queries["youtube"]),
-                "instagram": str(queries["instagram"]),
-                "pointSites": str(queries["point_site_reviews"]),
-            },
-            "requiredResearchChannels": list(REQUIRED_CHANNELS),
-            "contentPackageStatus": "pending",
-            "publicationAuthorized": False,
-        })
+        try:
+            item = build_item(game, by_game.get(game), len(items) + 1)
+        except (ValueError, TypeError) as error:
+            # One bad candidate is quarantined; the next ranked game is promoted.
+            reason = str(error) if isinstance(error, ValueError) else "ranked_game_fields_invalid"
+            held.append({"game": game, "reason": reason})
+            continue
+        items.append(item)
     return {
         "schemaVersion": 1,
         "phase": "NEW_GAME_CONTENT_QUEUE_V1",
@@ -210,14 +229,33 @@ def build(report, existing_games=None):
         "publicationAuthorized": False,
         "rankingComplete": True,
         "holdReason": None,
+        "heldCandidates": held[:20],
         "count": len(items),
         "items": items,
     }
 
 
+def build_or_hold(report, existing_games=None):
+    """build(), but an unusable report degrades to an empty non-authorizing handoff."""
+    try:
+        return build(report, existing_games=existing_games)
+    except (ValueError, TypeError, KeyError) as error:
+        code = str(error) if isinstance(error, ValueError) else type(error).__name__
+        return empty_handoff(report, f"queue_build_error:{code}"[:120])
+
+
 def write(input_path=INPUT, output_path=OUTPUT, catalog_path=CATALOG, targets_path=TARGETS):
-    existing = load_catalog_games(catalog_path) | load_target_aliases(targets_path)
-    out = build(load(input_path), existing_games=existing)
+    try:
+        existing = load_catalog_games(catalog_path) | load_target_aliases(targets_path)
+        report = load(input_path)
+    except (OSError, ValueError, TypeError) as error:
+        # Without the listed-game catalog or the scan report no candidate can be
+        # checked against already-published games, so hand off nothing.
+        code = str(error) if isinstance(error, ValueError) else type(error).__name__
+        report, existing = {}, None
+        out = empty_handoff(report, f"queue_input_unavailable:{code}"[:120])
+    else:
+        out = build_or_hold(report, existing_games=existing)
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
@@ -233,7 +271,15 @@ def main():
         "count": out["count"],
         "rankingComplete": out["rankingComplete"],
         "publicationAuthorized": False,
+        "holdReason": out.get("holdReason"),
+        "heldCandidates": len(out.get("heldCandidates") or []),
     }, ensure_ascii=False))
+    # Surface the problem in the run summary without failing the whole refresh:
+    # existing-game offers were already refreshed and validated before this step.
+    if out.get("holdReason") and str(out["holdReason"]).startswith(("queue_build_error", "queue_input_unavailable")):
+        print(f"::warning::new-game content queue held: {out['holdReason']}")
+    for held in out.get("heldCandidates") or []:
+        print(f"::warning::new-game candidate held: {held['game']} ({held['reason']})")
     return 0
 
 
