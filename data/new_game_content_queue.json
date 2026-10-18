@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-10-18T03:45:48+00:00",
+  "checkedAt": "2026-10-18T18:40:57+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -102,9 +102,16 @@
       "game": "ベガス クレイズ カジノ",
       "maxObservedRewardYen": 65793,
       "confirmedSourceCount": 1,
-      "listingSourceCount": 2,
+      "listingSourceCount": 3,
       "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207700&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
         {
           "source": "warau",
           "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
@@ -118,6 +125,20 @@
           "detailConfirmed": true,
           "rewardVerified": true,
           "rewardYen": 65793
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35719",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 59723
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19438",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
         }
       ],
       "researchQueries": {
@@ -283,14 +304,14 @@
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null

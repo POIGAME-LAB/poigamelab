@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-10-18T03:45:48+00:00",
-  "finishedAt": "2026-10-18T03:45:48+00:00",
+  "startedAt": "2026-10-18T18:40:57+00:00",
+  "finishedAt": "2026-10-18T18:40:57+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -93,7 +93,7 @@
     {
       "game": "パズル＆サバイバル",
       "returncode": 0,
-      "publishableCount": 7,
+      "publishableCount": 3,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -102,7 +102,7 @@
     {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 5,
+      "publishableCount": 3,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -160,7 +160,7 @@
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
