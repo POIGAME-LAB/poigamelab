@@ -166,15 +166,27 @@ function makeContext(fetchImpl) {
     row.site === 'warau' && [...endedWarauIds].some(id => String(row.url || '').includes(`point_id=${id}`))
   ), false);
 
-  const currentMemento12050 = actualRows.filter(row =>
-    row.game === 'メメントモリ' &&
-    row.site === 'warau' &&
-    row.reward === '12050'
-  );
-  assert.deepStrictEqual(
-    new Set(currentMemento12050.map(row => String(row.url || '').match(/point_id=(\d+)/)?.[1])),
-    new Set(['205975', '206035'])
-  );
+  // Warau campaigns end and are replaced under new point_ids (205975/206035 were
+  // retired after three consecutive "ended" reads on 2026-10-15), so the published
+  // set must not be pinned to any day's IDs. Check the identity and required
+  // fields of every currently published Warau row instead, whatever its ID/reward.
+  const warauPointId = value => String(value || '').match(/point_id=(\d+)/)?.[1];
+  const warauRows = actualRows.filter(row => row.site === 'warau');
+  assert.ok(warauRows.length > 0, 'published data must still contain Warau rows');
+  assert.strictEqual(new Set(actualRows.map(row => row.offerKey)).size, actualRows.length);
+  for (const row of warauRows) {
+    const id = warauPointId(row.url);
+    assert.ok(id, `Warau row without point_id in url: ${row.offerKey}`);
+    assert.ok(row.url.startsWith('https://www.warau.jp/'), row.url);
+    assert.strictEqual(warauPointId(row.offerKey), id, `offerKey/url point_id mismatch: ${row.offerKey}`);
+    assert.ok(row.offerKey.startsWith(`${row.game}|warau|${row.platform}|`), row.offerKey);
+    assert.ok(['iOS', 'Android'].includes(row.platform), row.offerKey);
+    assert.ok(/^[1-9]\d*$/.test(row.reward), `reward must be a positive integer: ${row.offerKey}`);
+    assert.ok(row.condition.trim().length > 0, row.offerKey);
+    assert.strictEqual(row.verified, 'true', row.offerKey);
+    assert.ok(String(row.sourceUrl || '').startsWith('https://www.warau.jp/'), row.offerKey);
+  }
+  assert.strictEqual(new Set(warauRows.map(row => warauPointId(row.url))).size, warauRows.length);
 
   const targets = JSON.parse(fs.readFileSync('config/game_targets.json', 'utf8')).games;
   for (const gameName of ['メメントモリ', 'ホワイトアウト・サバイバル']) {
@@ -184,10 +196,34 @@ function makeContext(fetchImpl) {
       [...endedWarauIds].some(id => String(url).includes(`point_id=${id}`))
     ), false);
   }
-  const candidateKeys = JSON.parse(fs.readFileSync('data/warau_baseline_candidates.json', 'utf8'))
-    .candidates.map(candidate => candidate.offerKey);
+  const baselineCandidates = JSON.parse(fs.readFileSync('data/warau_baseline_candidates.json', 'utf8')).candidates;
+  const candidateKeys = baselineCandidates.map(candidate => candidate.offerKey);
+  assert.strictEqual(new Set(candidateKeys).size, candidateKeys.length);
+  const publishedKeys = new Set(actualRows.map(row => row.offerKey));
   const selectedRows = actualRows.filter(row => candidateKeys.includes(row.offerKey));
-  assert.strictEqual(selectedRows.length, 4);
+  // The baseline candidates are a historical snapshot; their Warau offers end over
+  // time (Township 204643/204645 were retired on 2026-10-15), so zero published
+  // candidates is a valid state. What must always hold:
+  //  - a candidate that is still published appears exactly once, with the identity
+  //    recorded in the snapshot and the full rich-field contract;
+  //  - a candidate that is gone has no published row left under its point_id
+  //    (no partial or re-keyed remnant of an ended offer).
+  assert.strictEqual(selectedRows.length, candidateKeys.filter(key => publishedKeys.has(key)).length);
+  for (const candidate of baselineCandidates) {
+    const id = warauPointId(candidate.offerKey);
+    assert.ok(id && warauPointId(candidate.sourceUrl) === id, `candidate identity: ${candidate.offerKey}`);
+    const live = actualRows.filter(row => row.offerKey === candidate.offerKey);
+    if (live.length === 0) {
+      assert.strictEqual(
+        warauRows.some(row => warauPointId(row.url) === id),
+        false,
+        `ended baseline candidate still published under another key: ${candidate.offerKey}`
+      );
+      continue;
+    }
+    assert.strictEqual(live[0].game, candidate.game);
+    assert.strictEqual(live[0].site, candidate.source);
+  }
   for (const row of selectedRows) {
     assert.ok(row.condition.length > 20);
     assert.ok(row.deadline.includes('インストール日から起算'));
