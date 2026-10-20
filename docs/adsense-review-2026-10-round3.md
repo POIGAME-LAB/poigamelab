@@ -79,6 +79,8 @@
 - `tests/test_adsense_quality_static.py`：16件成功（新規4件：断定表現の不在、新セクションの非表示初期状態と条件、descriptionの検証済み件数、9ゲームの記録JSONの整合）。
 - 全体pytest：70 failed / 1,341 passed。失敗70件は変更前の`origin/main`（70 failed / 1,337 passed）と**同一集合**（追加失敗0、成功は新規テスト4件分増加）。
 - node：`test_site_data_v24.js`・`test_site_health_v25.js`・`test_game_offer_summary.js` 成功。`test_current_offers_browser.js`（BASELINE_ROOT指定）：56チェック成功・ページエラー0。
-- 公開用ビルド＋`validate_daily_publication.py`：valid（62行・保持62・撤退0）。
+- 公開用ビルド＋`validate_daily_publication.py`：valid（行数は日次更新で変動するため固定しない）。
+- **（2026-10-20追記）最新main（PR #336マージ後）へ追随：** `git merge origin/main`（競合なし。main側の変更は `data/`・`tests/` のみで、本PRの3ファイルと重複なし）。全体pytestは main＝62 failed / 1,370 passed、追随後＝62 failed / 1,374 passed で**失敗の集合は同一**（`test_public_site_build.py` の9件はエラーメッセージも同一）。CIの「Legacy collector regressions」再現は434 passed。
+- **（同）ブラウザ回帰 `tests/test_game_no_verified_offer_browser.js` を追加**（ローカル用・`_site`を使用。件数やゲーム一覧は固定せず、`games.csv`と`published_offers.csv`から「検証済み案件のないゲーム」を導出）。PC1280／スマホ390で、案件のないゲームは通知表示・断定表現なし・記録件数がJSONと一致・リンク・title/canonical/description・横スクロールなし、案件のあるゲームは通知非表示を検証。さらにCSV応答を書き換えて「案件が増える→通知が消える」「案件がなくなる→通知が出る」「CSV取得失敗でも『案件なし』と断定しない」「存在しないゲームはnoindex」を検証。変異（文言の差し替え／表示条件の削除）で失敗することを確認。
 - Chromium（PC1280／スマホ390）で9ゲーム＋検証済み4ゲームを確認：JSエラー0、横スクロール0、title／description／canonicalは従来どおりJSで個別設定、新セクションは9ゲームのみ表示。
 - **未実施：** iPhone Safari実機、本番URLでの確認（PR未マージのため）、Search Console。
