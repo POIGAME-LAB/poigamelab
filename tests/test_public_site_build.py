@@ -7,6 +7,8 @@ from urllib.parse import unquote, urlsplit
 
 import pytest
 
+import published_offer_contract as contract
+
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
     "build_public_site",
@@ -236,23 +238,15 @@ def test_evertale_has_current_hapitas_182_pair(output_dir):
     assert all(row["deadline"] == "インストール日から起算して30日以内" for row in matches)
 
 
-def test_evertale_has_current_warau_ios_offer(output_dir):
+def test_evertale_warau_ios_offer_is_consistent_when_listed(output_dir):
+    # Offer 188016 ended and was retired on 2026-10-19; an ended offer must leave no row.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    matches = [
-        row for row in rows
-        if row["game"] == "エバーテイル" and row["site"] == "warau"
-    ]
-    assert [(row["platform"], row["reward"], row["url"]) for row in matches] == [
-        ("iOS", "310", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=188016")
-    ]
-    assert matches[0]["updatedAt"] >= "2026-09-08"
-    assert matches[0]["verified"].lower() == "true"
-    assert matches[0]["deadline"] == "インストール日から起算して10日以内"
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [contract.pin("warau", "188016", "エバーテイル", "iOS")]
+    assert contract.pin_problems(rows, pins) == []
+    assert contract.rows_problems(rows) == []
+    for row in contract.listed(rows, pins):
+        assert row["deadline"] == "インストール日から起算して10日以内"
 
 
 def test_tokyo_debunker_hapitas_ios_android_pair_is_published(output_dir):
@@ -319,26 +313,17 @@ def test_kingshot_ended_hapitas_pair_is_not_published(output_dir):
     assert matches == []
 
 
-def test_kinoko_has_current_hapitas_ios_android_pair(output_dir):
+def test_kinoko_hapitas_pair_is_consistent_when_listed(output_dir):
+    # Hapitas 102450/102451 show "この広告は終了しています" and were retired on 2026-10-19.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    matches = [
-        row for row in rows
-        if row["game"] == "きのこ伝説" and row["site"] == "hapitas"
-    ]
-    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("iOS", "20047", "https://hapitas.jp/item/detail/itemid/102450"),
-        ("Android", "16346", "https://hapitas.jp/item/detail/itemid/102451"),
-    }
-    assert all(row["verified"].lower() == "true" for row in matches)
-    assert all(row["updatedAt"] >= "2026-09-24" for row in matches)
-    assert all("Lv100/120/125到達" in row["condition"] for row in matches)
-    assert all("Lv120は40日以内" in row["deadline"] for row in matches)
-    assert all("Lv125は45日以内" in row["deadline"] for row in matches)
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [contract.pin("hapitas", "102450", "きのこ伝説", "iOS"),
+            contract.pin("hapitas", "102451", "きのこ伝説", "Android")]
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert "Lv100/120/125到達" in row["condition"]
+        assert "Lv120は40日以内" in row["deadline"]
+        assert "Lv125は45日以内" in row["deadline"]
 
 
 def test_puzzles_survival_has_current_hapitas_ios_android_pair(output_dir):
@@ -363,32 +348,20 @@ def test_puzzles_survival_has_current_hapitas_ios_android_pair(output_dir):
 
 
 
-def test_current_warau_offerwall_amounts_are_published_with_provider_labels(output_dir):
+def test_warau_offerwall_rows_keep_their_identity_and_provider_label_when_listed(output_dir):
+    # Offers 206500/206501/206488/206460 ended and were retired on 2026-10-18.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    expected = {
-        "206501": ("メメントモリ", "iOS", "4906", "SmaAD"),
-        "206500": ("メメントモリ", "Android", "4906", "SmaAD"),
-        "206488": ("パズル＆サバイバル", "Android", "8628", "SmaAD"),
-        "206460": ("パズル＆サバイバル", "Android", "13016", "GF Rewards"),
-    }
-    for offer_id, (game, platform, reward, provider) in expected.items():
-        matches = [
-            row for row in rows
-            if row["site"] == "warau" and f"point_id={offer_id}" in row["url"]
-        ]
-        assert len(matches) == 1
-        row = matches[0]
-        assert row["game"] == game
-        assert row["platform"] == platform
-        assert row["reward"] == reward
-        assert row["provider"] == provider
-        assert row["verified"].lower() == "true"
-        assert row["updatedAt"] >= "2026-09-08"
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [
+        contract.pin("warau", "206501", "メメントモリ", "iOS"),
+        contract.pin("warau", "206500", "メメントモリ", "Android"),
+        contract.pin("warau", "206488", "パズル＆サバイバル", "Android"),
+        contract.pin("warau", "206460", "パズル＆サバイバル", "Android"),
+    ]
+    providers = {"206501": "SmaAD", "206500": "SmaAD", "206488": "SmaAD", "206460": "GF Rewards"}
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert row["provider"] == providers[contract.offer_id(row)]
         assert "StepUpミッションをクリア" in row["condition"]
 
 
@@ -497,29 +470,14 @@ def test_selected_moppy_verified_dates_are_current(output_dir):
             assert row["verified"].lower() == "true"
 
 
-def test_whiteout_and_houchi_selected_rows_are_current(output_dir):
+def test_whiteout_and_houchi_selected_rows_keep_their_identity_when_listed(output_dir):
+    # Warau 177971 (放置少女) ended and was retired on 2026-10-18; Moppy 160375 is still listed.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    expected = {
-        ("ホワイトアウト・サバイバル", "moppy", "Android", "6119", "https://pc.moppy.jp/ad/detail.php?site_id=160375"),
-        ("放置少女", "warau", "Android", "1600", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=177971"),
-    }
-    matches = {
-        (row["game"], row["site"], row["platform"], row["reward"], row["url"])
-        for row in rows
-        if (row["game"], row["site"], row["platform"], row["reward"], row["url"]) in expected
-    }
-    assert matches == expected
-    for row in rows:
-        key = (row["game"], row["site"], row["platform"], row["reward"], row["url"])
-        if key in expected:
-            expected_date = "2026-09-24" if row["site"] == "moppy" else "2026-09-08"
-            assert row["updatedAt"] >= expected_date
-            assert row["verified"].lower() == "true"
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [contract.pin("moppy", "160375", "ホワイトアウト・サバイバル", "Android"),
+            contract.pin("warau", "177971", "放置少女", "Android")]
+    assert contract.pin_problems(rows, pins) == []
+    assert contract.listed(rows, pins[:1]), "the Moppy Whiteout Survival row is expected to stay listed"
 
 
 def test_puzzles_moppy_android_is_current(output_dir):
@@ -631,25 +589,13 @@ def test_evertale_public_site_excludes_stale_hapitas_195(output_dir):
     assert ios140[0]["verified"].lower() == "true"
 
 
-def test_memento_warau_11500_ios_android_pair_is_public(output_dir):
+def test_memento_warau_11500_pair_is_consistent_when_listed(output_dir):
+    # Offers 205982/206037 ended and were retired on 2026-10-19.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    matches = [
-        row for row in rows
-        if row["game"] == "メメントモリ"
-        and row["site"] == "warau"
-        and row["reward"] == "11500"
-    ]
-    assert {(row["platform"], row["url"]) for row in matches} == {
-        ("iOS", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037"),
-        ("Android", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205982"),
-    }
-    assert all(row["updatedAt"] >= "2026-09-08" for row in matches)
-    assert all(row["verified"].lower() == "true" for row in matches)
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [contract.pin("warau", "206037", "メメントモリ", "iOS"),
+            contract.pin("warau", "205982", "メメントモリ", "Android")]
+    assert contract.pin_problems(rows, pins) == []
 
 
 def test_evertale_hapitas_140_ios_android_pair_is_public(output_dir):
@@ -675,25 +621,14 @@ def test_evertale_hapitas_140_ios_android_pair_is_public(output_dir):
     assert all(row["verified"].lower() == "true" for row in matches)
 
 
-def test_memento_warau_12050_ios_android_pair_is_public(output_dir):
+def test_memento_warau_12050_pair_is_consistent_when_listed(output_dir):
+    # Offers 205975/206035 ended and were retired on 2026-10-18; a re-issue gets a new ID.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    matches = [
-        row for row in rows
-        if row["game"] == "メメントモリ"
-        and row["site"] == "warau"
-        and row["reward"] == "12050"
-    ]
-    assert {(row["platform"], row["url"]) for row in matches} == {
-        ("iOS", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206035"),
-        ("Android", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205975"),
-    }
-    assert all(row["updatedAt"] >= "2026-09-09" for row in matches)
-    assert all(row["verified"].lower() == "true" for row in matches)
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [contract.pin("warau", "206035", "メメントモリ", "iOS"),
+            contract.pin("warau", "205975", "メメントモリ", "Android")]
+    assert contract.pin_problems(rows, pins) == []
+    assert contract.rows_problems(rows) == []
 
 
 def test_public_site_excludes_ended_whiteout_warau_android(output_dir):
@@ -720,23 +655,15 @@ def test_public_site_excludes_ended_whiteout_warau_android(output_dir):
     assert ios[0]["reward"] == "11500"
 
 
-def test_tokyo_debunker_warau_210_ios_android_pair_is_public(output_dir):
+def test_tokyo_debunker_warau_210_pair_is_consistent_when_listed(output_dir):
+    # Offers 191400/191401 ended and were retired on 2026-10-19.
     builder.build_public_site(output_dir)
-    import csv
-
-    rows = list(csv.DictReader(
-        (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
-    ))
-    matches = [
-        row for row in rows
-        if row["game"] == "東京ディバンカー" and row["site"] == "warau"
-    ]
-    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("iOS", "210", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191400"),
-        ("Android", "210", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=191401"),
-    }
-    assert all(row["updatedAt"] >= "2026-09-09" for row in matches)
-    assert all(row["verified"].lower() == "true" for row in matches)
+    rows = contract.load_rows(output_dir / "data" / "published_offers.csv")
+    pins = [contract.pin("warau", "191400", "東京ディバンカー", "iOS"),
+            contract.pin("warau", "191401", "東京ディバンカー", "Android")]
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert row["deadline"] == "インストール日から起算して30日以内"
 
 
 def test_working_heroes_hapitas_pair_is_current_sep9(output_dir):
