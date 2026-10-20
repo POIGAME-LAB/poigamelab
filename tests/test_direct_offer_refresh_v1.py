@@ -2,6 +2,7 @@ import csv, importlib.util, json, re
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
+import published_offer_contract as contract
 spec=importlib.util.spec_from_file_location('direct',ROOT/'scripts/direct_offer_refresh.py')
 direct=importlib.util.module_from_spec(spec); spec.loader.exec_module(direct)
 
@@ -1339,25 +1340,36 @@ def test_real_baseline_candidates_remain_historical_and_unapproved():
     payload = json.loads((ROOT/'data/warau_baseline_candidates.json').read_text())
     assert payload['status'] == 'reviewed_registry_added'
     assert len(payload['candidates']) == 4
-    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
+    rows = contract.load_rows()
+    # The snapshot is historical: its Warau offers end over time (Township 204643/204645 were
+    # retired on 2026-10-18), so none of them has to be published. What must hold is that the
+    # snapshot itself is unchanged and unapproved, a still-published candidate keeps the identity
+    # it was reviewed with, and an ended candidate leaves no row behind under its ID.
+    expected = {'204645': ('Township', 'Android', 21670, 9),
+                '204643': ('Township', 'iOS', 16760, 9),
+                '205817': ('きのこ伝説', 'Android', 18800, 11),
+                '205816': ('きのこ伝説', 'iOS', 22000, 11)}
     by_key = {row['offerKey']: row for row in rows}
-    assert len(by_key) == len(rows)
-    expected = {'204645': ('Township', 'Android', '21670', 9),
-                '204643': ('Township', 'iOS', '16760', 9),
-                '205817': ('きのこ伝説', 'Android', '18800', 11),
-                '205816': ('きのこ伝説', 'iOS', '22000', 11)}
     seen = set()
     for candidate in payload['candidates']:
         assert candidate['approved'] is False
         assert 'reviewedAt' not in candidate and 'expiresAt' not in candidate
         assert len(candidate['publishedRowFingerprint']) == 64
-        row = by_key[candidate['offerKey']]
-        assert row['site'] == 'warau' and row['verified'] == 'true'
-        offer_id = direct.warau_offer_id(row['url'])
+        offer_id = direct.warau_offer_id(candidate['sourceUrl'])
         seen.add(offer_id)
-        assert (row['game'], row['platform'], row['reward'], candidate['stepCount']) == expected[offer_id]
-        assert int(row['reward']) == candidate['rewardPoints']
+        game, platform, points, steps = expected[offer_id]
+        assert candidate['game'] == game and candidate['source'] == 'warau'
+        assert candidate['offerKey'].split('|')[2] == platform
+        assert (candidate['rewardPoints'], candidate['stepCount']) == (points, steps)
+        row = by_key.get(candidate['offerKey'])
+        pins = [contract.pin('warau', offer_id, game, platform)]
+        assert contract.pin_problems(rows, pins) == []
+        if row is None:
+            assert not contract.listed(rows, pins)
+        else:
+            assert row['site'] == 'warau' and row['verified'] == 'true'
     assert seen == set(expected)
+    assert contract.rows_problems(rows) == []
 
 
 def test_reviewed_registry_is_exactly_four_rows_for_seven_days(monkeypatch):
@@ -1382,8 +1394,20 @@ def test_reviewed_registry_is_exactly_four_rows_for_seven_days(monkeypatch):
 @pytest.mark.parametrize('offer_id', ['204645', '204643', '205817', '205816'])
 def test_enrolled_rows_gate_time_boundaries_and_changed_evidence(offer_id):
     from datetime import datetime, timedelta
-    rows = list(csv.DictReader((ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')))
-    row = next(r for r in rows if r['site'] == 'warau' and direct.warau_offer_id(r['url']) == offer_id)
+    rows = contract.load_rows()
+    candidates = {direct.warau_offer_id(c['sourceUrl']): c
+                  for c in json.loads((ROOT/'data/warau_baseline_candidates.json').read_text())['candidates']}
+    candidate = candidates[offer_id]
+    row = next((r for r in rows if r['site'] == 'warau' and direct.warau_offer_id(r['url']) == offer_id), None)
+    if row is None:
+        # The reviewed offer ended and was retired from the published CSV (e.g. Township
+        # 204643/204645 on 2026-10-18). The approval gate is still exercised, on a fixture row
+        # built from the reviewed snapshot instead of a row that no longer exists.
+        game, _, platform, url = candidate['offerKey'].split('|', 3)
+        row = {'offerKey': candidate['offerKey'], 'game': candidate['game'], 'site': 'warau',
+               'provider': '', 'reward': str(candidate['rewardPoints']), 'condition': 'fixture condition',
+               'platform': platform, 'type': 'StepUp', 'deadline': 'インストール日から起算',
+               'updatedAt': '2026-09-03', 'url': url, 'sourceUrl': url, 'verified': 'true'}
     approvals = json.loads((ROOT/'config/approved_offer_baselines.json').read_text())['approvals']
     approval = dict(next(a for a in approvals if a['offerKey'] == row['offerKey']))
     # This is a historical seven-day approval. The live published row may
@@ -2495,21 +2519,14 @@ def test_repository_evertale_current_hapitas_182_pair_is_published():
     assert all(row['verified'] == 'true' for row in matches)
 
 
-def test_repository_evertale_current_warau_ios_offer_is_published():
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
-    matches = [
-        row for row in rows
-        if row['game'] == 'エバーテイル' and row['site'] == 'warau'
-    ]
-    assert [(row['platform'], row['reward'], direct.warau_offer_id(row['url'])) for row in matches] == [
-        ('iOS', '310', '188016')
-    ]
-    row = matches[0]
-    assert row['condition'] == '新規アプリインストール後、3日連続ログインボーナス獲得'
-    assert row['deadline'] == 'インストール日から起算して10日以内'
-    assert row['verified'] == 'true'
+def test_repository_evertale_warau_ios_offer_is_consistent_when_listed():
+    # Warau 188016 ended and was retired on 2026-10-19.
+    rows = contract.load_rows()
+    pins = [contract.pin('warau', '188016', 'エバーテイル', 'iOS')]
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert row['condition'] == '新規アプリインストール後、3日連続ログインボーナス獲得'
+        assert row['deadline'] == 'インストール日から起算して10日以内'
 
 
 def test_repository_tokyo_debunker_hapitas_ios_android_pair_is_published():
@@ -2529,22 +2546,13 @@ def test_repository_tokyo_debunker_hapitas_ios_android_pair_is_published():
     assert all(row['verified'] == 'true' for row in matches)
 
 
-def test_repository_puzzles_current_warau_29500_offer_is_published():
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
-    matches = [
-        row for row in rows
-        if row['game'] == 'パズル＆サバイバル'
-        and row['site'] == 'warau'
-        and direct.warau_offer_id(row['url']) == '205557'
-    ]
-    assert len(matches) == 1
-    row = matches[0]
-    assert row['platform'] == 'Android'
-    assert row['reward'] == '29500'
-    assert row['deadline'] == 'インストール日から起算して30日以内'
-    assert row['verified'] == 'true'
+def test_repository_puzzles_warau_205557_offer_is_consistent_when_listed():
+    # Warau 205557 (formerly 29,500) ended and was retired on 2026-10-18.
+    rows = contract.load_rows()
+    pins = [contract.pin('warau', '205557', 'パズル＆サバイバル', 'Android')]
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert row['deadline'] == 'インストール日から起算して30日以内'
 
 
 def test_repository_ended_township_chobirich_offer_is_not_published():
@@ -2623,22 +2631,17 @@ def test_repository_evertale_stale_hapitas_195_is_not_published():
     assert 'https://hapitas.jp/item/detail/itemid/96066' not in evertale['known_urls_by_source']['hapitas']
 
 
-def test_repository_memento_current_target_coverage_includes_public_warau_and_review_only_hapitas():
+def test_repository_memento_target_coverage_includes_warau_and_review_only_hapitas():
     payload = json.loads((ROOT/'config/game_targets.json').read_text(encoding='utf-8'))
     memo = next(item for item in payload['games'] if item['game'] == 'メメントモリ')
     assert 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037' in memo['known_urls_by_source']['warau']
     assert 'https://hapitas.jp/item/detail/itemid/101349' in memo['known_urls_by_source']['hapitas']
 
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
-    assert any(
-        row['game'] == 'メメントモリ'
-        and row['site'] == 'warau'
-        and row['url'] == 'https://www.warau.jp/contents/point/pointEntrance.php?point_id=206037'
-        and row['reward'] == '11500'
-        for row in rows
-    )
+    rows = contract.load_rows()
+    # Warau 206037 is a registered target; the offer itself ended and was retired on 2026-10-19,
+    # so it may or may not be published, but if it is, it must be the Memento iOS row.
+    pins = [contract.pin('warau', '206037', 'メメントモリ', 'iOS')]
+    assert contract.pin_problems(rows, pins) == []
     assert not any(
         row['game'] == 'メメントモリ'
         and row['site'] == 'hapitas'
@@ -2646,23 +2649,12 @@ def test_repository_memento_current_target_coverage_includes_public_warau_and_re
         for row in rows
     )
 
-
-def test_repository_memento_current_warau_11500_pair_is_published():
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
-    matches = [
-        row for row in rows
-        if row['game'] == 'メメントモリ'
-        and row['site'] == 'warau'
-        and row['reward'] == '11500'
-    ]
-    assert {(row['platform'], direct.warau_offer_id(row['url'])) for row in matches} == {
-        ('iOS', '206037'),
-        ('Android', '205982'),
-    }
-    assert all(row['verified'] == 'true' for row in matches)
-    assert all(row['deadline'] for row in matches)
+def test_repository_memento_warau_11500_pair_is_consistent_when_listed():
+    rows = contract.load_rows()
+    pins = [contract.pin('warau', '206037', 'メメントモリ', 'iOS'),
+            contract.pin('warau', '205982', 'メメントモリ', 'Android')]
+    assert contract.pin_problems(rows, pins) == []
+    assert all(row['deadline'] for row in contract.listed(rows, pins))
 
 
 def test_repository_evertale_hapitas_140_ios_android_pair_is_published():
@@ -2700,23 +2692,14 @@ def test_repository_kinoko_99850_is_current_review_only_target():
     )
 
 
-def test_repository_memento_current_warau_12050_pair_is_published():
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
-    matches = [
-        row for row in rows
-        if row['game'] == 'メメントモリ'
-        and row['site'] == 'warau'
-        and row['reward'] == '12050'
-    ]
-    assert {(row['platform'], direct.warau_offer_id(row['url'])) for row in matches} == {
-        ('iOS', '206035'),
-        ('Android', '205975'),
-    }
-    assert all(row['verified'] == 'true' for row in matches)
-    assert all('ランク140到達' in row['condition'] for row in matches)
-    assert all('累計10000円課金' in row['condition'] for row in matches)
+def test_repository_memento_warau_12050_pair_is_consistent_when_listed():
+    rows = contract.load_rows()
+    pins = [contract.pin('warau', '206035', 'メメントモリ', 'iOS'),
+            contract.pin('warau', '205975', 'メメントモリ', 'Android')]
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert 'ランク140到達' in row['condition']
+        assert '累計10000円課金' in row['condition']
 
 
 def test_repository_ended_whiteout_warau_android_is_not_published_or_targeted():
@@ -2746,22 +2729,14 @@ def test_repository_ended_whiteout_warau_android_is_not_published_or_targeted():
     ]
 
 
-def test_repository_tokyo_debunker_current_warau_210_pair_is_published():
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
-    matches = [
-        row for row in rows
-        if row['game'] == '東京ディバンカー'
-        and row['site'] == 'warau'
-    ]
-    assert {(row['platform'], row['reward'], direct.warau_offer_id(row['url'])) for row in matches} == {
-        ('iOS', '210', '191400'),
-        ('Android', '210', '191401'),
-    }
-    assert all(row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得する' for row in matches)
-    assert all(row['deadline'] == 'インストール日から起算して30日以内' for row in matches)
-    assert all(row['verified'] == 'true' for row in matches)
+def test_repository_tokyo_debunker_warau_210_pair_is_consistent_when_listed():
+    rows = contract.load_rows()
+    pins = [contract.pin('warau', '191400', '東京ディバンカー', 'iOS'),
+            contract.pin('warau', '191401', '東京ディバンカー', 'Android')]
+    assert contract.pin_problems(rows, pins) == []
+    for row in contract.listed(rows, pins):
+        assert row['condition'] == '新規アプリインストール後、3日間連続でログインボーナスを獲得する'
+        assert row['deadline'] == 'インストール日から起算して30日以内'
 
 
 def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
@@ -2837,27 +2812,19 @@ def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
     }
     assert houchi == []
 
-    rows = list(csv.DictReader(
-        (ROOT/'data/published_offers.csv').open(encoding='utf-8', newline='')
-    ))
+    rows = contract.load_rows()
     hapitas_rows = [row for row in rows if row['site'] == 'hapitas']
-    assert {(row['game'], row['platform'], row['reward']) for row in hapitas_rows} == {
-        ('ワーキングヒーロー', 'Android', '9822'),
-        ('ワーキングヒーロー', 'iOS', '9822'),
-        ('東京ディバンカー', 'iOS', '147'),
-        ('東京ディバンカー', 'Android', '147'),
-        ('メメントモリ', 'Android', '5316'),
-        ('メメントモリ', 'iOS', '5316'),
-        ('エバーテイル', 'Android', '140'),
-        ('エバーテイル', 'iOS', '140'),
-        ('エバーテイル', 'Android', '182'),
-        ('エバーテイル', 'iOS', '182'),
-        ('パズル＆サバイバル', 'Android', '33829'),
-        ('パズル＆サバイバル', 'iOS', '38696'),
-        ('きのこ伝説', 'Android', '16346'),
-        ('きのこ伝説', 'iOS', '20047'),
-    }
+    registry = hapitas['reviewed_platform_by_offer_id']
+    # Published Hapitas rows change as offers end (102450/102451 retired on 2026-10-19), so the
+    # exact set of games/amounts is not pinned. Every published row must instead come from the
+    # reviewed registry with its reviewed platform and be a known target URL of its own game.
+    for row in hapitas_rows:
+        offer_id = contract.offer_id(row)
+        assert offer_id in registry, row['url']
+        assert registry[offer_id] == row['platform'], row['url']
+        assert row['url'] in by_game[row['game']]['known_urls_by_source']['hapitas'], row['url']
     assert not any(row['game'] == 'Township' for row in hapitas_rows)
+    assert contract.rows_problems(rows) == []
     assert not any(row['game'] == 'キングショット' for row in hapitas_rows)
     assert not any(row['game'] == '放置少女' for row in hapitas_rows)
     assert all(row['updatedAt'] >= '2026-09-24' for row in hapitas_rows)
