@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-10-19T21:07:41+00:00",
+  "checkedAt": "2026-10-20T20:01:36+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -39,14 +39,14 @@
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208077&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208076&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208076&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208077&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -101,9 +101,9 @@
       "rank": 2,
       "game": "ベガス クレイズ カジノ",
       "maxObservedRewardYen": 65793,
-      "confirmedSourceCount": 1,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 1,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 4,
+      "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
         {
           "source": "warau",
@@ -118,6 +118,13 @@
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
+        },
+        {
+          "source": "coincome",
+          "url": "https://cimcome.jp/campaigns/details/10448",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 58200
         },
         {
           "source": "mikoshi",
