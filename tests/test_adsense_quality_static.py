@@ -148,3 +148,51 @@ def test_progress_page_keeps_indexing_for_pages_with_records_and_redirects_empty
 def test_experience_panel_shows_update_date_only_when_it_is_a_real_date():
     js = (ROOT / "assets" / "guide-experience.js").read_text(encoding="utf-8")
     assert r"\d{4}-\d{2}-\d{2}" in js and "実例データの最終更新" in js
+
+
+# --- 2026-10: game detail pages for games without a verified offer -------------
+
+def test_game_page_does_not_assert_that_no_offer_exists():
+    html = (ROOT / "game.html").read_text(encoding="utf-8")
+    # A missing verified offer may also mean "could not be fetched": never state absence.
+    for phrase in ("確認できる案件なし", "現在掲載なし"):
+        assert phrase not in html, phrase
+    assert "案件の終了とは限らず、確認できていない場合を含みます" in html
+    assert "案件が存在しないとは断定していません" in html
+
+
+def test_no_verified_offer_section_is_hidden_until_script_decides():
+    html = (ROOT / "game.html").read_text(encoding="utf-8")
+    m = re.search(r'<section[^>]*id="noVerifiedOffer"[^>]*>', html)
+    assert m and " hidden" in m.group(0)
+    # shown only when the summary reports zero verified offers
+    assert "summary.verifiedCount > 0" in html
+    # facts come from the already-published player-record JSON only (counts, no invented figures)
+    assert "data/guide-experiences/${slug}.json" in html
+    assert 'count("retired", "abandoned")' in html
+
+
+def test_game_seo_description_counts_verified_offers_only():
+    html = (ROOT / "game.html").read_text(encoding="utf-8")
+    assert "game.offers.filter((offer) => offer.verified).length" in html
+
+
+def test_every_game_without_a_verified_offer_has_a_guide_and_player_records():
+    import csv
+    import json
+    published = {r["game"] for r in csv.DictReader((ROOT / "data/published_offers.csv").open(encoding="utf-8", newline=""))
+                 if r.get("verified") == "true"}
+    guides_js = (ROOT / "site-guides.js").read_text(encoding="utf-8")
+    catalog = [r["name"] for r in csv.DictReader((ROOT / "games.csv").open(encoding="utf-8", newline=""))]
+    for name in catalog:
+        if name in published:
+            continue
+        # not every catalogued game must have records, but when the page can show them they must parse
+        match = re.search(re.escape(f'"{name}": {{') + r'.*?href: "([a-z0-9-]+)-guide\.html"', guides_js, flags=re.S)
+        if not match:
+            continue
+        path = ROOT / "data/guide-experiences" / f"{match.group(1)}.json"
+        if path.is_file():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            assert isinstance(data.get("players"), list) and data["players"], name
+            assert all(p.get("status") in {"completed", "retired", "abandoned", "ongoing"} for p in data["players"]), name

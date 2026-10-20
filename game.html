@@ -853,6 +853,48 @@
       line-height: 1.8;
     }
 
+    .no-verified-box p {
+      margin: 0 0 10px;
+      color: #4b4360;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .no-verified-box .no-verified-records {
+      padding: 14px 16px;
+      border: 1px solid #e4dcff;
+      border-radius: 14px;
+      background: #faf8ff;
+    }
+
+    .no-verified-box .no-verified-records strong {
+      color: #32156f;
+    }
+
+    .no-verified-box .no-verified-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .no-verified-box .no-verified-links a {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 11px;
+      background: #7047ff;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .no-verified-box .no-verified-links a.secondary {
+      background: #fff;
+      color: #5b34d6;
+      box-shadow: inset 0 0 0 1px #cfc3ff;
+    }
+
     .game-summary .summary-note {
       margin: 0;
       font-size: 12px;
@@ -909,6 +951,13 @@
       <h2>📌 比較サマリー</h2>
       <ul id="gameSummaryList"></ul>
       <p class="summary-note">掲載中の案件データから自動で集計した内容です。申込み前に、各ポイントサイトで最新の条件をご確認ください。</p>
+    </section>
+
+    <section class="section no-verified-box" id="noVerifiedOffer" hidden>
+      <h2>📝 この案件の確認状況と、いま読める情報</h2>
+      <p id="noVerifiedLead"></p>
+      <div id="noVerifiedRecords" class="no-verified-records" hidden></div>
+      <div id="noVerifiedLinks" class="no-verified-links"></div>
     </section>
 
     <section class="section" id="comparison">
@@ -1031,7 +1080,7 @@
     function applyGameSeo(game) {
       const canonicalUrl = `https://poigamelab.com/game.html?game=${encodeURIComponent(game.name)}`;
       const firstSentence = String(game.overview || "").split("。")[0].trim();
-      const offerCount = game.offers.length;
+      const offerCount = game.offers.filter((offer) => offer.verified).length;
       const offerPart = offerCount > 0
         ? `ポイントサイト${offerCount}件の掲載枠の還元額・条件・対応OS・締切を比較。`
         : "ポイントサイト別の還元額・条件・対応OS・締切の確認状況をまとめています。";
@@ -1041,6 +1090,68 @@
       setHeadTag('meta[property="og:title"]', "meta", { property: "og:title", content: document.title });
       setHeadTag('meta[property="og:url"]', "meta", { property: "og:url", content: canonicalUrl });
       setHeadTag('meta[property="og:description"]', "meta", { property: "og:description", content: description });
+    }
+
+    // Games with no verified offer: say what is (not) confirmed and surface the
+    // information that does exist (guide + public player records). Nothing here is
+    // computed from anything but the already-published guide-experience JSON.
+    function guideSlug(guide) {
+      const links = guide && Array.isArray(guide.links) ? guide.links : [];
+      for (const item of links) {
+        const match = String(item && item.href || "").match(/^([a-z0-9-]+)-guide\.html$/);
+        if (match) return match[1];
+      }
+      return "";
+    }
+
+    async function renderNoVerifiedNotice(game, summary, guide) {
+      const box = document.getElementById("noVerifiedOffer");
+      if (!box || summary.verifiedCount > 0) return;
+      const esc = POIGAME_DATA.escapeHtml;
+      const lead = document.getElementById("noVerifiedLead");
+      const referenceNote = summary.referenceCount > 0
+        ? "表に載っている金額は参考値で、ポイントサイトの案件ページでの確認は完了していません。"
+        : "";
+      lead.textContent = `POIGAME LABは、ポイントサイトの案件ページで金額と条件を直接確認できた案件だけを「検証済み」として掲載しています。${game.name}は現在、検証済みの案件がありません。案件が終了している場合のほか、ページを取得・確認できていない場合も含むため、案件が存在しないとは断定していません。${referenceNote}申込み前に、各ポイントサイトで最新の案件と条件をご確認ください。`;
+
+      const links = document.getElementById("noVerifiedLinks");
+      links.replaceChildren();
+      const addLink = (href, label, secondary) => {
+        const a = document.createElement("a");
+        a.href = href;
+        a.textContent = label;
+        if (secondary) a.className = "secondary";
+        links.appendChild(a);
+      };
+      if (guide && Array.isArray(guide.links)) {
+        guide.links.forEach((item) => { if (item && item.href && item.label) addLink(item.href, item.label, false); });
+      }
+      addLink("offers.html", "案件一覧で他のゲームを比較する", true);
+      addLink("guides.html", "攻略一覧を見る", true);
+      box.hidden = false;
+
+      const slug = guideSlug(guide);
+      if (!slug) return;
+      try {
+        const data = await POIGAME_DATA.fetchJson(`data/guide-experiences/${slug}.json`);
+        const players = Array.isArray(data.players) ? data.players : [];
+        if (!players.length) return;
+        const count = (...names) => players.filter((p) => names.includes(p.status)).length;
+        const done = count("completed");
+        const stopped = count("retired", "abandoned");
+        const ongoing = count("ongoing");
+        const parts = [`完走${done}件`];
+        if (stopped) parts.push(`途中で断念・未達${stopped}件`);
+        if (ongoing) parts.push(`挑戦中${ongoing}件`);
+        const records = document.getElementById("noVerifiedRecords");
+        const notice = String(data.notice || "").trim();
+        records.innerHTML = `<p><strong>公開されている実プレイ記録：${players.length}件</strong>（${esc(parts.join("／"))}）</p>`
+          + `<p>プレイヤー別の経過は攻略記事に掲載しています。人によって課金・プレイ時間・開始時期が違うため、平均ではなく実例としてご覧ください。</p>`
+          + (notice ? `<p>${esc(notice)}</p>` : "");
+        records.hidden = false;
+      } catch (error) {
+        // Records unavailable: show nothing rather than claim anything about them.
+      }
     }
 
     async function loadGameDetail() {
@@ -1176,6 +1287,7 @@
             return item;
           }));
           summaryBox.hidden = false;
+          renderNoVerifiedNotice(game, summary, guide);
         }
         const tableBody = document.getElementById("offerTableBody");
         const offerCards = document.getElementById("offerCards");
@@ -1248,7 +1360,7 @@
           if (bestRewardLabel) bestRewardLabel.textContent = label;
 
           if (!offers.length) {
-            if (bestReward) bestReward.textContent = "確認できる案件なし";
+            if (bestReward) bestReward.textContent = game.offers.length ? "このOSの案件は未確認" : "検証済みの案件は未掲載";
             if (bestSite) bestSite.textContent = "ポイントサイト：—";
             if (bestVerified) bestVerified.textContent = "";
             return;
@@ -1309,7 +1421,7 @@
               : (platform === "unknown" ? "OS不明" : platform);
             const currentText = gameTrend.available
               ? `${gameTrend.currentReward.toLocaleString()}円`
-              : "現在掲載なし";
+              : "検証済みの掲載なし";
             const changeText = gameTrend.previousReward === null
               ? "前回比較：変動履歴なし"
               : `前回比 ${gameTrend.changeAmount > 0 ? "+" : ""}${gameTrend.changeAmount.toLocaleString()}円（${formatSigned(gameTrend.changePercent, "%")}）`;
@@ -1381,6 +1493,13 @@
           }).join("");
         }
 
+        const esc = POIGAME_DATA.escapeHtml;
+        function emptyOfferText() {
+          return game.offers.length
+            ? "このOSで現在確認できる案件はありません。"
+            : "検証済みの案件は現在掲載していません（案件の終了とは限らず、確認できていない場合を含みます）。";
+        }
+
         function renderOfferViews() {
           const filteredOffers = sortedOffers.filter((offer) => matchesPlatform(offer, activePlatform));
           updateBestOffer(filteredOffers, activePlatform);
@@ -1392,11 +1511,11 @@
           if (!filteredOffers.length) {
             if (tableBody) {
               const row = document.createElement("tr");
-              row.innerHTML = '<td colspan="7">このOSで現在確認できる案件はありません。</td>';
+              row.innerHTML = `<td colspan="7">${esc(emptyOfferText())}</td>`;
               tableBody.appendChild(row);
             }
             if (offerCards) {
-              offerCards.innerHTML = '<div class="no-offers-card">このOSで現在確認できる案件はありません。</div>';
+              offerCards.innerHTML = `<div class="no-offers-card">${esc(emptyOfferText())}</div>`;
             }
             return;
           }
