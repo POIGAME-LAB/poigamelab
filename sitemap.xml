@@ -42,4 +42,32 @@
   <url><loc>https://poigamelab.com/the-ants-guide.html</loc></url>
   <url><loc>https://poigamelab.com/tsue-to-ken-guide.html</loc></url>
   <url><loc>https://poigamelab.com/last-asylum-plague-guide.html</loc></url>
+  <!-- POIGAME_GAME_DETAIL_URLS_START: game.html?game=<games.csv name>, same URL as the internal links and the JS canonical -->
+  <url><loc>https://poigamelab.com/game.html?game=Township</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%81%8D%E3%81%AE%E3%81%93%E4%BC%9D%E8%AA%AC</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%A1%E3%83%A1%E3%83%B3%E3%83%88%E3%83%A2%E3%83%AA</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%E3%83%92%E3%83%BC%E3%83%AD%E3%83%BC</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%82%A2%E3%82%A6%E3%83%88%E3%83%BB%E3%82%B5%E3%83%90%E3%82%A4%E3%83%90%E3%83%AB</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E6%9D%B1%E4%BA%AC%E3%83%87%E3%82%A3%E3%83%90%E3%83%B3%E3%82%AB%E3%83%BC</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%91%E3%82%BA%E3%83%AB%EF%BC%86%E3%82%B5%E3%83%90%E3%82%A4%E3%83%90%E3%83%AB</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%82%AD%E3%83%B3%E3%82%B0%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E6%94%BE%E7%BD%AE%E5%B0%91%E5%A5%B3</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%82%A8%E3%83%90%E3%83%BC%E3%83%86%E3%82%A4%E3%83%AB</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=ATLAS%3A%20EARTH</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC%E3%83%95%E3%82%A1%E3%83%BC%E3%83%A0%E3%81%AE%E5%86%92%E9%99%BA</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%82%AF%E3%83%AD%E3%83%B3%E3%83%80%E3%82%A4%E3%82%AF%E3%81%AE%E5%86%92%E9%99%BA</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=Merge%20Help%3A%20%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%91%E3%82%BA%E3%83%AB</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%9E%E3%82%B8%E3%83%83%E3%82%AF%E3%82%B8%E3%82%B0%E3%82%BD%E3%83%BC%E3%83%91%E3%82%BA%E3%83%AB</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=Sea%20Block%201010</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%81%95%E3%82%8B%E5%B1%B1%E6%B8%A9%E6%B3%89%E6%97%85%E9%A4%A8</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%83%E3%82%B7%E3%83%96%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%88</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E5%A4%A9%E5%9C%B0%E8%8B%B1%E9%9B%84%E4%BC%9D</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=High%20Roller%20Vegas</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%9E%E3%83%95%E3%82%A3%E3%82%A2%E3%83%BB%E3%82%B7%E3%83%86%E3%82%A3-%E6%A5%B5%E9%81%93%E9%A2%A8%E9%9B%B2</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=%E3%83%AD%E3%83%83%E3%82%AF%E3%83%B3%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%82%AB%E3%82%B8%E3%83%8E-%E3%82%B9%E3%83%AD%E3%83%83%E3%83%88%E3%82%B2%E3%83%BC%E3%83%A0</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=Slot%20Mate%EF%BC%88%E3%82%B9%E3%83%AD%E3%83%83%E3%83%88%E3%83%A1%E3%82%A4%E3%83%88%EF%BC%89-%20%E3%83%99%E3%82%AC%E3%82%B9%E3%82%B9%E3%83%AD%E3%83%83%E3%83%88%E3%82%AB%E3%82%B8%E3%83%8E</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=Wild%20Survival</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=Dice%20Dreams</loc></url>
+  <url><loc>https://poigamelab.com/game.html?game=Disney%20Solitaire%20-%20%E3%83%87%E3%82%A3%E3%82%BA%E3%83%8B%E3%83%BC%20%E3%82%BD%E3%83%AA%E3%83%86%E3%82%A3%E3%82%A2</loc></url>
+  <!-- POIGAME_GAME_DETAIL_URLS_END -->
 </urlset>
