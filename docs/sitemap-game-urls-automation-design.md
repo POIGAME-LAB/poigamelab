@@ -14,7 +14,7 @@
 |---|---|
 | `publish-researched-new-games.yml` → `publish_top_five_content.run()` → `v30.run()`（`games.csv` 追加）→ `register_generated_guides.run()`（攻略記事のサイトマップ更新）。`sitemap.xml` もコミット対象 | 攻略記事のURLのみ。**ゲーム詳細URLは入らない** |
 | `adopt-high-reward-games.yml`（手動実行。コメントで「自動採用は保留中」）。`games.csv` をコミット対象にするが `sitemap.xml` は対象外 | 更新しない |
-| `discover-trending-games.yml` → `adopt_verified_games.py` | 同上（コミット対象は `games.csv` を含まないファイル群） |
+| `discover-trending-games.yml` → `adopt_verified_games.py`（旧API方式。手動実行のみ・`workflow_dispatch`）。`games.csv` をコミット対象にするが `sitemap.xml` は対象外 | 更新しない |
 | 運営者による手動編集 | 手動 |
 
 ### 1-3. 再利用できる既存の仕組み
@@ -52,7 +52,7 @@ main(--check | --write)          -> --check はずれがあれば非0終了し�
 ### 3-2. 導線（ワークフローを編集せずに済む順）
 1. **`register_generated_guides.run()` の末尾で `sitemap_game_urls.write(sitemap, root/"games.csv")` を呼ぶ**。`publish_top_five_content.run()` は `v30.run()` で `games.csv` を更新した**後**にこの関数を呼び、`publish-researched-new-games.yml` は既に `sitemap.xml` をコミット対象にしているため、**`.github/` を変更せずに**新ゲーム公開時にサイトマップが更新される。既存の `sitemap=` 引数（テスト用の差し替えパス）をそのまま使うので、既存テストの構造も保てる。
 2. **成果物（`_site/sitemap.xml`）の最終整合は検査のみ**：`deploy-pages.yml` の「Pre-deploy public-site checks」で `python scripts/sitemap_game_urls.py --check --artifact _site`（読み取りのみ）を実行し、ずれを検出したらデプロイ前に失敗させる案。これは `.github/` の変更なので**要承認**。承認が得られない場合は、`tests/test_deploy_smoke.py`（既にデプロイ前に実行される）に同等の検査を足す案もある（`.github/` は不変だが、デプロイ停止の可能性があるため、リスクは同程度）。
-3. **手動の `adopt-high-reward-games.yml`**：自動採用が保留中のため現時点では対応不要。再開する際に、`python scripts/sitemap_game_urls.py --write` を1行足して `sitemap.xml` をコミット対象に加える（要承認の `.github/` 変更。再開の判断と同時に行う）。
+3. **手動専用の `adopt-high-reward-games.yml` と `discover-trending-games.yml`**：どちらも手動実行のみ（前者は自動採用が保留中）で、現時点では対応不要。これらで `games.csv` に行を追加する運用を再開する際に、`python scripts/sitemap_game_urls.py --write` を1行足して `sitemap.xml` をコミット対象に加える（要承認の `.github/` 変更。再開の判断と同時に行う）。
 
 ### 3-3. 採用しなかった案
 | 案 | 見送り理由 |
