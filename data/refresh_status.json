@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-10-20T20:01:36+00:00",
-  "finishedAt": "2026-10-20T20:01:36+00:00",
+  "startedAt": "2026-10-21T20:13:20+00:00",
+  "finishedAt": "2026-10-21T20:13:20+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -49,12 +49,12 @@
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
@@ -71,12 +71,12 @@
     {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
@@ -93,19 +93,23 @@
     {
       "game": "パズル＆サバイバル",
       "returncode": 0,
-      "publishableCount": 3,
-      "collectionComplete": true,
-      "degradedReasons": [],
-      "standardConfirmed": 2,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 3,
-      "collectionComplete": true,
-      "degradedReasons": [],
-      "standardConfirmed": 2,
+      "publishableCount": 1,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
@@ -144,34 +148,34 @@
     {
       "game": "ファミリーファームの冒険",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
       "game": "クロンダイクの冒険",
       "returncode": 0,
-      "publishableCount": 4,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
       "game": "Merge Help: ホームデザインパズル",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
@@ -188,12 +192,12 @@
     {
       "game": "マフィア・シティ-極道風雲",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     },
     {
@@ -221,12 +225,12 @@
     {
       "game": "Wild Survival",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 1,
+      "standardConfirmed": 0,
       "standardTotal": 10
     }
   ],
