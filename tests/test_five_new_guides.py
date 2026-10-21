@@ -1,8 +1,14 @@
 import csv
 import json
+import re
+import shutil
+import sys
+import tempfile
 from pathlib import Path
+from urllib.parse import quote, unquote
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 
 GUIDES = {
     "ATLAS: EARTH": "atlas-earth-guide.html",
@@ -170,3 +176,75 @@ def test_reference_rewards_are_display_only_until_verified_offer_exists():
     for name in set(GUIDES) - verified:
         # Without a verified offer the card may only show the reference reward.
         assert int(catalog[name]["provisionalReward"] or 0) > 0, name
+
+
+# --- Game detail URLs in sitemap.xml -----------------------------------------------------
+# This file is run by the "Validate five new guides" workflow, which also triggers on changes to
+# sitemap.xml / games.csv / guides.html, so these checks run on the pull requests that can break them.
+GAME_DETAIL_PREFIX = "https://poigamelab.com/game.html?game="
+GAME_BLOCK_START = "<!-- POIGAME_GAME_DETAIL_URLS_START"
+GAME_BLOCK_END = "<!-- POIGAME_GAME_DETAIL_URLS_END -->"
+
+
+def _encode_uri_component(value):
+    # Same unreserved set as JavaScript's encodeURIComponent (which builds the page canonical).
+    return quote(value, safe="-_.!~*'()")
+
+
+def _sitemap_game_locs(text):
+    return [loc for loc in re.findall(r"<loc>([^<]+)</loc>", text) if "game.html" in loc]
+
+
+def test_sitemap_game_detail_urls_are_the_urls_the_site_links_to_and_canonicalises_to():
+    """Sitemap, internal links and the JS canonical must all name the same game URL.
+
+    One-directional on purpose: a catalog game that is not (yet) listed is not an error here, but a
+    listed URL must be a real catalog game written exactly like the internal links.
+    """
+    with (ROOT / "games.csv").open(encoding="utf-8-sig", newline="") as handle:
+        catalog = {row["name"].strip() for row in csv.DictReader(handle) if row.get("name", "").strip()}
+    locs = _sitemap_game_locs((ROOT / "sitemap.xml").read_text(encoding="utf-8"))
+    assert locs, "game detail URLs are expected in the sitemap"
+    assert len(locs) == len(set(locs))
+    guides_html = (ROOT / "guides.html").read_text(encoding="utf-8")
+    for loc in locs:
+        assert loc.startswith(GAME_DETAIL_PREFIX), loc
+        raw = loc[len(GAME_DETAIL_PREFIX):]
+        assert "&" not in loc and "#" not in loc, loc
+        name = unquote(raw)
+        assert name in catalog, f"sitemap lists a game that is not in games.csv: {name}"
+        assert raw == _encode_uri_component(name), f"not encodeURIComponent form: {loc}"
+        assert f'href="game.html?game={raw}' in guides_html, f"guides.html does not link to {loc}"
+    # The JS canonical is built with encodeURIComponent on the same prefix.
+    game_html = (ROOT / "game.html").read_text(encoding="utf-8")
+    assert "`" + GAME_DETAIL_PREFIX + "${encodeURIComponent(game.name)}`" in game_html
+
+
+def test_sitemap_never_lists_the_bare_game_page():
+    assert "https://poigamelab.com/game.html</loc>" not in (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+
+
+def test_guide_registration_scripts_keep_the_game_detail_block():
+    """Publishing a researched game rewrites only its own marker block of sitemap.xml."""
+    import include_generated_guides as include
+    import register_generated_guides as registry
+
+    original = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+    assert GAME_BLOCK_START in original and GAME_BLOCK_END in original
+    expected = _sitemap_game_locs(original)
+    with tempfile.TemporaryDirectory() as tmp:
+        folder = Path(tmp)
+        target = folder / "sitemap.xml"
+        for _ in range(2):  # applying twice must neither duplicate nor drop anything
+            shutil.copy2(ROOT / "sitemap.xml", target)
+            include.patch_sitemap(folder, [{"guidePath": "new-game-guide.html"}])
+            include.patch_sitemap(folder, [{"guidePath": "new-game-guide.html"}])
+            text = target.read_text(encoding="utf-8")
+            assert _sitemap_game_locs(text) == expected
+            assert text.count("https://poigamelab.com/new-game-guide.html</loc>") == 1
+            registry.patch_sitemap({"guides": {"x": {"guidePath": "other-guide.html"}}}, target)
+            text = target.read_text(encoding="utf-8")
+            assert _sitemap_game_locs(text) == expected
+            assert text.count("https://poigamelab.com/other-guide.html</loc>") == 1
+            registry.patch_sitemap({"guides": {}}, target)
+            assert _sitemap_game_locs(target.read_text(encoding="utf-8")) == expected

@@ -81,7 +81,7 @@ Google公式（URL構造）はパラメータを `key=value` で表現するこ�
 
 ### 本PRの範囲（Draft）
 - `sitemap.xml`：`<!-- POIGAME_GAME_DETAIL_URLS_START/END -->` で囲んだ26URLを追加（内部リンク・JS canonicalと同一URL）。生成ガイド用の自動パッチ（`include_generated_guides.py`／`register_generated_guides.py`）が自分のマーカー範囲だけを書き換えるため、この範囲は保持される（実機で確認）。
-- `tests/test_static_internal_links.py`：サイトマップのゲーム詳細URLが `games.csv` に実在し、`encodeURIComponent` 形式で、`guides.html` の静的リンクと一致し、`game.html` のcanonical生成式と同じ接頭辞であること、素の `game.html` を載せないことを固定。**一方向のテスト**にしたのは、新ゲームが自動追加された際にサイトマップ追記漏れでCIが赤くなるのを避けるため（追記漏れは本書の残課題として扱う）。
+- `tests/test_five_new_guides.py`：サイトマップのゲーム詳細URLが `games.csv` に実在し、`encodeURIComponent` 形式で、`guides.html` の静的リンクと一致し、`game.html` のcanonical生成式と同じ接頭辞であること、素の `game.html` を載せないこと、生成ガイド用の自動パッチ（`include_generated_guides.py`／`register_generated_guides.py`）が26URLのブロックを保持し重複させないことを固定（3テスト）。このファイルは「Validate five new guides」ワークフローが実行し、`sitemap.xml`・`games.csv`・`guides.html` の変更で起動するため、PRのCIで実際に走る（`tests/test_static_internal_links.py` はどのワークフローにも含まれておらずCIで走らないため、そこには置かない）。**一方向のテスト**にしたのは、新ゲームが自動追加された際にサイトマップ追記漏れでCIが赤くなるのを避けるため。
 - 変更していないもの：26ゲームのURL構造、`game.html`、CSV、案件金額、日次更新・新ゲーム処理、`.github/`、広告コード、robots.txt。
 
 ### 想定リスク
@@ -99,7 +99,7 @@ Google公式（URL構造）はパラメータを `key=value` で表現するこ�
 - 静的リンク監査（成果物ビルド、26ゲーム×index／offers／guides）：欠落0・エンコード不一致0。
 - Chromiumによるrobots.txt遮断＋低速回線のレンダリング計測（3ゲーム×2条件）：canonical 1個、noindex無し、JSエラー0。
 - 26ゲームの描画後本文量計測。
-- pytest全体：main 62 failed / 1,376 passed → 本ブランチ 62 failed / 1,378 passed（失敗62件は既存、追加テスト2件は成功）。CI「Legacy collector regressions」相当：435 passed。
+- pytest全体：main 62 failed / 1,376 passed → 本ブランチ 62 failed / 1,379 passed（失敗62件の集合はmainと同一、追加テスト3件は成功）。CI「Legacy collector regressions」相当：435 passed。
 - `node tests/test_site_data_v24.js`／`test_site_health_v25.js`／`test_game_offer_summary.js`：成功。`validate_daily_publication.py`：valid（53行維持・退役0・API呼び出し0）。
 - 負のテスト：サイトマップのURLを1文字変えるとテストが失敗することを確認。
 - 実施していない確認：Search Consoleの実画面（運営者のみ）、AdSenseクローラーの挙動、iPhone Safari実機。
