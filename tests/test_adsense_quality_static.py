@@ -196,3 +196,17 @@ def test_every_game_without_a_verified_offer_has_a_guide_and_player_records():
             data = json.loads(path.read_text(encoding="utf-8"))
             assert isinstance(data.get("players"), list) and data["players"], name
             assert all(p.get("status") in {"completed", "retired", "abandoned", "ongoing"} for p in data["players"]), name
+
+
+def test_privacy_policy_has_google_ad_cookie_disclosure_and_opt_out_links():
+    html = (ROOT / "privacy.html").read_text(encoding="utf-8")
+    text = re.sub(r"<[^>]+>", "", html)
+    assert "Googleを含む第三者配信事業者は、Cookieを使用して" in text
+    assert "過去にアクセスした際の情報に基づいて広告を配信" in text
+    for url in ("https://adssettings.google.com/", "https://optout.aboutads.info/",
+                "https://policies.google.com/technologies/partner-sites"):
+        assert url in html, url
+    # every external link opens safely
+    for tag in re.findall(r'<a [^>]*target="_blank"[^>]*>', html):
+        assert "noopener" in tag, tag
+    assert re.search(r"最終更新：\d{4}年\d{1,2}月\d{1,2}日", text)

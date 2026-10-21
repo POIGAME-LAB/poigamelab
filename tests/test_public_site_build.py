@@ -1,4 +1,5 @@
 import importlib.util
+import re
 import json
 import shutil
 from html.parser import HTMLParser
@@ -792,7 +793,20 @@ def test_privacy_policy_discloses_google_analytics(output_dir):
     html = (output_dir / "privacy.html").read_text(encoding="utf-8")
     assert "Google Analytics 4" in html
     assert "Google プライバシーポリシー" in html
-    assert "2026年9月5日" in html
+    assert "制定：2026年9月3日" in html
+    assert re.search(r"最終更新：\d{4}年\d{1,2}月\d{1,2}日", html)
+
+
+def test_privacy_policy_discloses_google_ad_cookies_and_opt_out(output_dir):
+    # Google AdSense "Required content": third-party vendors including Google use cookies to
+    # serve ads based on prior visits, and users can opt out via Ads Settings / aboutads.info.
+    builder.build_public_site(output_dir)
+    html = (output_dir / "privacy.html").read_text(encoding="utf-8")
+    assert "Googleを含む第三者配信事業者は、Cookieを使用して" in html
+    assert "過去にアクセスした際の情報に基づいて広告を配信" in html
+    assert 'href="https://adssettings.google.com/"' in html
+    assert 'href="https://optout.aboutads.info/"' in html
+    assert "policies.google.com/technologies/partner-sites" in html
 
 
 def test_shared_header_and_navigation_are_wired(output_dir):
