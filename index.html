@@ -969,11 +969,13 @@
       const bestOffer = getBestOffer(game);
 
       const rewardText = bestOffer
-        ? bestOffer.reward.toLocaleString() + " 円"
+        ? bestOffer.reward.toLocaleString() + " 円" + (bestOffer.verified ? "" : "（参考）")
         : "確認中";
 
       const pointSiteLine = bestOffer
-        ? "おすすめポイントサイト：" + (pointSites[bestOffer.site] || bestOffer.site)
+        ? (bestOffer.verified
+            ? "おすすめポイントサイト：" + (pointSites[bestOffer.site] || bestOffer.site)
+            : "参考値の出典：" + (pointSites[bestOffer.site] || bestOffer.site))
         : "確認済みの案件データはまだありません";
 
       const referral = bestOffer
@@ -1074,10 +1076,11 @@
         <a
           href="${safeReferralUrl}"
           class="referral-button"
+          ${bestOffer.verified ? "" : 'data-reference-only="1"'}
           target="_blank"
           rel="sponsored noopener noreferrer"
         >
-          このポイントサイトに登録［PR］
+          ${bestOffer.verified ? "このポイントサイトに登録［PR］" : "サイト登録のみ［PR］（案件は未確認）"}
         </a>
       `
       : ""

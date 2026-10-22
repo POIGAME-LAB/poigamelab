@@ -12,20 +12,6 @@
       "id": "A",
       "label": "プレイヤーA",
       "status": "completed",
-      "summary": "2026年8月・役場Lv24を21日で達成",
-      "milestones": [
-        {"day": 1, "label": "役場Lv9"},
-        {"day": 4, "label": "役場Lv16"},
-        {"day": 9, "label": "役場Lv20"},
-        {"day": 21, "label": "役場Lv24達成"}
-      ],
-      "note": "150円課金、1日約1時間のプレイ例。Lv24で終了し、さらに上は狙わなかった記録。",
-      "sources": ["https://growth-route.com/poikatsu-king-shot/"]
-    },
-    {
-      "id": "B",
-      "label": "プレイヤーB",
-      "status": "completed",
       "summary": "2026年8月・役場Lv28を29日で達成",
       "milestones": [
         {"day": 14, "label": "役場Lv24"},
@@ -35,8 +21,8 @@
       "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
     },
     {
-      "id": "C",
-      "label": "プレイヤーC",
+      "id": "B",
+      "label": "プレイヤーB",
       "status": "completed",
       "summary": "2026年8月・役場Lv28を30日目に達成",
       "milestones": [
@@ -47,8 +33,8 @@
       "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
     },
     {
-      "id": "D",
-      "label": "プレイヤーD",
+      "id": "C",
+      "label": "プレイヤーC",
       "status": "retired",
       "summary": "2026年8月・17日目Lv24、Lv28は撤退",
       "milestones": [
@@ -61,8 +47,8 @@
       "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
     },
     {
-      "id": "E",
-      "label": "プレイヤーE",
+      "id": "D",
+      "label": "プレイヤーD",
       "status": "completed",
       "summary": "X公開記録・8日目に役場Lv20着工",
       "milestones": [
@@ -73,8 +59,8 @@
       "sources": ["https://x.com/rinpointgame"]
     },
     {
-      "id": "F",
-      "label": "プレイヤーF",
+      "id": "E",
+      "label": "プレイヤーE",
       "status": "completed",
       "summary": "2026年・役場Lv20を6日で達成",
       "milestones": [
@@ -89,8 +75,8 @@
       "sources": ["https://poikatsu.monster/king-shot/"]
     },
     {
-      "id": "G",
-      "label": "プレイヤーG",
+      "id": "F",
+      "label": "プレイヤーF",
       "status": "completed",
       "summary": "2026年4月・役場Lv20を4日で達成",
       "milestones": [
@@ -101,8 +87,8 @@
       "sources": ["https://kochalog.com/kingshot/"]
     },
     {
-      "id": "H",
-      "label": "プレイヤーH",
+      "id": "G",
+      "label": "プレイヤーG",
       "status": "completed",
       "summary": "2026年7月・1週間で役場Lv20到達",
       "milestones": [
@@ -112,8 +98,8 @@
       "sources": ["https://ssl.warau.jp/contents/point/pointEntrance.php?pl=endEntrance&point_id=204983"]
     },
     {
-      "id": "I",
-      "label": "プレイヤーI",
+      "id": "H",
+      "label": "プレイヤーH",
       "status": "retired",
       "summary": "2026年5月・8日目Lv16で撤退",
       "milestones": [

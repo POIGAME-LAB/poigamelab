@@ -141,7 +141,7 @@ PATCH = r'''
       else card.appendChild(strip);
     }
 
-    referralButton.textContent = "このサイトに登録［PR］";
+    if (referralButton.dataset.referenceOnly !== "1") referralButton.textContent = "このサイトに登録［PR］";
     if (referralButton.parentElement !== strip) strip.appendChild(referralButton);
     if (referralCode && referralCode.parentElement !== strip) strip.appendChild(referralCode);
   };

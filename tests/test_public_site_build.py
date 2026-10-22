@@ -978,3 +978,26 @@ def test_public_existing_game_monitor_is_sanitized(output_dir):
     assert "data/existing_game_candidate_queue.json" not in page
     assert "rewardYenHint" not in page
     assert "POIGAME_DATA.safeHttpUrl" in page
+
+
+def test_reference_only_rewards_are_labelled_and_referral_is_not_an_offer_link():
+    # Reference (unverified) amounts must read as "参考" in every list view, and the
+    # [PR] sign-up link next to them must say it is a sign-up link, not the offer.
+    game = (ROOT / "game.html").read_text(encoding="utf-8")
+    assert game.count('${offer.verified ? "" : "（参考）"}') >= 2  # table cell + mobile card
+    assert "サイト登録のみ［PR］" in game
+    assert "この参考値の案件は確認できていません" in game
+    assert "!offer.verified" in game
+    index = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert '(bestOffer.verified ? "" : "（参考）")' in index
+    assert "参考値の出典：" in index
+    assert 'data-reference-only="1"' in index
+    assert "案件は未確認" in index
+    # The scripts that rewrite the compact index button label must leave the marked one alone.
+    for path in (
+        ROOT / "index-compact-v2.js",
+        ROOT / "assets" / "index-compact-v2.js",
+        ROOT / "scripts" / "patch_compact_index_actions.py",
+    ):
+        text = path.read_text(encoding="utf-8")
+        assert 'referralButton.dataset.referenceOnly !== "1"' in text, path.name
