@@ -44,7 +44,7 @@
           card.appendChild(strip);
         }
       }
-      referralButton.textContent = "このサイトに登録［PR］";
+      if (referralButton.dataset.referenceOnly !== "1") referralButton.textContent = "このサイトに登録［PR］";
       strip.appendChild(referralButton);
       if (referralCode) {
         strip.appendChild(referralCode);

@@ -250,3 +250,27 @@ def test_public_builder_includes_progress_page_and_guide_experience_data():
     builder = (ROOT / "scripts" / "build_public_site.py").read_text(encoding="utf-8")
     assert '"progress.html"' in builder
     assert '"guide-experiences"' in builder
+
+
+def test_dead_sources_removed_from_guides_and_player_records():
+    # Sources confirmed gone (404) or unverifiable on 2026-10-22 must not be cited as
+    # live evidence, and the records that rested only on them must not be published.
+    dead = (
+        "growth-route.com/poikatsu-king-shot",
+        "sepodi.com/mememori",
+        "web.mikoshi.jp/v2/skyflag/ads/33934",
+        "web.mikoshi.jp/v2/skyflag/ads/33937",
+        "web.mikoshi.jp/v2/skyflag/ads/34282",
+    )
+    paths = list(ROOT.glob("*-guide.html")) + list((ROOT / "data" / "guide-experiences").glob("*.json"))
+    for path in paths:
+        text = path.read_text(encoding="utf-8")
+        for url in dead:
+            assert url not in text, f"{path.name} still cites {url}"
+
+
+def test_kingshot_player_labels_stay_sequential_after_record_removal():
+    data = json.loads((ROOT / "data" / "guide-experiences" / "kingshot.json").read_text(encoding="utf-8"))
+    ids = [player["id"] for player in data["players"]]
+    assert ids == list("ABCDEFGHIJ"[: len(ids)])
+    assert all(player["label"] == f"プレイヤー{player['id']}" for player in data["players"])

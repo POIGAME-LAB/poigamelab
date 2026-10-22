@@ -160,23 +160,6 @@
       "sources": [
         "https://www.warau.jp/contents/point/pointEntrance.php?pl=pc_categoryService&point_id=206037"
       ]
-    },
-    {
-      "id": "H",
-      "label": "プレイヤーH",
-      "status": "completed",
-      "summary": "29日でランク110達成",
-      "milestones": [
-        {
-          "day": 29,
-          "level": 110,
-          "label": "ランク110達成"
-        }
-      ],
-      "note": "1日あたりの作業は少なめで、放置報酬・高速バトル・掃討を軸に進めた実例。",
-      "sources": [
-        "https://sepodi.com/mememori/"
-      ]
     }
   ]
 }
