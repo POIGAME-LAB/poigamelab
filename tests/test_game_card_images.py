@@ -47,3 +47,9 @@ def test_pages_use_card_image_helper_with_fallback():
         assert "POIGAME_CARD_IMAGE.attrs(" in (ROOT / page).read_text(encoding="utf-8"), page
     js = (ROOT / "site-image-rights.js").read_text(encoding="utf-8")
     assert "data-full-src" in js and "stopImmediatePropagation" in js
+
+
+def test_no_third_party_credit_for_chatgpt_generated_images():
+    js = (ROOT / "site-image-rights.js").read_text(encoding="utf-8")
+    assert "ワーキングヒーローズ公式サイト" not in js
+    assert "POIGAME_IMAGE_RIGHTS = Object.freeze({})" in js

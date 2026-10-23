@@ -1,11 +1,9 @@
 (() => {
   "use strict";
 
-  window.POIGAME_IMAGE_RIGHTS = Object.freeze({
-    "ワーキングヒーロー": Object.freeze({
-      credit: "画像出典：ワーキングヒーローズ公式サイト"
-    })
-  });
+  // 既存のゲーム画像は運営者がChatGPTで生成したもので、第三者サイトからの転載ではないため
+  // 出典クレジットは表示しない。外部素材を使う場合のみ、ここに「ゲーム名: { credit }」を追加する。
+  window.POIGAME_IMAGE_RIGHTS = Object.freeze({});
 
   // 一覧・詳細用の軽量WebP（scripts/generate_game_card_images.py で生成）。
   // 元画像は assets/game-art のまま残し、読み込み失敗時はそちらへ戻す。
