@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-10-22T20:11:29+00:00",
+  "checkedAt": "2026-10-23T19:58:30+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -13,10 +13,10 @@
     {
       "rank": 1,
       "game": "ベガス クレイズ カジノ",
-      "maxObservedRewardYen": 95769,
-      "confirmedSourceCount": 2,
-      "listingSourceCount": 4,
-      "verifiedRewardSourceCount": 2,
+      "maxObservedRewardYen": 89773,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
       "pointSiteEvidence": [
         {
           "source": "warau",
@@ -33,25 +33,18 @@
           "rewardYen": null
         },
         {
-          "source": "coincome",
-          "url": "https://cimcome.jp/campaigns/details/10448",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 58200
-        },
-        {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 95769
+          "rewardYen": 89773
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/35719",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 88732
+          "rewardYen": 82929
         },
         {
           "source": "kurashiru_reward",
@@ -217,7 +210,7 @@
     {
       "rank": 4,
       "game": "Heroes vs Crazy Wiggler",
-      "maxObservedRewardYen": 32777,
+      "maxObservedRewardYen": 30668,
       "confirmedSourceCount": 3,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 3,
@@ -231,14 +224,14 @@
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -262,14 +255,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34631",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 32777
+          "rewardYen": 30668
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34630",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 32777
+          "rewardYen": 30668
         },
         {
           "source": "kurashiru_reward",
@@ -313,7 +306,7 @@
     {
       "rank": 5,
       "game": "ヒーローウォーズアライアンス — 放置系ロールプレイング",
-      "maxObservedRewardYen": 32407,
+      "maxObservedRewardYen": 30301,
       "confirmedSourceCount": 1,
       "listingSourceCount": 2,
       "verifiedRewardSourceCount": 1,
@@ -323,14 +316,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34611",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 32407
+          "rewardYen": 30301
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34612",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 14755
+          "rewardYen": 13827
         },
         {
           "source": "kurashiru_reward",
