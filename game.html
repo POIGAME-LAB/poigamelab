@@ -1215,7 +1215,7 @@
         const imageRights = window.POIGAME_IMAGE_RIGHTS?.[game.name] || null;
         if (artwork) {
           if (game.image) {
-            artwork.innerHTML = `<img src="${POIGAME_DATA.escapeHtml(game.image)}" alt="${POIGAME_DATA.escapeHtml(game.name)} イメージ" referrerpolicy="no-referrer">`;
+            artwork.innerHTML = `<img ${POIGAME_CARD_IMAGE.attrs(game.image)} alt="${POIGAME_DATA.escapeHtml(game.name)} イメージ" referrerpolicy="no-referrer">`;
           } else {
             artwork.innerHTML = `<div class="game-artwork-fallback"><small>POIGAME LAB</small><strong>${POIGAME_DATA.escapeHtml(game.name)}</strong></div>`;
           }
