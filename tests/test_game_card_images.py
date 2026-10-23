@@ -39,7 +39,8 @@ def test_manifest_covers_all_games_and_records_source():
         entry = manifest[row["name"]]
         assert entry["source_and_license"].strip(), row["name"]
         if row["image"].strip():
-            assert "ChatGPT生成画像（運営者確認済み）" in entry["source_and_license"]
+            assert entry["image(games.csv)"] == row["image"].strip(), row["name"]
+            assert "ChatGPT" in entry["source_and_license"], row["name"]
 
 
 def test_pages_use_card_image_helper_with_fallback():
@@ -53,3 +54,10 @@ def test_no_third_party_credit_for_chatgpt_generated_images():
     js = (ROOT / "site-image-rights.js").read_text(encoding="utf-8")
     assert "ワーキングヒーローズ公式サイト" not in js
     assert "POIGAME_IMAGE_RIGHTS = Object.freeze({})" in js
+
+
+def test_every_game_has_an_image_and_original_file():
+    for row in GAMES:
+        image = row["image"].strip()
+        assert image.startswith("assets/game-art/"), f"image missing: {row['name']}"
+        assert (ROOT / image).is_file(), image
