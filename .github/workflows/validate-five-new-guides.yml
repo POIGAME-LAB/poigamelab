@@ -22,6 +22,14 @@ on:
       - "tests/test_five_new_guides.py"
       - "tests/test_puzzles_survival_progress.py"
       - "tests/test_game_art_binary_integrity.py"
+      - "tests/test_game_card_images.py"
+      - "tests/test_game_card_image_helper.js"
+      - "assets/game-cards/**"
+      - "scripts/generate_game_card_images.py"
+      - "site-image-rights.js"
+      - "offers.html"
+      - "game.html"
+      - "docs/game-images/**"
       - ".github/workflows/validate-five-new-guides.yml"
 
 permissions:
@@ -36,11 +44,14 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install pytest
-        run: python -m pip install --disable-pip-version-check pytest
+        run: python -m pip install --disable-pip-version-check pytest pillow
       - name: Check catalog JavaScript syntax
         run: |
           node --check games.js
           node --check site-guides.js
           node --check site-researched-guides.js
+          node --check site-image-rights.js
       - name: Run focused guide tests
-        run: python -m pytest -q tests/test_five_new_guides.py tests/test_puzzles_survival_progress.py tests/test_game_art_binary_integrity.py
+        run: python -m pytest -q tests/test_five_new_guides.py tests/test_puzzles_survival_progress.py tests/test_game_art_binary_integrity.py tests/test_game_card_images.py
+      - name: Run card image helper test
+        run: node tests/test_game_card_image_helper.js

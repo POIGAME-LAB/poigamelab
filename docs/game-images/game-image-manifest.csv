@@ -1,0 +1,27 @@
+﻿name,image(games.csv),card_image(assets/game-cards),production_status,source_px,source_bytes,card_bytes,source_and_license,planned_file,alt
+Township,assets/game-art/township-original.jpeg,assets/game-cards/township-original.webp,設定済み・本番表示OK,1536x864,530582,76666,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,Township イメージ
+きのこ伝説,assets/game-art/kinoko-original.png,assets/game-cards/kinoko-original.webp,設定済み・本番表示OK,1672x941,2370767,80082,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,きのこ伝説 イメージ
+メメントモリ,assets/game-art/mementomori-new.png.PNG,assets/game-cards/mementomori-new.webp,設定済み・本番表示OK,1672x941,2293585,52830,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,メメントモリ イメージ
+ワーキングヒーロー,assets/game-art/working-hero.PNG,assets/game-cards/working-hero.webp,設定済み・本番表示OK,1254x1254,1946214,81310,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,ワーキングヒーロー イメージ
+ホワイトアウト・サバイバル,assets/game-art/whiteout-survival-new.png.PNG,assets/game-cards/whiteout-survival-new.webp,設定済み・本番表示OK,1448x1086,2622608,79534,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,ホワイトアウト・サバイバル イメージ
+東京ディバンカー,assets/game-art/tokyo-debunker.jpeg,assets/game-cards/tokyo-debunker.webp,設定済み・本番表示OK,1536x864,512191,66864,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,東京ディバンカー イメージ
+パズル＆サバイバル,assets/game-art/puzzles-survival.png,assets/game-cards/puzzles-survival.webp,設定済み・本番表示OK,1672x941,3983767,85920,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,パズル＆サバイバル イメージ
+キングショット,assets/game-art/kingshot-new.png.PNG,assets/game-cards/kingshot-new.webp,設定済み・本番表示OK,1672x941,3885708,90602,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,キングショット イメージ
+放置少女,assets/game-art/houchishojo.png,assets/game-cards/houchishojo.webp,設定済み・本番表示OK,1672x941,4148482,82076,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,放置少女 イメージ
+エバーテイル,assets/game-art/evertale-new.png.PNG,assets/game-cards/evertale-new.webp,設定済み・本番表示OK,1672x941,4299561,80514,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,エバーテイル イメージ
+ATLAS: EARTH,assets/game-art/atlas-earth.PNG,assets/game-cards/atlas-earth.webp,設定済み・本番表示OK,1536x1024,2208251,77026,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,ATLAS: EARTH イメージ
+ファミリーファームの冒険,assets/game-art/family-farm-adventure.PNG,assets/game-cards/family-farm-adventure.webp,設定済み・本番表示OK,1672x941,2812350,90604,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,ファミリーファームの冒険 イメージ
+クロンダイクの冒険,assets/game-art/klondike-adventures.PNG,assets/game-cards/klondike-adventures.webp,設定済み・本番表示OK,1536x1024,4270770,91544,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,クロンダイクの冒険 イメージ
+Merge Help: ホームデザインパズル,assets/game-art/merge-help.PNG,assets/game-cards/merge-help.webp,設定済み・本番表示OK,1536x1024,2450120,88422,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,Merge Help: ホームデザインパズル イメージ
+マジックジグソーパズル,assets/game-art/magic-jigsaw-puzzles.PNG,assets/game-cards/magic-jigsaw-puzzles.webp,設定済み・本番表示OK,1536x1024,2866824,88528,ChatGPT生成画像（運営者確認済み）。第三者サイトからの転載ではない,,マジックジグソーパズル イメージ
+Sea Block 1010,assets/game-art/sea-block-1010.png,assets/game-cards/sea-block-1010.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,351741,83016,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,Sea Block 1010 イメージ
+さる山温泉旅館,assets/game-art/saruyama-onsen.png,assets/game-cards/saruyama-onsen.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,411267,78744,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,さる山温泉旅館 イメージ
+インポッシブルカート,assets/game-art/impossible-kart.png,assets/game-cards/impossible-kart.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,273182,57782,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,インポッシブルカート イメージ
+天地英雄伝,assets/game-art/tenchi-eiyuden.png,assets/game-cards/tenchi-eiyuden.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,379286,70762,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,天地英雄伝 イメージ
+High Roller Vegas,assets/game-art/highroller-vegas.png,assets/game-cards/highroller-vegas.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,353271,82262,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認。2026-10-23 ジャンル整合のためWork制作の差し替え版に更新（ビデオスロット筐体）,,High Roller Vegas イメージ
+マフィア・シティ-極道風雲,assets/game-art/mafia-city.png,assets/game-cards/mafia-city.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,453017,64024,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,マフィア・シティ-極道風雲 イメージ
+ロックンキャッシュカジノ-スロットゲーム,assets/game-art/rock-n-cash-casino.png,assets/game-cards/rock-n-cash-casino.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,283865,68356,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,ロックンキャッシュカジノ-スロットゲーム イメージ
+Slot Mate（スロットメイト）- ベガススロットカジノ,assets/game-art/slot-mate.png,assets/game-cards/slot-mate.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,300247,66390,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,Slot Mate（スロットメイト）- ベガススロットカジノ イメージ
+Wild Survival,assets/game-art/wild-survival.png,assets/game-cards/wild-survival.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,428930,86982,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認。2026-10-23 ジャンル整合のためWork制作の差し替え版に更新（木柵の拠点を守る防衛戦）,,Wild Survival イメージ
+Dice Dreams,assets/game-art/dice-dreams.png,assets/game-cards/dice-dreams.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,297681,54322,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,Dice Dreams イメージ
+Disney Solitaire - ディズニー ソリティア,assets/game-art/disney-solitaire.png,assets/game-cards/disney-solitaire.webp,設定済み（Work制作・本番表示は反映後に確認）,1200x675,321694,64590,ChatGPT Workで制作したオリジナルイメージ（運営者がZIPで提供）。公式画像ではない・ゲーム名の文字なし。公式ロゴ/キャラとの類似は公開前に運営者確認,,Disney Solitaire - ディズニー ソリティア イメージ

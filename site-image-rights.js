@@ -1,11 +1,40 @@
 (() => {
   "use strict";
 
-  window.POIGAME_IMAGE_RIGHTS = Object.freeze({
-    "ワーキングヒーロー": Object.freeze({
-      credit: "画像出典：ワーキングヒーローズ公式サイト"
-    })
+  // 既存のゲーム画像は運営者がChatGPTで生成したもので、第三者サイトからの転載ではないため
+  // 出典クレジットは表示しない。外部素材を使う場合のみ、ここに「ゲーム名: { credit }」を追加する。
+  window.POIGAME_IMAGE_RIGHTS = Object.freeze({});
+
+  // 一覧・詳細用の軽量WebP（scripts/generate_game_card_images.py で生成）。
+  // 元画像は assets/game-art のまま残し、読み込み失敗時はそちらへ戻す。
+  const cardImageFor = (value) => {
+    const raw = String(value || "").split("?", 1)[0].trim();
+    if (!raw.startsWith("assets/game-art/")) return null;
+    let stem = raw.split("/").pop() || "";
+    if (!/\.(?:png|jpe?g|webp)$/i.test(stem)) return null;
+    while (/\.(?:png|jpe?g|webp)$/i.test(stem)) stem = stem.replace(/\.(?:png|jpe?g|webp)$/i, "");
+    return `assets/game-cards/${stem.toLowerCase()}.webp`;
+  };
+  const escapeAttr = (value) =>
+    String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  window.POIGAME_CARD_IMAGE = Object.freeze({
+    // 一覧・詳細用の <img> 属性（軽量版 src と、失敗時に戻す元画像 data-full-src）
+    attrs(value) {
+      const original = String(value || "").trim();
+      const card = cardImageFor(original);
+      return card
+        ? `src="${escapeAttr(card)}" data-full-src="${escapeAttr(original)}"`
+        : `src="${escapeAttr(original)}"`;
+    }
   });
+
+  document.addEventListener("error", (event) => {
+    const img = event.target;
+    if (!(img instanceof HTMLImageElement) || !img.dataset.fullSrc || img.dataset.fullSrcTried === "1") return;
+    img.dataset.fullSrcTried = "1";
+    event.stopImmediatePropagation();
+    img.src = img.dataset.fullSrc;
+  }, true);
 
   const pathname = String(window.location.pathname || "");
   const isCompactIndex = pathname === "/" || /\/index\.html$/.test(pathname);

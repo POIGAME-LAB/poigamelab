@@ -45,7 +45,8 @@ jobs:
 
       - name: Pre-deploy public-site checks
         run: |
-          python -m pytest -q tests/test_deploy_smoke.py tests/test_offer_history.py tests/test_static_index_fallback.py
+          python -m pytest -q tests/test_deploy_smoke.py tests/test_offer_history.py tests/test_static_index_fallback.py tests/test_game_card_images.py
+          node tests/test_game_card_image_helper.js
           node tests/test_site_data_v24.js
           node tests/test_site_health_v25.js
 
