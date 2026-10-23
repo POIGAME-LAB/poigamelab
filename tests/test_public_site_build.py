@@ -1001,3 +1001,10 @@ def test_reference_only_rewards_are_labelled_and_referral_is_not_an_offer_link()
     ):
         text = path.read_text(encoding="utf-8")
         assert 'referralButton.dataset.referenceOnly !== "1"' in text, path.name
+
+
+def test_offers_list_marks_reference_only_best_reward():
+    # offers.html renders its own cards (separate from index.html / game.html); an unverified
+    # reference amount must not read as a verified "最高還元" there either.
+    page = (ROOT / "offers.html").read_text(encoding="utf-8")
+    assert 'game.best.reward.toLocaleString() + "円" + (game.best.verified ? "" : "（参考）")' in page

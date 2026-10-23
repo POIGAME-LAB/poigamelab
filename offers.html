@@ -93,7 +93,7 @@
       const guide = window.POIGAME_GUIDES?.[game.name];
       const guideHref = guide?.links?.[0]?.href || "";
       const imageRights = window.POIGAME_IMAGE_RIGHTS?.[game.name] || null;
-      const reward = game.best ? game.best.reward.toLocaleString() + "円" : "確認中";
+      const reward = game.best ? game.best.reward.toLocaleString() + "円" + (game.best.verified ? "" : "（参考）") : "確認中";
       const card = document.createElement("article");
       card.className = "card";
       card.innerHTML = `
