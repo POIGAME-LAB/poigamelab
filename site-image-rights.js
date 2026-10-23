@@ -13,8 +13,8 @@
     const raw = String(value || "").split("?", 1)[0].trim();
     if (!raw.startsWith("assets/game-art/")) return null;
     let stem = raw.split("/").pop() || "";
-    if (!/\.(?:png|jpe?g)$/i.test(stem)) return null;
-    while (/\.(?:png|jpe?g)$/i.test(stem)) stem = stem.replace(/\.(?:png|jpe?g)$/i, "");
+    if (!/\.(?:png|jpe?g|webp)$/i.test(stem)) return null;
+    while (/\.(?:png|jpe?g|webp)$/i.test(stem)) stem = stem.replace(/\.(?:png|jpe?g|webp)$/i, "");
     return `assets/game-cards/${stem.toLowerCase()}.webp`;
   };
   const escapeAttr = (value) =>

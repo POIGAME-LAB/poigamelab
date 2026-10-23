@@ -13,7 +13,7 @@ from pathlib import Path
 from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
-RASTER_SUFFIXES = {".png", ".jpg", ".jpeg"}
+RASTER_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 MAX_WIDTH = 800
 MAX_BYTES = 90 * 1024
 

@@ -13,6 +13,7 @@ GAMES = list(csv.DictReader((ROOT / "games.csv").open(encoding="utf-8-sig", newl
 def test_card_name_mapping():
     assert card_name("assets/game-art/township-original.jpeg") == "township-original.webp"
     assert card_name("assets/game-art/mementomori-new.png.PNG") == "mementomori-new.webp"
+    assert card_name("assets/game-art/New-Game.webp") == "new-game.webp"
     assert card_name("assets/game-art/whiteout-survival.svg") == ""
     assert card_name("https://example.com/a.png") == ""
     assert card_name("") == ""
