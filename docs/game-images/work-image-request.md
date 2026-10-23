@@ -6,23 +6,23 @@
 - 表現：そのゲームの**ジャンルを表す独自のイメージ**。POIGAME LABのブランド色（紫 #4b22b9 系＋黄 #ffd93d のアクセント）に寄せる
 - 禁止：公式ロゴ・公式キャラクター・公式UI・公式スクリーンショット・アイコンの複製/模倣、実在人物、ディズニー/ピクサー等の既存IP、「公式」「提携」「おすすめ」「報酬額」「無料」等の文言、AI生成物であることを隠す表現
 - 公式画像と誤認させない（一目で「POIGAME LABのイメージ画像」と分かること）
-- 納品後の運用：`assets/game-art/<ファイル名>` に保存 → `games.csv` の image 列に記入 → `python scripts/generate_game_card_images.py` → 軽量版をコミット。manifest（`game-image-manifest.csv`）に「POIGAME LABオリジナル／制作者／日付」を記録
+- 納品後の運用：`assets/game-art/<ファイル名>.png` に保存 → `games.csv` の image 列に記入 → `python scripts/generate_game_card_images.py` → 軽量版をコミット。manifest（`game-image-manifest.csv`）に「POIGAME LABオリジナル（制作元・納品日）」を記録
 - 保存形式：納品はPNG（無圧縮に近いもの）。公開用の軽量版（WebP 800px・約80KB以下）は自動生成
 
 ## 一覧
-| ゲーム名 | ジャンル | ファイル名 | 保存先 | 備考 | 必要な場所 |
+| ゲーム名 | ジャンル | モチーフ案 | 納品ファイル名 | 保存先 | 必要な場所 |
 |---|---|---|---|---|---|
-| Sea Block 1010 | ブロックパズル | カラフルな立体ブロックが盤面に並び、1ラインが光って消えるイメージ | `assets/game-art/sea-block-1010.webp`（元データ）／ `assets/game-art/sea-block-1010.png` | sea-block-1010-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| さる山温泉旅館 | 温泉旅館モチーフの周回型ゲーム | 湯けむりと和風の旅館、温泉に浸かる猿のシルエット風の独自キャラ | `assets/game-art/saruyama-onsen.webp`（元データ）／ `assets/game-art/saruyama-onsen.png` | saruyama-onsen-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| インポッシブルカート | タップ操作の障害物回避アクション | コース上を走る小型カートと障害物、疾走感のあるカーブ | `assets/game-art/impossible-kart.webp`（元データ）／ `assets/game-art/impossible-kart.png` | impossible-kart-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| 天地英雄伝 | 三国志モチーフのレトロ風ターン制RPG | 古い中国風の城・旗・武具のシルエット（実在キャラ・既存ゲームの絵は不可） | `assets/game-art/tenchi-eiyuden.webp`（元データ）／ `assets/game-art/tenchi-eiyuden.png` | tenchi-eiyuden-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| High Roller Vegas | ビデオスロット系カジノ | スロットのリール、コイン、ネオン調（既存ロゴ・シンボル模倣不可） | `assets/game-art/highroller-vegas.webp`（元データ）／ `assets/game-art/highroller-vegas.png` | highroller-vegas-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| マフィア・シティ-極道風雲 | 城育成型シミュレーション（組織拡大） | 夜の街と大きな屋敷のシルエット、黒×金（人物の顔は描かない） | `assets/game-art/mafia-city.webp`（元データ）／ `assets/game-art/mafia-city.png` | mafia-city-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| ロックンキャッシュカジノ-スロットゲーム | スロット系カジノ | スロット台、コインが弾ける、ロック調の赤×黒 | `assets/game-art/rock-n-cash-casino.webp`（元データ）／ `assets/game-art/rock-n-cash-casino.png` | rock-n-cash-casino-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| Slot Mate（スロットメイト）- ベガススロットカジノ | スロット系カジノ | リールと7・星などの汎用シンボル、明るいポップな配色 | `assets/game-art/slot-mate.webp`（元データ）／ `assets/game-art/slot-mate.png` | slot-mate-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| Wild Survival | タワーディフェンス型（自動戦闘・ウェーブ耐久） | 中央の防衛拠点と押し寄せる敵のシルエット群、荒野の背景 | `assets/game-art/wild-survival.webp`（元データ）／ `assets/game-art/wild-survival.png` | wild-survival-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| Dice Dreams | ダイス＆王国修復 | サイコロと小さな王国・城が修復されていくイメージ | `assets/game-art/dice-dreams.webp`（元データ）／ `assets/game-art/dice-dreams.png` | dice-dreams-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
-| Disney Solitaire - ディズニー ソリティア | ソリティア（ディズニー・ピクサー題材） | トランプの並びと星・魔法の輝き。ディズニー/ピクサーのキャラ・ロゴ・城は絶対に描かない | `assets/game-art/disney-solitaire.webp`（元データ）／ `assets/game-art/disney-solitaire.png` | disney-solitaire-original | 案件一覧・攻略一覧・ゲーム詳細・トップ |
+| Sea Block 1010 | ブロックパズル | カラフルな立体ブロックが盤面に並び、1ラインが光って消えるイメージ | `sea-block-1010.png` | `assets/game-art/sea-block-1010.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| さる山温泉旅館 | 温泉旅館モチーフの周回型ゲーム | 湯けむりと和風の旅館、温泉に浸かる猿のシルエット風の独自キャラ | `saruyama-onsen.png` | `assets/game-art/saruyama-onsen.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| インポッシブルカート | タップ操作の障害物回避アクション | コース上を走る小型カートと障害物、疾走感のあるカーブ | `impossible-kart.png` | `assets/game-art/impossible-kart.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| 天地英雄伝 | 三国志モチーフのレトロ風ターン制RPG | 古い中国風の城・旗・武具のシルエット（実在キャラ・既存ゲームの絵は不可） | `tenchi-eiyuden.png` | `assets/game-art/tenchi-eiyuden.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| High Roller Vegas | ビデオスロット系カジノ | スロットのリール、コイン、ネオン調（既存ロゴ・シンボル模倣不可） | `highroller-vegas.png` | `assets/game-art/highroller-vegas.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| マフィア・シティ-極道風雲 | 城育成型シミュレーション（組織拡大） | 夜の街と大きな屋敷のシルエット、黒×金（人物の顔は描かない） | `mafia-city.png` | `assets/game-art/mafia-city.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| ロックンキャッシュカジノ-スロットゲーム | スロット系カジノ | スロット台、コインが弾ける、ロック調の赤×黒 | `rock-n-cash-casino.png` | `assets/game-art/rock-n-cash-casino.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| Slot Mate（スロットメイト）- ベガススロットカジノ | スロット系カジノ | リールと7・星などの汎用シンボル、明るいポップな配色 | `slot-mate.png` | `assets/game-art/slot-mate.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| Wild Survival | タワーディフェンス型（自動戦闘・ウェーブ耐久） | 中央の防衛拠点と押し寄せる敵のシルエット群、荒野の背景 | `wild-survival.png` | `assets/game-art/wild-survival.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| Dice Dreams | ダイス＆王国修復 | サイコロと小さな王国・城が修復されていくイメージ | `dice-dreams.png` | `assets/game-art/dice-dreams.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
+| Disney Solitaire - ディズニー ソリティア | ソリティア（ディズニー・ピクサー題材） | トランプの並びと星・魔法の輝き。ディズニー/ピクサーのキャラ・ロゴ・城は絶対に描かない | `disney-solitaire.png` | `assets/game-art/disney-solitaire.png` | トップ・案件一覧・攻略一覧・ゲーム詳細 |
 
 ## ゲーム別仕様
 ### 1. Sea Block 1010
