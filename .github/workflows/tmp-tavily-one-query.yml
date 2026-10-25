@@ -1,0 +1,36 @@
+name: Tavily one-query diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'diag/tavily-one-query-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run one sanitized search
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0,str(Path('scripts').resolve()))
+          from collect_guide_evidence import tavily_search, safe_error
+          try:
+              result=tavily_search('Sea Block 1010 ポイ活 攻略',os.environ.get('TAVILY_API_KEY',''),max_results=3)
+              rows=result.get('results') if isinstance(result,dict) else None
+              print('TAVILY_ONE_QUERY_OK',{'resultType':type(result).__name__,'results':len(rows) if isinstance(rows,list) else None})
+          except Exception as exc:
+              print('TAVILY_ONE_QUERY_ERROR',{'type':type(exc).__name__,'message':safe_error(exc),'code':getattr(exc,'code',None)})
+              raise
+          PY
