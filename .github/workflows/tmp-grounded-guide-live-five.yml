@@ -1,0 +1,62 @@
+name: Grounded guide live five
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.head_ref == 'test/grounded-guide-live-five-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Replay current five-game research
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Build grounded packages
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/build_new_game_content_packages.py
+          python scripts/render_new_game_guide.py
+
+      - name: Print result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          channel=json.loads(Path('data/new_game_channel_research_status.json').read_text(encoding='utf-8'))
+          packages=json.loads(Path('data/new_game_content_package_status.json').read_text(encoding='utf-8'))
+          rows=[]
+          for p in sorted(Path('data/new_game_content_packages').glob('*.json')):
+              d=json.loads(p.read_text(encoding='utf-8'))
+              rows.append({
+                'game':d.get('game'),
+                'days':d.get('days'),
+                'difficulty':d.get('difficulty'),
+                'sections':len((d.get('guide') or {}).get('sections') or []),
+                'progress':len(d.get('progress') or []),
+                'publicationReady':d.get('publicationReady'),
+              })
+          print('GROUNDED_GUIDE_LIVE_FIVE='+json.dumps({
+            'research':channel,
+            'packages':packages,
+            'items':rows,
+          },ensure_ascii=False))
+          if channel.get('success') is not True:
+              raise SystemExit('channel research failed')
+          if packages.get('success') is not True:
+              raise SystemExit('package stage infrastructure failure')
+          if int(packages.get('games') or 0) <= 0:
+              raise SystemExit('no grounded package produced')
+          PY
