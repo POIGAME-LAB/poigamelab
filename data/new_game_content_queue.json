@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-10-25T19:06:02+00:00",
+  "checkedAt": "2026-10-26T21:03:41+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -304,14 +304,14 @@
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -346,15 +346,15 @@
         },
         {
           "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18904",
-          "detailConfirmed": true,
+          "url": "https://www.rewards.kurashiru.com/ads/19814",
+          "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18795",
-          "detailConfirmed": false,
+          "url": "https://www.rewards.kurashiru.com/ads/18904",
+          "detailConfirmed": true,
           "rewardVerified": false,
           "rewardYen": null
         },

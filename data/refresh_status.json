@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-10-25T19:06:02+00:00",
-  "finishedAt": "2026-10-25T19:06:02+00:00",
+  "startedAt": "2026-10-26T21:03:41+00:00",
+  "finishedAt": "2026-10-26T21:03:41+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -71,7 +71,7 @@
     {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
-      "publishableCount": 4,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
