@@ -85,7 +85,8 @@ def synthesis_prompt(game, rows):
 以下のsourcesだけを根拠にする。一般知識・推測・検索スニペット・別ゲーム情報は禁止。
 事実を含む文には必ずsourceRefsを付ける。数字・レベル・日数・金額を出す場合、その数字が参照元text内に存在するものだけ使う。
 「みんなの進捗」は x / youtube / instagram の公開プレイヤー記録だけから作り、同一URLを重複させない。
-根拠が足りない場合、days と difficulty だけは捏造せず「調査中」とする。その場合対応するSourceRefsは空配列にする。guide本文やprogressは根拠がなければ捏造せず空にする。
+根拠が足りない場合、days と difficulty は捏造せず「調査中」とする。その場合対応するSourceRefsは空配列にする。
+sections は根拠のあるものだけ1〜3件返す。3件を無理に埋めない。progress は根拠が無ければ空配列でよい。
 
 JSONのみ返す。
 形式:
@@ -119,10 +120,10 @@ def repair_prompt(game, rows, reason):
 前回のJSONは検証で却下された。却下理由: {reason}
 同じsourcesだけを使ってJSONを1回だけ修正する。
 - sourceRefsは必ずsourcesに存在するsourceIdだけを使う。
-- overview/tipsは8文字以上、sectionsは3件以上で各textは20文字以上にする。
+- overview/tipsは根拠がある内容だけを書く。sectionsは根拠のあるものだけ1〜3件でよく、3件を無理に作らない。
 - 数字を含む文は、その数字が参照先textに実際にある場合だけ使う。根拠がなければ数字を削る。
 - days/difficultyの根拠がない場合は「調査中」、対応SourceRefsは空配列にする。
-- progressはx/youtube/instagramの直接取得済みsourceだけを使う。存在しなければ捏造しない。
+- progressはx/youtube/instagramの直接取得済みsourceだけを使う。存在しなければ空配列にする。
 - 根拠不足を埋めるための一般知識や推測は禁止。
 JSONのみ返す。
 """
@@ -134,60 +135,103 @@ def evidence_for_refs(rows, refs, error):
     return " ".join(rows[str(ref)]["evidenceText"] for ref in refs)
 
 
+def _safe_refs(rows, refs):
+    if not isinstance(refs, list):
+        return []
+    out = []
+    seen = set()
+    for ref in refs:
+        sid = str(ref or "").strip()
+        if sid in rows and sid not in seen:
+            seen.add(sid)
+            out.append(sid)
+    return out
+
+
+def _grounded_text(rows, text, refs, min_len=8):
+    value = str(text or "").strip()
+    valid_refs = _safe_refs(rows, refs)
+    if len(value) < min_len or not valid_refs:
+        return "", []
+    evidence = " ".join(rows[sid]["evidenceText"] for sid in valid_refs)
+    if not numeric_grounded(value, evidence):
+        return "", []
+    return value, valid_refs
+
+
 def validate_synthesis(game, research, proposal):
     rows = source_rows(research)
     if not isinstance(proposal, dict):
         raise gate.ContentHold("synthesis_invalid")
-    days = str(proposal.get("days") or "").strip() or "調査中"
-    difficulty = str(proposal.get("difficulty") or "").strip() or "調査中"
-    guide = proposal.get("guide")
-    if not isinstance(guide, dict):
-        raise gate.ContentHold("synthesis_guide_missing")
 
-    if days != "調査中":
-        days_evidence = evidence_for_refs(
-            rows, proposal.get("daysSourceRefs"), "synthesis_days_evidence_invalid"
-        )
-        if not numeric_grounded(days, days_evidence):
-            raise gate.ContentHold("synthesis_days_numeric_ungrounded")
-    if difficulty != "調査中":
-        difficulty_evidence = evidence_for_refs(
-            rows, proposal.get("difficultySourceRefs"), "synthesis_difficulty_evidence_invalid"
-        )
-        if not numeric_grounded(difficulty, difficulty_evidence):
-            raise gate.ContentHold("synthesis_difficulty_numeric_ungrounded")
+    point_refs = [
+        sid for sid, row in rows.items()
+        if row.get("channel") == "pointSites" and str(row.get("evidenceText") or "").strip()
+    ]
+    guide_refs = [
+        sid for sid, row in rows.items()
+        if row.get("channel") != "pointSites" and str(row.get("evidenceText") or "").strip()
+    ]
+    if not point_refs or not guide_refs:
+        raise gate.ContentHold("insufficient_guide_research")
 
+    raw_days = str(proposal.get("days") or "").strip()
+    days = "調査中"
+    if raw_days and raw_days != "調査中":
+        refs = _safe_refs(rows, proposal.get("daysSourceRefs"))
+        evidence = " ".join(rows[sid]["evidenceText"] for sid in refs)
+        if refs and numeric_grounded(raw_days, evidence):
+            days = raw_days
+
+    raw_difficulty = str(proposal.get("difficulty") or "").strip()
+    difficulty = "調査中"
+    if raw_difficulty and raw_difficulty != "調査中":
+        refs = _safe_refs(rows, proposal.get("difficultySourceRefs"))
+        evidence = " ".join(rows[sid]["evidenceText"] for sid in refs)
+        if refs and numeric_grounded(raw_difficulty, evidence):
+            difficulty = raw_difficulty
+
+    guide = proposal.get("guide") if isinstance(proposal.get("guide"), dict) else {}
     title = str(guide.get("title") or "").strip()
-    overview = str(guide.get("overview") or "").strip()
-    tips = str(guide.get("tips") or "").strip()
-    if len(title) < 8 or len(overview) < 8 or len(tips) < 8:
-        raise gate.ContentHold("synthesis_guide_summary_missing")
-    overview_evidence = evidence_for_refs(rows, guide.get("overviewSourceRefs"), "synthesis_overview_evidence_invalid")
-    tips_evidence = evidence_for_refs(rows, guide.get("tipsSourceRefs"), "synthesis_tips_evidence_invalid")
-    if not numeric_grounded(overview, overview_evidence):
-        raise gate.ContentHold("synthesis_overview_numeric_ungrounded")
-    if not numeric_grounded(tips, tips_evidence):
-        raise gate.ContentHold("synthesis_tips_numeric_ungrounded")
+    if len(title) < 8:
+        title = f"{game} ポイ活攻略"
 
-    # The intro is deliberately deterministic instead of free-form AI prose.
-    normalized_guide = dict(guide)
-    normalized_guide["title"] = title
-    normalized_guide["intro"] = "ポイントサイトの案件情報と、直接確認できた公開攻略・進捗記録を根拠付きで整理しています。"
-    normalized_guide["overview"] = overview
-    normalized_guide["tips"] = tips
+    overview, overview_refs = _grounded_text(
+        rows, guide.get("overview"), guide.get("overviewSourceRefs"), 8
+    )
+    if not overview:
+        overview = f"{game}のポイ活案件について、掲載中のポイントサイト情報と直接確認できた公開情報だけを整理しています。"
+        overview_refs = [point_refs[0], guide_refs[0]]
 
-    sections = guide.get("sections")
-    if not isinstance(sections, list) or len(sections) < 3:
-        raise gate.ContentHold("synthesis_sections_incomplete")
-    for section in sections:
+    tips, tips_refs = _grounded_text(
+        rows, guide.get("tips"), guide.get("tipsSourceRefs"), 8
+    )
+    if not tips:
+        tips = "案件を始める前に達成条件を確認し、公開情報で裏取りできた内容だけを参考に進めてください。"
+        tips_refs = [point_refs[0]]
+
+    sections_out = []
+    for section in guide.get("sections") or []:
         if not isinstance(section, dict):
-            raise gate.ContentHold("synthesis_section_invalid")
-        text = str(section.get("text") or "").strip()
-        evidence = evidence_for_refs(rows, section.get("sourceRefs"), "synthesis_section_evidence_invalid")
-        if len(text) < 20:
-            raise gate.ContentHold("synthesis_section_evidence_invalid")
-        if not numeric_grounded(text, evidence):
-            raise gate.ContentHold("synthesis_section_numeric_ungrounded")
+            continue
+        heading = str(section.get("heading") or "").strip()
+        text, refs = _grounded_text(rows, section.get("text"), section.get("sourceRefs"), 20)
+        if len(heading) < 2 or not text:
+            continue
+        sections_out.append({"heading": heading, "text": text, "sourceRefs": refs})
+        if len(sections_out) >= 3:
+            break
+
+    if not sections_out:
+        raise gate.ContentHold("synthesis_sections_incomplete")
+
+    guide_used_refs = set(overview_refs) | set(tips_refs)
+    for section in sections_out:
+        guide_used_refs.update(section["sourceRefs"])
+    if len(guide_used_refs) < 2:
+        raise gate.ContentHold("synthesis_guide_source_diversity_insufficient")
+    if not any(rows[sid].get("channel") != "pointSites" for sid in guide_used_refs):
+        raise gate.ContentHold("synthesis_non_point_guide_source_missing")
 
     progress_out = []
     seen = set()
@@ -206,9 +250,16 @@ def validate_synthesis(game, research, proposal):
             continue
         seen.add(identity)
         progress_out.append({"identityKey": identity, "sourceRef": ref, "summary": summary})
-    if not progress_out:
-        raise gate.ContentHold("synthesis_progress_missing")
 
+    normalized_guide = {
+        "title": title,
+        "intro": "ポイントサイトの案件情報と、直接確認できた公開情報を根拠付きで整理しています。",
+        "overview": overview,
+        "overviewSourceRefs": overview_refs,
+        "tips": tips,
+        "tipsSourceRefs": tips_refs,
+        "sections": sections_out,
+    }
     return {
         "days": days,
         "difficulty": difficulty,

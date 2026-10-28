@@ -1,0 +1,83 @@
+name: Grounded guide live smoke
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.head_ref == 'test/grounded-guide-live-20260921'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Research current five games
+        env:
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python scripts/research_new_game_channels.py
+
+      - name: Build only grounded content
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/build_new_game_content_packages.py
+          python scripts/render_new_game_guide.py
+
+      - name: Continue strict offer research
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          FIRECRAWL_CALL_LIMIT: "2"
+        run: python scripts/research_top_five_offers.py
+
+      - name: Verify live result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          channel=json.loads(Path('data/new_game_channel_research_status.json').read_text(encoding='utf-8'))
+          packages=json.loads(Path('data/new_game_content_package_status.json').read_text(encoding='utf-8'))
+          offers=json.loads(Path('data/top_five_offer_research_status.json').read_text(encoding='utf-8'))
+          package_rows=[]
+          for p in sorted(Path('data/new_game_content_packages').glob('*.json')):
+              d=json.loads(p.read_text(encoding='utf-8'))
+              package_rows.append({
+                  'game':d.get('game'),
+                  'days':d.get('days'),
+                  'difficulty':d.get('difficulty'),
+                  'sectionCount':len((d.get('guide') or {}).get('sections') or []),
+                  'progressCount':len(d.get('progress') or []),
+              })
+          result={
+              'channel':channel,
+              'packages':packages,
+              'packageRows':package_rows,
+              'strictOffers':{
+                  'selected':offers.get('selected'),
+                  'researched':offers.get('researched'),
+                  'adoptionReady':offers.get('adoptionReady'),
+                  'held':offers.get('held'),
+                  'results':[
+                      {'game':x.get('game'),'status':x.get('status'),'reasons':x.get('reasons'),'error':x.get('error')}
+                      for x in (offers.get('results') or [])
+                  ],
+              },
+          }
+          print('GROUNDED_GUIDE_LIVE_RESULT='+json.dumps(result,ensure_ascii=False))
+          if channel.get('success') is not True:
+              raise SystemExit('channel research stage failed')
+          if packages.get('success') is not True:
+              raise SystemExit('package stage had infrastructure failure')
+          if int(packages.get('games') or 0) <= 0:
+              raise SystemExit('no grounded package was produced')
+          if int(packages.get('failed') or 0) != 0:
+              raise SystemExit('unexpected package failure')
+          PY
