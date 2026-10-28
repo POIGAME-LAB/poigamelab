@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "game": "Heroes vs Crazy Wiggler",
+  "updatedAt": "2026-10-28",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "ノーマルの個別実例です。現在の最大報酬があるヘル70までの目安ではありません。",
+  "notice": "ノーマル10は2日例がありますが、ノーマル6で断念した人もいます。ヘル70の十分な期限内完走例は確認できていません。",
+  "footnote": "広告利用を含む記録です。総課金額不明を無課金として表示しないでください。ハードで期限内に次の条件へ進めなかったというApp Storeレビューもあります。ノーマルの短期例だけから、後半も同じ速度で進められるとは言えません。",
+  "initialVisible": 4,
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "retired",
+      "summary": "2日目・累計2時間15分でノーマル10、その後終了",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "ノーマル2",
+          "detail": "累計13分"
+        },
+        {
+          "label": "ノーマル6",
+          "detail": "累計1時間8分。到達日は明記なし",
+          "dayLabel": "日付不明"
+        },
+        {
+          "day": 2,
+          "label": "ノーマル10",
+          "detail": "累計2時間15分"
+        }
+      ],
+      "note": "2026年8月プレイ、9月1日記事。広告あり。総課金額・OS不明。",
+      "sources": [
+        "https://tanakaatupoint.hatenablog.com/entry/heroes-vs-crazy-wiggler"
+      ],
+      "sourceDetails": [
+        "ブログ｜2026/09/01｜タナカアツ｜クリアにかかる所要時間は？"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "ongoing",
+      "summary": "ノーマル2・6を1日、ノーマル10を2日",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "ノーマル2・6"
+        },
+        {
+          "day": 2,
+          "label": "ノーマル10"
+        }
+      ],
+      "note": "2026年9月の記事。筆者の目標STAGE3はノーマル10に対応。ハード以降の達成は未確認。総課金額・OS不明。",
+      "sources": [
+        "https://ameblo.jp/2vjl45xge8/entry-12979184313.html"
+      ],
+      "sourceDetails": [
+        "アメブロ｜2026年9月記事｜興荘園人｜STAGE3までは何日でクリアできたか？"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "retired",
+      "summary": "ノーマル6を2〜3日、ノーマル10は断念",
+      "milestones": [
+        {
+          "label": "ノーマル6",
+          "detail": "2〜3日という幅付き記録。単一日へ変換しない",
+          "dayLabel": "2〜3日"
+        }
+      ],
+      "note": "広告で強化して進行。総課金額・プレイ時間不明。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205754&pl=pc_categoryService"
+      ],
+      "sourceDetails": [
+        "ワラウ｜2026/08/24｜Ｏｒｚ｜難易度6で断念。"
+      ]
+    }
+  ]
+}

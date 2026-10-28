@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "game": "ザ・グランドマフィア",
+  "updatedAt": "2026-10-27",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "公開資料の個別実例です。OS・条件・支出が同一ではなく、平均日数や達成保証ではありません。",
+  "notice": "T4の30日・60日完走ペースは確認できていません。監禁所や序盤の例をT4の日数に置き換えないでください。",
+  "footnote": "クチコミは自己申告で変更・削除される場合があります。別アカウントの記録を別人として数えていません。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "retired",
+      "summary": "無課金で6日：別荘17・Tier3までで終了",
+      "milestones": [
+        {
+          "day": 6,
+          "label": "別荘17・Tier3",
+          "detail": "ここまで達成して終了"
+        }
+      ],
+      "note": "7日以内の別荘21は狙わず終了。プレイ時間不明。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&pl=pc_categoryService"
+      ],
+      "sourceDetails": [
+        "ワラウ｜2026/09/27｜けいちゃん｜無課金で楽しくポイントゲット"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "ongoing",
+      "summary": "7日目：別荘12・Tier2",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "別荘12・Tier2"
+        }
+      ],
+      "note": "無課金・前提知識なしと記載。これ以降の到達は不明。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&pl=pc_categoryService"
+      ],
+      "sourceDetails": [
+        "ワラウ｜2026/10/20｜とむ｜下調べしたほうがいい"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "24日目：監禁所25、課金あり",
+      "milestones": [
+        {
+          "day": 24,
+          "label": "監禁所25"
+        }
+      ],
+      "note": "課金総額とプレイ時間は不明。投資センター25・T4完走例ではない。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&pl=pc_categoryService"
+      ],
+      "sourceDetails": [
+        "ワラウ｜2026/09/13｜じろう｜監禁所25まで"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "22日目：監禁所25、約5,500円課金",
+      "milestones": [
+        {
+          "day": 22,
+          "label": "監禁所25",
+          "detail": "約5,500円課金の自己申告"
+        }
+      ],
+      "note": "2025年12月記事の最初の記録だけ採用。同一作者の別アカウントは人数から除外。現行価格や同額での達成を保証しない。",
+      "sources": [
+        "https://note.com/maf252/n/n9f1f3332aa7c"
+      ],
+      "sourceDetails": [
+        "note｜2025/12/09｜maf252｜1アカウント目"
+      ]
+    }
+  ]
+}
