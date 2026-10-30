@@ -216,12 +216,14 @@ def test_grand_mafia_deadline_wording_does_not_assert_install_based_60_days():
     text = text_of(html)
     assert "全体期限はインストールから60日以内" not in text
     assert "調査受付も60日以内" not in text
-    # click-based 60 days / 50-day investigation window are stated, with the confirmation date
-    assert "成果到達期限が「クリックから60日以内」" in text
-    assert "成果調査受付期限が「クリックから50日以内」" in text
-    assert "2026年10月28日" in text
-    # the 51-60 day gap is flagged without asserting what the point site does
-    assert "51日目から60日目" in text and "当サイトでは断定できません" in text
+    # latest official wording: both limits install-based 60 days; inquiries click-based 60 / judgement-based 30
+    assert "成果到達期限が「インストールから60日以内」" in text
+    assert "成果調査受付期限も「インストールから60日以内」" in text
+    assert "クリック日から60日以内" in text and "成果判定日から30日以内" in text
+    assert "2026年10月28日・30日に再確認" in text
+    # the superseded click-60 / investigation-50 wording must not remain anywhere in the public page
+    for stale in ("クリックから50日", "クリックから60日以内」、成果調査", "51日目から60日目", "表記が一致しない", "別の取得結果"):
+        assert stale not in text, stale
     # the start of each Step period is not guessed
     assert "何日目から数えるかは、アメフリiOSの案件ページに明記が見当たりません" in text
 
