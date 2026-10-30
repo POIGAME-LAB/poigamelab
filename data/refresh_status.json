@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-10-27T20:45:15+00:00",
-  "finishedAt": "2026-10-27T20:45:15+00:00",
+  "startedAt": "2026-10-29T21:12:38+00:00",
+  "finishedAt": "2026-10-29T21:12:38+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -102,7 +102,7 @@
     {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 3,
+      "publishableCount": 1,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -155,7 +155,7 @@
     {
       "game": "クロンダイクの冒険",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-10-27T20:45:15+00:00",
+  "checkedAt": "2026-10-29T21:12:38+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -163,9 +163,16 @@
       "game": "Freecash",
       "maxObservedRewardYen": 39560,
       "confirmedSourceCount": 2,
-      "listingSourceCount": 2,
+      "listingSourceCount": 3,
       "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
+        {
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161900&track_ref=category",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
         {
           "source": "kurashiru_reward",
           "url": "https://www.rewards.kurashiru.com/ads/19185",
