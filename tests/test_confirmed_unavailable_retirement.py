@@ -130,3 +130,27 @@ def test_workflow_commits_the_count_file_and_build_keeps_it_private():
     workflow = (ROOT / ".github/workflows/refresh-verified-offers.yml").read_text(encoding="utf-8")
     assert "git add data/offer_unavailable_runs.json" in workflow
     assert "offer_unavailable_runs" not in (ROOT / "scripts/build_public_site.py").read_text(encoding="utf-8")
+
+
+def test_retired_offer_reopened_under_the_same_id_returns_only_on_a_live_reading(warau_markup, tmp_path):
+    """Warau 205982/206037 (2026-10): retired after 3 ended nights, re-listed later as the same ID.
+
+    Ended readings after the retirement must not bring the row back; the first live,
+    fully parsed reading clears the count and publishes the row again with today's date.
+    """
+    row, item = sample(warau_markup)
+    out, report = run([row], [ended(item, 3)])
+    assert out == [] and report["retiredRows"] == 1
+    # Further ended nights after the retirement: nothing is published.
+    out, report = run(out, [ended(item, 13)])
+    assert out == [] and report["addedRows"] == 0
+    # The campaign is live again under the same ID.
+    path = tmp_path / "offer_unavailable_runs.json"
+    url = item["url"]
+    daily.track_unavailable_runs([dict(reading("unavailable", "t1"), url=url)], "t1", path)
+    live = daily.track_unavailable_runs([dict(envelope(item), checkedAt="t2")], "t2", path)
+    assert "consecutiveUnavailableRuns" not in live[0]
+    assert '"offers": {}' in path.read_text(encoding="utf-8")
+    out, report = run(out, [envelope(item)])
+    assert report["addedRows"] == 1 and len(out) == 1
+    assert out[0]["url"] == row["url"] and out[0]["updatedAt"] == "2026-09-16"
