@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-11-02T23:36:28+00:00",
+  "checkedAt": "2026-11-03T21:49:22+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
@@ -13,7 +13,7 @@
     {
       "rank": 1,
       "game": "ベガス クレイズ カジノ",
-      "maxObservedRewardYen": 102417,
+      "maxObservedRewardYen": 96385,
       "confirmedSourceCount": 1,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 1,
@@ -37,14 +37,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 102417
+          "rewardYen": 96385
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/35719",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 95141
+          "rewardYen": 89303
         },
         {
           "source": "kurashiru_reward",
@@ -264,7 +264,7 @@
     {
       "rank": 5,
       "game": "Heroes vs Crazy Wiggler",
-      "maxObservedRewardYen": 35106,
+      "maxObservedRewardYen": 32988,
       "confirmedSourceCount": 3,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 3,
@@ -278,14 +278,14 @@
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
@@ -309,14 +309,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34631",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 35106
+          "rewardYen": 32988
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34630",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 35106
+          "rewardYen": 32988
         },
         {
           "source": "kurashiru_reward",
