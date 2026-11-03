@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-31",
+  "sources": [
+    {
+      "id": "A1",
+      "title": "ワラウ iOS案件207054",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207054",
+      "type": "point_site",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "11Step計15200pt、全期限はインストール起算、課金Stepなし"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-10-31T04:08:35.193195+00:00",
+      "responseSha256": "03fecf9488c3b8eea748bfc09c2961cb18f5b84474902380bc75d5a83682690d"
+    },
+    {
+      "id": "A2",
+      "title": "App Store Lessmore版",
+      "url": "https://apps.apple.com/jp/app/arrows-puzzle-escape/id6748397500",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元Lessmore、ルール、時間制限なし、ヒント、アプリ内購入"
+      ]
+    },
+    {
+      "id": "A3",
+      "title": "ぽんこつ・20000クリア記録",
+      "url": "https://ponkotsu-channel.com/poikatsu/point-site/arrows-puzzle-escape/",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "無課金20000を59日、12000短期未達、グリッドと進路確認"
+      ],
+      "publishedOn": "2026-09-15"
+    },
+    {
+      "id": "A4",
+      "title": "そら・2026年5月達成まとめ",
+      "url": "https://ameblo.jp/pointo-sora/entry-12967551561.html",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "5309を28日、2200のみ10日・他45日という別条件"
+      ],
+      "publishedOn": "2026-05",
+      "datePrecision": "month"
+    },
+    {
+      "id": "A5",
+      "title": "ワラウの複数人レビュー",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207054",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "さゆ2026/10/17：1000を7日・2000を9日、約10日撤退。いけっち2026/09/11：3389を32日"
+      ],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "retrievedAt": "2026-10-31T04:08:35.193195+00:00",
+      "responseSha256": "03fecf9488c3b8eea748bfc09c2961cb18f5b84474902380bc75d5a83682690d"
+    },
+    {
+      "id": "A7",
+      "title": "Google Play Lessmore版",
+      "url": "https://play.google.com/store/apps/details?id=com.ecffri.arrows",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元・Androidパッケージ、広告・アプリ内購入"
+      ]
+    },
+    {
+      "id": "A8",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "1pt=1円"
+      ]
+    }
+  ],
+  "retrievalNote": "一部Web検索のキャッシュは古いため、採用案件は当日HTTP本文で再照合。全Stepはmetadataへ転記。",
+  "editorialInferences": "編集部判断・算術計算は本文で明示。実測値とは別。"
+}

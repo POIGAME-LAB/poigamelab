@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "game": "アローズ：パズルエスケープ（Arrows）",
+  "updatedAt": "2026-10-31",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "案件条件・OS・課金・版に差があります。元プレイ日不明は現在実例の人数に数えていません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-10-31。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "20000を59日、12000の25日Step未達",
+      "milestones": [
+        {
+          "day": 2,
+          "label": "500クリア"
+        },
+        {
+          "day": 5,
+          "label": "1600クリア"
+        },
+        {
+          "day": 6,
+          "label": "2200クリア"
+        },
+        {
+          "day": 10,
+          "label": "3389クリア"
+        },
+        {
+          "day": 15,
+          "label": "5309クリア"
+        },
+        {
+          "day": 26,
+          "label": "9000クリア"
+        },
+        {
+          "day": 59,
+          "label": "20000クリア"
+        }
+      ],
+      "sources": [
+        "https://ponkotsu-channel.com/poikatsu/point-site/arrows-puzzle-escape/"
+      ],
+      "sourceDetails": [
+        "ぽんこつ",
+        "2026-09-15",
+        "20000を59日、12000の25日Step未達"
+      ],
+      "postedOn": "2026-09-15",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "free",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "最終レベル達成。全Step完走ではない。OS不明。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "別条件で5309を28日",
+      "milestones": [
+        {
+          "day": 28,
+          "label": "5309クリア"
+        }
+      ],
+      "sources": [
+        "https://ameblo.jp/pointo-sora/entry-12967551561.html"
+      ],
+      "sourceDetails": [
+        "そら",
+        "2026-05（記事は5月達成まとめ）",
+        "別条件で5309を28日"
+      ],
+      "postedOn": "2026-05（記事は5月達成まとめ）",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "MIKOSHI AppDriver。当時は2200のみ10日、その他45日。支出不明。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "retired",
+      "summary": "約10日で撤退、2000到達9日目",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "1000到達・広告込み29時間5分"
+        },
+        {
+          "day": 9,
+          "label": "2000到達・広告込み52時間50分"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207054"
+      ],
+      "sourceDetails": [
+        "さゆ",
+        "2026-10-17",
+        "約10日で撤退、2000到達9日目"
+      ],
+      "postedOn": "2026-10-17",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "見出し：高難易度をやる際は命を削りましょう。将来レベルの時間試算は実績から除外。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "ongoing",
+      "summary": "3389を32日。短期Step未達",
+      "milestones": [
+        {
+          "day": 32,
+          "label": "3389クリア"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207054"
+      ],
+      "sourceDetails": [
+        "いけっち",
+        "2026-09-11",
+        "3389を32日。短期Step未達"
+      ],
+      "postedOn": "2026-09-11",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "見出し：楽しいけど高難易度クエストは難しいかな。高難易度は未達。投稿後の継続・撤退は未確認。"
+    }
+  ]
+}

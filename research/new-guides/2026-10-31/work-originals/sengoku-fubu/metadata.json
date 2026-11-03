@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "game": "戦国布武：我が天下戦国編",
+  "slug": "sengoku-fubu",
+  "title": "戦国布武 ポイ活攻略｜侍大将・少史・頂天武将の違いと撤退判断",
+  "seoTitle": "戦国布武 ポイ活攻略｜侍大将・少史・頂天武将の違いと撤退判断",
+  "metaDescription": "戦国布武の侍大将・少史・頂天武将の条件を分けて解説。30日案件の報酬、実例の操作時間、初心者配布対象外、課金と撤退判断を整理。",
+  "os": [
+    "iOS",
+    "Android"
+  ],
+  "researchDate": "2026-10-31",
+  "status": "manuscript_complete",
+  "publicationStatus": "not_implemented_not_published",
+  "priority": 7,
+  "priorityIsRewardRanking": false,
+  "proposedPage": "sengoku-fubu-guide.html",
+  "canonical": "https://poigamelab.com/sengoku-fubu-guide.html",
+  "mainCommit": "d721371387b66f652abce3517121746a135b7ebd",
+  "offer": {
+    "site": "warau",
+    "currency": "pt",
+    "yenPerPoint": 1,
+    "totalDisplayedPt": 11640,
+    "steps": [
+      {
+        "condition": "チュートリアルをクリアする",
+        "rewardPt": 30,
+        "requiresPayment": false,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "頂天武将1体を獲得",
+        "rewardPt": 100,
+        "requiresPayment": false,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "頂天武将2体を獲得",
+        "rewardPt": 250,
+        "requiresPayment": false,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "220小判を1回でチャージする",
+        "rewardPt": 460,
+        "requiresPayment": true,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "官職を侍大将に昇進する",
+        "rewardPt": 600,
+        "requiresPayment": false,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "1100小判を1回でチャージする",
+        "rewardPt": 1800,
+        "requiresPayment": true,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "官職を少史に昇進する",
+        "rewardPt": 2900,
+        "requiresPayment": false,
+        "deadlineDays": 30
+      },
+      {
+        "condition": "頂天武将5体を獲得",
+        "rewardPt": 5500,
+        "requiresPayment": false,
+        "deadlineDays": 30
+      }
+    ],
+    "deadlineDays": 30,
+    "sumWithoutPurchaseStepsPt": 9380,
+    "sumIsNotPredictedEarnings": true
+  },
+  "limitations": [
+    "ポイント付与・ログイン後表示・実機プレイは追試していない",
+    "公開直前に案件本文とストア遷移先を再照合",
+    "最速例・合算報酬を到達保証にしない"
+  ],
+  "articleCharacters": 5009
+}

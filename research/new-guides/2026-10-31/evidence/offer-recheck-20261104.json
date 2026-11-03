@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "checkedAtJst": "2026-11-04T01:05+09:00",
+  "method": "direct HTTPS GET of the public Warau offer page (no login), text extracted from HTML",
+  "note": "Re-check for implementation. Logged-in conditions, store destination IDs and actual point crediting were not verified. D9 (okanega-naiyo.com) returned HTTP 403 to this environment and could not be re-read; it is kept as checked on 2026-10-31.",
+  "checks": [
+    {
+      "slug": "domino-dreams",
+      "pointId": "192689",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=192689",
+      "httpStatus": 200,
+      "osLabel": "iOS",
+      "osMatches": true,
+      "listingHeader": "Domino Dreams（StepUp） iOS 初回アプリインストール後、【StepUpミッション】をクリア 最大 9,500 pt 2.9 ( 149件 )",
+      "retrievedAtUtc": "2026-11-03T16:05:35+00:00",
+      "responseSha256": "0937c5fb6b4da193aaa11098a005f0e9b006c074bcd278924f48deca6003ad77",
+      "steps": [
+        {
+          "condition": "CHAPTER1クリア",
+          "rewardPt": 20
+        },
+        {
+          "condition": "CHAPTER2クリア",
+          "rewardPt": 30
+        },
+        {
+          "condition": "CHAPTER4クリア",
+          "rewardPt": 50
+        },
+        {
+          "condition": "初回課金",
+          "rewardPt": 210
+        },
+        {
+          "condition": "CHAPTER5クリア",
+          "rewardPt": 80
+        },
+        {
+          "condition": "CHAPTER6クリア",
+          "rewardPt": 110
+        },
+        {
+          "condition": "CHAPTER8クリア",
+          "rewardPt": 140
+        },
+        {
+          "condition": "CHAPTER9クリア",
+          "rewardPt": 170
+        },
+        {
+          "condition": "CHAPTER10クリア",
+          "rewardPt": 240
+        },
+        {
+          "condition": "CHAPTER12クリア",
+          "rewardPt": 310
+        },
+        {
+          "condition": "CHAPTER15クリア",
+          "rewardPt": 500
+        },
+        {
+          "condition": "CHAPTER18クリア",
+          "rewardPt": 680
+        },
+        {
+          "condition": "10回目課金",
+          "rewardPt": 920
+        },
+        {
+          "condition": "CHAPTER20クリア",
+          "rewardPt": 890
+        },
+        {
+          "condition": "CHAPTER25クリア",
+          "rewardPt": 1450
+        },
+        {
+          "condition": "CHAPTER30クリア",
+          "rewardPt": 3700
+        }
+      ],
+      "totalPt": 9500,
+      "stepSum": 9500,
+      "deadline": "インストール日から起算して60日以内",
+      "guaranteeApplicationDays": 80,
+      "reviewsStillListed": [],
+      "matchesManuscript": true
+    },
+    {
+      "slug": "arrows",
+      "pointId": "207054",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207054",
+      "httpStatus": 200,
+      "osLabel": "iOS",
+      "osMatches": true,
+      "listingHeader": "アローズ - パズルエスケープ (Arrows)（StepUp） iOS 初回アプリインストール後、【StepUpミッション】をクリア 最大 15,200 pt 3.6 ( 89件 )",
+      "retrievedAtUtc": "2026-11-03T16:05:37+00:00",
+      "responseSha256": "9d9770c0c035949cb991612f500b85d68baf6df296fcda9e7e2577e8e8382d05",
+      "steps": [
+        {
+          "condition": "60日以内にレベル14クリア",
+          "rewardPt": 5
+        },
+        {
+          "condition": "60日以内にレベル50クリア",
+          "rewardPt": 15
+        },
+        {
+          "condition": "60日以内にレベル300クリア",
+          "rewardPt": 20
+        },
+        {
+          "condition": "60日以内にレベル500クリア",
+          "rewardPt": 50
+        },
+        {
+          "condition": "60日以内にレベル1600クリア",
+          "rewardPt": 160
+        },
+        {
+          "condition": "【高難易度】7日以内にレベル2200クリア",
+          "rewardPt": 600
+        },
+        {
+          "condition": "60日以内にレベル3389クリア",
+          "rewardPt": 400
+        },
+        {
+          "condition": "【高難易度】15日以内にレベル5309クリア",
+          "rewardPt": 3000
+        },
+        {
+          "condition": "60日以内にレベル9000クリア",
+          "rewardPt": 950
+        },
+        {
+          "condition": "【高難易度】25日以内にレベル12000クリア",
+          "rewardPt": 5000
+        },
+        {
+          "condition": "【高難易度】60日以内にレベル20000クリア",
+          "rewardPt": 5000
+        }
+      ],
+      "totalPt": 15200,
+      "stepSum": 15200,
+      "deadline": "各Stepに記載（すべてインストール日から起算）",
+      "guaranteeApplicationDays": 65,
+      "reviewsStillListed": [
+        {
+          "poster": "さゆ",
+          "postedOn": "2026/10/17",
+          "present": true
+        },
+        {
+          "poster": "いけっち",
+          "postedOn": "2026/09/11",
+          "present": true
+        }
+      ],
+      "matchesManuscript": true,
+      "dataTransferExcludedNotice": true
+    },
+    {
+      "slug": "sengoku-fubu",
+      "pointId": "206085",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206085",
+      "httpStatus": 200,
+      "osLabel": "iOS",
+      "osMatches": true,
+      "listingHeader": "戦国布武：我が天下戦国編（StepUp） iOS 初回アプリインストール後、【StepUpミッション】をクリア 最大 11,640 pt 3.5 ( 66件 )",
+      "retrievedAtUtc": "2026-11-03T16:05:38+00:00",
+      "responseSha256": "b93b0c14e6150cee22b714fd52ab1c062ad6cb1ba29590ca9c96645fac7382f8",
+      "steps": [
+        {
+          "condition": "チュートリアルをクリアする",
+          "rewardPt": 30
+        },
+        {
+          "condition": "頂天武将1体を獲得",
+          "rewardPt": 100
+        },
+        {
+          "condition": "頂天武将2体を獲得",
+          "rewardPt": 250
+        },
+        {
+          "condition": "220小判を1回でチャージする",
+          "rewardPt": 460
+        },
+        {
+          "condition": "官職を侍大将に昇進する",
+          "rewardPt": 600
+        },
+        {
+          "condition": "1100小判を1回でチャージする",
+          "rewardPt": 1800
+        },
+        {
+          "condition": "官職を少史に昇進する",
+          "rewardPt": 2900
+        },
+        {
+          "condition": "頂天武将5体を獲得",
+          "rewardPt": 5500
+        }
+      ],
+      "totalPt": 11640,
+      "stepSum": 11640,
+      "deadline": "インストール日から起算して30日以内",
+      "guaranteeApplicationDays": 50,
+      "reviewsStillListed": [
+        {
+          "poster": "たまち",
+          "postedOn": "2026/09/12",
+          "present": true
+        },
+        {
+          "poster": "ナオケ",
+          "postedOn": "2026/09/10",
+          "present": true
+        },
+        {
+          "poster": "マル",
+          "postedOn": "2026/07/07",
+          "present": true
+        }
+      ],
+      "matchesManuscript": true,
+      "beginnerBonusExcludedNotice": true
+    },
+    {
+      "slug": "sengoku-fubu",
+      "pointId": "206086",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086",
+      "httpStatus": 200,
+      "osLabel": "Android",
+      "osMatches": true,
+      "listingHeader": "戦国布武：我が天下戦国編（StepUp） Android 初回アプリインストール後、【StepUpミッション】をクリア 最大 11,640 pt 3.5 ( 66件 )",
+      "retrievedAtUtc": "2026-11-03T16:05:40+00:00",
+      "responseSha256": "ba4899a2ad5114fe3660e34c405fe89ee5e4ae8e5e0c62808d71fe599a7a4d8f",
+      "steps": [
+        {
+          "condition": "チュートリアルをクリアする",
+          "rewardPt": 30
+        },
+        {
+          "condition": "頂天武将1体を獲得",
+          "rewardPt": 100
+        },
+        {
+          "condition": "頂天武将2体を獲得",
+          "rewardPt": 250
+        },
+        {
+          "condition": "220小判を1回でチャージする",
+          "rewardPt": 460
+        },
+        {
+          "condition": "官職を侍大将に昇進する",
+          "rewardPt": 600
+        },
+        {
+          "condition": "1100小判を1回でチャージする",
+          "rewardPt": 1800
+        },
+        {
+          "condition": "官職を少史に昇進する",
+          "rewardPt": 2900
+        },
+        {
+          "condition": "頂天武将5体を獲得",
+          "rewardPt": 5500
+        }
+      ],
+      "totalPt": 11640,
+      "stepSum": 11640,
+      "deadline": "インストール日から起算して30日以内",
+      "guaranteeApplicationDays": 50,
+      "reviewsStillListed": [
+        {
+          "poster": "たまち",
+          "postedOn": "2026/09/12",
+          "present": true
+        },
+        {
+          "poster": "ナオケ",
+          "postedOn": "2026/09/10",
+          "present": true
+        },
+        {
+          "poster": "マル",
+          "postedOn": "2026/07/07",
+          "present": true
+        }
+      ],
+      "matchesManuscript": true,
+      "beginnerBonusExcludedNotice": true
+    }
+  ]
+}

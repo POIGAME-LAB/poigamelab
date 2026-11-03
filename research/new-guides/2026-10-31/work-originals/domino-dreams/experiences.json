@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "game": "Domino Dreams",
+  "updatedAt": "2026-10-31",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "案件条件・OS・課金・版に差があります。元プレイ日不明は現在実例の人数に数えていません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-10-31。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "retired",
+      "summary": "23日でCHAPTER8クリア・9表示",
+      "milestones": [
+        {
+          "day": 7,
+          "label": "CHAPTER5表示"
+        },
+        {
+          "day": 12,
+          "label": "CHAPTER6表示"
+        },
+        {
+          "day": 23,
+          "label": "CHAPTER8クリア・9表示"
+        }
+      ],
+      "sources": [
+        "https://okanega-naiyo.com/【ポイ活】domino-dreams-step-up-攻略（日々の記録付）★ドミノ/"
+      ],
+      "sourceDetails": [
+        "カネ太郎",
+        "2026-05-02（更新表示10/01）",
+        "23日でCHAPTER8クリア・9表示"
+      ],
+      "postedOn": "2026-05-02（更新表示10/01）",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": 950,
+      "dailyPlayMinutes": null,
+      "note": "表示章とクリア章を区別。中間LEVEL値は採用しない。全Step完走ではない。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "retired",
+      "summary": "60日終了時LEVEL1154",
+      "milestones": [
+        {
+          "day": 60,
+          "label": "LEVEL1154。CHAPTERは未確定"
+        }
+      ],
+      "sources": [
+        "https://ameblo.jp/mimomimimo/entry-12965884622.html"
+      ],
+      "sourceDetails": [
+        "mimomimimo",
+        "2026-05-13",
+        "60日終了時LEVEL1154"
+      ],
+      "postedOn": "2026-05-13",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "dailyPlayMinutesRange": [
+        60,
+        120
+      ],
+      "note": "ピッコマ案件。現行ワラウ条件の達成とは判断しない。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "ongoing",
+      "summary": "CHAPTER8欄に4日目という途中メモ",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "CHAPTER8の欄の観測。クリア確定ではない"
+        }
+      ],
+      "sources": [
+        "https://note.com/cynarine_apple/n/n65ee75ce75cc"
+      ],
+      "sourceDetails": [
+        "しなりん",
+        "2026-09-20",
+        "CHAPTER8欄に4日目という途中メモ"
+      ],
+      "postedOn": "2026-09-20",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "free",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "数値が並ぶ後半章をすべて実到達済みと扱わない。"
+    }
+  ]
+}

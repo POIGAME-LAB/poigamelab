@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-31",
+  "sources": [
+    {
+      "id": "D1",
+      "title": "ワラウ iOS案件192689",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=192689",
+      "type": "point_site",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "iOS、60日、16Step計9500pt、課金2Step、保証申請80日"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-10-31T04:08:35.192691+00:00",
+      "responseSha256": "5b8ebbb9e8269e60363ef8c28c0bf4edb6791e54ea12e6cfa9e65027e1560d2b"
+    },
+    {
+      "id": "D2",
+      "title": "Google Play 公式ストア",
+      "url": "https://play.google.com/store/apps/details?id=com.screenshake.dominodreams",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "SuperPlay、Android版の存在、アプリ内購入"
+      ]
+    },
+    {
+      "id": "D3",
+      "title": "Chapters and Stars",
+      "url": "https://superplay.helpshift.com/hc/en/3-domino-dreams/faq/32-chapters-and-stars/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "星を建設に使う、モードによる星の増加、過去チャプター表示"
+      ]
+    },
+    {
+      "id": "D4",
+      "title": "How to Play",
+      "url": "https://superplay.helpshift.com/hc/en/3-domino-dreams/faq/1-how-to-play-domino-dreams/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "片側一致で裏返り反対側が手札になる"
+      ]
+    },
+    {
+      "id": "D5",
+      "title": "Domino Level Helpers",
+      "url": "https://superplay.helpshift.com/hc/en/3-domino-dreams/faq/2-domino-level-helpers/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "Wild、Restock、Undoとコンボへの影響"
+      ]
+    },
+    {
+      "id": "D6",
+      "title": "Domino Level Obstacles",
+      "url": "https://superplay.helpshift.com/hc/en/3-domino-dreams/faq/83-domino-level-obstacles/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "Cookie、Trap door、Puzzle、Frozenの解除方法"
+      ]
+    },
+    {
+      "id": "D7",
+      "title": "Rewarded Videos",
+      "url": "https://superplay.helpshift.com/hc/en/3-domino-dreams/faq/34-rewarded-videos/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "広告報酬イベントは全員に常時提供されない"
+      ]
+    },
+    {
+      "id": "D8",
+      "title": "Domino Level Multiplier",
+      "url": "https://superplay.helpshift.com/hc/en/3-domino-dreams/faq/33-domino-level-multiplier/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "倍率で参加料と報酬が増える。プレイヤーにより表示差"
+      ]
+    },
+    {
+      "id": "D9",
+      "title": "スキマぶろぐ・日々の記録",
+      "url": "https://okanega-naiyo.com/【ポイ活】domino-dreams-step-up-攻略（日々の記録付）★ドミノ/",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "23日で8クリア・9表示、累計15時間50分、LEVEL値一部うろ覚え"
+      ],
+      "publishedOn": "2026-05-02",
+      "displayedUpdatedOn": "2026-10-01"
+    },
+    {
+      "id": "D10",
+      "title": "mimomimimo・60日結果",
+      "url": "https://ameblo.jp/mimomimimo/entry-12965884622.html",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "60日でLEVEL1154、約1〜2時間/日、回収約2回/日"
+      ],
+      "publishedOn": "2026-05-13",
+      "dateEvidence": "Ameba記事一覧の表示。本文テキスト抽出には日付欄なし"
+    },
+    {
+      "id": "D11",
+      "title": "しなりん・Domino DREAMS",
+      "url": "https://note.com/cynarine_apple/n/n65ee75ce75cc",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "無課金の実プレイメモ、CHAPTER8欄に4日目、倍率で星増加"
+      ],
+      "publishedOn": "2026-09-20"
+    },
+    {
+      "id": "D12",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "1pt=1円"
+      ]
+    }
+  ],
+  "retrievalNote": "一部Web検索のキャッシュは古いため、採用案件は当日HTTP本文で再照合。全Stepはmetadataへ転記。",
+  "editorialInferences": "編集部判断・算術計算は本文で明示。実測値とは別。"
+}

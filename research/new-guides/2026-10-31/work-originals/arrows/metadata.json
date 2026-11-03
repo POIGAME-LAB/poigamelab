@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "game": "アローズ：パズルエスケープ（Arrows）",
+  "slug": "arrows",
+  "title": "アローズ ポイ活攻略｜レベル5309・20000の実例と期限別の進め方",
+  "seoTitle": "アローズ ポイ活攻略｜レベル5309・20000の実例と期限別の進め方",
+  "metaDescription": "アローズのレベル5309・20000案件を攻略。期限別の必要ペース、矢印の読み方、長時間プレイと撤退例、iOS案件の条件を紹介。",
+  "os": [
+    "iOS"
+  ],
+  "researchDate": "2026-10-31",
+  "status": "manuscript_complete",
+  "publicationStatus": "not_implemented_not_published",
+  "priority": 6,
+  "priorityIsRewardRanking": false,
+  "proposedPage": "arrows-guide.html",
+  "canonical": "https://poigamelab.com/arrows-guide.html",
+  "mainCommit": "d721371387b66f652abce3517121746a135b7ebd",
+  "offer": {
+    "site": "warau",
+    "currency": "pt",
+    "yenPerPoint": 1,
+    "totalDisplayedPt": 15200,
+    "steps": [
+      {
+        "condition": "レベル14クリア",
+        "rewardPt": 5,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル50クリア",
+        "rewardPt": 15,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル300クリア",
+        "rewardPt": 20,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル500クリア",
+        "rewardPt": 50,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル1600クリア",
+        "rewardPt": 160,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル2200クリア",
+        "rewardPt": 600,
+        "requiresPayment": false,
+        "deadlineDays": 7
+      },
+      {
+        "condition": "レベル3389クリア",
+        "rewardPt": 400,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル5309クリア",
+        "rewardPt": 3000,
+        "requiresPayment": false,
+        "deadlineDays": 15
+      },
+      {
+        "condition": "レベル9000クリア",
+        "rewardPt": 950,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "レベル12000クリア",
+        "rewardPt": 5000,
+        "requiresPayment": false,
+        "deadlineDays": 25
+      },
+      {
+        "condition": "レベル20000クリア",
+        "rewardPt": 5000,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      }
+    ],
+    "deadlineDays": null,
+    "sumWithoutPurchaseStepsPt": 15200,
+    "sumIsNotPredictedEarnings": true
+  },
+  "limitations": [
+    "ポイント付与・ログイン後表示・実機プレイは追試していない",
+    "公開直前に案件本文とストア遷移先を再照合",
+    "最速例・合算報酬を到達保証にしない"
+  ],
+  "articleCharacters": 5035
+}
