@@ -237,12 +237,19 @@ def warau_row(offer, game="メメントモリ", platform="Android", reward="1205
 
 
 # Offers confirmed ended on the source (Warau error page / Hapitas "この広告は終了しています")
-# and retired by the daily refresh after three consecutive reads, 2026-10-18 .. 2026-10-20.
-RETIRED = [("warau", i) for i in (
+# and retired by the daily refresh after three consecutive reads. The timestamp is the
+# refresh commit that removed the row (fa7076a 2026-10-18, 9e024d7 2026-10-19).
+# A retired ID is not banned forever: Warau re-opened 205982/206037 (メメントモリ) under the
+# same IDs and identical terms on 2026-10-31 after 13 "ended" nights; such a return is
+# accepted only with the fresh-evidence checks in published_offer_contract.retired_problems.
+_RETIRED_1018 = "2026-10-18T03:55:06+00:00"
+_RETIRED_1019 = "2026-10-19T21:16:54+00:00"
+RETIRED = [("warau", i, _RETIRED_1018) for i in (
     "204645", "204643", "204984", "204983", "205557", "206425", "206460", "206488",
-    "205975", "206500", "206035", "206501", "177971",
-    "207406", "207049", "188016", "205982", "206037", "191401", "191400")] + [
-    ("hapitas", "102450"), ("hapitas", "102451")]
+    "205975", "206500", "206035", "206501", "177971")] + [
+    ("warau", i, _RETIRED_1019) for i in (
+        "207406", "207049", "188016", "205982", "206037", "191401", "191400")] + [
+    ("hapitas", "102450", _RETIRED_1019), ("hapitas", "102451", _RETIRED_1019)]
 
 
 # ---- real repository data -------------------------------------------------------------
@@ -254,7 +261,20 @@ def test_real_published_rows_satisfy_the_contract():
 
 
 def test_retired_offers_are_not_republished():
-    assert contract.retired_problems(contract.load_rows(), RETIRED) == []
+    """Retired IDs stay off unless the refresh re-verified them after the retirement."""
+    assert contract.retired_problems(contract.load_rows(), RETIRED,
+                                     contract.load_unavailable(), contract.load_history()) == []
+
+
+def test_no_published_row_is_confirmed_ended():
+    assert contract.confirmed_ended_problems(contract.load_rows(), contract.load_unavailable()) == []
+
+
+def test_contract_threshold_matches_publication_gate():
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import structured_publication
+    assert contract.UNAVAILABLE_RUNS_BEFORE_RETIREMENT == structured_publication.UNAVAILABLE_RUNS_BEFORE_RETIREMENT
 
 
 # ---- normal / ended / re-issued -----------------------------------------------------------
@@ -356,6 +376,56 @@ def test_a_retired_offer_that_reappears_is_reported():
     assert contract.retired_problems(rows, [("warau", "205975")]) == ["retired_offer_republished:warau:205975"]
     assert contract.retired_problems(rows, [("warau", "206035")]) == []
     assert contract.retired_problems([], RETIRED) == []
+
+
+# ---- retired offer that returns under the same ID ------------------------------------------
+
+def _resumed(offer_id="205982", updated="2026-10-31", observed="2026-10-31T20:12:38Z", runs=None):
+    row = warau_row(offer_id, updatedAt=updated)
+    unavailable = {} if runs is None else {
+        f"warau:point_id:{offer_id}": {"runs": runs, "lastUnavailableAt": "2026-10-30T20:52:07+00:00"}}
+    history = [{"observedAt": observed, "offerKey": row["offerKey"]}]
+    return [row], [("warau", offer_id, "2026-10-19T21:16:54+00:00")], unavailable, history
+
+
+def test_retired_offer_reopened_under_same_id_with_fresh_evidence_is_valid():
+    rows, retired, unavailable, history = _resumed()
+    assert contract.retired_problems(rows, retired, unavailable, history) == []
+    rows, retired, unavailable, history = _resumed(runs=2)  # ending again, not yet confirmed: held
+    assert contract.retired_problems(rows, retired, unavailable, history) == []
+
+
+def test_retired_offer_republished_while_still_counted_ended_is_reported():
+    rows, retired, unavailable, history = _resumed(runs=3)
+    assert contract.retired_problems(rows, retired, unavailable, history) == [
+        "retired_offer_republished_while_ended:warau:205982"]
+    assert contract.confirmed_ended_problems(rows, unavailable) == [
+        "confirmed_ended_offer_published:warau:205982"]
+
+
+def test_retired_offer_back_without_refresh_after_retirement_is_reported():
+    # Row restored from an old copy: updatedAt is the pre-retirement verification day.
+    rows, retired, unavailable, history = _resumed(updated="2026-10-03")
+    assert contract.retired_problems(rows, retired, unavailable, history) == [
+        "retired_offer_republished_without_fresh_verification:warau:205982"]
+    # updatedAt on the retirement day itself (JST 2026-10-20) is not later than the retirement.
+    rows, retired, unavailable, history = _resumed(updated="2026-10-20")
+    assert "retired_offer_republished_without_fresh_verification:warau:205982" in \
+        contract.retired_problems(rows, retired, unavailable, history)
+
+
+def test_retired_offer_back_without_a_history_snapshot_is_reported():
+    rows, retired, unavailable, history = _resumed(observed="2026-10-18T18:49:55Z")
+    assert contract.retired_problems(rows, retired, unavailable, history) == [
+        "retired_offer_republished_without_history:warau:205982"]
+    assert contract.retired_problems(rows, retired, unavailable, []) == [
+        "retired_offer_republished_without_history:warau:205982"]
+
+
+def test_new_id_and_unrelated_rows_are_not_affected_by_retirements():
+    rows = [warau_row("208101"), warau_row("207637", game="Township", platform="iOS")]
+    assert contract.retired_problems(rows, RETIRED, {}, []) == []
+    assert contract.confirmed_ended_problems(rows, {"warau:point_id:208101": {"runs": 2}}) == []
 
 
 def test_missing_columns_are_reported_not_raised():
