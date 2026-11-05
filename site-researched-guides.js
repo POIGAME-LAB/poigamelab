@@ -103,5 +103,26 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Lv18・24攻略を読む →", href: "last-asylum-plague-guide.html" }
     ]
+  },
+  "Bingo Blitz": {
+    title: "Bingo Blitz ポイ活攻略",
+    description: "ワラウAndroid／iOSの条件の違い、都市クリアと写真交換、無料クレジットの管理、短期限と課金条件の注意点を、過去条件の実例とあわせてまとめています。",
+    links: [
+      { label: "都市クリア・写真交換の攻略を読む →", href: "bingo-blitz-guide.html" }
+    ]
+  },
+  "ザ・グランドマフィア": {
+    title: "ザ・グランドマフィア ポイ活攻略",
+    description: "アメフリiOSの12条件（別荘・Tier・監禁所25・投資センター25）と、無課金の序盤例・課金ありの監禁所25の実例、成果期限とT4条件の注意点をまとめています。",
+    links: [
+      { label: "別荘17・監禁所25の攻略を読む →", href: "grand-mafia-guide.html" }
+    ]
+  },
+  "Heroes vs Crazy Wiggler": {
+    title: "Heroes vs Crazy Wiggler ポイ活攻略",
+    description: "ワラウiOSのノーマル・ハード・ヘルの条件、ノーマル10までの実例と撤退例、広告とダイヤの注意点、赤いダイヤ購入条件をまとめています。",
+    links: [
+      { label: "ノーマル・ヘル条件の攻略を読む →", href: "heroes-vs-crazy-wiggler-guide.html" }
+    ]
   }
 });

@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "game": "Bingo Blitz",
+  "slug": "bingo-blitz",
+  "aliases": [
+    "ビンゴブリッツ",
+    "BINGO BLITZ"
+  ],
+  "checkedAt": "2026-10-27",
+  "baseMain": "6416abda44927307fe99fe852a22c97e00498e57",
+  "articleStatus": "editorial_complete_implementation_pending",
+  "publicationAuthorized": false,
+  "queue": {
+    "checkedAt": "2026-10-26T21:03:41+00:00",
+    "rank": 4,
+    "maxObservedRewardYen": 27770
+  },
+  "verifiedOffer": {
+    "source": "warau",
+    "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207591&pl=pc_categoryService",
+    "platform": "Android",
+    "displayedPoints": 27770,
+    "pointsPerYen": 1,
+    "rewardYen": 27770,
+    "deadline": "5/10/20/40/85日、すべてインストール日起算。iOSは別コースで1日条件あり",
+    "purchaseConditions": "最大27770円は1回/5回課金を含む。価格・回数重複の個別判定は未確認。購入除外25520円は達成保証でない",
+    "siteEstimate": "今回の詳細に、根拠として採用できる全条件完走目安はなし",
+    "steps": [
+      {
+        "condition": "ニューヨーククリア",
+        "points": 30,
+        "rewardYen": 30,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "アトランティックシティクリア",
+        "points": 40,
+        "rewardYen": 40,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "1回課金",
+        "points": 450,
+        "rewardYen": 450,
+        "deadlineDays": 85,
+        "purchaseRequired": true
+      },
+      {
+        "condition": "トーキョークリア",
+        "points": 50,
+        "rewardYen": 50,
+        "deadlineDays": 5,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ナッシュビルクリア",
+        "points": 300,
+        "rewardYen": 300,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "5回課金",
+        "points": 1800,
+        "rewardYen": 1800,
+        "deadlineDays": 85,
+        "purchaseRequired": true
+      },
+      {
+        "condition": "ムンバイクリア",
+        "points": 1000,
+        "rewardYen": 1000,
+        "deadlineDays": 10,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "イスタンブールクリア",
+        "points": 80,
+        "rewardYen": 80,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ドバイクリア",
+        "points": 1280,
+        "rewardYen": 1280,
+        "deadlineDays": 20,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "カサブランカクリア",
+        "points": 240,
+        "rewardYen": 240,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "イエローストーンクリア",
+        "points": 680,
+        "rewardYen": 680,
+        "deadlineDays": 40,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "モントリオールクリア",
+        "points": 1220,
+        "rewardYen": 1220,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "メデジンクリア",
+        "points": 3200,
+        "rewardYen": 3200,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ベイジンクリア",
+        "points": 7500,
+        "rewardYen": 7500,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "キョートクリア",
+        "points": 9900,
+        "rewardYen": 9900,
+        "deadlineDays": 85,
+        "purchaseRequired": false
+      }
+    ]
+  },
+  "verificationScope": "取得済み当日候補を起点に詳細本文を確認できた範囲の比較額。全ポイントサイト中の最高額保証ではない。Web取得結果にはキャッシュの可能性があり、ログイン実機/実際の付与は未確認",
+  "identity": "公式bingoblitz.comと案件名・写真/都市クリアの仕組みで同定。Bingo Island等とは統合しない。ストア遷移先IDは未操作",
+  "sourceIds": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "R1"
+  ],
+  "unknowns": [
+    "現行キョート/アルプスまでの十分な完走実例",
+    "現在のPLUS無料対象・期間・更新料金と最安購入価格",
+    "過去実例と現在の都市順/バランスの完全一致",
+    "広告クリック後のストアID"
+  ],
+  "seo": {
+    "title": "Bingo Blitz ポイ活攻略｜写真集め・都市クリアと短期限の注意点",
+    "description": "Bingo Blitzのポイ活を、都市クリアの条件、写真交換、無料クレジット、課金ステップで整理。短期達成例と途中撤退例を比較し、無理のない進め方を解説します。",
+    "canonical": "https://poigamelab.com/bingo-blitz-guide.html"
+  }
+}

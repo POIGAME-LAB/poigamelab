@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "game": "ザ・グランドマフィア",
+  "slug": "grand-mafia",
+  "aliases": [
+    "The Grand Mafia",
+    "グランドマフィア",
+    "グラマフィ"
+  ],
+  "checkedAt": "2026-10-27",
+  "baseMain": "6416abda44927307fe99fe852a22c97e00498e57",
+  "articleStatus": "editorial_complete_implementation_pending",
+  "publicationAuthorized": false,
+  "queue": {
+    "checkedAt": "2026-10-26T21:03:41+00:00",
+    "rank": 1,
+    "maxObservedRewardYen": 70824
+  },
+  "verifiedOffer": {
+    "source": "amefuri",
+    "url": "https://www.amefri.net/detail/id/137656",
+    "platform": "iOS",
+    "displayedPoints": 701980,
+    "pointsPerYen": 10,
+    "rewardYen": 70198,
+    "deadline": "全体60日。Step6=7日、7=15日、8〜11=30日、12=60日。1〜5は個別期限なし",
+    "purchaseConditions": "購入自体を成果とするStepはない。高難度条件の無課金達成は未確認",
+    "siteEstimate": "各Stepの30分程度〜60日程度はサイト表示の目安。実例にしない",
+    "steps": [
+      {
+        "condition": "別荘4",
+        "points": 580,
+        "rewardYen": 58,
+        "deadlineDays": null,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "別荘9",
+        "points": 840,
+        "rewardYen": 84,
+        "deadlineDays": null,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "Tier2を1種類アンロック",
+        "points": 1680,
+        "rewardYen": 168,
+        "deadlineDays": null,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "別荘17",
+        "points": 5880,
+        "rewardYen": 588,
+        "deadlineDays": null,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "Tier3を1種類アンロック",
+        "points": 8400,
+        "rewardYen": 840,
+        "deadlineDays": null,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "別荘21",
+        "points": 18480,
+        "rewardYen": 1848,
+        "deadlineDays": 7,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "別荘23",
+        "points": 15120,
+        "rewardYen": 1512,
+        "deadlineDays": 15,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "別荘25",
+        "points": 21000,
+        "rewardYen": 2100,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "監禁所25",
+        "points": 42000,
+        "rewardYen": 4200,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "投資センター25",
+        "points": 84000,
+        "rewardYen": 8400,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "Tier4を1種類アンロック",
+        "points": 336000,
+        "rewardYen": 33600,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "Tier4を1種類アンロック",
+        "points": 168000,
+        "rewardYen": 16800,
+        "deadlineDays": 60,
+        "purchaseRequired": false
+      }
+    ]
+  },
+  "verificationScope": "取得済み当日候補を起点に詳細本文を確認できた範囲の比較額。全ポイントサイト中の最高額保証ではない。Web取得結果にはキャッシュの可能性があり、ログイン実機/実際の付与は未確認",
+  "identity": "Android公式package=com.yottagames.gameofmafiajp。既存マフィア・シティとは別アプリ。iOS案件からストアへの遷移先ID一致は未操作",
+  "sourceIds": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "R1",
+    "R2"
+  ],
+  "unknowns": [
+    "レシチャレ70824円の当日再取得不可。最高額へ昇格させない",
+    "30日/60日のT4を両方付与する実運用・完走日数・必要課金額",
+    "iOS案件遷移先のストアIDと実機の個別条件",
+    "掲載履歴照合の全別slug・全ブランチ網羅性"
+  ],
+  "seo": {
+    "title": "ザ・グランドマフィア ポイ活攻略｜別荘17・監禁所25とT4の注意点",
+    "description": "ザ・グランドマフィアのポイ活を、別荘・隊員Tier・監禁所の条件別に整理。無課金の序盤例、課金ありの監禁所25達成例、短期限とT4のリスクを解説します。",
+    "canonical": "https://poigamelab.com/grand-mafia-guide.html"
+  }
+}
