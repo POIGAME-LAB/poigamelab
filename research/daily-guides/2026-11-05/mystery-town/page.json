@@ -1,0 +1,45 @@
+{
+  "heroStats": [
+    {
+      "label": "期限（2段階）",
+      "value": "30日・60日"
+    },
+    {
+      "label": "表示合計（iOS／Android）",
+      "value": "11,040／11,550pt"
+    },
+    {
+      "label": "レベル条件のみの合計",
+      "value": "10,750pt"
+    }
+  ],
+  "offerLinks": [
+    {
+      "label": "ワラウの案件ページ（iOS・206151）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+    },
+    {
+      "label": "ワラウの案件ページ（Android・206152）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152"
+    }
+  ],
+  "contextLabel": "ワラウの現在の案件ページを見る →",
+  "related": [
+    {
+      "label": "Merge Help ポイ活攻略",
+      "href": "merge-help-guide.html"
+    },
+    {
+      "label": "ファミリーファームの冒険 ポイ活攻略",
+      "href": "family-farm-adventure-guide.html"
+    },
+    {
+      "label": "Domino Dreams ポイ活攻略",
+      "href": "domino-dreams-guide.html"
+    }
+  ],
+  "registry": {
+    "label": "レベル150・170攻略を読む →",
+    "description": "ワラウ案件（iOS・Android、30日・60日の2段階）の全Stepと、30日でLv90前後から60日でLv150に届いた実例・途中で撤退した例、エネルギーと素材の回し方、課金Stepの損得をまとめています。"
+  }
+}

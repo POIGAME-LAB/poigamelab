@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-05",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "ワラウ iOS案件206151",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151",
+      "type": "point_site",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "全14Step・表示合計11,040pt（2026年11月07日までの増額、増額前10,510pt）",
+        "課金Step2件（300円パック70pt・800円パック220pt）",
+        "獲得対象外条件・あんしん保証（インストール日起算80日以内）・申請に必要なUIDとキャプチャ"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-05T01:52:14+00:00",
+      "responseSha256": "24db1e8eb2ffd308366ec95d3855b705efb12398042b312681a43d57864079fe"
+    },
+    {
+      "id": "M2",
+      "title": "ワラウ Android案件206152",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152",
+      "type": "point_site",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "全15Step・表示合計11,550pt（2026年11月07日までの増額、増額前11,000pt）",
+        "課金Step3件（ダイヤモンドミニパック80・小パック220・大パック1200、価格表記なし）"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-05T01:52:27+00:00",
+      "responseSha256": "9a1e1177758d37b4e1841920d6d4de1b5361b9649b31dbbd0eaff38bd7635a35"
+    },
+    {
+      "id": "M3",
+      "title": "App Store Cedar Games Studio版",
+      "url": "https://apps.apple.com/jp/app/id6503603603",
+      "type": "official",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元Cedar Games Studio、アイテムを2つマージ・注文を完了して町を再建、広告なし、アプリ内購入",
+        "評価とレビュー欄：2026年9月6日の投稿（課金ルーレットの値上がり、Lv150までの感想）はユーザー投稿"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Google Play Cedar Games Studio版",
+      "url": "https://play.google.com/store/apps/details?id=com.cedargames.mysterytown",
+      "type": "official",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "Androidパッケージcom.cedargames.mysterytown、開発元Cedar Games Studio"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151",
+      "type": "player",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026年4月〜10月の口コミ58件（iOS・Android両ページに同じ口コミを表示）。到達日数・レベル・課金の記載がある投稿を個別に採用"
+      ],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "reviewIndexFile": "research/daily-guides/2026-11-05/evidence/mystery-town-offers.json"
+    },
+    {
+      "id": "M6",
+      "title": "ササナギックス・30日目と60日の記録",
+      "url": "https://sasanagix.hateblo.jp/entry/2026/06/04/214743",
+      "type": "player",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "30日目レベル90、57日目くらいでレベル150で終了、約1,100円課金（グローリーパス）、9時ログインボーナス・曜日別カードブースト"
+      ],
+      "publishedOn": "2026-06-04"
+    },
+    {
+      "id": "M7",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-11-05",
+      "bodyConfirmed": true,
+      "claims": [
+        "1pt＝1円"
+      ]
+    }
+  ],
+  "retrievalNote": "案件ページはscripts/daily_guide_evidence.pyで当日直接取得（HTTP 200）し、全Stepと合計の一致を確認。口コミ本文はリポジトリへ複製せず、投稿者名・属性・日付・見出しの索引のみ保存。",
+  "editorialInferences": "編集部の計算・判断は本文で[編集部計算]／[編集部判断]と明示。自己申告の記録とは区別。"
+}
