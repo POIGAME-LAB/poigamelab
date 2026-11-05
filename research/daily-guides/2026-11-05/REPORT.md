@@ -40,10 +40,11 @@
 
 ## 7〜8. PR・テスト
 
-- Draft PR：このPR（セットアップと初回記事を同じPRに含む）。
-- ローカル：`tests/test_daily_guides.py` 19件合格（改ざん検出の否定テストを含む）。関連する攻略テストも合格。全体 pytest は main 62件失敗／ブランチ 62件失敗で、新規失敗0件（失敗はいずれも main に元からあるもの）。
+- Draft PR：https://github.com/POIGAME-LAB/poigamelab/pull/348（セットアップと初回記事を同じPRに含む）。
+- ローカル：`tests/test_daily_guides.py` 19件合格（改ざん検出の否定テストを含む）。関連する攻略テストも合格。全体 pytest は main 62件失敗／1426件合格、ブランチ 62件失敗／1445件合格で、新規失敗0件（失敗はいずれも main に元からあるもの）。
 - 表示：Playwright（PC 1280px／iPhone 13／360px）で横スクロール0、目次11リンク解決、実例7名表示、攻略一覧に1件。
-- CIの結果はPR作成後にGitHubで確認する。
+- GitHub CI（PR #348、HEAD ed674cc）：validate／validate-guides／validate-player-progress／validate-township-guide／validate-r2 の5件すべて success。なお `tests/test_daily_guides.py` は既存のCIワークフローに含まれていない（Actionsは変更していない）ため、CIでは実行されていない。
+- 定期実行：Routineはこの環境からの登録が権限判定で拒否されたため未登録。設定値とプロンプトは docs/daily-guide-routine.md。
 
 ## 9. 未確認事項
 
