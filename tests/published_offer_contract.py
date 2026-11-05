@@ -9,13 +9,17 @@ must always hold instead:
 * every published row is internally consistent (identity, platform, integer reward,
   verified, condition, date) and unique;
 * a *pinned* offer that is still published keeps the identity it was verified against;
-* a pinned offer that has ended leaves no row behind (not under another key either).
+* a pinned offer that has ended leaves no row behind (not under another key either);
+* an offer the refresh has confirmed ended is not published, and a retired offer that
+  comes back under the same ID does so only with fresh evidence that it was re-listed.
 
 Every function returns a list of problem codes so the checks can themselves be tested with
 normal, ended, re-issued-ID and malformed data.
 """
 import csv
+import json
 import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -131,8 +135,88 @@ def pin(site, offer, game, platform):
     return {"site": site, "id": str(offer), "game": game, "platform": platform}
 
 
-def retired_problems(rows, retired):
-    """Offers confirmed ended on the source must not be published again."""
-    wanted = {(site, str(oid)) for site, oid in retired}
-    return [f"retired_offer_republished:{r['site']}:{offer_id(r)}"
-            for r in rows if (r.get("site"), offer_id(r)) in wanted]
+# Same threshold as scripts/structured_publication.UNAVAILABLE_RUNS_BEFORE_RETIREMENT
+# (asserted equal in tests/test_warau_baseline_candidates.py).
+UNAVAILABLE_RUNS_BEFORE_RETIREMENT = 3
+UNAVAILABLE_RUNS = ROOT / "data" / "offer_unavailable_runs.json"
+HISTORY = ROOT / "data" / "offer_history.csv"
+JST = timezone(timedelta(hours=9))
+
+
+def load_unavailable(path=UNAVAILABLE_RUNS):
+    """``{identity: {"runs", "lastUnavailableAt"}}`` kept by the nightly refresh."""
+    return json.loads(Path(path).read_text(encoding="utf-8"))["offers"]
+
+
+def load_history(path=HISTORY):
+    return load_rows(path)
+
+
+def identity(row):
+    """The identity key the nightly refresh uses (e.g. ``warau:point_id:205982``)."""
+    import sys
+    if str(ROOT / "scripts") not in sys.path:
+        sys.path.insert(0, str(ROOT / "scripts"))
+    from direct_offer_refresh import offer_identity_key
+    return offer_identity_key(row.get("url"), row.get("site"))
+
+
+def _instant(value):
+    return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+
+def confirmed_ended_problems(rows, unavailable):
+    """No published row may be one the refresh has read as ended on enough nights to retire it.
+
+    1-2 "ended" readings are held on purpose (a single bad night must not drop a row).
+    """
+    problems = []
+    for row in rows:
+        runs = int((unavailable.get(identity(row)) or {}).get("runs") or 0)
+        if runs >= UNAVAILABLE_RUNS_BEFORE_RETIREMENT:
+            problems.append(f"confirmed_ended_offer_published:{row.get('site')}:{offer_id(row)}")
+    return problems
+
+
+def retired_problems(rows, retired, unavailable=None, history=None):
+    """A retired offer may come back only on fresh evidence that the source re-listed it.
+
+    Point sites re-open a paused campaign under the *same* ID (Warau 205982/206037
+    メメントモリ, 201862/201872 ホワイトアウト, 2026-10). The nightly refresh then reads
+    the live page, clears the ended count and publishes the row again, which is
+    correct. So a retired ID is not banned forever. ``retired`` holds
+    ``(site, id, retiredAt)``; a published row of such an ID is accepted only when
+
+    * the refresh no longer counts the offer as confirmed ended,
+    * the row was refreshed (``updatedAt``, JST date) after the retirement day, and
+    * ``offer_history.csv`` has a snapshot of the same offerKey after the retirement.
+
+    Without ``unavailable``/``history`` (or without ``retiredAt``) no such evidence
+    exists and any reappearance is reported, as before.
+    """
+    by_id = {}
+    for entry in retired:
+        site, oid, *rest = entry
+        by_id[(site, str(oid))] = rest[0] if rest else None
+    problems = []
+    for row in rows:
+        key = (row.get("site"), offer_id(row))
+        if key not in by_id:
+            continue
+        label = f"{key[0]}:{key[1]}"
+        retired_at = by_id[key]
+        if retired_at is None or unavailable is None or history is None:
+            problems.append(f"retired_offer_republished:{label}")
+            continue
+        retired_at = _instant(retired_at)
+        runs = int((unavailable.get(identity(row)) or {}).get("runs") or 0)
+        if runs >= UNAVAILABLE_RUNS_BEFORE_RETIREMENT:
+            problems.append(f"retired_offer_republished_while_ended:{label}")
+        updated = str(row.get("updatedAt") or "")
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", updated) or updated <= retired_at.astimezone(JST).date().isoformat():
+            problems.append(f"retired_offer_republished_without_fresh_verification:{label}")
+        seen_after = any(h.get("offerKey") == row.get("offerKey") and _instant(h.get("observedAt")) > retired_at
+                         for h in history if h.get("observedAt"))
+        if not seen_after:
+            problems.append(f"retired_offer_republished_without_history:{label}")
+    return problems

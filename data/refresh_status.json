@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-11-02T23:36:28+00:00",
-  "finishedAt": "2026-11-02T23:36:28+00:00",
+  "startedAt": "2026-11-04T21:56:46+00:00",
+  "finishedAt": "2026-11-04T21:56:46+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -49,7 +49,7 @@
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 4,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
