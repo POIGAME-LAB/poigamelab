@@ -1,78 +1,22 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-11-04T21:56:46+00:00",
+  "checkedAt": "2026-11-05T22:04:36+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
   "rankingComplete": true,
   "holdReason": null,
-  "heldCandidates": [],
+  "heldCandidates": [
+    {
+      "game": "Heroes Survival Battle",
+      "reason": "ranked_game_reward_invalid"
+    }
+  ],
   "count": 5,
   "items": [
     {
       "rank": 1,
-      "game": "ベガス クレイズ カジノ",
-      "maxObservedRewardYen": 102417,
-      "confirmedSourceCount": 1,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 1,
-      "pointSiteEvidence": [
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207700&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 102417
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35719",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 95141
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/19438",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        }
-      ],
-      "researchQueries": {
-        "web": "\"ベガス クレイズ カジノ\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"ベガス クレイズ カジノ\" ポイ活 日目",
-        "youtube": "site:youtube.com \"ベガス クレイズ カジノ\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"ベガス クレイズ カジノ\" ポイ活",
-        "pointSites": "\"ベガス クレイズ カジノ\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 2,
       "game": "ザ・グランドマフィア",
       "maxObservedRewardYen": 70824,
       "confirmedSourceCount": 3,
@@ -154,6 +98,67 @@
       "publicationAuthorized": false
     },
     {
+      "rank": 2,
+      "game": "ベガス クレイズ カジノ",
+      "maxObservedRewardYen": 66217,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207700&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 66217
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35719",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 60108
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19438",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ベガス クレイズ カジノ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ベガス クレイズ カジノ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ベガス クレイズ カジノ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ベガス クレイズ カジノ\" ポイ活",
+        "pointSites": "\"ベガス クレイズ カジノ\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
       "rank": 3,
       "game": "Freecash",
       "maxObservedRewardYen": 39560,
@@ -209,48 +214,8 @@
     },
     {
       "rank": 4,
-      "game": "モンスターサバイバル",
-      "maxObservedRewardYen": 37500,
-      "confirmedSourceCount": 2,
-      "listingSourceCount": 2,
-      "verifiedRewardSourceCount": 2,
-      "pointSiteEvidence": [
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208651&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 37500
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/19905",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 28146
-        }
-      ],
-      "researchQueries": {
-        "web": "\"モンスターサバイバル\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"モンスターサバイバル\" ポイ活 日目",
-        "youtube": "site:youtube.com \"モンスターサバイバル\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"モンスターサバイバル\" ポイ活",
-        "pointSites": "\"モンスターサバイバル\" ポイ活 口コミ 課金"
-      },
-      "requiredResearchChannels": [
-        "web",
-        "x",
-        "youtube",
-        "instagram",
-        "pointSites"
-      ],
-      "contentPackageStatus": "pending",
-      "publicationAuthorized": false
-    },
-    {
-      "rank": 5,
       "game": "Heroes vs Crazy Wiggler",
-      "maxObservedRewardYen": 35106,
+      "maxObservedRewardYen": 22379,
       "confirmedSourceCount": 3,
       "listingSourceCount": 3,
       "verifiedRewardSourceCount": 3,
@@ -295,14 +260,14 @@
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34631",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 35106
+          "rewardYen": 22379
         },
         {
           "source": "mikoshi",
           "url": "https://web.mikoshi.jp/v2/skyflag/ads/34630",
           "detailConfirmed": true,
           "rewardVerified": true,
-          "rewardYen": 35106
+          "rewardYen": 22379
         },
         {
           "source": "kurashiru_reward",
@@ -332,6 +297,53 @@
         "youtube": "site:youtube.com \"Heroes vs Crazy Wiggler\" ポイ活 攻略",
         "instagram": "site:instagram.com \"Heroes vs Crazy Wiggler\" ポイ活",
         "pointSites": "\"Heroes vs Crazy Wiggler\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 5,
+      "game": "ヒーローウォーズアライアンス — 放置系ロールプレイング",
+      "maxObservedRewardYen": 22029,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34611",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 22029
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34612",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 10187
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/18563",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ヒーローウォーズアライアンス — 放置系ロールプレイング\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ヒーローウォーズアライアンス — 放置系ロールプレイング\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ヒーローウォーズアライアンス — 放置系ロールプレイング\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ヒーローウォーズアライアンス — 放置系ロールプレイング\" ポイ活",
+        "pointSites": "\"ヒーローウォーズアライアンス — 放置系ロールプレイング\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
