@@ -57,6 +57,7 @@
 - research/daily-guides/D/selection.json（全候補の採用・保留・除外と理由）と REPORT.md（下記10項目）を書く。
 
 ## 5. 検証
+- pytestが無ければ `python -m pip install -q pytest`（Playwright・Chromiumは環境に導入済み。再インストールしない）。
 - `python -m pytest -q tests/test_daily_guides.py tests/test_work_guides_20261031.py tests/test_static_internal_links.py tests/test_generated_guide_registry.py tests/test_new_guides_quality.py tests/test_adsense_quality_static.py`
 - `node scripts/sync_static_guide_links.js --check`
 - 全体の `python -m pytest -q` は main と比べ、新規失敗が0件であることを確認する（mainの既存失敗は約62件）。全体テストは data/ や research/new-games/ を書き換える副作用があるため、実行後に `git status` を見て、自分の変更以外は `git checkout -- <file>` で戻す。
