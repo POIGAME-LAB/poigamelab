@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "game": "戦国布武：我が天下戦国編",
+  "updatedAt": "2026-10-31",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "案件条件・OS・課金・版に差があります。元プレイ日不明は現在実例の人数に数えていません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-10-31。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "少史4日、頂天武将5体15日",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "少史達成"
+        },
+        {
+          "day": 15,
+          "label": "頂天武将5体獲得"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086"
+      ],
+      "sourceDetails": [
+        "たまち",
+        "2026-09-12",
+        "少史4日、頂天武将5体15日"
+      ],
+      "postedOn": "2026-09-12",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "free",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "perBattlePlayHoursRange": [
+        6,
+        7
+      ],
+      "note": "見出し：かなり時間が取れる人向け。ほぼ全勝・引きが良い自己申告。課金Stepは未達。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "retired",
+      "summary": "侍大将で撤退",
+      "milestones": [
+        {
+          "day": null,
+          "label": "侍大将までで撤退"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086"
+      ],
+      "sourceDetails": [
+        "ナオケ",
+        "2026-09-10",
+        "侍大将で撤退"
+      ],
+      "postedOn": "2026-09-10",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "見出し：侍大将までが妥当。日数不明を補完しない。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "ongoing",
+      "summary": "侍大将までの進行、頂天武将1体",
+      "milestones": [
+        {
+          "day": null,
+          "label": "侍大将・頂天武将1体の記録"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086"
+      ],
+      "sourceDetails": [
+        "マル",
+        "2026-07-07",
+        "侍大将までの進行、頂天武将1体"
+      ],
+      "postedOn": "2026-07-07",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "見出し：気軽にやるなら侍大将。日数・課金不明。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "低操作で侍大将17日という参考記録",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "足軽大将"
+        },
+        {
+          "day": 17,
+          "label": "侍大将"
+        }
+      ],
+      "sources": [
+        "https://kochalog.com/sengokufubu-wagatenka/"
+      ],
+      "sourceDetails": [
+        "こちゃ",
+        "表示2026-02-07／元プレイ日不明",
+        "低操作で侍大将17日という参考記録"
+      ],
+      "postedOn": "表示2026-02-07／元プレイ日不明",
+      "checkedAt": "2026-10-31",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "dateEligibility": "reference_only_pending_original_date",
+      "note": "元プレイ日が確定しないため365日以内の必須人数には加えない。現在の最終条件へ一般化しない。"
+    }
+  ]
+}

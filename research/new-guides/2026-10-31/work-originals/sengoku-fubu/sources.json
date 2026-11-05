@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-31",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "ワラウ iOS案件206085",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206085",
+      "type": "point_site",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "30日、8Step11640pt、初心者頂天武将対象外、保証50日"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-10-31T04:08:35.193681+00:00",
+      "responseSha256": "2eeb733939811d3713347abbc81ed2339c5e896b75682a70eb5ec930e259e02e"
+    },
+    {
+      "id": "S2",
+      "title": "ワラウ Android案件206086",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086",
+      "type": "point_site",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "iOSと同じ条件・金額、GAID等OS別申請項目"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-10-31T04:08:35.194062+00:00",
+      "responseSha256": "7c30c3d1e782cf8ad2396a3c2f502b8492a5051e936375b15fc8f1515e89ef2b"
+    },
+    {
+      "id": "S3",
+      "title": "こちゃ・侍大将攻略",
+      "url": "https://kochalog.com/sengokufubu-wagatenka/",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "侍大将17日、9時間待機の降伏周回、官職ギフト後に付与の自己申告"
+      ],
+      "displayedDate": "2026-02-07",
+      "originalPlayDate": null,
+      "dateCaution": "更新表示の可能性あり。日付監査後も現在条件の最終達成例には一般化しない"
+    },
+    {
+      "id": "S4",
+      "title": "ワラウ・戦国布武レビュー",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086",
+      "type": "player",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "たまち2026/09/12：少史4日・頂天5体15日。ナオケ2026/09/10：侍大将撤退。マル2026/07/07：途中経過"
+      ],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "retrievedAt": "2026-10-31T04:08:35.194062+00:00",
+      "responseSha256": "7c30c3d1e782cf8ad2396a3c2f502b8492a5051e936375b15fc8f1515e89ef2b"
+    },
+    {
+      "id": "S6",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": true,
+      "claims": [
+        "1pt=1円"
+      ]
+    },
+    {
+      "id": "S7",
+      "title": "戦国布武公式サイト",
+      "url": "https://sengoku.bekko.com/",
+      "type": "official",
+      "checkedAt": "2026-10-31",
+      "bodyConfirmed": false,
+      "claims": [],
+      "accessStatus": "JavaScriptページ本文抽出不可。数値の根拠には未使用"
+    }
+  ],
+  "retrievalNote": "一部Web検索のキャッシュは古いため、採用案件は当日HTTP本文で再照合。全Stepはmetadataへ転記。",
+  "editorialInferences": "編集部判断・算術計算は本文で明示。実測値とは別。"
+}

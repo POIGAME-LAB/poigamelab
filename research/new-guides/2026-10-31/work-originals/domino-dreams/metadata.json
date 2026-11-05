@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "game": "Domino Dreams",
+  "slug": "domino-dreams",
+  "title": "Domino Dreams ポイ活攻略｜チャプターの進め方・コイン管理と撤退ライン",
+  "seoTitle": "Domino Dreams ポイ活攻略｜チャプターの進め方・コイン管理と撤退ライン",
+  "metaDescription": "Domino Dreamsのポイ活を、現行iOS条件と複数人の記録から解説。CHAPTERとLEVELの違い、コイン回収、救済、倍率、撤退ラインを整理。",
+  "os": [
+    "iOS"
+  ],
+  "researchDate": "2026-10-31",
+  "status": "manuscript_complete",
+  "publicationStatus": "not_implemented_not_published",
+  "priority": 5,
+  "priorityIsRewardRanking": false,
+  "proposedPage": "domino-dreams-guide.html",
+  "canonical": "https://poigamelab.com/domino-dreams-guide.html",
+  "mainCommit": "d721371387b66f652abce3517121746a135b7ebd",
+  "offer": {
+    "site": "warau",
+    "currency": "pt",
+    "yenPerPoint": 1,
+    "totalDisplayedPt": 9500,
+    "steps": [
+      {
+        "condition": "CHAPTER1クリア",
+        "rewardPt": 20,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER2クリア",
+        "rewardPt": 30,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER4クリア",
+        "rewardPt": 50,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "初回課金",
+        "rewardPt": 210,
+        "requiresPayment": true,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER5クリア",
+        "rewardPt": 80,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER6クリア",
+        "rewardPt": 110,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER8クリア",
+        "rewardPt": 140,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER9クリア",
+        "rewardPt": 170,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER10クリア",
+        "rewardPt": 240,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER12クリア",
+        "rewardPt": 310,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER15クリア",
+        "rewardPt": 500,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER18クリア",
+        "rewardPt": 680,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "10回目課金",
+        "rewardPt": 920,
+        "requiresPayment": true,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER20クリア",
+        "rewardPt": 890,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER25クリア",
+        "rewardPt": 1450,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      },
+      {
+        "condition": "CHAPTER30クリア",
+        "rewardPt": 3700,
+        "requiresPayment": false,
+        "deadlineDays": 60
+      }
+    ],
+    "deadlineDays": 60,
+    "sumWithoutPurchaseStepsPt": 8370,
+    "sumIsNotPredictedEarnings": true
+  },
+  "limitations": [
+    "ポイント付与・ログイン後表示・実機プレイは追試していない",
+    "公開直前に案件本文とストア遷移先を再照合",
+    "最速例・合算報酬を到達保証にしない"
+  ],
+  "articleCharacters": 5513
+}

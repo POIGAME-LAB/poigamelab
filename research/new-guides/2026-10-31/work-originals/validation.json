@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-31T04:17:29.328112+00:00",
+  "completedManuscripts": 3,
+  "checks": [
+    {
+      "game": "アローズ：パズルエスケープ（Arrows）",
+      "characters": 5035,
+      "requiredFiles": 5,
+      "sourceCount": 7,
+      "players": 4,
+      "offerSteps": 11,
+      "offerSum": 15200,
+      "tocLinks": 9,
+      "allChecksPassed": true
+    },
+    {
+      "game": "戦国布武：我が天下戦国編",
+      "characters": 5009,
+      "requiredFiles": 5,
+      "sourceCount": 6,
+      "players": 4,
+      "offerSteps": 8,
+      "offerSum": 11640,
+      "tocLinks": 9,
+      "allChecksPassed": true
+    },
+    {
+      "game": "Domino Dreams",
+      "characters": 5513,
+      "requiredFiles": 5,
+      "sourceCount": 12,
+      "players": 3,
+      "offerSteps": 16,
+      "offerSum": 9500,
+      "tocLinks": 9,
+      "allChecksPassed": true
+    }
+  ],
+  "websiteBuildRun": false,
+  "externalAllLinksRevalidated": false,
+  "editorialReview": "自己点検済み。第三者の掲載前編集承認は未実施。"
+}

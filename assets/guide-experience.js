@@ -25,6 +25,12 @@
     return "挑戦中";
   }
 
+  // A record whose original play date is unconfirmed is shown for reference only and is not
+  // counted as a current independent example (data: dateEligibility "reference_only_*").
+  function isReferenceOnly(player) {
+    return String(player.dateEligibility || "").startsWith("reference_only");
+  }
+
   function renderPlayer(player, extraClass = "") {
     const sources = Array.isArray(player.sources) ? player.sources : [];
     const firstSource = sources.map(safeUrl).find(Boolean) || "";
@@ -44,7 +50,7 @@
           <div>
             <div class="player-name-row">
               <span class="player-name">${escapeHtml(player.label || "プレイヤー")}</span>
-              <span class="player-status">${escapeHtml(statusLabel(player.status))}</span>
+              <span class="player-status">${escapeHtml(isReferenceOnly(player) ? "参考記録" : statusLabel(player.status))}</span>
             </div>
             <div class="player-summary">${escapeHtml(player.summary || "進捗記録")}</div>
           </div>
@@ -62,6 +68,7 @@
 
   function render(root, data) {
     const players = Array.isArray(data.players) ? data.players : [];
+    const referenceCount = players.filter(isReferenceOnly).length;
 
     const requestedLimit = Number.parseInt(data.initialVisible, 10);
     const visibleLimit =
@@ -81,7 +88,7 @@
     root.innerHTML = `
       <div class="experience-head">
         <h2>${escapeHtml(data.title || "実例：プレイヤーの進捗記録")}</h2>
-        <span class="experience-count">${players.length}名の実例</span>
+        <span class="experience-count">${players.length - referenceCount}名の実例${referenceCount ? `＋参考${referenceCount}件` : ""}</span>
       </div>
 
       <p class="experience-intro">

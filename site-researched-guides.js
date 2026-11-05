@@ -62,6 +62,27 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
       { label: "Lv30・37攻略を読む →", href: "shounin-hourouki-guide.html" }
     ]
   },
+  "Domino Dreams": {
+    title: "Domino Dreams ポイ活攻略",
+    description: "ワラウiOS案件（60日・CHAPTER30まで）の全Stepと、CHAPTERとLEVELの違い、コイン回収・救済・倍率の判断、23日でCHAPTER8を終えた記録などの実例と撤退ラインをまとめています。",
+    links: [
+      { label: "CHAPTER攻略を読む →", href: "domino-dreams-guide.html" }
+    ]
+  },
+  "アローズ：パズルエスケープ（Arrows）": {
+    title: "アローズ：パズルエスケープ（Arrows） ポイ活攻略",
+    description: "ワラウiOS案件（7・15・25・60日の期限別・計11Step）の条件と、レベル20000を59日でクリアした例・約10日で撤退した例、1日あたりの必要面数の計算、盤面の読み方をまとめています。",
+    links: [
+      { label: "レベル5309・20000攻略を読む →", href: "arrows-guide.html" }
+    ]
+  },
+  "戦国布武：我が天下戦国編": {
+    title: "戦国布武：我が天下戦国編 ポイ活攻略",
+    description: "ワラウ案件（iOS・Android共通、30日）の全Stepと、侍大将・少史・頂天武将の条件の違い、初心者配布が対象外になる点、操作時間の異なる実例、小判チャージと撤退判断をまとめています。",
+    links: [
+      { label: "侍大将・少史攻略を読む →", href: "sengoku-fubu-guide.html" }
+    ]
+  },
   "モーマンタイム": {
     title: "モーマンタイム ポイ活攻略",
     description: "ワラウStepUp（25日以内・Lv159まで）の条件と、Lv94に13〜23日で届いた実例、ワラウの達成率データ、土地と人口の集め方、同盟、課金ステップの収支をまとめています。",
