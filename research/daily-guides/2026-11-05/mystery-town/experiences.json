@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "game": "ミステリータウン：マージゲーム（Mystery Town）",
+  "updatedAt": "2026-11-05",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-05。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "30日目Lv90、57日目ごろLv150で終了",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv90"
+        },
+        {
+          "day": 57,
+          "label": "Lv150（本人記載は57日目くらい）"
+        }
+      ],
+      "sources": [
+        "https://sasanagix.hateblo.jp/entry/2026/06/04/214743"
+      ],
+      "sourceDetails": [
+        "ササナギ（ササナギックス）",
+        "2026-06-04",
+        "30日目Lv90、57日目ごろLv150で終了"
+      ],
+      "postedOn": "2026-06-04",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "paid",
+      "paidYen": 1100,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "グローリーパスを購入。課金額は本人記載の「1100円ほど」。報酬は「4000円弱」と記載、利用したポイントサイト名は記載なし。170は目指せないと判断して終了。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "無課金で30日Lv90、60日Lv150",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv90（30日以内）"
+        },
+        {
+          "day": 60,
+          "label": "Lv150（60日以内）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      ],
+      "sourceDetails": [
+        "ＭＭＭ（ワラウ口コミ・男性50代）",
+        "2026-08-15",
+        "無課金で30日Lv90、60日Lv150"
+      ],
+      "postedOn": "2026-08-15",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "free",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "最後は保証申請が必要だったと記載。イベントは種類がほぼ固定で、資源をためる回と使い切る回を分けたと記載。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "30日以内Lv100、60日目Lv160",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv100（30日以内）"
+        },
+        {
+          "day": 60,
+          "label": "Lv160（Lv150達成後も継続）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      ],
+      "sourceDetails": [
+        "なかとつさん（ワラウ口コミ・女性40代）",
+        "2026-08-27",
+        "30日以内Lv100、60日目Lv160"
+      ],
+      "postedOn": "2026-08-27",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "paid",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "週末の1000円・1500円のエネルギーパックを購入（総額不明）。Stepの課金は非推奨と記載。収支は「ほぼトントン」。Lv150は自動で付かず申請後すぐ付与。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "60日ちょうどでLv170",
+      "milestones": [
+        {
+          "day": 60,
+          "label": "Lv170"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      ],
+      "sourceDetails": [
+        "ぴょぴょん（ワラウ口コミ・女性50代）",
+        "2026-10-16",
+        "60日ちょうどでLv170"
+      ],
+      "postedOn": "2026-10-16",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "Lv150は自動で付かず申請し数日で加算、Lv170はすぐ付与。イベントの目標値に合わせて納品を調整したと記載。"
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "retired",
+      "summary": "26日目Lv80で撤退",
+      "milestones": [
+        {
+          "day": 26,
+          "label": "Lv80"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      ],
+      "sourceDetails": [
+        "めめこ（ワラウ口コミ・女性30代）",
+        "2026-09-28",
+        "26日目Lv80で撤退"
+      ],
+      "postedOn": "2026-09-28",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "次のLv100は厳しいと判断して撤退。時間がある時はエネルギーを1ずつ使う方がよいと記載。"
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "retired",
+      "summary": "30日目Lv92で撤退",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv92"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      ],
+      "sourceDetails": [
+        "いぬ（ワラウ口コミ・女性50代）",
+        "2026-07-20",
+        "30日目Lv92で撤退"
+      ],
+      "postedOn": "2026-07-20",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "paid",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "「ダイヤモンドミニパック80購入」Stepとプレミアムパスを購入（Step名はAndroid案件の表記）。残り30日でLv150は難しいと判断。"
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "retired",
+      "summary": "24日目Lv60で終了",
+      "milestones": [
+        {
+          "day": 24,
+          "label": "Lv60"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      ],
+      "sourceDetails": [
+        "サブロー（ワラウ口コミ・女性50代）",
+        "2026-06-16",
+        "24日目Lv60で終了"
+      ],
+      "postedOn": "2026-06-16",
+      "checkedAt": "2026-11-05",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "Lv40くらいまではサクサク進んだと記載。"
+    }
+  ]
+}

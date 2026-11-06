@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "note": "Holds recorded before the daily routine existed (source: Notion CONTROL ROOM history 2026-10-31). A hold is not an exclusion: re-check with that day's data and adopt only if the missing evidence is now found.",
+  "holds": [
+    {"game": "Fish of Fortune", "date": "2026-10-31", "reason": "モッピーiOSの総表示のみ確認。適用先の全Step・短期条件・内訳が未確認", "recordedIn": "Notion CONTROL ROOM 2026-10-31 13:20 JST"},
+    {"game": "MONOPOLY GO!", "date": "2026-10-31", "reason": "モッピー総表示のみ。全Step内訳・OS未特定。旧条件の流用不可", "recordedIn": "Notion CONTROL ROOM 2026-10-31 13:20 JST"},
+    {"game": "キャッシュクラブ", "date": "2026-10-31", "reason": "365日以内の独立した2人以上の具体的到達記録なし", "recordedIn": "Notion CONTROL ROOM 2026-10-31 13:20 JST"},
+    {"game": "ミラクルハウス", "date": "2026-10-31", "reason": "モッピーAndroid総表示のみ。全Step未取得、旧記録と条件差", "recordedIn": "Notion CONTROL ROOM 2026-10-31 13:20 JST"},
+    {"game": "ベガス クレイズ カジノ", "date": "2026-10-31", "reason": "365日以内の独立した複数プレイヤーの到達ペースと具体的攻略が不足", "recordedIn": "Notion CONTROL ROOM 2026-10-31 07:08 JST"}
+  ]
+}

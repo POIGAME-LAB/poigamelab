@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "productionDate": "2026-11-05",
+  "timezone": "Asia/Tokyo",
+  "inputs": {
+    "contentQueueCheckedAt": "2026-11-04T21:56:46+00:00",
+    "monitorCheckedAt": "2026-11-04T21:56:46+00:00",
+    "checkedDateJst": "2026-11-05",
+    "mainCommit": "23df481b2705294194a3a1169b523db3fca1253a",
+    "candidatesFile": "research/daily-guides/2026-11-05/candidates.json"
+  },
+  "dedupe": {
+    "openPullRequestsChecked": [
+      "#344（ザ・グランドマフィア／Bingo Blitz／Heroes vs Crazy Wiggler）",
+      "#339",
+      "#329",
+      "#289",
+      "#245",
+      "#244",
+      "#243",
+      "#242",
+      "#241",
+      "#240",
+      "#239",
+      "#225",
+      "#224",
+      "#223",
+      "#218",
+      "#217",
+      "#181",
+      "#166",
+      "#62",
+      "#37"
+    ],
+    "remoteBranchGuidePagesScanned": true,
+    "notionControlRoomChecked": true
+  },
+  "targetMax": 5,
+  "completedCount": 1,
+  "reviewedCount": 25,
+  "publicationAuthorized": false,
+  "decisions": [
+    {
+      "game": "ミステリータウン：マージゲーム（Mystery Town）",
+      "decision": "completed",
+      "reason": "ワラウiOS206151・Android206152の全Step・合計・期限を当日取得で確認。2026年4〜10月の独立した到達記録（ワラウ口コミ・個人ブログ）を7名採用。",
+      "slug": "mystery-town",
+      "candidateOrder": 8,
+      "aliases": [
+        "ミステリータウン:マージゲーム - Mystery Town",
+        "Mystery Town"
+      ],
+      "pr": null
+    },
+    {
+      "game": "ベガス クレイズ カジノ",
+      "decision": "held",
+      "reason": "ワラウ207700・205175は公開ページが表示不可（ログイン外から全Step未確認）。10/31保留理由（365日以内の独立した到達記録不足）を解消する新しい記録も未確認。",
+      "candidateOrder": 1
+    },
+    {
+      "game": "Fish of Fortune",
+      "decision": "held",
+      "reason": "モッピー161385の公開ページは合計45,603Pのみで全Stepの内訳が表示されない（10/31と同じ）。",
+      "candidateOrder": 2
+    },
+    {
+      "game": "モンスターサバイバル",
+      "decision": "held",
+      "reason": "ワラウ208651で全15Step・37,500pt（課金3Step）・30日期限は確認。ただし2026年7月30日配信・案件は当日新規で、日付つきの独立した到達記録を確認できず。",
+      "candidateOrder": 3
+    },
+    {
+      "game": "MONOPOLY GO!",
+      "decision": "held",
+      "reason": "モッピー161387の公開ページは合計32,441Pのみで全Step不明（10/31と同じ）。",
+      "candidateOrder": 4
+    },
+    {
+      "game": "ジャックポットワールド - カジノ&スロット",
+      "decision": "held",
+      "reason": "モッピー160980の公開ページは合計17,419Pのみで全Step不明。",
+      "candidateOrder": 5
+    },
+    {
+      "game": "Z ルート:リデンプション",
+      "decision": "held",
+      "reason": "ワラウ208646・208648は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 6
+    },
+    {
+      "game": "Endless Arrow:サクッと解いて、スッキリ勝利",
+      "decision": "held",
+      "reason": "ワラウ208707は公開ページが表示不可。MIKOSHI36278は未確認。",
+      "candidateOrder": 7
+    },
+    {
+      "game": "フェイトウォー",
+      "decision": "held",
+      "reason": "モッピー162251の公開ページは合計8,007Pのみで、StepUpの内訳・期限を確認できず。",
+      "candidateOrder": 9
+    },
+    {
+      "game": "マイナーファイターズ!",
+      "decision": "held",
+      "reason": "モッピー161912の公開ページは合計6,075Pのみで、StepUpの内訳・期限を確認できず。",
+      "candidateOrder": 12
+    },
+    {
+      "game": "Coin Master - Board Adventure",
+      "decision": "held",
+      "reason": "モッピー161557の公開ページは合計6,055Pのみで、StepUpの内訳・期限を確認できず。",
+      "candidateOrder": 13
+    },
+    {
+      "game": "信長の野望 真戦",
+      "decision": "held",
+      "reason": "モッピー161201は5,300P（単一条件：部将lv7）。期限・詳細条件が公開ページで確認できず、到達記録も未調査。",
+      "candidateOrder": 14
+    },
+    {
+      "game": "神々のふんわり育成日誌!",
+      "decision": "held",
+      "reason": "モッピー161127の公開ページは合計4,466Pのみで、StepUpの内訳・期限を確認できず。",
+      "candidateOrder": 15
+    },
+    {
+      "game": "ブレードウォー三国",
+      "decision": "held",
+      "reason": "COINCOMEのみ。条件詳細と実例は未調査（当日の調査枠外）。",
+      "candidateOrder": 10
+    },
+    {
+      "game": "TikTok",
+      "decision": "excluded",
+      "reason": "ゲーム攻略の対象外（動画・配信・公営競技のサービス）。",
+      "candidateOrder": 11
+    },
+    {
+      "game": "TikTok Lite",
+      "decision": "excluded",
+      "reason": "ゲーム攻略の対象外（動画・配信・公営競技のサービス）。",
+      "candidateOrder": 17
+    },
+    {
+      "game": "Pococha",
+      "decision": "excluded",
+      "reason": "ゲーム攻略の対象外（動画・配信・公営競技のサービス）。",
+      "candidateOrder": 23
+    },
+    {
+      "game": "TIPSTAR",
+      "decision": "excluded",
+      "reason": "ゲーム攻略の対象外（動画・配信・公営競技のサービス）。",
+      "candidateOrder": 25
+    },
+    {
+      "game": "小森の宿-ららら",
+      "decision": "held",
+      "reason": "ワラウ208661（Android・10日・5Step計1,900pt）と2026年6〜9月の口コミは確認。ただし公式ストアでアプリを同定できず（開発元表記Shimmer Studio）、ゲームの同一性を確定できない。",
+      "candidateOrder": 30
+    },
+    {
+      "game": "アツアツ冒険伝",
+      "decision": "held",
+      "reason": "ワラウ208690・208691は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 20
+    },
+    {
+      "game": "Tatem Blast: Color Pop",
+      "decision": "held",
+      "reason": "ワラウ208671・208672は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 22
+    },
+    {
+      "game": "AI彼女・彼氏と恋愛チャットゲーム【恋AIモード】",
+      "decision": "held",
+      "reason": "ワラウ208684・208685は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 24
+    },
+    {
+      "game": "Abyss World",
+      "decision": "held",
+      "reason": "ワラウ208653は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 31
+    },
+    {
+      "game": "クラウドキャッチャー",
+      "decision": "held",
+      "reason": "ワラウ200363・200364は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 37
+    },
+    {
+      "game": "マージキャンプ",
+      "decision": "held",
+      "reason": "ワラウ208511は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 38
+    },
+    {
+      "game": "大家さんになろう!",
+      "decision": "held",
+      "reason": "ワラウ208703・208704は公開ページが表示不可で条件を確認できず。",
+      "candidateOrder": 43
+    },
+    {
+      "game": "Shelf Sort: Match",
+      "decision": "held",
+      "reason": "ワラウ208664（Android・10Step計2,450pt）は確認。口コミ0件・独立した到達記録なし。",
+      "candidateOrder": 27
+    },
+    {
+      "game": "Happy Chef Mania: Cooking Game",
+      "decision": "held",
+      "reason": "ワラウ208662・208663（4Step計2,110pt）は確認。口コミ0件・独立した到達記録なし。",
+      "candidateOrder": 29
+    },
+    {
+      "game": "Monster Hunter Outlanders",
+      "decision": "held",
+      "reason": "ワラウ208725・208726（3Step計570／510pt）は確認。口コミ0件・独立した到達記録なし。SKYFLAG版208676・208708は表示不可。",
+      "candidateOrder": 50
+    }
+  ],
+  "note": "保留は除外ではない。次回以降、当日のデータで不足していた根拠が見つかった場合のみ採用する。"
+}
