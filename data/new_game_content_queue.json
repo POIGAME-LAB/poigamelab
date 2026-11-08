@@ -1,18 +1,13 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-11-07T20:17:16+00:00",
+  "checkedAt": "2026-11-08T20:32:31+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
   "rankingComplete": true,
   "holdReason": null,
-  "heldCandidates": [
-    {
-      "game": "Heroes Survival Battle",
-      "reason": "ranked_game_reward_invalid"
-    }
-  ],
+  "heldCandidates": [],
   "count": 5,
   "items": [
     {
@@ -268,89 +263,40 @@
     },
     {
       "rank": 5,
-      "game": "Heroes vs Crazy Wiggler",
-      "maxObservedRewardYen": 22379,
-      "confirmedSourceCount": 3,
-      "listingSourceCount": 3,
-      "verifiedRewardSourceCount": 3,
+      "game": "モンスターサバイバル",
+      "maxObservedRewardYen": 37500,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 2,
       "pointSiteEvidence": [
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206635&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208651&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 37500
         },
         {
           "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205731&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205732&pl=pc_categoryService",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205754&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 11400
-        },
-        {
-          "source": "warau",
-          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205755&pl=pc_categoryService",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 11400
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34631",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 22379
-        },
-        {
-          "source": "mikoshi",
-          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34630",
-          "detailConfirmed": true,
-          "rewardVerified": true,
-          "rewardYen": 22379
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/19814",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208598&pl=pc_categoryService",
           "detailConfirmed": false,
           "rewardVerified": false,
           "rewardYen": null
         },
         {
           "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18904",
+          "url": "https://www.rewards.kurashiru.com/ads/19905",
           "detailConfirmed": true,
-          "rewardVerified": false,
-          "rewardYen": null
-        },
-        {
-          "source": "kurashiru_reward",
-          "url": "https://www.rewards.kurashiru.com/ads/18336",
-          "detailConfirmed": false,
-          "rewardVerified": false,
-          "rewardYen": null
+          "rewardVerified": true,
+          "rewardYen": 28146
         }
       ],
       "researchQueries": {
-        "web": "\"Heroes vs Crazy Wiggler\" ポイ活 攻略 達成 撤退",
-        "x": "site:x.com \"Heroes vs Crazy Wiggler\" ポイ活 日目",
-        "youtube": "site:youtube.com \"Heroes vs Crazy Wiggler\" ポイ活 攻略",
-        "instagram": "site:instagram.com \"Heroes vs Crazy Wiggler\" ポイ活",
-        "pointSites": "\"Heroes vs Crazy Wiggler\" ポイ活 口コミ 課金"
+        "web": "\"モンスターサバイバル\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"モンスターサバイバル\" ポイ活 日目",
+        "youtube": "site:youtube.com \"モンスターサバイバル\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"モンスターサバイバル\" ポイ活",
+        "pointSites": "\"モンスターサバイバル\" ポイ活 口コミ 課金"
       },
       "requiredResearchChannels": [
         "web",
