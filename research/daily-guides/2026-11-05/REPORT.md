@@ -1,0 +1,68 @@
+# 2026-11-05 日次新規攻略｜結果報告（初回手動テスト）
+
+目標最大5本に対し、**完成1本**。品質基準を満たさない候補で本数を水増ししていません。
+
+## 1. 実行日・取得データ
+
+- 実行日：2026年11月5日（JST）。Routine導入前の初回手動テスト（Claude Code）。
+- 使用データ：`data/new_game_content_queue.json` と `data/new_game_monitor.json`。どちらも checkedAt 2026-11-04T21:56:46Z（＝2026-11-05 06:56 JST）で当日のデータ。main 23df481。
+- 候補整理：`candidates.json`。当日データの164候補（既掲載・未マージPR・カタログ17件、非ゲーム17件、案件集合サービス2件などを除外）。
+
+## 2〜4. 調査数・完成記事
+
+- 判断を記録した候補：29件（うち詳細を調べた候補25件）。詳細は `selection.json`。
+- 完成：1本
+
+| ゲーム | タイトル | ページ |
+| --- | --- | --- |
+| ミステリータウン：マージゲーム（Mystery Town） | ミステリータウン ポイ活攻略｜レベル120・150の実例と30日・60日の進め方 | /mystery-town-guide.html |
+
+## 5. 出典の確認状況
+
+- ワラウ iOS 206151／Android 206152：当日直接取得（HTTP 200）。全Step・合計（11,040／11,550pt）の一致を確認。どちらも**2026年11月07日までの増額表示**（増額前 10,510／11,000pt）で、記事に明記。証拠：`evidence/mystery-town-offers.json`（SHA-256つき）。
+- App Store（id6503603603）・Google Play（com.cedargames.mysterytown）：開発元 Cedar Games Studio、案件ページの広告主と一致。
+- 実例：ワラウ口コミ（2026年4〜10月、58件のうち到達日数・レベルの記載がある投稿）と個人ブログ1件。実例パネルに7名、すべて365日以内。日数の記載がないものは推定していない。
+- 出典URL 7件すべて当日 HTTP 200。
+
+## 6. 保留・除外（主なもの）
+
+| 候補 | 判定 | 理由 |
+| --- | --- | --- |
+| ベガス クレイズ カジノ | 保留 | ワラウの公開ページが表示不可。10/31の保留理由（独立した到達記録不足）も未解消 |
+| Fish of Fortune／MONOPOLY GO!／ジャックポットワールド ほかモッピー案件 | 保留 | モッピー公開ページは合計額のみで全Stepの内訳が見えない |
+| モンスターサバイバル | 保留 | 全15Step・37,500ptは確認。2026年7月配信・案件は当日新規で、日付つきの到達記録なし |
+| 小森の宿-ららら | 保留 | 案件・口コミは確認。公式ストアでアプリを同定できない |
+| Z ルート／Endless Arrow／アツアツ冒険伝 ほか | 保留 | ワラウの公開ページが「表示できません」 |
+| Shelf Sort／Happy Chef Mania／Monster Hunter Outlanders | 保留 | 案件は確認。口コミ0件・到達記録なし |
+| TikTok／TikTok Lite／Pococha／TIPSTAR | 除外 | ゲーム攻略の対象外 |
+| Freecash | 除外 | 案件集合サービス |
+| ザ・グランドマフィア／Bingo Blitz／Heroes vs Crazy Wiggler | 除外 | 未マージPR #344 で制作済み |
+
+## 7〜8. PR・テスト
+
+- Draft PR：https://github.com/POIGAME-LAB/poigamelab/pull/348（セットアップと初回記事を同じPRに含む）。
+- ローカル（11-09、最新main 421dde6 取込後）：`tests/test_daily_guides.py` 22件合格（改ざん・旧案件の誤表示を拒否する否定テストを含む）。全体 pytest は main 62件失敗／1426件合格、ブランチ 62件失敗／1448件合格で、失敗は同じ62件（新規失敗0件）。
+- 表示：Playwright（PC 1280px／iPhone 13／360px）で横スクロール0、目次11リンク解決、実例7名表示、攻略一覧に1件。
+- GitHub CI（PR #348、HEAD ed674cc）：validate／validate-guides／validate-player-progress／validate-township-guide／validate-r2 の5件すべて success。11-09に、既存ワークフローを変更せず独立した `.github/workflows/validate-daily-guides.yml` を追加し、日次ゲート・静的ハブ同期・日次テストをPRで実行するようにした。
+- 定期実行（11-09更新）：Routine「POIGAME LAB｜毎日新規攻略5本」を登録済み（trig_01WhoixeuBDjiRf6P8jhgQyc、毎日09:00 JST、モデルSonnet 5.5）。PR #348がmainへ入るまで必要なスクリプトがmainに無いため**無効（停止中）**。この方法で登録したRoutineには、リポジトリの添付とNotion等のコネクターが含まれておらず、推論レベルも設定できない。有効化の前に、claude.aiのRoutines画面でリポジトリPOIGAME-LAB/poigamelab・Notion（とGitHub）・推論Highを設定する必要がある。
+- GitHub CI（11-09、HEAD adf3845）：validate／validate-guides／validate-player-progress／validate-township-guide／validate-r2／**validate-daily-guides（新規、51件合格）**の6件すべて success。
+
+## 公開前の再確認（2026-11-09 JST）
+
+- 11-05に採用したワラウ iOS 206151／Android 206152 は、11-09の取得で「掲載終了のご案内」でした（HTTP 200）。この表示は一時停止でも出るため、終了とは断定していません。iOSの終了ページには「関連のサービス」として 201563 が表示されていました。
+- 同じゲーム（広告主 Cedar Games Studio、口コミ47件も共通）の現行案件を確認：**iOS 201563**（全14Step・10,510pt・増額表示なし）、**Android 201666**（全15Step・11,000pt・増額表示なし）。期限はすべてインストール日起算と明記、保証申請はインストール日起算80日以内。レベル条件のみの合計はどちらも10,230pt。
+- 記事の案件表・本文の金額・課金Stepの差額・FAQ・ヒーロー統計・案件リンク・出典（M1／M2／M5を現行IDへ、旧IDはM8／M9として掲載終了の案内のみ）を現行案件へ更新。旧ID・旧額（11,040／11,550pt）は現行の表やリンクに出していません。
+- 実例に使ったワラウ口コミ6名は、11-09も現行案件ページに掲載されていることを確認。出典9件すべて11-09に HTTP 200。
+- 証拠：`evidence/mystery-town-offers-recheck-20261109.json`（4ID、SHA-256つき）。ゲートは最新の再確認ファイルを正として照合します。
+
+## 9. 未確認事項
+
+- 当サイトは実機でプレイしていない。ログイン後の表示・実際のポイント付与は未確認。
+- Android課金Stepのパック価格（案件ページに記載なし）。
+- iPhone Safari実機での表示。
+
+## 10. 次回への注意点
+
+- 11-09の再確認で表を現行案件（201563／201666）へ更新済み。公開（マージ）が数日以上先になる場合は、`--recheck` で再度取り直してから公開する。
+- モッピー単独の高額案件は全Stepが公開ページにないため、毎日上位に出ても保留が続く。別サイトで同じゲームの全Stepが出たら再評価する。
+- 当日スキャンの全件は R2 にあり、Routineから読めるのは公開モニターの表示範囲のみ。

@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-09",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "ワラウ iOS案件201563",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563",
+      "type": "point_site",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "全14Step・表示合計10,510pt（増額表示なし）、期限はすべてインストール日起算",
+        "課金Step2件（300円パック70pt・800円パック210pt）",
+        "獲得対象外条件（iOSのトラッキング拒否を含む）・あんしん保証（インストール日起算80日以内）・申請に必要なUIDとキャプチャ"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-09T13:54:25+00:00",
+      "responseSha256": "383c0278dd89e21240a4d53d3495955bfcfdbc12c5a05b430216f9970f14e700"
+    },
+    {
+      "id": "M2",
+      "title": "ワラウ Android案件201666",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201666",
+      "type": "point_site",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "全15Step・表示合計11,000pt（増額表示なし）、期限はすべてインストール日起算",
+        "課金Step3件（ダイヤモンドミニパック80・小パック220・大パック1200、価格表記なし）"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-09T13:54:39+00:00",
+      "responseSha256": "bd3762342517f467fa6b2dcbbe9354a7a2e8184b2575151b2e95ff2485c85f39"
+    },
+    {
+      "id": "M3",
+      "title": "App Store Cedar Games Studio版",
+      "url": "https://apps.apple.com/jp/app/id6503603603",
+      "type": "official",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元Cedar Games Studio、アイテムを2つマージ・注文を完了して町を再建、広告なし、アプリ内購入",
+        "評価とレビュー欄：2026年9月6日の投稿（課金ルーレットの値上がり、Lv150までの感想）はユーザー投稿"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Google Play Cedar Games Studio版",
+      "url": "https://play.google.com/store/apps/details?id=com.cedargames.mysterytown",
+      "type": "official",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "Androidパッケージcom.cedargames.mysterytown、開発元Cedar Games Studio"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563",
+      "type": "player",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "口コミ47件（iOS・Androidの新旧案件ページに同じ口コミを表示）。採用した7名のうちワラウ投稿6名は2026-11-09も掲載を確認"
+      ],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "reviewIndexFile": "research/daily-guides/2026-11-05/evidence/mystery-town-offers-recheck-20261109.json"
+    },
+    {
+      "id": "M6",
+      "title": "ササナギックス・30日目と60日の記録",
+      "url": "https://sasanagix.hateblo.jp/entry/2026/06/04/214743",
+      "type": "player",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "30日目レベル90、57日目くらいでレベル150で終了、約1,100円課金（グローリーパス）、9時ログインボーナス・曜日別カードブースト"
+      ],
+      "publishedOn": "2026-06-04"
+    },
+    {
+      "id": "M7",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "1pt＝1円"
+      ]
+    },
+    {
+      "id": "M8",
+      "title": "ワラウ 旧iOS案件206151",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151",
+      "type": "point_site",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026-11-05は14Step・11,040pt（11月7日までの増額）。2026-11-09は「掲載終了のご案内」、関連サービスとして201563を表示"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-09T13:54:53+00:00",
+      "responseSha256": "ec3bf4a38588f3944b4f880609f3b911e6ed670604511a74eb7ae46cb52b69f1"
+    },
+    {
+      "id": "M9",
+      "title": "ワラウ 旧Android案件206152",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152",
+      "type": "point_site",
+      "checkedAt": "2026-11-09",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026-11-05は15Step・11,550pt（11月7日までの増額）。2026-11-09は「掲載終了のご案内」"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-09T13:54:55+00:00",
+      "responseSha256": "d5112880ff8ee31c6eca5926fbbc34a207949f4efc489fe443731c504213c961"
+    }
+  ],
+  "retrievalNote": "案件ページは2026-11-05にscripts/daily_guide_evidence.pyで取得し、公開前の再確認として2026-11-09に再取得（--recheck）。11-09時点で旧ID 206151・206152は掲載終了の案内、現行の201563・201666の全Stepと合計の一致を確認。口コミ本文はリポジトリへ複製せず索引のみ保存。",
+  "editorialInferences": "編集部の計算・判断は本文で[編集部計算]／[編集部判断]と明示。自己申告の記録とは区別。"
+}
