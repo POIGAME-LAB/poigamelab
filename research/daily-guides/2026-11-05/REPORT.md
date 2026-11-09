@@ -44,7 +44,8 @@
 - ローカル（11-09、最新main 421dde6 取込後）：`tests/test_daily_guides.py` 22件合格（改ざん・旧案件の誤表示を拒否する否定テストを含む）。全体 pytest は main 62件失敗／1426件合格、ブランチ 62件失敗／1448件合格で、失敗は同じ62件（新規失敗0件）。
 - 表示：Playwright（PC 1280px／iPhone 13／360px）で横スクロール0、目次11リンク解決、実例7名表示、攻略一覧に1件。
 - GitHub CI（PR #348、HEAD ed674cc）：validate／validate-guides／validate-player-progress／validate-township-guide／validate-r2 の5件すべて success。11-09に、既存ワークフローを変更せず独立した `.github/workflows/validate-daily-guides.yml` を追加し、日次ゲート・静的ハブ同期・日次テストをPRで実行するようにした。
-- 定期実行：Routineはこの環境からの登録が権限判定で拒否されたため未登録。設定値とプロンプトは docs/daily-guide-routine.md。
+- 定期実行（11-09更新）：Routine「POIGAME LAB｜毎日新規攻略5本」を登録済み（trig_01WhoixeuBDjiRf6P8jhgQyc、毎日09:00 JST、モデルSonnet 5.5）。PR #348がmainへ入るまで必要なスクリプトがmainに無いため**無効（停止中）**。この方法で登録したRoutineには、リポジトリの添付とNotion等のコネクターが含まれておらず、推論レベルも設定できない。有効化の前に、claude.aiのRoutines画面でリポジトリPOIGAME-LAB/poigamelab・Notion（とGitHub）・推論Highを設定する必要がある。
+- GitHub CI（11-09、HEAD adf3845）：validate／validate-guides／validate-player-progress／validate-township-guide／validate-r2／**validate-daily-guides（新規、51件合格）**の6件すべて success。
 
 ## 公開前の再確認（2026-11-09 JST）
 
