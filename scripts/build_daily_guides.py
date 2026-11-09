@@ -9,7 +9,10 @@ Each completed article folder holds the editorial package written by the daily r
     experiences.json  experience-panel data (players with sources, unknown days stay null)
     page.json         page furniture only: heroStats, offerLinks, related, registry
 
-and ``evidence/<slug>-offers.json`` written by ``scripts/daily_guide_evidence.py`` the same day.
+and ``evidence/<slug>-offers.json`` written by ``scripts/daily_guide_evidence.py`` the same day. A later
+pre-publication re-check (``evidence/<slug>-offers-recheck-YYYYMMDD.json``, ``--recheck``) supersedes it: the
+offer table must then equal the *latest* first-party evidence, and offers recorded in ``metadata.previousOffers``
+must be shown as no longer available there (an old point_id is never presented as the current offer).
 
 This script only *converts* (body text is carried over verbatim, as in research/new-guides/2026-10-31/tools/
 md_to_spec.py), renders with the existing ``scripts/render_cited_guide.py`` and registers guide-only with
@@ -129,8 +132,14 @@ def parse_article(text: str) -> dict:
     return {"title": title, "intro": intro, "toc": toc, "sections": sections, "sources": sources, "sourceNote": source_note}
 
 
+def evidence_path(batch: Path, slug: str) -> Path:
+    """Latest offer evidence: the newest pre-publication re-check if any, else the production-day file."""
+    rechecks = sorted((batch / "evidence").glob(f"{slug}-offers-recheck-*.json"))
+    return rechecks[-1] if rechecks else batch / "evidence" / f"{slug}-offers.json"
+
+
 def _evidence(batch: Path, slug: str) -> dict:
-    return _json(batch / "evidence" / f"{slug}-offers.json")
+    return _json(evidence_path(batch, slug))
 
 
 def _jp_date(iso: str) -> str:
@@ -192,8 +201,8 @@ def gate(batch: Path, slug: str) -> list[str]:
     for name in REQUIRED_FILES:
         if not (d / name).is_file():
             errs.append(f"missing_file:{name}")
-    ev_path = batch / "evidence" / f"{slug}-offers.json"
-    if not ev_path.is_file():
+    ev_path = evidence_path(batch, slug)
+    if not (batch / "evidence" / f"{slug}-offers.json").is_file() or not ev_path.is_file():
         errs.append("missing_offer_evidence")
     if errs:
         return errs
@@ -201,6 +210,8 @@ def gate(batch: Path, slug: str) -> list[str]:
     article = (d / "article.md").read_text(encoding="utf-8")
     meta, src, exp, page = (_json(d / n) for n in ("metadata.json", "sources.json", "experiences.json", "page.json"))
     ev = _json(ev_path)
+    ev_date = ev.get("checkedAtJst", "")[:10]
+    is_recheck = ev_path.name != f"{slug}-offers.json"
     try:
         art = parse_article(article)
     except ValueError as exc:
@@ -244,15 +255,27 @@ def gate(batch: Path, slug: str) -> list[str]:
         s = src_by_id.get(sid)
         if s and s.get("url") != url:
             errs.append(f"source_url_differs:{sid}")
-        if s and s.get("checkedAt") != batch_date:
+        if s and s.get("checkedAt") not in {batch_date, ev_date}:
             errs.append(f"source_not_checked_today:{sid}")
+        if s and s.get("type") == "point_site" and s.get("checkedAt") != ev_date:
+            errs.append(f"offer_source_not_checked_with_latest_evidence:{sid}")
         if urlsplit(url).scheme != "https":
             errs.append(f"source_not_https:{sid}")
 
     # offer table vs same-day first-party evidence
     checks = {c["pointId"]: c for c in ev.get("checks", [])}
-    if ev.get("checkedAtJst", "")[:10] != batch_date:
+    if (not is_recheck and ev_date != batch_date) or (is_recheck and ev_date < batch_date):
         errs.append("offer_evidence_not_from_batch_date")
+    current_ids = {str(o.get("pointId")) for o in meta.get("offers") or []}
+    for prev in meta.get("previousOffers") or []:
+        pid = str(prev.get("pointId"))
+        c = {x["pointId"]: x for x in ev.get("checks", [])}.get(pid)
+        if pid in current_ids:
+            errs.append(f"previous_offer_listed_as_current:{pid}")
+        if not c or c.get("live"):
+            errs.append(f"previous_offer_not_shown_unavailable_in_latest_evidence:{pid}")
+        if prev.get("url") in {l.get("url") for l in page.get("offerLinks", [])}:
+            errs.append(f"previous_offer_linked_as_current:{pid}")
     offers = meta.get("offers") or []
     if not offers:
         errs.append("metadata_offers_required")

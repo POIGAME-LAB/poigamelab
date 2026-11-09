@@ -15,6 +15,7 @@ research/daily-guides/
     selection.json             採用／保留／除外の判断と理由（重複防止の履歴）
     REPORT.md                  その日の結果報告
     evidence/<slug>-offers.json  scripts/daily_guide_evidence.py の当日取得記録（全Step・合計・SHA-256・口コミ索引）
+    evidence/<slug>-offers-recheck-YYYYMMDD.json  公開前の再確認（--recheck）。あればゲートはこちらを正とする
     <slug>/
       article.md               完成原稿（H1＝SEOタイトル、出典ID [M1] 付き）
       metadata.json            SEO・ゲーム同定・案件表（全Step・課金フラグ・期限・合計）
@@ -29,7 +30,15 @@ research/daily-guides/
 ```sh
 python scripts/daily_guide_candidates.py --scan-remote            # 当日候補（前日データなら status=stale_input で停止）
 python scripts/daily_guide_evidence.py --slug <slug> <point_id>... --reviews 6
+python scripts/daily_guide_evidence.py --date <batch date> --slug <slug> --recheck <現行point_id>... <旧point_id>...   # 公開前の再確認
 python scripts/build_daily_guides.py --check research/daily-guides/<date>   # 品質ゲートのみ
 python scripts/build_daily_guides.py research/daily-guides/<date>           # HTML生成・攻略一覧／sitemap／ビルド許可へ登録
 python -m pytest -q tests/test_daily_guides.py
 ```
+
+## 公開前の再確認
+
+増額期限や掲載状況はマージ待ちの間に変わります。公開（mainマージ）前に `--recheck` で案件ページを取り直し、`build_daily_guides.py --check` を通してください。
+
+- 採用時の案件IDが「掲載終了のご案内」になった場合、その表示が一時停止か終了かはページから判別できません。案件終了と断定せず、`metadata.previousOffers` に記録します（ゲートは、旧IDが最新の確認で掲載中でないこと、現行の案件として表やリンクに出ていないことを確認します）。
+- 同じゲームの現行案件（終了ページの「関連のサービス」に出るIDなど）を全Stepまで確認できた場合だけ、表・合計・FAQ・出典を現行案件へ更新します。確認できなければ、現行の報酬を書かず公開を保留します。

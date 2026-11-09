@@ -58,6 +58,10 @@ def parse_offer(raw: str) -> dict:
     out: dict = {"title": html.unescape(title), "live": "獲得条件" in t and "達成条件\n獲得pt" in t}
     if "こちらのページは表示できません" in t:
         out["live"], out["unavailableReason"] = False, "page_not_viewable_publicly"
+    elif "掲載終了のご案内" in t or "広告にアクセスすることができませんでした" in t:
+        # Warau shows the same notice for a pause and for an end, so this records only what was shown.
+        out["live"], out["unavailableReason"] = False, "listing_end_notice_shown"
+        out["relatedPointIds"] = sorted(set(re.findall(r"point_id=(\d+)&(?:amp;)?pl=endEntrance(?!Similar)", raw)))
     m = re.search(r"本日インストールの場合、達成期限は\s*(\d{4}年\d+月\d+日)", t)
     out["deadlineIfInstalledToday"] = m.group(1) if m else None
     m = re.search(r"■獲得条件\s*\n(.+)", t)
@@ -82,9 +86,10 @@ def parse_offer(raw: str) -> dict:
     # Temporary increase: "10,510pt\n →\n最大\n11,040\npt\n 2026年11月07日まで"
     m = re.search(r"([\d,]+)pt\s*\n\s*→\s*\n\s*最大\s*\n\s*([\d,]+)\s*\n\s*pt\s*\n\s*(\d{4}年\d{1,2}月\d{1,2}日)まで", t)
     out["temporaryIncrease"] = {"regularPt": _int(m.group(1)), "increasedPt": _int(m.group(2)), "until": m.group(3)} if m else None
-    m = re.search(r"^(iOS|Android)\s*$", t, re.M)
+    # An end/unavailable page lists *other* offers; never read their OS or advertiser as this offer's.
+    m = re.search(r"^(iOS|Android)\s*$", t, re.M) if out["live"] else None
     out["os"] = m.group(1) if m else None
-    m = re.search(r"広告主：(.+)", t)
+    m = re.search(r"広告主：(.+)", t) if out["live"] else None
     out["advertiser"] = m.group(1).strip() if m else None
     terms = t.split("クチコミ", 1)[0]  # offer terms only; never review bodies
     out["termNotes"] = [ln.strip() for ln in terms.split("\n")
@@ -130,11 +135,14 @@ def main(argv=None) -> int:
     ap.add_argument("--date", default=datetime.now(JST).date().isoformat())
     ap.add_argument("--slug", required=True)
     ap.add_argument("--reviews", type=int, default=0, help="also index up to N review pages")
+    ap.add_argument("--recheck", action="store_true",
+                    help="pre-publication re-check of an earlier batch: writes <slug>-offers-recheck-<today>.json instead")
     args = ap.parse_args(argv)
     checks = [record(pid, args.reviews) for pid in args.point_ids]
     out = {"schemaVersion": 1, "slug": args.slug, "site": "warau", "checkedAtJst": datetime.now(JST).isoformat(timespec="seconds"),
            "yenPerPoint": 1, "yenPerPointSource": "https://www.warau.jp/help/qa/1475/", "checks": checks}
-    path = ROOT / "research" / "daily-guides" / args.date / "evidence" / f"{args.slug}-offers.json"
+    name = f"{args.slug}-offers-recheck-{out['checkedAtJst'][:10].replace('-', '')}.json" if args.recheck else f"{args.slug}-offers.json"
+    path = ROOT / "research" / "daily-guides" / args.date / "evidence" / name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for c in checks:

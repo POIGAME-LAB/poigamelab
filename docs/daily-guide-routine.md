@@ -84,6 +84,8 @@
 | 原稿→公開HTML | `scripts/build_daily_guides.py` | 既存 `render_cited_guide.py`・`register_guide_pages.py`・`sync_static_guide_links.js` を再利用。本文は原稿のまま |
 | 品質ゲート | `build_daily_guides.py --check` | 当日証拠と全Step一致、課金Stepの明示、期限、増額の開示、SEO／canonical、目次、出典の当日確認、365日以内の独立2人以上、day=0禁止、約束表現の禁止 |
 | 回帰テスト | `tests/test_daily_guides.py` | 全バッチの再現性・登録・重複なし＋改ざん検出の否定テスト |
+| 公開前の再確認 | `daily_guide_evidence.py --recheck` | マージ前に案件を取り直す。旧IDは `metadata.previousOffers` に記録し、現行案件として表示しない |
+| CI | `.github/workflows/validate-daily-guides.yml` | 既存ワークフローとは別。PRで日次ゲート・静的ハブ同期・日次テストを実行（ネットワーク・Secrets不使用） |
 
 ## 4. 既知の限界
 

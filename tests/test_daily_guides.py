@@ -70,7 +70,7 @@ def test_gate_passes_and_page_reproducible(batch, slug):
 @pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
 def test_offer_table_equals_same_day_evidence(batch, slug):
     meta = _j(batch / slug / "metadata.json")
-    ev = {c["pointId"]: c for c in _j(batch / "evidence" / f"{slug}-offers.json")["checks"]}
+    ev = {c["pointId"]: c for c in _j(bdg.evidence_path(batch, slug))["checks"]}
     text = _text((ROOT / meta["proposedPage"]).read_text(encoding="utf-8"))
     for o in meta["offers"]:
         c = ev[o["pointId"]]
@@ -83,6 +83,11 @@ def test_offer_table_equals_same_day_evidence(batch, slug):
             assert f"{s['rewardPt']:,}pt" in text
         if c.get("temporaryIncrease"):
             assert c["temporaryIncrease"]["until"] in text  # a boosted amount is always disclosed as temporary
+    for prev in meta.get("previousOffers", []):
+        c = ev[prev["pointId"]]
+        assert c["live"] is False and c["unavailableReason"]  # shown as no longer available on the latest check
+        assert prev["pointId"] not in {o["pointId"] for o in meta["offers"]}
+        assert f"{prev['totalDisplayedPt']:,}pt" not in text  # an old amount is never presented as current
 
 
 @pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
@@ -210,6 +215,8 @@ def test_gate_rejects_unflagged_purchase_and_missing_deadline(tmp_batch):
 
 def test_gate_rejects_stale_evidence_and_dead_offer(tmp_batch):
     b, slug = tmp_batch
+    for rc in (b / "evidence").glob(f"{slug}-offers-recheck-*.json"):
+        rc.unlink()  # fall back to the production-day evidence
     _edit(b / "evidence" / f"{slug}-offers.json", lambda e: (e.update(checkedAtJst="2026-01-01T09:00:00+09:00"), e["checks"][0].update(live=False)))
     errs = bdg.gate(b, slug)
     assert "offer_evidence_not_from_batch_date" in errs
@@ -233,16 +240,40 @@ def test_gate_rejects_day_zero_old_records_and_too_few_players(tmp_batch):
 def test_gate_rejects_undisclosed_boost_and_promises(tmp_batch):
     b, slug = tmp_batch
     art = b / slug / "article.md"
-    text = art.read_text(encoding="utf-8")
-    ev = _j(b / "evidence" / f"{slug}-offers.json")
-    until = next((c["temporaryIncrease"]["until"] for c in ev["checks"] if c.get("temporaryIncrease")), None)
-    if until:
-        text = text.replace(until, "期間中")
-    art.write_text(text.replace("当サイト自身がプレイした結果ではありません。", "必ずもらえる金額です。"), encoding="utf-8")
+    art.write_text(art.read_text(encoding="utf-8").replace("当サイト自身がプレイした結果ではありません。", "必ずもらえる金額です。"), encoding="utf-8")
+    pid = _j(b / slug / "metadata.json")["offers"][0]["pointId"]
+    # a temporary increase on the latest evidence must be disclosed with its end date
+    _edit(bdg.evidence_path(b, slug), lambda e: next(c for c in e["checks"] if c["pointId"] == pid).update(
+        temporaryIncrease={"regularPt": 1, "increasedPt": 2, "until": "2099年1月1日"}))
     errs = bdg.gate(b, slug)
     assert "forbidden_claim:必ずもらえる" in errs
-    if until:
-        assert any(e.startswith("temporary_increase_not_disclosed") for e in errs)
+    assert f"temporary_increase_not_disclosed:{pid}" in errs
+
+
+def test_gate_uses_latest_recheck_evidence(tmp_batch):
+    b, slug = tmp_batch
+    latest = bdg.evidence_path(b, slug)
+    assert latest.name.startswith(f"{slug}-offers")
+    if latest.name == f"{slug}-offers.json":
+        pytest.skip("no pre-publication re-check in this batch")
+    # a current offer that the latest re-check shows as ended must fail, even if the old file had it live
+    meta = _j(b / slug / "metadata.json")
+    pid = meta["offers"][0]["pointId"]
+    _edit(latest, lambda e: next(c for c in e["checks"] if c["pointId"] == pid).update(live=False, steps=[], totalPt=None))
+    assert f"offer_not_live_in_evidence:{pid}" in bdg.gate(b, slug)
+
+
+def test_gate_rejects_previous_offer_presented_as_current(tmp_batch):
+    b, slug = tmp_batch
+    meta = _j(b / slug / "metadata.json")
+    if not meta.get("previousOffers"):
+        pytest.skip("no previous offers recorded")
+    prev = meta["previousOffers"][0]
+    _edit(b / slug / "page.json", lambda pg: pg["offerLinks"].append({"label": "旧", "url": prev["url"]}))
+    _edit(bdg.evidence_path(b, slug), lambda e: next(c for c in e["checks"] if c["pointId"] == prev["pointId"]).update(live=True))
+    errs = bdg.gate(b, slug)
+    assert f"previous_offer_linked_as_current:{prev['pointId']}" in errs
+    assert f"previous_offer_not_shown_unavailable_in_latest_evidence:{prev['pointId']}" in errs
 
 
 def test_gate_rejects_uncited_offer_and_seo_mismatch(tmp_batch):
@@ -271,6 +302,16 @@ def test_evidence_parser_reads_steps_total_boost_and_reviews():
     assert d["temporaryIncrease"] == {"regularPt": 1000, "increasedPt": 1100, "until": "2026年11月07日"}
     assert d["reviewIndex"] == [{"name": "ねこ", "attribute": "女性・30代", "date": "2026-10-01", "title": "見出し"}]
     assert all("本文" not in n for n in d["termNotes"])  # review bodies are never copied
+
+
+def test_evidence_parser_records_end_notice_without_reading_related_cards():
+    raw = ("<title>掲載終了のご案内｜ワラウ</title><p>広告にアクセスすることができませんでした</p><p>▼関連のサービスをご利用ください▼</p>"
+           '<a href="/contents/point/pointEntrance.php?point_id=201563&pl=endEntrance">ミステリータウン</a><p>10,510</p><p>pt</p><p>iOS</p>'
+           '<a href="/contents/point/pointEntrance.php?point_id=207823&amp;pl=endEntranceSimilar">別ゲーム</a>')
+    d = evid.parse_offer(raw)
+    assert d["live"] is False and d["unavailableReason"] == "listing_end_notice_shown"
+    assert d["relatedPointIds"] == ["201563"]  # the "similar ads" list is not the same game
+    assert d["os"] is None and d["steps"] == [] and d["totalPt"] is None  # the related card's OS/amount is not this offer's
 
 
 def test_evidence_parser_never_reads_unavailable_page_as_zero():

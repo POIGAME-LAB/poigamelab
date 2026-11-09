@@ -1,14 +1,25 @@
 {
   "schemaVersion": 1,
   "game": "ミステリータウン：マージゲーム（Mystery Town）",
-  "aliases": ["ミステリータウン：マージゲーム - Mystery Town", "ミステリータウン:マージゲーム - Mystery Town", "Mystery Town"],
+  "aliases": [
+    "ミステリータウン：マージゲーム - Mystery Town",
+    "ミステリータウン:マージゲーム - Mystery Town",
+    "Mystery Town"
+  ],
   "slug": "mystery-town",
   "title": "ミステリータウン ポイ活攻略｜レベル120・150の実例と30日・60日の進め方",
   "seoTitle": "ミステリータウン ポイ活攻略｜レベル120・150の実例と30日・60日の進め方",
   "metaDescription": "ミステリータウン（マージゲーム）のワラウStepUp案件を攻略。30日・60日の期限別の全Step、レベル150に届いた実例と撤退例、エネルギーの使い方、課金Stepの損得を紹介。",
-  "os": ["iOS", "Android"],
+  "os": [
+    "iOS",
+    "Android"
+  ],
   "researchDate": "2026-11-05",
-  "inputData": {"contentQueueCheckedAt": "2026-11-04T21:56:46+00:00", "monitorCheckedAt": "2026-11-04T21:56:46+00:00", "candidateOrder": 8},
+  "inputData": {
+    "contentQueueCheckedAt": "2026-11-04T21:56:46+00:00",
+    "monitorCheckedAt": "2026-11-04T21:56:46+00:00",
+    "candidateOrder": 8
+  },
   "status": "manuscript_complete",
   "publicationStatus": "draft_pr_not_published",
   "proposedPage": "mystery-town-guide.html",
@@ -22,69 +33,250 @@
   "offers": [
     {
       "site": "warau",
-      "pointId": "206151",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151",
+      "pointId": "201563",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563",
       "os": "iOS",
       "currency": "pt",
       "yenPerPoint": 1,
-      "totalDisplayedPt": 11040,
-      "temporaryIncrease": {"regularPt": 10510, "increasedPt": 11040, "until": "2026-11-07"},
+      "totalDisplayedPt": 10510,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
       "steps": [
-        {"condition": "30日以内にレベル20到達", "rewardPt": 15, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内に300円パック購入", "rewardPt": 70, "requiresPayment": true, "deadlineDays": 30},
-        {"condition": "30日以内にレベル30到達", "rewardPt": 35, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内に800円パック購入", "rewardPt": 220, "requiresPayment": true, "deadlineDays": 30},
-        {"condition": "30日以内にレベル40到達", "rewardPt": 110, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル60到達", "rewardPt": 300, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル70到達", "rewardPt": 430, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル80到達", "rewardPt": 520, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル100到達", "rewardPt": 650, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル120到達", "rewardPt": 1020, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "60日以内にレベル150到達", "rewardPt": 1370, "requiresPayment": false, "deadlineDays": 60},
-        {"condition": "60日以内にレベル170到達", "rewardPt": 1700, "requiresPayment": false, "deadlineDays": 60},
-        {"condition": "60日以内にレベル200到達", "rewardPt": 2100, "requiresPayment": false, "deadlineDays": 60},
-        {"condition": "60日以内にレベル250到達", "rewardPt": 2500, "requiresPayment": false, "deadlineDays": 60}
+        {
+          "condition": "30日以内にレベル20到達",
+          "rewardPt": 15,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内に300円パック購入",
+          "rewardPt": 70,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル30到達",
+          "rewardPt": 35,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内に800円パック購入",
+          "rewardPt": 210,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル40到達",
+          "rewardPt": 100,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル60到達",
+          "rewardPt": 260,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル70到達",
+          "rewardPt": 400,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル80到達",
+          "rewardPt": 470,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル100到達",
+          "rewardPt": 600,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル120到達",
+          "rewardPt": 1000,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "60日以内にレベル150到達",
+          "rewardPt": 1350,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "60日以内にレベル170到達",
+          "rewardPt": 1600,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "60日以内にレベル200到達",
+          "rewardPt": 2000,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "60日以内にレベル250到達",
+          "rewardPt": 2400,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        }
       ],
-      "sumWithoutPurchaseStepsPt": 10750,
+      "sumWithoutPurchaseStepsPt": 10230,
       "guaranteeApplicationDays": 80,
+      "verifiedAt": "2026-11-09T13:54:25+00:00",
       "sumIsNotPredictedEarnings": true
     },
     {
       "site": "warau",
-      "pointId": "206152",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152",
+      "pointId": "201666",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201666",
       "os": "Android",
       "currency": "pt",
       "yenPerPoint": 1,
-      "totalDisplayedPt": 11550,
-      "temporaryIncrease": {"regularPt": 11000, "increasedPt": 11550, "until": "2026-11-07"},
+      "totalDisplayedPt": 11000,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
       "steps": [
-        {"condition": "30日以内にレベル20到達", "rewardPt": 15, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にダイヤモンドミニパック80購入", "rewardPt": 70, "requiresPayment": true, "deadlineDays": 30},
-        {"condition": "30日以内にレベル30到達", "rewardPt": 35, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にダイヤモンド小パック220購入", "rewardPt": 220, "requiresPayment": true, "deadlineDays": 30},
-        {"condition": "30日以内にレベル40到達", "rewardPt": 110, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル60到達", "rewardPt": 300, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル70到達", "rewardPt": 430, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル80到達", "rewardPt": 520, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にダイヤモンド大パック1200購入", "rewardPt": 510, "requiresPayment": true, "deadlineDays": 30},
-        {"condition": "30日以内にレベル100到達", "rewardPt": 650, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "30日以内にレベル120到達", "rewardPt": 1020, "requiresPayment": false, "deadlineDays": 30},
-        {"condition": "60日以内にレベル150到達", "rewardPt": 1370, "requiresPayment": false, "deadlineDays": 60},
-        {"condition": "60日以内にレベル170到達", "rewardPt": 1700, "requiresPayment": false, "deadlineDays": 60},
-        {"condition": "60日以内にレベル200到達", "rewardPt": 2100, "requiresPayment": false, "deadlineDays": 60},
-        {"condition": "60日以内にレベル250到達", "rewardPt": 2500, "requiresPayment": false, "deadlineDays": 60}
+        {
+          "condition": "30日以内にレベル20到達",
+          "rewardPt": 15,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にダイヤモンドミニパック80購入",
+          "rewardPt": 70,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル30到達",
+          "rewardPt": 35,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にダイヤモンド小パック220購入",
+          "rewardPt": 200,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル40到達",
+          "rewardPt": 100,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル60到達",
+          "rewardPt": 260,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル70到達",
+          "rewardPt": 400,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル80到達",
+          "rewardPt": 470,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にダイヤモンド大パック1200購入",
+          "rewardPt": 500,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル100到達",
+          "rewardPt": 600,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "30日以内にレベル120到達",
+          "rewardPt": 1000,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "60日以内にレベル150到達",
+          "rewardPt": 1350,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "60日以内にレベル170到達",
+          "rewardPt": 1600,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "60日以内にレベル200到達",
+          "rewardPt": 2000,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "60日以内にレベル250到達",
+          "rewardPt": 2400,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        }
       ],
-      "sumWithoutPurchaseStepsPt": 10750,
+      "sumWithoutPurchaseStepsPt": 10230,
       "guaranteeApplicationDays": 80,
+      "verifiedAt": "2026-11-09T13:54:39+00:00",
       "sumIsNotPredictedEarnings": true
     }
   ],
   "limitations": [
     "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
     "Android課金Stepのパック価格は案件ページに記載がなく未確認",
-    "増額期間（2026-11-07まで）終了後の各Stepの額は未確認",
-    "期限の起算日は条件名の「30日以内／60日以内」表記に基づく。保証の申請期限はインストール日起算80日と明記",
+    "案件の条件・報酬は2026-11-09時点の201563・201666。11-05時点の206151・206152は11-09に掲載終了の案内（一時停止か終了かは判別不可）",
     "ワラウ口コミは投稿時期の案件条件で書かれており、当時の報酬額は今回と異なる可能性がある"
-  ]
+  ],
+  "previousOffers": [
+    {
+      "site": "warau",
+      "pointId": "206151",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151",
+      "os": "iOS",
+      "checkedOn": "2026-11-05",
+      "totalDisplayedPt": 11040,
+      "temporaryIncrease": {
+        "regularPt": 10510,
+        "increasedPt": 11040,
+        "until": "2026-11-07"
+      },
+      "statusOn20261109": "listing_end_notice_shown",
+      "note": "掲載終了の案内（一時停止か終了かはページから判別不可）。関連サービスとして201563を表示"
+    },
+    {
+      "site": "warau",
+      "pointId": "206152",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152",
+      "os": "Android",
+      "checkedOn": "2026-11-05",
+      "totalDisplayedPt": 11550,
+      "temporaryIncrease": {
+        "regularPt": 11000,
+        "increasedPt": 11550,
+        "until": "2026-11-07"
+      },
+      "statusOn20261109": "listing_end_notice_shown",
+      "note": "掲載終了の案内（一時停止か終了かはページから判別不可）"
+    }
+  ],
+  "offerRecheckedAt": "2026-11-09"
 }

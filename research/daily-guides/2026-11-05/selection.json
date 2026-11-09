@@ -50,7 +50,12 @@
         "ミステリータウン:マージゲーム - Mystery Town",
         "Mystery Town"
       ],
-      "pr": null
+      "pr": null,
+      "recheck": {
+        "date": "2026-11-09",
+        "result": "11-05採用時の206151・206152は掲載終了の案内（一時停止か終了か判別不可）。同じゲームの現行案件 iOS 201563（14Step・10,510pt）・Android 201666（15Step・11,000pt）の全Stepを確認し、記事・metadata・HTMLを現行案件へ更新。",
+        "evidence": "research/daily-guides/2026-11-05/evidence/mystery-town-offers-recheck-20261109.json"
+      }
     },
     {
       "game": "ベガス クレイズ カジノ",

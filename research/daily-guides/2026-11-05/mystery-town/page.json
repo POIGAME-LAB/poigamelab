@@ -1,26 +1,26 @@
 {
   "heroStats": [
     {
-      "label": "期限（2段階）",
+      "label": "期限（インストール日から）",
       "value": "30日・60日"
     },
     {
       "label": "表示合計（iOS／Android）",
-      "value": "11,040／11,550pt"
+      "value": "10,510／11,000pt"
     },
     {
       "label": "レベル条件のみの合計",
-      "value": "10,750pt"
+      "value": "10,230pt"
     }
   ],
   "offerLinks": [
     {
-      "label": "ワラウの案件ページ（iOS・206151）",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
+      "label": "ワラウの案件ページ（iOS・201563）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
     },
     {
-      "label": "ワラウの案件ページ（Android・206152）",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152"
+      "label": "ワラウの案件ページ（Android・201666）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201666"
     }
   ],
   "contextLabel": "ワラウの現在の案件ページを見る →",
