@@ -189,12 +189,15 @@ def test_research_never_enters_public_artifact(tmp_path):
         # mafia-city-guide.html is the separately reviewed live page, not a
         # research preview, so it is intentionally allowed here.
         for g in (
-            "grand-mafia",
             "viking-rise",
             "puzzles-chaos",
             "royal-match",
         )
     )
+    # grand-mafia-guide.html is now a reviewed live page (2026-10-28 guide-only
+    # addition). Only the root page may ship; the research preview must not.
+    assert "grand-mafia-guide.html" in copied
+    assert not any(x.endswith("/grand-mafia-guide.html") for x in copied)
 
 
 def test_priority_is_explicitly_not_measured_search_demand():

@@ -1,0 +1,203 @@
+{
+  "checkedAt": "2026-10-27",
+  "sources": [
+    {
+      "id": "G1",
+      "url": "https://play.google.com/store/apps/details?hl=ja&id=com.yottagames.gameofmafiajp",
+      "kind": "official",
+      "supports": "ゲーム種別・同定・組織／別荘育成・更新情報",
+      "locator": "Google Play：ゲームについて／新機能",
+      "publishedAt": "2026-10-21",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "G2",
+      "url": "https://www.amefri.net/detail/id/137656",
+      "kind": "offer",
+      "supports": "iOS・12Step・701980pt・7/15/30/60日・審査待ち記帳なし",
+      "locator": "案件詳細、多段階表、ポイント獲得条件",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "G3",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&pl=pc_categoryService",
+      "kind": "offer_and_players",
+      "supports": "Android・55000pt・短期限・3人の進行差",
+      "locator": "StepUp表、クチコミ：けいちゃん2026/09/27、とむ2026/10/20、じろう2026/09/13",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "G4",
+      "url": "https://note.com/maf252/n/n9f1f3332aa7c",
+      "kind": "player",
+      "supports": "監禁所25の22日・約5500円課金。装備・足枷・短縮の考え方",
+      "locator": "1アカウント目、装備、リーダースキル",
+      "publishedAt": "2025-12-09",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "G5",
+      "url": "https://kochalog.com/poi-gramafi/",
+      "kind": "player_strategy_other_target",
+      "supports": "英雄グレードと隊員Tier条件の相違",
+      "locator": "英雄グレードを上げる方法",
+      "publishedAt": "2026-02-07",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B1",
+      "url": "https://www.bingoblitz.com/",
+      "kind": "official",
+      "supports": "写真・チーム・交換の仕組み",
+      "locator": "Bingo Experience",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B2",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207591&pl=pc_categoryService",
+      "kind": "offer_and_players",
+      "supports": "Android27770pt・15Step・購入条件。すーな12日約50時間",
+      "locator": "StepUp表／クチコミ2026/05/16・すーな・報酬全部取り切りました",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B3",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207589&pl=pc_categoryService",
+      "kind": "offer",
+      "supports": "iOS17770pt・15Step・1/5/10/20/40/85日・最終アルプス",
+      "locator": "StepUp表",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B4",
+      "url": "https://poikatu0205.hatenablog.com/entry/2026/04/09/182246",
+      "kind": "player",
+      "supports": "旧コースのマイアミ3日、写真集め。無料PLUS利用、総課金額不明",
+      "locator": "達成結果、攻略情報、PLUSサブスク",
+      "publishedAt": "2026-04-09",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B5",
+      "url": "https://subincome055.blog.fc2.com/blog-entry-3042.html",
+      "kind": "player",
+      "supports": "15日までの途中記録、停滞とジャマイカで終了",
+      "locator": "本文・追記1〜4",
+      "publishedAt": "2026-01-11",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B6",
+      "url": "https://news.playtika.com/2026-04-23-Bingo-Blitz-Expands-Beyond-Gameplay-with-Shortical-in-New-Interactive-Drama-Collaboration",
+      "kind": "official",
+      "supports": "21歳以上向けの公式案内",
+      "locator": "本文Bingo Blitzダウンロード案内",
+      "publishedAt": "2026-04-23",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "B7",
+      "url": "https://www.bingoblitz.com/free-credits/",
+      "kind": "official",
+      "supports": "無料クレジット・ギフト・フレンド依頼",
+      "locator": "In-game／External Freebies",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "H1",
+      "url": "https://apps.apple.com/jp/app/heroes-vs-crazy-wiggler/id6758664314",
+      "kind": "official_and_reviews",
+      "supports": "巨大ワーム／役割とスキル、自動攻撃と操作、広告上限、ハード未達、更新履歴",
+      "locator": "アプリ説明、宇喜多潟レビュー9/8、ねこ大工9/12、バージョン履歴",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": "レビューの年省略表記はそのまま。日時付きペース主サンプル人数には含めない"
+    },
+    {
+      "id": "H2",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205754&pl=pc_categoryService",
+      "kind": "offer_and_players",
+      "supports": "iOS11400pt・30日・赤いダイヤ条件・Orzの2〜3日例",
+      "locator": "StepUp表／獲得条件／クチコミ2026/08/24・Ｏｒｚ・難易度6で断念。",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "H3",
+      "url": "https://tanakaatupoint.hatenablog.com/entry/heroes-vs-crazy-wiggler",
+      "kind": "player",
+      "supports": "ノーマル2/6/10・時間・2日目・終了",
+      "locator": "クリアにかかる所要時間は？",
+      "publishedAt": "2026-09-01",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "H4",
+      "url": "https://ameblo.jp/2vjl45xge8/entry-12979184313.html",
+      "kind": "player",
+      "supports": "ノーマル10を2日、ワーム・宝箱・編成・強化の攻略",
+      "locator": "戦闘説明、マウント、STAGE3までは何日",
+      "publishedAt": "2026-09",
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": "9月の記事。検索結果の9/24を本文の確定投稿日として採用しない"
+    },
+    {
+      "id": "R1",
+      "url": "https://www.warau.jp/help/qa/128/",
+      "kind": "rate",
+      "supports": "原則1pt＝1円",
+      "locator": "ワラウのポイント交換レートを知りたい",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    },
+    {
+      "id": "R2",
+      "url": "https://www.amefri.net/faq/post/24/57",
+      "kind": "rate",
+      "supports": "10pt＝1円",
+      "locator": "ポイントとはなんですか？1ptはいくらですか？",
+      "publishedAt": null,
+      "checkedAt": "2026-10-27",
+      "access": "body_read_via_web",
+      "dateNote": null
+    }
+  ]
+}

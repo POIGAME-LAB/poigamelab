@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "game": "Bingo Blitz",
+  "updatedAt": "2026-10-27",
+  "title": "実例：プレイヤーの進捗記録",
+  "intro": "過去の都市条件の進行例です。現行のキョート・アルプスとは目標が異なります。",
+  "notice": "マイアミ3日やベリーズ12日を、現行コース全額達成の所要日数として扱わないでください。",
+  "footnote": "総支出・OSが不明な記録は不明のままです。購入回数の条件やPLUS条件を現在の案件へ流用しないでください。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "マイアミを3日で達成した旧条件の例",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "マイアミ"
+        }
+      ],
+      "note": "長時間付き添ってプレイ、無料PLUS利用の記載あり。総課金額・累計時間・OS不明。",
+      "sources": [
+        "https://poikatu0205.hatenablog.com/entry/2026/04/09/182246"
+      ],
+      "sourceDetails": [
+        "ブログ｜2026/04/09｜のんびり湯豆腐"
+      ]
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "retired",
+      "summary": "トロントで停滞後、15日目にジャマイカをクリアして終了",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "ロンドン"
+        },
+        {
+          "day": 2,
+          "label": "ベニス"
+        },
+        {
+          "day": 5,
+          "label": "トロント",
+          "detail": "クレジットが枯渇"
+        },
+        {
+          "day": 13,
+          "label": "トロント",
+          "detail": "進行が止まる"
+        },
+        {
+          "day": 15,
+          "label": "ジャマイカクリア／ハリウッドで終了"
+        }
+      ],
+      "note": "ハピタスAndroidの旧75日コース。購入あり、総額不明。ベリーズ完走例ではない。",
+      "sources": [
+        "https://subincome055.blog.fc2.com/blog-entry-3042.html"
+      ],
+      "sourceDetails": [
+        "ブログ｜2026/01/11〜01/24追記｜クート"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "ベリーズを12日・約50時間で達成した旧条件の例",
+      "milestones": [
+        {
+          "day": 12,
+          "label": "ベリーズ",
+          "detail": "約50時間、課金約1,000円"
+        }
+      ],
+      "note": "課金・無料PLUSを利用したという自己申告。現行最終都市の例ではない。",
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207591&pl=pc_categoryService"
+      ],
+      "sourceDetails": [
+        "ワラウ｜2026/05/16｜すーな｜報酬全部取り切りました"
+      ]
+    }
+  ]
+}
