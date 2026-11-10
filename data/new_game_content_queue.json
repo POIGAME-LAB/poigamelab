@@ -1,12 +1,305 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-11-10T00:17:52+00:00",
+  "checkedAt": "2026-11-10T21:49:58+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
-  "rankingComplete": false,
-  "holdReason": "ranking_incomplete",
-  "count": 0,
-  "items": []
+  "rankingComplete": true,
+  "holdReason": null,
+  "heldCandidates": [],
+  "count": 5,
+  "items": [
+    {
+      "rank": 1,
+      "game": "ハイローラー ベガス : カジノゲーム",
+      "maxObservedRewardYen": 123946,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161125&track_ref=category",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 123946
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=200661&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=197091&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ハイローラー ベガス : カジノゲーム\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ハイローラー ベガス : カジノゲーム\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ハイローラー ベガス : カジノゲーム\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ハイローラー ベガス : カジノゲーム\" ポイ活",
+        "pointSites": "\"ハイローラー ベガス : カジノゲーム\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 2,
+      "game": "熱血大作戦！- 三国志キングダムRPG",
+      "maxObservedRewardYen": 92302,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/36317",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 92302
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/36316",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 92302
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/20008",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"熱血大作戦！- 三国志キングダムRPG\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"熱血大作戦！- 三国志キングダムRPG\" ポイ活 日目",
+        "youtube": "site:youtube.com \"熱血大作戦！- 三国志キングダムRPG\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"熱血大作戦！- 三国志キングダムRPG\" ポイ活",
+        "pointSites": "\"熱血大作戦！- 三国志キングダムRPG\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 3,
+      "game": "ザ・グランドマフィア",
+      "maxObservedRewardYen": 80389,
+      "confirmedSourceCount": 4,
+      "listingSourceCount": 4,
+      "verifiedRewardSourceCount": 4,
+      "pointSiteEvidence": [
+        {
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157476&track_ref=category",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 80389
+        },
+        {
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161772&track_ref=category",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208077&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208076&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207177&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&pl=pc_categoryService",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 55000
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/16651",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 70824
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/137656",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 70198
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ザ・グランドマフィア\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ザ・グランドマフィア\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ザ・グランドマフィア\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ザ・グランドマフィア\" ポイ活",
+        "pointSites": "\"ザ・グランドマフィア\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 4,
+      "game": "ベガス クレイズ カジノ",
+      "maxObservedRewardYen": 66217,
+      "confirmedSourceCount": 1,
+      "listingSourceCount": 3,
+      "verifiedRewardSourceCount": 1,
+      "pointSiteEvidence": [
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=207700&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205175&pl=pc_categoryService",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/34266",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 66217
+        },
+        {
+          "source": "mikoshi",
+          "url": "https://web.mikoshi.jp/v2/skyflag/ads/35719",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 60108
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19438",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        }
+      ],
+      "researchQueries": {
+        "web": "\"ベガス クレイズ カジノ\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"ベガス クレイズ カジノ\" ポイ活 日目",
+        "youtube": "site:youtube.com \"ベガス クレイズ カジノ\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"ベガス クレイズ カジノ\" ポイ活",
+        "pointSites": "\"ベガス クレイズ カジノ\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    },
+    {
+      "rank": 5,
+      "game": "Freecash",
+      "maxObservedRewardYen": 39560,
+      "confirmedSourceCount": 2,
+      "listingSourceCount": 2,
+      "verifiedRewardSourceCount": 2,
+      "pointSiteEvidence": [
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19185",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 23760
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19168",
+          "detailConfirmed": false,
+          "rewardVerified": false,
+          "rewardYen": null
+        },
+        {
+          "source": "kurashiru_reward",
+          "url": "https://www.rewards.kurashiru.com/ads/19091",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 29670
+        },
+        {
+          "source": "amefuri",
+          "url": "https://www.amefri.net/detail/id/140884",
+          "detailConfirmed": true,
+          "rewardVerified": true,
+          "rewardYen": 39560
+        }
+      ],
+      "researchQueries": {
+        "web": "\"Freecash\" ポイ活 攻略 達成 撤退",
+        "x": "site:x.com \"Freecash\" ポイ活 日目",
+        "youtube": "site:youtube.com \"Freecash\" ポイ活 攻略",
+        "instagram": "site:instagram.com \"Freecash\" ポイ活",
+        "pointSites": "\"Freecash\" ポイ活 口コミ 課金"
+      },
+      "requiredResearchChannels": [
+        "web",
+        "x",
+        "youtube",
+        "instagram",
+        "pointSites"
+      ],
+      "contentPackageStatus": "pending",
+      "publicationAuthorized": false
+    }
+  ]
 }
