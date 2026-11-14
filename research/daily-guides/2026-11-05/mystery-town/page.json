@@ -6,17 +6,17 @@
     },
     {
       "label": "表示合計（iOS／Android）",
-      "value": "10,510／11,000pt"
+      "value": "10,230／11,000pt"
     },
     {
-      "label": "レベル条件のみの合計",
-      "value": "10,230pt"
+      "label": "レベル条件のみ（iOS／Android）",
+      "value": "9,950／10,230pt"
     }
   ],
   "offerLinks": [
     {
-      "label": "ワラウの案件ページ（iOS・201563）",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+      "label": "ワラウの案件ページ（iOS・209212）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
     },
     {
       "label": "ワラウの案件ページ（Android・201666）",

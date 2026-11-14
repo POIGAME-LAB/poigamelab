@@ -250,6 +250,16 @@ def test_gate_rejects_undisclosed_boost_and_promises(tmp_batch):
     assert f"temporary_increase_not_disclosed:{pid}" in errs
 
 
+def test_batch_is_capped_at_five_articles_per_day(tmp_batch):
+    b, slug = tmp_batch
+    for i in range(5):  # 1 real + 5 copies = 6 completed manuscripts
+        shutil.copytree(b / slug, b / f"{slug}-copy{i}")
+    res = bdg.check_batch(b)
+    assert res["_batch"] == ["more_than_5_articles_in_one_day:6"]
+    with pytest.raises(SystemExit):
+        bdg.build_batch(b)  # refuses to build anything while over the cap
+
+
 def test_gate_uses_latest_recheck_evidence(tmp_batch):
     b, slug = tmp_batch
     latest = bdg.evidence_path(b, slug)

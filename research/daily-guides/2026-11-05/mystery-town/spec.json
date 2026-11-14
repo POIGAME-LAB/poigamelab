@@ -12,11 +12,11 @@
     },
     {
       "label": "表示合計（iOS／Android）",
-      "value": "10,510／11,000pt"
+      "value": "10,230／11,000pt"
     },
     {
-      "label": "レベル条件のみの合計",
-      "value": "10,230pt"
+      "label": "レベル条件のみ（iOS／Android）",
+      "value": "9,950／10,230pt"
     }
   ],
   "heroNote": "公開された記録では、30日時点でレベル55〜60前後で止めた例と、レベル80〜100前後まで進んで60日でレベル150に届いた例に分かれます。レベル170は60日ちょうどで到達した1例を確認しました。レベル200・250の到達記録は確認できていません。最大額は達成の見込みではなく、エネルギーと注文の進み方で区切りを決める案件です。[M5][M6]",
@@ -73,12 +73,12 @@
       "blocks": [
         {
           "t": "p",
-          "x": "2026年11月9日に確認したワラウの現行案件は、iOS（201563）が全14Stepで表示合計10,510pt、Android（201666）が全15Stepで表示合計11,000ptです。増額表示はなく、期限はすべてインストール日から数えます。ワラウは1pt＝1円です。[M1][M2][M7]"
+          "x": "2026年11月15日に確認したワラウの現行案件は、iOS（209212）が全14Stepで表示合計10,230pt、Android（201666）が全15Stepで表示合計11,000ptです。どちらも増額表示はなく、期限はすべてインストール日から数えます。ワラウは1pt＝1円です。[M1][M2][M7]"
         },
         {
           "t": "table",
           "head": [
-            "iOSの条件（201563）",
+            "iOSの条件（209212）",
             "期限",
             "報酬",
             "課金"
@@ -117,19 +117,19 @@
             [
               "レベル60到達",
               "30日以内",
-              "260pt",
+              "220pt",
               "なし"
             ],
             [
               "レベル70到達",
               "30日以内",
-              "400pt",
+              "280pt",
               "なし"
             ],
             [
               "レベル80到達",
               "30日以内",
-              "470pt",
+              "350pt",
               "なし"
             ],
             [
@@ -172,7 +172,7 @@
         },
         {
           "t": "key",
-          "x": "2026年11月9日（日本時間）に上表の案件ページを直接取得し、全Stepの条件・個別報酬・合計が上表と同じであることを確認しました。参加時の画面に表示される条件が優先されます。"
+          "x": "2026年11月15日（日本時間）に上表の案件ページを直接取得し、全Stepの条件・個別報酬・合計が上表と同じであることを確認しました。参加時の画面に表示される条件が優先されます。"
         },
         {
           "t": "table",
@@ -277,11 +277,11 @@
         },
         {
           "t": "p",
-          "x": "課金Stepを除いたレベル条件だけの合計は、iOS・Androidとも10,230ptで同じです。そのうち30日以内の8Stepが2,880pt、60日以内の4Stepが7,350ptです。[M1][M2／編集部計算]"
+          "x": "課金Stepを除いたレベル条件だけの合計は、iOSが9,950pt（30日以内の8Stepが2,600pt、60日以内の4Stepが7,350pt）、Androidが10,230pt（30日以内の8Stepが2,880pt、60日以内の4Stepが7,350pt）です。レベル60・70・80の報酬がiOSとAndroidで違い、レベル100以降は同じ額です。[M1][M2／編集部計算]"
         },
         {
           "t": "p",
-          "x": "なお、11月5日に確認したワラウの別の案件ID（iOS 206151・Android 206152、11月7日までの増額表示）は、11月9日には「掲載終了のご案内」と表示され、参加できない状態でした。この案内が一時停止か終了かはページから判別できません。上の表は11月9日に掲載中だった201563・201666の内容で、条件や報酬はまた変わる可能性があるため、参加する日に案件ページで確認してください。[M8][M9]"
+          "x": "この案件は短い期間で入れ替わっています。11月5日にiOS（206151）とAndroid（206152）で確認した11月7日までの増額表示の案件は、11月9日にも11月15日にも「掲載終了のご案内」が表示されていました。11月9日にiOSで掲載中だった201563も、11月15日は同じ案内に変わり、関連サービスとして209212が表示されています。この案内が一時停止か終了かはページから判別できません。上の表は11月15日に掲載中だった209212・201666の内容です。条件や報酬はまた変わる可能性があるため、参加する日に案件ページの表を確認してください。[M8][M9][M10]"
         },
         {
           "t": "p",
@@ -506,7 +506,7 @@
         },
         {
           "t": "p",
-          "x": "11月5日に確認した206151・206152は11月7日までの増額表示の案件で、11月9日には「掲載終了のご案内」と表示されていました。11月9日に参加できたのは、増額表示のない201563（iOS）・201666（Android）です。報酬額は時期で変わるため、参加する日の表を確認してください。[M1][M2][M8][M9]"
+          "x": "11月5日に確認した206151・206152（11月7日までの増額表示）と、11月9日にiOSで掲載中だった201563は、11月15日には「掲載終了のご案内」が表示されていました。11月15日に掲載中だったのは、iOSの209212とAndroidの201666です。報酬額は数日で変わることがあるため、参加する日の表を確認してください。[M1][M2][M8][M9][M10]"
         }
       ]
     }
@@ -514,8 +514,8 @@
   "sources": [
     {
       "id": "M1",
-      "label": "M1：ワラウ iOS案件201563",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+      "label": "M1：ワラウ iOS案件209212",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
     },
     {
       "id": "M2",
@@ -535,7 +535,7 @@
     {
       "id": "M5",
       "label": "M5：ワラウ案件ページの口コミ（複数投稿者）",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
     },
     {
       "id": "M6",
@@ -549,24 +549,29 @@
     },
     {
       "id": "M8",
-      "label": "M8：ワラウ 旧iOS案件206151（11月9日は掲載終了の案内）",
+      "label": "M8：ワラウ 旧iOS案件206151（11月9日・11月15日は掲載終了の案内）",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151"
     },
     {
       "id": "M9",
-      "label": "M9：ワラウ 旧Android案件206152（11月9日は掲載終了の案内）",
+      "label": "M9：ワラウ 旧Android案件206152（11月9日・11月15日は掲載終了の案内）",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152"
+    },
+    {
+      "id": "M10",
+      "label": "M10：ワラウ 旧iOS案件201563（11月9日は掲載中、11月15日は掲載終了の案内）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
     }
   ],
-  "sourceNote": "調査日：2026年11月5日、案件の再確認：2026年11月9日。案件はワラウのiOS・Androidの公開ページを直接取得して確認。体験記と口コミは投稿者本人の自己申告で、到達日数・課金額・プレイ時間には個人差があります。投稿時期の案件条件と今回の条件を区別して掲載しています。",
+  "sourceNote": "調査日：2026年11月5日、案件の再確認：2026年11月9日・11月15日。案件はワラウのiOS・Androidの公開ページを直接取得して確認。体験記と口コミは投稿者本人の自己申告で、到達日数・課金額・プレイ時間には個人差があります。投稿時期の案件条件と今回の条件を区別して掲載しています。",
   "context": {
-    "href": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563",
+    "href": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212",
     "label": "ワラウの現在の案件ページを見る →"
   },
   "offerLinks": [
     {
-      "label": "ワラウの案件ページ（iOS・201563）",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+      "label": "ワラウの案件ページ（iOS・209212）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
     },
     {
       "label": "ワラウの案件ページ（Android・201666）",
@@ -593,11 +598,11 @@
     "description": "ワラウ案件（iOS・Android、30日・60日の2段階）の全Stepと、30日でLv90前後から60日でLv150に届いた実例・途中で撤退した例、エネルギーと素材の回し方、課金Stepの損得をまとめています。"
   },
   "experience": {
-    "updatedAt": "2026-11-09",
+    "updatedAt": "2026-11-15",
     "title": "実際の到達ペース",
     "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
     "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
-    "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-09。",
+    "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-15。",
     "players": [
       {
         "id": "A",
@@ -623,7 +628,7 @@
           "30日目Lv90、57日目ごろLv150で終了"
         ],
         "postedOn": "2026-06-04",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "paid",
         "paidYen": 1100,
@@ -647,7 +652,7 @@
           }
         ],
         "sources": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
         ],
         "sourceDetails": [
           "ＭＭＭ（ワラウ口コミ・男性50代）",
@@ -655,7 +660,7 @@
           "無課金で30日Lv90、60日Lv150"
         ],
         "postedOn": "2026-08-15",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "free",
         "paidYen": null,
@@ -679,7 +684,7 @@
           }
         ],
         "sources": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
         ],
         "sourceDetails": [
           "なかとつさん（ワラウ口コミ・女性40代）",
@@ -687,7 +692,7 @@
           "30日以内Lv100、60日目Lv160"
         ],
         "postedOn": "2026-08-27",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "paid",
         "paidYen": null,
@@ -707,7 +712,7 @@
           }
         ],
         "sources": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
         ],
         "sourceDetails": [
           "ぴょぴょん（ワラウ口コミ・女性50代）",
@@ -715,7 +720,7 @@
           "60日ちょうどでLv170"
         ],
         "postedOn": "2026-10-16",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "unknown",
         "paidYen": null,
@@ -735,7 +740,7 @@
           }
         ],
         "sources": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
         ],
         "sourceDetails": [
           "めめこ（ワラウ口コミ・女性30代）",
@@ -743,7 +748,7 @@
           "26日目Lv80で撤退"
         ],
         "postedOn": "2026-09-28",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "unknown",
         "paidYen": null,
@@ -763,7 +768,7 @@
           }
         ],
         "sources": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
         ],
         "sourceDetails": [
           "いぬ（ワラウ口コミ・女性50代）",
@@ -771,7 +776,7 @@
           "30日目Lv92で撤退"
         ],
         "postedOn": "2026-07-20",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "paid",
         "paidYen": null,
@@ -791,7 +796,7 @@
           }
         ],
         "sources": [
-          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212"
         ],
         "sourceDetails": [
           "サブロー（ワラウ口コミ・女性50代）",
@@ -799,7 +804,7 @@
           "24日目Lv60で終了"
         ],
         "postedOn": "2026-06-16",
-        "checkedAt": "2026-11-09",
+        "checkedAt": "2026-11-15",
         "platform": null,
         "paymentStatus": "unknown",
         "paidYen": null,

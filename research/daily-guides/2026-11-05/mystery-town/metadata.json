@@ -33,12 +33,12 @@
   "offers": [
     {
       "site": "warau",
-      "pointId": "201563",
-      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563",
+      "pointId": "209212",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212",
       "os": "iOS",
       "currency": "pt",
       "yenPerPoint": 1,
-      "totalDisplayedPt": 10510,
+      "totalDisplayedPt": 10230,
       "temporaryIncrease": null,
       "deadlineBase": "install_day",
       "steps": [
@@ -74,19 +74,19 @@
         },
         {
           "condition": "30日以内にレベル60到達",
-          "rewardPt": 260,
+          "rewardPt": 220,
           "requiresPayment": false,
           "deadlineDays": 30
         },
         {
           "condition": "30日以内にレベル70到達",
-          "rewardPt": 400,
+          "rewardPt": 280,
           "requiresPayment": false,
           "deadlineDays": 30
         },
         {
           "condition": "30日以内にレベル80到達",
-          "rewardPt": 470,
+          "rewardPt": 350,
           "requiresPayment": false,
           "deadlineDays": 30
         },
@@ -127,9 +127,9 @@
           "deadlineDays": 60
         }
       ],
-      "sumWithoutPurchaseStepsPt": 10230,
+      "sumWithoutPurchaseStepsPt": 9950,
       "guaranteeApplicationDays": 80,
-      "verifiedAt": "2026-11-09T13:54:25+00:00",
+      "verifiedAt": "2026-11-14T23:53:03+00:00",
       "sumIsNotPredictedEarnings": true
     },
     {
@@ -236,14 +236,14 @@
       ],
       "sumWithoutPurchaseStepsPt": 10230,
       "guaranteeApplicationDays": 80,
-      "verifiedAt": "2026-11-09T13:54:39+00:00",
+      "verifiedAt": "2026-11-14T23:53:17+00:00",
       "sumIsNotPredictedEarnings": true
     }
   ],
   "limitations": [
     "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
     "Android課金Stepのパック価格は案件ページに記載がなく未確認",
-    "案件の条件・報酬は2026-11-09時点の201563・201666。11-05時点の206151・206152は11-09に掲載終了の案内（一時停止か終了かは判別不可）",
+    "案件の条件・報酬は2026-11-15時点のiOS 209212・Android 201666。iOSは11-05（206151）→11-09（201563）→11-15（209212）と入れ替わり、旧IDは掲載終了の案内（一時停止か終了かは判別不可）",
     "ワラウ口コミは投稿時期の案件条件で書かれており、当時の報酬額は今回と異なる可能性がある"
   ],
   "previousOffers": [
@@ -260,7 +260,8 @@
         "until": "2026-11-07"
       },
       "statusOn20261109": "listing_end_notice_shown",
-      "note": "掲載終了の案内（一時停止か終了かはページから判別不可）。関連サービスとして201563を表示"
+      "note": "掲載終了の案内（一時停止か終了かはページから判別不可）。関連サービスとして201563を表示",
+      "statusOn20261115": "listing_end_notice_shown"
     },
     {
       "site": "warau",
@@ -275,8 +276,21 @@
         "until": "2026-11-07"
       },
       "statusOn20261109": "listing_end_notice_shown",
-      "note": "掲載終了の案内（一時停止か終了かはページから判別不可）"
+      "note": "掲載終了の案内（一時停止か終了かはページから判別不可）",
+      "statusOn20261115": "listing_end_notice_shown"
+    },
+    {
+      "site": "warau",
+      "pointId": "201563",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563",
+      "os": "iOS",
+      "checkedOn": "2026-11-09",
+      "totalDisplayedPt": 10510,
+      "temporaryIncrease": null,
+      "statusOn20261109": "live",
+      "statusOn20261115": "listing_end_notice_shown",
+      "note": "11-09にiOSの現行案件として確認。11-15は掲載終了の案内（一時停止か終了かはページから判別不可）。関連サービスとして209212を表示"
     }
   ],
-  "offerRecheckedAt": "2026-11-09"
+  "offerRecheckedAt": "2026-11-15"
 }

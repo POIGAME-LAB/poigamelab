@@ -43,6 +43,7 @@ REQUIRED_FILES = ("article.md", "metadata.json", "sources.json", "experiences.js
 REQUIRED_TOC = ("condition", "pace", "early", "middle", "late", "stop", "tracking", "faq", "sources")
 RECORDS_ID, RECORDS_H2 = "records", "到達記録の比較表"
 MIN_ARTICLE_CHARS = 3000
+MAX_ARTICLES_PER_DAY = 5
 MIN_INDEPENDENT_PLAYERS = 2
 MAX_PLAYER_RECORD_AGE_DAYS = 365
 # The site has not played these games itself; promising wording is never allowed (AGENTS.md §5).
@@ -358,7 +359,11 @@ def gate(batch: Path, slug: str) -> list[str]:
 
 def check_batch(batch: Path) -> dict[str, list[str]]:
     result = {}
-    for slug in completed_slugs(batch):
+    slugs = completed_slugs(batch)
+    if len(slugs) > MAX_ARTICLES_PER_DAY:
+        # One day's batch never exceeds five articles; nothing is built until the surplus is held back.
+        result["_batch"] = [f"more_than_{MAX_ARTICLES_PER_DAY}_articles_in_one_day:{len(slugs)}"]
+    for slug in slugs:
         errs = gate(batch, slug)
         if not errs:
             spec = build_spec(batch, slug)
