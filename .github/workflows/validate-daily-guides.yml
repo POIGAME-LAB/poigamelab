@@ -1,0 +1,48 @@
+name: Validate daily guides
+
+# Offline checks for the daily new-guide batches (research/daily-guides/). Separate from the existing
+# workflows so none of them changes. No secrets, no network access, read-only token.
+on:
+  pull_request:
+    paths:
+      - "research/daily-guides/**"
+      - "*-guide.html"
+      - "data/guide-experiences/**"
+      - "guides.html"
+      - "sitemap.xml"
+      - "site-researched-guides.js"
+      - "scripts/build_public_site.py"
+      - "scripts/build_daily_guides.py"
+      - "scripts/daily_guide_candidates.py"
+      - "scripts/daily_guide_evidence.py"
+      - "scripts/render_cited_guide.py"
+      - "scripts/render_guide_from_spec.py"
+      - "scripts/register_guide_pages.py"
+      - "scripts/sync_static_guide_links.js"
+      - "tests/test_daily_guides.py"
+      - ".github/workflows/validate-daily-guides.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-daily-guides:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Daily quality gate for every batch
+        run: |
+          set -e
+          for batch in research/daily-guides/20*/; do
+            python scripts/build_daily_guides.py --check "$batch"
+          done
+      - name: Static guide hub is in sync
+        run: node scripts/sync_static_guide_links.js --check
+      - name: Daily guide tests
+        run: python -m pytest -q tests/test_daily_guides.py tests/test_work_guides_20261031.py

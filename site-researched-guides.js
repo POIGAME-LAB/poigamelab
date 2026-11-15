@@ -124,5 +124,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Lv18・24攻略を読む →", href: "last-asylum-plague-guide.html" }
     ]
+  },
+  "ミステリータウン：マージゲーム（Mystery Town）": {
+    title: "ミステリータウン：マージゲーム（Mystery Town） ポイ活攻略",
+    description: "ワラウ案件（iOS・Android、30日・60日の2段階）の全Stepと、30日でLv90前後から60日でLv150に届いた実例・途中で撤退した例、エネルギーと素材の回し方、課金Stepの損得をまとめています。",
+    links: [
+      { label: "レベル150・170攻略を読む →", href: "mystery-town-guide.html" }
+    ]
   }
 });
