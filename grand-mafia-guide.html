@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/grand-mafia-guide.html">
+<meta name="description" content="ザ・グランドマフィアのポイ活を、別荘・隊員Tier・監禁所の条件別に整理。無課金の序盤例、課金ありの監禁所25達成例、短期限とT4のリスクを解説します。">
+<title>ザ・グランドマフィア ポイ活攻略｜別荘17・監禁所25とT4の注意点 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<style>
+a.cite{font-size:.82em;font-weight:800;text-decoration:none;white-space:nowrap}
+.hero a.cite{color:#ffe663}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ザ・グランドマフィア 攻略ガイド</span>
+    <a href="https://www.amefri.net/detail/id/137656" target="_blank" rel="noopener nofollow">アメフリ（iOS）の現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ザ・グランドマフィア ポイ活攻略</h1>
+<p class="lead">ザ・グランドマフィアは、別荘や関連施設を育て、組織の仲間と協力して進めるストラテジーゲームです。ポイ活では、建物のレベルと隊員のTierが別々の成果条件になっています。まず無課金の序盤報酬を目指すのか、監禁所まで進むのかを決めると、資源の使い道を整理しやすくなります。<a class="cite" href="#src-G1">[G1]</a></p>
+<div class="stats"><div class="stat"><span>表示合計（アメフリiOS・全12条件）</span><strong>70,198円相当</strong></div><div class="stat"><span>実例：別荘17・Tier3</span><strong>無課金6日（1人）</strong></div><div class="stat"><span>実例：監禁所25</span><strong>22日・24日（課金あり）</strong></div></div>
+<p class="hero-note"><strong>確認できた個別実例：無課金で別荘17・Tier3を6日／無課金で7日目に別荘12／課金ありで監禁所25を22日・24日。</strong> どれも条件・プレイ環境の異なる記録です。T4の完走日数を示す数字ではありません。<a class="cite" href="#src-G3">[G3]</a><a class="cite" href="#src-G4">[G4]</a> この記事は公開資料とプレイヤーの記録を調査して作成しました。筆者自身のプレイ体験ではありません。報酬・期限は2026年10月27日に確認し、10月28日に期限の記載を再確認した内容です。開始時の案件画面が優先されます。</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">現在の案件条件</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#early">序盤は別荘とTierを分けて進める</a></li><li><a href="#middle">中盤は建築待ちと加速を管理する</a></li><li><a href="#late">監禁所25とT4を目指す前に</a></li><li><a href="#spending">無課金・課金と続行の判断</a></li><li><a href="#tracking">成果反映の注意点</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#sources">参考資料</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>現在の案件条件</h2>
+<p>確認した範囲で、条件表と換算を照合できた最大額は、<strong>アメフリのiOS案件で70,198円相当</strong>でした。701,980ptを10pt＝1円で換算した、全12条件の表示合計です。必ず受け取れる金額や、課金を引いた利益ではありません。対象OSはiOSで、App Storeでの掲載名は「ザ・グランドマフィア」です。<a class="cite" href="#src-G2">[G2]</a><a class="cite" href="#src-G6">[G6]</a><a class="cite" href="#src-R2">[R2]</a></p>
+<div class="table-wrap"><table>
+<thead><tr><th>成果条件</th><th>個別期限</th><th>獲得pt</th><th>円相当</th></tr></thead>
+<tbody>
+<tr><td>別荘4</td><td>条件表に個別期限なし※</td><td>580</td><td>58</td></tr>
+<tr><td>別荘9</td><td>同上</td><td>840</td><td>84</td></tr>
+<tr><td>Tier2を1種類アンロック</td><td>同上</td><td>1,680</td><td>168</td></tr>
+<tr><td>別荘17</td><td>同上</td><td>5,880</td><td>588</td></tr>
+<tr><td>Tier3を1種類アンロック</td><td>同上</td><td>8,400</td><td>840</td></tr>
+<tr><td>別荘21</td><td>7日</td><td>18,480</td><td>1,848</td></tr>
+<tr><td>別荘23</td><td>15日</td><td>15,120</td><td>1,512</td></tr>
+<tr><td>別荘25</td><td>30日</td><td>21,000</td><td>2,100</td></tr>
+<tr><td>監禁所25</td><td>30日</td><td>42,000</td><td>4,200</td></tr>
+<tr><td>投資センター25</td><td>30日</td><td>84,000</td><td>8,400</td></tr>
+<tr><td>Tier4を1種類アンロック</td><td>30日</td><td>336,000</td><td>33,600</td></tr>
+<tr><td>Tier4を1種類アンロック</td><td>60日</td><td>168,000</td><td>16,800</td></tr>
+<tr><td><strong>表示合計</strong></td><td><strong>条件ごとに異なる</strong></td><td><strong>701,980</strong></td><td><strong>70,198</strong></td></tr>
+</tbody>
+</table></div>
+<p>※アメフリの案件ページでは、成果到達期限・成果調査受付期限は「インストールから60日以内」、未承認の問い合わせは「ポイントを貯める」ボタンのクリック日から60日以内、非承認理由の問い合わせは成果判定日から30日以内と、起算日の違う期限が別々に書かれています。詳しくは「成果反映の注意点」を確認してください。個別Stepの7日・15日・30日・60日を何日目から数えるかも、アメフリiOSの案件ページには明記が見当たりません。短い個別期限を優先して計画してください。表中の「30分程度」「1日程度」などはポイントサイトが示す進行目安であり、成果期限や実プレイヤーの所要時間とは区別が必要です。<a class="cite" href="#src-G2">[G2]</a></p>
+<div class="warning">T4（Tier4）の2条件に注意してください。Step11（30日以内）とStep12（60日以内）は、どちらも「いずれかのTier4隊員をアンロック」という同じ到達目標で、期限と報酬だけが違います。表の合計70,198円は12条件をすべて足した表示合計で、30日以内に達成したときに両方のStepが付与されるのか、片方だけなのかは、案件ページの記載から判断できません。両方の報酬が必ず受け取れるとは考えないでください。参考までに、T4の2条件（33,600円＋16,800円）を除いた10条件の表示合計は19,798円相当ですが、これも達成の保証ではありません。<a class="cite" href="#src-G2">[G2]</a></div>
+<p>Androidでは、ワラウの別コースを最大55,000pt＝55,000円相当で確認しました。こちらは別荘9・17・21とTier2・3が7日以内で、期限はすべてインストール日から数える表記です。Tier4アンロックは30日以内の1条件のみで、アメフリiOSと期限も配分も違います。異なるコースの金額や期限を組み合わせないでください。<a class="cite" href="#src-G3">[G3]</a><a class="cite" href="#src-R1">[R1]</a></p>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://www.amefri.net/detail/id/137656" target="_blank" rel="noopener nofollow">アメフリ（iOS）｜ザ・グランドマフィアの案件ページ</a></li><li><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&amp;pl=pc_categoryService" target="_blank" rel="noopener nofollow">ワラウ（Android）｜ザ・グランドマフィアの案件ページ（別コース）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/grand-mafia.json" aria-live="polite"></section>
+<section class="section" id="early"><h2>序盤は別荘とTierを分けて進める</h2>
+<p>最初に条件画面から「建物」と「隊員」を書き分けましょう。別荘レベルが上がっても、Tierのアンロック条件を満たしたことにはなりません。Tier到達時はトレーニングセンター側の解放状態まで確認します。<a class="cite" href="#src-G2">[G2]</a><a class="cite" href="#src-G3">[G3]</a></p>
+<p>序盤の進め方は次の順です。</p>
+<ol class="lab-list">
+<li>シナリオと案内に沿って別荘を上げ、次の別荘に必要な施設を確認する。</li>
+<li>隊員の解放条件も並行して確認し、Tier2・3の対象を取りこぼさない。</li>
+<li>組織に入り、支援とイベントの参加機会を確保する。</li>
+<li>次の短期限が自分の稼働時間で狙えるか見直す。</li>
+</ol>
+<p>組織との協力は公式にも示されている仕組みです。<a class="cite" href="#src-G1">[G1]</a> 早い達成例を基準に予定を詰めすぎず、初日に触れる時間が少ない場合は、7日以内の条件が複数あるコースを慎重に選んでください。</p>
+</section>
+<section class="section" id="middle"><h2>中盤は建築待ちと加速を管理する</h2>
+<p>中盤で見るべきなのは、戦力の数字だけでなく、<strong>次の成果地点を妨げている前提施設・建築時間・素材</strong>です。目標と関係の薄い強化を先に進めると、必要な加速や資源を別の場所へ使ってしまいます。</p>
+<p>監禁所攻略の記録では、建築短縮向けのアーキテクト装備、投資短縮向けのインベスター装備、リーダースキルの使い分けが説明されています。まず建築の待ち時間を減らす要素を確認し、建築と投資で必要な効果を選びます。細かな装備解放条件は現在の画面で確認してください。<a class="cite" href="#src-G4">[G4]</a></p>
+<p>毎回の終了前に「次に必要な施設」「不足素材」「完了予定」を残すと、次の起動時に迷いません。これは到達速度を保証する攻略ではなく、短期限の取りこぼしを減らす管理方法です。</p>
+</section>
+<section class="section" id="late"><h2>監禁所25とT4を目指す前に</h2>
+<p>監禁所を目指す記録では、専用素材の<strong>足枷</strong>と建築の短縮が負担になっています。ゴールドを建築の即時完了だけに使い切らず、足枷の必要分と残りの建築を見て配分する考え方が参考になります。<a class="cite" href="#src-G4">[G4]</a></p>
+<p>一方、監禁所25を達成したワラウの投稿者も、投資センター25には進まず終了しています。<a class="cite" href="#src-G3">[G3]</a> 高い段階へ進むほど報酬が大きくなる表でも、次の条件に必要な負担まで小さいとは限りません。</p>
+<p>終盤は次の3点が分かってから続行します。</p>
+<ul class="lab-list">
+<li>必要な前提施設・研究・専用素材を現在のゲーム画面で確認できている。</li>
+<li>建築と研究が残りの個別期限に収まる見込みを、自分の待ち時間から判断できる。</li>
+<li>追加支出をしても目標達成や黒字が保証されないことを理解している。</li>
+</ul>
+<p>T4の必要資源総量、確実な無課金ルート、30日完走に必要な課金額は、確認できた資料から断定できません。ここを推定で埋めて最高額を勧めることはしません。</p>
+</section>
+<section class="section" id="spending"><h2>無課金・課金と続行の判断</h2>
+<p>無課金で別荘17・Tier3まで進んだ例はありますが、7日で別荘12までの例もあります。無課金でどこまで行けるかは、自分の進行と期限で判断する必要があります。<a class="cite" href="#src-G3">[G3]</a></p>
+<p>アメフリiOSの表では、別荘4・9・17、Tier2・3の5条件の合計は<strong>1,738円相当</strong>です。これは表の単純合計であり、全員が受け取れる見積もりではありません。監禁所25だけに対応する追加報酬は4,200円相当なので、過去の約5,500円課金例をそのまま再現して得になるとも言えません。<a class="cite" href="#src-G2">[G2]</a><a class="cite" href="#src-G4">[G4]</a></p>
+<p>支出を判断するときは、すでに使ったお金を取り戻すために先へ進むのではなく、「これから増える確定可能な段階報酬」と「これから必要な費用・時間」を比較します。パックの価格や購入条件を古い記事から決めつけないでください。</p>
+</section>
+<section class="section" id="tracking"><h2>成果反映の注意点</h2>
+<p>案件ごとに記帳方式が異なります。<strong>アメフリの今回のコースは、審査待ちにならず、条件達成後の承認通知のみ</strong>と記載されています。一方、ワラウは通帳の「判定中」を確認してから進める条件です。共通の記帳手順として案内しないでください。<a class="cite" href="#src-G2">[G2]</a><a class="cite" href="#src-G3">[G3]</a></p>
+<h3>成果の期限と問い合わせ期限を分けて読む</h3>
+<p>アメフリの案件ページ（2026年10月28日・30日に再確認）では、成果到達期限が「インストールから60日以内」、成果調査受付期限も「インストールから60日以内」と記載されています。一方、審査中にならない・承認されない場合の問い合わせは、「ポイントを貯める」ボタンのクリック日から60日以内、非承認理由の問い合わせは成果判定日から30日以内です。<a class="cite" href="#src-G2">[G2]</a></p>
+<div class="warning">成果の期限はインストール日、未承認の問い合わせ期限はクリック日が起点で、起算日が違います。Step12の60日条件のように期限ぎりぎりで達成すると、未反映の問い合わせ期限との差が小さくなります。最終日まで待たず、達成画面とユーザーIDをその日のうちに保存し、反映されなければ早めに問い合わせてください。取り扱いは案件ページとアメフリの案内が優先です。<a class="cite" href="#src-G2">[G2]</a></div>
+<p>個別Stepの「7日間」「15日間」「30日間」「60日間」を何日目から数えるかは、アメフリiOSの案件ページに明記が見当たりません。ワラウAndroidは「すべてインストール日から」と明記していますが、同じ数え方をアメフリiOSに当てはめず、迷う場合は最も早い起点（「ポイントを貯める」ボタンをクリックした日）から数えた計画にしてください。<a class="cite" href="#src-G2">[G2]</a><a class="cite" href="#src-G3">[G3]</a></p>
+<p>開始時の報酬表・期限・案件名、ゲーム内ユーザーID、各建物やTierの達成画面を保存します。ポイント未反映の問い合わせ先は利用したポイントサイトです。<a class="cite" href="#src-G2">[G2]</a></p>
+</section>
+<section class="section" id="faq"><h2>よくある質問</h2>
+<h3>マフィア・シティと同じゲームですか？</h3>
+<p>別アプリです。App Storeでも別のアプリとして掲載されています。似た城育成型でも、攻略条件や専用素材を流用しないでください。比較するときは<a href="mafia-city-guide.html">マフィア・シティ攻略</a>も参照できます。<a class="cite" href="#src-G1">[G1]</a></p>
+<h3>「Sグレード英雄を獲得」の古い攻略は使えますか？</h3>
+<p>今回の建物・Tier条件と同じ成果条件ではありません。英雄育成の情報を参考にする場合も、S英雄獲得だけで現在のT4条件を達成したと判断しないでください。<a class="cite" href="#src-G2">[G2]</a><a class="cite" href="#src-G5">[G5]</a></p>
+<h3>全12条件を達成すれば必ず70,198円ですか？</h3>
+<p>確認した表示合計です。特に30日・60日のT4は同じ到達対象で期限違いの条件が並んでおり、両方の報酬が必ず付与されるとは言えません。付与の扱いを含め、参加時の条件が優先されます。全額を確定利益として計画しないでください。</p>
+</section>
+
+<section class="sources" id="sources">
+<h2>調査ソース</h2>
+<span class="source-line" id="src-G1"><a href="https://play.google.com/store/apps/details?hl=ja&amp;id=com.yottagames.gameofmafiajp" target="_blank" rel="noopener">G1：公式Google Play掲載情報</a></span>
+<span class="source-line" id="src-G2"><a href="https://www.amefri.net/detail/id/137656" target="_blank" rel="noopener">G2：アメフリ・iOS案件と条件</a></span>
+<span class="source-line" id="src-G3"><a href="https://www.warau.jp/contents/point/pointEntrance.php?point_id=206954&amp;pl=pc_categoryService" target="_blank" rel="noopener">G3：ワラウ・Android案件と公開クチコミ</a></span>
+<span class="source-line" id="src-G4"><a href="https://note.com/maf252/n/n9f1f3332aa7c" target="_blank" rel="noopener">G4：maf252・監禁所25攻略メモ</a></span>
+<span class="source-line" id="src-G5"><a href="https://kochalog.com/poi-gramafi/" target="_blank" rel="noopener">G5：こちゃログ・英雄グレード条件の攻略</a></span>
+<span class="source-line" id="src-G6"><a href="https://apps.apple.com/jp/app/id1612013407" target="_blank" rel="noopener">G6：App Store掲載情報・ザ・グランドマフィア（iOS）</a></span>
+<span class="source-line" id="src-R1"><a href="https://www.warau.jp/help/qa/128/" target="_blank" rel="noopener">R1：ワラウの交換レート</a></span>
+<span class="source-line" id="src-R2"><a href="https://www.amefri.net/faq/post/24/57" target="_blank" rel="noopener">R2：アメフリのポイント価値</a></span>
+<div class="source-note">最終確認：2026年10月27日（成果期限の記載は10月28日に再確認）。本文の[G番号]・[R番号]は上の資料に対応します。公開クチコミは自己申告で、後から変更・削除される可能性があります。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

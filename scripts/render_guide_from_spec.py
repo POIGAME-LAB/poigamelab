@@ -27,11 +27,48 @@ FORBIDDEN_PUBLIC = (
     "Instagramでは", "YouTubeでは", "Xでは", "ウェブ検索", "Web検索", "Google検索",
     "読み込み中", "準備中", "調査中", "TODO", "ダミー", "サンプル文",
 )
-BLOCK_TYPES = {"p", "h3", "ul", "key", "warning", "decision", "table"}
+BLOCK_TYPES = {"p", "h3", "ul", "ol", "key", "warning", "decision", "table"}
+
+# Opt-in inline markup (spec["inlineMarkup"] = true): **bold**, [label](https://...) and [G1]-style source
+# citations that jump to the matching entry of the page's source list. Specs without the flag render as before.
+_INLINE = re.compile(
+    r"\*\*(?P<bold>.+?)\*\*|\[(?P<label>[^\[\]]+)\]\((?P<url>https?://[^)\s]+)\)|\[(?P<cite>[A-Z]\d+)\]"
+)
+CITATION = re.compile(r"\[([A-Z]\d+)\]")
+SITE_ORIGIN = "https://poigamelab.com/"
+# Citation links sit inside the purple hero too, where the default link colour is unreadable.
+CITE_STYLE = "<style>\na.cite{font-size:.82em;font-weight:800;text-decoration:none;white-space:nowrap}\n.hero a.cite{color:#ffe663}\n</style>\n"
 
 
 def e(value: object) -> str:
     return escape(str(value), quote=True)
+
+
+def inline(text: object, ids: set | None) -> str:
+    """Escape ``text``; with ``ids`` (inline markup enabled) also turn markup into HTML."""
+    text = str(text)
+    if ids is None:
+        return e(text)
+    parts: list[str] = []
+    pos = 0
+    for m in _INLINE.finditer(text):
+        parts.append(e(text[pos:m.start()]))
+        if m.group("bold") is not None:
+            parts.append(f"<strong>{inline(m.group('bold'), ids)}</strong>")
+        elif m.group("url") is not None:
+            url = m.group("url")
+            if url.startswith(SITE_ORIGIN):
+                parts.append(f'<a href="{e(url[len(SITE_ORIGIN):])}">{e(m.group("label"))}</a>')
+            else:
+                parts.append(f'<a href="{e(url)}" target="_blank" rel="noopener">{e(m.group("label"))}</a>')
+        elif m.group("cite") in ids:
+            cid = m.group("cite")
+            parts.append(f'<a class="cite" href="#src-{e(cid)}">[{e(cid)}]</a>')
+        else:
+            parts.append(e(m.group(0)))
+        pos = m.end()
+    parts.append(e(text[pos:]))
+    return "".join(parts)
 
 
 def _head_template() -> tuple[str, str]:
@@ -92,7 +129,7 @@ def validate(spec: dict) -> list[str]:
         errs.append("duplicate_section_ids")
     toc_ids = [t["id"] for t in spec["toc"]]
     for t in toc_ids:
-        if t not in ids and t != "pace":
+        if t not in ids and t not in ("pace", "sources"):
             errs.append(f"toc_target_missing:{t}")
     for must in ("condition", "pace"):
         if must not in toc_ids:
@@ -128,6 +165,12 @@ def validate(spec: dict) -> list[str]:
         if not p.get("milestones"):
             errs.append(f"player_without_milestones:{p.get('id')}")
     text = public_text(spec)
+    if spec.get("inlineMarkup"):
+        source_ids = [s.get("id") for s in spec["sources"] if s.get("id")]
+        if len(source_ids) != len(set(source_ids)):
+            errs.append("duplicate_source_ids")
+        for cid in sorted(set(CITATION.findall(text)) - set(source_ids)):
+            errs.append(f"unknown_citation:{cid}")
     for word in FORBIDDEN_PUBLIC:
         if word in text:
             errs.append(f"forbidden_public_text:{word}")
@@ -136,30 +179,35 @@ def validate(spec: dict) -> list[str]:
     return errs
 
 
-def render_block(b: dict) -> str:
+def render_block(b: dict, ids: set | None = None) -> str:
     t = b["t"]
+
+    def f(value: object) -> str:
+        return inline(value, ids)
+
     if t == "p":
-        return f"<p>{e(b['x'])}</p>"
+        return f"<p>{f(b['x'])}</p>"
     if t == "h3":
-        return f"<h3>{e(b['x'])}</h3>"
+        return f"<h3>{f(b['x'])}</h3>"
     if t == "key":
-        return f'<div class="key">{e(b["x"])}</div>'
+        return f'<div class="key">{f(b["x"])}</div>'
     if t == "warning":
-        return f'<div class="warning">{e(b["x"])}</div>'
-    if t == "ul":
-        return '<ul class="lab-list">\n' + "\n".join(f"<li>{e(i)}</li>" for i in b["items"]) + "\n</ul>"
+        return f'<div class="warning">{f(b["x"])}</div>'
+    if t in ("ul", "ol"):
+        return f'<{t} class="lab-list">\n' + "\n".join(f"<li>{f(i)}</li>" for i in b["items"]) + f"\n</{t}>"
     if t == "decision":
-        cards = "\n".join(f'<div class="decision-card"><strong>{e(c["h"])}</strong>{e(c["x"])}</div>' for c in b["cards"])
+        cards = "\n".join(f'<div class="decision-card"><strong>{f(c["h"])}</strong>{f(c["x"])}</div>' for c in b["cards"])
         return f'<div class="decision">\n{cards}\n</div>'
     if t == "table":
-        head = "".join(f"<th>{e(c)}</th>" for c in b["head"])
-        rows = "\n".join("<tr>" + "".join(f"<td>{e(c)}</td>" for c in r) + "</tr>" for r in b["rows"])
+        head = "".join(f"<th>{f(c)}</th>" for c in b["head"])
+        rows = "\n".join("<tr>" + "".join(f"<td>{f(c)}</td>" for c in r) + "</tr>" for r in b["rows"])
         return f'<div class="table-wrap"><table>\n<thead><tr>{head}</tr></thead>\n<tbody>\n{rows}\n</tbody>\n</table></div>'
     raise ValueError(t)
 
 
 def render(spec: dict) -> str:
     prefix, style = _head_template()
+    ids = {s["id"] for s in spec["sources"] if s.get("id")} if spec.get("inlineMarkup") else None
     canonical = f"https://poigamelab.com/{spec['file']}"
     ctx = spec["context"]
     head = (
@@ -168,6 +216,7 @@ def render(spec: dict) -> str:
         f'<meta name="description" content="{e(spec["description"])}">\n'
         f"<title>{e(spec['title'])} | POIGAME LAB</title>\n"
         f"{style}\n"
+        f"{CITE_STYLE if ids is not None else ''}"
         '<link rel="stylesheet" href="assets/guide-experience.css">\n'
         "</head>\n"
     )
@@ -175,7 +224,7 @@ def render(spec: dict) -> str:
     stats = "".join(f'<div class="stat"><span>{e(s["label"])}</span><strong>{e(s["value"])}</strong></div>' for s in spec["heroStats"])
     body_sections: list[str] = []
     for sec in spec["sections"]:
-        inner = "\n".join(render_block(b) for b in sec["blocks"])
+        inner = "\n".join(render_block(b, ids) for b in sec["blocks"])
         body_sections.append(f'<section class="section" id="{e(sec["id"])}"><h2>{e(sec["h2"])}</h2>\n{inner}\n</section>')
         if sec["id"] == "condition":
             offer_items = "".join(
@@ -190,9 +239,12 @@ def render(spec: dict) -> str:
             body_sections.append(
                 f'<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/{e(spec["slug"])}.json" aria-live="polite"></section>'
             )
-    sources = "\n".join(
-        f'<span class="source-line"><a href="{e(s["url"])}" target="_blank" rel="noopener">{e(s["label"])}</a></span>' for s in spec["sources"]
-    )
+    def source_line(s: dict) -> str:
+        anchor = f' id="src-{e(s["id"])}"' if ids is not None and s.get("id") else ""
+        return f'<span class="source-line"{anchor}><a href="{e(s["url"])}" target="_blank" rel="noopener">{e(s["label"])}</a></span>'
+
+    sources = "\n".join(source_line(s) for s in spec["sources"])
+    sources_open = '<section class="sources" id="sources">' if any(t["id"] == "sources" for t in spec["toc"]) else '<section class="sources">'
     page = f"""<body>
 <div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
 <script src="site-header.js?v=20260905-0315"></script>
@@ -206,9 +258,9 @@ def render(spec: dict) -> str:
 <section class="hero">
 <div class="eyebrow">POIGAME LAB 攻略データ</div>
 <h1>{e(spec['game'])} ポイ活攻略</h1>
-<p class="lead">{e(spec['lead'])}</p>
+<p class="lead">{inline(spec['lead'], ids)}</p>
 <div class="stats">{stats}</div>
-<p class="hero-note">{e(spec['heroNote'])}</p>
+<p class="hero-note">{inline(spec['heroNote'], ids)}</p>
 </section>
 
 <nav class="toc" aria-label="目次"><h2>目次</h2><ol>
@@ -216,7 +268,7 @@ def render(spec: dict) -> str:
 
 {chr(10).join(body_sections)}
 
-<section class="sources">
+{sources_open}
 <h2>調査ソース</h2>
 {sources}
 <div class="source-note">{e(spec['sourceNote'])}</div>

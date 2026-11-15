@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "game": "Heroes vs Crazy Wiggler",
+  "slug": "heroes-vs-crazy-wiggler",
+  "aliases": [
+    "HEROES VS Crazy Wiggler",
+    "Heroes vs Crazy Wiggle",
+    "クレイジーワーム討伐隊"
+  ],
+  "checkedAt": "2026-10-27",
+  "baseMain": "6416abda44927307fe99fe852a22c97e00498e57",
+  "articleStatus": "editorial_complete_implementation_pending",
+  "publicationAuthorized": false,
+  "queue": {
+    "checkedAt": "2026-10-26T21:03:41+00:00",
+    "rank": 5,
+    "maxObservedRewardYen": 22237
+  },
+  "verifiedOffer": {
+    "source": "warau",
+    "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205754&pl=pc_categoryService",
+    "platform": "iOS",
+    "displayedPoints": 11400,
+    "pointsPerYen": 1,
+    "rewardYen": 11400,
+    "deadline": "インストール日から30日。Androidページは絶対日付が古い取得結果だったため現行コースとして採用しない",
+    "purchaseConditions": "指定赤ダイヤ一括購入3条件。青ダイヤ対象外。現在の購入価格未確認",
+    "siteEstimate": "全条件の達成目安は未確認。2日の実例はノーマル10まで",
+    "steps": [
+      {
+        "condition": "ノーマル難易度2",
+        "points": 6,
+        "rewardYen": 6,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ノーマル難易度6",
+        "points": 14,
+        "rewardYen": 14,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ノーマル難易度10",
+        "points": 30,
+        "rewardYen": 30,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ハード難易度15",
+        "points": 120,
+        "rewardYen": 120,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ハード難易度30",
+        "points": 230,
+        "rewardYen": 230,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ヘル難易度30",
+        "points": 380,
+        "rewardYen": 380,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ヘル難易度40",
+        "points": 1600,
+        "rewardYen": 1600,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "ヘル難易度50",
+        "points": 2800,
+        "rewardYen": 2800,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      },
+      {
+        "condition": "赤いダイヤ4990一括購入",
+        "points": 170,
+        "rewardYen": 170,
+        "deadlineDays": 30,
+        "purchaseRequired": true
+      },
+      {
+        "condition": "赤いダイヤ9990一括購入",
+        "points": 350,
+        "rewardYen": 350,
+        "deadlineDays": 30,
+        "purchaseRequired": true
+      },
+      {
+        "condition": "赤いダイヤ19990一括購入",
+        "points": 700,
+        "rewardYen": 700,
+        "deadlineDays": 30,
+        "purchaseRequired": true
+      },
+      {
+        "condition": "ヘル難易度70",
+        "points": 5000,
+        "rewardYen": 5000,
+        "deadlineDays": 30,
+        "purchaseRequired": false
+      }
+    ]
+  },
+  "verificationScope": "取得済み当日候補を起点に詳細本文を確認できた範囲の比較額。全ポイントサイト中の最高額保証ではない。Web取得結果にはキャッシュの可能性があり、ログイン実機/実際の付与は未確認",
+  "identity": "現行公式App Store ID6758664314、IMI GAME、クレイジーワーム説明を確認。Worms Incomingは別ゲームのため実例を混ぜない。案件ストア遷移先IDは未操作",
+  "sourceIds": [
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "R1"
+  ],
+  "unknowns": [
+    "MIKOSHI22237円の詳細へアクセス不可。現行最高確定値にしない",
+    "ヘル70の十分な期限内完走実例と必要課金額",
+    "赤ダイヤの現在販売価格",
+    "最新アップデート後の全育成バランス・広告上限回数",
+    "案件遷移先ストアIDとの直接一致"
+  ],
+  "seo": {
+    "title": "Heroes vs Crazy Wiggler ポイ活攻略｜ノーマル10とヘル条件の注意点",
+    "description": "Heroes vs Crazy Wigglerのポイ活を、ノーマル・ハード・ヘルの条件別に解説。ノーマル10の2日例と撤退例、編成・広告強化・赤いダイヤ購入の注意点を整理します。",
+    "canonical": "https://poigamelab.com/heroes-vs-crazy-wiggler-guide.html"
+  }
+}
