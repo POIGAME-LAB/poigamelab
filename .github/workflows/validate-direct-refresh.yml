@@ -57,6 +57,7 @@ on:
       - "tests/test_phase2_multigame.py"
       - "tests/test_site_data_v24.js"
       - "tests/test_site_health_v25.js"
+      - "tests/test_referral_flow_disclosure.py"
   workflow_dispatch:
 
 permissions:
@@ -161,6 +162,9 @@ jobs:
             --deselect=tests/test_phase2_auto_refresh_v23.py::test_new_game_enrollment_keeps_single_daily_api_free_workflow \
             --deselect=tests/test_phase2_auto_refresh_v23.py::test_v32_games_join_daily_refresh_with_same_schedule \
           --deselect=tests/test_public_site_build.py::test_mementomori_has_verified_published_reward
+
+      - name: Referral monetization disclosure regression checks
+        run: python -m pytest -q tests/test_referral_flow_disclosure.py
 
       - name: Frontend data regression tests
         run: |
