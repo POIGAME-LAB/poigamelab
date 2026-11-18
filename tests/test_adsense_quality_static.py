@@ -255,6 +255,12 @@ def test_first_html_bakes_only_verified_figures_with_confirmation_dates(tmp_path
     assert "1件は確認から30日以上" in index
     assert "99,999" not in index and "88,888" not in index
     assert "確認中" not in _visible(index)
+    # every card keeps its own overview text from games.csv
+    import csv as _csv
+    for row in _csv.DictReader(open(site / "games.csv", encoding="utf-8-sig")):
+        first = (row.get("overview") or "").split("。")[0].strip()[:30]
+        if first:
+            assert escape(first) in index, row["name"]
     # no numbered rank in the default (editorial) order
     assert not re.search(r'class="rank-badge">\d+位', index)
     offers = (site / "offers.html").read_text(encoding="utf-8")
@@ -270,7 +276,9 @@ def test_first_html_old_only_offer_states_its_age(tmp_path):
     rows = ["k1,Township,moppy,,5000,x,iOS,StepUp,60日,2026-09-01,https://pc.moppy.jp/a,https://pc.moppy.jp/a,true"]
     site = _build_with_published(tmp_path, rows)
     index = (site / "index.html").read_text(encoding="utf-8")
-    assert "5,000 円" in index and "最終確認 9/1（78日前）" in index
+    assert "5,000 円" in index and "最終確認 9/1（30日以上前）" in index
+    # no build-time "N日前" count (it would freeze and understate the age)
+    assert "78日前" not in index
 
 
 def test_first_html_empty_published_csv_says_no_verified_offer_not_failure(tmp_path):

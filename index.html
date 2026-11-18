@@ -964,7 +964,7 @@
       if (statMaxRewardNote) {
         statMaxRewardNote.textContent = summary.bestRecent
           ? `${siteName(headline)}・${freshness.short}`
-          : `${siteName(headline)}・最終確認 ${freshness.date}（${freshness.days}日前）`;
+          : `${siteName(headline)}・${freshness.days === null ? "確認日不明" : `最終確認 ${freshness.date}（${freshness.days}日前）`}`;
       }
       setStat(statUpdated, summary.latestConfirmedAt.replaceAll("-", "/"), false);
       if (statRunNote) {
@@ -986,10 +986,24 @@
     if (gamesState === LOAD_STATE.FAILED) {
       showLoadNotice(`${LOAD_TEXT.failed}。表示中の内容はページ生成時点のものです。時間をおいて再読み込みしてください。`);
     } else if (offersState === LOAD_STATE.FAILED) {
-      showLoadNotice(`${LOAD_TEXT.failed}。還元額は表示できていません（案件がなくなったわけではありません）。時間をおいて再読み込みしてください。`);
+      showLoadNotice(statMaxReward.dataset.staticValue
+        ? `${LOAD_TEXT.failed}。上の最高還元・確認日はページ生成時点のデータです（案件がなくなったわけではありません）。時間をおいて再読み込みしてください。`
+        : `${LOAD_TEXT.failed}。還元額は表示できていません（案件がなくなったわけではありません）。時間をおいて再読み込みしてください。`);
     } else {
       showLoadNotice("");
     }
+  }
+
+  function isRecentVerified(offer) {
+    if (!offer || !offer.verified) return false;
+    const days = POIGAME_DATA.offerAgeDays(offer.updatedAt);
+    return days !== null && days <= POIGAME_DATA.OFFER_OLD_DAYS;
+  }
+
+  function rewardTier(offer) {
+    if (!offer) return 3;
+    if (isRecentVerified(offer)) return 0;
+    return offer.verified ? 1 : 2;
   }
 
   function hasVerifiedOffer(game) {
@@ -1007,14 +1021,13 @@
     }
 
     if (currentSort === "reward") {
+      // Recently confirmed verified offers first, then older verified ones,
+      // then reference values, then games without any amount.
       visibleGames.sort((a, b) => {
         const bestA = getBestOffer(a);
         const bestB = getBestOffer(b);
-
-        const rewardA = bestA ? bestA.reward : -1;
-        const rewardB = bestB ? bestB.reward : -1;
-
-        return rewardB - rewardA;
+        return (rewardTier(bestA) - rewardTier(bestB))
+          || ((bestB ? bestB.reward : -1) - (bestA ? bestA.reward : -1));
       });
     }
 
@@ -1053,6 +1066,15 @@
 
     gameGrid.innerHTML = "";
 
+    // Ranks are counted only over offers confirmed within the last 30 days.
+    const rankByGame = new Map();
+    if (currentSort === "reward" && !currentSearch) {
+      let rank = 0;
+      visibleGames.forEach((game) => {
+        if (isRecentVerified(getBestOffer(game))) rankByGame.set(game, ++rank);
+      });
+    }
+
     if (visibleGames.length === 0) {
       gameGrid.innerHTML = `
         <div class="no-results">
@@ -1083,9 +1105,7 @@
 
       // A rank is only shown when the list really is ordered by a measured
       // value: the verified reward, in "報酬が高い順".
-      const rankNumber = currentSort === "reward" && !currentSearch && bestOffer && bestOffer.verified
-        ? cardIndex + 1
-        : 0;
+      const rankNumber = rankByGame.get(game) || 0;
 
       const referral = bestOffer
         ? window.POIGAME_REFERRALS?.get(bestOffer.site) || null

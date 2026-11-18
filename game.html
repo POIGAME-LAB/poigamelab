@@ -1470,7 +1470,8 @@
           const higherOld = offers.find((offer) => offer.verified && Number(offer.reward) > Number(bestOffer.reward));
           if (bestOfferNote && higherOld) {
             const oldFresh = POIGAME_DATA.getOfferFreshness(higherOld);
-            bestOfferNote.textContent = `※ ${pointSites[higherOld.site] || higherOld.site}の${Number(higherOld.reward).toLocaleString()}円は${oldFresh.date}の確認で、${oldFresh.days}日たっているため最高還元には使っていません（表に掲載しています）。`;
+            const when = oldFresh.days === null ? "確認日が不明なため" : `${oldFresh.date}の確認で、${oldFresh.days}日たっているため`;
+            bestOfferNote.textContent = `※ ${pointSites[higherOld.site] || higherOld.site}の${Number(higherOld.reward).toLocaleString()}円は${when}最高還元には使っていません（表に掲載しています）。`;
           }
         }
 

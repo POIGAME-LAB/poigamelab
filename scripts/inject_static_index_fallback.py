@@ -87,11 +87,13 @@ def _short_day(value: object) -> str:
 
 
 def _confirmation_text(offer: dict[str, object], today: date) -> str:
+    # Only absolute dates are baked in: a "N日前" count would freeze at build time
+    # and understate the age to visitors without JavaScript.
     days = _age_days(offer, today)
     if days is None:
         return "確認日の記録なし"
     if days > OFFER_OLD_DAYS:
-        return f"最終確認 {_short_day(offer['updatedAt'])}（{days}日前）"
+        return f"最終確認 {_short_day(offer['updatedAt'])}（{OFFER_OLD_DAYS}日以上前）"
     return f"{_short_day(offer['updatedAt'])}確認"
 
 
@@ -106,15 +108,18 @@ def _offers_by_game(offers: list[dict[str, object]] | None) -> dict[str, list[di
     return grouped
 
 
-def _read_games(path: Path, verified_games: set[str] | None = None) -> list[dict[str, str]]:
+def _read_games(
+    path: Path, verified_games: set[str] | None = None, use_featured: bool = True
+) -> list[dict[str, str]]:
     """Catalog rows in the same order the page script uses: games that have a
-    verified offer first, then the editorial "featured" flag, then CSV order."""
+    verified offer first, then (index only) the editorial "featured" flag, then
+    CSV order."""
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         rows = [row for row in csv.DictReader(handle) if str(row.get("name") or "").strip()]
     has_offer = verified_games or set()
     rows.sort(key=lambda row: (
         str(row.get("name") or "").strip() not in has_offer,
-        str(row.get("featured") or "").strip().lower() != "true",
+        use_featured and str(row.get("featured") or "").strip().lower() != "true",
     ))
     return rows
 
@@ -153,7 +158,7 @@ def _reward_markup(
         return "詳細で比較", ""
     best = _headline(offers, today)
     if best is None:
-        return "確認済み案件なし", "確認済みの案件は現在掲載していません（終了とは限りません）"
+        return "確認済み案件なし", ""
     return (
         f"{int(best['reward']):,} 円",
         f"最高還元のサイト：{_site_label(best['site'])}（{_confirmation_text(best, today)}）",
@@ -192,7 +197,10 @@ def _build_cards(
         badge = '<span class="rank-badge">注目</span>' if featured else ""
         game_offers = None if offers_by_game is None else offers_by_game.get(name, [])
         reward_text, site_line = _reward_markup(game_offers, today)
-        point_site_markup = escape(site_line) if site_line else overview_markup
+        # The game's own overview stays on every card; the source/date line is extra.
+        verification_markup = (
+            f'\n    <p class="verification-line verified">{escape(site_line)}</p>' if site_line else ""
+        )
 
         cards.append(
             f'''<article class="game-card" data-static-fallback="1">
@@ -202,7 +210,7 @@ def _build_cards(
     <h3><a class="game-title-link" href="{detail_href}">{escape(name)}</a></h3>
     <p class="game-condition">{escape(condition)}</p>
     <div class="reward-box"><span>最高還元</span><strong>{escape(reward_text)}</strong></div>
-    <p class="point-site">{point_site_markup}</p>
+    <p class="point-site">{overview_markup}</p>{verification_markup}
     <div class="game-meta">
       <span>⏱ 達成目安：{escape(days)}</span>
       <span>🎮 難易度：{escape(difficulty)}</span>
@@ -375,9 +383,10 @@ def _build_offer_cards(
                 f'\n          <ul class="facts"><li><span>確認済み案件</span><span>{len(sites)}サイト・{len(game_offers)}件</span></li></ul>'
                 if game_offers else ""
             )
+            best_line = f'\n          <p class="best-line">{escape(site_line)}</p>' if site_line else ""
             reward_markup = (
                 f'\n          <div class="reward"><span>最高還元</span><strong>{escape(reward_text)}</strong></div>'
-                f'\n          <p class="best-line">{escape(site_line)}</p>{facts}'
+                f'{best_line}{facts}'
             )
         cards.append(
             f'''<article class="card" data-static-fallback="1">
@@ -423,7 +432,7 @@ def inject_offers_fallback(
         published_path = games_path.parent / "data" / "published_offers.csv"
     verified = _read_verified_offers(published_path)
     grouped = None if verified is None else _offers_by_game(verified)
-    games = _read_games(games_path, set(grouped or {}))
+    games = _read_games(games_path, set(grouped or {}), use_featured=False)
     if not games:
         raise RuntimeError("refusing to publish an empty static offers fallback")
 

@@ -149,8 +149,8 @@
       latest,
       hasRecent: latestAge !== null && latestAge <= POIGAME_DATA.OFFER_OLD_DAYS,
       sites: [...new Set(verified.map((offer) => offer.site))],
-      iosBest: top(game.verified.filter((offer) => offer.platform.includes("iOS"))),
-      androidBest: top(game.verified.filter((offer) => offer.platform.includes("Android"))),
+      iosBest: POIGAME_DATA.pickHeadlineOffer(game.verified.filter((offer) => offer.platform.includes("iOS"))),
+      androidBest: POIGAME_DATA.pickHeadlineOffer(game.verified.filter((offer) => offer.platform.includes("Android"))),
       reference: activeOs === "all" ? top(game.reference) : null
     };
   };
@@ -181,8 +181,12 @@
         : "確認できた案件は現在掲載していません（終了とは限りません）"}</p>`;
     }
     const osParts = [];
-    if (item.iosBest) osParts.push(`iOS ${yen(item.iosBest.reward)}`);
-    if (item.androidBest) osParts.push(`Android ${yen(item.androidBest.reward)}`);
+    const osAmount = (name, offer) => {
+      const fresh = POIGAME_DATA.getOfferFreshness(offer);
+      return `${name} ${yen(offer.reward)}${fresh.level === "old" ? `（${fresh.date}確認）` : ""}`;
+    };
+    if (item.iosBest) osParts.push(osAmount("iOS", item.iosBest));
+    if (item.androidBest) osParts.push(osAmount("Android", item.androidBest));
     const facts = item.verified.length
       ? `<ul class="facts">
           <li><span>確認済み案件</span><span>${item.sites.length}サイト・${item.verified.length}件</span></li>
@@ -235,7 +239,8 @@
     const sort = sortSelect.value;
     const byIndex = (a, b) => a.game.index - b.game.index;
     if (sort === "reward") {
-      items.sort((a, b) => (b.best?.reward ?? -1) - (a.best?.reward ?? -1) || byIndex(a, b));
+      const tier = (item) => !item.best ? 2 : (POIGAME_DATA.getOfferFreshness(item.best).level === "old" ? 1 : 0);
+      items.sort((a, b) => tier(a) - tier(b) || (b.best?.reward ?? -1) - (a.best?.reward ?? -1) || byIndex(a, b));
     } else if (sort === "fresh") {
       items.sort((a, b) => (b.latest || "").localeCompare(a.latest || "") || byIndex(a, b));
     } else if (sort === "sites") {

@@ -106,6 +106,7 @@ const overflow = page => page.evaluate(() => document.documentElement.scrollWidt
 
         if (name === 'offersFailed' || name === 'allFailed') {
           ok(text.includes('最新情報を取得できませんでした'), `${label}: failure not stated`);
+          ok(!/\d\s*円（参考/.test(text), `${label}: reference values shown in place of failed verified data`);
           ok(!text.includes('現在、確認済み案件の掲載はありません'), `${label}: failure shown as empty`);
           ok(!text.includes('検証済みの案件がありません'), `${label}: failure shown as no verified offers`);
         }
@@ -118,6 +119,18 @@ const overflow = page => page.evaluate(() => document.documentElement.scrollWidt
         if (name === 'normal' && target === TOWNSHIP) {
           ok(/\d{1,3}(,\d{3})*円/.test(text), `${label}: verified amount missing`);
           ok(/確認/.test(text) && /\d{4}-\d{2}-\d{2}/.test(text), `${label}: confirmation date missing`);
+        }
+        if ((name === 'normal' || name === 'stale') && target === 'index.html') {
+          // "報酬が高い順": ranks only for offers confirmed within 30 days.
+          await page.click('.sort-buttons button:nth-child(2)');
+          await page.waitForTimeout(200);
+          const ranked = await page.$$eval('.game-card', cards => cards
+            .filter(card => /報酬\d+位/.test(card.textContent))
+            .map(card => ({ line: card.querySelector('.verification-line')?.className || '', rank: card.querySelector('.rank-badge')?.textContent })));
+          if (name === 'stale') ok(ranked.length === 0, `${label}: old offers ranked ${JSON.stringify(ranked)}`);
+          else ok(ranked.length > 0 && ranked.every(r => /fresh|aging/.test(r.line)), `${label}: rank on old offer ${JSON.stringify(ranked)}`);
+          await page.click('.sort-buttons button:nth-child(1)');
+          await page.waitForTimeout(200);
         }
         if (name === 'normal' && target === 'index.html') {
           const stat = await page.textContent('#statMaxReward');

@@ -105,6 +105,9 @@ const pointSites = {
           const originalLoadOffersWithFallback = value.loadOffersWithFallback.bind(value);
           value.loadOffersWithFallback = async function loadOffersWithCatalogProvisionalFallback() {
             const result = await originalLoadOffersWithFallback();
+            // A failed download says nothing about which games lack verified
+            // offers, so no reference values are mixed in on failure.
+            if (result?.status === "failed") return { ...result, provisionalCount: 0 };
             const offers = Array.isArray(result?.offers) ? [...result.offers] : [];
             const gamesWithVerifiedOffer = new Set(
               offers.filter((offer) => offer?.verified).map((offer) => offer.gameName)

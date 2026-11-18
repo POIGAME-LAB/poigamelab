@@ -753,15 +753,14 @@
         `最高額の案件：${label(best.site) || best.site}${bestPlatforms.length ? `・${bestPlatforms.join("・")}` : ""}／${bestCondition}${bestAgeNote}。`
       );
 
-      const byPlatform = {};
-      verified.forEach((offer) => {
-        (offer.platform || []).forEach((name) => {
-          if (name === "iOS" || name === "Android") {
-            byPlatform[name] = Math.max(byPlatform[name] || 0, Number(offer.reward));
-          }
-        });
-      });
-      const platformParts = ["iOS", "Android"].filter((name) => byPlatform[name]).map((name) => `${name} ${yen(byPlatform[name])}`);
+      // Per-OS amount follows the same 30-day rule as the headline; an older
+      // row is only used when nothing recent exists, and then carries its date.
+      const platformParts = ["iOS", "Android"].map((name) => {
+        const pick = pickHeadlineOffer(verified.filter((offer) => (offer.platform || []).includes(name)), now);
+        if (!pick) return "";
+        const age = offerAgeDays(pick.updatedAt, now);
+        return `${name} ${yen(pick.reward)}${age !== null && age > OFFER_OLD_DAYS ? `（${shortDate(pick.updatedAt)}確認）` : ""}`;
+      }).filter(Boolean);
       if (platformParts.length) lines.push(`OS別の最高額：${platformParts.join("／")}（OSが明記された案件のみ）。`);
 
       const dates = verified.map((offer) => String(offer.updatedAt || "").trim()).filter(Boolean).sort();
