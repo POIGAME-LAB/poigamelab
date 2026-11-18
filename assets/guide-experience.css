@@ -8,7 +8,8 @@
 .experience-count{flex:0 0 auto;padding:5px 10px;border-radius:999px;background:#f2edff;color:#6840d6;font-size:11px;font-weight:900}
 .experience-intro{margin:8px 0 14px;color:#5e5570}
 .experience-notice{margin:0 0 18px;padding:12px 14px;border:1px solid #ded2ff;border-radius:13px;background:#faf8ff;color:#5b3ba6;font-size:12px;font-weight:800;line-height:1.65}
-.player-list{display:grid;gap:14px}
+.player-list{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.player-card{min-width:0}
 .player-card{--accent:#7047ff;--accent-soft:#f2edff;border:1px solid #e9e2f9;border-radius:18px;padding:18px;background:#fff}
 .player-card[data-status="ongoing"]{--accent:#2968dc;--accent-soft:#edf4ff}
 .player-card[data-status="retired"]{--accent:#8b8199;--accent-soft:#f4f2f6}

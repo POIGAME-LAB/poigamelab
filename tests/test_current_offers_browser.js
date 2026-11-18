@@ -56,7 +56,7 @@ const server = http.createServer((req, res) => {
         }
         if (name.includes('-guide.html') || name.startsWith('township-lv')) {
           assert.equal(await page.locator('#current-verified-offers').count(), 1, name);
-          assert.match(await page.locator('#current-verified-offers').innerText(), /円|確認済みの案件データはありません/, name);
+          assert.match(await page.locator('#current-verified-offers').innerText(), /円|確認済み案件の掲載はありません/, name);
         }
         checks++;
       }
@@ -64,7 +64,10 @@ const server = http.createServer((req, res) => {
     assert.deepEqual(errors, []);
     // A changed CSV must update a guide without rewriting its historical body.
     const before = fs.readFileSync(path.join(root, 'data/published_offers.csv'), 'utf8');
-    const modified = before.replace(/(エバーテイル,[^\n]*?,)(\d+)(,)/, '$199999$3');
+    // Pages lead with offers confirmed in the last 30 days, so the edited row is also
+    // given the newest confirmation date present in the file.
+    const newest = (before.match(/\d{4}-\d{2}-\d{2}/g) || []).sort().pop();
+    const modified = before.replace(/(エバーテイル,[^\n]*?,)(\d+)(,[^\n]*?,)(\d{4}-\d{2}-\d{2})(,)/, `$199999$3${newest}$5`);
     assert.notEqual(modified, before);
     await page.route('**/data/published_offers.csv', route => route.fulfill({status: 200, body: modified}));
     for (const name of ['evertale-guide.html', 'index.html', 'offers.html', 'game.html?game=' + encodeURIComponent('エバーテイル')]) {

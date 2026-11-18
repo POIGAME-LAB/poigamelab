@@ -23,7 +23,7 @@
  "toc": [
   {
    "id": "condition",
-   "label": "現在の案件条件"
+   "label": "確認時点の案件条件"
   },
   {
    "id": "pace",
@@ -65,7 +65,7 @@
  "sections": [
   {
    "id": "condition",
-   "h2": "現在の案件条件（ワラウiOS・2026年10月16日確認）",
+   "h2": "確認時点の案件条件（ワラウiOS・2026年10月16日確認）",
    "sourceRefs": [
     "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"
    ],
@@ -452,7 +452,7 @@
  "sourceNote": "公開されている実プレイヤーの記録（ブログ・note・X・ワラウのクチコミ）を、同じ人は1人分にまとめて整理しています。個人の到達日数・攻略法は再現を保証するものではありません。案件条件は2026年10月16日にワラウのiOS案件ページで確認した内容で、開始前に利用先で最新情報をご確認ください。",
  "context": {
   "href": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031",
-  "label": "ワラウの現在の案件ページを見る →"
+  "label": "ワラウの案件ページで最新の条件を見る →"
  },
  "experience": {
   "updatedAt": "2026-10-16",
