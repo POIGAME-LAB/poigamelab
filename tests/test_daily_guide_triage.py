@@ -53,6 +53,26 @@ def test_services_and_non_games_are_set_aside_and_penalised():
     assert out["bucket"] == "non_game_or_service" and out["verdict"] == "non_game_or_service" and out["scoreParts"]["serviceOrNonGame"] == -5
 
 
+def test_a_name_without_game_words_is_unclassified_not_a_non_game():
+    ambiguous = tri.triage_offline(_cand("Triple Tile", [_row("kurashiru_reward", "https://www.rewards.kurashiru.com/ads/20309", "Triple Tile", "review")], likely=False, hint=0))
+    assert ambiguous["bucket"] == "unclassified" and ambiguous["gameStatus"] == "unconfirmed" and ambiguous["scoreParts"]["serviceOrNonGame"] == 0
+    assert ambiguous["verdict"] == "offer_not_probed"
+
+
+def test_unclassified_names_are_probed_only_after_the_likely_games(tmp_path):
+    likely = [_cand(f"G{i}", [_row("moppy", f"https://pc.moppy.jp/ad/detail.php?s_id={i}", MOPPY_SINGLE[1])], order=i, hint=100) for i in range(1, 4)]
+    unknown = _cand("Mystery Name", [_row("moppy", "https://pc.moppy.jp/ad/detail.php?s_id=99", "Mystery Name 新規登録 5,000P", "review")], order=0, likely=False, hint=5000)
+    root = _write_candidates(tmp_path, [unknown] + likely)
+    asked = []
+
+    def fetch(url):
+        asked.append(url)
+        return 404, b""
+    out = tri.build(DATE, root, True, 2, 12, fetch, 0, False)
+    assert len(asked) == 2 and not any("s_id=99" in u for u in asked)
+    assert [i["game"] for i in out["items"]][-1] == "Mystery Name" and out["unclassifiedCount"] == 1
+
+
 def test_moppy_stepup_only_is_ranked_below_a_single_condition_game():
     stepup = tri.triage_offline(_cand("Coin Master", [_row("moppy", *MOPPY_STEPUP)], hint=6055))
     single = tri.triage_offline(_cand("Ball Sort", [_row("moppy", *MOPPY_SINGLE)], hint=700))

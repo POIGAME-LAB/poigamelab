@@ -24,7 +24,10 @@ Verdicts (per candidate) - none of them is "an article can be written":
 ``offer_verified``    at least one first-party page was read with every condition, reward unit and deadline;
 ``offer_unreadable``  every probed page was unreadable (the states are listed - never read as "ended" or "0 pt");
 ``offer_not_probed``  budget/stage A only;
-``non_game_or_service`` / ``excluded``  not a single-game guide topic.
+``non_game_or_service`` / ``excluded``  a service word was found in the title (not a single-game guide topic).
+
+Candidates with no game words and no service words are ``unclassified``: they are probed only after the likely games and
+their ``gameStatus`` stays ``unconfirmed`` - an editor must confirm from the store listing that it is a game.
 
 Whether independent player records exist (2+ independent players, 3+ panel entries, <= 365 days) and the game's
 identity (store developer / app id) are still checked by the routine for ``offer_verified`` games.
@@ -101,8 +104,16 @@ def triage_offline(c: dict) -> dict:
     kinds = set(c.get("kindHints", []))
     sites = set(c.get("sources", []))
     paths = _paths(c)
-    only_service = kinds <= {"service", "unknown"} and not c.get("likelyGame")
-    bucket = "non_game_or_service" if (only_service or kinds == {"service"}) else "game_candidate"
+    likely = bool(c.get("likelyGame"))
+    # "service" needs a positive signal (a service word in the title). A name that merely lacks game words is NOT proof of
+    # a non-game: "Triple Tile" or "Worms Incoming" are listed without any kind words, so they stay in the queue as
+    # "unclassified" (probed only after the likely games, and never counted as ready until an editor confirms the game).
+    if kinds == {"service"} or ("service" in kinds and kinds <= {"service", "unknown"} and not likely):
+        bucket = "non_game_or_service"
+    elif not likely and kinds <= {"unknown"}:
+        bucket = "unclassified"
+    else:
+        bucket = "game_candidate"
     readable = [p for p in paths if p["expectedReadable"] is True]
     uncertain = [p for p in paths if p["expectedReadable"] is None and not p["skyflagTagged"]]
     flagged = [p for p in paths if p["skyflagTagged"]]
@@ -129,6 +140,7 @@ def triage_offline(c: dict) -> dict:
         "scoreParts": parts, "score": round(sum(parts.values()), 2),
         "relatedMaterial": c.get("relatedMaterial", []), "previouslyHeld": c.get("previouslyHeld"),
         "verdict": "non_game_or_service" if bucket == "non_game_or_service" else "offer_not_probed",
+        "gameStatus": "unconfirmed" if bucket == "unclassified" else "likely_game" if bucket == "game_candidate" else "not_a_game",
         "identityCheckRequired": True,
     }
 
@@ -211,9 +223,10 @@ def build(date: str, root: Path = ROOT, do_probe: bool = False, probe_limit: int
     limit = max(1, min(int(probe_limit), MAX_PROBE_LIMIT))
     items = [triage_offline(c) for c in data["candidates"]]
     games = sorted((i for i in items if i["bucket"] == "game_candidate"), key=lambda i: (-i["score"], i["order"] or 0, i["game"]))
+    unclassified = sorted((i for i in items if i["bucket"] == "unclassified"), key=lambda i: (-i["score"], i["order"] or 0, i["game"]))
     budget = {"requests": 0, "lookups": 0, "capHit": False, "probed": 0, "verified": 0}
     if do_probe:
-        for item in games:
+        for item in games + unclassified:      # unclassified names only get what the likely games leave over
             if budget["probed"] >= limit or budget["verified"] >= target_verified or budget["capHit"]:
                 break
             if not item["paths"] and budget["lookups"] >= MAX_LOOKUPS:
@@ -225,7 +238,8 @@ def build(date: str, root: Path = ROOT, do_probe: bool = False, probe_limit: int
     def reviews(i):
         return (i.get("playerSignal") or {}).get("firstPartyReviewCount") or 0
 
-    ranked = sorted(items, key=lambda i: (i["bucket"] != "game_candidate", i["verdict"] != "offer_verified" if do_probe else False,
+    bucket_order = {"game_candidate": 0, "unclassified": 1, "non_game_or_service": 2}
+    ranked = sorted(items, key=lambda i: (bucket_order.get(i["bucket"], 3), i["verdict"] != "offer_verified" if do_probe else False,
                                           -min(reviews(i), 5), -i["score"], i["order"] or 0, i["game"]))
     for n, item in enumerate(ranked, 1):
         item["rank"] = n
@@ -238,7 +252,7 @@ def build(date: str, root: Path = ROOT, do_probe: bool = False, probe_limit: int
         "stages": {"A": "offline, all candidates", "B": "bounded first-party probing" if do_probe else "not run"},
         "budget": {"probeLimit": limit, "maxProbeLimit": MAX_PROBE_LIMIT, "targetVerified": target_verified,
                    "maxRequests": MAX_REQUESTS, "maxPagesPerGame": MAX_PAGES_PER_GAME, "maxAmefuriLookups": MAX_LOOKUPS, **budget},
-        "candidateCount": len(items), "gameCandidateCount": len(games), "verdictCounts": counts,
+        "candidateCount": len(items), "gameCandidateCount": len(games), "unclassifiedCount": len(unclassified), "verdictCounts": counts,
         "note": "score orders the research queue only. offer_verified means the first-party conditions were read; it does not mean an "
                 "article is possible (player records, store identity and gameplay sources are still required).",
         "items": ranked,
