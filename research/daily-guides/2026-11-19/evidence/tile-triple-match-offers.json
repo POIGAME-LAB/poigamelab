@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "tile-triple-match",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:10+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209334",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209334",
+      "retrievedAt": "2026-11-19T00:05:10+00:00",
+      "httpStatus": 200,
+      "responseSha256": "250c559653b32b239440a0a3f88e522991345e1be958589669b17b678a4c5e35",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

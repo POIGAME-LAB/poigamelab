@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "wood-block-smart",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:22+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209343",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209343",
+      "retrievedAt": "2026-11-19T00:05:22+00:00",
+      "httpStatus": 200,
+      "responseSha256": "82d7b8bc51b3a73a5087118b7e0abbc02cb821f1d3405f843ea3a2e78fa1909c",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

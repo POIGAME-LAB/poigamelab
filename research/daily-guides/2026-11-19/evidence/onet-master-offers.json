@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "onet-master",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:09+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209332",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209332",
+      "retrievedAt": "2026-11-19T00:05:09+00:00",
+      "httpStatus": 200,
+      "responseSha256": "60d37f29a21c2da6343695a5f9c04645e3d0148a62a9f7ca4d61db64d7085a69",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

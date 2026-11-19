@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "golden-solitaire",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:21+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209370",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209370",
+      "retrievedAt": "2026-11-19T00:05:21+00:00",
+      "httpStatus": 200,
+      "responseSha256": "55d36a8cb1f4453b6ff77528f090d2f4dbcbb887c651ac3668b1d00f04a7250a",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

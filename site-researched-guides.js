@@ -131,5 +131,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "レベル150・170攻略を読む →", href: "mystery-town-guide.html" }
     ]
+  },
+  "大家さんになろう！": {
+    title: "大家さんになろう！ ポイ活攻略",
+    description: "ワラウのiOS案件（全6Step・10日以内）の条件と、繁栄レベル15に6〜7日で届いた実例、資金のため方、初回課金の損得をまとめています。",
+    links: [
+      { label: "繁栄レベル15の攻略を読む →", href: "ooya-san-guide.html" }
+    ]
   }
 });
