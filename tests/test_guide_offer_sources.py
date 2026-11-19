@@ -56,8 +56,8 @@ def test_amefuri_stepup_reads_every_step_and_converts_at_the_printed_rate():
     assert ev["state"] == "readable" and ev["live"] and ev["kind"] == "stepup" and ev["os"] == "iOS"
     assert ev["gameName"] == "Onet Master: Puzzle & Art"
     assert ev["pointUnit"] == "pt" and ev["yenPerPoint"] == 0.1 and ev["rateVerified"]
-    assert len(ev["steps"]) == 14 and ev["steps"][0] == {"condition": "レベル5クリア", "rewardPt": 50, "rewardYen": 5}
-    assert ev["steps"][-1] == {"condition": "レベル20000クリア", "rewardPt": 64370, "rewardYen": 6437}
+    assert len(ev["steps"]) == 14 and ev["steps"][0] == {"condition": "レベル5クリア", "rewardPt": 50, "rewardYen": 5, "deadlineDays": 30}
+    assert ev["steps"][-1] == {"condition": "レベル20000クリア", "rewardPt": 64370, "rewardYen": 6437, "deadlineDays": 30}
     assert ev["totalPt"] == 137790 and ev["totalYen"] == 13779 and ev["stepSumMatchesTotal"]
     assert ev["deadlineDays"] == 30 and ev["deadlineBasis"] == "install"
     # "Ptアップ": a boosted amount is recorded as temporary; the page states no end date and none is invented
@@ -69,7 +69,7 @@ def test_amefuri_single_condition_is_one_condition_one_reward_and_ignores_the_la
     # the fixture ends with the page's label legend, which lists "多段階" for every reader; it must not make this a StepUp
     assert "labelArea__item--stepup" in _page("amefuri_single_boku.html")
     assert ev["state"] == "readable" and ev["kind"] == "single" and ev["os"] == "iOS"
-    assert ev["steps"] == [{"condition": "レベル40到達", "rewardPt": 9840, "rewardYen": 984}]
+    assert ev["steps"] == [{"condition": "レベル40到達", "rewardPt": 9840, "rewardYen": 984, "deadlineDays": 30}]
     assert ev["totalPt"] == 9840 and ev["totalYen"] == 984 and ev["deadlineDays"] == 30 and ev["deadlineBasis"] == "click"
     assert ev["temporaryIncrease"]["regularYen"] == 600 and ev["temporaryIncrease"]["increasedYen"] == 984
 
@@ -104,7 +104,7 @@ def test_coincome_stepup_sums_to_the_current_displayed_amount():
 def test_coincome_single_condition():
     ev = _parse("coincome", "10850", "coincome_single_yuusha.html")
     assert ev["state"] == "readable" and ev["kind"] == "single" and ev["os"] == "iOS"
-    assert ev["steps"] == [{"condition": "ノーマルのステージ40クリア", "rewardPt": 340, "rewardYen": 340}]
+    assert ev["steps"] == [{"condition": "ノーマルのステージ40クリア", "rewardPt": 340, "rewardYen": 340, "deadlineDays": 30}]
     assert ev["deadlineDays"] == 30
 
 
@@ -124,7 +124,7 @@ def test_moppy_single_condition_with_os_in_the_title():
     ev = _parse("moppy", "161455", "moppy_single_ball_sort_ios.html")
     assert ev["state"] == "readable" and ev["kind"] == "single" and ev["os"] == "iOS" and ev["osSource"] == "title"
     assert ev["pointUnit"] == "P" and ev["yenPerPoint"] == 1
-    assert ev["steps"] == [{"condition": "新規アプリインストール後、30日以内にレベル300クリアで条件達成となります。", "rewardPt": 700, "rewardYen": 700}]
+    assert ev["steps"] == [{"condition": "新規アプリインストール後、30日以内にレベル300クリアで条件達成となります。", "rewardPt": 700, "rewardYen": 700, "deadlineDays": 30}]
     assert ev["deadlineDays"] == 30
 
 
@@ -268,3 +268,67 @@ def test_moppy_review_count_is_read_from_the_page_tab():
 def test_moppy_page_without_the_review_tab_has_unknown_review_count():
     raw = _page("moppy_single_ball_sort_ios.html").replace("クチコミ", "xx")
     assert src.parse_offer_page("moppy", "161455", raw)["reviewCount"] is None
+
+
+# ---------------------------------------------------------------- deadlines: every wording seen on real pages
+def test_moppy_deadline_counted_from_mission_participation():
+    ev = _parse("moppy", "159535", "moppy_single_mission60.html")
+    assert ev["state"] == "readable" and ev["kind"] == "single"
+    assert ev["deadlineDays"] == 60 and ev["deadlineBasis"] == "mission"
+    assert [s["deadlineDays"] for s in ev["steps"]] == [60]
+
+
+def test_moppy_deadline_counted_from_click():
+    ev = _parse("moppy", "160405", "moppy_single_click7.html")
+    assert ev["state"] == "readable" and ev["deadlineDays"] == 7 and ev["deadlineBasis"] == "click"
+
+
+def test_amefuri_mission_deadline_of_60_days():
+    ev = _parse("amefuri", "128434", "amefuri_mission60.html")
+    assert ev["state"] == "readable" and ev["deadlineDays"] == 60 and ev["deadlineBasis"] == "mission"
+
+
+def test_amefuri_one_day_deadline_is_kept_as_one_day():
+    ev = _parse("amefuri", "142151", "amefuri_single_click1.html")
+    assert ev["state"] == "readable" and ev["kind"] == "single" and ev["deadlineDays"] == 1
+
+
+def test_amefuri_global_deadline_applies_to_every_step():
+    ev = _parse("amefuri", "142430", "amefuri_stepup_global_click.html")
+    assert ev["state"] == "readable" and ev["deadlineDays"] == 30
+    assert {s["deadlineDays"] for s in ev["steps"]} == {30}
+
+
+def test_amefuri_per_step_deadlines_are_read_from_each_step():
+    ev = _parse("amefuri", "142379", "amefuri_stepup_per_step_deadlines.html")
+    assert ev["state"] == "readable" and ev["kind"] == "stepup" and len(ev["steps"]) == 24
+    by_condition = {s["condition"]: s["deadlineDays"] for s in ev["steps"]}
+    assert by_condition["1日以内に村レベル20をクリア"] == 1
+    assert by_condition["5日以内に村レベル45をクリア"] == 5
+    assert by_condition["20日以内に村レベル150をクリア"] == 20
+    assert by_condition["村レベル2をクリア"] == 30
+    assert ev["deadlineDays"] is None                      # steps differ, so there is no single offer-level number
+    assert sum(s["rewardPt"] for s in ev["steps"]) == ev["totalPt"] == 66020 and ev["totalYen"] == 6602
+
+
+def test_conflicting_deadline_numbers_make_the_page_unreadable_not_guessed():
+    html = _page("amefuri_single_click1.html")
+    assert "成果受付期限　　：広告クリックから1日以内" in html
+    # the page's own condition block now states 1 day in one place and 7 days in another
+    html = html.replace("成果受付期限　　：広告クリックから1日以内", "成果受付期限　　：広告クリックから1日以内<br />\n成果受付期限　　：広告クリックから7日以内", 1)
+    ev = src.parse_offer_page("amefuri", "142151", html)
+    assert ev["state"] == "parse_failed" and ev["unavailableReason"] == "deadline_ambiguous"
+
+
+def test_page_without_any_deadline_is_not_readable():
+    html = _page("amefuri_single_click1.html")
+    import re
+    html = re.sub(r"\d+日以内", "", html)
+    ev = src.parse_offer_page("amefuri", "142151", html)
+    assert ev["state"] == "parse_failed"
+
+
+def test_read_deadlines_rejects_two_numbers_for_one_condition():
+    steps = [{"condition": "村レベル20をクリア", "rewardPt": 10}]
+    text = "・5日以内に村レベル20をクリア\n・9日以内に村レベル20をクリア"
+    assert src.read_deadlines(text, steps)["state"] == "ambiguous"

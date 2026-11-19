@@ -130,6 +130,113 @@ def clean_game_name(title: str) -> str:
     return re.sub(r"\s+", " ", t).strip(" _＿")
 
 
+_INQUIRY_LINE = re.compile(r"問い合わせ|問合せ|調査|保証|申請期限")  # inquiry / investigation / guarantee windows are not achievement deadlines
+_DEADLINE_PATTERNS = (
+    # (regex, basis) - the first number of each pattern; all distinct numbers must agree (else the page is ambiguous)
+    (re.compile(r"成果受付期限\s*[：:]\s*(?:広告)?クリックから(\d+)日以内(?!\s*[（(])"), "click"),
+    (re.compile(r"[：:]\s*(?:広告)?クリックから(\d+)日以内\s*[（(]上記以外[^）)]*[）)]"), "click"),
+    (re.compile(r"獲得条件達成期限はインストール日から起算して(\d+)日以内"), "install"),
+    (re.compile(r"広告クリックから[（(]当日を1日目とし[)）]\s*(\d+)日以内"), "click"),
+    (re.compile(r"(?:ミッション参加|参加)から(?:[（(]当日を1日目とし[)）])?\s*(\d+)日以内"), "mission"),
+    (re.compile(r"クリック後[、,]?\s*(\d+)日以内"), "click"),
+    (re.compile(r"(?:インストール後|インストール日から(?:起算して)?)[、,]?\s*(\d+)日以内"), "install"),
+    (re.compile(r"広告クリックから[、,]?\s*(\d+)日以内に?(?!\s*[（(])"), "click"),
+)
+_BULLET_DEADLINE = re.compile(r"^[・･•]\s*(\d+)日以内に(.+?)\s*$")
+_PAREN_DEADLINE = re.compile(r"(?:広告)?クリックから(\d+)日以内\s*[（(]([^）)]+)[）)]")
+
+
+def _norm_cond(text: str) -> str:
+    return re.sub(r"[\s　を・]", "", _nfkc(text or ""))
+
+
+_LEADING_DEADLINE = re.compile(r"^\s*(\d+)日以内に\s*(.+)$")
+
+
+def read_deadlines(text: str, steps: list[dict]) -> dict:
+    """Deadlines from an offer's condition text.
+
+    Returns ``{"state": "ok"|"missing"|"ambiguous", "days": int|None, "basis": str|None, "byStep": [int|None, ...]}``.
+    ``days`` is the one deadline all conditions share (None when Steps differ - each step then carries its own).
+
+    Sources, all of which must agree: a deadline written in the step's own condition ("1日以内に村レベル20をクリア"),
+    a bullet list ("・5日以内に村レベル45をクリア"), a per-condition 成果受付期限 line ("…5日以内（村レベル45をクリア）"),
+    a common "上記以外" deadline, and one common deadline for the whole offer. A step is never given a number that
+    no page text states for it, and a page whose numbers disagree is ``ambiguous`` - never readable.
+    """
+    lines = [ln for ln in _nfkc(text).split("\n") if not _INQUIRY_LINE.search(ln)]
+    joined = "\n".join(lines)
+    stated: dict[str, set[int]] = {}   # normalized condition -> every deadline the page states for it
+
+    def note(cond: str, days: int) -> None:
+        stated.setdefault(_norm_cond(cond), set()).add(days)
+
+    for ln in lines:
+        m = _BULLET_DEADLINE.match(ln.strip())
+        if m:
+            note(m.group(2), int(m.group(1)))
+        for m in _PAREN_DEADLINE.finditer(ln):
+            note(m.group(2), int(m.group(1)))
+    plain_conditions: list[str] = []
+    for step in steps:
+        m = _LEADING_DEADLINE.match(_nfkc(step["condition"]))
+        if m:
+            note(m.group(2), int(m.group(1)))
+            plain_conditions.append(m.group(2))
+        else:
+            plain_conditions.append(step["condition"])
+    found: dict[int, str] = {}
+    for pattern, basis in _DEADLINE_PATTERNS:
+        for m in pattern.finditer(joined):
+            found.setdefault(int(m.group(1)), basis)
+    default = None
+    for pattern, basis in _DEADLINE_PATTERNS[:2]:
+        m = pattern.search(joined)
+        if m:
+            default = (int(m.group(1)), basis)
+            break
+    if any(len(v) > 1 for v in stated.values()):
+        return {"state": "ambiguous", "days": None, "basis": None, "byStep": [None] * len(steps)}
+    explicit = [next(iter(stated[_norm_cond(c)])) if _norm_cond(c) in stated else None for c in plain_conditions]
+    if any(d is not None for d in explicit):
+        # per-condition deadlines exist: the remaining steps may only take a common "上記以外" / whole-offer number
+        common = default[0] if default else (next(iter(found)) if len(found) == 1 else None)
+        if common is None and any(d is None for d in explicit):
+            return {"state": "ambiguous", "days": None, "basis": None, "byStep": explicit}
+        by_step = [d if d is not None else common for d in explicit]
+        basis = default[1] if default else ("click" if "クリック" in joined else None)
+        return {"state": "ok", "days": by_step[0] if len(set(by_step)) == 1 else None, "basis": basis, "byStep": by_step}
+    if len(found) == 1:
+        (days, basis), = found.items()
+        return {"state": "ok", "days": days, "basis": basis, "byStep": [days] * len(steps)}
+    if len(found) > 1:
+        return {"state": "ambiguous", "days": None, "basis": None, "byStep": [None] * len(steps)}
+    return {"state": "missing", "days": None, "basis": None, "byStep": [None] * len(steps)}
+
+
+_BLOCK_END = ("▼却下条件", "■獲得対象外条件", "【獲得対象外】", "■獲得対象外", "▼注意", "■注意事項", "【注意事項】", "■成果調査に関して", "お問い合わせに関して", "否認条件")
+
+
+def _conditions_block(text: str) -> str:
+    """The part of a conditions section that states conditions and deadlines (not the refusal / notice lists)."""
+    end = len(text)
+    for marker in _BLOCK_END:
+        i = text.find(marker)
+        if 0 < i < end:
+            end = i
+    return text[:end]
+
+
+def _apply_deadlines(ev: dict, info: dict) -> str | None:
+    """Store deadlines on the evidence (offer level and per step). Returns a failure reason or None."""
+    if info["state"] != "ok":
+        return "deadline_ambiguous" if info["state"] == "ambiguous" else "condition_or_deadline_missing"
+    ev["deadlineDays"], ev["deadlineBasis"] = info["days"], info["basis"]
+    for step, days in zip(ev["steps"], info["byStep"]):
+        step["deadlineDays"] = days
+    return None
+
+
 def _sha(body: bytes) -> str:
     return hashlib.sha256(body).hexdigest()
 
@@ -199,13 +306,7 @@ def parse_amefuri(raw: str, offer_id: str, url: str | None = None) -> dict:
     stepup = bool(re.search(r"labelArea__item--stepup|【多段階】", scope)) or "多段階" in name
     cond = re.search(r'<th class="table-head">成果条件</th>\s*<td class="table-data">\s*(.*?)\s*</td>', scope, re.S)
     ev["conditionText"] = _unesc(re.sub(r"<[^>]+>", "", cond.group(1))) if cond else None
-    m = re.search(r"獲得条件達成期限はインストール日から起算して(\d+)日以内", text)
-    if m:
-        ev["deadlineDays"], ev["deadlineBasis"] = int(m.group(1)), "install"
-    else:
-        m = re.search(r"広告クリックから[（(]当日を1日目とし[)）](\d+)日以内", text)
-        if m:
-            ev["deadlineDays"], ev["deadlineBasis"] = int(m.group(1)), "click"
+    block = _conditions_block(_text(raw[raw.find("ポイント獲得条件", start):] if raw.find("ポイント獲得条件", start) > 0 else raw))
     if (base_yen is not None and base_yen < best_yen) or re.search(r"labelArea__item--ptup", scope):
         ev["temporaryIncrease"] = {"regularYen": base_yen, "increasedYen": best_yen, "until": None, "endDateStated": False}
     if stepup:
@@ -221,12 +322,19 @@ def parse_amefuri(raw: str, offer_id: str, url: str | None = None) -> dict:
         ev["totalPt"] = sum(s["rewardPt"] for s in steps)
         ev["totalYen"] = best_yen
         ev["stepSumMatchesTotal"] = ev["rateVerified"] and ev["totalPt"] == best_yen * 10
+        bad = _apply_deadlines(ev, read_deadlines(block, steps))
+        if bad:
+            return _finish(_unavailable(ev, "parse_failed", bad))
     else:
         ev["kind"] = "single" if ev["conditionText"] else "unknown"
         ev["steps"] = [{"condition": ev["conditionText"], "rewardPt": best_yen * 10, "rewardYen": best_yen}] if ev["conditionText"] else []
         ev["totalPt"], ev["totalYen"] = best_yen * 10, best_yen
         ev["stepSumMatchesTotal"] = bool(ev["steps"]) and ev["rateVerified"]
-    ready = ev["steps"] and ev["stepSumMatchesTotal"] and ev["deadlineDays"] and ev["rateVerified"]
+        if ev["steps"]:
+            bad = _apply_deadlines(ev, read_deadlines(block, ev["steps"]))
+            if bad:
+                return _finish(_unavailable(ev, "parse_failed", bad))
+    ready = ev["steps"] and ev["stepSumMatchesTotal"] and ev["rateVerified"] and all(s.get("deadlineDays") for s in ev["steps"])
     if not ready:
         why = "rate_not_verified" if not ev["rateVerified"] else ("step_sum_differs_from_displayed_total" if ev["steps"] and not ev["stepSumMatchesTotal"] else "condition_or_deadline_missing")
         return _finish(_unavailable(ev, "parse_failed", why))
@@ -263,9 +371,6 @@ def parse_coincome(raw: str, offer_id: str, url: str | None = None) -> dict:
     text = _nfkc(_text(raw))
     approve = re.search(r"承認条件\s*\n(.*?)(?:\n否認条件|\Z)", text, re.S)
     block = approve.group(1) if approve else ""
-    m = re.search(r"インストール(?:後|日から)[、,]?\s*(?:（当日を1日目とし）)?(\d+)日以内", block) or re.search(r"(\d+)日以内", block)
-    if m:
-        ev["deadlineDays"], ev["deadlineBasis"] = int(m.group(1)), "install"
     if base is not None and base < cur:
         ev["temporaryIncrease"] = {"regularYen": base, "increasedYen": cur, "until": None, "endDateStated": False}
     stepup = "StepUp" in name or "ステップアップ" in name or bool(re.search(r"STEP\s*1\.", text))
@@ -278,6 +383,9 @@ def parse_coincome(raw: str, offer_id: str, url: str | None = None) -> dict:
             return _finish(_unavailable(ev, "steps_not_public", "stepup_steps_not_on_page"))
         ev["totalPt"] = ev["totalYen"] = sum(s["rewardPt"] for s in steps)
         ev["stepSumMatchesTotal"] = ev["totalYen"] == cur
+        bad = _apply_deadlines(ev, read_deadlines(block, steps))
+        if bad:
+            return _finish(_unavailable(ev, "parse_failed", bad))
     else:
         m = re.search(r"新規[^\n]*?インストール後[、,]?[^\n]*?【([^】\n]+)】", block) or re.search(r"新規[^\n]*?インストール後[、,]?\s*(?:\d+日以内に)?\s*([^\n]+)", block)
         ev["conditionText"] = m.group(1).strip() if m else None
@@ -285,7 +393,11 @@ def parse_coincome(raw: str, offer_id: str, url: str | None = None) -> dict:
         ev["steps"] = [{"condition": ev["conditionText"], "rewardPt": cur, "rewardYen": cur}] if ev["conditionText"] else []
         ev["totalPt"] = ev["totalYen"] = cur
         ev["stepSumMatchesTotal"] = bool(ev["steps"])
-    if not (ev["steps"] and ev["stepSumMatchesTotal"] and ev["deadlineDays"]):
+        if ev["steps"]:
+            bad = _apply_deadlines(ev, read_deadlines(block, ev["steps"]))
+            if bad:
+                return _finish(_unavailable(ev, "parse_failed", bad))
+    if not (ev["steps"] and ev["stepSumMatchesTotal"] and all(s.get("deadlineDays") for s in ev["steps"])):
         why = "step_sum_differs_from_displayed_total" if ev["steps"] and not ev["stepSumMatchesTotal"] else "condition_or_deadline_missing"
         return _finish(_unavailable(ev, "parse_failed", why))
     ev["state"] = "readable"
@@ -331,7 +443,7 @@ def parse_moppy(raw: str, offer_id: str, url: str | None = None) -> dict:
     lines = [ln.strip() for ln in body.split("\n") if ln.strip()]
     cond = None
     for i, ln in enumerate(lines[:60]):
-        if ln in ("【獲得条件】", "▼ポイント獲得条件") and i + 1 < len(lines):
+        if ln in ("【獲得条件】", "【獲得対象】", "▼ポイント獲得条件", "■獲得条件", "■ポイント獲得条件") and i + 1 < len(lines):
             cond = lines[i + 1]
             break
         if _MOPPY_COND.match(ln):
@@ -344,25 +456,17 @@ def parse_moppy(raw: str, offer_id: str, url: str | None = None) -> dict:
         ev["totalYen"] = pt if ev["rateVerified"] else None
         return _finish(_unavailable(ev, "steps_not_public", "stepup_steps_behind_point_get_page"))
     ev["conditionText"] = cond
-    m = re.search(r"成果受付期限\s*[：:]\s*広告クリックから(\d+)日以内", body)
-    if m:
-        ev["deadlineDays"], ev["deadlineBasis"] = int(m.group(1)), "click"
-    else:
-        m = re.search(r"広告クリックから[（(]当日を1日目とし[)）](\d+)日以内", body)
-        if m:
-            ev["deadlineDays"], ev["deadlineBasis"] = int(m.group(1)), "click"
-        else:
-            m = re.search(r"(?:インストール後|広告クリックから)[、,]?\s*(\d+)日以内", cond or "")
-            if m:
-                ev["deadlineDays"] = int(m.group(1))
-                ev["deadlineBasis"] = "click" if "広告クリック" in (cond or "") else "install"
     ev["kind"] = "single" if cond else "unknown"
     ev["steps"] = [{"condition": cond, "rewardPt": pt, "rewardYen": pt if ev["rateVerified"] else None}] if cond else []
     ev["totalPt"], ev["totalYen"] = pt, (pt if ev["rateVerified"] else None)
     ev["stepSumMatchesTotal"] = bool(cond)
-    if not (cond and ev["deadlineDays"] and ev["rateVerified"]):
-        why = "rate_not_verified" if not ev["rateVerified"] else "condition_or_deadline_missing"
-        return _finish(_unavailable(ev, "parse_failed", why))
+    if not cond:
+        return _finish(_unavailable(ev, "parse_failed", "condition_or_deadline_missing"))
+    bad = _apply_deadlines(ev, read_deadlines(_conditions_block(body), ev["steps"]))
+    if bad:
+        return _finish(_unavailable(ev, "parse_failed", bad))
+    if not ev["rateVerified"]:
+        return _finish(_unavailable(ev, "parse_failed", "rate_not_verified"))
     ev["state"] = "readable"
     return _finish(ev)
 

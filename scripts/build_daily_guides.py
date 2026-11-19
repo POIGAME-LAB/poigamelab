@@ -272,11 +272,16 @@ def offer_table_errors(meta: dict, page: dict, ev: dict, article: str, cited_url
             errs.append(f"offer_total_mismatch:{pid}")
         if sum(s["rewardPt"] for s in steps if not s.get("requiresPayment")) != o.get("sumWithoutPurchaseStepsPt"):
             errs.append(f"offer_free_sum_mismatch:{pid}")
-        for s in steps:
+        ev_steps = c.get("steps", [])
+        for i, s in enumerate(steps):
             if not isinstance(s.get("deadlineDays"), int) or s["deadlineDays"] <= 0:
                 errs.append(f"step_deadline_missing:{pid}:{s.get('condition')}")
-            elif c.get("site") not in (None, "warau") and c.get("deadlineDays") and s["deadlineDays"] != c["deadlineDays"]:
-                errs.append(f"step_deadline_differs_from_evidence:{pid}:{s.get('condition')}")
+            elif c.get("site") not in (None, "warau"):
+                # the page's own number for this very step wins; the offer-level number only applies when the step has none
+                ev_step = ev_steps[i] if i < len(ev_steps) else {}
+                expected = ev_step.get("deadlineDays") or c.get("deadlineDays")
+                if expected is None or s["deadlineDays"] != expected:
+                    errs.append(f"step_deadline_differs_from_evidence:{pid}:{s.get('condition')}")
             if not isinstance(s.get("requiresPayment"), bool):
                 errs.append(f"step_payment_flag_missing:{pid}:{s.get('condition')}")
             if re.search(r"購入|課金|パック|パス", s["condition"]) and not s.get("requiresPayment"):

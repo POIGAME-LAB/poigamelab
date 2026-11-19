@@ -7,6 +7,7 @@ days, readable offer evidence only - are asserted here so that supporting new of
 """
 import copy
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -44,7 +45,7 @@ def _filler(n=70):
 
 def _article(ev, extra=""):
     unit = ev["pointUnit"]
-    rows = "\n".join(f"| {s['condition']} | {ev['deadlineDays']}日以内 | {s['rewardPt']:,}{unit} | なし |" for s in ev["steps"])
+    rows = "\n".join(f"| {s['condition']} | {s.get('deadlineDays') or ev['deadlineDays']}日以内 | {s['rewardPt']:,}{unit} | なし |" for s in ev["steps"])
     sections = {
         "condition": f"## 案件条件と報酬\n\n{ev['siteLabel']}の案件ページを直接取得しました。[M1]\n\n| 条件 | 期限 | 報酬 | 課金 |\n| --- | ---: | ---: | --- |\n{rows}\n\n{extra}\n\n合計は{ev['totalPt']:,}{unit}です。[M1]",
         "pace": "## 実際の到達ペース\n\nA・B・Cの記録を並べます。[M2][M3][M4]\n\n| プレイヤー | 到達日数 |\n| --- | ---: |\n| A | 10日 |\n| B | 11日 |\n| C | 12日 |",
@@ -70,6 +71,10 @@ def _article(ev, extra=""):
     return title, "\n".join(lines) + "\n" + _filler(40)
 
 
+def _pays(step):
+    return bool(re.search(r"購入|課金|パック|パス", step["condition"]))
+
+
 def _write(tmp_path, ev, *, players=None, extra="", mutate=None):
     batch = tmp_path / "research" / "daily-guides" / DATE
     pkg = batch / SLUG
@@ -78,9 +83,9 @@ def _write(tmp_path, ev, *, players=None, extra="", mutate=None):
     title, article = _article(ev, extra)
     (pkg / "article.md").write_text(article, encoding="utf-8")
     offer = {"offerKey": ev["offerKey"], "site": ev["site"], "kind": ev["kind"], "os": ev["os"], "url": ev["url"],
-             "steps": [{"condition": s["condition"], "rewardPt": s["rewardPt"], "deadlineDays": ev["deadlineDays"], "requiresPayment": False}
+             "steps": [{"condition": s["condition"], "rewardPt": s["rewardPt"], "deadlineDays": s.get("deadlineDays") or ev["deadlineDays"], "requiresPayment": _pays(s)}
                        for s in ev["steps"]],
-             "totalDisplayedPt": ev["totalPt"], "sumWithoutPurchaseStepsPt": ev["totalPt"]}
+             "totalDisplayedPt": ev["totalPt"], "sumWithoutPurchaseStepsPt": sum(s["rewardPt"] for s in ev["steps"] if not _pays(s))}
     meta = {"slug": SLUG, "game": GAME, "seoTitle": title, "metaDescription": "サンプルパズル（テスト用）の案件条件と、実例の到達日数を整理した検証用のページです。ゲートの動作確認に使います。",
             "proposedPage": f"{SLUG}-guide.html", "canonical": f"https://poigamelab.com/{SLUG}-guide.html", "status": "manuscript_complete", "offers": [offer]}
     sources = [{"id": "M1", "title": "案件ページ", "url": ev["url"], "type": "point_site", "checkedAt": DATE},
@@ -121,6 +126,27 @@ def test_amefuri_stepup_offer_passes_with_rate_and_boost_disclosure(tmp_path):
     extra = "アメフリは10ptが1円です（合計13,779円）。現在は増額中で、増額の終了日はページに記載がありません。"
     batch = _write(tmp_path, ev, extra=extra)
     assert _check(batch) == []
+
+
+def test_stepup_with_per_step_deadlines_passes_when_each_step_carries_its_own_number(tmp_path):
+    ev = _evidence("amefuri", "142379", "amefuri_stepup_per_step_deadlines.html")
+    assert ev["deadlineDays"] is None and {s["deadlineDays"] for s in ev["steps"]} == {1, 5, 20, 30}
+    inc = ev["temporaryIncrease"]
+    extra = "アメフリは10ptが1円です（合計6,602円）。" + ("現在は増額中で、増額の終了日はページに記載がありません。" if inc else "")
+    assert _check(_write(tmp_path, ev, extra=extra)) == []
+
+
+def test_a_step_deadline_that_differs_from_the_page_is_refused(tmp_path):
+    ev = _evidence("amefuri", "142379", "amefuri_stepup_per_step_deadlines.html")
+    extra = "アメフリは10ptが1円です（合計6,602円）。" + ("現在は増額中で、増額の終了日はページに記載がありません。" if ev["temporaryIncrease"] else "")
+
+    def mutate(batch, pkg):
+        meta = json.loads((pkg / "metadata.json").read_text(encoding="utf-8"))
+        # the one-day step is written up as a 30-day step: the page says 1 day
+        meta["offers"][0]["steps"] = [dict(s, deadlineDays=30) if s["deadlineDays"] == 1 else s for s in meta["offers"][0]["steps"]]
+        (pkg / "metadata.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+    errs = _check(_write(tmp_path, ev, extra=extra, mutate=mutate))
+    assert any(e.startswith("step_deadline_differs_from_evidence") for e in errs), errs
 
 
 # ---------------------------------------------------------------- the promised quality bars are unchanged
