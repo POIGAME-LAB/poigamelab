@@ -11,14 +11,15 @@ research/daily-guides/
   aliases.json                 編集者が同一アプリと確認した表記揺れ（似た名前の自動統合はしない）
   legacy-holds.json            Routine開始前（Notion記録）の保留。除外ではない
   <YYYY-MM-DD>/
-    candidates.json            scripts/daily_guide_candidates.py の出力（当日データの候補・除外理由）
+    candidates.json            scripts/daily_guide_candidates.py の出力（当日データの候補・除外理由・relatedMaterial）
+    triage.json                scripts/daily_guide_triage.py の出力（全候補の事前判定と、上限つきの公式ページ確認の結果）
     selection.json             採用／保留／除外の判断と理由（重複防止の履歴）
     REPORT.md                  その日の結果報告
-    evidence/<slug>-offers.json  scripts/daily_guide_evidence.py の当日取得記録（全Step・合計・SHA-256・口コミ索引）
+    evidence/<slug>-offers.json  scripts/daily_guide_evidence.py の当日取得記録（全Step／単一条件・合計・単位・換算率・SHA-256・口コミ索引。ワラウ以外は --url で記録）
     evidence/<slug>-offers-recheck-YYYYMMDD.json  公開前の再確認（--recheck）。あればゲートはこちらを正とする
     <slug>/
       article.md               完成原稿（H1＝SEOタイトル、出典ID [M1] 付き）
-      metadata.json            SEO・ゲーム同定・案件表（全Step・課金フラグ・期限・合計）
+      metadata.json            SEO・ゲーム同定・案件表（offers[]：offerKey・kind=stepup/single・os・全Step／単一条件・課金フラグ・期限・合計）
       sources.json             出典（当日確認）
       experiences.json         実例パネル（日数不明はnull、0にしない）
       page.json                ヒーロー統計・案件リンク・関連攻略・一覧カード文
@@ -29,7 +30,9 @@ research/daily-guides/
 
 ```sh
 python scripts/daily_guide_candidates.py --scan-remote            # 当日候補（前日データなら status=stale_input で停止）
-python scripts/daily_guide_evidence.py --slug <slug> <point_id>... --reviews 6
+python scripts/daily_guide_triage.py --date <date> --probe        # 全候補の事前判定＋公式ページの上限つき確認（--probe なしは無料の事前判定のみ）
+python scripts/daily_guide_evidence.py --slug <slug> <point_id>... --reviews 6                       # ワラウ
+python scripts/daily_guide_evidence.py --slug <slug> --url <案件URL> [--url <案件URL>...]            # ワラウ／アメフリ／COINCOME／モッピーの任意の案件ページ（単一条件にも対応）
 python scripts/daily_guide_evidence.py --date <batch date> --slug <slug> --recheck <現行point_id>... <旧point_id>...   # 公開前の再確認
 python scripts/build_daily_guides.py --check research/daily-guides/<date>   # 品質ゲートのみ
 python scripts/build_daily_guides.py research/daily-guides/<date>           # HTML生成・攻略一覧／sitemap／ビルド許可へ登録

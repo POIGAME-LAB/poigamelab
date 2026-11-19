@@ -9,7 +9,10 @@ Each completed article folder holds the editorial package written by the daily r
     experiences.json  experience-panel data (players with sources, unknown days stay null)
     page.json         page furniture only: heroStats, offerLinks, related, registry
 
-and ``evidence/<slug>-offers.json`` written by ``scripts/daily_guide_evidence.py`` the same day. A later
+and ``evidence/<slug>-offers.json`` written by ``scripts/daily_guide_evidence.py`` the same day. Offers may come from
+Warau (StepUp tables, ``pointId``), or from Amefuri / COINCOME / Moppy / Warau via ``--url`` (``offerKey`` =
+"<site>:<id>", see ``scripts/guide_offer_sources.py``), and an offer is either ``stepup`` (every Step) or ``single``
+(one achievement condition, one reward). Units are per site (``pointUnit`` / ``yenPerPoint``) and are never mixed. A later
 pre-publication re-check (``evidence/<slug>-offers-recheck-YYYYMMDD.json``, ``--recheck``) supersedes it: the
 offer table must then equal the *latest* first-party evidence, and offers recorded in ``metadata.previousOffers``
 must be shown as no longer available there (an old point_id is never presented as the current offer).
@@ -29,6 +32,7 @@ import json
 import re
 import subprocess
 import sys
+import unicodedata
 from datetime import date as Date
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -133,6 +137,24 @@ def parse_article(text: str) -> dict:
     return {"title": title, "intro": intro, "toc": toc, "sections": sections, "sources": sources, "sourceNote": source_note}
 
 
+def offer_key(item: dict) -> str | None:
+    """Stable key of an offer/evidence entry: "<site>:<id>" (legacy Warau entries carry only ``pointId``)."""
+    if item.get("offerKey"):
+        return str(item["offerKey"])
+    if item.get("pointId") is not None:
+        return f"warau:{item['pointId']}"
+    return None
+
+
+def offer_label(item: dict) -> str:
+    """Id used in error messages: the Warau point_id for legacy entries, else the offer key."""
+    return str(item["pointId"]) if item.get("pointId") is not None else str(offer_key(item))
+
+
+def _amount(value: int, unit: str) -> str:
+    return f"{value:,}{unit}"
+
+
 def evidence_path(batch: Path, slug: str) -> Path:
     """Latest offer evidence: the newest pre-publication re-check if any, else the production-day file."""
     rechecks = sorted((batch / "evidence").glob(f"{slug}-offers-recheck-*.json"))
@@ -162,8 +184,10 @@ def build_spec(batch: Path, slug: str) -> dict:
         toc.append(t)
         if t["id"] == "pace":
             toc.append({"id": RECORDS_ID, "label": RECORDS_H2})
+    kinds = {c.get("kind", "stepup") for c in ev.get("checks", []) if c.get("live")}
+    what = "条件・報酬・期限" if kinds == {"single"} else "全Stepの条件・個別報酬・合計"
     note = (
-        f"{_jp_date(ev['checkedAtJst'])}（日本時間）に上表の案件ページを直接取得し、全Stepの条件・個別報酬・合計が上表と同じであることを確認しました。"
+        f"{_jp_date(ev['checkedAtJst'])}（日本時間）に上表の案件ページを直接取得し、{what}が上表と同じであることを確認しました。"
         "参加時の画面に表示される条件が優先されます。"
     )
     cond = next(s for s in sections if s["id"] == "condition")
@@ -194,6 +218,92 @@ def build_spec(batch: Path, slug: str) -> dict:
 # ---------------------------------------------------------------- daily quality gate
 def _plain(text: str) -> str:
     return re.sub(r"\s+", "", re.sub(r"\[[^\]]*\]|\*\*|<[^>]+>|\|", "", text))
+
+
+def offer_table_errors(meta: dict, page: dict, ev: dict, article: str, cited_urls: set, batch_date: str, ev_date: str,
+                       is_recheck: bool) -> list[str]:
+    """Offer table vs same-day first-party evidence: Warau StepUp, or Amefuri / COINCOME / Moppy / Warau via ``--url``;
+    StepUp or single-condition offers; units per site and never mixed."""
+    errs: list[str] = []
+    checks = {offer_key(c): c for c in ev.get("checks", [])}
+    if (not is_recheck and ev_date != batch_date) or (is_recheck and ev_date < batch_date):
+        errs.append("offer_evidence_not_from_batch_date")
+    current_keys = {offer_key(o) for o in meta.get("offers") or []}
+    for prev in meta.get("previousOffers") or []:
+        pid = offer_label(prev)
+        c = checks.get(offer_key(prev))
+        if offer_key(prev) in current_keys:
+            errs.append(f"previous_offer_listed_as_current:{pid}")
+        if not c or c.get("live"):
+            errs.append(f"previous_offer_not_shown_unavailable_in_latest_evidence:{pid}")
+        if prev.get("url") in {l.get("url") for l in page.get("offerLinks", [])}:
+            errs.append(f"previous_offer_linked_as_current:{pid}")
+    offers = meta.get("offers") or []
+    if not offers:
+        errs.append("metadata_offers_required")
+    offer_urls = {o.get("url") for o in offers}
+    for link in page.get("offerLinks", []):
+        if link.get("url") not in offer_urls:
+            errs.append(f"offer_link_not_in_metadata:{link.get('url')}")
+    article_nfkc = unicodedata.normalize("NFKC", article)
+    for o in offers:
+        pid = offer_label(o)
+        c = checks.get(offer_key(o))
+        if not c or not c.get("live") or c.get("state", "readable") != "readable":
+            errs.append(f"offer_not_live_in_evidence:{pid}")
+            continue
+        unit = c.get("pointUnit") or "pt"
+        kind = c.get("kind", "stepup")
+        if o.get("kind", "stepup") != kind:
+            errs.append(f"offer_kind_mismatch:{pid}")
+        if o.get("os") != c.get("os"):
+            errs.append(f"offer_os_mismatch:{pid}")
+        if c.get("os") is None and "OSの記載" not in article:
+            errs.append(f"os_not_stated_on_page_but_not_disclosed:{pid}")
+        if o.get("url") not in cited_urls:
+            errs.append(f"offer_url_not_cited:{pid}")
+        steps = o.get("steps") or []
+        if kind == "single" and len(steps) != 1:
+            errs.append(f"single_offer_must_have_exactly_one_condition:{pid}")
+        if [(s["condition"], s["rewardPt"]) for s in steps] != [(s["condition"], s["rewardPt"]) for s in c.get("steps", [])]:
+            errs.append(f"offer_steps_differ_from_evidence:{pid}")
+        total = sum(s["rewardPt"] for s in steps)
+        if total != o.get("totalDisplayedPt") or total != c.get("totalPt"):
+            errs.append(f"offer_total_mismatch:{pid}")
+        if sum(s["rewardPt"] for s in steps if not s.get("requiresPayment")) != o.get("sumWithoutPurchaseStepsPt"):
+            errs.append(f"offer_free_sum_mismatch:{pid}")
+        for s in steps:
+            if not isinstance(s.get("deadlineDays"), int) or s["deadlineDays"] <= 0:
+                errs.append(f"step_deadline_missing:{pid}:{s.get('condition')}")
+            elif c.get("site") not in (None, "warau") and c.get("deadlineDays") and s["deadlineDays"] != c["deadlineDays"]:
+                errs.append(f"step_deadline_differs_from_evidence:{pid}:{s.get('condition')}")
+            if not isinstance(s.get("requiresPayment"), bool):
+                errs.append(f"step_payment_flag_missing:{pid}:{s.get('condition')}")
+            if re.search(r"購入|課金|パック|パス", s["condition"]) and not s.get("requiresPayment"):
+                errs.append(f"purchase_step_not_flagged:{pid}:{s['condition']}")
+            if _amount(s["rewardPt"], unit) not in article:
+                errs.append(f"step_reward_not_in_article:{pid}:{s['rewardPt']}")
+        if _amount(total, unit) not in article:
+            errs.append(f"offer_total_not_in_article:{pid}")
+        rate = c.get("yenPerPoint")
+        if c.get("site") not in (None, "warau") and not c.get("rateVerified"):
+            errs.append(f"point_rate_not_verified_on_page:{pid}")
+        if rate is not None and rate != 1:
+            # e.g. Amefuri 10pt = 1 yen: the yen equivalent and the rate must be written next to the points
+            if c.get("totalYen") is None or _amount(c["totalYen"], "円") not in article:
+                errs.append(f"yen_equivalent_not_in_article:{pid}")
+            if "10pt" not in article_nfkc or "1円" not in article_nfkc:
+                errs.append(f"point_rate_not_disclosed:{pid}")
+        inc = c.get("temporaryIncrease")
+        if inc:
+            if inc.get("until"):
+                if inc["until"] not in article:
+                    errs.append(f"temporary_increase_not_disclosed:{pid}")
+            elif "増額" not in article or not (inc.get("endDateStated") is False and "終了日" in article):
+                # an increase whose end date the page does not state must still be called temporary, with that said
+                errs.append(f"temporary_increase_not_disclosed:{pid}")
+
+    return errs
 
 
 def gate(batch: Path, slug: str) -> list[str]:
@@ -263,59 +373,7 @@ def gate(batch: Path, slug: str) -> list[str]:
         if urlsplit(url).scheme != "https":
             errs.append(f"source_not_https:{sid}")
 
-    # offer table vs same-day first-party evidence
-    checks = {c["pointId"]: c for c in ev.get("checks", [])}
-    if (not is_recheck and ev_date != batch_date) or (is_recheck and ev_date < batch_date):
-        errs.append("offer_evidence_not_from_batch_date")
-    current_ids = {str(o.get("pointId")) for o in meta.get("offers") or []}
-    for prev in meta.get("previousOffers") or []:
-        pid = str(prev.get("pointId"))
-        c = {x["pointId"]: x for x in ev.get("checks", [])}.get(pid)
-        if pid in current_ids:
-            errs.append(f"previous_offer_listed_as_current:{pid}")
-        if not c or c.get("live"):
-            errs.append(f"previous_offer_not_shown_unavailable_in_latest_evidence:{pid}")
-        if prev.get("url") in {l.get("url") for l in page.get("offerLinks", [])}:
-            errs.append(f"previous_offer_linked_as_current:{pid}")
-    offers = meta.get("offers") or []
-    if not offers:
-        errs.append("metadata_offers_required")
-    offer_urls = {o.get("url") for o in offers}
-    for link in page.get("offerLinks", []):
-        if link.get("url") not in offer_urls:
-            errs.append(f"offer_link_not_in_metadata:{link.get('url')}")
-    for o in offers:
-        pid = str(o.get("pointId"))
-        c = checks.get(pid)
-        if not c or not c.get("live"):
-            errs.append(f"offer_not_live_in_evidence:{pid}")
-            continue
-        if o.get("os") != c.get("os"):
-            errs.append(f"offer_os_mismatch:{pid}")
-        if o.get("url") not in art_src.values():
-            errs.append(f"offer_url_not_cited:{pid}")
-        steps = o.get("steps") or []
-        if [(s["condition"], s["rewardPt"]) for s in steps] != [(s["condition"], s["rewardPt"]) for s in c.get("steps", [])]:
-            errs.append(f"offer_steps_differ_from_evidence:{pid}")
-        total = sum(s["rewardPt"] for s in steps)
-        if total != o.get("totalDisplayedPt") or total != c.get("totalPt"):
-            errs.append(f"offer_total_mismatch:{pid}")
-        if sum(s["rewardPt"] for s in steps if not s.get("requiresPayment")) != o.get("sumWithoutPurchaseStepsPt"):
-            errs.append(f"offer_free_sum_mismatch:{pid}")
-        for s in steps:
-            if not isinstance(s.get("deadlineDays"), int) or s["deadlineDays"] <= 0:
-                errs.append(f"step_deadline_missing:{pid}:{s.get('condition')}")
-            if not isinstance(s.get("requiresPayment"), bool):
-                errs.append(f"step_payment_flag_missing:{pid}:{s.get('condition')}")
-            if re.search(r"購入|課金|パック|パス", s["condition"]) and not s.get("requiresPayment"):
-                errs.append(f"purchase_step_not_flagged:{pid}:{s['condition']}")
-            if f"{s['rewardPt']:,}pt" not in article:
-                errs.append(f"step_reward_not_in_article:{pid}:{s['rewardPt']}")
-        if f"{total:,}pt" not in article:
-            errs.append(f"offer_total_not_in_article:{pid}")
-        inc = c.get("temporaryIncrease")
-        if inc and inc["until"] not in article:
-            errs.append(f"temporary_increase_not_disclosed:{pid}")
+    errs += offer_table_errors(meta, page, ev, article, set(art_src.values()), batch_date, ev_date, is_recheck)
 
     # player records
     players = exp.get("players", [])

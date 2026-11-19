@@ -11,6 +11,12 @@ A page that cannot be read is recorded as ``live: false`` with the reason. It is
 
     python scripts/daily_guide_evidence.py --date 2026-11-05 --slug mystery-town 206151 206152 [--reviews 5]
     # -> research/daily-guides/2026-11-05/evidence/<slug>-offers.json
+
+Other point sites and single-condition offers (``scripts/guide_offer_sources.py``: Warau / Amefuri / COINCOME /
+Moppy; every state explicit, units never mixed) are recorded with ``--url`` instead of Warau point ids:
+
+    python scripts/daily_guide_evidence.py --date 2026-11-19 --slug onet-master \
+        --url https://www.amefri.net/detail/id/142696 --url https://cimcome.jp/campaigns/details/10842
 """
 from __future__ import annotations
 
@@ -110,7 +116,8 @@ def record(pid: str, review_pages: int = 0) -> dict:
     url = WARAU.format(pid=pid)
     code, body = fetch(url)
     raw = body.decode("utf-8", "replace")
-    entry = {"pointId": pid, "url": url, "retrievedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    entry = {"pointId": pid, "offerKey": f"warau:{pid}", "site": "warau", "url": url,
+             "retrievedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
              "httpStatus": code, "responseSha256": hashlib.sha256(body).hexdigest()}
     entry.update(parse_offer(raw) if code == 200 else {"live": False, "unavailableReason": f"http_{code}"})
     if review_pages and entry.get("live"):
@@ -131,23 +138,38 @@ def record(pid: str, review_pages: int = 0) -> dict:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("point_ids", nargs="+")
+    ap.add_argument("point_ids", nargs="*", help="Warau point_id(s) (StepUp tables)")
+    ap.add_argument("--url", action="append", default=[], metavar="OFFER_URL",
+                    help="registered first-party offer URL of Warau / Amefuri / COINCOME / Moppy (repeatable); one GET each")
     ap.add_argument("--date", default=datetime.now(JST).date().isoformat())
     ap.add_argument("--slug", required=True)
     ap.add_argument("--reviews", type=int, default=0, help="also index up to N review pages")
     ap.add_argument("--recheck", action="store_true",
                     help="pre-publication re-check of an earlier batch: writes <slug>-offers-recheck-<today>.json instead")
     args = ap.parse_args(argv)
+    if not args.point_ids and not args.url:
+        ap.error("give Warau point ids and/or --url OFFER_URL")
     checks = [record(pid, args.reviews) for pid in args.point_ids]
-    out = {"schemaVersion": 1, "slug": args.slug, "site": "warau", "checkedAtJst": datetime.now(JST).isoformat(timespec="seconds"),
-           "yenPerPoint": 1, "yenPerPointSource": "https://www.warau.jp/help/qa/1475/", "checks": checks}
+    if args.url:
+        from scripts import guide_offer_sources as sources  # lazy: that module imports this one
+
+        for i, url in enumerate(args.url):
+            if i or checks:
+                time.sleep(0.8)
+            checks.append(sources.record(url))
+    sites = sorted({c.get("site") or "warau" for c in checks})
+    out = {"schemaVersion": 1 if sites == ["warau"] else 2, "slug": args.slug,
+           "site": sites[0] if len(sites) == 1 else "multi", "sites": sites,
+           "checkedAtJst": datetime.now(JST).isoformat(timespec="seconds"), "checks": checks}
+    if sites == ["warau"]:
+        out.update(yenPerPoint=1, yenPerPointSource="https://www.warau.jp/help/qa/1475/")
     name = f"{args.slug}-offers-recheck-{out['checkedAtJst'][:10].replace('-', '')}.json" if args.recheck else f"{args.slug}-offers.json"
     path = ROOT / "research" / "daily-guides" / args.date / "evidence" / name
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for c in checks:
-        print(c["pointId"], c.get("os"), "live" if c.get("live") else c.get("unavailableReason"), c.get("totalPt"), "sum-ok" if c.get("stepSumMatchesTotal") else "SUM-MISMATCH",
-              len(c.get("steps", [])), "steps", len(c.get("reviewIndex", [])), "reviews")
+        print(c.get("offerKey") or c["pointId"], c.get("kind", "stepup"), c.get("os"), "live" if c.get("live") else c.get("unavailableReason"), c.get("totalPt"),
+              "sum-ok" if c.get("stepSumMatchesTotal") else "SUM-MISMATCH", len(c.get("steps", [])), "steps", len(c.get("reviewIndex", [])), "reviews")
     print("wrote", path.relative_to(ROOT))
     return 0 if all(c.get("live") and c.get("stepSumMatchesTotal") for c in checks) else 2
 
