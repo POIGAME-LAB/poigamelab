@@ -374,8 +374,11 @@ def test_candidates_group_rank_and_exclude(tmp_path):
     assert next(c for c in out["candidates"] if c["game"] == "別ゲーム")["listingRewardHintYen"] is None  # gendama pt is not 1:1
     reasons = {(e["game"], e["reason"]) for e in out["excluded"]}
     assert ("Freecash", "aggregator_or_reward_wall_not_a_single_game") in reasons
-    assert ("既存ゲーム", "already_covered") in reasons
-    assert ("タウンシップ", "already_covered") in reasons  # editor-reviewed alias of a catalog game
+    assert ("既存ゲーム", "already_covered") in reasons  # a published guide page exists
+    # A games.csv row alone is NOT a guide (2026-11-19: catalog / research material must not hide a game).
+    assert ("タウンシップ", "already_covered") not in reasons
+    township = next(c for c in out["candidates"] if c["game"] == "タウンシップ")
+    assert township["relatedMaterial"] == [{"kind": "catalog", "ref": "games.csv"}]  # reuse hint, not an exclusion
     assert any(r == "scan_classified_likely_non_game" for _, r in reasons)
 
 
@@ -388,3 +391,87 @@ def test_candidate_name_normalisation():
     assert cand.display_name("【SKYFLAG】【注意事項必読】Monster Hunter Outlanders（StepUp） 初回") == "Monster Hunter Outlanders"
     assert cand.display_name("iOS_モーマンタイム【StepUp】 アプリ利用でキャッシュバック") == "モーマンタイム【StepUp】"
     assert cand.norm_key("ミステリータウン：マージゲーム - Mystery Town") == cand.norm_key("ミステリータウン:マージゲーム－Mystery Town")
+
+
+# ---------------------------------------------------------------- guide vs comparison/research material (2026-11-19 fix)
+def _root_with(tmp_path, *, guide_for=None, dossier_for=None, registry_for=None, registry_page=None, spec_only_for=None):
+    root = _mini_root(tmp_path)
+    if guide_for:
+        (root / "zzz-guide.html").write_text(f"<h1>{guide_for} ポイ活攻略</h1>", encoding="utf-8")
+    if dossier_for:
+        d = root / "research" / "new-games" / "2026-09-27" / "dossiers"
+        d.mkdir(parents=True)
+        (d / "x.json").write_text(json.dumps({"slug": "x", "name": dossier_for, "aliases": []}, ensure_ascii=False), encoding="utf-8")
+    if registry_for:
+        (root / "site-guides.js").write_text(
+            'window.POIGAME_GUIDES = Object.freeze({\n  "%s": {\n    title: "x",\n    links: [{ label: "a", href: "%s" }]\n  },\n});\n' % (registry_for, registry_page),
+            encoding="utf-8")
+        if registry_page and registry_page.endswith("-guide.html") and registry_page != "missing-guide.html":
+            (root / registry_page).write_text("<h1>別名 ポイ活攻略</h1>", encoding="utf-8")
+    if spec_only_for:
+        d = root / "research" / "new-guides" / "2026-10-16"
+        d.mkdir(parents=True)
+        (d / "y.json").write_text(json.dumps({"game": spec_only_for, "file": "never-published-guide.html"}, ensure_ascii=False), encoding="utf-8")
+    return root
+
+
+def _cands(out):
+    return {c["game"]: c for c in out["candidates"]}, {e["game"]: e for e in out["excluded"]}
+
+
+def test_research_dossier_does_not_count_as_a_published_guide(tmp_path):
+    root = _root_with(tmp_path, dossier_for="新作パズル")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" in cands and "新作パズル" not in excluded
+    assert any(m["kind"] == "research_dossier" for m in cands["新作パズル"]["relatedMaterial"])
+
+
+def test_published_guide_page_excludes_even_when_a_dossier_exists(tmp_path):
+    root = _root_with(tmp_path, guide_for="新作パズル", dossier_for="新作パズル")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" not in cands
+    assert excluded["新作パズル"]["reason"] == "already_covered" and excluded["新作パズル"]["coveredBy"].startswith("published_guide:")
+
+
+def test_registry_entry_counts_only_when_its_guide_page_exists(tmp_path):
+    root = _root_with(tmp_path, registry_for="新作パズル", registry_page="zzz2-guide.html")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" in excluded and excluded["新作パズル"]["coveredBy"].startswith("guide_registry:")
+    root2 = _root_with(tmp_path / "b", registry_for="新作パズル", registry_page="missing-guide.html") if (tmp_path / "b").mkdir() is None else None
+    cands2, excluded2 = _cands(cand.build("2026-11-05", root2))
+    assert "新作パズル" in cands2  # registry points at a page that does not exist -> not a guide
+
+
+def test_unpublished_guide_spec_is_material_not_a_guide(tmp_path):
+    root = _root_with(tmp_path, spec_only_for="新作パズル")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" in cands
+    assert any(m["kind"] == "guide_spec_only" for m in cands["新作パズル"]["relatedMaterial"])
+
+
+def test_completed_same_day_batch_and_open_pr_still_exclude(tmp_path):
+    root = _mini_root(tmp_path)
+    batch = root / "research" / "daily-guides" / "2026-11-05"
+    batch.mkdir(parents=True)
+    (batch / "selection.json").write_text(json.dumps({"decisions": [{"game": "新作パズル", "decision": "completed"}]}, ensure_ascii=False), encoding="utf-8")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert excluded["新作パズル"]["coveredBy"] == "daily_batch:2026-11-05"
+    out = cand.build("2026-11-05", _mini_root(tmp_path / "c") if (tmp_path / "c").mkdir() is None else None, extra_exclude=["別ゲーム"])
+    assert "別ゲーム" not in [c["game"] for c in out["candidates"]]
+
+
+def test_kind_hints_cover_stepup_single_and_service_titles():
+    assert cand.kind_hint("Coin Master（StepUp）【iOS】 新規アプリインストール後、30日以内に各成果地点到達でクリア 6,055P") == "stepup"
+    assert cand.kind_hint("iOS_Onet Master: Puzzle & Art『StepUp』 アプリ利用でキャッシュバック 13,950円") == "stepup"
+    assert cand.kind_hint("Screw Out 3D（レベル500到達） 【▼ポイント獲得条件】記載の条件を達成 1,300P") == "single"
+    assert cand.kind_hint("Rise of Kingdoms ―万国覚醒― 任意のレベルIV部隊をアンロック 11,400P") == "single"
+    assert cand.kind_hint("Onet Master: Tile Match Puzzle レベル1000をクリア 3,800P") == "single"
+    assert cand.kind_hint("Coincheck/コインチェック(初回購入)_iOS 新規アプリインストール後、30日以内に販売所での初回購入 1,500P") == "service"
+    assert cand.kind_hint("ホットペッパービューティー 美容院予約完了後、予約店舗に来訪 3,300P") == "service"
+
+
+def test_bracketed_stepup_tag_is_not_part_of_the_game_name():
+    assert cand.display_name("iOS_Onet Master: Puzzle & Art『StepUp』 アプリ利用でキャッシュバック 13,950円") == "Onet Master: Puzzle & Art"
+    assert cand.display_name("【SKYFLAG】Onet Master: Puzzle & Art（StepUp） 初回アプリインストール後") == "Onet Master: Puzzle & Art"
+    # a name that really contains 「」 is kept
+    assert cand.display_name("魔王「世界の半分あげるって言っちゃった」 第14の城【天象儀と魔術の城】クリア 1,068P") == "魔王「世界の半分あげるって言っちゃった」"
