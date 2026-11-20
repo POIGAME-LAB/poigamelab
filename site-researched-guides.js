@@ -141,7 +141,7 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
   },
   "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）": {
     title: "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M） ポイ活攻略",
-    description: "ワラウ案件（iOS・Android、60日以内の4Step）の全報酬と、30〜46日でレベル400に届いた実例・レベル300で止まった例、転生・秘宝・広告視聴の進め方をまとめています。",
+    description: "ワラウ案件（iOS・Android、60日以内の4Step、増額表示あり）の全報酬と、レベル400に30〜40日で届いた実例・レベル300まで進んだ例、転生・秘宝・広告視聴の進め方をまとめています。",
     links: [
       { label: "レベル400攻略を読む →", href: "purikets-nyaa-guide.html" }
     ]

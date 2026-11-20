@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
   "game": "LINE マジマジ：爽快魔法マージパズル",
-  "updatedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
   "title": "実際の到達ペース",
   "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
   "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
-  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-20。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-21。",
   "players": [
     {
       "id": "A",
       "label": "プレイヤーA",
       "status": "completed",
-      "summary": "かなりゆっくり遊んで4日でクリア",
+      "summary": "かなりゆっくり遊んで4日でクリア（レベル・Stepの記載なし）",
       "milestones": [
         {
           "day": 4,
-          "label": "条件クリア（本人記載、段階は全Stepと読める記載）"
+          "label": "クリア（本人記載。レベル・Stepの記載なし）"
         }
       ],
       "sources": [
@@ -24,16 +24,16 @@
       "sourceDetails": [
         "ぽいぽいぽい（ワラウ口コミ）",
         "2026-09-24",
-        "かなりゆっくり遊んで4日でクリア"
+        "かなりゆっくり遊んで4日でクリア（レベル・Stepの記載なし）"
       ],
       "postedOn": "2026-09-24",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
       "totalPlayMinutes": null,
       "dailyPlayMinutes": null,
-      "note": "体力を溢れさせたが条件は緩かったと記載。後半は生成アイテムの要求が増え、ダイヤで購入し泡割りも使用。課金額は記載なし。"
+      "note": "体力を溢れさせたが条件は緩かったと記載。後半は生成アイテムの要求が増え、ダイヤで購入し泡割りも使用。課金額は記載なし。現行のどのStepかは確認できない（投稿時の案件構成が現行と異なる可能性）。"
     },
     {
       "id": "B",
@@ -55,7 +55,7 @@
         "2日でレベル25クリア"
       ],
       "postedOn": "2026-09-24",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -83,7 +83,7 @@
         "2日でレベル25到達、合計8時間弱"
       ],
       "postedOn": "2026-09-21",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -111,7 +111,7 @@
         "空いた時間のプレイで3日でレベル25"
       ],
       "postedOn": "2026-09-30",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -143,7 +143,7 @@
         "レベル18まで約2時間、約10時間でレベル23"
       ],
       "postedOn": "2026-09-21",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -175,7 +175,7 @@
         "レベル25のStep2まで2〜3日、レベル35超は1週間ちょっと"
       ],
       "postedOn": "2026-11-19",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -186,7 +186,7 @@
     {
       "id": "G",
       "label": "プレイヤーG",
-      "status": "stopped",
+      "status": "retired",
       "summary": "レベル36で離脱",
       "milestones": [
         {
@@ -203,7 +203,7 @@
         "レベル36で離脱"
       ],
       "postedOn": "2026-10-31",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,

@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-20",
+  "checkedAt": "2026-11-21",
   "sources": [
     {
       "id": "M1",
       "title": "ワラウ iOS案件209372",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372",
       "type": "point_site",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "bodyConfirmed": true,
       "claims": [
         "全3Step・表示合計700pt（増額表示なし）、期限はインストール日から30日以内",
         "獲得対象外条件・1時間以内の起動・あんしん保証の記載"
       ],
       "retrieval": "direct_http_200",
-      "retrievedAt": "2026-11-20T00:25:40+00:00",
-      "responseSha256": "c714e161f1313f3060abc545a41ff31419d64e1c8e2b1ad77dcc4c7485f91d2c"
+      "retrievedAt": "2026-11-20T22:47:55+00:00",
+      "responseSha256": "4a6161a263547a35f05607510fc53642aca781dcba4f7b857d855e55a66e5815"
     },
     {
       "id": "M2",
@@ -44,10 +44,10 @@
       "title": "ワラウ案件ページの口コミ（複数投稿者）",
       "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372",
       "type": "player",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "bodyConfirmed": true,
       "claims": [
-        "口コミ9件（5点6件・4点2件・3点1件）。採用した7名の投稿は2026-09-21〜2026-11-19、2026-11-20に掲載を確認"
+        "口コミ10件（5点6件・4点2件・3点2件、2026-11-21確認）。採用した7名の投稿は2026-09-21〜2026-11-19。2026-11-21付の1件に「Lv18〜40で430ptの案件だった」との記載"
       ],
       "individualSourceDetailsRequired": true
     },

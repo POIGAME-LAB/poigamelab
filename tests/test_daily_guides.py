@@ -82,12 +82,29 @@ def test_offer_table_equals_same_day_evidence(batch, slug):
         for s in o["steps"]:
             assert f"{s['rewardPt']:,}pt" in text
         if c.get("temporaryIncrease"):
-            assert c["temporaryIncrease"]["until"] in text  # a boosted amount is always disclosed as temporary
+            inc = c["temporaryIncrease"]
+            if inc.get("until"):
+                assert inc["until"] in text  # a boosted amount is always disclosed as temporary
+            else:  # no end date printed on the page: say it is an increase and that the end date is not stated
+                assert "増額" in text and "終了日" in text and inc.get("endDateStated") is False
+            assert o["temporaryIncrease"] == inc  # the metadata row states the same increase the page shows
     for prev in meta.get("previousOffers", []):
         c = ev[prev["pointId"]]
         assert c["live"] is False and c["unavailableReason"]  # shown as no longer available on the latest check
         assert prev["pointId"] not in {o["pointId"] for o in meta["offers"]}
         assert f"{prev['totalDisplayedPt']:,}pt" not in text  # an old amount is never presented as current
+
+
+@pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
+def test_guide_list_text_equals_the_manuscripts_registry_text(batch, slug):
+    """The 攻略一覧 entry is written once at registration and is never refreshed by a rebuild, so a manuscript fix that
+    forgets it leaves the list describing facts the article no longer states (PR #353: "30〜46日でレベル400")."""
+    reg = _j(batch / slug / "page.json")["registry"]
+    js = (ROOT / "site-researched-guides.js").read_text(encoding="utf-8")
+    guides = (ROOT / "guides.html").read_text(encoding="utf-8")
+    assert js.count(reg["description"]) == 1, "site-researched-guides.js differs from page.json registry.description"
+    assert guides.count(reg["description"]) == 1, "guides.html differs from page.json registry.description"
+    assert reg["label"] in js
 
 
 @pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)

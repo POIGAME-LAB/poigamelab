@@ -32,7 +32,8 @@ def _offer(ev, *, payment=lambda cond: False):
               "requiresPayment": payment(s["condition"])} for s in ev["steps"]]
     return {"offerKey": ev["offerKey"], "site": ev["site"], "kind": ev["kind"], "os": ev["os"], "url": ev["url"],
             "steps": steps, "totalDisplayedPt": ev["totalPt"],
-            "sumWithoutPurchaseStepsPt": sum(s["rewardPt"] for s in steps if not s["requiresPayment"])}
+            "sumWithoutPurchaseStepsPt": sum(s["rewardPt"] for s in steps if not s["requiresPayment"]),
+            "temporaryIncrease": copy.deepcopy(ev.get("temporaryIncrease"))}
 
 
 def _errors(offers, ev, article, *, page_links=None, previous=None, when=DATE, recheck=False):
@@ -195,3 +196,44 @@ def test_legacy_warau_evidence_and_metadata_still_use_point_ids():
     errs = bdg.offer_table_errors(meta, {"offerLinks": [{"url": offer["url"]}]}, _evidence(legacy_check), "100pt", {offer["url"]}, DATE, DATE, False)
     assert errs == []
     assert bdg.offer_key(offer) == "warau:209342" and bdg.offer_label(offer) == "209342"
+
+
+# ---------------------------------------------------------------- Warau increase without a printed end date (PR #353 audit)
+def _warau_increase_ev():
+    ev = copy.deepcopy(_ev("warau", "178209", "warau_stepup_undated_increase.html"))
+    ev["retrievedAt"] = f"{DATE}T00:30:00+00:00"
+    assert ev["temporaryIncrease"] == {"regularPt": 1700, "increasedPt": 2000, "until": None, "endDateStated": False}
+    return ev
+
+
+WARAU_INCREASE_ARTICLE = ("プリケツレベル120到達 50pt、プリケツレベル200到達 120pt、プリケツレベル300到達 270pt、プリケツレベル400到達 1,560pt、合計2,000pt。"
+                          "通常は1,700ptですが現在は増額表示があり、増額の終了日は案件ページに記載がありません。")
+
+
+def test_undated_warau_increase_passes_only_when_disclosed_as_an_increase_without_an_end_date():
+    ev = _warau_increase_ev()
+    assert _errors([_offer(ev)], _evidence(ev), WARAU_INCREASE_ARTICLE) == []
+
+
+@pytest.mark.parametrize("old,new", [("増額", "アップ"), ("終了日", "期限")])
+def test_undated_warau_increase_without_disclosure_is_refused(old, new):
+    ev = _warau_increase_ev()
+    errs = _errors([_offer(ev)], _evidence(ev), WARAU_INCREASE_ARTICLE.replace(old, new))
+    assert any(e.startswith("temporary_increase_not_disclosed") for e in errs), errs
+
+
+def test_metadata_that_says_no_increase_while_the_page_shows_one_is_refused():
+    ev = _warau_increase_ev()
+    offer = _offer(ev)
+    offer["temporaryIncrease"] = None          # exactly what PR #353's purikets-nyaa metadata said
+    errs = _errors([offer], _evidence(ev), WARAU_INCREASE_ARTICLE)
+    assert any(e.startswith("temporary_increase_differs_from_evidence") for e in errs), errs
+
+
+def test_metadata_that_invents_an_increase_the_page_does_not_show_is_refused():
+    ev = _ev("warau", "178209", "warau_stepup_undated_increase.html")
+    ev = copy.deepcopy(ev)
+    ev["temporaryIncrease"] = None
+    offer = _offer(_warau_increase_ev())
+    errs = _errors([offer], _evidence(ev), WARAU_INCREASE_ARTICLE)
+    assert any(e.startswith("temporary_increase_differs_from_evidence") for e in errs), errs

@@ -332,3 +332,45 @@ def test_read_deadlines_rejects_two_numbers_for_one_condition():
     steps = [{"condition": "村レベル20をクリア", "rewardPt": 10}]
     text = "・5日以内に村レベル20をクリア\n・9日以内に村レベル20をクリア"
     assert src.read_deadlines(text, steps)["state"] == "ambiguous"
+
+
+# ---------------------------------------------------------------- Warau: increase WITHOUT a printed end date (PR #353 audit)
+def test_warau_increase_without_an_end_date_is_recorded_not_dropped():
+    """2026-11-20 official page: ``<del>1,700pt</del> →最大 2,000pt`` with no "○年○月○日まで". The old detector required the
+    date and therefore recorded ``temporaryIncrease: None`` ("no increase") for point_id 178209 / 178210."""
+    ev = _parse("warau", "178209", "warau_stepup_undated_increase.html")
+    assert ev["state"] == "readable" and ev["kind"] == "stepup" and ev["os"] == "iOS"
+    assert ev["totalPt"] == 2000 and [s["rewardPt"] for s in ev["steps"]] == [50, 120, 270, 1560]
+    assert ev["temporaryIncrease"] == {"regularPt": 1700, "increasedPt": 2000, "until": None, "endDateStated": False}
+
+
+def test_warau_increase_with_a_printed_end_date_keeps_that_date():
+    unit = '<span class="entrance-ptItem_PtInfo-unit">pt</span>'
+    raw = _page("warau_stepup_undated_increase.html")
+    assert raw.count(unit) >= 1
+    dated = raw.replace(unit, unit + "<span> 2026年12月01日まで</span>", 1)
+    assert src.parse_offer_page("warau", "178209", dated)["temporaryIncrease"] == {
+        "regularPt": 1700, "increasedPt": 2000, "until": "2026年12月01日"}
+
+
+def test_warau_page_without_a_price_change_has_no_increase():
+    raw = _page("warau_stepup_undated_increase.html")
+    raw = raw.replace("<del>1,700pt</del>", "").replace("→", "").replace('<span class="entrance-ptItem_PtInfo-max">最大</span>', "")
+    assert src.parse_offer_page("warau", "178209", raw)["temporaryIncrease"] is None
+
+
+def test_another_offers_price_change_in_the_recommendation_list_is_not_this_offers_increase():
+    raw = _page("warau_stepup_undated_increase.html")
+    raw = raw.replace("<del>1,700pt</del>", "").replace("→", "").replace('<span class="entrance-ptItem_PtInfo-max">最大</span>', "")
+    other = "<div>こんな広告もおすすめ</div><div>別ゲーム（StepUp）</div><div>3,000pt</div><div> →</div><div>最大</div><div>3,500</div><div>pt</div>"
+    assert src.parse_offer_page("warau", "178209", raw + other)["temporaryIncrease"] is None
+
+
+def test_warau_single_condition_page_with_a_price_change_is_not_read_as_plain():
+    """Fail closed: a single-condition page that shows a price change must not become a plain 'one condition, one reward'."""
+    raw = _page("warau_single_tile_match.html")
+    plain = '<span class="entrance-ptItem_PtInfo-point">320</span><span class="entrance-ptItem_PtInfo-unit">pt</span>'
+    assert plain in raw
+    changed = raw.replace(plain, '<del>200pt</del> →<span class="entrance-ptItem_PtInfo-max">最大</span>' + plain, 1)
+    ev = src.parse_offer_page("warau", "209300", changed)
+    assert ev["state"] == "parse_failed" and ev["unavailableReason"] == "offer_structure_not_found"

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "game": "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）",
-  "updatedAt": "2026-11-20",
+  "updatedAt": "2026-11-21",
   "title": "実際の到達ペース",
   "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
   "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
-  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-20。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-21。",
   "players": [
     {
       "id": "A",
@@ -27,7 +27,7 @@
         "30日ぴったりでレベル400"
       ],
       "postedOn": "2025-12-06",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -55,7 +55,7 @@
         "30日間でレベル400"
       ],
       "postedOn": "2026-05-16",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -83,7 +83,7 @@
         "40日でレベル400"
       ],
       "postedOn": "2025-12-07",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -95,11 +95,11 @@
       "id": "D",
       "label": "プレイヤーD",
       "status": "completed",
-      "summary": "46日目にクリア",
+      "summary": "46日目にクリア（到達レベルの記載なし）",
       "milestones": [
         {
           "day": 46,
-          "label": "クリア（レベル400と推定せず、本人は「クリア」と記載）"
+          "label": "クリア（本人記載。レベル・Stepの記載なし）"
         }
       ],
       "sources": [
@@ -111,13 +111,13 @@
         "46日目にクリア"
       ],
       "postedOn": "2026-07-10",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
       "totalPlayMinutes": null,
       "dailyPlayMinutes": null,
-      "note": "同様の別ゲームより早くクリアできたと記載。レベルの数値は記載なし。"
+      "note": "似たゲームより早くクリアできたと記載。レベルやStepの数値は記載がなく、レベル400とは読んでいない。"
     },
     {
       "id": "E",
@@ -143,7 +143,7 @@
         "転生1回でLv380から400まで4日追加"
       ],
       "postedOn": "2025-12-25",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
@@ -154,8 +154,8 @@
     {
       "id": "F",
       "label": "プレイヤーF",
-      "status": "retired",
-      "summary": "転生5回目でLv300、Lv400は届きそうにないと記載",
+      "status": "in_progress",
+      "summary": "転生5回目でLv300。「あと3日で行ける気がしない」と記載",
       "milestones": [
         {
           "day": null,
@@ -168,16 +168,16 @@
       "sourceDetails": [
         "大輔（ワラウ口コミ・男性40代）",
         "2026-03-28",
-        "転生5回目でLv300、Lv400は届きそうにないと記載"
+        "転生5回目でLv300。「あと3日で行ける気がしない」と記載"
       ],
       "postedOn": "2026-03-28",
-      "checkedAt": "2026-11-20",
+      "checkedAt": "2026-11-21",
       "platform": null,
       "paymentStatus": "unknown",
       "paidYen": null,
       "totalPlayMinutes": null,
       "dailyPlayMinutes": null,
-      "note": "ガチャで良いレアが出ず、1時間ごとに広告を見ている状態。残り3日で届く気がしないと記載。"
+      "note": "ガチャで良いレアが出ず、1時間ごとに広告を見ている状態と記載。この時点で撤退したとは書かれていない。"
     }
   ]
 }
