@@ -415,7 +415,6 @@
     /* PUBLIC_STATUS_UI_V1 */
     .best-verified.warning,
     .health-warning,
-    #dataHealthBox,
     .comparison-table .verified-label,
     .comparison-table .legacy-label,
     .comparison-table .health-warning {
@@ -429,6 +428,47 @@
     .legacy-label {
       color: #756f80;
     }
+
+    /* OFFER_FRESHNESS_UI_V1: every row states when it was last confirmed */
+    .best-verified.fresh { color: #216e4e; }
+    .best-verified.aging { color: #5c4a84; }
+    .best-verified.old,
+    .best-verified.unknown { color: #8a4a00; }
+    .best-verified.failed { color: #8a4a00; }
+    .offer-age {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.5;
+      white-space: normal;
+    }
+    .offer-age.fresh { background: #e8f6ee; color: #216e4e; }
+    .offer-age.aging { background: #f1edfb; color: #5c4a84; }
+    .offer-age.old,
+    .offer-age.unknown { background: #fff1dc; color: #8a4a00; }
+    .offer-age.legacy { background: #f1eff4; color: #6f6878; }
+    .best-offer-note {
+      margin: 6px 0 0;
+      color: #6f6590;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .best-offer-note:empty { display: none; }
+    .load-failed-box {
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border: 1px solid #f1d9a8;
+      border-radius: 12px;
+      background: #fff9ec;
+      color: #6b4a00;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.7;
+    }
+    .load-failed-box[hidden] { display: none; }
 
     /* POIGAME_LV70_PREVIEW_V1 */
     .guide-cta {
@@ -936,10 +976,12 @@
           <div class="best-offer">
             <span id="bestRewardLabel">最高還元</span>
 
-            <strong id="bestReward">確認中</strong>
+            <strong id="bestReward" aria-live="polite"></strong>
 
-            <p id="bestSite">ポイントサイト：確認中</p>
+            <p id="bestSite"></p>
             <p id="bestVerified" class="best-verified"></p>
+            <p id="bestOfferNote" class="best-offer-note"></p>
+            <noscript><p class="best-offer-note">還元額・確認日は、JavaScriptを有効にすると表示されます。</p></noscript>
             <p id="dataHealthBox" class="data-health-box" hidden></p>
           </div>
 
@@ -969,6 +1011,7 @@
     <section class="section" id="comparison">
 
       <h2>📊 ポイントサイト比較</h2>
+      <p id="loadFailedBox" class="load-failed-box" role="status" hidden></p>
       <p class="referral-flow-guide" style="margin:10px 0 18px;padding:12px 14px;border:1px solid #e8e1ff;background:#fbfaff;border-radius:12px;font-size:12px;line-height:1.8;color:#47376c;">
         <strong>リンクは2種類あります。</strong>「案件を見る」はゲーム案件を確認するリンク、［PR］はポイントサイトに新規登録するための紹介リンク（または紹介コード）です。紹介を利用して登録する方は、［PR］から登録した後に同じポイントサイトでゲーム案件の条件・対応OS・期限をご確認ください。紹介特典は各サイトの条件を満たした場合のみ対象です。
       </p>
@@ -988,7 +1031,7 @@
             <th>条件</th>
             <th>対応OS</th>
             <th>締切</th>
-            <th>更新日</th>
+            <th>確認日</th>
             <th>リンク</th>
           </tr>
         </thead>
@@ -1058,7 +1101,7 @@
       <ul>
         <li><strong>還元額</strong>：各ポイントサイトが案件ページに表示している金額（円換算）です。同じゲームでも、サイトやOSによって金額も条件も異なります。</li>
         <li><strong>条件・締切</strong>：「レベル○到達」などの成果条件と、インストール日から数えた達成期限です。金額だけでなく、期限内に達成できるかを「達成目安」「難易度」と見比べてください。</li>
-        <li><strong>更新日・（参考）表示</strong>：案件ごとの更新日は、POIGAME LABが最後に確認した日です。「（参考）」「参考掲載」は、一次情報での確認が完了していない参考値です。検証済みの案件がないゲームでは、参考値が最高還元の欄に表示されることがあります。</li>
+        <li><strong>確認日・（参考）表示</strong>：案件ごとの確認日は、POIGAME LABがその案件ページを最後に確認できた日です。確認から30日以上たった案件は「現在の掲載は未確認」と表示し、金額の変更や掲載終了の可能性があります。「（参考）」「参考掲載」は、一次情報での確認が完了していない参考値です。検証済みの案件がないゲームでは、参考値が最高還元の欄に表示されることがあります。</li>
         <li><strong>課金が必要な条件</strong>：条件に購入が含まれる案件は「還元額 − 購入額」で損得を計算してください。</li>
         <li><strong>案件リンクと［PR］の違い</strong>：「案件を見る」はポイントサイトの案件確認用リンク、［PR］はそのサイトへの新規登録用紹介リンク（または紹介コード）です。紹介を使った登録と所定の条件達成により、運営者が報酬を受け取る場合があります。案件リンクを開くだけでは紹介登録は成立しません。掲載順や検証基準とは分けて管理しています。</li>
       </ul>
@@ -1076,6 +1119,29 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const gameName = params.get("game");
+    const LOAD_STATE = POIGAME_DATA.LOAD_STATE;
+    const LOAD_TEXT = POIGAME_DATA.LOAD_STATE_TEXT;
+
+    function setBestText(reward, site, status, statusClass) {
+      const bestReward = document.getElementById("bestReward");
+      const bestSite = document.getElementById("bestSite");
+      const bestVerified = document.getElementById("bestVerified");
+      if (bestReward) bestReward.textContent = reward;
+      if (bestSite) bestSite.textContent = site || "";
+      if (bestVerified) {
+        bestVerified.textContent = status || "";
+        bestVerified.className = `best-verified ${statusClass || ""}`.trim();
+      }
+    }
+
+    function showLoadFailure(message) {
+      const box = document.getElementById("loadFailedBox");
+      if (!box) return;
+      box.textContent = message;
+      box.hidden = !message;
+    }
+
+    setBestText(LOAD_TEXT.loading, "", "", "");
 
     function setHeadTag(selector, create, attrs) {
       let node = document.head.querySelector(selector);
@@ -1113,9 +1179,10 @@
       return "";
     }
 
-    async function renderNoVerifiedNotice(game, summary, guide) {
+    async function renderNoVerifiedNotice(game, summary, guide, offersFailed) {
       const box = document.getElementById("noVerifiedOffer");
-      if (!box || summary.verifiedCount > 0) return;
+      // A failed download says nothing about whether verified offers exist.
+      if (!box || summary.verifiedCount > 0 || offersFailed) return;
       const esc = POIGAME_DATA.escapeHtml;
       const lead = document.getElementById("noVerifiedLead");
       const referenceNote = summary.referenceCount > 0
@@ -1199,6 +1266,10 @@
           POIGAME_DATA.loadCoverageCandidates()
         ]);
         game.offers = offerResult.offers.filter((offer) => offer.gameName === game.name);
+        const offersFailed = offerResult.status === LOAD_STATE.FAILED;
+        if (offersFailed) {
+          showLoadFailure(`${LOAD_TEXT.failed}。還元額の比較を表示できていません（案件がなくなったわけではありません）。時間をおいて再読み込みしてください。`);
+        }
         const coverageCandidates = (coverageCandidateResult.items || [])
           .filter((item) => item.gameName === game.name);
         const gameHealth = dataHealth.games?.[game.name];
@@ -1295,8 +1366,8 @@
             item.textContent = line;
             return item;
           }));
-          summaryBox.hidden = false;
-          renderNoVerifiedNotice(game, summary, guide);
+          summaryBox.hidden = offersFailed;
+          renderNoVerifiedNotice(game, summary, guide, offersFailed);
         }
         const tableBody = document.getElementById("offerTableBody");
         const offerCards = document.getElementById("offerCards");
@@ -1304,16 +1375,22 @@
         let activePlatform = "all";
 
         const dataHealthBox = document.getElementById("dataHealthBox");
-        if (dataHealthBox && gameHealth) {
-          dataHealthBox.hidden = false;
-          if (gameHealth.state === "fresh") {
-            dataHealthBox.textContent = `自動更新：正常 ・ ${POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })}`;
-          } else if (gameHealth.state === "degraded" || gameHealth.state === "failed") {
-            dataHealthBox.textContent = "掲載情報は定期的に確認しています。";
-            dataHealthBox.classList.add("health-warning");
-          } else if (gameHealth.state === "stale") {
-            dataHealthBox.textContent = "申込み前に案件ページで最新条件をご確認ください。";
-            dataHealthBox.classList.add("health-warning");
+        if (dataHealthBox) {
+          // Report what is known: when the automatic check last ran. The age of
+          // each offer is shown on its own row, so nothing here says "確認中".
+          const runText = gameHealth?.finishedAt
+            ? POIGAME_DATA.formatHealthUpdatedAt({ generatedAt: gameHealth.finishedAt })
+            : "";
+          if (offersFailed) {
+            dataHealthBox.hidden = true;
+          } else if (gameHealth?.state === "stale") {
+            dataHealthBox.textContent = `${LOAD_TEXT.stale}（自動チェックの最終実行：${runText}）。申込み前に案件ページで最新条件をご確認ください。`;
+            dataHealthBox.hidden = false;
+          } else if (runText) {
+            dataHealthBox.textContent = `自動チェックの最終実行：${runText}（案件ごとの確認日は表をご覧ください）`;
+            dataHealthBox.hidden = false;
+          } else {
+            dataHealthBox.hidden = true;
           }
         }
 
@@ -1362,31 +1439,39 @@
 
         function updateBestOffer(offers, platform) {
           const bestRewardLabel = document.getElementById("bestRewardLabel");
-          const bestReward = document.getElementById("bestReward");
-          const bestSite = document.getElementById("bestSite");
-          const bestVerified = document.getElementById("bestVerified");
+          const bestOfferNote = document.getElementById("bestOfferNote");
           const label = platform === "all" ? "最高還元" : (platform === "unknown" ? "OS不明の最高還元" : `${platform}の最高還元`);
           if (bestRewardLabel) bestRewardLabel.textContent = label;
+          if (bestOfferNote) bestOfferNote.textContent = "";
 
+          if (offersFailed) {
+            setBestText(LOAD_TEXT.failed, "時間をおいて再読み込みしてください。", "", "failed");
+            return;
+          }
           if (!offers.length) {
-            if (bestReward) bestReward.textContent = game.offers.length ? "このOSの案件は未確認" : "検証済みの案件は未掲載";
-            if (bestSite) bestSite.textContent = "ポイントサイト：—";
-            if (bestVerified) bestVerified.textContent = "";
+            setBestText(
+              game.offers.length ? "このOSの案件は未確認" : LOAD_TEXT.empty,
+              "ポイントサイト：—",
+              "",
+              ""
+            );
             return;
           }
 
-          const bestOffer = offers[0];
-          if (bestReward) {
-            bestReward.textContent = `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`;
-          }
-          if (bestSite) {
-            const bestSiteName = pointSites[bestOffer.site] || bestOffer.site;
-            bestSite.textContent = `ポイントサイト：${POIGAME_DATA.formatOfferSourceLabel(bestSiteName, bestOffer.provider)}`;
-          }
-          if (bestVerified) {
-            const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, gameHealth);
-            bestVerified.textContent = healthLabel.text;
-            bestVerified.className = `best-verified ${healthLabel.state}`;
+          const bestOffer = POIGAME_DATA.pickHeadlineOffer(offers);
+          const bestSiteName = pointSites[bestOffer.site] || bestOffer.site;
+          const statusLabel = POIGAME_DATA.getOfferStatusLabel(bestOffer, gameHealth);
+          setBestText(
+            `${bestOffer.reward.toLocaleString()}円${bestOffer.verified ? "" : "（参考）"}`,
+            `ポイントサイト：${POIGAME_DATA.formatOfferSourceLabel(bestSiteName, bestOffer.provider)}`,
+            statusLabel.text,
+            statusLabel.state
+          );
+          const higherOld = offers.find((offer) => offer.verified && Number(offer.reward) > Number(bestOffer.reward));
+          if (bestOfferNote && higherOld) {
+            const oldFresh = POIGAME_DATA.getOfferFreshness(higherOld);
+            const when = oldFresh.days === null ? "確認日が不明なため" : `${oldFresh.date}の確認で、${oldFresh.days}日たっているため`;
+            bestOfferNote.textContent = `※ ${pointSites[higherOld.site] || higherOld.site}の${Number(higherOld.reward).toLocaleString()}円は${when}最高還元には使っていません（表に掲載しています）。`;
           }
         }
 
@@ -1504,6 +1589,7 @@
 
         const esc = POIGAME_DATA.escapeHtml;
         function emptyOfferText() {
+          if (offersFailed) return `${LOAD_TEXT.failed}（案件がなくなったわけではありません）。`;
           return game.offers.length
             ? "このOSで現在確認できる案件はありません。"
             : "検証済みの案件は現在掲載していません（案件の終了とは限らず、確認できていない場合を含みます）。";
@@ -1557,11 +1643,12 @@
                   </div>
                 `
               : "";
-            const rowHealth = POIGAME_DATA.getOfferHealthLabel(offer, gameHealth);
-            const labelClass = rowHealth.state === "legacy"
-              ? "legacy-label"
-              : (rowHealth.state === "verified" ? "verified-label" : "health-warning");
-            const verifyLabel = `<br><small class="${labelClass}">${POIGAME_DATA.escapeHtml(rowHealth.text)}</small>`;
+            const rowStatus = POIGAME_DATA.getOfferStatusLabel(offer, gameHealth);
+            const ageText = rowStatus.state === "legacy"
+              ? "参考値・未確認"
+              : (rowStatus.days === null ? "確認日不明" : (rowStatus.state === "old" ? `${rowStatus.days}日前・現在の掲載は未確認` : (rowStatus.days === 0 ? "本日確認" : `${rowStatus.days}日前`)));
+            const ageBadge = `<span class="offer-age ${rowStatus.state}">${POIGAME_DATA.escapeHtml(ageText)}</span>`;
+            const verifyLabel = offer.verified ? "" : `<br><small class="legacy-label">参考掲載</small>`;
             const platformText = offer.platform.length ? offer.platform.join(" / ") : "不明";
 
             if (tableBody) {
@@ -1572,7 +1659,7 @@
                 <td>${POIGAME_DATA.escapeHtml(POIGAME_DATA.summarizeOfferCondition(offer.condition, offer.type))}</td>
                 <td>${POIGAME_DATA.escapeHtml(platformText)}</td>
                 <td>${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</td>
-                <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</td>
+                <td>${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}<br>${ageBadge}</td>
                 <td>
                   ${safeUrl
                     ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">案件を見る</a>`
@@ -1595,8 +1682,9 @@
                 <p class="mobile-offer-condition">${POIGAME_DATA.escapeHtml(POIGAME_DATA.summarizeOfferCondition(offer.condition, offer.type))}</p>
                 <div class="mobile-offer-meta">
                   <span>締切：${POIGAME_DATA.escapeHtml(offer.deadline || "未定")}</span>
-                  <span>更新：${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
+                  <span>確認日：${POIGAME_DATA.escapeHtml(offer.updatedAt || "-")}</span>
                 </div>
+                ${ageBadge}
                 ${safeUrl
                   ? `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="offer-link">この案件を見る</a>`
                   : '<span class="coming-soon">リンク未確認</span>'}
@@ -1622,6 +1710,8 @@
         renderOfferViews();
       } catch (error) {
         console.error("ゲーム詳細の読み込みに失敗しました", error);
+        setBestText(LOAD_TEXT.failed, "時間をおいて再読み込みしてください。", "", "failed");
+        showLoadFailure(`${LOAD_TEXT.failed}。通信状況をご確認のうえ、時間をおいて再読み込みしてください。`);
       }
     }
 

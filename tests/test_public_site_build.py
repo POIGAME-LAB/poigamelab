@@ -1006,4 +1006,8 @@ def test_offers_list_marks_reference_only_best_reward():
     # offers.html renders its own cards (separate from index.html / game.html); an unverified
     # reference amount must not read as a verified "最高還元" there either.
     page = (ROOT / "offers.html").read_text(encoding="utf-8")
-    assert 'game.best.reward.toLocaleString() + "円" + (game.best.verified ? "" : "（参考）")' in page
+    # verified amounts and reference amounts are rendered by separate branches; the
+    # reference branch is only reached when no verified offer exists and is labelled.
+    assert "const best = POIGAME_DATA.pickHeadlineOffer(verified);" in page
+    assert "} else if (item.reference) {" in page
+    assert "（参考・未確認）" in page and "案件ページでは未確認" in page

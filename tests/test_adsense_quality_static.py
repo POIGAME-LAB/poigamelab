@@ -37,7 +37,7 @@ def test_built_index_and_offers_first_html_have_no_placeholders(tmp_path):
             assert token not in text, f"{name}: {token}"
 
 
-def test_offers_fallback_lists_every_catalog_game_without_reward_figures(tmp_path):
+def test_offers_fallback_without_published_data_has_no_reward_figures(tmp_path):
     site = _build(tmp_path)
     html = (site / "offers.html").read_text(encoding="utf-8")
     games_csv = (ROOT / "games.csv").read_text(encoding="utf-8-sig")
@@ -89,7 +89,9 @@ def test_game_page_first_html_is_not_placeholder_text_and_explains_the_table():
 def test_index_dynamic_cards_do_not_show_dash_placeholders():
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     assert '"--- 円"' not in html
-    assert "おすすめポイントサイト：" in html and "確認済みの案件データはまだありません" in html
+    assert "最高還元のサイト：" in html and "確認済みの案件は現在掲載していません（終了とは限りません）" in html
+    # a failed download must never be worded as "no offers"
+    assert "取得できませんでした" in html and "LOAD_STATE.FAILED" in html
 
 
 def test_about_page_explains_data_method_and_reading_rules():
@@ -210,3 +212,77 @@ def test_privacy_policy_has_google_ad_cookie_disclosure_and_opt_out_links():
     for tag in re.findall(r'<a [^>]*target="_blank"[^>]*>', html):
         assert "noopener" in tag, tag
     assert re.search(r"最終更新：\d{4}年\d{1,2}月\d{1,2}日", text)
+
+
+# --- Build-time verified figures (2026-11 load-state work) ------------------------------
+from datetime import date  # noqa: E402
+
+PUBLISHED_HEADER = "offerKey,game,site,provider,reward,condition,platform,type,deadline,updatedAt,url,sourceUrl,verified"
+
+
+def _build_with_published(tmp_path, rows):
+    site = _build_dir(tmp_path)
+    (site / "data").mkdir()
+    (site / "data" / "published_offers.csv").write_text(
+        PUBLISHED_HEADER + "\n" + "".join(r + "\n" for r in rows), encoding="utf-8")
+    today = date(2026, 11, 18)
+    inject_static_fallback(site / "index.html", site / "games.csv", today=today)
+    inject_offers_fallback(site / "offers.html", site / "games.csv", today=today)
+    return site
+
+
+def _build_dir(tmp_path):
+    site = tmp_path / "_site"
+    site.mkdir()
+    for name in ("index.html", "offers.html", "games.csv"):
+        (site / name).write_text((ROOT / name).read_text(encoding="utf-8"), encoding="utf-8")
+    return site
+
+
+def test_first_html_bakes_only_verified_figures_with_confirmation_dates(tmp_path):
+    rows = [
+        "k1,Township,warau,,17530,レベル81到達,iOS,StepUp,60日,2026-11-16,https://www.warau.jp/a,https://www.warau.jp/a,true",
+        # older and higher: must not lead the card, must not lead the dashboard
+        "k2,Township,moppy,,99999,レベル81到達,iOS,StepUp,60日,2026-09-01,https://pc.moppy.jp/a,https://pc.moppy.jp/a,true",
+        # unverified rows are never baked in
+        "k3,きのこ伝説,warau,,88888,x,iOS,StepUp,30日,2026-11-16,https://www.warau.jp/b,https://www.warau.jp/b,false",
+    ]
+    site = _build_with_published(tmp_path, rows)
+    index = (site / "index.html").read_text(encoding="utf-8")
+    assert '<strong id="statMaxReward" aria-live="polite" data-static-value="1">17,530 円</strong>' in index
+    assert '<strong id="statUpdated" aria-live="polite" data-static-value="1">2026/11/16</strong>' in index
+    assert "ワラウ・11/16確認" in index
+    assert "1件は確認から30日以上" in index
+    assert "99,999" not in index and "88,888" not in index
+    assert "確認中" not in _visible(index)
+    # every card keeps its own overview text from games.csv
+    import csv as _csv
+    for row in _csv.DictReader(open(site / "games.csv", encoding="utf-8-sig")):
+        first = (row.get("overview") or "").split("。")[0].strip()[:30]
+        if first:
+            assert escape(first) in index, row["name"]
+    # no numbered rank in the default (editorial) order
+    assert not re.search(r'class="rank-badge">\d+位', index)
+    offers = (site / "offers.html").read_text(encoding="utf-8")
+    fallback = offers.split("OFFERS_FALLBACK_V1")[1].split("</section>")[0]
+    assert "17,530 円" in fallback and "11/16確認" in fallback
+    assert "88,888" not in fallback and "99,999" not in fallback
+    assert "確認済み案件なし" in fallback  # games without a verified row
+    # provisional catalog values (games.csv) are never baked in
+    assert "1,120" not in fallback
+
+
+def test_first_html_old_only_offer_states_its_age(tmp_path):
+    rows = ["k1,Township,moppy,,5000,x,iOS,StepUp,60日,2026-09-01,https://pc.moppy.jp/a,https://pc.moppy.jp/a,true"]
+    site = _build_with_published(tmp_path, rows)
+    index = (site / "index.html").read_text(encoding="utf-8")
+    assert "5,000 円" in index and "最終確認 9/1（30日以上前）" in index
+    # no build-time "N日前" count (it would freeze and understate the age)
+    assert "78日前" not in index
+
+
+def test_first_html_empty_published_csv_says_no_verified_offer_not_failure(tmp_path):
+    site = _build_with_published(tmp_path, [])
+    index = (site / "index.html").read_text(encoding="utf-8")
+    assert "現在、確認済み案件の掲載はありません" in index
+    assert "取得できませんでした" not in _visible(index)

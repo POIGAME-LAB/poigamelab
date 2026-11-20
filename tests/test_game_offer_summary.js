@@ -18,7 +18,7 @@ let r = api.summarizeGameOffers([
   offer({ reward: 16760, platform: ['iOS'], condition: 'レベル70到達', updatedAt: '2026-09-10' }),
   offer({ site: 'moppy', reward: 18100, platform: ['iOS'], updatedAt: '2026-10-03' }),
   offer({ site: 'coincome', reward: 99999, verified: false })
-], label);
+], label, Date.parse('2026-10-05T03:00:00Z')); // fixed "now": rows are days old, not months
 assert.strictEqual(r.verifiedCount, 3);
 assert.strictEqual(r.referenceCount, 1);
 assert.ok(r.lines[0].includes('3件') && r.lines[0].includes('ワラウ・モッピー') && r.lines[0].includes('2サイト'), r.lines[0]);
