@@ -1,0 +1,483 @@
+{
+  "schemaVersion": 2,
+  "slug": "minori-no-chi",
+  "site": "multi",
+  "sites": [
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-20T09:27:04+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:189048",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "189048",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=189048",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "実りの地（レベル30到達）でポイントを貯める",
+      "gameName": "実りの地",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "ｘ＿ｘ",
+          "attribute": "女性・30代",
+          "date": "2026-08-23",
+          "title": "よくあるファームゲーム"
+        },
+        {
+          "name": "みこと",
+          "attribute": "女性・30代",
+          "date": "2026-05-18",
+          "title": "強いクランに入れないと…"
+        },
+        {
+          "name": "憂哉",
+          "attribute": "女性・30代",
+          "date": "2025-10-03",
+          "title": "強制動画視聴広告が差し込まれる農場ゲー…"
+        },
+        {
+          "name": "あさみ",
+          "attribute": "女性・40代",
+          "date": "2025-07-29",
+          "title": "強制CMが酷すぎる"
+        },
+        {
+          "name": "むに",
+          "attribute": "女性・20代",
+          "date": "2024-01-20",
+          "title": "ギリギリのクリアでした。倉庫がすぐにいっ..."
+        },
+        {
+          "name": "みこでこ",
+          "attribute": "女性・30代",
+          "date": "2023-01-31",
+          "title": "アイテム作成に時間がかかるようになるので..."
+        },
+        {
+          "name": "あゃ",
+          "attribute": "女性・30代",
+          "date": "2023-01-22",
+          "title": "かなりギリギリだった。 時間ある人はオ..."
+        },
+        {
+          "name": "クワッケ",
+          "attribute": "女性・30代",
+          "date": "2023-01-20",
+          "title": "こういうゲームは楽しめたので良かった。..."
+        },
+        {
+          "name": "郁美",
+          "attribute": "女性・40代",
+          "date": "2022-12-17",
+          "title": "26日程でクリアしました クリアした今..."
+        },
+        {
+          "name": "なーちゃん",
+          "attribute": "女性・30代",
+          "date": "2022-12-12",
+          "title": "牧場系？育てるタイプが好まない方はやめた..."
+        },
+        {
+          "name": "ｘ＿ｘ",
+          "attribute": "女性・30代",
+          "date": "2026-08-23",
+          "title": "よくあるファームゲーム"
+        },
+        {
+          "name": "みこと",
+          "attribute": "女性・30代",
+          "date": "2026-05-18",
+          "title": "強いクランに入れないと…"
+        },
+        {
+          "name": "憂哉",
+          "attribute": "女性・30代",
+          "date": "2025-10-03",
+          "title": "強制動画視聴広告が差し込まれる農場ゲー…"
+        },
+        {
+          "name": "あさみ",
+          "attribute": "女性・40代",
+          "date": "2025-07-29",
+          "title": "強制CMが酷すぎる"
+        },
+        {
+          "name": "むに",
+          "attribute": "女性・20代",
+          "date": "2024-01-20",
+          "title": "ギリギリのクリアでした。倉庫がすぐにいっ..."
+        },
+        {
+          "name": "みこでこ",
+          "attribute": "女性・30代",
+          "date": "2023-01-31",
+          "title": "アイテム作成に時間がかかるようになるので..."
+        },
+        {
+          "name": "あゃ",
+          "attribute": "女性・30代",
+          "date": "2023-01-22",
+          "title": "かなりギリギリだった。 時間ある人はオ..."
+        },
+        {
+          "name": "クワッケ",
+          "attribute": "女性・30代",
+          "date": "2023-01-20",
+          "title": "こういうゲームは楽しめたので良かった。..."
+        },
+        {
+          "name": "郁美",
+          "attribute": "女性・40代",
+          "date": "2022-12-17",
+          "title": "26日程でクリアしました クリアした今..."
+        },
+        {
+          "name": "なーちゃん",
+          "attribute": "女性・30代",
+          "date": "2022-12-12",
+          "title": "牧場系？育てるタイプが好まない方はやめた..."
+        }
+      ],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:26:57+00:00",
+      "responseSha256": "055699d2a52344da5697bada6e70c810bd51b7b1a622b629a34734357f8770c5"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:160118",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "160118",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=160118",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "実りの地（レベル30到達）でポイントを貯める",
+      "gameName": "実りの地",
+      "os": "Android",
+      "osSource": "page",
+      "kind": "single",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "レベル30到達",
+      "deadlineDays": 30,
+      "deadlineBasis": "install",
+      "steps": [
+        {
+          "condition": "レベル30到達",
+          "rewardPt": 900,
+          "rewardYen": 900
+        }
+      ],
+      "totalPt": 900,
+      "totalYen": 900,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "ｘ＿ｘ",
+          "attribute": "女性・30代",
+          "date": "2026-08-23",
+          "title": "よくあるファームゲーム"
+        },
+        {
+          "name": "みこと",
+          "attribute": "女性・30代",
+          "date": "2026-05-18",
+          "title": "強いクランに入れないと…"
+        },
+        {
+          "name": "憂哉",
+          "attribute": "女性・30代",
+          "date": "2025-10-03",
+          "title": "強制動画視聴広告が差し込まれる農場ゲー…"
+        },
+        {
+          "name": "あさみ",
+          "attribute": "女性・40代",
+          "date": "2025-07-29",
+          "title": "強制CMが酷すぎる"
+        },
+        {
+          "name": "むに",
+          "attribute": "女性・20代",
+          "date": "2024-01-20",
+          "title": "ギリギリのクリアでした。倉庫がすぐにいっ..."
+        },
+        {
+          "name": "みこでこ",
+          "attribute": "女性・30代",
+          "date": "2023-01-31",
+          "title": "アイテム作成に時間がかかるようになるので..."
+        },
+        {
+          "name": "あゃ",
+          "attribute": "女性・30代",
+          "date": "2023-01-22",
+          "title": "かなりギリギリだった。 時間ある人はオ..."
+        },
+        {
+          "name": "クワッケ",
+          "attribute": "女性・30代",
+          "date": "2023-01-20",
+          "title": "こういうゲームは楽しめたので良かった。..."
+        },
+        {
+          "name": "郁美",
+          "attribute": "女性・40代",
+          "date": "2022-12-17",
+          "title": "26日程でクリアしました クリアした今..."
+        },
+        {
+          "name": "なーちゃん",
+          "attribute": "女性・30代",
+          "date": "2022-12-12",
+          "title": "牧場系？育てるタイプが好まない方はやめた..."
+        },
+        {
+          "name": "サンダル",
+          "attribute": "女性・30代",
+          "date": "2022-11-28",
+          "title": "20日でクリア Lv24までは1日に4..."
+        },
+        {
+          "name": "ほんち",
+          "attribute": "女性・20代",
+          "date": "2022-11-26",
+          "title": "農場ゲームが苦手な人には辛いと思います！..."
+        },
+        {
+          "name": "やきざかな",
+          "attribute": "女性・30代",
+          "date": "2022-11-12",
+          "title": "レベル30到着までかなり日数がかかりまし..."
+        },
+        {
+          "name": "ランヴォー",
+          "attribute": "男性・30代",
+          "date": "2022-11-07",
+          "title": "正直オススメはしません労力が半端ないです..."
+        },
+        {
+          "name": "ぷっち。",
+          "attribute": "女性・40代",
+          "date": "2022-11-01",
+          "title": "すぐにイロイロと受け取らない事をオススメ..."
+        },
+        {
+          "name": "ぽし",
+          "attribute": "女性・20代",
+          "date": "2022-10-16",
+          "title": "なかなか日数がかかってしまいました。コツ..."
+        },
+        {
+          "name": "ままままま",
+          "attribute": "女性・30代",
+          "date": "2022-10-02",
+          "title": "好きなジャンルだったので楽しみました。..."
+        },
+        {
+          "name": "りん",
+          "attribute": "女性・30代",
+          "date": "2022-09-30",
+          "title": "結構大変でしたが、頑張れば1週間くらいで..."
+        },
+        {
+          "name": "ｘ＿ｘ",
+          "attribute": "女性・30代",
+          "date": "2026-08-23",
+          "title": "よくあるファームゲーム"
+        },
+        {
+          "name": "みこと",
+          "attribute": "女性・30代",
+          "date": "2026-05-18",
+          "title": "強いクランに入れないと…"
+        },
+        {
+          "name": "憂哉",
+          "attribute": "女性・30代",
+          "date": "2025-10-03",
+          "title": "強制動画視聴広告が差し込まれる農場ゲー…"
+        },
+        {
+          "name": "あさみ",
+          "attribute": "女性・40代",
+          "date": "2025-07-29",
+          "title": "強制CMが酷すぎる"
+        },
+        {
+          "name": "むに",
+          "attribute": "女性・20代",
+          "date": "2024-01-20",
+          "title": "ギリギリのクリアでした。倉庫がすぐにいっ..."
+        },
+        {
+          "name": "みこでこ",
+          "attribute": "女性・30代",
+          "date": "2023-01-31",
+          "title": "アイテム作成に時間がかかるようになるので..."
+        },
+        {
+          "name": "あゃ",
+          "attribute": "女性・30代",
+          "date": "2023-01-22",
+          "title": "かなりギリギリだった。 時間ある人はオ..."
+        },
+        {
+          "name": "クワッケ",
+          "attribute": "女性・30代",
+          "date": "2023-01-20",
+          "title": "こういうゲームは楽しめたので良かった。..."
+        },
+        {
+          "name": "郁美",
+          "attribute": "女性・40代",
+          "date": "2022-12-17",
+          "title": "26日程でクリアしました クリアした今..."
+        },
+        {
+          "name": "なーちゃん",
+          "attribute": "女性・30代",
+          "date": "2022-12-12",
+          "title": "牧場系？育てるタイプが好まない方はやめた..."
+        }
+      ],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:26:59+00:00",
+      "responseSha256": "11a0a227091ddde155da53c1728fbe12528e8b130d794452325eca6aa3ec008e"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:159414",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "159414",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=159414",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "実りの地（レベル15到達）",
+      "gameName": "実りの地",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、レベル15到達でポイント獲得",
+      "deadlineDays": 30,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル15到達でポイント獲得",
+          "rewardPt": 108,
+          "rewardYen": 108,
+          "deadlineDays": 30
+        }
+      ],
+      "totalPt": 108,
+      "totalYen": 108,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:27:02+00:00",
+      "responseSha256": "7693aa6bd59a060f56364e56b11bf17788d2351169af86cec9a42774eeaae9f5"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:157109",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "157109",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=157109",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "実りの地 （レベル20到達）",
+      "gameName": "実りの地",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、レベル20到達でポイント獲得",
+      "deadlineDays": 30,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル20到達でポイント獲得",
+          "rewardPt": 135,
+          "rewardYen": 135,
+          "deadlineDays": 30
+        }
+      ],
+      "totalPt": 135,
+      "totalYen": 135,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:27:04+00:00",
+      "responseSha256": "0b90d3832bbc0ed554a68618c78db77c2ea45a313f735289953587fa8bf14226"
+    }
+  ]
+}

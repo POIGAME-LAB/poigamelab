@@ -1,0 +1,520 @@
+{
+  "schemaVersion": 2,
+  "slug": "namco-online-crane",
+  "site": "multi",
+  "sites": [
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-20T09:03:15+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:157514",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "157514",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=157514",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "ナムコオンラインクレーン（初回課金（NPチャージ））",
+      "gameName": "ナムコオンラインクレーン（初回課金（NPチャージ））",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、初回課金(NPチャージ)でポイント獲得",
+      "deadlineDays": 1,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、初回課金(NPチャージ)でポイント獲得",
+          "rewardPt": 440,
+          "rewardYen": 440,
+          "deadlineDays": 1
+        }
+      ],
+      "totalPt": 440,
+      "totalYen": 440,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:10+00:00",
+      "responseSha256": "04feb1e223e5755c96b50b919e1fc68f11d4bb1b58ddd64c3b61d11768a3ed70"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:175513",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "175513",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=175513",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "ナムコオンラインクレーン（初回課金（NPチャージ））でポイントを貯める",
+      "gameName": "ナムコオンラインクレーン（初回課金（NPチャージ））",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "こっせつ",
+          "attribute": "男性・40代",
+          "date": "2026-06-16",
+          "title": "基本取れないと思った方がいい"
+        },
+        {
+          "name": "みゅう",
+          "attribute": "女性・40代",
+          "date": "2026-02-11",
+          "title": "たのしい"
+        },
+        {
+          "name": "たすたあげ",
+          "attribute": "女性・20代",
+          "date": "2025-11-14",
+          "title": "ほしいプライズ品があった時に利用しました..."
+        },
+        {
+          "name": "たかし",
+          "attribute": "男性・30代",
+          "date": "2025-10-22",
+          "title": "はやい"
+        },
+        {
+          "name": "ミマチッチ",
+          "attribute": "男性・40代",
+          "date": "2025-10-08",
+          "title": "課金するだけ"
+        },
+        {
+          "name": "ポテトマン",
+          "attribute": "男性・50代",
+          "date": "2025-10-02",
+          "title": "難しい"
+        },
+        {
+          "name": "ショウジ",
+          "attribute": "男性・40代",
+          "date": "2025-09-30",
+          "title": "課金であっさり"
+        },
+        {
+          "name": "夢玉",
+          "attribute": "女性・30代",
+          "date": "2025-09-29",
+          "title": "取れると思わない方が楽"
+        },
+        {
+          "name": "じぇじぇ",
+          "attribute": "男性・20代",
+          "date": "2025-09-20",
+          "title": "課金だけなので楽っちゃ楽"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・30代",
+          "date": "2025-08-25",
+          "title": "最低課金額は490円でした"
+        },
+        {
+          "name": "くれは",
+          "attribute": "女性・20代",
+          "date": "2025-06-29",
+          "title": "欲しいプライズがあり課金することはきまっ..."
+        },
+        {
+          "name": "つみゅ",
+          "attribute": "女性・20代",
+          "date": "2025-04-26",
+          "title": "欲しい景品があったので丁度良いと思い利用..."
+        },
+        {
+          "name": "神代小薪",
+          "attribute": "男性・40代",
+          "date": "2024-11-25",
+          "title": "課金したらポイントはすぐ反映されます、ク..."
+        },
+        {
+          "name": "まー",
+          "attribute": "男性・40代",
+          "date": "2024-11-09",
+          "title": "とても良いアプリです！ 簡単にポイント..."
+        },
+        {
+          "name": "アヤ",
+          "attribute": "女性・20代",
+          "date": "2024-10-08",
+          "title": "他のクレーンゲームアプリと同じく課金のみ..."
+        },
+        {
+          "name": "さくら",
+          "attribute": "女性・20代",
+          "date": "2024-10-03",
+          "title": "1番安い金額の490円を課金したらすぐに..."
+        },
+        {
+          "name": "らん",
+          "attribute": "男性・20代",
+          "date": "2024-09-25",
+          "title": "クレーンゲームがオンラインでできるので..."
+        },
+        {
+          "name": "琉生",
+          "attribute": "男性・20代",
+          "date": "2024-09-06",
+          "title": "承認も早く、ほしいプライズがあったのでラ..."
+        },
+        {
+          "name": "ぽぽ",
+          "attribute": "女性・20代",
+          "date": "2024-08-25",
+          "title": "承認も早く、ほしいプライズがあったのでラ..."
+        },
+        {
+          "name": "愛らぶにゃ",
+          "attribute": "女性・30代",
+          "date": "2024-08-20",
+          "title": "課金したらすぐにポイントもらえました。..."
+        },
+        {
+          "name": "こっせつ",
+          "attribute": "男性・40代",
+          "date": "2026-06-16",
+          "title": "基本取れないと思った方がいい"
+        },
+        {
+          "name": "みゅう",
+          "attribute": "女性・40代",
+          "date": "2026-02-11",
+          "title": "たのしい"
+        },
+        {
+          "name": "たすたあげ",
+          "attribute": "女性・20代",
+          "date": "2025-11-14",
+          "title": "ほしいプライズ品があった時に利用しました..."
+        },
+        {
+          "name": "たかし",
+          "attribute": "男性・30代",
+          "date": "2025-10-22",
+          "title": "はやい"
+        },
+        {
+          "name": "ミマチッチ",
+          "attribute": "男性・40代",
+          "date": "2025-10-08",
+          "title": "課金するだけ"
+        },
+        {
+          "name": "ポテトマン",
+          "attribute": "男性・50代",
+          "date": "2025-10-02",
+          "title": "難しい"
+        },
+        {
+          "name": "ショウジ",
+          "attribute": "男性・40代",
+          "date": "2025-09-30",
+          "title": "課金であっさり"
+        },
+        {
+          "name": "夢玉",
+          "attribute": "女性・30代",
+          "date": "2025-09-29",
+          "title": "取れると思わない方が楽"
+        },
+        {
+          "name": "じぇじぇ",
+          "attribute": "男性・20代",
+          "date": "2025-09-20",
+          "title": "課金だけなので楽っちゃ楽"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・30代",
+          "date": "2025-08-25",
+          "title": "最低課金額は490円でした"
+        }
+      ],
+      "termNotes": [
+        "ナムコオンラインクレーン（初回課金（NPチャージ））でポイントを貯める｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+        "あんしん保証",
+        "ナムコオンラインクレーン（初回課金（NPチャージ））",
+        "あんしん保証",
+        "ナムコオンラインクレーン（初回課金（NPチャージ））",
+        "初回アプリインストール後、初回課金（NPチャージ）",
+        "起動後、最短30分",
+        "判定期間",
+        "新規アプリインストール後、当日中に初回課金（NPチャージ）完了",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "購入完了",
+        "※初回課金：410NP＝490円〜となります。",
+        "※以下の課金には電話番号認証が必須となります。",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:13+00:00",
+      "responseSha256": "3d7f97a6058c6582e39e82240c5c2d98420f25d8486ee8dbd7bd7c3c7f51047b"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:175514",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "175514",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=175514",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "ナムコオンラインクレーン（初回課金（NPチャージ））でポイントを貯める",
+      "gameName": "ナムコオンラインクレーン（初回課金（NPチャージ））",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "こっせつ",
+          "attribute": "男性・40代",
+          "date": "2026-06-16",
+          "title": "基本取れないと思った方がいい"
+        },
+        {
+          "name": "みゅう",
+          "attribute": "女性・40代",
+          "date": "2026-02-11",
+          "title": "たのしい"
+        },
+        {
+          "name": "たすたあげ",
+          "attribute": "女性・20代",
+          "date": "2025-11-14",
+          "title": "ほしいプライズ品があった時に利用しました..."
+        },
+        {
+          "name": "たかし",
+          "attribute": "男性・30代",
+          "date": "2025-10-22",
+          "title": "はやい"
+        },
+        {
+          "name": "ミマチッチ",
+          "attribute": "男性・40代",
+          "date": "2025-10-08",
+          "title": "課金するだけ"
+        },
+        {
+          "name": "ポテトマン",
+          "attribute": "男性・50代",
+          "date": "2025-10-02",
+          "title": "難しい"
+        },
+        {
+          "name": "ショウジ",
+          "attribute": "男性・40代",
+          "date": "2025-09-30",
+          "title": "課金であっさり"
+        },
+        {
+          "name": "夢玉",
+          "attribute": "女性・30代",
+          "date": "2025-09-29",
+          "title": "取れると思わない方が楽"
+        },
+        {
+          "name": "じぇじぇ",
+          "attribute": "男性・20代",
+          "date": "2025-09-20",
+          "title": "課金だけなので楽っちゃ楽"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・30代",
+          "date": "2025-08-25",
+          "title": "最低課金額は490円でした"
+        },
+        {
+          "name": "くれは",
+          "attribute": "女性・20代",
+          "date": "2025-06-29",
+          "title": "欲しいプライズがあり課金することはきまっ..."
+        },
+        {
+          "name": "つみゅ",
+          "attribute": "女性・20代",
+          "date": "2025-04-26",
+          "title": "欲しい景品があったので丁度良いと思い利用..."
+        },
+        {
+          "name": "神代小薪",
+          "attribute": "男性・40代",
+          "date": "2024-11-25",
+          "title": "課金したらポイントはすぐ反映されます、ク..."
+        },
+        {
+          "name": "まー",
+          "attribute": "男性・40代",
+          "date": "2024-11-09",
+          "title": "とても良いアプリです！ 簡単にポイント..."
+        },
+        {
+          "name": "アヤ",
+          "attribute": "女性・20代",
+          "date": "2024-10-08",
+          "title": "他のクレーンゲームアプリと同じく課金のみ..."
+        },
+        {
+          "name": "さくら",
+          "attribute": "女性・20代",
+          "date": "2024-10-03",
+          "title": "1番安い金額の490円を課金したらすぐに..."
+        },
+        {
+          "name": "らん",
+          "attribute": "男性・20代",
+          "date": "2024-09-25",
+          "title": "クレーンゲームがオンラインでできるので..."
+        },
+        {
+          "name": "琉生",
+          "attribute": "男性・20代",
+          "date": "2024-09-06",
+          "title": "承認も早く、ほしいプライズがあったのでラ..."
+        },
+        {
+          "name": "ぽぽ",
+          "attribute": "女性・20代",
+          "date": "2024-08-25",
+          "title": "承認も早く、ほしいプライズがあったのでラ..."
+        },
+        {
+          "name": "愛らぶにゃ",
+          "attribute": "女性・30代",
+          "date": "2024-08-20",
+          "title": "課金したらすぐにポイントもらえました。..."
+        },
+        {
+          "name": "こっせつ",
+          "attribute": "男性・40代",
+          "date": "2026-06-16",
+          "title": "基本取れないと思った方がいい"
+        },
+        {
+          "name": "みゅう",
+          "attribute": "女性・40代",
+          "date": "2026-02-11",
+          "title": "たのしい"
+        },
+        {
+          "name": "たすたあげ",
+          "attribute": "女性・20代",
+          "date": "2025-11-14",
+          "title": "ほしいプライズ品があった時に利用しました..."
+        },
+        {
+          "name": "たかし",
+          "attribute": "男性・30代",
+          "date": "2025-10-22",
+          "title": "はやい"
+        },
+        {
+          "name": "ミマチッチ",
+          "attribute": "男性・40代",
+          "date": "2025-10-08",
+          "title": "課金するだけ"
+        },
+        {
+          "name": "ポテトマン",
+          "attribute": "男性・50代",
+          "date": "2025-10-02",
+          "title": "難しい"
+        },
+        {
+          "name": "ショウジ",
+          "attribute": "男性・40代",
+          "date": "2025-09-30",
+          "title": "課金であっさり"
+        },
+        {
+          "name": "夢玉",
+          "attribute": "女性・30代",
+          "date": "2025-09-29",
+          "title": "取れると思わない方が楽"
+        },
+        {
+          "name": "じぇじぇ",
+          "attribute": "男性・20代",
+          "date": "2025-09-20",
+          "title": "課金だけなので楽っちゃ楽"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・30代",
+          "date": "2025-08-25",
+          "title": "最低課金額は490円でした"
+        }
+      ],
+      "termNotes": [
+        "ナムコオンラインクレーン（初回課金（NPチャージ））でポイントを貯める｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+        "あんしん保証",
+        "ナムコオンラインクレーン（初回課金（NPチャージ））",
+        "あんしん保証",
+        "ナムコオンラインクレーン（初回課金（NPチャージ））",
+        "初回アプリインストール後、初回課金（NPチャージ）",
+        "起動後、最短30分",
+        "判定期間",
+        "新規アプリインストール後、当日中に初回課金（NPチャージ）完了",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "購入完了",
+        "※初回課金：410NP＝490円〜となります。",
+        "※以下の課金には電話番号認証が必須となります。",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:15+00:00",
+      "responseSha256": "c116f4a0c0cedede2da04073e2ffe91e5a06333c81ec5e0212c2bf62581907f4"
+    }
+  ]
+}

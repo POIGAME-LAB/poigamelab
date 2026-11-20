@@ -131,5 +131,19 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "レベル150・170攻略を読む →", href: "mystery-town-guide.html" }
     ]
+  },
+  "LINE マジマジ：爽快魔法マージパズル": {
+    title: "LINE マジマジ：爽快魔法マージパズル ポイ活攻略",
+    description: "ワラウ案件（iOS、30日以内の全3Step）と、レベル25まで2〜3日で届いた実例・レベル35の壁、体力とダイヤの使い方、撤退の目安をまとめています。",
+    links: [
+      { label: "レベル25・35攻略を読む →", href: "line-magimagi-guide.html" }
+    ]
+  },
+  "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）": {
+    title: "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M） ポイ活攻略",
+    description: "ワラウ案件（iOS・Android、60日以内の4Step）の全報酬と、30〜46日でレベル400に届いた実例・レベル300で止まった例、転生・秘宝・広告視聴の進め方をまとめています。",
+    links: [
+      { label: "レベル400攻略を読む →", href: "purikets-nyaa-guide.html" }
+    ]
   }
 });

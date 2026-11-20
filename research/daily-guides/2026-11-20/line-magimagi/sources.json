@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-20",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "ワラウ iOS案件209372",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372",
+      "type": "point_site",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "全3Step・表示合計700pt（増額表示なし）、期限はインストール日から30日以内",
+        "獲得対象外条件・1時間以内の起動・あんしん保証の記載"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-20T00:25:40+00:00",
+      "responseSha256": "c714e161f1313f3060abc545a41ff31419d64e1c8e2b1ad77dcc4c7485f91d2c"
+    },
+    {
+      "id": "M2",
+      "title": "App Store LY Corporation版",
+      "url": "https://apps.apple.com/jp/app/id6578433768",
+      "type": "official",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "販売元LY Corporation、バンドルID com.linecorp.LGMGMG、無料・アプリ内課金、合成と魔法カードのマージパズル"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Google Play LY Corporation版",
+      "url": "https://play.google.com/store/apps/details?id=com.linecorp.LGMGMG",
+      "type": "official",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "パッケージcom.linecorp.LGMGMG、提供元LY Corporation"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372",
+      "type": "player",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "口コミ9件（5点6件・4点2件・3点1件）。採用した7名の投稿は2026-09-21〜2026-11-19、2026-11-20に掲載を確認"
+      ],
+      "individualSourceDetailsRequired": true
+    },
+    {
+      "id": "M5",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "ワラウ 1pt＝1円"
+      ]
+    }
+  ]
+}
