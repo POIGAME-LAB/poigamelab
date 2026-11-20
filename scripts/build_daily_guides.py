@@ -300,6 +300,10 @@ def offer_table_errors(meta: dict, page: dict, ev: dict, article: str, cited_url
             if "10pt" not in article_nfkc or "1円" not in article_nfkc:
                 errs.append(f"point_rate_not_disclosed:{pid}")
         inc = c.get("temporaryIncrease")
+        # the metadata row must state the same increase the page shows (regular amount, current amount, end date or "not stated")
+        keys = ("regularPt", "increasedPt", "regularYen", "increasedYen", "until")
+        if bool(inc) != bool(o.get("temporaryIncrease")) or (inc and {k: inc.get(k) for k in keys} != {k: o["temporaryIncrease"].get(k) for k in keys}):
+            errs.append(f"temporary_increase_differs_from_evidence:{pid}")
         if inc:
             if inc.get("until"):
                 if inc["until"] not in article:

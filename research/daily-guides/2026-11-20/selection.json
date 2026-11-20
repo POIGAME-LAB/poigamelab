@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "productionDate": "2026-11-20",
+  "timezone": "Asia/Tokyo",
+  "inputs": {
+    "contentQueueCheckedAt": "2026-11-19T23:05:24+00:00",
+    "monitorCheckedAt": "2026-11-19T23:05:24+00:00",
+    "checkedDateJst": "2026-11-20",
+    "mainCommit": "51f22518c900e376790f60568959ca3e063e1114",
+    "candidatesFile": "research/daily-guides/2026-11-20/candidates.json"
+  },
+  "dedupe": {
+    "openPullRequestsChecked": [
+      "#351",
+      "#350",
+      "#344",
+      "#339",
+      "#329"
+    ],
+    "remoteBranchGuidePagesScanned": true,
+    "notionControlRoomChecked": true
+  },
+  "targetMax": 5,
+  "completedCount": 2,
+  "reviewedCount": 13,
+  "publicationAuthorized": false,
+  "decisions": [
+    {
+      "game": "LINE マジマジ：爽快魔法マージパズル",
+      "decision": "completed",
+      "reason": "ワラウiOS 209372の全3Step・合計700ptを当日取得で確認。2026-09〜11月の独立したワラウ口コミ7名を採用（「4日でクリア」はStep不明のため到達日数の目安には使わない）。ストアはLY Corporation（iOS 6578433768／com.linecorp.LGMGMG）。",
+      "slug": "line-magimagi"
+    },
+    {
+      "game": "プリケツにゃー",
+      "decision": "completed",
+      "reason": "ワラウiOS 178209・Android 178210の全4Step・合計2,000pt（1,700ptから最大2,000ptへの増額表示。終了日の記載なし）を確認。2025-12〜2026-07の独立したワラウ口コミ6名を採用。ストアはIGNITION M CO., LTD.（iOS 6450658934／com.ignm.puri）。",
+      "slug": "purikets-nyaa"
+    },
+    {
+      "game": "実りの地",
+      "decision": "held",
+      "reason": "365日以内の独立した実プレイヤー記録が2名（ワラウ口コミ2026-08-23・2026-05-18）のみで3件に届かない。モッピー口コミ0件。案件は読めるが保留。",
+      "candidateOrder": 92
+    },
+    {
+      "game": "Tile Triple Match",
+      "decision": "held",
+      "reason": "ワラウ209334は公開ページ表示不可。モッピー160625は単一条件で読めるが、口コミ0件・個人記録なし。",
+      "candidateOrder": 11
+    },
+    {
+      "game": "タイルマッチ3D:トリプルマスター",
+      "decision": "held",
+      "reason": "モッピー161999・ワラウ209379は読めるが口コミ0件・個人記録なし。",
+      "candidateOrder": 52
+    },
+    {
+      "game": "ボクと惑星農園",
+      "decision": "held",
+      "reason": "モッピー単一条件2件は読めるが口コミ0件。ワラウ案件は期限切れ・掲載終了で個人記録なし。",
+      "candidateOrder": 60
+    },
+    {
+      "game": "ソリティア無限にやれる「そるティア」",
+      "decision": "held",
+      "reason": "モッピー単一条件は読めるが個人記録なし。",
+      "candidateOrder": 96
+    },
+    {
+      "game": "Onet Master: Tile Match Puzzle",
+      "decision": "held",
+      "reason": "モッピー単一条件は読めるが個人記録なし。名前が似る Onet Master: Puzzle & Art とは別アプリの可能性があり同定していない。",
+      "candidateOrder": 23
+    },
+    {
+      "game": "Merge Restyle",
+      "decision": "held",
+      "reason": "モッピー単一条件は読めるが個人記録なし。",
+      "candidateOrder": 29
+    },
+    {
+      "game": "Otaku Onet: Anime & Manga",
+      "decision": "held",
+      "reason": "モッピー単一条件は読めるが個人記録なし。ワラウは停止中。",
+      "candidateOrder": 32
+    },
+    {
+      "game": "Screw Out",
+      "decision": "held",
+      "reason": "モッピー単一条件は読めるが個人記録なし。似た名前の別アプリが複数あり同定していない。",
+      "candidateOrder": 34
+    },
+    {
+      "game": "モーリーオンライン",
+      "decision": "excluded",
+      "reason": "条件が初回課金（チャージ）で、進行する攻略の対象ではない。ワラウ案件ページは構造を読めず。"
+    },
+    {
+      "game": "ナムコオンラインクレーン",
+      "decision": "excluded",
+      "reason": "条件が初回課金（チャージ）で、進行する攻略の対象ではない。ワラウ案件ページは構造を読めず。"
+    }
+  ]
+}

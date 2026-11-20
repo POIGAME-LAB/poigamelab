@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 2,
+  "slug": "tile-triple-match",
+  "site": "multi",
+  "sites": [
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-20T09:03:03+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:160625",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "160625",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160625",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "Tile Triple Match: 3D puzzle",
+      "gameName": "Tile Triple Match: 3D puzzle",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規アプリインストール後、広告クリックから30日以内にレベル1100を完成で成果となります。",
+      "deadlineDays": 30,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規アプリインストール後、広告クリックから30日以内にレベル1100を完成で成果となります。",
+          "rewardPt": 2375,
+          "rewardYen": 2375,
+          "deadlineDays": 30
+        }
+      ],
+      "totalPt": 2375,
+      "totalYen": 2375,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:00+00:00",
+      "responseSha256": "fdb6aae9e10b896fe3bb443c16a699ac29d81a8014a328bc716203e01ec61899"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:209334",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "209334",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209334",
+      "state": "not_viewable",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "gameName": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [],
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:03+00:00",
+      "responseSha256": "250c559653b32b239440a0a3f88e522991345e1be958589669b17b678a4c5e35"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "game": "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）",
+  "updatedAt": "2026-11-21",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-21。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "30日ぴったりでレベル400",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv400"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+      ],
+      "sourceDetails": [
+        "おおもりぱすた（ワラウ口コミ・女性20代）",
+        "2025-12-06",
+        "30日ぴったりでレベル400"
+      ],
+      "postedOn": "2025-12-06",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "広告をしっかり見る、ダンジョンのボスラッシュ以降に解放されるものを広告分も含めてこまめにやることがポイントと記載。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "30日間でレベル400",
+      "milestones": [
+        {
+          "day": 30,
+          "label": "Lv400"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+      ],
+      "sourceDetails": [
+        "ろけっと（ワラウ口コミ・女性40代）",
+        "2026-05-16",
+        "30日間でレベル400"
+      ],
+      "postedOn": "2026-05-16",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "転生2回（1回で十分だったと記載）。約Lv30000まで攻撃力などを上げる必要があり、ひたすらタップ。ポイントはすぐ付与と記載。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "40日でレベル400",
+      "milestones": [
+        {
+          "day": 40,
+          "label": "Lv400"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+      ],
+      "sourceDetails": [
+        "うんたん（ワラウ口コミ・男性30代）",
+        "2025-12-07",
+        "40日でレベル400"
+      ],
+      "postedOn": "2025-12-07",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "1時間ごとにログインしてオフラインボーナスを受け取り、ガチャを引き続けたと記載。広告視聴に耐えられるかが課題と記載。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "46日目にクリア（到達レベルの記載なし）",
+      "milestones": [
+        {
+          "day": 46,
+          "label": "クリア（本人記載。レベル・Stepの記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+      ],
+      "sourceDetails": [
+        "わかめ（ワラウ口コミ・女性20代）",
+        "2026-07-10",
+        "46日目にクリア"
+      ],
+      "postedOn": "2026-07-10",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "似たゲームより早くクリアできたと記載。レベルやStepの数値は記載がなく、レベル400とは読んでいない。"
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "転生1回でLv380から400まで4日追加",
+      "milestones": [
+        {
+          "day": null,
+          "label": "Lv380付近から伸びが鈍化"
+        },
+        {
+          "day": null,
+          "label": "Lv400（そこから4日）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+      ],
+      "sourceDetails": [
+        "サクラ（ワラウ口コミ・男性30代）",
+        "2025-12-25",
+        "転生1回でLv380から400まで4日追加"
+      ],
+      "postedOn": "2025-12-25",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "転生は1回のみ。期間は長いのでゆっくりでもよいが、転生は最低1回はした方がよいと記載。到達までの総日数は記載なし。"
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "in_progress",
+      "summary": "転生5回目でLv300。「あと3日で行ける気がしない」と記載",
+      "milestones": [
+        {
+          "day": null,
+          "label": "Lv300（本人記載。日数の記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+      ],
+      "sourceDetails": [
+        "大輔（ワラウ口コミ・男性40代）",
+        "2026-03-28",
+        "転生5回目でLv300。「あと3日で行ける気がしない」と記載"
+      ],
+      "postedOn": "2026-03-28",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "ガチャで良いレアが出ず、1時間ごとに広告を見ている状態と記載。この時点で撤退したとは書かれていない。"
+    }
+  ]
+}

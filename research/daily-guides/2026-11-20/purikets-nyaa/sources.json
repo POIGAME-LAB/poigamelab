@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-21",
+  "retrievalNote": "案件ページは2026-11-20に取得し、2026-11-21に再取得（scripts/daily_guide_evidence.py --recheck）。口コミ本文はリポジトリへ複製せず索引のみ保存。ストアはApp Store・Google Playの公開ページを2026-11-20に確認。",
+  "editorialInferences": "編集部の計算・判断は本文で[編集部計算]／[編集部判断]と明示。自己申告の記録とは区別。",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "ワラウ iOS案件178209",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209",
+      "type": "point_site",
+      "checkedAt": "2026-11-21",
+      "bodyConfirmed": true,
+      "claims": [
+        "4Step・表示合計2,000pt（打ち消し線1,700ptから最大2,000ptへの増額表示。増額の終了日の記載なし）、期限はインストール日から60日以内",
+        "獲得対象外条件（再インストール・iOSのトラッキング拒否）とあんしん保証制度の案内"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-20T22:47:51+00:00",
+      "responseSha256": "a0bbc03882c819798b46b0197533c1fcd210716831627622bf7c6dbe1237619f"
+    },
+    {
+      "id": "M2",
+      "title": "ワラウ Android案件178210",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178210",
+      "type": "point_site",
+      "checkedAt": "2026-11-21",
+      "bodyConfirmed": true,
+      "claims": [
+        "4Step・表示合計2,000pt（1,700ptから最大2,000ptへの増額表示、終了日の記載なし）、条件・報酬はiOSと同じ"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-20T22:47:53+00:00",
+      "responseSha256": "f2662e10186b42268ad21e79227715cfa45ebec6c5a1b0a1dc5ef050549ff312"
+    },
+    {
+      "id": "M3",
+      "title": "App Store IGNITION M版",
+      "url": "https://apps.apple.com/jp/app/id6450658934",
+      "type": "official",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "販売元IGNITION M CO., LTD.、バンドルID com.ignm.puri、無料（一部有料アイテム）、縦画面の放置系オートバトルRPG"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Google Play IGNITION M版",
+      "url": "https://play.google.com/store/apps/details?id=com.ignm.puri",
+      "type": "official",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "パッケージcom.ignm.puri、提供元IGNITION M、アプリ名プリケツにゃー！放置で育成☆プリケツ猫"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209",
+      "type": "player",
+      "checkedAt": "2026-11-21",
+      "bodyConfirmed": true,
+      "claims": [
+        "365日以内の独立した投稿者6名の自己申告（到達日数・転生回数・広告視聴の運用）。本文はリポジトリへ複製していない"
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "ワラウポイント換算",
+      "url": "https://www.warau.jp/help/qa/1475/",
+      "type": "official",
+      "checkedAt": "2026-11-20",
+      "bodyConfirmed": true,
+      "claims": [
+        "ワラウは1pt＝1円"
+      ]
+    }
+  ]
+}

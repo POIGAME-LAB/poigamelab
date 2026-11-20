@@ -56,6 +56,8 @@ ROOT_FILES = (
     "tsue-to-ken-guide.html",
     "last-asylum-plague-guide.html",
     "mystery-town-guide.html",
+    "line-magimagi-guide.html",
+    "purikets-nyaa-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

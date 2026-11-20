@@ -1,0 +1,370 @@
+{
+  "schemaVersion": 1,
+  "slug": "purikets-nyaa",
+  "site": "warau",
+  "sites": [
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-21T07:47:53+09:00",
+  "checks": [
+    {
+      "pointId": "178209",
+      "offerKey": "warau:178209",
+      "site": "warau",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209",
+      "retrievedAt": "2026-11-20T22:47:51+00:00",
+      "httpStatus": 200,
+      "responseSha256": "a0bbc03882c819798b46b0197533c1fcd210716831627622bf7c6dbe1237619f",
+      "title": "プリケツにゃー（StepUp）でポイントを貯める",
+      "live": true,
+      "deadlineIfInstalledToday": "2027年1月19日",
+      "condition": "新規アプリインストール後、インストール日から起算して60日以内にStepUpミッションの各達成条件をクリア",
+      "steps": [
+        {
+          "condition": "プリケツレベル120到達",
+          "rewardPt": 50
+        },
+        {
+          "condition": "プリケツレベル200到達",
+          "rewardPt": 120
+        },
+        {
+          "condition": "プリケツレベル300到達",
+          "rewardPt": 270
+        },
+        {
+          "condition": "プリケツレベル400到達",
+          "rewardPt": 1560
+        }
+      ],
+      "totalPt": 2000,
+      "stepSum": 2000,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": {
+        "regularPt": 1700,
+        "increasedPt": 2000,
+        "until": null,
+        "endDateStated": false
+      },
+      "os": "iOS",
+      "advertiser": "IGNITION M",
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "判定中の記載なし",
+        "判定期間",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした",
+        "■あんしん保証制度",
+        "あんしん保証制度",
+        "判定期間保証"
+      ],
+      "reviewIndex": [
+        {
+          "name": "バラモン",
+          "attribute": "男性・50代",
+          "date": "2026-10-27",
+          "title": "猫のケツに焦点を当てるならもう少しはっち..."
+        },
+        {
+          "name": "ぽなのぽな☆",
+          "attribute": "女性・20代",
+          "date": "2026-10-26",
+          "title": "いつからかはわかりませんがタップしなくて..."
+        },
+        {
+          "name": "たぬーきー",
+          "attribute": "男性・30代",
+          "date": "2026-09-25",
+          "title": "とにかく時間かかる"
+        },
+        {
+          "name": "ぽいぽいぽい",
+          "attribute": "男性・30代",
+          "date": "2026-08-03",
+          "title": "他の案件も並行して行っていたのでかなり時..."
+        },
+        {
+          "name": "わかめ",
+          "attribute": "女性・20代",
+          "date": "2026-07-10",
+          "title": "コツコツ"
+        },
+        {
+          "name": "ナオ",
+          "attribute": "男性・30代",
+          "date": "2026-05-23",
+          "title": "ひたすら広告を見るだけ"
+        },
+        {
+          "name": "ろけっと",
+          "attribute": "女性・40代",
+          "date": "2026-05-16",
+          "title": "20万回くらいタップする必要がある"
+        },
+        {
+          "name": "ぴょぴょん",
+          "attribute": "女性・50代",
+          "date": "2026-04-06",
+          "title": "広告は多いがゲームは楽しい"
+        },
+        {
+          "name": "大輔",
+          "attribute": "男性・40代",
+          "date": "2026-03-28",
+          "title": "広告ゲー"
+        },
+        {
+          "name": "まみ",
+          "attribute": "女性・30代",
+          "date": "2026-02-28",
+          "title": "クリア"
+        },
+        {
+          "name": "みなと",
+          "attribute": "女性・10代",
+          "date": "2026-02-08",
+          "title": "とにかく広告を見まくることが大事です！！..."
+        },
+        {
+          "name": "るみん",
+          "attribute": "男性・20代",
+          "date": "2026-01-07",
+          "title": "広告を見るゲームですね。 見なくてもも..."
+        },
+        {
+          "name": "おもち",
+          "attribute": "女性・40代",
+          "date": "2026-01-02",
+          "title": "動画を見るゲームみたい"
+        },
+        {
+          "name": "サクラ",
+          "attribute": "男性・30代",
+          "date": "2025-12-25",
+          "title": "広告ゲー"
+        },
+        {
+          "name": "うんたん",
+          "attribute": "男性・30代",
+          "date": "2025-12-07",
+          "title": "半分程CMを見るゲームです"
+        },
+        {
+          "name": "しゅうーー",
+          "attribute": "男性・30代",
+          "date": "2025-12-06",
+          "title": "しんどい"
+        },
+        {
+          "name": "おおもりぱすた",
+          "attribute": "女性・20代",
+          "date": "2025-12-06",
+          "title": "個人的には好き！"
+        },
+        {
+          "name": "ラーメン",
+          "attribute": "男性・10代",
+          "date": "2025-10-14",
+          "title": "くっそむずい"
+        },
+        {
+          "name": "ウォルター",
+          "attribute": "男性・40代",
+          "date": "2025-10-02",
+          "title": "無課金でもレベル400はいけます"
+        },
+        {
+          "name": "てらぴ",
+          "attribute": "男性・20代",
+          "date": "2025-09-15",
+          "title": "放置ゲームの定番"
+        }
+      ]
+    },
+    {
+      "pointId": "178210",
+      "offerKey": "warau:178210",
+      "site": "warau",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178210",
+      "retrievedAt": "2026-11-20T22:47:53+00:00",
+      "httpStatus": 200,
+      "responseSha256": "f2662e10186b42268ad21e79227715cfa45ebec6c5a1b0a1dc5ef050549ff312",
+      "title": "プリケツにゃー（StepUp）でポイントを貯める",
+      "live": true,
+      "deadlineIfInstalledToday": "2027年1月19日",
+      "condition": "新規アプリインストール後、インストール日から起算して60日以内にStepUpミッションの各達成条件をクリア",
+      "steps": [
+        {
+          "condition": "プリケツレベル120到達",
+          "rewardPt": 50
+        },
+        {
+          "condition": "プリケツレベル200到達",
+          "rewardPt": 120
+        },
+        {
+          "condition": "プリケツレベル300到達",
+          "rewardPt": 270
+        },
+        {
+          "condition": "プリケツレベル400到達",
+          "rewardPt": 1560
+        }
+      ],
+      "totalPt": 2000,
+      "stepSum": 2000,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": {
+        "regularPt": 1700,
+        "increasedPt": 2000,
+        "until": null,
+        "endDateStated": false
+      },
+      "os": "Android",
+      "advertiser": "IGNITION M",
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "判定中の記載なし",
+        "判定期間",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度",
+        "あんしん保証制度",
+        "判定期間保証"
+      ],
+      "reviewIndex": [
+        {
+          "name": "バラモン",
+          "attribute": "男性・50代",
+          "date": "2026-10-27",
+          "title": "猫のケツに焦点を当てるならもう少しはっち..."
+        },
+        {
+          "name": "ぽなのぽな☆",
+          "attribute": "女性・20代",
+          "date": "2026-10-26",
+          "title": "いつからかはわかりませんがタップしなくて..."
+        },
+        {
+          "name": "たぬーきー",
+          "attribute": "男性・30代",
+          "date": "2026-09-25",
+          "title": "とにかく時間かかる"
+        },
+        {
+          "name": "ぽいぽいぽい",
+          "attribute": "男性・30代",
+          "date": "2026-08-03",
+          "title": "他の案件も並行して行っていたのでかなり時..."
+        },
+        {
+          "name": "わかめ",
+          "attribute": "女性・20代",
+          "date": "2026-07-10",
+          "title": "コツコツ"
+        },
+        {
+          "name": "ナオ",
+          "attribute": "男性・30代",
+          "date": "2026-05-23",
+          "title": "ひたすら広告を見るだけ"
+        },
+        {
+          "name": "ろけっと",
+          "attribute": "女性・40代",
+          "date": "2026-05-16",
+          "title": "20万回くらいタップする必要がある"
+        },
+        {
+          "name": "ぴょぴょん",
+          "attribute": "女性・50代",
+          "date": "2026-04-06",
+          "title": "広告は多いがゲームは楽しい"
+        },
+        {
+          "name": "大輔",
+          "attribute": "男性・40代",
+          "date": "2026-03-28",
+          "title": "広告ゲー"
+        },
+        {
+          "name": "まみ",
+          "attribute": "女性・30代",
+          "date": "2026-02-28",
+          "title": "クリア"
+        },
+        {
+          "name": "みなと",
+          "attribute": "女性・10代",
+          "date": "2026-02-08",
+          "title": "とにかく広告を見まくることが大事です！！..."
+        },
+        {
+          "name": "るみん",
+          "attribute": "男性・20代",
+          "date": "2026-01-07",
+          "title": "広告を見るゲームですね。 見なくてもも..."
+        },
+        {
+          "name": "おもち",
+          "attribute": "女性・40代",
+          "date": "2026-01-02",
+          "title": "動画を見るゲームみたい"
+        },
+        {
+          "name": "サクラ",
+          "attribute": "男性・30代",
+          "date": "2025-12-25",
+          "title": "広告ゲー"
+        },
+        {
+          "name": "うんたん",
+          "attribute": "男性・30代",
+          "date": "2025-12-07",
+          "title": "半分程CMを見るゲームです"
+        },
+        {
+          "name": "しゅうーー",
+          "attribute": "男性・30代",
+          "date": "2025-12-06",
+          "title": "しんどい"
+        },
+        {
+          "name": "おおもりぱすた",
+          "attribute": "女性・20代",
+          "date": "2025-12-06",
+          "title": "個人的には好き！"
+        },
+        {
+          "name": "ラーメン",
+          "attribute": "男性・10代",
+          "date": "2025-10-14",
+          "title": "くっそむずい"
+        },
+        {
+          "name": "ウォルター",
+          "attribute": "男性・40代",
+          "date": "2025-10-02",
+          "title": "無課金でもレベル400はいけます"
+        },
+        {
+          "name": "てらぴ",
+          "attribute": "男性・20代",
+          "date": "2025-09-15",
+          "title": "放置ゲームの定番"
+        }
+      ]
+    }
+  ],
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/"
+}
