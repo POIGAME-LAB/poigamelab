@@ -1,0 +1,107 @@
+{
+ "schemaVersion": 1,
+ "game": "大家さんになろう！",
+ "updatedAt": "2026-11-19",
+ "title": "実際の到達ペース",
+ "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+ "notice": "投稿時期のStep構成が今回の案件と異なる場合があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+ "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-19。",
+ "players": [
+  {
+   "id": "A",
+   "label": "プレイヤーA",
+   "status": "completed",
+   "summary": "6日で全StepUpを達成（繁栄レベル15は6日目）",
+   "milestones": [
+    {
+     "day": 3,
+     "label": "繁栄Lv8"
+    },
+    {
+     "day": 4,
+     "label": "繁栄Lv10"
+    },
+    {
+     "day": 5,
+     "label": "繁栄Lv13"
+    },
+    {
+     "day": 6,
+     "label": "繁栄Lv15"
+    }
+   ],
+   "sources": [
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342&sort=new"
+   ],
+   "sourceDetails": [
+    "憂哉（ワラウ口コミ・女性30代）",
+    "2026-11-11",
+    "6日で全StepUpを達成（繁栄レベル15は6日目）"
+   ],
+   "postedOn": "2026-11-11",
+   "checkedAt": "2026-11-19",
+   "platform": null,
+   "paymentStatus": "unknown",
+   "paidYen": null,
+   "totalPlayMinutes": null,
+   "dailyPlayMinutes": null,
+   "note": "投稿のStepには「レベル6」（当日）があり、今回の「レベル3」と異なる。動画視聴（富豪の贈与）がかなりの回数だったと記載。レベル4→5・8→9・11→12は資金が必要で時間がかかり、レベル13で新ステージに入ると記載。ポイント付与は即時と記載。"
+  },
+  {
+   "id": "B",
+   "label": "プレイヤーB",
+   "status": "completed",
+   "summary": "7日で繁栄レベル15に到達",
+   "milestones": [
+    {
+     "day": 7,
+     "label": "繁栄Lv15"
+    }
+   ],
+   "sources": [
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342&sort=new"
+   ],
+   "sourceDetails": [
+    "あき（ワラウ口コミ・女性30代）",
+    "2026-11-06",
+    "7日で繁栄レベル15に到達"
+   ],
+   "postedOn": "2026-11-06",
+   "checkedAt": "2026-11-19",
+   "platform": null,
+   "paymentStatus": "unknown",
+   "paidYen": null,
+   "totalPlayMinutes": 3600,
+   "dailyPlayMinutes": null,
+   "note": "7日で合計60時間起動（放置を含む起動時間）。強制広告はないが、資金のため広告を何度も見たと記載。ポイントはすぐ反映と記載。"
+  },
+  {
+   "id": "C",
+   "label": "プレイヤーC",
+   "status": "completed",
+   "summary": "7日目に繁栄レベル15に到達",
+   "milestones": [
+    {
+     "day": 7,
+     "label": "繁栄Lv15"
+    }
+   ],
+   "sources": [
+    "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342&sort=new"
+   ],
+   "sourceDetails": [
+    "ナナピー（ワラウ口コミ・男性30代）",
+    "2026-11-17",
+    "7日目に繁栄レベル15に到達"
+   ],
+   "postedOn": "2026-11-17",
+   "checkedAt": "2026-11-19",
+   "platform": null,
+   "paymentStatus": "unknown",
+   "paidYen": null,
+   "totalPlayMinutes": null,
+   "dailyPlayMinutes": null,
+   "note": "タイクーン系で攻略法は少なく、放置と広告視聴で施設をアップグレードすると記載。10日で達成するなら起動放置はほぼ必要と記載。"
+  }
+ ]
+}

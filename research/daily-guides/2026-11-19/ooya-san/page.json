@@ -1,0 +1,37 @@
+{
+ "heroStats": [
+  {
+   "label": "期限（インストール日から）",
+   "value": "10日"
+  },
+  {
+   "label": "表示合計（iOS）",
+   "value": "960pt"
+  },
+  {
+   "label": "レベル条件のみ（iOS）",
+   "value": "890pt"
+  }
+ ],
+ "offerLinks": [
+  {
+   "label": "ワラウの案件ページ（iOS・209342）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342"
+  }
+ ],
+ "contextLabel": "ワラウの現在の案件ページを見る →",
+ "related": [
+  {
+   "label": "さる山温泉旅館 ポイ活攻略",
+   "href": "saruyama-onsen-guide.html"
+  },
+  {
+   "label": "ワーキングヒーローズ ポイ活攻略",
+   "href": "working-heroes-guide.html"
+  }
+ ],
+ "registry": {
+  "label": "繁栄レベル15の攻略を読む →",
+  "description": "ワラウのiOS案件（全6Step・10日以内）の条件と、繁栄レベル15に6〜7日で届いた実例、資金のため方、初回課金の損得をまとめています。"
+ }
+}

@@ -1,0 +1,60 @@
+{
+ "schemaVersion": 1,
+ "checkedAt": "2026-11-19",
+ "sources": [
+  {
+   "id": "M1",
+   "title": "ワラウ iOS案件209342",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342",
+   "type": "point_site",
+   "checkedAt": "2026-11-19",
+   "bodyConfirmed": true,
+   "claims": [
+    "全6Step・表示合計960pt、期限はインストール日から10日以内、増額表示なし",
+    "初回課金Step70pt・獲得対象外条件・あんしん保証（判定期間保証、申請期限20日以内）",
+    "広告主ShimmerGames"
+   ],
+   "retrieval": "direct_http_200",
+   "retrievedAt": "2026-11-19T00:05:27+00:00",
+   "responseSha256": "88f948a52420309ee2296010486d2a38e6521b734c202ced537bd25d5ff5d44f"
+  },
+  {
+   "id": "M2",
+   "title": "App Store 大家さんになろう！",
+   "url": "https://apps.apple.com/jp/app/id1645844395",
+   "type": "official",
+   "checkedAt": "2026-11-19",
+   "bodyConfirmed": true,
+   "claims": [
+    "開発元Shimmer Games Co., Ltd.・アプリID1645844395・無料・iOS 15.0以降・シミュレーション",
+    "放置系の経営シミュレーション（アパート・マンション・ヴィラ・一戸建てなどの部屋を管理）"
+   ]
+  },
+  {
+   "id": "M3",
+   "title": "ワラウ案件ページの口コミ（複数投稿者）",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342&sort=new",
+   "type": "player",
+   "checkedAt": "2026-11-19",
+   "bodyConfirmed": true,
+   "claims": [
+    "口コミ5件（2026-11-06〜2026-11-18）。憂哉・あき・ナナピー・キッシュ・ひまりの5名",
+    "到達日数・起動時間・資金のため方・新マップの記録"
+   ],
+   "retrieval": "direct_http_200",
+   "individualSourceDetailsRequired": true,
+   "reviewIndexFile": "research/daily-guides/2026-11-19/evidence/ooya-san-offers.json"
+  },
+  {
+   "id": "M4",
+   "title": "ワラウポイント換算",
+   "url": "https://www.warau.jp/help/qa/1475/",
+   "type": "official",
+   "checkedAt": "2026-11-19",
+   "bodyConfirmed": true,
+   "claims": [
+    "1pt＝1円"
+   ]
+  }
+ ]
+}
