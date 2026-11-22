@@ -64,7 +64,7 @@
 - article.md：H1＝SEOタイトル、導入2段落、目次、節ID condition / pace / outlook / early / middle / late / stop / tracking / faq / sources（pace＝実際の到達ペースの比較表）。各段落の末尾に出典ID［M1］等。編集部の計算・判断は［編集部計算］［編集部判断］と明示し、出典の事実・投稿者の自己申告と区別する。最大報酬を無課金の見込みや利益として書かない。期間限定増額は期限日を明記。
 - 画像は使わない（未確認の公式画像・ロゴを転載しない）。関連攻略は実在する公開ページだけ。games.csv・data/published_offers.csv・取得処理・広告設定・Actionsは変更しない。
 - `python scripts/build_daily_guides.py --check research/daily-guides/D` が全件 ok になるまで原稿を直す。テストを通すために事実を変えない・チェックを緩めない。
-- `python scripts/build_daily_guides.py research/daily-guides/D` でHTML生成・攻略一覧・sitemap・公開ビルド許可へ登録。攻略一覧の説明文は登録時に一度だけ書かれ、再ビルドでは更新されない。原稿（page.jsonのregistry）を直したら `site-researched-guides.js` も同じ文に直し、`node scripts/sync_static_guide_links.js` を実行する（食い違いはテストが検知する）。口コミの日数は「どのレベル・Stepの話か」が書かれている場合だけ到達日数として使い、書かれていなければ「Stepの記載なし」と明記する。
+- `python scripts/build_daily_guides.py research/daily-guides/D` でHTML生成・攻略一覧・sitemap・公開ビルド許可へ登録。攻略一覧の説明文は登録時に一度だけ書かれ、再ビルドでは更新されない。原稿（page.jsonのregistry）を直したら `site-researched-guides.js` も同じ文に直し、`node scripts/sync_static_guide_links.js` を実行する（食い違いはテストが検知する）。口コミの日数は「どのレベル・Stepの話か」が書かれている場合だけ到達日数として使い、書かれていなければ「Stepの記載なし」と明記する。「1週間ちょっと」「2〜3日」「30日前後」のように投稿者が幅を持たせて書いた日数は、実例データの `day` に入れず `null` にして、ラベルに原文の言い回しを残す（2026-11-20以降のバッチはゲートが拒否）。口コミの総数と実例に採用した人数は分けて書く。
 - research/daily-guides/D/selection.json（全候補の採用・保留・除外と理由）と REPORT.md（下記10項目）を書く。
 
 ## 5. 検証

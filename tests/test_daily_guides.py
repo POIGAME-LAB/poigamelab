@@ -207,6 +207,53 @@ def _edit(path, fn):
     path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
 
+@pytest.fixture
+def batch_1120(tmp_path):
+    src = DAILY / "2026-11-20"
+    if not (src / "line-magimagi").is_dir():
+        pytest.skip("2026-11-20 batch not present")
+    dst = tmp_path / "2026-11-20"
+    shutil.copytree(src, dst)
+    return dst, "line-magimagi"
+
+
+@pytest.mark.parametrize("label", ["Lv35超（1週間ちょっと）", "Lv25（2〜3日と記載）", "Lv400（30日前後）", "Lv150（57日目くらい）", "Lv35（3.4日）"])
+def test_gate_refuses_an_approximate_poster_wording_stored_as_an_exact_day(batch_1120, label):
+    """PR #353 audit: "1週間ちょっと" had been saved as day 7. What a poster wrote loosely stays day=null."""
+    b, slug = batch_1120
+    assert bdg.gate(b, slug) == []
+
+    def tamper(e):
+        f = next(p for p in e["players"] if p["id"] == "F")
+        f["milestones"] = [{"day": 7, "label": label}]
+    _edit(b / slug / "experiences.json", tamper)
+    assert "player_day_is_approximate_but_stored_exact:F" in bdg.gate(b, slug)
+
+
+def test_gate_accepts_an_exact_stated_day_and_an_approximate_wording_with_null_day(batch_1120):
+    b, slug = batch_1120
+
+    def edit(e):
+        f = next(p for p in e["players"] if p["id"] == "F")
+        f["milestones"] = [{"day": None, "label": "Lv35超（1週間ちょっと。正確な日数は不明）"}, {"day": 4, "label": "Lv25"}]
+    _edit(b / slug / "experiences.json", edit)
+    assert "player_day_is_approximate_but_stored_exact:F" not in bdg.gate(b, slug)
+
+
+def test_line_magimagi_review_counts_and_level25_range_match_the_recorded_posts():
+    """PR #353 audit: Lv25 is "2〜3日" (the "1日で達成" post names no level), and the 10 posts on the page are not the 7 adopted examples."""
+    d = DAILY / "2026-11-20" / "line-magimagi"
+    if not d.is_dir():
+        pytest.skip("2026-11-20 batch not present")
+    art = (d / "article.md").read_text(encoding="utf-8")
+    assert "1〜3日" not in art and "到達記録は9件" not in art
+    assert "レベル25までは本当に2〜3日で届きますか" in art
+    assert "11月21日時点の口コミ10件のうち、実例として採用したのは独立した投稿者7名" in art
+    players = _j(d / "experiences.json")["players"]
+    lv25_days = sorted(m["day"] for p in players for m in p["milestones"] if m["label"] == "Lv25" and m["day"] is not None)
+    assert lv25_days == [2, 2, 3] and len(players) == 7  # only the three posts that state both the level and an exact day
+
+
 def test_gate_rejects_reward_not_matching_evidence(tmp_batch):
     b, slug = tmp_batch
     _edit(b / slug / "metadata.json", lambda m: m["offers"][0]["steps"][-1].update(rewardPt=m["offers"][0]["steps"][-1]["rewardPt"] + 100))

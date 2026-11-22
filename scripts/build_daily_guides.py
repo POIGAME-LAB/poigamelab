@@ -137,6 +137,12 @@ def parse_article(text: str) -> dict:
     return {"title": title, "intro": intro, "toc": toc, "sections": sections, "sources": sources, "sourceNote": source_note}
 
 
+# wording that makes a poster's day count approximate; a milestone label containing it must carry day=null
+# batches before this date were published/produced earlier and are not re-judged by the rule (reported separately, not edited here)
+APPROXIMATE_DAY_RULE_FROM = "2026-11-20"
+APPROXIMATE_DAY_WORDS = re.compile(r"ちょっと|前後|約|ほど|くらい|ぐらい|程度|[〜～~]|\d\.\d日")
+
+
 def offer_key(item: dict) -> str | None:
     """Stable key of an offer/evidence entry: "<site>:<id>" (legacy Warau entries carry only ``pointId``)."""
     if item.get("offerKey"):
@@ -393,6 +399,9 @@ def gate(batch: Path, slug: str) -> list[str]:
         for m in p.get("milestones", []):
             if m.get("day") == 0:
                 errs.append(f"player_day_zero:{p.get('id')}")
+            if batch_date >= APPROXIMATE_DAY_RULE_FROM and m.get("day") is not None and APPROXIMATE_DAY_WORDS.search(str(m.get("label", ""))):
+                # "1週間ちょっと" / "2〜3日" / "30日前後" is what the poster wrote, not a day count: it is never stored as an exact day
+                errs.append(f"player_day_is_approximate_but_stored_exact:{p.get('id')}")
         for u in p.get("sources", []):
             if u not in {s["url"] for s in src_by_id.values()}:
                 errs.append(f"player_source_not_in_sources:{p.get('id')}")
