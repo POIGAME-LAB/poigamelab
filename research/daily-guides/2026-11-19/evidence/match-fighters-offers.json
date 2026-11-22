@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "slug": "match-fighters",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:25+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209339",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209339",
+      "retrievedAt": "2026-11-19T00:05:24+00:00",
+      "httpStatus": 200,
+      "responseSha256": "cfc5decdf4a7c4464636148c03ce9cb32911e0bcc5ea4ff2b48552b47f5308d6",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    },
+    {
+      "pointId": "209338",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209338",
+      "retrievedAt": "2026-11-19T00:05:25+00:00",
+      "httpStatus": 200,
+      "responseSha256": "3ab2d4b248ddd4c1d6d8192fb6e436f66a5bbccbb16a01a99cf1918394a06ec8",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

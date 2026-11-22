@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "slug": "koi-coordi",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:18+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209385",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209385",
+      "retrievedAt": "2026-11-19T00:05:17+00:00",
+      "httpStatus": 200,
+      "responseSha256": "8ef8be59b22bf2b0d6bcd97afb83535bdeb9fae985f8e52458c352677a7bcf65",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    },
+    {
+      "pointId": "209384",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209384",
+      "retrievedAt": "2026-11-19T00:05:18+00:00",
+      "httpStatus": 200,
+      "responseSha256": "dbca3f3a1716b14dda1702ca6e0f938c02a0a2dda6f102508c2c1af57df7c301",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

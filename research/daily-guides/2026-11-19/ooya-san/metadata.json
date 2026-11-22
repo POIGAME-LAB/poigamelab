@@ -1,0 +1,91 @@
+{
+ "schemaVersion": 1,
+ "game": "大家さんになろう！",
+ "aliases": [
+  "大家さんになろう"
+ ],
+ "slug": "ooya-san",
+ "title": "大家さんになろう！ポイ活攻略｜繁栄レベル15の到達日数と10日の進め方",
+ "seoTitle": "大家さんになろう！ポイ活攻略｜繁栄レベル15の到達日数と10日の進め方",
+ "metaDescription": "大家さんになろう！（iOS）のワラウStepUp案件を攻略。全6Stepと10日の期限、繁栄レベル15に6〜7日で届いた実例、資金のため方、初回課金の損得を紹介。",
+ "os": [
+  "iOS"
+ ],
+ "researchDate": "2026-11-19",
+ "inputData": {
+  "candidatesFile": "research/daily-guides/2026-11-19/candidates.json",
+  "candidateOrder": 37
+ },
+ "status": "manuscript_complete",
+ "publicationStatus": "draft_pr_not_published",
+ "proposedPage": "ooya-san-guide.html",
+ "canonical": "https://poigamelab.com/ooya-san-guide.html",
+ "identity": {
+  "developer": "Shimmer Games Co., Ltd.",
+  "appStoreId": "1645844395",
+  "androidPackage": null,
+  "advertiserOnOfferPage": "ShimmerGames"
+ },
+ "offers": [
+  {
+   "site": "warau",
+   "pointId": "209342",
+   "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209342",
+   "os": "iOS",
+   "currency": "pt",
+   "yenPerPoint": 1,
+   "totalDisplayedPt": 960,
+   "temporaryIncrease": null,
+   "deadlineBase": "install_day",
+   "steps": [
+    {
+     "condition": "団地繁栄レベル3に到達",
+     "rewardPt": 10,
+     "requiresPayment": false,
+     "deadlineDays": 10
+    },
+    {
+     "condition": "団地繁栄レベル8に到達",
+     "rewardPt": 60,
+     "requiresPayment": false,
+     "deadlineDays": 10
+    },
+    {
+     "condition": "団地繁栄レベル10に到達",
+     "rewardPt": 180,
+     "requiresPayment": false,
+     "deadlineDays": 10
+    },
+    {
+     "condition": "団地繁栄レベル13に到達",
+     "rewardPt": 290,
+     "requiresPayment": false,
+     "deadlineDays": 10
+    },
+    {
+     "condition": "団地繁栄レベル15に到達",
+     "rewardPt": 350,
+     "requiresPayment": false,
+     "deadlineDays": 10
+    },
+    {
+     "condition": "初回課金",
+     "rewardPt": 70,
+     "requiresPayment": true,
+     "deadlineDays": 10
+    }
+   ],
+   "sumWithoutPurchaseStepsPt": 890,
+   "guaranteeApplicationDays": 20,
+   "verifiedAt": "2026-11-19T00:05:27+00:00",
+   "sumIsNotPredictedEarnings": true
+  }
+ ],
+ "limitations": [
+  "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+  "初回課金の購入額は案件ページに記載がなく未確認",
+  "Android案件は当日確認できていない",
+  "ワラウ口コミは投稿時期のStep構成で書かれており、今回の条件（レベル3など）と異なる場合がある"
+ ],
+ "previousOffers": []
+}

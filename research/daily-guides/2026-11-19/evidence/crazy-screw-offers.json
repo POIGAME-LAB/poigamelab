@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "crazy-screw",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:20+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209320",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209320",
+      "retrievedAt": "2026-11-19T00:05:20+00:00",
+      "httpStatus": 200,
+      "responseSha256": "6b9ce8084cf319b5c1b226fb333cc8ec787bcaa60994cf580bd0e207f83faf8c",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

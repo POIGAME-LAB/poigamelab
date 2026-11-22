@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "purrdoku",
+  "site": "warau",
+  "checkedAtJst": "2026-11-19T09:05:07+09:00",
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/",
+  "checks": [
+    {
+      "pointId": "209333",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209333",
+      "retrievedAt": "2026-11-19T00:05:07+00:00",
+      "httpStatus": 200,
+      "responseSha256": "99342c0b3d267d8d0e9f49b55b7fd01ca688caa73737ccb5969b70132a4bbd2e",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ]
+}

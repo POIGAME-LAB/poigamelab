@@ -1,0 +1,112 @@
+{
+ "schemaVersion": 1,
+ "productionDate": "2026-11-19",
+ "timezone": "Asia/Tokyo",
+ "inputs": {
+  "checkedAt": "2026-11-18T22:57:45+00:00",
+  "checkedDateJst": "2026-11-19",
+  "candidatesFile": "research/daily-guides/2026-11-19/candidates.json"
+ },
+ "dedupe": {
+  "openPullRequestsChecked": [
+   "#350（17本）",
+   "#344",
+   "#339",
+   "#329",
+   "#289",
+   "その他TEMP/旧PR"
+  ],
+  "remoteBranchGuidePagesScanned": false,
+  "note": "浅いcloneのため他ブランチは未走査。open PRの変更ファイルで重複確認"
+ },
+ "targetMax": 5,
+ "completedCount": 1,
+ "reviewedCount": 15,
+ "publicationAuthorized": false,
+ "decisions": [
+  {
+   "game": "大家さんになろう！",
+   "decision": "completed",
+   "slug": "ooya-san",
+   "candidateOrder": 37,
+   "previousHold": "2026-11-05（旧案件208703・208704が表示不可）",
+   "reason": "ワラウiOS209342で全6Step・合計960pt・期限10日を当日取得で確認。2026-11-06〜11-17の独立した3名の到達記録を採用。保留理由（案件表示不可）は新案件209342で解消。"
+  },
+  {
+   "game": "Purrdoku: Cat Logic Puzzle",
+   "decision": "held",
+   "candidateOrder": 2,
+   "reason": "ワラウ209333は公開ページが表示不可で全Stepを確認できない。"
+  },
+  {
+   "game": "Onet Master: Puzzle & Art",
+   "decision": "held",
+   "candidateOrder": 5,
+   "reason": "ワラウ209332は公開ページが表示不可。コインカムの別案件（StepUp）は今回未取得。"
+  },
+  {
+   "game": "Tile Triple Match",
+   "decision": "held",
+   "candidateOrder": 10,
+   "reason": "ワラウ209334は公開ページが表示不可。モッピーは合計のみ。"
+  },
+  {
+   "game": "Figure Rush: Arrow Crush",
+   "decision": "held",
+   "candidateOrder": 11,
+   "reason": "ワラウ209314・209313は公開ページが表示不可。"
+  },
+  {
+   "game": "恋するコーデ「ペアリウム」",
+   "decision": "held",
+   "candidateOrder": 14,
+   "reason": "ワラウ209385・209384は公開ページが表示不可。"
+  },
+  {
+   "game": "Crazy Screw: Hole n' Nail",
+   "decision": "held",
+   "candidateOrder": 23,
+   "reason": "ワラウ209320は公開ページが表示不可。"
+  },
+  {
+   "game": "Golden Solitaire Master",
+   "decision": "held",
+   "candidateOrder": 27,
+   "reason": "ワラウ209370は公開ページが表示不可。"
+  },
+  {
+   "game": "ウッドブロックスマート",
+   "decision": "held",
+   "candidateOrder": 32,
+   "reason": "ワラウ209343は公開ページが表示不可。"
+  },
+  {
+   "game": "Match Fighters",
+   "decision": "held",
+   "candidateOrder": 34,
+   "reason": "ワラウ209339・209338は公開ページが表示不可。"
+  },
+  {
+   "game": "ジャックポットワールド・フェイトウォー・Coin Master・マイナーファイターズ・信長の野望 真戦・Pococha・ロードモバイル ほか（モッピーのみ）",
+   "decision": "held",
+   "candidateOrder": null,
+   "reason": "モッピーの公開ページは合計のみでStepUp内訳が確認できない（11/05と同じ）。"
+  },
+  {
+   "game": "ハイローラー ベガス",
+   "decision": "excluded",
+   "candidateOrder": 1,
+   "reason": "High Roller Vegasは公開済み（highroller-vegas-guide.html）。名称の表記違いで候補に出たもので重複。"
+  },
+  {
+   "game": "Rise of Kingdoms／ブレードウォー三国 ほか",
+   "decision": "held",
+   "reason": "モッピーのみで内訳確認不可、または既存攻略との重複の可能性。深掘り上限15候補の範囲外。"
+  },
+  {
+   "game": "TikTok／TikTok Lite",
+   "decision": "excluded",
+   "reason": "単体ゲームではない（動画・SNS）。"
+  }
+ ]
+}
