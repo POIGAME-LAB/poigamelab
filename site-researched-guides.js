@@ -131,5 +131,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "レベル150・170攻略を読む →", href: "mystery-town-guide.html" }
     ]
+  },
+  "ボクと惑星農園": {
+    title: "ボクと惑星農園 ポイ活攻略",
+    description: "モッピーのレベル30（400P・7日以内）とレベル14（180P・3日以内）の条件、6〜7日でレベル30に届いた実例、広告バフと開発の回し方、ポイント反映の注意をまとめています。",
+    links: [
+      { label: "レベル30の進め方を読む →", href: "boku-to-wakusei-nouen-guide.html" }
+    ]
   }
 });

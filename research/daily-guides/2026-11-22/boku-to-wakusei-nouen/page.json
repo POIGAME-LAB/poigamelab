@@ -1,0 +1,41 @@
+{
+  "heroStats": [
+    {
+      "label": "レベル30到達（7日以内）",
+      "value": "400P"
+    },
+    {
+      "label": "レベル14到達（3日以内）",
+      "value": "180P"
+    },
+    {
+      "label": "実例のレベル30到達",
+      "value": "6〜7日"
+    }
+  ],
+  "offerLinks": [
+    {
+      "label": "モッピーの案件ページ（レベル30到達・400P）",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161240"
+    },
+    {
+      "label": "モッピーの案件ページ（レベル14到達・180P）",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161658"
+    }
+  ],
+  "contextLabel": "モッピーの現在の案件ページを見る →",
+  "related": [
+    {
+      "label": "ファミリーファームの冒険 ポイ活攻略",
+      "href": "family-farm-adventure-guide.html"
+    },
+    {
+      "label": "商人放浪記 ポイ活攻略",
+      "href": "shounin-hourouki-guide.html"
+    }
+  ],
+  "registry": {
+    "label": "レベル30の進め方を読む →",
+    "description": "モッピーのレベル30（400P・7日以内）とレベル14（180P・3日以内）の条件、6〜7日でレベル30に届いた実例、広告バフと開発の回し方、ポイント反映の注意をまとめています。"
+  }
+}

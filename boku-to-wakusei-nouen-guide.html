@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4SF1QQDWB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    (() => {
+      const ownerKey = 'poigame_owner_exclude_v1';
+      const params = new URLSearchParams(location.search);
+      if (params.get('owner') === '1') localStorage.setItem(ownerKey, '1');
+      if (params.get('owner') === '0') localStorage.removeItem(ownerKey);
+      if (localStorage.getItem(ownerKey) === '1') window['ga-disable-G-E4SF1QQDWB'] = true;
+      if (params.has('owner')) {
+        params.delete('owner');
+        const q = params.toString();
+        history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+      }
+    })();
+    gtag('config', 'G-E4SF1QQDWB');
+  </script>
+<!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224207953863103"
+       crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://poigamelab.com/boku-to-wakusei-nouen-guide.html">
+<meta name="description" content="ボクと惑星農園のモッピー案件（レベル30到達400P・レベル14到達180P）の条件と、公開された4人の到達記録を整理。6〜7日でレベル30に届いた例、広告バフの回し方、ポイント反映の注意を紹介。">
+<title>ボクと惑星農園 ポイ活攻略｜レベル30は6〜7日の実例と広告の回し方 | POIGAME LAB</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Helvetica Neue",Arial,sans-serif;background:#f8f6ff;color:#32284a;line-height:1.9}a{color:#7047ff}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:10px 5%;background:rgba(255,255,255,.94);border-bottom:1px solid #eee9fe;backdrop-filter:blur(10px)}.brand{font-weight:950;letter-spacing:.08em;color:#32156f;text-decoration:none;font-size:20px}.brand b{color:#7047ff}.back{font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap}.page{max-width:940px;margin:0 auto;padding:34px 22px 90px}.hero{overflow:hidden;padding:38px;border-radius:28px;color:#fff;background:radial-gradient(circle at 90% 10%,rgba(255,221,66,.28),transparent 26%),linear-gradient(135deg,#28105f 0%,#7047ff 64%,#8f62ff 100%);box-shadow:0 22px 55px rgba(65,35,145,.22)}.eyebrow{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:6px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.10);color:#ffe663;font-size:11px;font-weight:900;letter-spacing:1.3px}h1{margin:0;font-size:38px;line-height:1.35;letter-spacing:-.03em}.lead{margin:17px 0 0;color:#eee8ff;font-size:16px}.hero-note{margin-top:20px;padding:13px 15px;border-radius:14px;background:rgba(18,6,52,.25);color:#f4f0ff;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 0}.stat{padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.10)}.stat span{display:block;color:#dcd1ff;font-size:11px;font-weight:800}.stat strong{display:block;margin-top:4px;color:#fff;font-size:22px}.toc,.section,.data-panel{margin-top:22px;padding:26px;border-radius:22px;background:#fff;box-shadow:0 10px 34px rgba(69,39,137,.08)}.toc h2,.section h2,.data-panel h2{margin:0 0 14px;color:#28125f;font-size:24px;line-height:1.45}.toc ol{display:grid;grid-template-columns:1fr 1fr;gap:7px 26px;margin:0;padding-left:23px}.toc a{text-decoration:none;font-weight:800;font-size:14px}.section h3{margin:27px 0 8px;color:#4a248f;font-size:19px}.section p{margin:10px 0}.key{margin:17px 0;padding:16px 18px;border-left:5px solid #7047ff;border-radius:12px;background:#f5f1ff;font-weight:800;color:#35205f}.warning{margin:17px 0;padding:16px 18px;border-radius:12px;background:#fff7d8;color:#594710;font-size:14px;font-weight:700}.shot{display:flex;align-items:center;justify-content:center;min-height:145px;margin:20px 0;border:2px dashed #c9b9ff;border-radius:18px;background:linear-gradient(135deg,#faf8ff,#f1edff);color:#725aa8;text-align:center;font-weight:900}.shot small{display:block;margin-top:5px;color:#9b8dbd;font-weight:700}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{padding:12px 10px;border-bottom:1px solid #eee9fa;text-align:left}th{font-size:12px;color:#756b8b;background:#faf8ff}td{font-size:14px}.progress{display:grid;gap:10px;margin-top:16px}.progress-row{display:grid;grid-template-columns:78px 1fr 64px;gap:10px;align-items:center}.progress-row span{font-size:12px;font-weight:900;color:#665c78}.bar{height:12px;overflow:hidden;border-radius:999px;background:#eee9fa}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7047ff,#a06dff)}.progress-row strong{text-align:right;color:#3b176f;font-size:13px}.lab-list{padding-left:22px}.lab-list li{margin:7px 0}.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.decision-card{padding:17px;border-radius:16px;background:#f8f6ff;border:1px solid #ece5ff}.decision-card strong{display:block;margin-bottom:6px;color:#3d1a7a}.sources{margin-top:28px;padding-top:12px;border-top:1px solid #e7e1ef;color:#8d8597;font-size:10px;line-height:1.55}.sources h2{margin:0 0 6px;font-size:12px;color:#746c80}.sources a{font-size:10px;text-decoration:none}.sources .source-line{display:inline}.sources .source-line:not(:last-child)::after{content:" ／ ";color:#bbb3c4}.source-note{margin-top:8px;color:#9b94a3;font-size:9.5px;line-height:1.55}.footer{text-align:center;padding:30px 15px;color:#8b8299;font-size:12px}@media(max-width:700px){.topbar{padding:9px 14px}.brand{font-size:17px}.page{padding:20px 14px 65px}.hero{padding:25px 20px;border-radius:22px}h1{font-size:28px}.lead{font-size:14px}.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}.toc,.section,.data-panel{padding:20px;border-radius:18px}.toc ol{grid-template-columns:1fr;gap:5px}.toc h2,.section h2,.data-panel h2{font-size:21px}.section h3{font-size:18px}.decision{grid-template-columns:1fr}.progress-row{grid-template-columns:64px 1fr 54px}.shot{min-height:120px;padding:16px 12px}}
+</style>
+<style>
+a.cite{font-size:.82em;font-weight:800;text-decoration:none;white-space:nowrap}.hero a.cite{color:#ffe663}.source-line:target{background:#fff3c4}.related-guides .lab-list a{font-weight:800}
+</style>
+<link rel="stylesheet" href="assets/guide-experience.css">
+</head>
+<body>
+<div data-poigame-header><nav aria-label="メインメニュー"><a href="index.html">POIGAME LAB トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">POIGAME LABとは</a> <a href="contact.html">お問い合わせ</a></nav></div>
+<script src="site-header.js?v=20260905-0315"></script>
+<div class="poigame-context-bar">
+  <div class="poigame-context-bar__inner">
+    <span>ボクと惑星農園 攻略ガイド</span>
+    <a href="https://pc.moppy.jp/ad/detail.php?s_id=161240" target="_blank" rel="noopener nofollow">モッピーの現在の案件ページを見る →</a>
+  </div>
+</div>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">POIGAME LAB 攻略データ</div>
+<h1>ボクと惑星農園 ポイ活攻略</h1>
+<p class="lead">ボクと惑星農園は、なぞの惑星でタネを植えて作物を収穫し、経験値でプレイヤーレベルを上げていく放置寄りの農園ゲームです。2026年11月22日に確認したモッピーの案件は2つあり、「レベル30到達」が400P（広告クリックから7日以内）、「レベル14到達」が180P（広告クリックから3日以内）です。どちらもページにOSの記載はありません。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<div class="stats"><div class="stat"><span>レベル30到達（7日以内）</span><strong>400P</strong></div><div class="stat"><span>レベル14到達（3日以内）</span><strong>180P</strong></div><div class="stat"><span>実例のレベル30到達</span><strong>6〜7日</strong></div></div>
+<p class="hero-note">公開されている4人の記録では、レベル20までは1〜2日、レベル30は6〜7日目に届いた例が2件ありました。ただし両方とも、毎日たっぷり遊べた様子ではなく（Aは「ギリギリ」、Bは2日目以降あまりプレイできなかったと記載）、余裕のある期限とは言えません。到達を保証するものではありません。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M8">M8</a>]</p>
+</section>
+
+<nav class="toc" aria-label="目次"><h2>目次</h2><ol>
+<li><a href="#condition">案件条件と報酬</a></li><li><a href="#pace">実際の到達ペース</a></li><li><a href="#records">到達記録の比較表</a></li><li><a href="#outlook">難易度と達成の見通し</a></li><li><a href="#early">序盤：レベル14までにやること</a></li><li><a href="#middle">中盤：広告バフと開発の回し方</a></li><li><a href="#late">終盤：レベル20〜30を詰める</a></li><li><a href="#stop">課金・コインの損得と撤退ライン</a></li><li><a href="#tracking">ポイント反映の注意</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#sources">出典</a></li></ol></nav>
+
+<section class="section" id="condition"><h2>案件条件と報酬</h2>
+<p>モッピーは1P＝1円で、今回確認した2案件はどちらも条件が1つだけの単一条件です。期限は広告をクリックした日を1日目として数えます。ページにOSの記載はありません。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<div class="table-wrap"><table>
+<thead><tr><th>案件</th><th>条件</th><th>期限（クリックから）</th><th>報酬</th></tr></thead>
+<tbody>
+<tr><td>モッピー161240</td><td>新規インストール後、レベル30到達でポイント獲得</td><td>7日以内</td><td>400P</td></tr>
+<tr><td>モッピー161658</td><td>新規インストール後、レベル14到達でポイント獲得</td><td>3日以内</td><td>180P</td></tr>
+</tbody>
+</table></div>
+<div class="key">2026年11月22日（日本時間）に上表の案件ページを直接取得し、条件・報酬・期限が上表と同じであることを確認しました。参加時の画面に表示される条件が優先されます。</div>
+<p>ページの条件到達目安は、レベル30が「新規インストール後、3日程度」、レベル14が「新規インストール後、1日程度」です。ただし、これは案件ページの目安であり、次章の実例（6〜7日）とは差があります。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>2案件は同じアプリの別の成果地点です。モッピーの注意事項には「同じアプリでの広告利用は1人1回まで」「異なる成果地点で広告参加をされたことがある場合も成果となりません」とあります。両方を取る前提で動かず、どちらか1つに決めてから始めてください。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>報酬額は時期で変わります。つきブログ（2026年4月）に載っていたモッピーのレベル30案件は315円で、今回の400Pとは異なります。ブログの金額を見て判断せず、参加前に案件ページの現在額を確認してください。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M1">M1</a>]</p>
+<div class="key offer-guide">この攻略の案件は、当サイトの案件一覧（比較ページ）にはまだ掲載していません。現在の条件・金額は、次の案件ページで直接ご確認ください。<ul class="lab-list"><li><a href="https://pc.moppy.jp/ad/detail.php?s_id=161240" target="_blank" rel="noopener nofollow">モッピーの案件ページ（レベル30到達・400P）</a></li><li><a href="https://pc.moppy.jp/ad/detail.php?s_id=161658" target="_blank" rel="noopener nofollow">モッピーの案件ページ（レベル14到達・180P）</a></li></ul></div>
+</section>
+<section id="pace" class="experience-panel" data-experience-src="data/guide-experiences/boku-to-wakusei-nouen.json" aria-live="polite"></section>
+<section class="section" id="records"><h2>到達記録の比較表</h2>
+<p>公開された記録のうち、条件・日数・時間がわかる4人を並べます。案件サイトとレベル条件が人ごとに違うため、同じ物差しでは比べられません。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M8">M8</a>]</p>
+<div class="table-wrap"><table>
+<thead><tr><th>プレイヤー</th><th>案件サイト・条件</th><th>記録</th><th>日数・時間</th></tr></thead>
+<tbody>
+<tr><td>A（2026-04）</td><td>モッピー・レベル30</td><td>2日目にLv20、7日目にLv30</td><td>7日（最終日に26〜30を1日で）</td></tr>
+<tr><td>B（2026-02・iOS）</td><td>アメフリ・レベル30</td><td>初日Lv15、2日目Lv19、4日目Lv27、6日目Lv30</td><td>6日</td></tr>
+<tr><td>C（2026-01）</td><td>レベル20案件（Lv20まで計測）</td><td>Lv15：1時間22分、Lv20：2時間8分、Lv25：3時間19分</td><td>連続プレイの時間のみ</td></tr>
+<tr><td>D（2026-01・Android）</td><td>ワラウ・レベル20</td><td>初日にLv20（実働1時間57分）</td><td>1日</td></tr>
+</tbody>
+</table></div>
+<p>［編集部計算］Aは「レベル20に2日目、レベル30に7日目」なので、レベル20から30までに5日かかっています。Bは初日に15、4日目に27、6日目に30です。どちらもレベル20付近から先の伸びが遅いことがわかります。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>]</p>
+<p>［編集部計算］Cの連続プレイの記録だと、レベル15までは1時間22分、レベル20までは2時間8分です。レベル14は15より前なので、「レベル14は1時間22分より短い時間で届く」と読めます。実際の日数はバフの待ち時間で変わります。[<a class="cite" href="#src-M7">M7</a>]</p>
+<p>記録Cは、レベル30の所要時間を表で6時間39分と書いていますが、同じ表の開始・終了時刻（10:50〜16:29）から計算すると5時間39分で、記事内で食い違っています。このため、レベル30の所要時間は採用していません。[<a class="cite" href="#src-M7">M7</a>]</p>
+</section>
+<section class="section" id="outlook"><h2>難易度と達成の見通し</h2>
+<p>レベル14とレベル20までは、記録を見る限り短時間です。記録Dは初日の実働約2時間でレベル20に届き、記録Cも連続で2時間ほどです。レベル14は3日以内の案件ですが、記録Bは初日にレベル15、記録Cは約1時間20分でレベル15に届いています。[<a class="cite" href="#src-M2">M2</a>][<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M8">M8</a>][<a class="cite" href="#src-M6">M6</a>]</p>
+<p>レベル30は余裕がありません。記録Aは「途中さぼってめちゃギリギリ」と書いており、最終日にレベル26〜30を1日かけて上げています。記録Bも2日目以降はあまりプレイできず、6日目に届いています。7日の期限に対して、毎日触る前提で組まないと間に合わない例がありました。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>]</p>
+<p>［編集部判断］400Pのレベル30と180Pのレベル14では、レベル14のほうが時間当たりの報酬は高く見えます。記録Cの時間を使うと、レベル14は1時間22分以内で180P、レベル30は連続でおよそ5時間半〜6時間半かかって400Pになります。ただし、これは1人の連続プレイの記録で、あくまで比較の目安です。[<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>広告視聴が前提のゲームです。記録Bは「動画広告視聴に抵抗がある方はやめたほうがよい」と書いています。記録Cは、プレイ中に突然出る強制広告はないものの、バフや種の補充で広告を見る必要があると書いています。[<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M7">M7</a>]</p>
+</section>
+<section class="section" id="early"><h2>序盤：レベル14までにやること</h2>
+<p>基本の動きは「種を植える→作物を育てる→収穫して経験値を得る」の繰り返しです。種は広告視聴またはレベルアップで補充でき、作物は10分ほどで育ちますが、成長時間短縮の広告を見ると序盤の作物はすぐに収穫できます。[<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M5">M5</a>]</p>
+<p>記録Cによると、序盤は種まきと成長短縮を途切れさせないのが基本で、成長短縮は2分おきに使えます。収穫前には経験値バフを有効にしたほうが、経験値メーターの伸びが大きく違ったと書いています。[<a class="cite" href="#src-M7">M7</a>]</p>
+<p>記録Dは、レア度アップ→成長短縮→経験値アップの順で広告を使う3つの組み合わせを回し、約2時間でレベル20に届いたとしています。インストールした当日に進めるのがコツとも書いており、期限が短い案件では初日の進捗が後の余裕になります。[<a class="cite" href="#src-M8">M8</a>]</p>
+<p>レベル14の案件（3日以内）に参加するなら、初日にまとまった時間を取る前提で始めるのが安全です。記録Bは初日にレベル15まで進めており、記録Dも初日にレベル20まで進めています。[<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M8">M8</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+</section>
+<section class="section" id="middle"><h2>中盤：広告バフと開発の回し方</h2>
+<p>広告で使えるバフは大きく3つあります。記録Cは、レア度アップ（レアな作物が出やすくなる）、経験値アップ（経験値とタマシーが1.5倍）、成長速度アップの3種類で、経験値バフとレアバフの再使用までは10分、成長短縮は2分と書いています。有効時間は記録によって4分〜5分と差があります。[<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>]</p>
+<p>レアバフは種まきの直前に使い、経験値バフは収穫の直前に使うのが、記録Cの勧める順序です。レアバフは有効になった後に植えた種にだけ効き、すでに植えた作物にはかからないと書いています。[<a class="cite" href="#src-M7">M7</a>]</p>
+<p>収穫で得るタマシーは「開発」に使います。開発には天候・照明・じょうろ・土の4つがあり、記録Cは目に見えて効果があったのは「土」だけで、土を最優先にするよう勧めています。記録Aも体感として「天候＜照明＜じょうろ＜土」の順に高ランクの作物が出やすくなると書いています。[<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M5">M5</a>]</p>
+<p>開発しただけでは効果が出ません。記録A・C・Bとも、開発後に「選択」して有効にしないといけないと書いています。ただし、土を選択すると、まだ収穫していない苗や作物が消えるため、収穫してから切り替えるよう記録Aは注意しています。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M6">M6</a>]</p>
+<p>収穫するとプレゼントボックスが出ます。1つずつ開くと毎回広告が流れるため、記録Aと記録Bは10個ほど貯めてからまとめて開くよう勧め、記録Cは5個以上と書いています。箱から出るのはコインやギフトで、ポイ活の条件には関係しません。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M7">M7</a>]</p>
+</section>
+<section class="section" id="late"><h2>終盤：レベル20〜30を詰める</h2>
+<p>レベル20から先は、必要な経験値が一気に重くなります。記録Cは、レベル11を超えたあたりから経験値メーターの伸びが悪くなったと書いています。記録Aも「レベルを重ねるごとに必要な経験値が上がる」と書き、レベル20以降は時間がかかるので計画的に進めるよう勧めています。[<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M5">M5</a>]</p>
+<p>記録Aは、最終日にレベル26〜30を1日かけて上げました。このとき、成長速度と種を増やす広告を見続ける方法をとったとしています。バフのインターバルが明けるたびに、経験値とレア度の広告を使う進め方です。[<a class="cite" href="#src-M5">M5</a>]</p>
+<p>［編集部計算］記録Cはレベル5までが18分（1レベルあたり約3.6分）で、レベル20から25までは1時間11分（1レベルあたり約14分）でした。レベル20を過ぎてからの1レベルは、序盤の約4倍の時間がかかっています。[<a class="cite" href="#src-M7">M7</a>]</p>
+<p>作物は放置すると枯れます。記録Aは「おそらく5時間ほどで枯れる」と推定し、枯れた作物から得られる経験値とタマシーはごくわずかと書いています。記録Cは、寝る前に植えて朝起きたら全部枯れていたと書いています。就寝前に種を植えて放置する進め方は期待しないほうがよいです。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M7">M7</a>]</p>
+<p>記録Cは、30分以上アプリを開きっぱなしにすると動作が重くなり、広告を見たのに報酬が反映されないことがあったため、20〜30分ごとに再起動することを勧めています。端末の問題かもしれないとも書いています。[<a class="cite" href="#src-M7">M7</a>]</p>
+</section>
+<section class="section" id="stop"><h2>課金・コインの損得と撤退ライン</h2>
+<p>案件の条件に課金は含まれていません。今回確認した2つの案件は、どちらも条件が「レベル到達」のみで、課金の記載はありません。4人の記録にも課金の記載はありません。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>ゲーム内のコインは、ポイ活の期間中には使い道がありません。記録Bは、レベル30到達（6日目）の時点でコインが139枚で、PayPayポイントへの交換は1,100枚から（100ポイント分）のため、案件の期間中には交換できないと書いています。[<a class="cite" href="#src-M6">M6</a>]</p>
+<p>プレゼントボックスからPayPayポイントが当たることがあります。記録Bは6日間で30ポイントが当たったと書いています。ただし、当選は確率で、ギフトコードの交換期限もあるため、案件の収入として見込むのは避けてください。[<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M5">M5</a>]</p>
+<p>撤退や見直しの目安は、期限に対する進捗です。実例は2日目にレベル19〜20でした。［編集部判断］3日目に入ってもレベル20に届いていなければ、実例より遅れているため、広告バフの使い方を見直すか、レベル30を諦めるかを考える時期です。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>]</p>
+<p>［編集部判断］レベル30案件の400Pを、1日あたり数時間の広告視聴で取りに行くかは、時間に余裕があるかで決まります。広告が苦手なら、180Pのレベル14案件のほうが負担は小さく済みます。[<a class="cite" href="#src-M7">M7</a>][<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+</section>
+<section class="section" id="tracking"><h2>ポイント反映の注意</h2>
+<p>モッピーの両案件に共通して、「判定中が反映されなかった場合は、その後アプリを進めて条件を達成してもポイント対象外」と書かれています。インストール後に、ポイント通帳で判定中の記帳を確認してから進めてください。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>広告をクリックしてから1時間以内に初回起動が完了しない場合、成果にならない場合があります。初回起動に時間がかかる場合は、もう一度広告をクリックするよう案内されています。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>却下条件には、過去にインストール済みの場合、公共Wi-Fiでのインストール、広告ブロックの使用、エミュレータ、アプリのトラッキングを制限している端末などが挙がっています。iPhoneで「Appからのトラッキング要求を許可」をオフにしていると、ポイントを獲得できない可能性があるとも書かれています。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<p>期限を過ぎると対象外です。レベル30は広告クリックから8日目以降、レベル14は4日目以降に到達しても対象外になります。成果達成後にポイントが付くまで最大24時間かかる場合があり、確定反映は条件確定次第1日程度とされています。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+</section>
+<section class="section" id="faq"><h2>よくある質問</h2>
+<h3>レベル30は何日かかりますか？</h3>
+<p>公開記録では、6日目（記録B）と7日目（記録A）に届いた2例があります。どちらも毎日まとまった時間を取れたわけではなく、期限に近い到達です。案件ページの目安は「3日程度」ですが、記録とは差があります。[<a class="cite" href="#src-M5">M5</a>][<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M1">M1</a>]</p>
+<h3>レベル14とレベル30の案件は両方取れますか？</h3>
+<p>モッピーの注意事項では、同じアプリの広告利用は1人1回までで、異なる成果地点で参加したことがある場合も成果になりません。両方は取れない前提で、どちらか1つを選んでください。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>]</p>
+<h3>iPhoneとAndroidのどちらが対象ですか？</h3>
+<p>モッピーの2案件ページにOSの記載はありません。アプリ自体はApp StoreとGoogle Playの両方にページがあります（App Storeの表示は「iPhoneのみ対応」）。参加前にご自身の端末で案件が表示されるか、ページの注意事項を確認してください。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M2">M2</a>][<a class="cite" href="#src-M3">M3</a>][<a class="cite" href="#src-M4">M4</a>]</p>
+<h3>広告を見ずに進められますか？</h3>
+<p>記録Bは広告視聴が前提と書き、記録Cも広告を見るほど効率が上がると書いています。広告を見ずにレベル30へ届いた記録は確認できませんでした。[<a class="cite" href="#src-M6">M6</a>][<a class="cite" href="#src-M7">M7</a>]</p>
+<h3>報酬は今も400Pですか？</h3>
+<p>2026年11月22日にモッピーの案件ページで400Pを確認しました。2026年4月のブログでは315円で、時期によって変わっています。参加時の画面の金額を優先してください。[<a class="cite" href="#src-M1">M1</a>][<a class="cite" href="#src-M5">M5</a>]</p>
+</section>
+
+<section class="section related-guides" id="related"><h2>関連する攻略</h2>
+<ul class="lab-list"><li><a href="family-farm-adventure-guide.html">ファミリーファームの冒険 ポイ活攻略</a></li><li><a href="shounin-hourouki-guide.html">商人放浪記 ポイ活攻略</a></li><li><a href="guides.html">攻略一覧を見る</a></li></ul>
+</section>
+
+<section class="sources" id="sources">
+<h2>調査ソース</h2>
+<span class="source-line" id="src-M1"><a href="https://pc.moppy.jp/ad/detail.php?s_id=161240" target="_blank" rel="noopener">M1：モッピー ボクと惑星農園（レベル30到達）</a></span>
+<span class="source-line" id="src-M2"><a href="https://pc.moppy.jp/ad/detail.php?s_id=161658" target="_blank" rel="noopener">M2：モッピー ボクと惑星農園（レベル14到達）</a></span>
+<span class="source-line" id="src-M3"><a href="https://apps.apple.com/jp/app/id6748809552" target="_blank" rel="noopener">M3：App Store ボクと惑星農園</a></span>
+<span class="source-line" id="src-M4"><a href="https://play.google.com/store/apps/details?id=jp.digimerce.idleharvest" target="_blank" rel="noopener">M4：Google Play ボクと惑星農園</a></span>
+<span class="source-line" id="src-M5"><a href="https://tsukitama-blog.com/4913/bokutowakusei_pk/" target="_blank" rel="noopener">M5：つきブログ・ボクと惑星農園 7日で達成</a></span>
+<span class="source-line" id="src-M6"><a href="https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%9C%E3%82%AF%E3%81%A8%E6%83%91%E6%98%9F%E8%BE%B2%E5%9C%92%EF%BC%88%E3%83%AC%E3%83%99%E3%83%AB30%E5%88%B0%E9%81%94%EF%BC%89%EF%BC%88ios%E6%8C%91/" target="_blank" rel="noopener">M6：うっしーのポイ活日記・6日でクリア（iOS）</a></span>
+<span class="source-line" id="src-M7"><a href="https://poikatsu.monster/boku-wakusei-farm/" target="_blank" rel="noopener">M7：ポイ活モンスター・ラクラク ボクと惑星農園</a></span>
+<span class="source-line" id="src-M8"><a href="https://poikatusmith3.hatenablog.com/entry/2026/01/28/200000" target="_blank" rel="noopener">M8：すみすのポイ活ラボ・レベル20到達までを攻略</a></span>
+<div class="source-note">調査日：2026年11月22日。案件はモッピーの公開ページを直接取得して確認しました。体験記は投稿者本人の自己申告で、日数・時間・課金の有無は本人の記載どおりです。当サイトは実機でプレイしておらず、ポイント付与も確認していません。</div>
+</section>
+</main>
+<footer class="footer">POIGAME LAB｜ポイ活ゲーム案件をデータで比較・攻略</footer>
+<script src="assets/guide-experience.js"></script>
+  <footer data-poigame-footer-fallback><nav aria-label="サイト情報"><a href="index.html">トップ</a> <a href="offers.html">案件一覧</a> <a href="guides.html">攻略一覧</a> <a href="about.html">運営情報・免責事項</a> <a href="privacy.html">プライバシーポリシー</a> <a href="contact.html">お問い合わせ</a></nav></footer>
+<script src="site-footer.js"></script>
+</body>
+</html>

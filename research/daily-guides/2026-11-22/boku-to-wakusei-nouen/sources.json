@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-22",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "モッピー ボクと惑星農園（レベル30到達）",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161240",
+      "type": "point_site",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "400P・広告クリックから7日以内（当日が1日目）・条件到達目安は新規インストール後3日程度・OSの記載なし",
+        "同じアプリでの広告利用は1人1回、判定中が反映されない場合は対象外、初回起動はクリックから1時間以内"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-22T02:41:33+00:00",
+      "responseSha256": "4d037cbc39bc8e8fcd8254132caf098b1344f03b5825e7733e08bd9a12e8bb75"
+    },
+    {
+      "id": "M2",
+      "title": "モッピー ボクと惑星農園（レベル14到達）",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161658",
+      "type": "point_site",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "180P・広告クリックから3日以内（当日が1日目）・条件到達目安は新規インストール後1日程度・OSの記載なし"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-22T02:41:35+00:00",
+      "responseSha256": "23d4dbd218e284b978d222a6dd3b65863dba1b0f28b0d3649c27773b30020511"
+    },
+    {
+      "id": "M3",
+      "title": "App Store ボクと惑星農園",
+      "url": "https://apps.apple.com/jp/app/id6748809552",
+      "type": "official",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元Digimerce、App Store ID 6748809552、バンドルIDjp.digimerce.idleharvest、2025年12月8日リリース、無料、「iPhoneのみ対応」と表示"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Google Play ボクと惑星農園",
+      "url": "https://play.google.com/store/apps/details?id=jp.digimerce.idleharvest",
+      "type": "official",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "パッケージjp.digimerce.idleharvestのページがHTTP 200で表示（iOSのバンドルIDと同一）"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "つきブログ：ボクと惑星農園 7日で達成",
+      "url": "https://tsukitama-blog.com/4913/bokutowakusei_pk/",
+      "type": "player",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026-04-06掲載。モッピーのレベル30案件、レベル20は2日目・レベル30は7日目、最終日は26〜30を1日使ってギリギリ",
+        "広告バフ・開発・プレゼントの使い方"
+      ],
+      "individualSourceDetailsRequired": false
+    },
+    {
+      "id": "M6",
+      "title": "うっしーのポイ活日記：ボクと惑星農園（iOS）6日でクリア",
+      "url": "https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%9C%E3%82%AF%E3%81%A8%E6%83%91%E6%98%9F%E8%BE%B2%E5%9C%92%EF%BC%88%E3%83%AC%E3%83%99%E3%83%AB30%E5%88%B0%E9%81%94%EF%BC%89%EF%BC%88ios%E6%8C%91/",
+      "type": "player",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026-02-15掲載。アメフリのレベル30案件（7日以内）、iOS、初日Lv15・2日目Lv19・4日目Lv27・6日目Lv30",
+        "6日間でPayPayポイント30pt当選、コイン139枚"
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "ポイ活モンスター：ラクラク ボクと惑星農園",
+      "url": "https://poikatsu.monster/boku-wakusei-farm/",
+      "type": "player",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026-01-15掲載。レベル20到達案件（114円）の実測。Lv10は43分、Lv15は1時間22分、Lv20は2時間8分、Lv25は3時間19分",
+        "Lv30は表で6時間39分、開始・終了時刻（10:50〜16:29）では5時間39分と食い違い"
+      ]
+    },
+    {
+      "id": "M8",
+      "title": "すみすのポイ活ラボ：レベル20到達までを攻略",
+      "url": "https://poikatusmith3.hatenablog.com/entry/2026/01/28/200000",
+      "type": "player",
+      "checkedAt": "2026-11-22",
+      "bodyConfirmed": true,
+      "claims": [
+        "2026-01-28掲載。ワラウのレベル20案件（80pt）、Android、1日・実働1時間57分"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 2,
+  "slug": "boku-to-wakusei-nouen",
+  "site": "moppy",
+  "sites": [
+    "moppy"
+  ],
+  "checkedAtJst": "2026-11-22T11:41:35+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:161240",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "161240",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161240",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "ボクと惑星農園（レベル30到達）",
+      "gameName": "ボクと惑星農園",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、レベル30到達でポイント獲得",
+      "deadlineDays": 7,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル30到達でポイント獲得",
+          "rewardPt": 400,
+          "rewardYen": 400,
+          "deadlineDays": 7
+        }
+      ],
+      "totalPt": 400,
+      "totalYen": 400,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-22T02:41:33+00:00",
+      "responseSha256": "4d037cbc39bc8e8fcd8254132caf098b1344f03b5825e7733e08bd9a12e8bb75"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:161658",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "161658",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161658",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "ボクと惑星農園（レベル14到達）",
+      "gameName": "ボクと惑星農園",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、レベル14到達でポイント獲得",
+      "deadlineDays": 3,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル14到達でポイント獲得",
+          "rewardPt": 180,
+          "rewardYen": 180,
+          "deadlineDays": 3
+        }
+      ],
+      "totalPt": 180,
+      "totalYen": 180,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-22T02:41:35+00:00",
+      "responseSha256": "23d4dbd218e284b978d222a6dd3b65863dba1b0f28b0d3649c27773b30020511"
+    }
+  ]
+}
