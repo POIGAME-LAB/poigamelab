@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "productionDate": "2026-11-22",
+  "timezone": "Asia/Tokyo",
+  "inputs": {
+    "checkedDateJst": "2026-11-22",
+    "triageInputCheckedAt": "2026-11-21T21:41:31+00:00",
+    "mainCommit": "4f47ccf0199123155c6ed9af20f4f7364b942e14",
+    "candidatesFile": "research/daily-guides/2026-11-22/candidates.json",
+    "triageFile": "research/daily-guides/2026-11-22/triage.json"
+  },
+  "dedupe": {
+    "openPullRequestsChecked": [
+      "#353",
+      "#351",
+      "#350",
+      "#344",
+      "#339",
+      "#329",
+      "#289",
+      "#245",
+      "#244",
+      "#243",
+      "#242",
+      "#241",
+      "#240",
+      "#239",
+      "#225",
+      "#224",
+      "#223",
+      "#218",
+      "#217",
+      "#181",
+      "#166",
+      "#62",
+      "#37"
+    ],
+    "remoteBranchGuidePagesScanned": true,
+    "notionControlRoomChecked": true
+  },
+  "targetMax": 5,
+  "completedCount": 1,
+  "reviewedCount": 12,
+  "publicationAuthorized": false,
+  "decisions": [
+    {
+      "game": "ボクと惑星農園",
+      "decision": "completed",
+      "slug": "boku-to-wakusei-nouen",
+      "reason": "モッピー161240（Lv30・400P・7日以内）・161658（Lv14・180P・3日以内）を当日取得で確認（単一条件）。独立4名（つき2026-04／うっしー2026-02／ポイ活モンスター人柱2026-01／すみす2026-01、すべて365日以内）の到達記録を採用。App Store ID 6748809552（Digimerce）で同定。",
+      "candidateOrder": 58
+    },
+    {
+      "game": "プリケツにゃー",
+      "decision": "excluded",
+      "reason": "PR #353（2026-11-20）で攻略制作済みのため重複。"
+    },
+    {
+      "game": "実りの地",
+      "decision": "held",
+      "reason": "モッピー159414はLv15・108Pで確認できたが、見つかった実プレイヤー記録は主にレベル30案件の2022〜2024年の記事で、365日以内の独立2人以上を確認できず。"
+    },
+    {
+      "game": "ソリティア無限にやれる「そるティア」",
+      "decision": "held",
+      "reason": "Web検索で独立2人以上・実例3件以上・365日以内の到達記録を確認できず（見つかったのはポイントサイトの案件ページ・攻略記事のみ）。基準は緩めず保留"
+    },
+    {
+      "game": "Onet Master: Tile Match Puzzle",
+      "decision": "held",
+      "reason": "Web検索で独立2人以上・実例3件以上・365日以内の到達記録を確認できず（見つかったのはポイントサイトの案件ページ・攻略記事のみ）。基準は緩めず保留。名前の似た別アプリ（Onet Master: Puzzle & Art）の記録と混同しない"
+    },
+    {
+      "game": "Tile Triple Match:",
+      "decision": "held",
+      "reason": "Web検索で独立2人以上・実例3件以上・365日以内の到達記録を確認できず（見つかったのはポイントサイトの案件ページ・攻略記事のみ）。基準は緩めず保留"
+    },
+    {
+      "game": "Merge Restyle",
+      "decision": "held",
+      "reason": "Web検索で独立2人以上・実例3件以上・365日以内の到達記録を確認できず（見つかったのはポイントサイトの案件ページ・攻略記事のみ）。基準は緩めず保留"
+    },
+    {
+      "game": "Otaku Onet: Anime & Manga",
+      "decision": "held",
+      "reason": "Web検索で独立2人以上・実例3件以上・365日以内の到達記録を確認できず（見つかったのはポイントサイトの案件ページ・攻略記事のみ）。基準は緩めず保留"
+    },
+    {
+      "game": "Screw Out",
+      "decision": "held",
+      "reason": "Web検索で独立2人以上・実例3件以上・365日以内の到達記録を確認できず（見つかったのはポイントサイトの案件ページ・攻略記事のみ）。基準は緩めず保留"
+    },
+    {
+      "game": "魔王「世界の半分あげるって言っちゃった」",
+      "decision": "held",
+      "reason": "記録は2025〜2026年に複数あるが、モッピー147016の成果地点（条件1件・1,068P・15日以内）と記録の城・条件の対応を確認できず保留。"
+    },
+    {
+      "game": "商人サーガ 「魔王城でお店開けって言われた」",
+      "decision": "held",
+      "reason": "フロア550階クリアまでの日数を書いた個人の記録を確認できず。"
+    },
+    {
+      "game": "Ball Sort Puzzle:ボールソーティングパズル",
+      "decision": "held",
+      "reason": "レベル300クリアまでの日数を書いた記録を確認できず。"
+    }
+  ],
+  "notUsed": "triage上限（公式ページ確認30件）まで調べていない。offer_verified 12件で目標到達のため停止。残り候補（offer_not_probed 131件）は未調査。"
+}

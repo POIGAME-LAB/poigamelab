@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "game": "ボクと惑星農園",
+  "updatedAt": "2026-11-22",
+  "title": "実際の到達ペース",
+  "intro": "独立した4人の公開記録です。平均や達成保証ではありません。",
+  "notice": "案件サイト・条件（Lv14/20/30）・OSが人ごとに異なります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-22。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2日目にLv20、7日目にLv30（ギリギリ）",
+      "milestones": [
+        {
+          "day": 2,
+          "label": "Lv20"
+        },
+        {
+          "day": 7,
+          "label": "Lv30（本人は「途中さぼってめちゃギリギリ」と記載）"
+        }
+      ],
+      "sources": [
+        "https://tsukitama-blog.com/4913/bokutowakusei_pk/"
+      ],
+      "sourceDetails": [
+        "つき（つきブログ・モッピー案件）",
+        "2026-04-06",
+        "2日目Lv20、7日目Lv30"
+      ],
+      "postedOn": "2026-04-06",
+      "checkedAt": "2026-11-22",
+      "platform": null,
+      "paymentStatus": null,
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "当時のモッピー報酬は315円（今回の案件は400P）。最終日にLv26〜30を1日かけて上げたと記載。課金の記載なし。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "初日Lv15、6日目にLv30",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv15"
+        },
+        {
+          "day": 2,
+          "label": "Lv19"
+        },
+        {
+          "day": 4,
+          "label": "Lv27"
+        },
+        {
+          "day": 6,
+          "label": "Lv30"
+        }
+      ],
+      "sources": [
+        "https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91%E3%83%9C%E3%82%AF%E3%81%A8%E6%83%91%E6%98%9F%E8%BE%B2%E5%9C%92%EF%BC%88%E3%83%AC%E3%83%99%E3%83%AB30%E5%88%B0%E9%81%94%EF%BC%89%EF%BC%88ios%E6%8C%91/"
+      ],
+      "sourceDetails": [
+        "うっしー（うっしーのポイ活日記・アメフリ案件）",
+        "2026-02-15",
+        "初日Lv15、2日目Lv19、4日目Lv27、6日目Lv30"
+      ],
+      "postedOn": "2026-02-15",
+      "checkedAt": "2026-11-22",
+      "platform": "iOS",
+      "paymentStatus": null,
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "2日目以降はあまりプレイできなかったと記載。報酬はアメフリ2,870pt（本人換算287円）。大量の広告視聴が前提と記載。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "Lv20まで2時間8分、Lv25まで3時間19分（連続プレイ）",
+      "milestones": [
+        {
+          "day": null,
+          "label": "Lv15：1時間22分"
+        },
+        {
+          "day": null,
+          "label": "Lv20：2時間8分"
+        },
+        {
+          "day": null,
+          "label": "Lv25：3時間19分"
+        }
+      ],
+      "sources": [
+        "https://poikatsu.monster/boku-wakusei-farm/"
+      ],
+      "sourceDetails": [
+        "人柱（ポイ活モンスター・Lv20案件）",
+        "2026-01-15",
+        "Lv20まで2時間8分（連続プレイ）"
+      ],
+      "postedOn": "2026-01-15",
+      "checkedAt": "2026-11-22",
+      "platform": null,
+      "paymentStatus": null,
+      "paidYen": null,
+      "totalPlayMinutes": 128,
+      "dailyPlayMinutes": null,
+      "note": "アプリを開きっぱなしにした連続プレイの実測で、日数の記載なし。Lv30は表で6時間39分、時刻差は5時間39分と食い違うため日数・時間とも採用しない。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "初日（実働1時間57分）にLv20",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "Lv20（実働1時間57分）"
+        }
+      ],
+      "sources": [
+        "https://poikatusmith3.hatenablog.com/entry/2026/01/28/200000"
+      ],
+      "sourceDetails": [
+        "すみす（すみすのポイ活ラボ・ワラウ案件）",
+        "2026-01-28",
+        "初日にLv20、実働1時間57分"
+      ],
+      "postedOn": "2026-01-28",
+      "checkedAt": "2026-11-22",
+      "platform": "Android",
+      "paymentStatus": null,
+      "paidYen": null,
+      "totalPlayMinutes": 117,
+      "dailyPlayMinutes": null,
+      "note": "ワラウのレベル20案件（80pt）。インストール当日にレベル20まで進めるのがコツと記載。"
+    }
+  ]
+}

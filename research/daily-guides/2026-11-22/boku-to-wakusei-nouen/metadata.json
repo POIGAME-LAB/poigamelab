@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "game": "ボクと惑星農園",
+  "aliases": [
+    "ボクと惑星農園-のんびり育ててポイントゲット",
+    "ボク惑"
+  ],
+  "slug": "boku-to-wakusei-nouen",
+  "title": "ボクと惑星農園 ポイ活攻略｜レベル30は6〜7日の実例と広告の回し方",
+  "seoTitle": "ボクと惑星農園 ポイ活攻略｜レベル30は6〜7日の実例と広告の回し方",
+  "metaDescription": "ボクと惑星農園のモッピー案件（レベル30到達400P・レベル14到達180P）の条件と、公開された4人の到達記録を整理。6〜7日でレベル30に届いた例、広告バフの回し方、ポイント反映の注意を紹介。",
+  "os": [],
+  "researchDate": "2026-11-22",
+  "inputData": {
+    "candidateOrder": 58,
+    "triageFile": "research/daily-guides/2026-11-22/triage.json"
+  },
+  "status": "manuscript_complete",
+  "publicationStatus": "draft_pr_not_published",
+  "proposedPage": "boku-to-wakusei-nouen-guide.html",
+  "canonical": "https://poigamelab.com/boku-to-wakusei-nouen-guide.html",
+  "identity": {
+    "developer": "Digimerce.inc",
+    "appStoreId": "6748809552",
+    "androidPackage": "jp.digimerce.idleharvest",
+    "note": "Androidのパッケージ名はGoogle PlayのURLのidと、App StoreのバンドルIDが一致することで確認。Google Playページの開発元表示までは未確認"
+  },
+  "offers": [
+    {
+      "offerKey": "moppy:161240",
+      "site": "moppy",
+      "kind": "single",
+      "os": null,
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161240",
+      "currency": "P",
+      "yenPerPoint": 1,
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル30到達でポイント獲得",
+          "rewardPt": 400,
+          "requiresPayment": false,
+          "deadlineDays": 7
+        }
+      ],
+      "totalDisplayedPt": 400,
+      "sumWithoutPurchaseStepsPt": 400,
+      "deadlineBase": "click",
+      "verifiedAt": "2026-11-22T02:41:33+00:00",
+      "sumIsNotPredictedEarnings": true
+    },
+    {
+      "offerKey": "moppy:161658",
+      "site": "moppy",
+      "kind": "single",
+      "os": null,
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161658",
+      "currency": "P",
+      "yenPerPoint": 1,
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル14到達でポイント獲得",
+          "rewardPt": 180,
+          "requiresPayment": false,
+          "deadlineDays": 3
+        }
+      ],
+      "totalDisplayedPt": 180,
+      "sumWithoutPurchaseStepsPt": 180,
+      "deadlineBase": "click",
+      "verifiedAt": "2026-11-22T02:41:35+00:00",
+      "sumIsNotPredictedEarnings": true
+    }
+  ],
+  "limitations": [
+    "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+    "モッピーの2案件ページにOSの記載はない",
+    "実プレイヤーの記録は投稿者の自己申告で、投稿時点の案件条件・報酬額は今回の案件と異なる場合がある",
+    "記録Cの記事は、Lv30の所要時間が表（6時間39分）と開始・終了時刻（5時間39分）で食い違っている"
+  ]
+}
