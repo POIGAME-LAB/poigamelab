@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 2,
+  "slug": "tile-match-3d-triple-master",
+  "site": "multi",
+  "sites": [
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-20T09:02:55+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:161999",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "161999",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=161999",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "タイルマッチ3D：トリプルマスター（レベル300クリア）",
+      "gameName": "タイルマッチ3D：トリプルマスター",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、レベル300クリア",
+      "deadlineDays": 14,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル300クリア",
+          "rewardPt": 500,
+          "rewardYen": 500,
+          "deadlineDays": 14
+        }
+      ],
+      "totalPt": 500,
+      "totalYen": 500,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:02:52+00:00",
+      "responseSha256": "e85409684a54f0e90a959dbf648409f844845a7b1b0736fc3a683979761e8051"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:209379",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "209379",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209379",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "タイルマッチ3D：トリプルマスター（レベル300クリア）でポイントを貯める",
+      "gameName": "タイルマッチ3D：トリプルマスター",
+      "os": "iOS",
+      "osSource": "page",
+      "kind": "single",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "レベル300クリア",
+      "deadlineDays": 14,
+      "deadlineBasis": "install",
+      "steps": [
+        {
+          "condition": "レベル300クリア",
+          "rewardPt": 320,
+          "rewardYen": 320
+        }
+      ],
+      "totalPt": 320,
+      "totalYen": 320,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした",
+        "同じアプリで他達成条件の広告をご利用の場合、本広告のポイントは対象外となりますのでご注意ください。",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証",
+        "アプリ起動→ホーム画面",
+        "「adjust Insights」を起動→表示された「IDFA」を記載"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:02:55+00:00",
+      "responseSha256": "b45e1413060de2435a0052095e4c3c04b117be17db3ccc70f082d4f0af093cee"
+    }
+  ]
+}

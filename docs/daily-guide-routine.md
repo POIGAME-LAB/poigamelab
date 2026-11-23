@@ -54,7 +54,7 @@
 - **読める案件だけが根拠になる**：evidenceの state が `readable` のものだけ。`steps_not_public`（モッピーのStepUpは各成果地点が「POINT GET」後のページにあり公開ページでは合計のみ）・`not_viewable`（ワラウSKYFLAG／SmaAD等の「こちらのページは表示できません」）・`ended`・`not_found`・`http_error`・`parse_failed`・`identity_mismatch` は保留。取得失敗・閲覧不可を「案件終了」「0pt」と扱わない。
 - **報酬の単位を混ぜない**：ワラウ 1pt＝1円／モッピー 1P＝1円／アメフリ **10pt＝1円**（ページに「10pt＝1円」の表示があることが条件）／COINCOMEは円表示。evidenceに pointUnit・yenPerPoint が入り、記事の金額はそのサイトの単位で書く（例：モッピー「700P」、COINCOME「340円」、アメフリ「137,790pt（13,779円）」）。アメフリは換算率「10ptが1円」と円換算の合計も本文に書く。サイトによって同じゲームでも金額が違うため、サイトごとの表にする。
 - **対象OS**：ページが明記したものだけ。モッピーの単一条件ページにはOSの記載がないことがあり、その場合 os は null のまま、本文に「ページにOSの記載はありません」と書く（推測しない）。
-- **増額**：アメフリ「Ptアップ」・COINCOMEのセール表示などは `temporaryIncrease` に記録される。終了日がページにあればその日付を、なければ本文に「増額中」「増額の終了日はページに記載がありません」を書く（期間限定の増額を通常額として書かない）。ワラウの増額は従来どおり期限日を明記。
+- **増額**：アメフリ「Ptアップ」・COINCOMEのセール表示などは `temporaryIncrease` に記録される。終了日がページにあればその日付を、なければ本文に「増額中」「増額の終了日はページに記載がありません」を書く（期間限定の増額を通常額として書かない）。ワラウも同じ扱い：「1,700pt → 最大2,000pt」のように期限日なしで表示される増額もあり（2026-11-20のプリケツにゃー）、その場合は `until: null`・`endDateStated: false` で記録され、本文に通常額・現在額・「終了日の記載なし」を書く。metadataの `offers[].temporaryIncrease` は証拠と同じ内容にする（食い違いはゲートが拒否）。
 攻略：公式ストア（App Store／Google Play）で開発元・アプリIDを確認し、実際の進行システム（資源・施設・レベル・ステージ・イベント）を出典つきで説明でき、序盤・中盤・終盤の具体的な行動を書ける。
 実プレイヤー：直近365日以内、独立した2人以上（この基準は案件の形・サイトが増えても緩めない。ゲートが検査する）（同一人物の複数投稿は1人）。実例パネルは3件以上。到達日数・到達地点・課金状況・撤退理由を出典と照合。日数不明はnull（0にしない）。古い仕様の記録はその旨を明記。足りなければ保留し、架空の体験談を作らない。当サイトがプレイしたとは書かない。
 
@@ -64,7 +64,7 @@
 - article.md：H1＝SEOタイトル、導入2段落、目次、節ID condition / pace / outlook / early / middle / late / stop / tracking / faq / sources（pace＝実際の到達ペースの比較表）。各段落の末尾に出典ID［M1］等。編集部の計算・判断は［編集部計算］［編集部判断］と明示し、出典の事実・投稿者の自己申告と区別する。最大報酬を無課金の見込みや利益として書かない。期間限定増額は期限日を明記。
 - 画像は使わない（未確認の公式画像・ロゴを転載しない）。関連攻略は実在する公開ページだけ。games.csv・data/published_offers.csv・取得処理・広告設定・Actionsは変更しない。
 - `python scripts/build_daily_guides.py --check research/daily-guides/D` が全件 ok になるまで原稿を直す。テストを通すために事実を変えない・チェックを緩めない。
-- `python scripts/build_daily_guides.py research/daily-guides/D` でHTML生成・攻略一覧・sitemap・公開ビルド許可へ登録。
+- `python scripts/build_daily_guides.py research/daily-guides/D` でHTML生成・攻略一覧・sitemap・公開ビルド許可へ登録。攻略一覧の説明文は登録時に一度だけ書かれ、再ビルドでは更新されない。原稿（page.jsonのregistry）を直したら `site-researched-guides.js` も同じ文に直し、`node scripts/sync_static_guide_links.js` を実行する（食い違いはテストが検知する）。口コミの日数は「どのレベル・Stepの話か」が書かれている場合だけ到達日数として使い、書かれていなければ「Stepの記載なし」と明記する。「1週間ちょっと」「2〜3日」「30日前後」のように投稿者が幅を持たせて書いた日数は、実例データの `day` に入れず `null` にして、ラベルに原文の言い回しを残す（2026-11-20以降のバッチはゲートが拒否）。口コミの総数と実例に採用した人数は分けて書く。
 - research/daily-guides/D/selection.json（全候補の採用・保留・除外と理由）と REPORT.md（下記10項目）を書く。
 
 ## 5. 検証

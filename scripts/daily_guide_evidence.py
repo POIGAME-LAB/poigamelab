@@ -89,9 +89,22 @@ def parse_offer(raw: str) -> dict:
     out["totalPt"] = _int(m.group(1)) if m else None
     out["stepSum"] = sum(s["rewardPt"] for s in steps)
     out["stepSumMatchesTotal"] = bool(steps) and out["totalPt"] == out["stepSum"]
-    # Temporary increase: "10,510pt\n →\n最大\n11,040\npt\n 2026年11月07日まで"
-    m = re.search(r"([\d,]+)pt\s*\n\s*→\s*\n\s*最大\s*\n\s*([\d,]+)\s*\n\s*pt\s*\n\s*(\d{4}年\d{1,2}月\d{1,2}日)まで", t)
-    out["temporaryIncrease"] = {"regularPt": _int(m.group(1)), "increasedPt": _int(m.group(2)), "until": m.group(3)} if m else None
+    # Temporary increase. Two shapes are seen on the official page, and BOTH are an increase the article must disclose:
+    #   "10,510pt\n →\n最大\n11,040\npt\n 2026年11月07日まで"   (end date printed)
+    #   "<del>1,700pt</del> →最大 2,000pt"                            (no end date printed - 2026-11-20, point_id 178209/178210)
+    # An increase whose end date is not printed is recorded with ``until: None`` / ``endDateStated: False``; it is never
+    # read as "no increase". (Before 2026-11-20 only the dated shape matched, so an undated increase became "none".)
+    # Only this offer's own header counts: the "こんな広告もおすすめ" list and the reviews below it show other offers' prices.
+    own = t
+    for marker in ("クチコミ", "こんな広告もおすすめ"):
+        own = own.split(marker, 1)[0]
+    m = re.search(r"([\d,]+)pt\s*\n\s*→\s*\n\s*最大\s*\n\s*([\d,]+)\s*\n\s*pt(?:\s*\n\s*(\d{4}年\d{1,2}月\d{1,2}日)まで)?", own)
+    if m and m.group(3):
+        out["temporaryIncrease"] = {"regularPt": _int(m.group(1)), "increasedPt": _int(m.group(2)), "until": m.group(3)}
+    elif m:
+        out["temporaryIncrease"] = {"regularPt": _int(m.group(1)), "increasedPt": _int(m.group(2)), "until": None, "endDateStated": False}
+    else:
+        out["temporaryIncrease"] = None
     # An end/unavailable page lists *other* offers; never read their OS or advertiser as this offer's.
     m = re.search(r"^(iOS|Android)\s*$", t, re.M) if out["live"] else None
     out["os"] = m.group(1) if m else None

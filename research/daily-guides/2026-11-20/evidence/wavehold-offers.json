@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "slug": "wavehold",
+  "site": "warau",
+  "sites": [
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-20T09:25:45+09:00",
+  "checks": [
+    {
+      "pointId": "209408",
+      "offerKey": "warau:209408",
+      "site": "warau",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209408",
+      "retrievedAt": "2026-11-20T00:25:44+00:00",
+      "httpStatus": 200,
+      "responseSha256": "af9ba1fdb07254ce9e57c659fd9adb26cd424ad0455a3fadbc40729a2e775117",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    },
+    {
+      "pointId": "209409",
+      "offerKey": "warau:209409",
+      "site": "warau",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209409",
+      "retrievedAt": "2026-11-20T00:25:45+00:00",
+      "httpStatus": 200,
+      "responseSha256": "63b267928b39fc0d79c15026123af667ed8f84e6875186a51b2f9ffe31611361",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "deadlineIfInstalledToday": null,
+      "condition": null,
+      "steps": [],
+      "totalPt": null,
+      "stepSum": 0,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "os": null,
+      "advertiser": null,
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "reviewIndex": []
+    }
+  ],
+  "yenPerPoint": 1,
+  "yenPerPointSource": "https://www.warau.jp/help/qa/1475/"
+}

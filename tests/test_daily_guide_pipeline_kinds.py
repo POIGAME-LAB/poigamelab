@@ -85,7 +85,7 @@ def _write(tmp_path, ev, *, players=None, extra="", mutate=None):
     offer = {"offerKey": ev["offerKey"], "site": ev["site"], "kind": ev["kind"], "os": ev["os"], "url": ev["url"],
              "steps": [{"condition": s["condition"], "rewardPt": s["rewardPt"], "deadlineDays": s.get("deadlineDays") or ev["deadlineDays"], "requiresPayment": _pays(s)}
                        for s in ev["steps"]],
-             "totalDisplayedPt": ev["totalPt"], "sumWithoutPurchaseStepsPt": sum(s["rewardPt"] for s in ev["steps"] if not _pays(s))}
+             "totalDisplayedPt": ev["totalPt"], "temporaryIncrease": ev.get("temporaryIncrease"), "sumWithoutPurchaseStepsPt": sum(s["rewardPt"] for s in ev["steps"] if not _pays(s))}
     meta = {"slug": SLUG, "game": GAME, "seoTitle": title, "metaDescription": "サンプルパズル（テスト用）の案件条件と、実例の到達日数を整理した検証用のページです。ゲートの動作確認に使います。",
             "proposedPage": f"{SLUG}-guide.html", "canonical": f"https://poigamelab.com/{SLUG}-guide.html", "status": "manuscript_complete", "offers": [offer]}
     sources = [{"id": "M1", "title": "案件ページ", "url": ev["url"], "type": "point_site", "checkedAt": DATE},

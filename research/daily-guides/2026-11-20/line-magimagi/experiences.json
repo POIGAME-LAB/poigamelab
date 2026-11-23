@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "game": "LINE マジマジ：爽快魔法マージパズル",
+  "updatedAt": "2026-11-21",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-21。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "かなりゆっくり遊んで4日でクリア（レベル・Stepの記載なし）",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "クリア（本人記載。レベル・Stepの記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "ぽいぽいぽい（ワラウ口コミ）",
+        "2026-09-24",
+        "かなりゆっくり遊んで4日でクリア（レベル・Stepの記載なし）"
+      ],
+      "postedOn": "2026-09-24",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "体力を溢れさせたが条件は緩かったと記載。後半は生成アイテムの要求が増え、ダイヤで購入し泡割りも使用。課金額は記載なし。現行のどのStepかは確認できない（投稿時の案件構成が現行と異なる可能性）。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "2日でレベル25クリア",
+      "milestones": [
+        {
+          "day": 2,
+          "label": "Lv25"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "こむちゃ（ワラウ口コミ）",
+        "2026-09-24",
+        "2日でレベル25クリア"
+      ],
+      "postedOn": "2026-09-24",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "ダイヤはエナジーに使ったと記載。課金の有無は記載なし。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "2日でレベル25到達、合計8時間弱",
+      "milestones": [
+        {
+          "day": 2,
+          "label": "Lv25"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "ひろ（ワラウ口コミ）",
+        "2026-09-21",
+        "2日でレベル25到達、合計8時間弱"
+      ],
+      "postedOn": "2026-09-21",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": 480,
+      "dailyPlayMinutes": null,
+      "note": "魔力ポーションの使い方が大事と記載。課金の有無は記載なし。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "空いた時間のプレイで3日でレベル25",
+      "milestones": [
+        {
+          "day": 3,
+          "label": "Lv25"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "木々（ワラウ口コミ）",
+        "2026-09-30",
+        "空いた時間のプレイで3日でレベル25"
+      ],
+      "postedOn": "2026-09-30",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "達成しやすい依頼が多いと記載。課金の有無は記載なし。"
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "in_progress",
+      "summary": "レベル18まで約2時間、約10時間でレベル23",
+      "milestones": [
+        {
+          "day": null,
+          "label": "Lv18（約2時間）"
+        },
+        {
+          "day": null,
+          "label": "Lv23（累計約10時間、日数不明）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "わったくん（ワラウ口コミ）",
+        "2026-09-21",
+        "レベル18まで約2時間、約10時間でレベル23"
+      ],
+      "postedOn": "2026-09-21",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": 600,
+      "dailyPlayMinutes": null,
+      "note": "18以降は依頼数が必要でコスパは18で辞めるのが良さそうと記載。25までやりたいと記載。"
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "レベル25のStep2まで2〜3日、レベル35超は1週間ちょっと",
+      "milestones": [
+        {
+          "day": null,
+          "label": "Lv25（Step2まで「2〜3日」と記載。正確な日数は不明）"
+        },
+        {
+          "day": null,
+          "label": "Lv35超（「1週間ちょっと」と記載。正確な日数は不明）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "美桜（ワラウ口コミ）",
+        "2026-11-19",
+        "レベル25のStep2まで2〜3日、レベル35超は1週間ちょっと"
+      ],
+      "postedOn": "2026-11-19",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "33付近から苦戦したと記載。課金の有無は記載なし。"
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "retired",
+      "summary": "レベル36で離脱",
+      "milestones": [
+        {
+          "day": null,
+          "label": "Lv36で離脱（日数不明）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+      ],
+      "sourceDetails": [
+        "まろましゅ（ワラウ口コミ）",
+        "2026-10-31",
+        "レベル36で離脱"
+      ],
+      "postedOn": "2026-10-31",
+      "checkedAt": "2026-11-21",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "レベル40が終了ミッションの時期に開始。逆算して間に合わないと判断し離脱。今回の案件条件とは異なる。"
+    }
+  ]
+}

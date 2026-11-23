@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 2,
+  "slug": "molly-online",
+  "site": "multi",
+  "sites": [
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-20T09:03:09+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:159009",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "159009",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=159009",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "モーリーオンライン（初回課金（MPチャージ））",
+      "gameName": "モーリーオンライン（初回課金（MPチャージ））",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、初回課金(MPチャージ)でポイント獲得",
+      "deadlineDays": 1,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、初回課金(MPチャージ)でポイント獲得",
+          "rewardPt": 480,
+          "rewardYen": 480,
+          "deadlineDays": 1
+        }
+      ],
+      "totalPt": 480,
+      "totalYen": 480,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:04+00:00",
+      "responseSha256": "d3f66fef99c756b1a4478d5c08ee56c103a9b79e41c02f8cb4e02b7259d905fe"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:193742",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "193742",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=193742",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "モーリーオンライン（初回課金（MPチャージ））でポイントを貯める",
+      "gameName": "モーリーオンライン（初回課金（MPチャージ））",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "蘭丸",
+          "attribute": "男性・20代",
+          "date": "2026-10-19",
+          "title": "課金はいります"
+        },
+        {
+          "name": "ごん",
+          "attribute": "男性・40代",
+          "date": "2026-10-19",
+          "title": "手軽、"
+        },
+        {
+          "name": "イッチ",
+          "attribute": "男性・50代",
+          "date": "2026-09-29",
+          "title": "色々な商品ラインナップがありとても楽しい..."
+        },
+        {
+          "name": "そそそそそ",
+          "attribute": "女性・20代",
+          "date": "2026-09-02",
+          "title": "課金額と貰える金額が合わないのですが、あ..."
+        },
+        {
+          "name": "かかかか",
+          "attribute": "男性・30代",
+          "date": "2026-05-18",
+          "title": "商品は諦めましょう"
+        },
+        {
+          "name": "いっせいせい",
+          "attribute": "男性・30代",
+          "date": "2026-07-28",
+          "title": "楽しみ"
+        },
+        {
+          "name": "らむ",
+          "attribute": "女性・20代",
+          "date": "2026-01-22",
+          "title": "ポイントに換えたい方に"
+        },
+        {
+          "name": "りんね",
+          "attribute": "女性・40代",
+          "date": "2026-01-06",
+          "title": "課金で即付与"
+        },
+        {
+          "name": "さもはん",
+          "attribute": "男性・40代",
+          "date": "2025-12-04",
+          "title": "クレーンゲームはじめてでしたがそれなりに..."
+        },
+        {
+          "name": "のっぽ",
+          "attribute": "男性・20代",
+          "date": "2025-11-25",
+          "title": "他のクレーンゲームより取りやすい"
+        },
+        {
+          "name": "ポテトマン",
+          "attribute": "男性・50代",
+          "date": "2025-09-03",
+          "title": "便利な時代になったな〜"
+        },
+        {
+          "name": "焼きたてさん",
+          "attribute": "男性・20代",
+          "date": "2025-05-28",
+          "title": "よくあるオンラインクレーン"
+        },
+        {
+          "name": "ドタマ",
+          "attribute": "男性・40代",
+          "date": "2025-05-04",
+          "title": "ポイント反映はやい"
+        },
+        {
+          "name": "ルー",
+          "attribute": "男性・10代",
+          "date": "2025-04-04",
+          "title": "デカ爪キャッチャーでお得になるかも！"
+        },
+        {
+          "name": "蘭丸",
+          "attribute": "男性・20代",
+          "date": "2026-10-19",
+          "title": "課金はいります"
+        },
+        {
+          "name": "ごん",
+          "attribute": "男性・40代",
+          "date": "2026-10-19",
+          "title": "手軽、"
+        },
+        {
+          "name": "イッチ",
+          "attribute": "男性・50代",
+          "date": "2026-09-29",
+          "title": "色々な商品ラインナップがありとても楽しい..."
+        },
+        {
+          "name": "そそそそそ",
+          "attribute": "女性・20代",
+          "date": "2026-09-02",
+          "title": "課金額と貰える金額が合わないのですが、あ..."
+        },
+        {
+          "name": "いっせいせい",
+          "attribute": "男性・30代",
+          "date": "2026-07-28",
+          "title": "楽しみ"
+        },
+        {
+          "name": "かかかか",
+          "attribute": "男性・30代",
+          "date": "2026-05-18",
+          "title": "商品は諦めましょう"
+        },
+        {
+          "name": "らむ",
+          "attribute": "女性・20代",
+          "date": "2026-01-22",
+          "title": "ポイントに換えたい方に"
+        },
+        {
+          "name": "りんね",
+          "attribute": "女性・40代",
+          "date": "2026-01-06",
+          "title": "課金で即付与"
+        },
+        {
+          "name": "さもはん",
+          "attribute": "男性・40代",
+          "date": "2025-12-04",
+          "title": "クレーンゲームはじめてでしたがそれなりに..."
+        },
+        {
+          "name": "のっぽ",
+          "attribute": "男性・20代",
+          "date": "2025-11-25",
+          "title": "他のクレーンゲームより取りやすい"
+        }
+      ],
+      "termNotes": [
+        "モーリーオンライン（初回課金（MPチャージ））でポイントを貯める｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+        "あんしん保証",
+        "モーリーオンライン（初回課金（MPチャージ））",
+        "あんしん保証",
+        "モーリーオンライン（初回課金（MPチャージ））",
+        "初回アプリインストール後、初回課金（MPチャージ）",
+        "起動後、最短30分",
+        "判定期間",
+        "新規アプリインストール後、当日中に初回課金（MPチャージ）完了",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "インストール後、起動",
+        "初回課金（MPチャージ） ※初回課金：420MP＝550円〜となります。",
+        "【課金メニュー】",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:07+00:00",
+      "responseSha256": "0e0a4d42f96a457f057dc85d294bbeb2b47dafa18b546b2197a21526f32aacfe"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:193743",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "193743",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=193743",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "モーリーオンライン（初回課金（MPチャージ））でポイントを貯める",
+      "gameName": "モーリーオンライン（初回課金（MPチャージ））",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "蘭丸",
+          "attribute": "男性・20代",
+          "date": "2026-10-19",
+          "title": "課金はいります"
+        },
+        {
+          "name": "ごん",
+          "attribute": "男性・40代",
+          "date": "2026-10-19",
+          "title": "手軽、"
+        },
+        {
+          "name": "イッチ",
+          "attribute": "男性・50代",
+          "date": "2026-09-29",
+          "title": "色々な商品ラインナップがありとても楽しい..."
+        },
+        {
+          "name": "そそそそそ",
+          "attribute": "女性・20代",
+          "date": "2026-09-02",
+          "title": "課金額と貰える金額が合わないのですが、あ..."
+        },
+        {
+          "name": "かかかか",
+          "attribute": "男性・30代",
+          "date": "2026-05-18",
+          "title": "商品は諦めましょう"
+        },
+        {
+          "name": "いっせいせい",
+          "attribute": "男性・30代",
+          "date": "2026-07-28",
+          "title": "楽しみ"
+        },
+        {
+          "name": "らむ",
+          "attribute": "女性・20代",
+          "date": "2026-01-22",
+          "title": "ポイントに換えたい方に"
+        },
+        {
+          "name": "りんね",
+          "attribute": "女性・40代",
+          "date": "2026-01-06",
+          "title": "課金で即付与"
+        },
+        {
+          "name": "さもはん",
+          "attribute": "男性・40代",
+          "date": "2025-12-04",
+          "title": "クレーンゲームはじめてでしたがそれなりに..."
+        },
+        {
+          "name": "のっぽ",
+          "attribute": "男性・20代",
+          "date": "2025-11-25",
+          "title": "他のクレーンゲームより取りやすい"
+        },
+        {
+          "name": "ポテトマン",
+          "attribute": "男性・50代",
+          "date": "2025-09-03",
+          "title": "便利な時代になったな〜"
+        },
+        {
+          "name": "焼きたてさん",
+          "attribute": "男性・20代",
+          "date": "2025-05-28",
+          "title": "よくあるオンラインクレーン"
+        },
+        {
+          "name": "ドタマ",
+          "attribute": "男性・40代",
+          "date": "2025-05-04",
+          "title": "ポイント反映はやい"
+        },
+        {
+          "name": "ルー",
+          "attribute": "男性・10代",
+          "date": "2025-04-04",
+          "title": "デカ爪キャッチャーでお得になるかも！"
+        },
+        {
+          "name": "蘭丸",
+          "attribute": "男性・20代",
+          "date": "2026-10-19",
+          "title": "課金はいります"
+        },
+        {
+          "name": "ごん",
+          "attribute": "男性・40代",
+          "date": "2026-10-19",
+          "title": "手軽、"
+        },
+        {
+          "name": "イッチ",
+          "attribute": "男性・50代",
+          "date": "2026-09-29",
+          "title": "色々な商品ラインナップがありとても楽しい..."
+        },
+        {
+          "name": "そそそそそ",
+          "attribute": "女性・20代",
+          "date": "2026-09-02",
+          "title": "課金額と貰える金額が合わないのですが、あ..."
+        },
+        {
+          "name": "いっせいせい",
+          "attribute": "男性・30代",
+          "date": "2026-07-28",
+          "title": "楽しみ"
+        },
+        {
+          "name": "かかかか",
+          "attribute": "男性・30代",
+          "date": "2026-05-18",
+          "title": "商品は諦めましょう"
+        },
+        {
+          "name": "らむ",
+          "attribute": "女性・20代",
+          "date": "2026-01-22",
+          "title": "ポイントに換えたい方に"
+        },
+        {
+          "name": "りんね",
+          "attribute": "女性・40代",
+          "date": "2026-01-06",
+          "title": "課金で即付与"
+        },
+        {
+          "name": "さもはん",
+          "attribute": "男性・40代",
+          "date": "2025-12-04",
+          "title": "クレーンゲームはじめてでしたがそれなりに..."
+        },
+        {
+          "name": "のっぽ",
+          "attribute": "男性・20代",
+          "date": "2025-11-25",
+          "title": "他のクレーンゲームより取りやすい"
+        }
+      ],
+      "termNotes": [
+        "モーリーオンライン（初回課金（MPチャージ））でポイントを貯める｜ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+        "あんしん保証",
+        "モーリーオンライン（初回課金（MPチャージ））",
+        "あんしん保証",
+        "モーリーオンライン（初回課金（MPチャージ））",
+        "初回アプリインストール後、初回課金（MPチャージ）",
+        "起動後、最短30分",
+        "判定期間",
+        "新規アプリインストール後、当日中に初回課金（MPチャージ）完了",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "インストール後、起動",
+        "初回課金（MPチャージ） ※初回課金：420MP＝550円〜となります。",
+        "【課金メニュー】",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-20T00:03:09+00:00",
+      "responseSha256": "f91824a3e673c3d0b183d36abd7b77338feab78e496842c875270a334b72df0f"
+    }
+  ]
+}

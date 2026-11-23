@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "game": "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）",
+  "aliases": [
+    "プリケツにゃー",
+    "プリケツにゃー！放置系シミュレーションゲームで猫を育成しよう"
+  ],
+  "slug": "purikets-nyaa",
+  "title": "プリケツにゃー ポイ活攻略｜レベル400の実例と転生・広告のコツ",
+  "seoTitle": "プリケツにゃー ポイ活攻略｜レベル400の実例と転生・広告のコツ",
+  "metaDescription": "プリケツにゃー（IGNITION M）のワラウStepUp案件を攻略。60日以内の4Step全報酬（増額表示あり・終了日の記載なし）、レベル400に30〜40日で届いた実例、転生・秘宝・広告視聴の進め方を紹介。",
+  "os": [
+    "iOS",
+    "Android"
+  ],
+  "researchDate": "2026-11-20",
+  "inputData": {
+    "contentQueueCheckedAt": "2026-11-19T23:05:24+00:00",
+    "monitorCheckedAt": "2026-11-19T23:05:24+00:00",
+    "candidateOrder": 31
+  },
+  "status": "manuscript_complete",
+  "publicationStatus": "draft_pr_not_published",
+  "proposedPage": "purikets-nyaa-guide.html",
+  "canonical": "https://poigamelab.com/purikets-nyaa-guide.html",
+  "identity": {
+    "developer": "IGNITION M CO., LTD.",
+    "appStoreId": "6450658934",
+    "androidPackage": "com.ignm.puri",
+    "advertiserOnOfferPage": "IGNITION M"
+  },
+  "offers": [
+    {
+      "site": "warau",
+      "pointId": "178209",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209",
+      "os": "iOS",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 2000,
+      "temporaryIncrease": {
+        "regularPt": 1700,
+        "increasedPt": 2000,
+        "until": null,
+        "endDateStated": false
+      },
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "プリケツレベル120到達",
+          "rewardPt": 50,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "プリケツレベル200到達",
+          "rewardPt": 120,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "プリケツレベル300到達",
+          "rewardPt": 270,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "プリケツレベル400到達",
+          "rewardPt": 1560,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 2000,
+      "guaranteeApplicationDays": null,
+      "verifiedAt": "2026-11-20T22:47:51+00:00",
+      "sumIsNotPredictedEarnings": true
+    },
+    {
+      "site": "warau",
+      "pointId": "178210",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178210",
+      "os": "Android",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 2000,
+      "temporaryIncrease": {
+        "regularPt": 1700,
+        "increasedPt": 2000,
+        "until": null,
+        "endDateStated": false
+      },
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "プリケツレベル120到達",
+          "rewardPt": 50,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "プリケツレベル200到達",
+          "rewardPt": 120,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "プリケツレベル300到達",
+          "rewardPt": 270,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        },
+        {
+          "condition": "プリケツレベル400到達",
+          "rewardPt": 1560,
+          "requiresPayment": false,
+          "deadlineDays": 60
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 2000,
+      "guaranteeApplicationDays": null,
+      "verifiedAt": "2026-11-20T22:47:53+00:00",
+      "sumIsNotPredictedEarnings": true
+    }
+  ],
+  "limitations": [
+    "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+    "ワラウ口コミは投稿時期の案件条件で書かれており、当時の報酬額は今回と異なる可能性がある",
+    "口コミに課金額の記載がなく、課金の要否は確認できていない",
+    "案件ページは通常1,700ptから最大2,000ptへの増額を表示しているが、増額の終了日・増額前の各Stepの内訳は記載がない",
+    "口コミ「46日目にクリア」は到達レベルの記載がなく、レベル400の実例には数えていない"
+  ],
+  "previousOffers": [],
+  "offerRecheckedAt": "2026-11-21"
+}

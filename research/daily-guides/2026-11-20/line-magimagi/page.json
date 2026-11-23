@@ -1,0 +1,37 @@
+{
+  "heroStats": [
+    {
+      "label": "期限（インストール日から）",
+      "value": "30日以内"
+    },
+    {
+      "label": "表示合計（iOS）",
+      "value": "700pt"
+    },
+    {
+      "label": "Step数",
+      "value": "3（レベル18・25・35）"
+    }
+  ],
+  "offerLinks": [
+    {
+      "label": "ワラウの案件ページ（iOS・209372）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"
+    }
+  ],
+  "contextLabel": "ワラウの現在の案件ページを見る →",
+  "related": [
+    {
+      "label": "Merge Help ポイ活攻略",
+      "href": "merge-help-guide.html"
+    },
+    {
+      "label": "ファミリーファームの冒険 ポイ活攻略",
+      "href": "family-farm-adventure-guide.html"
+    }
+  ],
+  "registry": {
+    "label": "レベル25・35攻略を読む →",
+    "description": "ワラウ案件（iOS、30日以内の全3Step）と、レベル25まで2〜3日で届いた実例・レベル35の壁、体力とダイヤの使い方、撤退の目安をまとめています。"
+  }
+}
