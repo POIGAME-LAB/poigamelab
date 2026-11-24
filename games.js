@@ -106,9 +106,12 @@ const pointSites = {
           value.loadOffersWithFallback = async function loadOffersWithCatalogProvisionalFallback() {
             const result = await originalLoadOffersWithFallback();
             const offers = Array.isArray(result?.offers) ? [...result.offers] : [];
-            const gamesWithVerifiedOffer = new Set(
-              offers.filter((offer) => offer?.verified).map((offer) => offer.gameName)
-            );
+            // A game whose verified amounts are only hidden for being older than 7 days must not
+            // fall back to unverified catalog reference amounts.
+            const gamesWithVerifiedOffer = new Set([
+              ...offers.filter((offer) => offer?.verified).map((offer) => offer.gameName),
+              ...(Array.isArray(result?.staleHiddenGames) ? result.staleHiddenGames : [])
+            ]);
             let provisionalCount = 0;
 
             try {
