@@ -141,6 +141,41 @@
       "known_urls_by_source": {
         "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205785", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205786"]
       }
+    },
+    {
+      "game": "Sea Block 1010",
+      "aliases": ["Sea Block 1010"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "さる山温泉旅館",
+      "aliases": ["さる山温泉旅館"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "インポッシブルカート",
+      "aliases": ["インポッシブルカート", "Impossible Kart"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "天地英雄伝",
+      "aliases": ["天地英雄伝"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "High Roller Vegas",
+      "aliases": ["High Roller Vegas"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "Dice Dreams",
+      "aliases": ["Dice Dreams"],
+      "known_urls_by_source": {}
+    },
+    {
+      "game": "Disney Solitaire - ディズニー ソリティア",
+      "aliases": ["Disney Solitaire - ディズニー ソリティア", "Disney Solitaire", "ディズニー ソリティア", "ディズニーソリティア"],
+      "known_urls_by_source": {}
     }
   ]
 }
