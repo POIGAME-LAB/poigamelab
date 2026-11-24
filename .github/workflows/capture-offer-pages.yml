@@ -42,7 +42,7 @@ jobs:
         run: |
           case "${MAX_PAGES}" in ''|*[!0-9]*) MAX_PAGES=80 ;; esac
           python scripts/capture_offer_pages.py --sources "${SOURCES}" --max-pages "${MAX_PAGES}" \
-            --out "${RUNNER_TEMP}/captured-pages"
+            --out "${RUNNER_TEMP}/captured-pages" --emit-log
       - uses: actions/upload-artifact@v4
         with:
           name: captured-offer-pages

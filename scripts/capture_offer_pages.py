@@ -16,6 +16,8 @@ Pages captured (each URL once, politely spaced, at most --max-pages):
 from __future__ import annotations
 
 import argparse
+import base64
+import gzip
 import hashlib
 import json
 import sys
@@ -109,12 +111,50 @@ def capture(items: list[dict], out_dir: Path, sources_cfg: dict, aliases_by_game
     return index
 
 
+def emit_pages(index: list[dict], out_dir: Path, write=print, width: int = 900) -> int:
+    """Print saved pages into the job log as gzip+base64 lines (PAGE_BEGIN / PAGEDATA / PAGE_END).
+
+    Artifacts are stored on a blob host the editing environment cannot reach, while job logs can
+    be read through the GitHub API. The pages are public first-party pages; nothing else is printed.
+    """
+    count = 0
+    for entry in index:
+        name = entry.get("file")
+        if not name:
+            continue
+        data = base64.b64encode(gzip.compress((out_dir / name).read_bytes(), 9)).decode("ascii")
+        chunks = [data[i:i + width] for i in range(0, len(data), width)] or [""]
+        write(f"PAGE_BEGIN {name} {len(chunks)}")
+        for chunk in chunks:
+            write(f"PAGEDATA {name} {chunk}")
+        write(f"PAGE_END {name}")
+        count += 1
+    return count
+
+
+def decode_log(lines) -> dict:
+    """Inverse of emit_pages for a downloaded log (timestamps before the marker are ignored)."""
+    parts, out = {}, {}
+    for line in lines:
+        i = line.find("PAGEDATA ")
+        if i >= 0:
+            _, name, chunk = line[i:].rstrip("\n").split(" ", 2)
+            parts.setdefault(name, []).append(chunk.strip())
+            continue
+        j = line.find("PAGE_END ")
+        if j >= 0:
+            name = line[j:].split(" ", 1)[1].strip()
+            out[name] = gzip.decompress(base64.b64decode("".join(parts.pop(name, []))))
+    return out
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--sources", default=",".join(DEFAULT_SOURCES))
     ap.add_argument("--max-pages", type=int, default=80)
     ap.add_argument("--out", default="captured-pages")
     ap.add_argument("--delay", type=float, default=1.0)
+    ap.add_argument("--emit-log", action="store_true", help="also print the saved pages into the job log")
     args = ap.parse_args(argv)
     sources_cfg = {s["id"]: s for s in json.loads((ROOT / "config/point_sources.json").read_text(encoding="utf-8"))["sources"]}
     targets = json.loads((ROOT / "config/game_targets.json").read_text(encoding="utf-8"))["games"]
@@ -127,6 +167,9 @@ def main(argv=None) -> int:
         key = f"{e['source']}:{e['kind']}:{e['status']}" + (f":{(e.get('parser') or {}).get('state')}" if e.get("parser") else "")
         summary[key] = summary.get(key, 0) + 1
     print("CAPTURE_SUMMARY " + json.dumps(dict(sorted(summary.items())), ensure_ascii=False))
+    if args.emit_log:
+        print("CAPTURE_INDEX " + json.dumps(index, ensure_ascii=False))
+        emit_pages(index, Path(args.out))
     return 0
 
 
