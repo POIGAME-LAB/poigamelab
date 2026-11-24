@@ -11,7 +11,7 @@
     },
     {
       "game": "きのこ伝説",
-      "aliases": ["きのこ伝説", "キノコ伝説"],
+      "aliases": ["きのこ伝説", "キノコ伝説", "キノコ伝説：勇者と魔法のランプ"],
       "known_urls_by_source": {
         "chobirich": ["https://www.chobirich.com/ad_details/1883822", "https://www.chobirich.com/ad_details/1896200", "https://www.chobirich.com/ad_details/1896275"],
         "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205817"],
@@ -101,7 +101,7 @@
     },
     {
       "game": "クロンダイクの冒険",
-      "aliases": ["クロンダイクの冒険", "Klondike Adventures", "Klondike Adventure", "ウエスタン農場 - クロンダイクの冒険"],
+      "aliases": ["クロンダイクの冒険", "Klondike Adventures", "Klondike Adventure", "ウエスタン農場 - クロンダイクの冒険", "ウエスタン農場(クロンダイクの冒険)"],
       "known_urls_by_source": {
         "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205043", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205042"]
       }
@@ -174,7 +174,7 @@
     },
     {
       "game": "Disney Solitaire - ディズニー ソリティア",
-      "aliases": ["Disney Solitaire - ディズニー ソリティア", "Disney Solitaire", "ディズニー ソリティア", "ディズニーソリティア"],
+      "aliases": ["Disney Solitaire - ディズニー ソリティア", "Disney Solitaire", "ディズニー ソリティア", "ディズニーソリティア", "Disney Solitaire ディズニー ソリティア"],
       "known_urls_by_source": {}
     }
   ]
