@@ -112,7 +112,8 @@ def test_reward_contracts_respect_publication_veto_and_preserve_prose():
     expected_safe = {"hapitas", "coincome", "point_town", "ec_navi", "amefuri"}
     assert expected_safe <= set(publication.REWARD_ONLY_CONTRACTS)
     assert "moppy" in publication.REWARD_ONLY_CONTRACTS
-    assert "powl" not in publication.REWARD_ONLY_CONTRACTS
+    # Powl joined the reward-only contracts on 2026-11-24 (operator decision, real pages checked).
+    assert "powl" in publication.REWARD_ONLY_CONTRACTS
 
     domains = {
         "hapitas": ["hapitas.jp", "www.hapitas.jp"],
