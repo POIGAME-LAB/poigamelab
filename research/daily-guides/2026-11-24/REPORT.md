@@ -6,7 +6,7 @@
 4. 記事：ウォーターパークボーイズ ポイ活攻略｜Stage2 Open（2時間前後）の実例と進め方（WaterPark Boys）
 5. 出典確認：Moppy×2・App Store・Google Play・ブログ等、当日HTTP 200（担当エージェント確認）。sarakimt.co.jp は環境のドメイン制限で取得不可・不使用
 6. 保留：勇者サバイバー（条件に合う記録なし）、超能力学園（別条件のみ）、サバイバルアイランド（記録が365日超）。他 offer_verified 25件は未深掘り。Warau 209434/209435・Amefuri 131762 は解析不可で金額に不使用
-7. Draft PR：作成後に記載
+7. Draft PR：https://github.com/POIGAME-LAB/poigamelab/pull/362
 8. テスト：`build_daily_guides.py --check` ok／指定10テストファイルは tests/test_daily_guides.py の Warau専用だった1検査をモッピー案件に対応させて通過（検査内容は維持）
 9. 未確認：実機プレイ・ポイント付与・iPhone Safari実機。ほとんどの投稿者のOS・課金状況は不明。triageの `promising=0` の意味（verified 29なのに0）は未解明
 10. 次回：WaterPark Boysは公開前に `--recheck`。Moppy単一条件は口コミ0件が多く、記録のあるゲームを先に探す。
