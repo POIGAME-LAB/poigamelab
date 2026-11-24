@@ -750,6 +750,28 @@ def track_unavailable_runs(snapshots, checked_at, path=None):
     return annotated
 
 
+def summarize_publication_holds(decisions):
+    """Per-site counts of published/held decisions and hold reasons, for the Actions log.
+
+    The full decisions stay in the private daily report (R2); this summary carries no URLs,
+    amounts or secrets, only "site -> reason -> count", so a held site is visible in the log.
+    """
+    summary = {}
+    for decision in decisions or []:
+        if not isinstance(decision, dict):
+            continue
+        site = str(decision.get("source") or "unknown")
+        entry = summary.setdefault(site, {"published": 0, "held": 0, "holdReasons": {}})
+        reason = decision.get("holdReason")
+        if reason:
+            entry["held"] += 1
+            key = str(reason)[:80]
+            entry["holdReasons"][key] = entry["holdReasons"].get(key, 0) + 1
+        else:
+            entry["published"] += 1
+    return dict(sorted(summary.items()))
+
+
 def main():
     review_path = ROOT / "data/daily_scan_review.json"
 
@@ -792,6 +814,8 @@ def main():
             updated_rows, publication = prepare(kwargs["rows"], evidence_items, kwargs["sources"],
                 kwargs["checked_at"], publication_policy, report["warauBaseRate"]["confirmed"])
         report["existingPublication"] = publication
+        print("PUBLICATION_HOLDS " + json.dumps(
+            summarize_publication_holds(publication.get("decisions")), ensure_ascii=False, sort_keys=True))
         kwargs["rows"][:] = updated_rows
         _write_report(review_path, report)
         return {"confirmedOfferKeys": [d["offerKey"] for d in publication["decisions"]

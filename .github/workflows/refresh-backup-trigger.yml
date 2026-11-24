@@ -1,0 +1,49 @@
+name: Refresh comparison offers backup trigger
+
+# GitHub sometimes drops the scheduled daily refresh (2026-11-24 JST: never created).
+# This workflow does not refresh anything itself: late in the JST morning it starts the
+# normal "Refresh comparison offers (API-free)" workflow once, and only when no refresh
+# ran or was created today (see scripts/refresh_schedule_guard.py). Its own completion
+# triggers nothing (deploy/research listen to the refresh workflow only).
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 1 * * *"   # 10:13 JST
+    - cron: "43 2 * * *"   # 11:43 JST, before the 12:07 JST daily-guide routine
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: poigamelab-refresh-backup-trigger
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Decide whether today's refresh is missing
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run list --repo "${GITHUB_REPOSITORY}" --workflow refresh-verified-offers.yml \
+            --limit 20 --json createdAt,status,conclusion > "${RUNNER_TEMP}/runs.json" \
+            || echo "null" > "${RUNNER_TEMP}/runs.json"
+          python3 scripts/refresh_schedule_guard.py --status data/refresh_status.json \
+            --runs "${RUNNER_TEMP}/runs.json"
+
+      - name: Start the missed daily refresh
+        if: steps.guard.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run refresh-verified-offers.yml --repo "${GITHUB_REPOSITORY}" --ref main

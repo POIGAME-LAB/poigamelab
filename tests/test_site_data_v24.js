@@ -20,6 +20,9 @@ function makeContext(fetchImpl) {
   return context.window.POIGAME_DATA;
 }
 
+// Rows below are dated 2026-08-31; the 7-day freshness rule (2026-11-24) is evaluated at that date.
+const TEST_NOW = Date.parse('2026-08-31T03:00:00Z');
+
 (async () => {
   const api = makeContext(async () => { throw new Error('unused'); });
   const parsed = api.rowsToObjects(api.parseCsv(
@@ -54,7 +57,7 @@ function makeContext(fetchImpl) {
     const text = path.includes('published') ? published : legacy;
     return { ok: true, status: 200, text: async () => text };
   });
-  const merged = await apiMerge.loadOffersWithFallback();
+  const merged = await apiMerge.loadOffersWithFallback(TEST_NOW);
   assert.strictEqual(merged.publishedCount, 1);
   assert.strictEqual(merged.legacyCount, 1);
   assert.strictEqual(merged.offers.length, 2);
@@ -69,7 +72,7 @@ function makeContext(fetchImpl) {
     if (path.includes('published')) return { ok: false, status: 404, text: async () => '' };
     return { ok: true, status: 200, text: async () => legacy };
   });
-  const fallback = await apiFallback.loadOffersWithFallback();
+  const fallback = await apiFallback.loadOffersWithFallback(TEST_NOW);
   assert.strictEqual(fallback.publishedCount, 0);
   assert.strictEqual(fallback.legacyCount, 1);
   assert.strictEqual(fallback.offers.length, 1);
@@ -90,7 +93,7 @@ function makeContext(fetchImpl) {
     }
     throw new Error(`launch must not request legacy offers: ${path}`);
   });
-  const launch = await apiLaunch.loadOffersWithFallback();
+  const launch = await apiLaunch.loadOffersWithFallback(TEST_NOW);
   assert.strictEqual(launch.publishedCount, 1);
   assert.strictEqual(launch.legacyCount, 0);
   assert.strictEqual(launch.offers.length, 1);
@@ -103,7 +106,7 @@ function makeContext(fetchImpl) {
     const text = path.includes('published') ? published : legacy;
     return { ok: true, status: 200, text: async () => text };
   });
-  const policyFailClosed = await apiPolicyFailClosed.loadOffersWithFallback();
+  const policyFailClosed = await apiPolicyFailClosed.loadOffersWithFallback(TEST_NOW);
   assert.strictEqual(policyFailClosed.publishedCount, 1);
   assert.strictEqual(policyFailClosed.legacyCount, 0);
   assert.strictEqual(policyFailClosed.offers.length, 1);

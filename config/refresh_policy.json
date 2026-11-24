@@ -118,7 +118,8 @@
     "completeRunReplacesGameSnapshot": false,
     "degradedRunMergesOnly": true,
     "directRefreshNeverCreatesNewPublishedRows": true,
-    "allowLegacyFallback": false
+    "allowLegacyFallback": false,
+    "maxOfferAgeDays": 7
   },
   "schedulerReady": true,
   "scheduledMode": "direct-http-api-free",

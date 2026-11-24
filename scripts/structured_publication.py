@@ -253,6 +253,33 @@ def full_snapshot(item, sources, checked_at, rate_confirmed=False):
     }
 
 
+# Moppy StepUp pages show only the total and say that each Step's condition is on the page
+# after "POINT GET". By the 2026-11-24 operator decision such an offer is published with its
+# verified total and an explicit note, instead of being held forever (the old rule kept the
+# 9/28 totals on the public site). Nothing else about the page is relaxed: the total must be
+# the page's single current reward, OS and deadline must be explicit, and the note is always
+# attached to the condition.
+MOPPY_TOTAL_ONLY_NOTE = (
+    "【合計額のみ確認】各成果地点の条件と内訳は、モッピーの案件ページで「POINT GET」を"
+    "タップした後に表示されます。当サイトはモッピーの公開ページに載っている合計額だけを確認しています。"
+)
+
+
+def moppy_stepup_total_only(source, evidence):
+    """True only for a Moppy StepUp page whose Steps sit behind POINT GET."""
+    if source != "moppy" or not isinstance(evidence, dict):
+        return False
+    terms = str(evidence.get("termsText") or "")
+    text = f"{evidence.get('name') or ''} {terms}"
+    return bool(
+        evidence.get("downstreamTermsRequired") is True
+        and re.search(r"POINT\s*GET", terms, re.I)
+        and re.search(r"step\s*up|各成果地点", text, re.I)
+        and not evidence.get("stepRewardPoints")
+        and not any(evidence.get(k) for k in ("providerId", "providerCandidates", "downstreamProviderCandidates"))
+    )
+
+
 def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
     sid = item.get("source")
     contract = REWARD_ONLY_CONTRACTS.get(sid)
@@ -263,7 +290,7 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
         e.get("state") == "parsed" and e.get("parserVersion") == contract["parser"],
         "incomplete_parser_contract",
     )
-    require(not e.get("downstreamTermsRequired"), "downstream_terms_required")
+    require(not e.get("downstreamTermsRequired") or moppy_stepup_total_only(sid, e), "downstream_terms_required")
     url = item.get("url") or ""
     require(direct.source_host_allowed(url, sources[sid]), "unregistered_url")
     require(contract["identity"](url) == e.get("offerId"), "offer_identity_mismatch")
@@ -641,6 +668,9 @@ def addition_snapshot(item, update):
     require(len(terms) < 8000, "oversize_condition")
     values = e.get("stepRewardYen", e.get("stepRewardPoints", []))
     is_step = bool(values) or bool(re.search(r"step\s*up|step\s*\d|複数条件|各成果地点", e["name"] + terms, re.I))
+    if is_step and moppy_stepup_total_only(item.get("source"), e):
+        return {**update, "condition": f"{terms}\n{MOPPY_TOTAL_ONLY_NOTE}",
+                "deadline": "条件欄の達成期限を参照", "type": "StepUp"}
     if is_step:
         # COINCOME v2's summary can omit the description's actual steps;
         # never create a row from "StepUpミッションクリア" alone.
@@ -755,8 +785,9 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
                 matches = {g for g, keys in aliases.items() if catalog_title_key(e.get("name")) in keys}
                 require(matches == {game}, "game_identity_ambiguous_or_changed")
                 require(not any(e.get(k) for k in (
-                    "providerId", "providerCandidates", "downstreamProviderCandidates",
-                    "downstreamTermsRequired")), "downstream_or_provider_contract_required")
+                    "providerId", "providerCandidates", "downstreamProviderCandidates"))
+                        and (not e.get("downstreamTermsRequired") or moppy_stepup_total_only(sid, e)),
+                        "downstream_or_provider_contract_required")
                 update = snapshot(item, sources, checked_at, rate_confirmed, fresh_detail=True)
                 achievement_deadline(e)
                 if sid == "moppy":

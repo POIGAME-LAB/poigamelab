@@ -104,10 +104,49 @@
     };
   }
 
-  async function loadOffersWithFallback() {
-    let publishedRows = [];
+  // 2026-11-24 operator decision: a verified amount that the daily check has not re-confirmed
+  // for more than 7 days is not shown (the row stays in the CSV; nothing is deleted).
+  const DEFAULT_MAX_OFFER_AGE_DAYS = 7;
+
+  function jstDayNumber(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value || "").trim());
+    if (!match) return null;
+    return Math.floor(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])) / 86400000);
+  }
+
+  function offerAgeDays(updatedAt, now = Date.now()) {
+    const day = jstDayNumber(updatedAt);
+    if (day === null) return null;
+    const today = Math.floor((Number(now) + 9 * 3600000) / 86400000);
+    return today - day;
+  }
+
+  function maxOfferAgeDays(policy) {
+    const value = Number(policy?.publication?.maxOfferAgeDays);
+    return Number.isFinite(value) && value >= 0 ? value : DEFAULT_MAX_OFFER_AGE_DAYS;
+  }
+
+  function isOfferFresh(offer, maxDays = DEFAULT_MAX_OFFER_AGE_DAYS, now = Date.now()) {
+    const age = offerAgeDays(offer?.updatedAt, now);
+    return age !== null && age >= 0 && age <= maxDays;
+  }
+
+  function splitFreshOffers(rows, maxDays, now = Date.now()) {
+    const fresh = [];
+    const stale = [];
+    (rows || []).forEach((offer) => (isOfferFresh(offer, maxDays, now) ? fresh : stale).push(offer));
+    return {
+      fresh,
+      staleCount: stale.length,
+      staleHiddenGames: [...new Set(stale.map((offer) => offer.gameName))]
+        .filter((game) => !fresh.some((offer) => offer.gameName === game))
+    };
+  }
+
+  async function loadOffersWithFallback(now = Date.now()) {
+    let allPublishedRows = [];
     try {
-      publishedRows = (await fetchCsv("data/published_offers.csv"))
+      allPublishedRows = (await fetchCsv("data/published_offers.csv"))
         .map((row) => normalizeOffer(row, "published"))
         .filter((offer) => offer.gameName && offer.verified && offer.reward > 0);
     } catch (error) {
@@ -120,21 +159,25 @@
       policy = await fetchJson("config/refresh_policy.json");
       managedGames = new Set(Object.keys(policy?.games || {}));
     } catch (error) {
+      policy = null;
       console.info("更新ポリシーを確認できないため、旧案件データは表示しません。", error.message);
-      return {
-        offers: publishedRows,
-        publishedCount: publishedRows.length,
-        legacyCount: 0,
-        usingPublished: publishedRows.length > 0
-      };
     }
 
-    if (policy?.publication?.allowLegacyFallback !== true) {
+    const freshness = splitFreshOffers(allPublishedRows, maxOfferAgeDays(policy), now);
+    const publishedRows = freshness.fresh;
+    const freshnessInfo = {
+      maxOfferAgeDays: maxOfferAgeDays(policy),
+      staleHiddenCount: freshness.staleCount,
+      staleHiddenGames: freshness.staleHiddenGames
+    };
+
+    if (!policy || policy?.publication?.allowLegacyFallback !== true) {
       return {
         offers: publishedRows,
         publishedCount: publishedRows.length,
         legacyCount: 0,
-        usingPublished: publishedRows.length > 0
+        usingPublished: publishedRows.length > 0,
+        ...freshnessInfo
       };
     }
 
@@ -147,7 +190,7 @@
       console.error("旧案件データの読み込みに失敗しました", error);
     }
 
-    const verifiedGames = new Set(publishedRows.map((offer) => offer.gameName));
+    const verifiedGames = new Set([...publishedRows.map((offer) => offer.gameName), ...freshness.staleHiddenGames]);
     const legacyOnly = legacyRows.filter((offer) =>
       !managedGames.has(offer.gameName) && !verifiedGames.has(offer.gameName)
     );
@@ -156,7 +199,8 @@
       offers: [...publishedRows, ...legacyOnly],
       publishedCount: publishedRows.length,
       legacyCount: legacyOnly.length,
-      usingPublished: publishedRows.length > 0
+      usingPublished: publishedRows.length > 0,
+      ...freshnessInfo
     };
   }
 
@@ -231,7 +275,11 @@
     if (gameHealth.state === "failed") {
       return { state: "warning", text: "掲載情報を確認中" };
     }
-    if (gameHealth.state === "degraded") {
+    // 2026-11-24 operator decision: an amount confirmed on one first-party site is shown as
+    // confirmed (with its date). Having fewer than two comparison sites is not a warning.
+    const reasons = Array.isArray(gameHealth.degradedReasons) ? gameHealth.degradedReasons : [];
+    const onlyFewSources = reasons.length > 0 && reasons.every((reason) => reason === "comparison_sources_below_minimum");
+    if (gameHealth.state === "degraded" && !onlyFewSources) {
       return { state: "warning", text: "掲載情報を確認中" };
     }
     if (gameHealth.state === "stale") {
@@ -658,6 +706,10 @@
     normalizePlatform,
     formatOfferSourceLabel,
     loadOffersWithFallback,
+    offerAgeDays,
+    isOfferFresh,
+    splitFreshOffers,
+    maxOfferAgeDays,
     hoursSince,
     buildGameHealth,
     loadDataHealth,

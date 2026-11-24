@@ -58,8 +58,16 @@ function makeContext(fetchImpl) {
   assert.strictEqual(discovery['Township'].state, 'degraded');
   const discoveryLabel = api.getOfferHealthLabel(
     { verified: true, updatedAt: '2026-08-29' }, discovery['Township']);
-  assert.strictEqual(discoveryLabel.state, 'warning');
-  assert.strictEqual(discoveryLabel.text, '掲載情報を確認中');
+  // 2026-11-24 operator decision: an amount confirmed on one first-party site is shown as confirmed
+  // with its date; "fewer than two comparison sites" alone is no longer a warning.
+  assert.strictEqual(discoveryLabel.state, 'verified');
+  assert.strictEqual(discoveryLabel.text, '✓ 掲載確認済み ・ 2026-08-29更新');
+  const mixed = api.buildGameHealth({
+    finishedAt: '2026-08-31T11:59:00Z',
+    results: [{ game: 'Township', returncode: 0, collectionComplete: false,
+      degradedReasons: ['comparison_sources_below_minimum', 'known_page_failure'] }]
+  }, { staleAfterHours: 48 }, now);
+  assert.strictEqual(api.getOfferHealthLabel({ verified: true, updatedAt: '2026-08-29' }, mixed['Township']).state, 'warning');
 
   const responses = {
     'data/refresh_status.json': {
