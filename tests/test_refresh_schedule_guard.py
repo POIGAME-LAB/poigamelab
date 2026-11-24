@@ -55,6 +55,12 @@ def test_backup_workflow_only_dispatches_and_never_writes():
     text = (ROOT / ".github/workflows/refresh-backup-trigger.yml").read_text(encoding="utf-8")
     assert "contents: read" in text and "contents: write" not in text and "git push" not in text
     assert "gh workflow run refresh-verified-offers.yml" in text
+    # A GITHUB_TOKEN-started run does not fire workflow_run, so the deploy must be dispatched here,
+    # and only after the refresh it started finished successfully.
+    watch = text.index("gh run watch")
+    assert "--exit-status" in text[watch:watch + 120]
+    assert text.index("gh workflow run deploy-pages.yml") > watch
+    assert "research-new-game-content" not in text  # no paid-API research on backup days
     assert "if: steps.guard.outputs.run == 'true'" in text
     assert "secrets." not in text and "API_KEY" not in text
     # downstream workflows listen only to the refresh workflow, never to this trigger
