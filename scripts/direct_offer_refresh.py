@@ -4918,6 +4918,55 @@ def merge_verified_offer_urls(targets, entries):
     return targets
 
 
+_DIAG_CODE = re.compile(r"[a-z0-9_]{1,60}")
+
+
+def _diag_code(value):
+    """A short internal code; anything else (page text, URLs, titles) becomes "unrecognized"."""
+    code = str(value or "").strip().lower()
+    if not code:
+        return "unknown"
+    return code if _DIAG_CODE.fullmatch(code) else "unrecognized"
+
+
+def source_diagnostics(review, detail_snapshots, fetch_cache):
+    """Per-site counts for the Actions log: why details did not parse and why reviews happened.
+
+    Added 2026-11-24 because the daily log only showed totals (e.g. Amefuri parse 0 for a month)
+    and the private daily report is not readable from the log. Only internal codes and counts
+    are printed - no URLs, titles, amounts or response text.
+    """
+    out = {}
+
+    def bucket(sid):
+        return out.setdefault(_diag_code(sid), {"fetchErrors": {}, "detailStates": {}, "reviewReasons": {}})
+
+    def bump(counter, key):
+        counter[key] = counter.get(key, 0) + 1
+
+    for (sid, _url), value in (fetch_cache or {}).items():
+        error = value[1] if isinstance(value, tuple) and len(value) == 2 else None
+        if error is not None:
+            code = summarize_fetch_error(error) if isinstance(error, BaseException) else _diag_code(error)
+            bump(bucket(sid)["fetchErrors"], _diag_code(code))
+    for item in detail_snapshots or []:
+        if not isinstance(item, dict):
+            continue
+        e = item.get("sourceEvidence") or {}
+        state = _diag_code(e.get("state"))
+        if e.get("reason"):
+            state = f"{state}:{_diag_code(e.get('reason'))}"
+        bump(bucket(item.get("source"))["detailStates"], state[:80])
+    for item in review or []:
+        if not isinstance(item, dict):
+            continue
+        reason = _diag_code(item.get("reason"))
+        if item.get("error"):
+            reason = f"{reason}:{_diag_code(item.get('error'))}"
+        bump(bucket(item.get("source"))["reviewReasons"], reason[:80])
+    return dict(sorted(out.items()))
+
+
 def main(after_scan=None):
     try:
         approvals = load_refresh_approvals()
@@ -6139,6 +6188,11 @@ def main(after_scan=None):
         print(f"{health['source']}: fetch成功={health['fetchSuccess']} parse成功={health['parseSuccess']} "
               f"publication可能={health['publicationEligible']} candidate-only={health['candidateOnly']} "
               f"device-only={health['deviceOnly']} fetch失敗={health['fetchFailed']}")
+    try:
+        print("SOURCE_DIAGNOSTICS " + json.dumps(source_diagnostics(review, detail_snapshots, fetch_cache),
+                                                 ensure_ascii=False, sort_keys=True))
+    except Exception as error:  # diagnostics must never fail the refresh
+        print(f"WARN: source diagnostics unavailable: {type(error).__name__}")
     return 0
 
 if __name__ == "__main__":
