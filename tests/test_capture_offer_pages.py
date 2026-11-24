@@ -47,3 +47,16 @@ def test_workflow_is_manual_read_only_and_secret_free():
     assert "contents: read" in text and "contents: write" not in text and "git push" not in text
     assert "secrets." not in text and "API_KEY" not in text
     assert "retention-days: 3" in text
+
+
+def test_pages_roundtrip_through_the_job_log(tmp_path):
+    (tmp_path / "001_moppy_detail.html").write_text("<html>日本語ページ" + "x" * 5000 + "</html>", encoding="utf-8")
+    index = [{"file": "001_moppy_detail.html"}, {"status": "http_status_404"}]
+    lines = []
+    assert cap.emit_pages(index, tmp_path, write=lines.append, width=50) == 1
+    logged = [f"2026-11-24T03:00:00.0000000Z {line}\n" for line in lines]
+    pages = cap.decode_log(logged)
+    assert pages["001_moppy_detail.html"].decode("utf-8").startswith("<html>日本語ページ")
+    assert all(line.startswith(("PAGE_BEGIN", "PAGEDATA", "PAGE_END")) for line in lines)
+    text = (ROOT / ".github/workflows/capture-offer-pages.yml").read_text(encoding="utf-8")
+    assert "--emit-log" in text
