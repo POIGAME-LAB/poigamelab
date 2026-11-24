@@ -104,3 +104,16 @@ def test_publication_hold_summary_counts_sites_and_reasons_without_urls():
     }
     assert "http" not in str(out)
     assert daily.summarize_publication_holds(None) == {}
+
+
+def test_moppy_s_id_and_site_id_are_one_offer(moppy_markup):
+    """2026-11-24: the catalog URL (?s_id=N&track_ref=category) created a second row for the same offer."""
+    a = "https://pc.moppy.jp/ad/detail.php?site_id=12345"
+    b = "https://pc.moppy.jp/ad/detail.php?s_id=12345&track_ref=category"
+    assert pub.direct.offer_identity_key(a, "moppy") == pub.direct.offer_identity_key(b, "moppy") == "moppy:site_id:12345"
+    # other sites keep their own key names
+    assert pub.direct.offer_identity_key("https://www.warau.jp/contents/point/pointEntrance.php?point_id=1", "warau") == "warau:point_id:1"
+    item = _item(moppy_markup.replace("site_id=12345", "s_id=12345&amp;track_ref=category"))
+    item["url"] = item["requestedUrl"] = b
+    out, report = _run([_row()], [item])
+    assert len(out) == 1 and report["addedRows"] == 0 and out[0]["reward"] == "600", report

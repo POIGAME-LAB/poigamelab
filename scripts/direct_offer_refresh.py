@@ -1360,7 +1360,11 @@ def offer_identity_key(url, source_id):
         if values:
             value = str(values[0]).strip()
             if value:
-                return f"{source_id}:{key}:{value}"
+                # Moppy serves one offer as ?site_id=N (canonical) and ?s_id=N&track_ref=category
+                # (app catalog). Both must be one identity, or the same offer is published twice
+                # (2026-11-24: King Shot iOS appeared as two rows).
+                label = "site_id" if str(source_id or "") == "moppy" and key == "s_id" else key
+                return f"{source_id}:{label}:{value}"
 
     path = p.path or ""
     if str(source_id or "") == "trima":
