@@ -209,7 +209,7 @@ def test_probe_limit_is_clamped_to_forty_and_stops_at_the_target(tmp_path):
     pages = {f"https://pc.moppy.jp/ad/detail.php?s_id={1000 + i}": (200, _page("moppy_single_ball_sort_ios.html")) for i in range(1, 80)}
     # every page here is the same fixture, so identity checks are not the point: only the budget is
     for url in list(pages):
-        pages[url] = (200, _page("moppy_single_ball_sort_ios.html").replace(b"161455", url.rsplit("=", 1)[1].encode()))
+        pages[url] = (200, _page("moppy_single_ball_sort_ios.html").replace("（0件）".encode(), "（3件）".encode()).replace(b"161455", url.rsplit("=", 1)[1].encode()))
     out, log = _build(tmp_path, cands, pages, probe_limit=500, target_verified=999)
     assert out["budget"]["probeLimit"] == tri.MAX_PROBE_LIMIT == 40 and out["budget"]["probed"] == 40 and len(log) == 40
     out2, log2 = _build(tmp_path / "b", cands, pages, probe_limit=40, target_verified=5) if (tmp_path / "b").mkdir() is None else (None, None)
@@ -251,3 +251,47 @@ def test_unreadable_candidates_rank_after_verified_ones_once_probed(tmp_path):
     pages = {WARAU_SKYFLAG[0]: (200, _page("warau_not_viewable.html")), MOPPY_SINGLE[0]: (200, _page("moppy_single_ball_sort_ios.html"))}
     out, _ = _build(tmp_path, [bad, good], pages, lookup=False)
     assert [i["game"] for i in out["items"]] == ["Good", "Bad"]
+
+
+def _moppy_cands(n, start=3000, **extra):
+    return [_cand(f"M{start + i}", [_row("moppy", f"https://pc.moppy.jp/ad/detail.php?s_id={start + i}", MOPPY_SINGLE[1])], order=i, **extra) for i in range(n)]
+
+
+def _moppy_pages(cands, reviews):
+    page = _page("moppy_single_ball_sort_ios.html")
+    return {c["rows"][0]["url"]: (200, page.replace("（0件）".encode(), f"（{reviews.get(c['game'], 0)}件）".encode())
+                                  .replace(b"161455", c["rows"][0]["url"].rsplit("=", 1)[1].encode())) for c in cands}
+
+
+def test_games_held_on_an_earlier_day_are_probed_last_and_do_not_count_toward_the_target(tmp_path):
+    held = _moppy_cands(4, 3000, previouslyHeld={"date": "2026-11-22", "reason": "no independent players"})
+    fresh = _moppy_cands(3, 3100)
+    allc = held + fresh
+    reviews = {c["game"]: 2 for c in allc}
+    out, log = _build(tmp_path, allc, _moppy_pages(allc, reviews), lookup=False, probe_limit=40, target_verified=3)
+    assert [u.rsplit("=", 1)[1][:2] for u in log][:3] == ["31", "31", "31"]  # the three fresh games first
+    assert out["budget"]["promising"] == 3 and out["budget"]["verified"] == 3 and len(log) == 3  # held games never reached
+    # when too few fresh games exist the held ones still use the leftover slots
+    out2, log2 = _build(tmp_path / "b", held + fresh[:1], _moppy_pages(held + fresh[:1], {c["game"]: 2 for c in held + fresh[:1]}),
+                        lookup=False, probe_limit=40, target_verified=3) if (tmp_path / "b").mkdir() is None else (None, None)
+    assert len(log2) == 5 and out2["budget"]["promising"] == 1 and out2["budget"]["verified"] == 5
+
+
+def test_offers_whose_page_shows_zero_user_reviews_do_not_stop_the_probing(tmp_path):
+    zero = _moppy_cands(6, 3200, listedDays=40)
+    withrev = _moppy_cands(3, 3300, listedDays=1)
+    allc = zero + withrev
+    out, log = _build(tmp_path, allc, _moppy_pages(allc, {c["game"]: 4 for c in withrev}), lookup=False, probe_limit=40, target_verified=2)
+    # the six zero-review pages are read and ranked, but only the two pages with reviews end the search
+    assert out["budget"]["verified"] == len(log) == 8 and out["budget"]["promising"] == 2
+    assert out["budget"]["probed"] == 8 and out["budget"]["probeLimit"] == 40  # still bounded by the same caps
+    # a zero count only changes when to stop: those games stay verified and are never rejected
+    assert sum(1 for i in out["items"] if i["verdict"] == "offer_verified") == 8
+
+
+def test_unknown_review_count_counts_as_promising(tmp_path):
+    item = {"verdict": "offer_verified", "playerSignal": {"firstPartyReviewCount": None}}
+    assert tri._is_promising(item) is True
+    assert tri._is_promising({**item, "playerSignal": {"firstPartyReviewCount": 0}}) is False
+    assert tri._is_promising({**item, "previouslyHeld": {"date": "x"}}) is False
+    assert tri._is_promising({"verdict": "offer_unreadable"}) is False
