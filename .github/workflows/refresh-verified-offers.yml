@@ -86,6 +86,10 @@ jobs:
         if: steps.refresh.outcome == 'success'
         run: python scripts/write_new_game_content_queue.py
 
+      - name: Write all-offers ranking (every new-game offer on today's listings)
+        if: steps.refresh.outcome == 'success'
+        run: python scripts/write_all_offers_ranking.py
+
       - name: Append reward history when values changed
         if: steps.refresh.outcome == 'success'
         run: python scripts/append_offer_history.py
@@ -173,6 +177,7 @@ jobs:
           git add data/published_offers.csv
           git add data/offer_history.csv
           git add data/new_game_content_queue.json
+          if [ -f data/all_offers_ranking.json ]; then git add data/all_offers_ranking.json; fi
           if [ -f data/refresh_status.json ]; then git add data/refresh_status.json; fi
           git add data/new_game_monitor.json data/existing_game_monitor.json
           if [ -f data/verified_offer_urls.json ]; then git add data/verified_offer_urls.json; fi

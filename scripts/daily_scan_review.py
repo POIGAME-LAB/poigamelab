@@ -408,6 +408,50 @@ def research_queries(game):
             "point_site_reviews": f'"{game}" ポイ活 口コミ 課金'}
 
 
+def all_offers_summary(eligible, results, sources, warau_rate_confirmed, rate_registry):
+    """Every new-game offer seen on today's first-party listings, ranked by listing amount.
+
+    Added 2026-11-24 (operator request): the top-five handoff only covers games listed on two
+    or more sites and stops when any site scan is incomplete, so the daily-guide routine could
+    not see a full ranking. This summary costs no extra requests: it reuses today's listing
+    snapshots. listingUpperBoundYen is the conservative listing amount (never published, never
+    verified); verifiedRewardYen is set only where a first-party detail was confirmed today.
+    """
+    verified = {}
+    for result in results:
+        for detail in result.get("details") or []:
+            if detail.get("rewardYen") is not None:
+                verified[(result["game"], detail["source"], detail["url"])] = detail["rewardYen"]
+    games = []
+    for group in eligible:
+        offers = []
+        for sid, url, item in group["offers"].values():
+            bound = listing_reward_upper_bound_yen(item, warau_rate_confirmed, rate_registry)
+            offers.append({
+                "source": sid,
+                "url": url,
+                "platformHint": str((item or {}).get("platformHint") or ""),
+                "listingUpperBoundYen": bound,
+                "verifiedRewardYen": verified.get((group["game"], sid, url)),
+            })
+        offers.sort(key=lambda o: (o["listingUpperBoundYen"] is None, -(o["listingUpperBoundYen"] or 0), o["source"]))
+        bounds = [o["listingUpperBoundYen"] for o in offers if o["listingUpperBoundYen"] is not None]
+        games.append({
+            "game": group["game"],
+            "siteCount": len({o["source"] for o in offers}),
+            "bestListingYen": max(bounds) if bounds else None,
+            "bestVerifiedYen": max((o["verifiedRewardYen"] for o in offers if o["verifiedRewardYen"] is not None), default=None),
+            "offers": offers,
+        })
+    games.sort(key=lambda g: (g["bestListingYen"] is None, -(g["bestListingYen"] or 0), -g["siteCount"], g["game"]))
+    by_source = {}
+    for g in games:
+        for o in g["offers"]:
+            by_source[o["source"]] = by_source.get(o["source"], 0) + 1
+    return {"gameCount": len(games), "offerCount": sum(len(g["offers"]) for g in games),
+            "offersBySource": dict(sorted(by_source.items())), "games": games}
+
+
 def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
                 existing_games=None, max_groups=MAX_GROUPS, max_details=MAX_DETAILS):
     families = source_families(sources)
@@ -609,7 +653,8 @@ def review_scan(*, items, sources, targets, rows, checked_at, fetcher,
             "incompleteDiscoverySources": [],
             "rankingComplete": not group_limit and not detail_limit,
             "rankingScope": "supported_scanned_first_party_surfaces",
-            "topFiveReviewCandidates": [g["game"] for g in ranked[:5]], "results": results}
+            "topFiveReviewCandidates": [g["game"] for g in ranked[:5]], "results": results,
+            "allOffers": all_offers_summary(eligible, results, sources, warau_rate_confirmed, rate_registry)}
 
 
 def apply_discovery_completeness(report, discovery_summary):
