@@ -1,0 +1,50 @@
+{
+ "moppy_ended_timeerror.html": {
+  "url": "https://pc.moppy.jp/ad/detail.php?site_id=160690",
+  "finalUrl": "https://pc.moppy.jp/timeerror.php",
+  "game": "メメントモリ",
+  "source": "moppy",
+  "capturedAt": "2026-11-24",
+  "sha256": "db6a95c4d33735146ac137001a165c20294defb99cd8e5d44b69f4606cef4345"
+ },
+ "warau_paused.html": {
+  "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
+  "finalUrl": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205816",
+  "game": "きのこ伝説",
+  "source": "warau",
+  "capturedAt": "2026-11-24",
+  "sha256": "c9b423ea3ca64b69a981aab7aa7a463076138ca92b99a6dd59357f94eff5b426"
+ },
+ "moppy_single_tokyo_debunker_unheaded.html": {
+  "url": "https://pc.moppy.jp/ad/detail.php?site_id=158270",
+  "finalUrl": "https://pc.moppy.jp/ad/detail.php?site_id=158270",
+  "game": "東京ディバンカー",
+  "source": "moppy",
+  "capturedAt": "2026-11-24",
+  "sha256": "fa15b4d8f68c40da285a975da83ad48bda615158c50e09c506abdb4ea1e36112"
+ },
+ "hapitas_tokyo_debunker.html": {
+  "url": "https://hapitas.jp/item/detail/itemid/91316",
+  "finalUrl": "https://hapitas.jp/item/detail/itemid/91316",
+  "game": "東京ディバンカー",
+  "source": "hapitas",
+  "capturedAt": "2026-11-24",
+  "sha256": "a0df4742bc718a9415dcfb24c92aa60a5bb96a5f6cdbe598424f3d8366a0c0bb"
+ },
+ "hapitas_evertale_template.html": {
+  "url": "https://hapitas.jp/item/detail/itemid/91331",
+  "finalUrl": "https://hapitas.jp/item/detail/itemid/91331",
+  "game": "エバーテイル",
+  "source": "hapitas",
+  "capturedAt": "2026-11-24",
+  "sha256": "747070b5fad72e46eb90c5a9952c1e9c7fdc2fd8aa98b4f7be8ed223e7f9f36f"
+ },
+ "hapitas_evertale_10days.html": {
+  "url": "https://hapitas.jp/item/detail/itemid/91344",
+  "finalUrl": "https://hapitas.jp/item/detail/itemid/91344",
+  "game": "エバーテイル",
+  "source": "hapitas",
+  "capturedAt": "2026-11-24",
+  "sha256": "caef86af65c24e533fa5bd6ed49857ffbb88bb1c022241bc4d4b57b8fe2b06de"
+ }
+}

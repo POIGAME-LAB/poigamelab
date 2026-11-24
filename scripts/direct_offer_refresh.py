@@ -1511,6 +1511,11 @@ def inspect_warau_offer(raw, requested_url, final_url, aliases):
         if doc.find(cls="pointEntranceNone-Main") or "掲載終了のご案内" in title:
             return {"state": "unavailable", "reason": "source_offer_unavailable",
                     "offerId": offer_id}
+        # A paused offer ("この広告は現在停止中のため、ご利用いただけません") is not ended.
+        if not doc.find(ident="pointEntrancePointDetail") and any(
+                "現在停止中" in evidence_text(node)
+                for node in doc.find(cls="commonError-Paragraph")):
+            return {"state": "unavailable", "reason": "source_offer_paused", "offerId": offer_id}
         # Since 2026-09 an ended offer keeps its canonical URL but renders only
         # the shared error body instead of the offer detail block.
         if not doc.find(ident="pointEntrancePointDetail") and any(
@@ -2658,6 +2663,11 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
     """
     try:
         offer_id = moppy_offer_id(requested_url)
+        # An ended Moppy offer redirects to /timeerror.php ("こちらの広告は掲載期間が終了しています").
+        final = urlparse(str(final_url or ""))
+        if final.hostname == "pc.moppy.jp" and final.path == "/timeerror.php":
+            return {"state": "unavailable", "reason": "source_offer_unavailable", "offerId": offer_id,
+                    "unavailableMarker": "timeerror"}
         if moppy_offer_id(final_url) != offer_id:
             raise ValueError("redirected_to_different_offer")
 
@@ -2753,7 +2763,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
             pr_marker = section_text.find("[PR]")
             strong_unheaded = (
                 any(marker in section_text[:terms_end] for marker in (
-                    "成果受付期限", "成果調査受付期限"
+                    "成果受付期限", "成果調査受付期限", "獲得条件達成期限"
                 ))
                 and any(marker in section_text[:terms_end] for marker in (
                     "新規アプリインストール後", "新規インストール後",
