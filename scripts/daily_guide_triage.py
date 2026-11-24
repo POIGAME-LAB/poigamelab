@@ -212,6 +212,13 @@ def probe(item: dict, budget: dict, fetcher=None, delay: float = 0.8, lookup: bo
         item["unreadableReasons"] = sorted({f"{r['site']}:{r['state']}:{r.get('unavailableReason')}" for r in results})
 
 
+def _is_promising(item: dict) -> bool:
+    """A readable offer that is worth counting toward the stop target (see module docstring)."""
+    if item["verdict"] != "offer_verified" or item.get("previouslyHeld"):
+        return False
+    return (item.get("playerSignal") or {}).get("firstPartyReviewCount") != 0
+
+
 def build(date: str, root: Path = ROOT, do_probe: bool = False, probe_limit: int = DEFAULT_PROBE_LIMIT,
           target_verified: int = DEFAULT_TARGET_VERIFIED, fetcher=None, delay: float = 0.8, lookup: bool = True) -> dict:
     cpath = root / DAILY_DIR / date / "candidates.json"
@@ -222,18 +229,23 @@ def build(date: str, root: Path = ROOT, do_probe: bool = False, probe_limit: int
     cand.ALIASES.update(cand._load_aliases(root))
     limit = max(1, min(int(probe_limit), MAX_PROBE_LIMIT))
     items = [triage_offline(c) for c in data["candidates"]]
-    games = sorted((i for i in items if i["bucket"] == "game_candidate"), key=lambda i: (-i["score"], i["order"] or 0, i["game"]))
-    unclassified = sorted((i for i in items if i["bucket"] == "unclassified"), key=lambda i: (-i["score"], i["order"] or 0, i["game"]))
-    budget = {"requests": 0, "lookups": 0, "capHit": False, "probed": 0, "verified": 0}
+    # games held on an earlier day go to the back of the queue: they are probed only with what the new games leave over
+    def queue_key(i):
+        return (bool(i.get("previouslyHeld")), -i["score"], i["order"] or 0, i["game"])
+
+    games = sorted((i for i in items if i["bucket"] == "game_candidate"), key=queue_key)
+    unclassified = sorted((i for i in items if i["bucket"] == "unclassified"), key=queue_key)
+    budget = {"requests": 0, "lookups": 0, "capHit": False, "probed": 0, "verified": 0, "promising": 0}
     if do_probe:
         for item in games + unclassified:      # unclassified names only get what the likely games leave over
-            if budget["probed"] >= limit or budget["verified"] >= target_verified or budget["capHit"]:
+            if budget["probed"] >= limit or budget["promising"] >= target_verified or budget["capHit"]:
                 break
             if not item["paths"] and budget["lookups"] >= MAX_LOOKUPS:
                 continue
             probe(item, budget, fetcher, delay, lookup)
             budget["probed"] += 1
             budget["verified"] += item["verdict"] == "offer_verified"
+            budget["promising"] += _is_promising(item)
     # After probing, games whose first-party page already shows user reviews come first among the verified ones.
     def reviews(i):
         return (i.get("playerSignal") or {}).get("firstPartyReviewCount") or 0
@@ -279,7 +291,8 @@ def main(argv=None) -> int:
     out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     b = result["budget"]
     print(f"wrote {out.relative_to(ROOT) if out.is_relative_to(ROOT) else out}  candidates={result['candidateCount']} games={result['gameCandidateCount']} "
-          f"verdicts={result['verdictCounts']} requests={b['requests']}/{b['maxRequests']} probed={b['probed']}/{b['probeLimit']}")
+          f"verdicts={result['verdictCounts']} requests={b['requests']}/{b['maxRequests']} probed={b['probed']}/{b['probeLimit']} "
+          f"verified={b['verified']} promising={b['promising']}")
     for item in result["items"][: args.top]:
         print(f"{item['rank']:>3} {item['score']:>5} {item['verdict']:<20} {item['game'][:34]:<34} kinds={','.join(item['kindHints'])} "
               f"sites={','.join(item['sources'])} paths={','.join(p['site'] for p in item['paths'])}")
