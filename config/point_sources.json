@@ -142,6 +142,8 @@
     },
     {
       "id": "mikoshi",
+      "existing_game_listing_lane": true,
+      "coverage_first_party_listing_enabled": true,
       "name": "MIKOSHI",
       "start_url": "https://web.mikoshi.jp/v2/skyflag/ads?os=1&limit=1000",
       "search_domains": [

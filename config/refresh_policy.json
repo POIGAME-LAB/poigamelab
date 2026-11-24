@@ -180,7 +180,8 @@
       "point_town",
       "ec_navi",
       "amefuri",
-      "powl"
+      "powl",
+      "mikoshi"
     ],
     "mode": "complete-stepup-or-exact-reward-snapshot",
     "preserveRowsOnHold": true

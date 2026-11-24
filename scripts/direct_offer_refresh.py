@@ -364,6 +364,13 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
             )
         except (ValueError, TypeError, RecursionError):
             return []
+    if str(source.get("id") or "") == "mikoshi":
+        try:
+            return discover_mikoshi_target_listing_candidates(
+                raw, base_url, source, aliases, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
     if str(source.get("id") or "") == "trima":
         try:
             return discover_trima_target_listing_candidates(
@@ -4210,6 +4217,48 @@ def mikoshi_listing_detail_identity_signature(raw, base_url, source, limit=5000)
     return tuple(sorted(identities))
 
 
+def mikoshi_title_matches(name, aliases):
+    """Same title rule as inspect_mikoshi_offer: alias contained, or a >=4-char key prefix."""
+    if target_present(name, aliases):
+        return True
+    name_key = normalized_game_title_key(name)
+    return any(
+        key and len(key) >= 4 and name_key and (key.startswith(name_key) or name_key.startswith(key))
+        for key in (normalized_game_title_key(a) for a in aliases if str(a or "").strip())
+    )
+
+
+def discover_mikoshi_target_listing_candidates(raw, base_url, source, aliases, limit=8):
+    """Detail URLs of one catalog game in the anonymous MIKOSHI JSON feed (candidate only)."""
+    platform = mikoshi_listing_platform(base_url)
+    found, seen = [], set()
+    for ad in _mikoshi_listing_ads(raw):
+        if not isinstance(ad, dict):
+            continue
+        offer_id = str(ad.get("id") or "")
+        name = str(ad.get("name") or "").strip()
+        if not re.fullmatch(r"[0-9]+", offer_id) or not 2 <= len(name) <= 240:
+            continue
+        if not mikoshi_title_matches(name, aliases):
+            continue
+        detail_url = f"https://web.mikoshi.jp/v2/skyflag/ads/{offer_id}"
+        if detail_url in seen or not source_host_allowed(detail_url, source):
+            continue
+        seen.add(detail_url)
+        found.append({
+            "source": "mikoshi",
+            "sourceLabel": str(source.get("name") or "MIKOSHI"),
+            "providerHint": "",
+            "gameLabel": next((str(x).strip() for x in aliases if str(x).strip()), ""),
+            "platformHint": platform,
+            "rewardYenHint": "",
+            "firstPartyCandidateUrl": detail_url,
+        })
+        if len(found) >= max(1, min(int(limit or 8), 8)):
+            break
+    return found
+
+
 def discover_mikoshi_listing_candidates(raw, base_url, source, targets, limit=500):
     """Convert the anonymous first-party MIKOSHI JSON feed into review candidates."""
     platform = mikoshi_listing_platform(base_url)
@@ -5037,6 +5086,17 @@ def main(after_scan=None):
         and not device_only(x)
         and str(x.get("id") or "").strip()
     ]
+    # Sources that are not discovery-only (MIKOSHI) may opt in explicitly. They go first so the
+    # per-game lane limit below never drops them (2026-11-24: MIKOSHI lists 17 catalog games).
+    first_party_coverage_sources = [
+        x for x in sources.values()
+        if isinstance(x, dict)
+        and x.get("existing_game_listing_lane") is True
+        and x.get("coverage_first_party_listing_enabled") is True
+        and not device_only(x)
+        and str(x.get("id") or "").strip()
+        and x not in first_party_coverage_sources
+    ] + first_party_coverage_sources
     new_game_discovery_sources = [
         x for x in sources.values()
         if isinstance(x, dict)
@@ -5829,7 +5889,7 @@ def main(after_scan=None):
                         "reason": "external_coverage_gap_candidate",
                     })
 
-            for discovery_source in first_party_coverage_sources[:6]:
+            for discovery_source in first_party_coverage_sources[:7]:
                 detail_review_enabled = discovery_source.get("coverage_detail_review_enabled") is True
                 detail_review_remaining = max(
                     0, min(

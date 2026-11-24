@@ -114,6 +114,30 @@ REWARD_ONLY_CONTRACTS = {
         "pointScale": 10,
         "termsMarkers": ("加算条件", "加算時期"),
     },
+    # MIKOSHI: added 2026-11-24 by operator decision after checking 15 real first-party JSON
+    # details (17 catalog games are listed). The parser already requires every Step's
+    # reward to add up to the total and reads the OS from isPublishIos/isPublishAndroid.
+    # 1 MIKOSHI point = 1 JPY is the reviewed base value in config/point_value_rates.json.
+    "mikoshi": {
+        "parser": "mikoshi-skyflag-detail-review-v3",
+        "identity": direct.mikoshi_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "verifiedCurrentRewardPoints", "verifiedCurrentRewardYen",
+            "rewardUnit", "sourcePointRate", "conversionEvidenceUrl", "conversionReviewedAt",
+            "steps", "conditionText", "termsText", "downstreamTermsRequired", "candidateOnly",
+            "publicationAuthorized",
+        ],
+        "rewardUnit": "MIKOSHI-point",
+        "sourcePointRate": "1MIKOSHI-point=1JPY",
+        "pointField": "verifiedCurrentRewardPoints",
+        "pointScale": 1,
+        "termsMarkers": ("注意事項",),
+        "termsLimit": 16000,
+        # The parser marks every output candidateOnly; like publicationAuthorized this is its
+        # default, not a veto. Item-level candidate envelopes still veto.
+        "parserCandidateOnlyIsDefault": True,
+    },
     # Powl: added 2026-11-24 by operator decision after checking 13 real first-party pages
     # (16 catalog games are listed on Powl). 10pt=1JPY is the reviewed rate in
     # config/point_value_rates.json. Multi-mission offers are published only when the
@@ -332,6 +356,21 @@ def check_powl_steps(evidence):
     return steps
 
 
+def mikoshi_steps(evidence):
+    """Validated (condition, points) pairs; total must equal the verified reward."""
+    steps = evidence.get("steps")
+    require(isinstance(steps, list) and steps, "invalid_steps")
+    out = []
+    for n, step in enumerate(steps, start=1):
+        require(isinstance(step, dict) and step.get("step") == n, "invalid_step")
+        points = step.get("rewardPoints")
+        condition = str(step.get("condition") or "").strip()
+        require(type(points) is int and points > 0 and len(condition) >= 2, "invalid_step")
+        out.append((condition, points))
+    require(sum(points for _, points in out) == evidence.get("verifiedCurrentRewardPoints"), "step_total_mismatch")
+    return out
+
+
 def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
     sid = item.get("source")
     contract = REWARD_ONLY_CONTRACTS.get(sid)
@@ -394,6 +433,8 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
         )
     elif sid == "powl":
         check_powl_steps(e)
+    elif sid == "mikoshi":
+        mikoshi_steps(e)
     elif sid == "amefuri":
         require(
             e.get("displayedCurrentRewardYen") == reward,
@@ -420,7 +461,7 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
             raise Hold("invalid_reward_mode")
     terms = e.get("termsText")
     require(
-        isinstance(terms, str) and 0 < len(terms) <= 12000,
+        isinstance(terms, str) and 0 < len(terms) <= int(contract.get("termsLimit") or 12000),
         "missing_or_oversize_terms",
     )
     require(
@@ -737,6 +778,13 @@ def addition_snapshot(item, update):
     require(len(terms) < 8000, "oversize_condition")
     values = e.get("stepRewardYen", e.get("stepRewardPoints", []))
     is_step = bool(values) or bool(re.search(r"step\s*up|step\s*\d|複数条件|各成果地点", e["name"] + terms, re.I))
+    if item.get("source") == "mikoshi":
+        steps = mikoshi_steps(e)
+        require(sum(p for _, p in steps) == int(update["reward"]), "step_total_mismatch")
+        if len(steps) >= 2:
+            lines = "\n".join(f"STEP{n}：{cond}【{points:,}MIKOSHIポイント】" for n, (cond, points) in enumerate(steps, 1))
+            return {**update, "condition": f"{lines}\n{terms}", "deadline": "条件欄の達成期限を参照", "type": "StepUp"}
+        return {**update, "condition": f"{steps[0][0]}\n{terms}", "deadline": "条件欄の達成期限を参照", "type": "Single"}
     if item.get("source") == "powl":
         steps = check_powl_steps(e)
         multi = powl_is_multi(e)
@@ -857,7 +905,9 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
                 require(game in aliases, "unknown_catalog_game")
                 e = item.get("sourceEvidence") or {}
                 require(e.get("state") == "parsed", "incomplete_parser_contract")
-                require(e.get("candidateOnly") is not True, "candidate_only_parser")
+                require(e.get("candidateOnly") is not True
+                        or (REWARD_ONLY_CONTRACTS.get(sid) or {}).get("parserCandidateOnlyIsDefault") is True,
+                        "candidate_only_parser")
                 require(direct.source_host_allowed(item.get("requestedUrl"), sources[sid]), "unregistered_request")
                 require(direct.offer_identity_key(item.get("requestedUrl"), sid) == identity, "redirect_identity_changed")
                 title = powl_title(e.get("name")) if sid == "powl" else e.get("name")
