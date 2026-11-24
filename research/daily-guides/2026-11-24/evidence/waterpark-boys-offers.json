@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 2,
+  "slug": "waterpark-boys",
+  "site": "multi",
+  "sites": [
+    "amefuri",
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-24T20:00:26+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:160639",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "160639",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160639",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "WaterPark Boys（ウォーターパークボーイズ）_iOS",
+      "gameName": "WaterPark Boys（ウォーターパークボーイズ）",
+      "os": "iOS",
+      "osSource": "title",
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープンで達成",
+      "deadlineDays": 7,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープンで達成",
+          "rewardPt": 210,
+          "rewardYen": 210,
+          "deadlineDays": 7
+        }
+      ],
+      "totalPt": 210,
+      "totalYen": 210,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-24T11:00:15+00:00",
+      "responseSha256": "e88e04f81c70aa676938e96c88140983d796a40a4478dab0a0ae3aa30f43bf02"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:160640",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "160640",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160640",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "WaterPark Boys（ウォーターパークボーイズ）_Android",
+      "gameName": "WaterPark Boys（ウォーターパークボーイズ）",
+      "os": "Android",
+      "osSource": "title",
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープンで達成",
+      "deadlineDays": 7,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープンで達成",
+          "rewardPt": 210,
+          "rewardYen": 210,
+          "deadlineDays": 7
+        }
+      ],
+      "totalPt": 210,
+      "totalYen": 210,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-24T11:00:18+00:00",
+      "responseSha256": "f283c67457769c740829f6fe9f92391e684358aaba9a44ac167936ff36f9b1dd"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:209434",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "209434",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "WaterPark Boys（2番目のステージSANTA MONICA BEACHオープン）でポイントを貯める",
+      "gameName": "WaterPark Boys",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "おきサンポ",
+          "attribute": "男性・40代",
+          "date": "2026-11-23",
+          "title": "2時間やれば大丈夫♪"
+        },
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-23",
+          "title": "2時間くらいでクリアしました"
+        },
+        {
+          "name": "マリーさん",
+          "attribute": "女性・40代",
+          "date": "2026-11-21",
+          "title": "数時間で達成しました"
+        },
+        {
+          "name": "はりはり",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "強制広告に耐えられる方には良い案件"
+        },
+        {
+          "name": "はる",
+          "attribute": "男性・20代",
+          "date": "2026-11-24",
+          "title": "楽しかった！"
+        },
+        {
+          "name": "チーズナン",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "2時間弱で終了"
+        },
+        {
+          "name": "はりはり",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "強制広告に耐えられる方には良い案件"
+        },
+        {
+          "name": "はる",
+          "attribute": "男性・20代",
+          "date": "2026-11-24",
+          "title": "楽しかった！"
+        },
+        {
+          "name": "チーズナン",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "2時間弱で終了"
+        },
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-23",
+          "title": "2時間くらいでクリアしました"
+        },
+        {
+          "name": "おきサンポ",
+          "attribute": "男性・40代",
+          "date": "2026-11-23",
+          "title": "2時間やれば大丈夫♪"
+        },
+        {
+          "name": "マリーさん",
+          "attribute": "女性・40代",
+          "date": "2026-11-21",
+          "title": "数時間で達成しました"
+        }
+      ],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動してください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証",
+        "「adjust Insights」を起動→表示された「IDFA」を記載"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-24T11:00:21+00:00",
+      "responseSha256": "32ff53e7d4893daf7eb9393d36c2b04ed6346da969f711e9724c19a6381d42e3"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:209435",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "209435",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209435",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "offer_structure_not_found",
+      "title": "WaterPark Boys（2番目のステージSANTA MONICA BEACHオープン）でポイントを貯める",
+      "gameName": "WaterPark Boys",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "おきサンポ",
+          "attribute": "男性・40代",
+          "date": "2026-11-23",
+          "title": "2時間やれば大丈夫♪"
+        },
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-23",
+          "title": "2時間くらいでクリアしました"
+        },
+        {
+          "name": "マリーさん",
+          "attribute": "女性・40代",
+          "date": "2026-11-21",
+          "title": "数時間で達成しました"
+        },
+        {
+          "name": "はりはり",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "強制広告に耐えられる方には良い案件"
+        },
+        {
+          "name": "はる",
+          "attribute": "男性・20代",
+          "date": "2026-11-24",
+          "title": "楽しかった！"
+        },
+        {
+          "name": "チーズナン",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "2時間弱で終了"
+        },
+        {
+          "name": "はりはり",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "強制広告に耐えられる方には良い案件"
+        },
+        {
+          "name": "はる",
+          "attribute": "男性・20代",
+          "date": "2026-11-24",
+          "title": "楽しかった！"
+        },
+        {
+          "name": "チーズナン",
+          "attribute": "女性・50代",
+          "date": "2026-11-24",
+          "title": "2時間弱で終了"
+        },
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-23",
+          "title": "2時間くらいでクリアしました"
+        },
+        {
+          "name": "おきサンポ",
+          "attribute": "男性・40代",
+          "date": "2026-11-23",
+          "title": "2時間やれば大丈夫♪"
+        },
+        {
+          "name": "マリーさん",
+          "attribute": "女性・40代",
+          "date": "2026-11-21",
+          "title": "数時間で達成しました"
+        }
+      ],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動してください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証",
+        "「adjust Insights」を起動→表示された「Google Advertising ID」を記載"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-24T11:00:24+00:00",
+      "responseSha256": "b7ed3d8d6cabd844164591dfd11b5ba7e18f09ffa3bdc4a75273060c3d47f215"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "amefuri:131762",
+      "site": "amefuri",
+      "siteLabel": "アメフリ",
+      "offerId": "131762",
+      "url": "https://www.amefri.net/detail/id/131762",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "reward_header_not_found",
+      "title": "【S】【Stage2 Open（2番目のステージSANTA MONICA BEACHオープン）】WaterPark Boys_iOS",
+      "gameName": "【S】【Stage2 Open（2番目のステージSANTA MONICA BEACHオープン）】WaterPark Boys",
+      "os": "iOS",
+      "osSource": "page",
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": null,
+      "rateVerified": false,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-24T11:00:26+00:00",
+      "responseSha256": "f733e23a89e534ac3fe3c6ac117af3898d26042e6ffe0ce179063723b3fe7490"
+    }
+  ]
+}
