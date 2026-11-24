@@ -60,6 +60,19 @@ def plan(sources_cfg: dict, targets: list, wanted: tuple, max_pages: int = MAX_P
     return out[:max(0, min(int(max_pages), MAX_PAGES))]
 
 
+def extra_items(sources_cfg: dict, spec: str) -> list[dict]:
+    """Explicit "source=url" pairs (e.g. an Amefuri detail found in a listing); registered hosts only."""
+    out = []
+    for part in str(spec or "").split(","):
+        sid, sep, url = part.strip().partition("=")
+        source = sources_cfg.get(sid.strip())
+        url = url.strip()
+        if not sep or not source or not url.startswith("https://") or not direct.source_host_allowed(url, source):
+            continue
+        out.append({"source": sid.strip(), "url": url, "kind": "detail", "game": ""})
+    return out[:20]
+
+
 def _error_code(error) -> str:
     return direct.summarize_fetch_error(error) if isinstance(error, BaseException) else "error"
 
@@ -155,12 +168,15 @@ def main(argv=None) -> int:
     ap.add_argument("--out", default="captured-pages")
     ap.add_argument("--delay", type=float, default=1.0)
     ap.add_argument("--emit-log", action="store_true", help="also print the saved pages into the job log")
+    ap.add_argument("--urls", default="", help="extra source=url pairs, comma-separated (registered hosts only)")
     args = ap.parse_args(argv)
     sources_cfg = {s["id"]: s for s in json.loads((ROOT / "config/point_sources.json").read_text(encoding="utf-8"))["sources"]}
     targets = json.loads((ROOT / "config/game_targets.json").read_text(encoding="utf-8"))["games"]
     aliases = {t["game"]: [t["game"], *t.get("aliases", [])] for t in targets}
     wanted = tuple(s.strip() for s in args.sources.split(",") if s.strip())
     items = plan(sources_cfg, targets, wanted, args.max_pages)
+    items = extra_items(sources_cfg, args.urls) + items
+    items = items[:MAX_PAGES]
     index = capture(items, Path(args.out), sources_cfg, aliases, delay=args.delay)
     summary = {}
     for e in index:

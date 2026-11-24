@@ -14,6 +14,10 @@ on:
         description: "At most this many pages (hard cap 120)"
         required: false
         default: "80"
+      urls:
+        description: "Extra source=url pairs, comma-separated (registered hosts only, max 20)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -39,10 +43,11 @@ jobs:
         env:
           SOURCES: ${{ github.event.inputs.sources }}
           MAX_PAGES: ${{ github.event.inputs.max_pages }}
+          EXTRA_URLS: ${{ github.event.inputs.urls }}
         run: |
           case "${MAX_PAGES}" in ''|*[!0-9]*) MAX_PAGES=80 ;; esac
           python scripts/capture_offer_pages.py --sources "${SOURCES}" --max-pages "${MAX_PAGES}" \
-            --out "${RUNNER_TEMP}/captured-pages" --emit-log
+            --out "${RUNNER_TEMP}/captured-pages" --emit-log --urls "${EXTRA_URLS}"
       - uses: actions/upload-artifact@v4
         with:
           name: captured-offer-pages

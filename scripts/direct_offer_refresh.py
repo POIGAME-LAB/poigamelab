@@ -300,6 +300,14 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
         # make unrelated links look like matches. Only generic/blank links may
         # borrow text from their nearest bounded card container.
         matched = target_present(anchor_label, aliases)
+        # Some sites (Amefuri: <div class="projectList__box"> with an empty overlay <a>) use card
+        # classes the generic tokens below do not know. A source may list its reviewed card
+        # classes in "listing_card_class_tokens"; without this, Amefuri never matched a single
+        # catalog game (2026-11-24: 0 of 323 listed offers).
+        extra_card_tokens = tuple(
+            str(x).strip().casefold() for x in (source.get("listing_card_class_tokens") or [])
+            if str(x).strip()
+        )
         if not anchor_label_is_descriptive:
             node = anchor.parent
             depth = 0
@@ -314,6 +322,7 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
                     or any(token in marker for token in (
                         "card", "offer", "campaign", "service-item", "result-item"
                     ))
+                    or any(token in marker for token in extra_card_tokens)
                 )
                 if is_card_boundary:
                     context = evidence_text(node)
