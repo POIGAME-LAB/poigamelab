@@ -435,6 +435,9 @@
       "direct_detail_url_hints": [
         "/detail/id/"
       ],
+      "listing_card_class_tokens": [
+        "projectlist__box"
+      ],
       "scheduled_fetch_enabled": false,
       "scheduled_fetch_reason": "Full 26-page first-party game catalog is reused for discovery and known-game coverage. Up to 3 matching known-game detail pages per game are review-fetched nightly with the reviewed v2 parser. Publication remains disabled pending explicit reviewed promotion rules.",
       "coverage_first_party_listing_enabled": true,

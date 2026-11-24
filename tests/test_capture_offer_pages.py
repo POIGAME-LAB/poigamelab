@@ -60,3 +60,10 @@ def test_pages_roundtrip_through_the_job_log(tmp_path):
     assert all(line.startswith(("PAGE_BEGIN", "PAGEDATA", "PAGE_END")) for line in lines)
     text = (ROOT / ".github/workflows/capture-offer-pages.yml").read_text(encoding="utf-8")
     assert "--emit-log" in text
+
+
+def test_extra_urls_are_limited_to_registered_hosts():
+    items = cap.extra_items(SOURCES, "amefuri=https://www.amefri.net/detail/id/141876, amefuri=https://evil.example/x,"
+                                     "nosuch=https://www.amefri.net/detail/id/1, moppy=http://pc.moppy.jp/ad/detail.php?site_id=1")
+    assert [i["url"] for i in items] == ["https://www.amefri.net/detail/id/141876"]
+    assert cap.extra_items(SOURCES, "") == []
