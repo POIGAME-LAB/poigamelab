@@ -592,14 +592,29 @@ def published_row_fingerprint(row):
     ).encode("utf-8")).hexdigest()
 
 
+# Where the achievement conditions start. Hapitas and some Moppy pages open with boilerplate
+# that mentions お問い合わせ before the conditions (2026-11-24 real pages), which used to end
+# the scope before any condition was read.
+ACHIEVEMENT_START = re.compile(
+    r"【ポイント獲得条件】|[▼■]\s*ポイント獲得条件|■獲得条件|【獲得条件】|▼承認条件|"
+    r"新規アプリインストール後|新規インストール後"
+)
+# "click the ad, then launch within 1 hour" is a tracking rule, not an achievement deadline.
+LAUNCH_TRACKING_RULE = re.compile(r"[^。※\n]*\d+\s*時間以内[^。※\n]*(?:起動|初回起動)[^。※\n]*")
+
+
 def achievement_deadline(evidence):
     # Stop before support/inquiry deadlines. A 30-day inquiry window is NOT
     # evidence of a 30-day achievement window.
     terms = publication_terms(evidence)
+    start = ACHIEVEMENT_START.search(terms)
+    if start:
+        terms = terms[start.start():]
     scope = re.split(
         r"成果調査受付(?:期限|期間)|否認条件|却下条件|獲得対象外|ポイント対象外条件|"
-        r"お問い合わせ|お問合せ|注意事項", terms, maxsplit=1
+        r"お問い合わせ|お問合せ|[■▼【]\s*注意事項", terms, maxsplit=1
     )[0]
+    scope = LAUNCH_TRACKING_RULE.sub(" ", scope)
     scope += " " + " ".join(s.get("condition", "") for s in evidence.get("steps", []))
     require(bool(re.search(
         r"(?:\d+\s*(?:日|時間)以内|翌日以内|当日中)", scope
@@ -765,6 +780,8 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
             require(sources[sid].get("acquisition_lane") != "device", "device_only")
             require(bool(identity), "offer_identity_missing")
             require(len(existing) <= 1, "ambiguous_published_identity")
+            if any(_evidence(item).get("reason") == "source_offer_paused" for item in items):
+                raise Hold("source_offer_paused")  # paused is not ended: keep the row, never retire
             if any(_evidence(item).get("state") == "unavailable" for item in items):
                 retire_confirmed_unavailable(existing, items, sid, sources, checked_at, decision)
                 retired_offer_keys.add(existing[0].get("offerKey"))
