@@ -114,6 +114,24 @@ REWARD_ONLY_CONTRACTS = {
         "pointScale": 10,
         "termsMarkers": ("加算条件", "加算時期"),
     },
+    # Powl: added 2026-11-24 by operator decision after checking 13 real first-party pages
+    # (16 catalog games are listed on Powl). 10pt=1JPY is the reviewed rate in
+    # config/point_value_rates.json. Multi-mission offers are published only when the
+    # per-mission rewards printed in the terms add up to the displayed total.
+    "powl": {
+        "parser": "powl-detail-review-v1",
+        "identity": direct.powl_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "displayedRewardPoints", "verifiedCurrentRewardYen",
+            "rewardUnit", "sourcePointRate", "conditionText", "termsText", "publicationAuthorized",
+        ],
+        "rewardUnit": "Powl-pt",
+        "sourcePointRate": "10pt=1JPY",
+        "pointField": "displayedRewardPoints",
+        "pointScale": 10,
+        "termsMarkers": ("ポイント獲得条件",),
+    },
     "amefuri": {
         "parser": "amefuri-detail-review-v2",
         "identity": direct.amefuri_offer_id,
@@ -280,6 +298,40 @@ def moppy_stepup_total_only(source, evidence):
     )
 
 
+POWL_STEP_REWARD = re.compile(r"【\s*([0-9][0-9,]*)\s*pt\s*】")
+
+
+def powl_step_points(evidence):
+    """Per-mission rewards printed in Powl terms ("…【400pt】"), in page order."""
+    return [int(x.replace(",", "")) for x in POWL_STEP_REWARD.findall(str(evidence.get("termsText") or ""))]
+
+
+def powl_is_multi(evidence):
+    return bool(re.search(r"マルチミッション|多段階", str(evidence.get("name") or ""))) or len(powl_step_points(evidence)) >= 2
+
+
+def powl_title(name):
+    """Powl decorates titles: "【還元UP中】X（…）（iOS）", "X（iOS） マルチミッション",
+    "X（多段階）（iOS） - 課金総額…". Remove only those decorations; the rest must still be the
+    exact catalog title (catalog_title_key), so a different app never matches."""
+    value = unicodedata.normalize("NFKC", str(name or "")).strip()
+    value = re.sub(r"^【[^】]*(?:UP|アップ|増量|限定|復活)[^】]*】\s*", "", value, flags=re.I)
+    value = re.sub(r"\s*マルチミッション$", "", value)
+    value = re.sub(r"(\((?:iOS|Android)\))\s*[-‐－]\s*.+$", r"\1", value, flags=re.I)
+    return value
+
+
+def check_powl_steps(evidence):
+    """Multi-mission: >=2 printed rewards that sum to the displayed total. Single: none or exactly the total."""
+    steps = powl_step_points(evidence)
+    total = evidence.get("displayedRewardPoints")
+    if powl_is_multi(evidence):
+        require(len(steps) >= 2 and sum(steps) == total, "step_total_mismatch")
+    else:
+        require(not steps or steps == [total], "step_total_mismatch")
+    return steps
+
+
 def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
     sid = item.get("source")
     contract = REWARD_ONLY_CONTRACTS.get(sid)
@@ -340,6 +392,8 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
                           str(e.get("headerText") or "")),
             "ambiguous_displayed_reward",
         )
+    elif sid == "powl":
+        check_powl_steps(e)
     elif sid == "amefuri":
         require(
             e.get("displayedCurrentRewardYen") == reward,
@@ -683,6 +737,13 @@ def addition_snapshot(item, update):
     require(len(terms) < 8000, "oversize_condition")
     values = e.get("stepRewardYen", e.get("stepRewardPoints", []))
     is_step = bool(values) or bool(re.search(r"step\s*up|step\s*\d|複数条件|各成果地点", e["name"] + terms, re.I))
+    if item.get("source") == "powl":
+        steps = check_powl_steps(e)
+        multi = powl_is_multi(e)
+        if multi:
+            require(sum(steps) == int(update["reward"]) * 10, "step_total_mismatch")
+        return {**update, "condition": terms, "deadline": "条件欄の達成期限を参照",
+                "type": "StepUp" if multi else "Single"}
     if is_step and moppy_stepup_total_only(item.get("source"), e):
         return {**update, "condition": f"{terms}\n{MOPPY_TOTAL_ONLY_NOTE}",
                 "deadline": "条件欄の達成期限を参照", "type": "StepUp"}
@@ -799,7 +860,8 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
                 require(e.get("candidateOnly") is not True, "candidate_only_parser")
                 require(direct.source_host_allowed(item.get("requestedUrl"), sources[sid]), "unregistered_request")
                 require(direct.offer_identity_key(item.get("requestedUrl"), sid) == identity, "redirect_identity_changed")
-                matches = {g for g, keys in aliases.items() if catalog_title_key(e.get("name")) in keys}
+                title = powl_title(e.get("name")) if sid == "powl" else e.get("name")
+                matches = {g for g, keys in aliases.items() if catalog_title_key(title) in keys}
                 require(matches == {game}, "game_identity_ambiguous_or_changed")
                 require(not any(e.get(k) for k in (
                     "providerId", "providerCandidates", "downstreamProviderCandidates"))

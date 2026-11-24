@@ -1,0 +1,32 @@
+{
+ "powl_tokyo_debunker_single.html": {
+  "url": "https://web.powl.jp/reward/16322",
+  "finalUrl": "https://web.powl.jp/reward/16322",
+  "capturedAt": "2026-11-24",
+  "sha256": "69c2ae67e4e4af911ac204c40557961e2327bf1816a2fcf95a840a3228c22160"
+ },
+ "powl_evertale_ambiguous_os.html": {
+  "url": "https://web.powl.jp/reward/16430",
+  "finalUrl": "https://web.powl.jp/reward/16430",
+  "capturedAt": "2026-11-24",
+  "sha256": "5f656c0f763b38c998f9012c03f7c67c132992474a50fad85023dc26954a962f"
+ },
+ "powl_mementomori_multi.html": {
+  "url": "https://web.powl.jp/reward/40752",
+  "finalUrl": "https://web.powl.jp/reward/40752",
+  "capturedAt": "2026-11-24",
+  "sha256": "bf963413e0c6bd810b84b42b01dad5566fd8c25372f8cd7e307c283fa74ba33d"
+ },
+ "powl_puzzles_survival_single.html": {
+  "url": "https://web.powl.jp/reward/15449",
+  "finalUrl": "https://web.powl.jp/reward/15449",
+  "capturedAt": "2026-11-24",
+  "sha256": "77c056981dec67833a0419c6a0bff8afb89a7fea026843c430ba52a3e0897d6e"
+ },
+ "powl_kingshot_ios_multi.html": {
+  "url": "https://web.powl.jp/reward/40806",
+  "finalUrl": "https://web.powl.jp/reward/40806",
+  "capturedAt": "2026-11-24",
+  "sha256": "9c1742cd43aacd65f0fddc5011e57ed9c38c92d05585ee925339e255f24c110a"
+ }
+}

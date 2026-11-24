@@ -144,7 +144,8 @@
       "coincome",
       "point_town",
       "ec_navi",
-      "amefuri"
+      "amefuri",
+      "powl"
     ],
     "mode": "complete-stepup-or-exact-reward-snapshot",
     "preserveRowsOnHold": true
