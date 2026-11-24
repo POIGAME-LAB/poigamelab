@@ -171,6 +171,7 @@ def test_registered_guide_only_without_catalog_or_offer_rows():
     with open(ROOT / "games.csv", encoding="utf-8-sig", newline="") as fh:
         catalog = {cand.norm_key(r["name"]) for r in csv.DictReader(fh)}
     published = (ROOT / "data" / "published_offers.csv").read_text(encoding="utf-8-sig")
+    guide_catalog = {e["game"] for e in json.loads((ROOT / "config" / "guide_catalog.json").read_text(encoding="utf-8"))["games"]}
     for batch, slug in ARTICLES:
         meta = _j(batch / slug / "metadata.json")
         f = meta["proposedPage"]
@@ -178,7 +179,7 @@ def test_registered_guide_only_without_catalog_or_offer_rows():
         assert sitemap.count(f"<loc>https://poigamelab.com/{f}</loc>") == 1
         assert registry.count(f'href: "{f}"') == 1
         assert hub.count(f'href="{f}"') == 1
-        assert cand.norm_key(meta["game"]) not in catalog
+        assert cand.norm_key(meta["game"]) not in catalog or meta["game"] in guide_catalog  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
         for o in meta["offers"]:
             assert o["url"] not in published
 
