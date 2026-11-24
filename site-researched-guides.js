@@ -145,5 +145,12 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "レベル400攻略を読む →", href: "purikets-nyaa-guide.html" }
     ]
+  },
+  "ウォーターパークボーイズ（WaterPark Boys）": {
+    title: "ウォーターパークボーイズ（WaterPark Boys） ポイ活攻略",
+    description: "モッピーの単一条件案件（iOS・Android、各210P・クリック日から7日以内）の条件と、約2時間でStage2に届いた公開記録、広告の扱い、反映の注意をまとめています。",
+    links: [
+      { label: "Stage2 Open攻略を読む →", href: "waterpark-boys-guide.html" }
+    ]
   }
 });

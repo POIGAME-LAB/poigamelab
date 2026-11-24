@@ -1,0 +1,6192 @@
+{
+  "schemaVersion": 1,
+  "productionDate": "2026-11-24",
+  "inputs": {
+    "contentQueue": {
+      "path": "data/new_game_content_queue.json",
+      "checkedAt": "2026-11-24T03:00:22+00:00",
+      "checkedDateJst": "2026-11-24",
+      "rankingComplete": false,
+      "count": 0
+    },
+    "monitor": {
+      "path": "data/new_game_monitor.json",
+      "checkedAt": "2026-11-24T03:00:22+00:00",
+      "checkedDateJst": "2026-11-24",
+      "items": 200,
+      "counts": {
+        "new": 0,
+        "active": 2638,
+        "highPriority": 23,
+        "inactive": 4775
+      },
+      "displayLimits": {
+        "today": 100,
+        "continuing": 200,
+        "priority": 100,
+        "inactive": 100
+      }
+    }
+  },
+  "candidateOnly": true,
+  "publicationAuthorized": false,
+  "rewardNote": "listingRewardHintYen is the largest amount in the scan's own listing text (1pt=1円 sources only). It is not a verified reward; open the point-site page before using any amount.",
+  "status": "ok",
+  "candidateCount": 147,
+  "candidates": [
+    {
+      "game": "モンスターサバイバル",
+      "key": "モンスタサバイバル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209484&pl=pc_categoryService",
+          "titleHint": "【SmaAD】モンスターサバイバル（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 66,214 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD iOS",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 66214
+        }
+      ],
+      "listingRewardHintYen": 66214,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209484&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "ワラウ208651で全15Step・37,500pt（課金3Step）・30日期限は確認。ただし2026年7月30日配信・案件は当日新規で、日付つきの独立した到達記録を確認できず。"
+      },
+      "order": 1
+    },
+    {
+      "game": "Arrow GO! Arrow Flow Puzzle",
+      "key": "arrowgoarrowflowpuzzle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209430&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Arrow GO! Arrow Flow Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 21,373 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 21373
+        }
+      ],
+      "listingRewardHintYen": 21373,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209430&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 2
+    },
+    {
+      "game": "Z ルート:リデンプション",
+      "key": "zルトリデンプション",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209441&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Z ルート：リデンプション（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 20,568 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 20568
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209443&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Z ルート：リデンプション（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 20,645 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 20645
+        }
+      ],
+      "listingRewardHintYen": 20645,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209441&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209443&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "ワラウ208646・208648は公開ページが表示不可で条件を確認できず。"
+      },
+      "order": 3
+    },
+    {
+      "game": "Arrow Odyssey: Escape Puzzle",
+      "key": "arrowodysseyescapepuzzle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209456&pl=pc_categoryService",
+          "titleHint": "Arrow Odyssey: Escape Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 19,110 pt 4.0 （ 1件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 19110
+        }
+      ],
+      "listingRewardHintYen": 19110,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209456&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 4
+    },
+    {
+      "game": "Reef Rings: Fish Rescue",
+      "key": "reefringsfishrescue",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209471&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Reef Rings: Fish Rescue（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 18,043 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 18043
+        }
+      ],
+      "listingRewardHintYen": 18043,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209471&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 5
+    },
+    {
+      "game": "Topple Isles: Cannon Knockdown",
+      "key": "toppleislescannonknockdown",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209478&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Topple Isles: Cannon Knockdown（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 18,043 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 18043
+        }
+      ],
+      "listingRewardHintYen": 18043,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209478&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 6
+    },
+    {
+      "game": "ジャックポットワールド - カジノ&スロット",
+      "key": "ジャックポットワルドカジノスロット",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160980&track_ref=category",
+          "titleHint": "ジャックポットワールド - カジノ&スロット（StepUp）【iOS】 新規アプリインストール後、45日以内に各成果地点到達でクリア 17,419P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 17419
+        }
+      ],
+      "listingRewardHintYen": 17419,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160980&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "モッピー160980の公開ページは合計17,419Pのみで全Step不明。"
+      },
+      "order": 7
+    },
+    {
+      "game": "Rise of Kingdoms ―万国覚醒―",
+      "key": "riseofkingdoms―万国覚醒―",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162444&track_ref=category",
+          "titleHint": "Rise of Kingdoms ―万国覚醒― 任意のレベルIV部隊をアンロック 14,250P",
+          "firstSeen": "2026-11-18T22:57:45+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 14250
+        }
+      ],
+      "listingRewardHintYen": 14250,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162444&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-19",
+      "listedDays": 5,
+      "order": 8
+    },
+    {
+      "game": "Wavehold: Last Stand",
+      "key": "waveholdlaststand",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209409&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Wavehold: Last Stand（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 13,867 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 13867
+        }
+      ],
+      "listingRewardHintYen": 13867,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209409&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 9
+    },
+    {
+      "game": "ロイヤルマッチ",
+      "key": "ロイヤルマッチ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162253&track_ref=category",
+          "titleHint": "ロイヤルマッチ（StepUp）_iOS 新規アプリインストール後、各ミッションクリア 11,493P",
+          "firstSeen": "2026-10-02T20:47:52+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 11493
+        }
+      ],
+      "listingRewardHintYen": 11493,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162253&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-03",
+      "listedDays": 52,
+      "relatedMaterial": [
+        {
+          "kind": "research_dossier",
+          "ref": "research/new-games/2026-09-27/dossiers/royal-match.json"
+        }
+      ],
+      "order": 10
+    },
+    {
+      "game": "Beach Drop Match: Pair Puzzle",
+      "key": "beachdropmatchpairpuzzle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209473&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Beach Drop Match: Pair Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 9,293 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 9293
+        }
+      ],
+      "listingRewardHintYen": 9293,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209473&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 11
+    },
+    {
+      "game": "フェイトウォー",
+      "key": "フェイトウォ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162251&track_ref=category",
+          "titleHint": "フェイトウォー（StepUp）_iOS 新規アプリインストール後、各ミッションクリア 8,060P",
+          "firstSeen": "2026-10-02T20:47:52+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 8060
+        }
+      ],
+      "listingRewardHintYen": 8060,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162251&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-03",
+      "listedDays": 52,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "モッピー162251の公開ページは合計8,007Pのみで、StepUpの内訳・期限を確認できず。"
+      },
+      "order": 12
+    },
+    {
+      "game": "3D Toys: Shadow Match",
+      "key": "3dtoysshadowmatch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209402&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】3D Toys: Shadow Match（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 7,250 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 7250
+        }
+      ],
+      "listingRewardHintYen": 7250,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209402&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 13
+    },
+    {
+      "game": "Cubby:ほっこり3D仕分けパズル",
+      "key": "cubbyほっこり3d仕分けパズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209513&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Cubby：ほっこり3D仕分けパズル（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 6,865 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-24T02:53:04+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 6865
+        }
+      ],
+      "listingRewardHintYen": 6865,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209513&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-24",
+      "listedDays": 0,
+      "order": 14
+    },
+    {
+      "game": "シェフの力:BBQ&ソーティング",
+      "key": "シェフの力bbqソティング",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209390&pl=pc_categoryService",
+          "titleHint": "【SmaAD】シェフの力：BBQ＆ソーティング（レベル80クリア） レベル80クリア 81 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD Android",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "single",
+          "rewardHintYen": 81
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209407&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】シェフの力：BBQ＆ソーティング（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 6,719 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 6719
+        }
+      ],
+      "listingRewardHintYen": 6719,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single",
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209390&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209407&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 15
+    },
+    {
+      "game": "Yarn Fever! Unravel Puzzle",
+      "key": "yarnfeverunravelpuzzle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209476&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Yarn Fever! Unravel Puzzle（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 6,320 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 6320
+        }
+      ],
+      "listingRewardHintYen": 6320,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209476&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 16
+    },
+    {
+      "game": "TikTok",
+      "key": "tiktok",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=142835&track_ref=category",
+          "titleHint": "TikTok 初回起動日から連続7日間起動 4,560P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 4560
+        },
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162315&track_ref=category",
+          "titleHint": "TikTok（StepUp）_iOS 新規アプリインストール後、各ミッションクリア 6,159P",
+          "firstSeen": "2026-10-18T03:45:48+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 6159
+        }
+      ],
+      "listingRewardHintYen": 6159,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup",
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=142835&track_ref=category",
+          "https://pc.moppy.jp/ad/detail.php?s_id=162315&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 17
+    },
+    {
+      "game": "Coin Master - Board Adventure",
+      "key": "coinmasterboardadventure",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161557&track_ref=category",
+          "titleHint": "Coin Master - Board Adventure（StepUp）【iOS】 新規アプリインストール後、30日以内に各成果地点到達でクリア 6,055P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 6055
+        }
+      ],
+      "listingRewardHintYen": 6055,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161557&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "モッピー161557の公開ページは合計6,055Pのみで、StepUpの内訳・期限を確認できず。"
+      },
+      "order": 18
+    },
+    {
+      "game": "マイナーファイターズ!",
+      "key": "マイナファイタズ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161912&track_ref=category",
+          "titleHint": "マイナーファイターズ！（Miner Fighters）（StepUp）【iOS】 新規アプリインストール後、各成果地点到達でクリア 5,537P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 5537
+        }
+      ],
+      "listingRewardHintYen": 5537,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161912&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "モッピー161912の公開ページは合計6,075Pのみで、StepUpの内訳・期限を確認できず。"
+      },
+      "order": 19
+    },
+    {
+      "game": "信長の野望 真戦",
+      "key": "信長の野望真戦",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161201&track_ref=category",
+          "titleHint": "信長の野望 真戦（部将lv7）_iOS 新規アプリインストール後、30日以内にシーズン1で役職部将lv7に到達 5,300P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 5300
+        }
+      ],
+      "listingRewardHintYen": 5300,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161201&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "モッピー161201は5,300P（単一条件：部将lv7）。期限・詳細条件が公開ページで確認できず、到達記録も未調査。"
+      },
+      "order": 20
+    },
+    {
+      "game": "ブレードウォー三国 火炉レベル25達成",
+      "key": "ブレドウォ三国火炉レベル25達成",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162427&track_ref=category",
+          "titleHint": "ブレードウォー三国 火炉レベル25達成 5,225P",
+          "firstSeen": "2026-11-12T22:16:31+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 5225
+        }
+      ],
+      "listingRewardHintYen": 5225,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162427&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-13",
+      "listedDays": 11,
+      "order": 21
+    },
+    {
+      "game": "Sweet Impact - Match",
+      "key": "sweetimpactmatch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209401&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Sweet Impact - Match 3 Game（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 4,387 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 4387
+        }
+      ],
+      "listingRewardHintYen": 4387,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209401&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 22
+    },
+    {
+      "game": "TikTok Lite",
+      "key": "tiktoklite",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158232&track_ref=category",
+          "titleHint": "TikTok Lite（StepUp）【iOS】 新規アプリインストール後、【StepUpミッション】クリア 4,244P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 4244
+        }
+      ],
+      "listingRewardHintYen": 4244,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158232&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 23
+    },
+    {
+      "game": "Onet Master: Tile Match Puzzle",
+      "key": "onetmastertilematchpuzzle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162069&track_ref=category",
+          "titleHint": "Onet Master: Tile Match Puzzle レベル1000をクリア 3,800P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 3800
+        }
+      ],
+      "listingRewardHintYen": 3800,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162069&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "モッピー単一条件は読めるが個人記録なし。名前が似る Onet Master: Puzzle & Art とは別アプリの可能性があり同定していない。"
+      },
+      "order": 24
+    },
+    {
+      "game": "Sweet Impact:マッチ3パズル",
+      "key": "sweetimpactマッチ3パズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209460&pl=pc_categoryService",
+          "titleHint": "Sweet Impact：マッチ3パズル（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 3,110 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 3110
+        }
+      ],
+      "listingRewardHintYen": 3110,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209460&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 25
+    },
+    {
+      "game": "Pococha",
+      "key": "pococha",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161940&track_ref=category",
+          "titleHint": "Pococha(チュートリアルミッション全クリア後にコインをすべて受け取る)_iOS 初心者限定！チュートリアルミッション全クリア後にコインをすべて受け取る 3,000P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 3000
+        }
+      ],
+      "listingRewardHintYen": 3000,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161940&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 26
+    },
+    {
+      "game": "Tile Triple Match:",
+      "key": "tiletriplematch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160625&track_ref=category",
+          "titleHint": "Tile Triple Match: 3D puzzle レベル1100を完成 2,375P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 2375
+        }
+      ],
+      "listingRewardHintYen": 2375,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160625&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "ワラウ209334は公開ページ表示不可。モッピー160625は単一条件で読めるが、口コミ0件・個人記録なし。"
+      },
+      "order": 27
+    },
+    {
+      "game": "Sushi Spin: Triple Match",
+      "key": "sushispintriplematch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209451&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】Sushi Spin: Triple Match（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 2,314 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 2314
+        }
+      ],
+      "listingRewardHintYen": 2314,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209451&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 28
+    },
+    {
+      "game": "ロードモバイル",
+      "key": "ロドモバイル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162305&track_ref=category",
+          "titleHint": "ロードモバイル（StepUp）_iOS 新規アプリインストール後、各成果地点到達でクリア 2,260P",
+          "firstSeen": "2026-10-18T03:45:48+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 2260
+        }
+      ],
+      "listingRewardHintYen": 2260,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162305&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-18",
+      "listedDays": 37,
+      "order": 29
+    },
+    {
+      "game": "Merge Restyle",
+      "key": "mergerestyle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162050&track_ref=category",
+          "titleHint": "Merge Restyle レベル40クリア 1,900P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 1900
+        }
+      ],
+      "listingRewardHintYen": 1900,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162050&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "モッピー単一条件は読めるが個人記録なし。"
+      },
+      "order": 30
+    },
+    {
+      "game": "Otaku Onet: Anime & Manga",
+      "key": "otakuonetanimemanga",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161875&track_ref=category",
+          "titleHint": "Otaku Onet: Anime & Manga ステージ400クリア 1,615P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 1615
+        }
+      ],
+      "listingRewardHintYen": 1615,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161875&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "モッピー単一条件は読めるが個人記録なし。ワラウは停止中。"
+      },
+      "order": 31
+    },
+    {
+      "game": "Egg Sort: Color Drop",
+      "key": "eggsortcolordrop",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209450&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Egg Sort: Color Drop（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 1,487 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD iOS",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 1487
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209442&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Egg Sort: Color Drop（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 1,487 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 1487
+        }
+      ],
+      "listingRewardHintYen": 1487,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209450&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209442&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 32
+    },
+    {
+      "game": "クイーンズ・キャッスル ~マージと秘密の物語~",
+      "key": "クインズキャッスルマジと秘密の物語",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162421&track_ref=category",
+          "titleHint": "クイーンズ・キャッスル ～マージと秘密の物語～ レベル20到達 1,368P",
+          "firstSeen": "2026-11-10T21:49:58+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 1368
+        }
+      ],
+      "listingRewardHintYen": 1368,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162421&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-11",
+      "listedDays": 13,
+      "order": 33
+    },
+    {
+      "game": "Screw Out",
+      "key": "screwout",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162245&track_ref=category",
+          "titleHint": "Screw Out 3D（レベル500到達） 【▼ポイント獲得条件】記載の条件を達成 1,300P",
+          "firstSeen": "2026-10-01T21:04:14+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 1300
+        }
+      ],
+      "listingRewardHintYen": 1300,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162245&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-02",
+      "listedDays": 53,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "モッピー単一条件は読めるが個人記録なし。似た名前の別アプリが複数あり同定していない。"
+      },
+      "order": 34
+    },
+    {
+      "game": "オリパならポケパ365 オンラインオリパ・ポケカ",
+      "key": "オリパならポケパ365オンラインオリパポケカ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209512&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】オリパならポケパ365 オンラインオリパ・ポケカ（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 1,107 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-24T02:53:04+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 1107
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209514&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】オリパならポケパ365 オンラインオリパ・ポケカ（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 1,107 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG Android",
+          "firstSeen": "2026-11-24T02:53:04+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 1107
+        }
+      ],
+      "listingRewardHintYen": 1107,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209512&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209514&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-24",
+      "listedDays": 0,
+      "order": 35
+    },
+    {
+      "game": "GiGO ONLINE CRANE ギゴクレ",
+      "key": "gigoonlinecraneギゴクレ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159713&track_ref=category",
+          "titleHint": "GiGO ONLINE CRANE ギゴクレ（StepUp）【iOS】 新規アプリインストール後、【StepUpミッション!!】クリア 1,089P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 1089
+        }
+      ],
+      "listingRewardHintYen": 1089,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159713&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 36
+    },
+    {
+      "game": "魔王「世界の半分あげるって言っちゃった」",
+      "key": "魔王世界の半分あげるって言っちゃった",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=147016&track_ref=category",
+          "titleHint": "魔王「世界の半分あげるって言っちゃった」 第14の城【天象儀と魔術の城】クリア 1,068P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 1068
+        }
+      ],
+      "listingRewardHintYen": 1068,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=147016&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 37
+    },
+    {
+      "game": "オリくじ 超還元トレカのオリパ・オンラインオリパ",
+      "key": "オリくじ超還元トレカのオリパオンラインオリパ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161869&track_ref=category",
+          "titleHint": "オリくじ 超還元トレカのオリパ・オンラインオリパ（StepUp）【iOS】 新規アプリインストール後、各ミッションクリア 934P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 934
+        }
+      ],
+      "listingRewardHintYen": 934,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161869&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 38
+    },
+    {
+      "game": "Yarn Out",
+      "key": "yarnout",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209419&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Yarn Out 3D（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 922 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD Android",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 922
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209418&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Yarn Out 3D（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 922 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD iOS",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 922
+        }
+      ],
+      "listingRewardHintYen": 922,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209419&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209418&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 39
+    },
+    {
+      "game": "REALITY",
+      "key": "reality",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162461&track_ref=category",
+          "titleHint": "REALITY（リアリティ）（StepUp）_iOS 新規アプリインストール後、各ミッションクリア 907P",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 907
+        }
+      ],
+      "listingRewardHintYen": 907,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162461&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 40
+    },
+    {
+      "game": "商人サーガ 「魔王城でお店開けって言われた」",
+      "key": "商人サガ魔王城でお店開けって言われた",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158596&track_ref=category",
+          "titleHint": "商人サーガ 「魔王城でお店開けって言われた」（フロア550階クリア） 【▼ポイント獲得条件】記載の条件を達成 864P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 864
+        }
+      ],
+      "listingRewardHintYen": 864,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158596&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 41
+    },
+    {
+      "game": "Merge: Dream Home",
+      "key": "mergedreamhome",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162371&track_ref=category",
+          "titleHint": "Merge: Dream Home レベル21達成 798P",
+          "firstSeen": "2026-10-27T20:45:15+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 798
+        }
+      ],
+      "listingRewardHintYen": 798,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162371&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-28",
+      "listedDays": 27,
+      "order": 42
+    },
+    {
+      "game": "Mikke Live",
+      "key": "mikkelive",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162211&track_ref=category",
+          "titleHint": "Mikke Live（StepUp）_iOS 新規アプリインストール後、各ミッションクリア 742P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 742
+        }
+      ],
+      "listingRewardHintYen": 742,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162211&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 43
+    },
+    {
+      "game": "Ball Sort Puzzle:ボールソーティングパズル",
+      "key": "ballsortpuzzleボルソティングパズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161455&track_ref=category",
+          "titleHint": "Ball Sort Puzzle：ボールソーティングパズル(レベル300クリア)_iOS 新規アプリインストール後、30日以内にレベル300クリア 700P",
+          "firstSeen": "2026-09-25T20:02:47+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 700
+        }
+      ],
+      "listingRewardHintYen": 700,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161455&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-26",
+      "listedDays": 59,
+      "order": 44
+    },
+    {
+      "game": "Water Sort Puzzle - ソートパズルゲーム",
+      "key": "watersortpuzzleソトパズルゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160798&track_ref=category",
+          "titleHint": "Water Sort Puzzle - ソートパズルゲーム（300ステージ到達） 【▼ポイント獲得条件】記載の条件を達成 700P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 700
+        }
+      ],
+      "listingRewardHintYen": 700,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160798&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 45
+    },
+    {
+      "game": "グッズソーティング3D:マッチゲーム",
+      "key": "グッズソティング3dマッチゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161012&track_ref=category",
+          "titleHint": "グッズソーティング3D：マッチゲーム（レベル300クリア） 【▼ポイント獲得条件】記載の条件を達成 600P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 600
+        }
+      ],
+      "listingRewardHintYen": 600,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161012&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 46
+    },
+    {
+      "game": "サバイバルアイランド――放置型ストラテジーゲーム",
+      "key": "サバイバルアイランド――放置型ストラテジゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157966&track_ref=category",
+          "titleHint": "サバイバルアイランド――放置型ストラテジーゲーム（凍てつく島の船LV.9到達） 【▼ポイント獲得条件】記載の条件を達成 585P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 585
+        }
+      ],
+      "listingRewardHintYen": 585,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=157966&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 47
+    },
+    {
+      "game": "Yarnation: Unravel Flow",
+      "key": "yarnationunravelflow",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209466&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Yarnation: Unravel Flow（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 517 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD iOS",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 517
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209465&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Yarnation: Unravel Flow（StepUp） 初回アプリインストール後、【StepUpミッション】をクリア 最大 517 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "stepup",
+          "rewardHintYen": 517
+        }
+      ],
+      "listingRewardHintYen": 517,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209466&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209465&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 48
+    },
+    {
+      "game": "タイルマッチ3D:トリプルマスター",
+      "key": "タイルマッチ3dトリプルマスタ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161999&track_ref=category",
+          "titleHint": "タイルマッチ3D：トリプルマスター（レベル300クリア） 【▼ポイント獲得条件】記載の条件を達成 500P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 500
+        }
+      ],
+      "listingRewardHintYen": 500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161999&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "モッピー161999・ワラウ209379は読めるが口コミ0件・個人記録なし。"
+      },
+      "order": 49
+    },
+    {
+      "game": "Cat Drop: Cute Slide & Match",
+      "key": "catdropcuteslidematch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162381&track_ref=category",
+          "titleHint": "Cat Drop: Cute Slide & Match（レベル380クリア） 【▼ポイント獲得条件】記載の条件を達成 460P",
+          "firstSeen": "2026-10-30T20:52:07+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 460
+        }
+      ],
+      "listingRewardHintYen": 460,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162381&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-31",
+      "listedDays": 24,
+      "order": 50
+    },
+    {
+      "game": "ナンプレ - クラシック数字パズル",
+      "key": "ナンプレクラシック数字パズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160540&track_ref=category",
+          "titleHint": "ナンプレ - クラシック数字パズル（勝利200到達（難易度：易しい）） 【▼ポイント獲得条件】記載の条件を達成 460P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 460
+        }
+      ],
+      "listingRewardHintYen": 460,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160540&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 51
+    },
+    {
+      "game": "アートパズル:ジグソーピクチャーArt Of Puzzles",
+      "key": "アトパズルジグソピクチャartofpuzzles",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157826&track_ref=category",
+          "titleHint": "アートパズル：ジグソーピクチャーArt Of Puzzles（パズル501アンロック） 【▼ポイント獲得条件】記載の条件を達成 450P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 450
+        }
+      ],
+      "listingRewardHintYen": 450,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=157826&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 52
+    },
+    {
+      "game": "バーガーください!/Burger Please!",
+      "key": "バガくださいburgerplease",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160405&track_ref=category",
+          "titleHint": "バーガーください！/Burger Please!(ステージ4オープン)_iOS 新規アプリインストール後、ステージ4オープン 440P",
+          "firstSeen": "2026-11-13T22:00:10+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 440
+        }
+      ],
+      "listingRewardHintYen": 440,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160405&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-14",
+      "listedDays": 10,
+      "order": 53
+    },
+    {
+      "game": "マビノギモバイル",
+      "key": "マビノギモバイル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162168&track_ref=category",
+          "titleHint": "マビノギモバイル（StepUp）_iOS 新規アプリインストール後、各ミッションクリア 434P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "stepup",
+          "rewardHintYen": 434
+        }
+      ],
+      "listingRewardHintYen": 434,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "stepup"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162168&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 54
+    },
+    {
+      "game": "Backpack Rush: Bag Merge",
+      "key": "backpackrushbagmerge",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159607&track_ref=category",
+          "titleHint": "Backpack Rush: Bag Merge（チャプター25をクリア） 【▼ポイント獲得条件】記載の条件を達成 400P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 400
+        }
+      ],
+      "listingRewardHintYen": 400,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159607&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 55
+    },
+    {
+      "game": "勇者サバイバー: お姫様を守り抜け!",
+      "key": "勇者サバイバお姫様を守り抜け",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162425&track_ref=category",
+          "titleHint": "勇者サバイバー: お姫様を守り抜け！（ノーマルのステージ40クリア） 【▼ポイント獲得条件】記載の条件を達成 400P",
+          "firstSeen": "2026-11-11T22:45:11+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 400
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209455&pl=pc_categoryService",
+          "titleHint": "【SmaAD】勇者サバイバー: お姫様を守り抜け！（ノーマルのステージ40クリア） ノーマルのステージ40クリア 283 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "single",
+          "rewardHintYen": 283
+        }
+      ],
+      "listingRewardHintYen": 400,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy",
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162425&track_ref=category"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209455&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-12",
+      "listedDays": 12,
+      "order": 56
+    },
+    {
+      "game": "Tile Match",
+      "key": "tilematch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159892&track_ref=category",
+          "titleHint": "Tile Match 3D：Triple Master（トリプルマスター）_iOS 新規アプリインストール後、30日以内にレベル400をクリア 380P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 380
+        }
+      ],
+      "listingRewardHintYen": 380,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159892&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 57
+    },
+    {
+      "game": "数学パズルゲーム - クロスマス",
+      "key": "数学パズルゲムクロスマス",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160804&track_ref=category",
+          "titleHint": "数学パズルゲーム - クロスマス（勝利400到達（難易度：簡単）） 【▼ポイント獲得条件】記載の条件を達成 380P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 380
+        }
+      ],
+      "listingRewardHintYen": 380,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160804&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 58
+    },
+    {
+      "game": "マイコンビニ コンビニ 経営 シミュレーション ゲーム",
+      "key": "マイコンビニコンビニ経営シミュレションゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160765&track_ref=category",
+          "titleHint": "マイコンビニ コンビニ 経営 シミュレーション ゲーム（プレイヤーレベル20到達） 【▼ポイント獲得条件】記載の条件を達成 310P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 310
+        }
+      ],
+      "listingRewardHintYen": 310,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160765&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 59
+    },
+    {
+      "game": "Arrow Turns: Puzzle Tap Out",
+      "key": "arrowturnspuzzletapout",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162429&track_ref=category",
+          "titleHint": "Arrow Turns: Puzzle Tap Out(レベル400クリア)_iOS 新規アプリインストール後、30日以内にレベル400クリア 300P",
+          "firstSeen": "2026-11-12T22:16:31+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 300
+        }
+      ],
+      "listingRewardHintYen": 300,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162429&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-13",
+      "listedDays": 11,
+      "order": 60
+    },
+    {
+      "game": "ターミナルマスター /Terminal Master",
+      "key": "タミナルマスタterminalmaster",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160300&track_ref=category",
+          "titleHint": "ターミナルマスター /Terminal Master (ステージ7到達/シカゴ空港オープン)_iOS 新規アプリインストール後、ステージ7 到達（シカゴ空港オープン） 300P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 300
+        }
+      ],
+      "listingRewardHintYen": 300,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160300&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 61
+    },
+    {
+      "game": "ネコティア 癒し系ねこソリティアゲーム",
+      "key": "ネコティア癒し系ねこソリティアゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159742&track_ref=category",
+          "titleHint": "ネコティア 癒し系ねこソリティアゲーム（累計300勝利コイン獲得後、初心者ミッション画面にて達成報酬の300ポイントを獲得） 【▼ポイント獲得条件】記載の条件を達成 288P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 300
+        }
+      ],
+      "listingRewardHintYen": 300,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159742&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 62
+    },
+    {
+      "game": "Cargo Run",
+      "key": "cargorun",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162285&track_ref=category",
+          "titleHint": "Cargo Run ステージ24クリア 285P",
+          "firstSeen": "2026-10-09T20:58:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 285
+        }
+      ],
+      "listingRewardHintYen": 285,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162285&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-10",
+      "listedDays": 45,
+      "order": 63
+    },
+    {
+      "game": "Phase",
+      "key": "phase",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162328&track_ref=category",
+          "titleHint": "Phase 10：ワールドツアー 7日目にゲームをプレイ 285P",
+          "firstSeen": "2026-10-20T20:01:36+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 285
+        }
+      ],
+      "listingRewardHintYen": 285,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162328&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-21",
+      "listedDays": 34,
+      "order": 64
+    },
+    {
+      "game": "超能力学園-Idle Superpower School",
+      "key": "超能力学園idlesuperpowerschool",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161695&track_ref=category",
+          "titleHint": "超能力学園-Idle Superpower School（3つ目の地図「冷凍霊廟」の7番目の教室「トレーニングルーム」クリア） 【▼ポイント獲得条件】記載の条件を達成 280P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 280
+        }
+      ],
+      "listingRewardHintYen": 280,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161695&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 65
+    },
+    {
+      "game": "勇者「剣投げるしかねーか」",
+      "key": "勇者剣投げるしかねか",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159633&track_ref=category",
+          "titleHint": "勇者「剣投げるしかねーか」（ステージ8-3クリア） 【▼ポイント獲得条件】記載の条件を達成 270P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 270
+        }
+      ],
+      "listingRewardHintYen": 270,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159633&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 66
+    },
+    {
+      "game": "Screw Out Factory Puzzle",
+      "key": "screwoutfactorypuzzle",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162001&track_ref=category",
+          "titleHint": "Screw Out Factory Puzzle 3D（経験値バーのマイルストーンを5にする（ユーザーレベル5に到達する）） 【▼ポイント獲得条件】記載の条件を達成 260P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 260
+        }
+      ],
+      "listingRewardHintYen": 260,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162001&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 67
+    },
+    {
+      "game": "Arrow Away : Tap Maze",
+      "key": "arrowawaytapmaze",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162167&track_ref=category",
+          "titleHint": "Arrow Away : Tap Maze(レベル400クリア)_iOS 新規アプリインストール後、30日以内にレベル400クリア 250P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 250
+        }
+      ],
+      "listingRewardHintYen": 250,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162167&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 68
+    },
+    {
+      "game": "Triple Match",
+      "key": "triplematch",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161948&track_ref=category",
+          "titleHint": "Triple Match 3D: Logic Sort（レベル400達成）_iOS 新規アプリインストール後、30日以内にレベル400達成 250P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 250
+        }
+      ],
+      "listingRewardHintYen": 250,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161948&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 69
+    },
+    {
+      "game": "Idle Food Bar",
+      "key": "idlefoodbar",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158774&track_ref=category",
+          "titleHint": "Idle Food Bar（マップ3アンロック） 【▼ポイント獲得条件】記載の条件を達成 240P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 240
+        }
+      ],
+      "listingRewardHintYen": 240,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158774&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 70
+    },
+    {
+      "game": "そらペンソート",
+      "key": "そらペンソト",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209453&pl=pc_categoryService",
+          "titleHint": "そらペンソート（ゲームクリア累計200回到達） 初回アプリインストール後、ゲームクリア累計200回到達 200pt → 240 pt 2.5 （ 2件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+          "firstSeen": "2026-11-22T21:53:06+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "single",
+          "rewardHintYen": 240
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209452&pl=pc_categoryService",
+          "titleHint": "そらペンソート（ゲームクリア累計200回到達） 初回アプリインストール後、ゲームクリア累計200回到達 200pt → 240 pt 2.5 （ 2件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
+          "firstSeen": "2026-11-22T21:53:06+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 240
+        }
+      ],
+      "listingRewardHintYen": 240,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209453&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209452&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-23",
+      "listedDays": 1,
+      "order": 71
+    },
+    {
+      "game": "WaterPark Boys",
+      "key": "waterparkboys",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160639&track_ref=category",
+          "titleHint": "WaterPark Boys（ウォーターパークボーイズ）_iOS 新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープン 210P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 210
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434&pl=pc_categoryService",
+          "titleHint": "WaterPark Boys（2番目のステージSANTA MONICA BEACHオープン） 初回アプリインストール後、2番目のステージSANTA MONICA BEACHオープン 90pt → 180 pt 5.0 （ 6件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 iOS",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 180
+        },
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209435&pl=pc_categoryService",
+          "titleHint": "WaterPark Boys（2番目のステージSANTA MONICA BEACHオープン） 初回アプリインストール後、2番目のステージSANTA MONICA BEACHオープン 90pt → 180 pt 5.0 （ 6件 ） 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "single",
+          "rewardHintYen": 180
+        }
+      ],
+      "listingRewardHintYen": 210,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy",
+        "warau"
+      ],
+      "osHints": [
+        "Android",
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160639&track_ref=category"
+        ],
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434&pl=pc_categoryService",
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209435&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 72
+    },
+    {
+      "game": "Goods Triple",
+      "key": "goodstriple",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162179&track_ref=category",
+          "titleHint": "Goods Triple 3D-Sorting Puzzle（レベル200クリア） 【▼ポイント獲得条件】記載の条件を達成 200P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 200
+        }
+      ],
+      "listingRewardHintYen": 200,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162179&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 73
+    },
+    {
+      "game": "ハコハコ!商店街",
+      "key": "ハコハコ商店街",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158904&track_ref=category",
+          "titleHint": "ハコハコ！商店街（Rank Legend Lv1到達（佐渡島解放）） 【▼ポイント獲得条件】記載の条件を達成 200P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 200
+        }
+      ],
+      "listingRewardHintYen": 200,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158904&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 74
+    },
+    {
+      "game": "GameTalkTalk",
+      "key": "gametalktalk",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162373&track_ref=category",
+          "titleHint": "GameTalkTalk（Welcom Bounusを受け取る） 【▼ポイント獲得条件】記載の条件を達成 190P",
+          "firstSeen": "2026-10-28T21:09:03+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 190
+        }
+      ],
+      "listingRewardHintYen": 190,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162373&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-29",
+      "listedDays": 26,
+      "order": 75
+    },
+    {
+      "game": "Hexa Garden Stack",
+      "key": "hexagardenstack",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160308&track_ref=category",
+          "titleHint": "Hexa Garden Stack（ユーザーレベル3に到達） 【▼ポイント獲得条件】記載の条件を達成 180P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 180
+        }
+      ],
+      "listingRewardHintYen": 180,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160308&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 76
+    },
+    {
+      "game": "ブロックパズル",
+      "key": "ブロックパズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159505&track_ref=category",
+          "titleHint": "ブロックパズル(クラシックモード1万点達成)_iOS 新規アプリインストール後、クラシックモード1万点達成 160P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 160
+        }
+      ],
+      "listingRewardHintYen": 160,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159505&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 77
+    },
+    {
+      "game": "Triple Sort",
+      "key": "triplesort",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=156317&track_ref=category",
+          "titleHint": "Triple Sort 3D - Matching Tidy レベル350をクリア 156P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 156
+        }
+      ],
+      "listingRewardHintYen": 156,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=156317&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 78
+    },
+    {
+      "game": "超巨大スライム/Super Big Slime",
+      "key": "超巨大スライムsuperbigslime",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160356&track_ref=category",
+          "titleHint": "超巨大スライム/Super Big Slime (レベル60到達)_iOS 新規アプリインストール後、レベル60到達 155P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 155
+        }
+      ],
+      "listingRewardHintYen": 155,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160356&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 79
+    },
+    {
+      "game": "Arrow Fever",
+      "key": "arrowfever",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161782&track_ref=category",
+          "titleHint": "Arrow Fever（レベル100クリア） 【▼ポイント獲得条件】記載の条件を達成 150P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 150
+        }
+      ],
+      "listingRewardHintYen": 150,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161782&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 80
+    },
+    {
+      "game": "すみすみ~まったりパズル~",
+      "key": "すみすみまったりパズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161925&track_ref=category",
+          "titleHint": "すみすみ~まったりパズル~ 新規アプリインストール後、14日以内にステージ200到達 150P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 150
+        }
+      ],
+      "listingRewardHintYen": 150,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161925&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 81
+    },
+    {
+      "game": "すみっコぐらし 農園つくるんです",
+      "key": "すみっコぐらし農園つくるんです",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161927&track_ref=category",
+          "titleHint": "すみっコぐらし 農園つくるんです 新規アプリインストール後、14日以内にレベル30到達 150P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 150
+        }
+      ],
+      "listingRewardHintYen": 150,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161927&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 82
+    },
+    {
+      "game": "リラックマ農園",
+      "key": "リラックマ農園",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161926&track_ref=category",
+          "titleHint": "リラックマ農園 新規アプリインストール後、14日以内にレベル30到達 150P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 150
+        }
+      ],
+      "listingRewardHintYen": 150,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161926&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 83
+    },
+    {
+      "game": "異世界派遣の係長 -ドットとリアルが融合!?異世界RPG ワールド9-3クリア",
+      "key": "異世界派遣の係長ドットとリアルが融合異世界rpgワルド93クリア",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159927&track_ref=category",
+          "titleHint": "異世界派遣の係長 -ドットとリアルが融合！？異世界RPG ワールド9-3クリア 145P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 145
+        }
+      ],
+      "listingRewardHintYen": 145,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159927&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 84
+    },
+    {
+      "game": "パンダパーキング - Panda Parking",
+      "key": "パンダパキングpandaparking",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157636&track_ref=category",
+          "titleHint": "パンダパーキング - Panda Parking（レベル500クリア） 【▼ポイント獲得条件】記載の条件を達成 140P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 140
+        }
+      ],
+      "listingRewardHintYen": 140,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=157636&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 85
+    },
+    {
+      "game": "実りの地",
+      "key": "実りの地",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159414&track_ref=category",
+          "titleHint": "実りの地（レベル15到達） 【▼ポイント獲得条件】記載の条件を達成 108P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 108
+        },
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157109&track_ref=category",
+          "titleHint": "実りの地 （レベル20到達） 【▼ポイント獲得条件】記載の条件を達成 135P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 135
+        }
+      ],
+      "listingRewardHintYen": 135,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159414&track_ref=category",
+          "https://pc.moppy.jp/ad/detail.php?s_id=157109&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "365日以内の独立した実プレイヤー記録が2名（ワラウ口コミ2026-08-23・2026-05-18）のみで3件に届かない。モッピー口コミ0件。案件は読めるが保留。"
+      },
+      "order": 86
+    },
+    {
+      "game": "Brain Test",
+      "key": "braintest",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158946&track_ref=category",
+          "titleHint": "Brain Test 2: Tricky Stories（レベル350クリア） 【▼ポイント獲得条件】記載の条件を達成 120P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 120
+        }
+      ],
+      "listingRewardHintYen": 120,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158946&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 87
+    },
+    {
+      "game": "LINE:ジグソーパズル",
+      "key": "lineジグソパズル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158209&track_ref=category",
+          "titleHint": "LINE：ジグソーパズル 7日以内にパズルを問わず全てのピース数を1度以上クリア 120P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 120
+        }
+      ],
+      "listingRewardHintYen": 120,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158209&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 88
+    },
+    {
+      "game": "ラズベリーマッシュ",
+      "key": "ラズベリマッシュ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158866&track_ref=category",
+          "titleHint": "ラズベリーマッシュ（Normalステージを全クリア（フロア6クリア）） 【▼ポイント獲得条件】記載の条件を達成 118P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 118
+        }
+      ],
+      "listingRewardHintYen": 118,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158866&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 89
+    },
+    {
+      "game": "ソリティア無限にやれる「そるティア」",
+      "key": "ソリティア無限にやれるそるティア",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159409&track_ref=category",
+          "titleHint": "ソリティア無限にやれる「そるティア」（勝利数10回クリア） 【▼ポイント獲得条件】記載の条件を達成 48P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 48
+        },
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159988&track_ref=category",
+          "titleHint": "ソリティア無限にやれる「そるティア」(勝利数50回クリア) 【▼ポイント獲得条件】記載の条件を達成 115P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 115
+        }
+      ],
+      "listingRewardHintYen": 115,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159409&track_ref=category",
+          "https://pc.moppy.jp/ad/detail.php?s_id=159988&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-20",
+        "reason": "モッピー単一条件は読めるが個人記録なし。"
+      },
+      "order": 90
+    },
+    {
+      "game": "勇者「こんなに仲間あつめていいんですか?」",
+      "key": "勇者こんなに仲間あつめていいんですか",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159949&track_ref=category",
+          "titleHint": "勇者「こんなに仲間あつめていいんですか？」 ステージ81クリア 115P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 115
+        }
+      ],
+      "listingRewardHintYen": 115,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159949&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 91
+    },
+    {
+      "game": "Block Joy",
+      "key": "blockjoy",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159218&track_ref=category",
+          "titleHint": "Block Joy（Journeyモードでレベル50クリア）_iOS 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159218&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 92
+    },
+    {
+      "game": "Hide My Test!",
+      "key": "hidemytest",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159175&track_ref=category",
+          "titleHint": "Hide My Test!（ランダムモード100ステージクリア） 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159175&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 93
+    },
+    {
+      "game": "Mr.Shipping",
+      "key": "mrshipping",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159179&track_ref=category",
+          "titleHint": "Mr.Shipping（ステージ2のタスク「トータル売り上げ4,500,000ドル」をクリア） 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159179&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 94
+    },
+    {
+      "game": "Purify the World",
+      "key": "purifytheworld",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160041&track_ref=category",
+          "titleHint": "Purify the World（ワールド1のミッションをすべてクリア） 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160041&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 95
+    },
+    {
+      "game": "Trump's Empire: idle game",
+      "key": "trumpsempireidlegame",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=155454&track_ref=category",
+          "titleHint": "Trump's Empire: idle game（Build Colony on Mars） 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=155454&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 96
+    },
+    {
+      "game": "仕事サボる! -暇つぶし 簡単謎解き脱出ゲーム",
+      "key": "仕事サボる暇つぶし簡単謎解き脱出ゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159174&track_ref=category",
+          "titleHint": "仕事サボる！ -暇つぶし 簡単謎解き脱出ゲーム（ランダムモード120ステージクリア） 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159174&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 97
+    },
+    {
+      "game": "学校サボる! - 脱出ゲーム",
+      "key": "学校サボる脱出ゲム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158211&track_ref=category",
+          "titleHint": "学校サボる! - 脱出ゲーム（Skip School)（100ステージクリア） 【▼ポイント獲得条件】記載の条件を達成 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158211&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 98
+    },
+    {
+      "game": "XP Hero",
+      "key": "xphero",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161672&track_ref=category",
+          "titleHint": "XP Hero (Gargoyle Bossクリア)_iOS 新規アプリインストール後、Gargoyle Bossクリア 95P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 95
+        }
+      ],
+      "listingRewardHintYen": 95,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161672&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 99
+    },
+    {
+      "game": "異世界派遣の係長",
+      "key": "異世界派遣の係長",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158131&track_ref=category",
+          "titleHint": "異世界派遣の係長（ワールド9-3クリア） 【▼ポイント獲得条件】記載の条件を達成 91P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 91
+        }
+      ],
+      "listingRewardHintYen": 91,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158131&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 100
+    },
+    {
+      "game": "Draw Bridge - Puzzle Game",
+      "key": "drawbridgepuzzlegame",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159627&track_ref=category",
+          "titleHint": "Draw Bridge - Puzzle Game（レベル200クリア） 【▼ポイント獲得条件】記載の条件を達成 90P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 90
+        }
+      ],
+      "listingRewardHintYen": 90,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159627&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 101
+    },
+    {
+      "game": "Police Rush",
+      "key": "policerush",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159101&track_ref=category",
+          "titleHint": "Police Rush（レベル131-1到達） 【▼ポイント獲得条件】記載の条件を達成 90P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 90
+        }
+      ],
+      "listingRewardHintYen": 90,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159101&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 102
+    },
+    {
+      "game": "Tiles Journey: World traveller",
+      "key": "tilesjourneyworldtraveller",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209433&pl=pc_categoryService",
+          "titleHint": "【SmaAD】Tiles Journey: World traveller（レベル80クリア） レベル80クリア 81 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SmaAD Android",
+          "firstSeen": "2026-11-20T22:41:41+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": "Android",
+          "kind": "single",
+          "rewardHintYen": 81
+        }
+      ],
+      "listingRewardHintYen": 81,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "Android"
+      ],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209433&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-21",
+      "listedDays": 3,
+      "order": 103
+    },
+    {
+      "game": "Block Puzzle - Gems Adventure",
+      "key": "blockpuzzlegemsadventure",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159253&track_ref=category",
+          "titleHint": "Block Puzzle - Gems Adventure (レベル50クリア) 【▼ポイント獲得条件】記載の条件を達成 80P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 80
+        }
+      ],
+      "listingRewardHintYen": 80,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159253&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 104
+    },
+    {
+      "game": "キャットポップンマッチ",
+      "key": "キャットポップンマッチ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159878&track_ref=category",
+          "titleHint": "キャットポップンマッチ（Cat Pop'n Match)（ステージ150クリア） 【▼ポイント獲得条件】記載の条件を達成 70P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "likely_game",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 70
+        }
+      ],
+      "listingRewardHintYen": 70,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": true,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159878&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 105
+    },
+    {
+      "game": "ヴァイキングライズ 首領本部レベル21に到達",
+      "key": "ヴァイキングライズ首領本部レベル21に到達",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162423&track_ref=category",
+          "titleHint": "ヴァイキングライズ 首領本部ﾚﾍﾞﾙ21に到達 4,037P",
+          "firstSeen": "2026-11-10T21:49:58+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 4037
+        }
+      ],
+      "listingRewardHintYen": 4037,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162423&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-11",
+      "listedDays": 13,
+      "relatedMaterial": [
+        {
+          "kind": "research_dossier",
+          "ref": "research/new-games/2026-09-27/dossiers/viking-rise.json",
+          "match": "name-prefix"
+        }
+      ],
+      "order": 106
+    },
+    {
+      "game": "オリパワン -トレカのオリパ-",
+      "key": "オリパワントレカのオリパ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209406&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】オリパワン -トレカのオリパ-（初回一括3000円(税込)以上課金） 初回一括3000円(税込)以上課金 3,444 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-19T23:05:24+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 3444
+        }
+      ],
+      "listingRewardHintYen": 3444,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209406&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-20",
+      "listedDays": 4,
+      "order": 107
+    },
+    {
+      "game": "ホットペッパービューティー 美容院予約完了後、予約店舗に来訪",
+      "key": "ホットペッパビュティ美容院予約完了後予約店舗に来訪",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159093&track_ref=category",
+          "titleHint": "ホットペッパービューティー 美容院予約完了後、予約店舗に来訪 3,300P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "service",
+          "rewardHintYen": 3300
+        }
+      ],
+      "listingRewardHintYen": 3300,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159093&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 108
+    },
+    {
+      "game": "IRIAM",
+      "key": "iriam",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=156389&track_ref=category",
+          "titleHint": "IRIAM チュートリアル全突破 3,000P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 3000
+        }
+      ],
+      "listingRewardHintYen": 3000,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=156389&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 109
+    },
+    {
+      "game": "TIPSTAR",
+      "key": "tipstar",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161071&track_ref=category",
+          "titleHint": "TIPSTAR(100円以上チャージ)_iOS 新規アプリインストール後、7日以内に現金100円以上チャージ完了 2,500P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "service",
+          "rewardHintYen": 2500
+        }
+      ],
+      "listingRewardHintYen": 2500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161071&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 110
+    },
+    {
+      "game": "WINTICKET/ウィンチケット",
+      "key": "winticketウィンチケット",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=149647&track_ref=category",
+          "titleHint": "WINTICKET/ウィンチケット(初回投票)_iOS 初回投票 2,275P",
+          "firstSeen": "2026-09-30T20:51:00+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "service",
+          "rewardHintYen": 2275
+        }
+      ],
+      "listingRewardHintYen": 2275,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=149647&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-01",
+      "listedDays": 54,
+      "order": 111
+    },
+    {
+      "game": "IDARE",
+      "key": "idare",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=156587&track_ref=category",
+          "titleHint": "IDARE（イデア）【iOS】 新規アプリインストール後、入金完了 ★ 4.7 70 1,000P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "service",
+          "rewardHintYen": 1000
+        }
+      ],
+      "listingRewardHintYen": 1000,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=156587&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 112
+    },
+    {
+      "game": "Leminoプレミアム",
+      "key": "leminoプレミアム",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=156123&track_ref=category",
+          "titleHint": "Leminoプレミアム（レミノ）【初月無料お試し】 新規契約完了後、32日間継続契約 ★ 5.0 1 900P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "service",
+          "rewardHintYen": 900
+        }
+      ],
+      "listingRewardHintYen": 900,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=156123&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 113
+    },
+    {
+      "game": "ColorSing",
+      "key": "colorsing",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160001&track_ref=category",
+          "titleHint": "ColorSing 1人のライバーに対して1K推しポイント獲得 800P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 800
+        }
+      ],
+      "listingRewardHintYen": 800,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160001&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 114
+    },
+    {
+      "game": "カーネクスト公式アプリ【ダウンロード&無料査定完了】",
+      "key": "カネクスト公式アプリダウンロド無料査定完了",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160379&track_ref=category",
+          "titleHint": "カーネクスト公式アプリ【ダウンロード&無料査定完了】iOS 新規アプリインストール後、30日以内に車の無料査定 ★ 2.0 1 800P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "service",
+          "rewardHintYen": 800
+        }
+      ],
+      "listingRewardHintYen": 800,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160379&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 115
+    },
+    {
+      "game": "怖い学校鬼ごっこ新規アプリインストール+広告利用",
+      "key": "怖い学校鬼ごっこ新規アプリインストル広告利用",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161493&track_ref=category",
+          "titleHint": "怖い学校鬼ごっこ新規アプリインストール＋広告利用 新規アプリインストール後、メニューの「条件達成でダイヤゲット！」より月額550円以上のコースのいずれかの広告利用 800P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 800
+        }
+      ],
+      "listingRewardHintYen": 800,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161493&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 116
+    },
+    {
+      "game": "楽天ミュージック",
+      "key": "楽天ミュジック",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158679&track_ref=category",
+          "titleHint": "楽天ミュージック 新規30日無料申し込み＋アプリインストール後ログイン＋申し込み後45日間継続利用 ★ 4.8 12 800P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "service",
+          "rewardHintYen": 800
+        }
+      ],
+      "listingRewardHintYen": 800,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158679&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 117
+    },
+    {
+      "game": "※還元UP※スマートニュース",
+      "key": "※還元up※スマトニュス",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161662&track_ref=category",
+          "titleHint": "※還元UP※スマートニュース（8日目起動）_iOS 初回起動日を1日目として8日目の起動 700P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 700
+        }
+      ],
+      "listingRewardHintYen": 700,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161662&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 118
+    },
+    {
+      "game": "アイドル ウェポン ショップ",
+      "key": "アイドルウェポンショップ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161411&track_ref=category",
+          "titleHint": "アイドル ウェポン ショップ（工業遺跡（3_7）をアンロック） 【▼ポイント獲得条件】記載の条件を達成 700P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 700
+        }
+      ],
+      "listingRewardHintYen": 700,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161411&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 119
+    },
+    {
+      "game": "マジックスクール",
+      "key": "マジックスクル",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161108&track_ref=category",
+          "titleHint": "マジックスクール（3つ目の地図の7番目の教室に到達） 【▼ポイント獲得条件】記載の条件を達成 680P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 680
+        }
+      ],
+      "listingRewardHintYen": 680,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161108&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 120
+    },
+    {
+      "game": "バンドルカード",
+      "key": "バンドルカド",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157773&track_ref=category",
+          "titleHint": "バンドルカード（iOS） 申し込み後の審査通過後に「ポチっとチャージ」完了 600P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "service",
+          "rewardHintYen": 600
+        }
+      ],
+      "listingRewardHintYen": 600,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=157773&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 121
+    },
+    {
+      "game": "カプコンネットキャッチャー カプとれ",
+      "key": "カプコンネットキャッチャカプとれ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=155462&track_ref=category",
+          "titleHint": "カプコンネットキャッチャー カプとれ_iOS 【▼ポイント獲得条件】記載の条件を達成 550P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "single",
+          "rewardHintYen": 550
+        }
+      ],
+      "listingRewardHintYen": 550,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=155462&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 122
+    },
+    {
+      "game": "RAVIO",
+      "key": "ravio",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162178&track_ref=category",
+          "titleHint": "RAVIO（ラビオ）[500円(税込)以上の課金] 新規アプリインストール後、30日以内に500円(税込)以上の課金 400P",
+          "firstSeen": "2026-10-21T20:13:20+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 500
+        }
+      ],
+      "listingRewardHintYen": 500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162178&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-10-22",
+      "listedDays": 33,
+      "order": 123
+    },
+    {
+      "game": "Uqey",
+      "key": "uqey",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162023&track_ref=category",
+          "titleHint": "Uqey（ユーキ―） 新規アプリダウンロード＋レンタカー予約後の利用 500P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "service",
+          "rewardHintYen": 500
+        }
+      ],
+      "listingRewardHintYen": 500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162023&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 124
+    },
+    {
+      "game": "Wallet+",
+      "key": "wallet",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162062&track_ref=category",
+          "titleHint": "Wallet+（ウォレットプラス） 新規アプリインストール＋対象銀行の口座登録 500P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "service",
+          "rewardHintYen": 500
+        }
+      ],
+      "listingRewardHintYen": 500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162062&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 125
+    },
+    {
+      "game": "クラウドキャッチャー",
+      "key": "クラウドキャッチャ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159443&track_ref=category",
+          "titleHint": "クラウドキャッチャー（初回課金） 【▼ポイント獲得条件】記載の条件を達成 500P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 500
+        }
+      ],
+      "listingRewardHintYen": 500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159443&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "previouslyHeld": {
+        "date": "2026-11-05",
+        "reason": "ワラウ200363・200364は公開ページが表示不可で条件を確認できず。"
+      },
+      "order": 126
+    },
+    {
+      "game": "メルペイ",
+      "key": "メルペイ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162303&track_ref=category",
+          "titleHint": "メルペイ（初回決済） メルペイ初回決済 500P",
+          "firstSeen": "2026-11-13T22:00:10+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 500
+        }
+      ],
+      "listingRewardHintYen": 500,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162303&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-11-14",
+      "listedDays": 10,
+      "order": 127
+    },
+    {
+      "game": "ナムコオンラインクレーン",
+      "key": "ナムコオンラインクレン",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=157514&track_ref=category",
+          "titleHint": "ナムコオンラインクレーン（初回課金（NPチャージ）） 【▼ポイント獲得条件】記載の条件を達成 440P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 440
+        }
+      ],
+      "listingRewardHintYen": 440,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=157514&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 128
+    },
+    {
+      "game": "楽天ラクマ",
+      "key": "楽天ラクマ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159670&track_ref=category",
+          "titleHint": "【超簡単ポイントゲット】楽天ラクマ(初回出品完了) 新規アプリインストールし初回起動後、初回出品完了 ★ 4.7 66 410P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 410
+        }
+      ],
+      "listingRewardHintYen": 410,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159670&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 129
+    },
+    {
+      "game": "Dinosaur Universe",
+      "key": "dinosauruniverse",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161760&track_ref=category",
+          "titleHint": "Dinosaur Universe（ロストシティ到達） 【▼ポイント獲得条件】記載の条件を達成 350P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 350
+        }
+      ],
+      "listingRewardHintYen": 350,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161760&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 130
+    },
+    {
+      "game": "BIGO LIVE",
+      "key": "bigolive",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=148782&track_ref=category",
+          "titleHint": "BIGO LIVE 8分以上のライブ視聴したうえで、3日連続ログイン 332P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 332
+        }
+      ],
+      "listingRewardHintYen": 332,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=148782&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 131
+    },
+    {
+      "game": "洋菓子店ローズ パンもはじめました",
+      "key": "洋菓子店ロズパンもはじめました",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159435&track_ref=category",
+          "titleHint": "洋菓子店ローズ パンもはじめました（レシピ1,600個作成） 【▼ポイント獲得条件】記載の条件を達成 315P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 315
+        }
+      ],
+      "listingRewardHintYen": 315,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159435&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 132
+    },
+    {
+      "game": "パクパクフィッシュ-Fish Eat Fish.io",
+      "key": "パクパクフィッシュfisheatfishio",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162072&track_ref=category",
+          "titleHint": "パクパクフィッシュ-Fish Eat Fish.io（魚を18種類アンロック） 【▼ポイント獲得条件】記載の条件を達成 280P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 280
+        }
+      ],
+      "listingRewardHintYen": 280,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162072&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 133
+    },
+    {
+      "game": "※還元アップ※楽天家計簿 初めてのアプリインストール後、口座を1つ以上連携",
+      "key": "※還元アップ※楽天家計簿初めてのアプリインストル後口座を1つ以上連携",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159550&track_ref=category",
+          "titleHint": "※還元アップ※楽天家計簿 初めてのアプリインストール後、口座を1つ以上連携 200P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "service",
+          "rewardHintYen": 200
+        }
+      ],
+      "listingRewardHintYen": 200,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "service"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159550&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 134
+    },
+    {
+      "game": "Berry Factory Tycoon",
+      "key": "berryfactorytycoon",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160670&track_ref=category",
+          "titleHint": "Berry Factory Tycoon（jelly concern (ゼリー工場複合施設)に到達） 【▼ポイント獲得条件】記載の条件を達成 180P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 180
+        }
+      ],
+      "listingRewardHintYen": 180,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160670&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 135
+    },
+    {
+      "game": "LINE:ナンプレ",
+      "key": "lineナンプレ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=158364&track_ref=category",
+          "titleHint": "LINE：ナンプレ 7日以内にコインを2000枚以上獲得 142P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 142
+        }
+      ],
+      "listingRewardHintYen": 142,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=158364&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 136
+    },
+    {
+      "game": "秘密のメッセージはじめました シーズン1とシーズン2をコンプリート",
+      "key": "秘密のメッセジはじめましたシズン1とシズン2をコンプリト",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=147035&track_ref=category",
+          "titleHint": "秘密のメッセージはじめました シーズン１とシーズン２をコンプリート 113P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 113
+        }
+      ],
+      "listingRewardHintYen": 113,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=147035&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 137
+    },
+    {
+      "game": "RD:ポーカー アカウント連携ログイン後、累計50000払出チップ達成",
+      "key": "rdポカアカウント連携ログイン後累計50000払出チップ達成",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160876&track_ref=category",
+          "titleHint": "RD：ポーカー アカウント連携ログイン後、累計50000払出チップ達成 110P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 110
+        }
+      ],
+      "listingRewardHintYen": 110,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160876&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 138
+    },
+    {
+      "game": "RD:七並べ アカウント連携ログイン後、累計50000払出チップ達成",
+      "key": "rd七並べアカウント連携ログイン後累計50000払出チップ達成",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160835&track_ref=category",
+          "titleHint": "RD：七並べ アカウント連携ログイン後、累計50000払出チップ達成 110P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 110
+        }
+      ],
+      "listingRewardHintYen": 110,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160835&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 139
+    },
+    {
+      "game": "RD:大富豪 アカウント連携ログインし累計50000払出チップ達成",
+      "key": "rd大富豪アカウント連携ログインし累計50000払出チップ達成",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=160766&track_ref=category",
+          "titleHint": "RD：大富豪 アカウント連携ログインし累計50000払出チップ達成 110P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "single",
+          "rewardHintYen": 110
+        }
+      ],
+      "listingRewardHintYen": 110,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "single"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=160766&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 140
+    },
+    {
+      "game": "パラノイズ",
+      "key": "パラノイズ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161472&track_ref=category",
+          "titleHint": "パラノイズ 7日以内に初心者限定ルーレット(無料)を10回受け取る 100P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161472&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 141
+    },
+    {
+      "game": "ポイ壁",
+      "key": "ポイ壁",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=161659&track_ref=category",
+          "titleHint": "ポイ壁（iOS） 新規アプリインストール後、60日以内に累計100ポイント獲得 50P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 100
+        }
+      ],
+      "listingRewardHintYen": 100,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=161659&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 142
+    },
+    {
+      "game": "CoincheckアプリDL",
+      "key": "coincheckアプリdl",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=162051&track_ref=category",
+          "titleHint": "CoincheckアプリDL（コインチェックアプリダウンロード） 新規アプリインストール後の初回起動 60P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": 60
+        }
+      ],
+      "listingRewardHintYen": 60,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=162051&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 143
+    },
+    {
+      "game": "skyticket",
+      "key": "skyticket",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=133769&track_ref=category",
+          "titleHint": "skyticket（iOS/スカイチケット） インストール後起動 40P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 40
+        }
+      ],
+      "listingRewardHintYen": 40,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=133769&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 144
+    },
+    {
+      "game": "外貨積立",
+      "key": "外貨積立",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/ad/detail.php?s_id=159367&track_ref=category",
+          "titleHint": "外貨積立（らくつむ）ios用 新規アプリインストール後、初回起動 40P",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 40
+        }
+      ],
+      "listingRewardHintYen": 40,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/ad/detail.php?s_id=159367&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 145
+    },
+    {
+      "game": "ケロロ軍曹☆ ぽちっと大出動であります!",
+      "key": "ケロロ軍曹☆ぽちっと大出動であります",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "warau",
+          "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209403&pl=pc_categoryService",
+          "titleHint": "【SKYFLAG】ケロロ軍曹☆ ぽちっと大出動であります！（ストア事前登録完了） ストア事前登録完了 26 pt 通帳記載 起動後、最短30分 判定期間 条件達成後、24時間以内 SKYFLAG iOS",
+          "firstSeen": "2026-11-24T02:53:04+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": "iOS",
+          "kind": "unknown",
+          "rewardHintYen": 26
+        }
+      ],
+      "listingRewardHintYen": 26,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "warau"
+      ],
+      "osHints": [
+        "iOS"
+      ],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "warau": [
+          "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209403&pl=pc_categoryService"
+        ]
+      },
+      "firstSeenJst": "2026-11-24",
+      "listedDays": 0,
+      "order": 146
+    },
+    {
+      "game": "トリファ",
+      "key": "トリファ",
+      "rows": [
+        {
+          "from": "monitor",
+          "source": "moppy",
+          "url": "https://pc.moppy.jp/shopping/detail.php?site_id=6611&track_ref=category",
+          "titleHint": "トリファ 新規アプリインストール後、プラン購入 5.0%",
+          "firstSeen": "2026-09-23T17:05:35+00:00",
+          "classification": "review",
+          "isNewToday": false,
+          "os": null,
+          "kind": "unknown",
+          "rewardHintYen": null
+        }
+      ],
+      "listingRewardHintYen": null,
+      "queueRank": null,
+      "verifiedRewardYen": null,
+      "sources": [
+        "moppy"
+      ],
+      "osHints": [],
+      "newToday": false,
+      "likelyGame": false,
+      "kindHints": [
+        "unknown"
+      ],
+      "offerUrls": {
+        "moppy": [
+          "https://pc.moppy.jp/shopping/detail.php?site_id=6611&track_ref=category"
+        ]
+      },
+      "firstSeenJst": "2026-09-24",
+      "listedDays": 61,
+      "order": 147
+    }
+  ],
+  "excluded": [
+    {
+      "game": "Freecash 遊びながらポイント獲得",
+      "reason": "aggregator_or_reward_wall_not_a_single_game"
+    },
+    {
+      "game": "※還元UP※Freecash",
+      "reason": "aggregator_or_reward_wall_not_a_single_game"
+    },
+    {
+      "game": "キャッシュクラブ",
+      "reason": "aggregator_or_reward_wall_not_a_single_game"
+    },
+    {
+      "game": "Bingo Blitz/ビンゴブリッツ",
+      "reason": "already_covered",
+      "coveredBy": "unmerged_branch:origin/claude/poigame-3guides-audit-deploy-ee46dt:bingo-blitz-guide.html"
+    },
+    {
+      "game": "Disney Solitaire ディズニー ソリティア",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:disney-solitaire-guide.html"
+    },
+    {
+      "game": "アローズ – パズルエスケープ",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:arrows-guide.html"
+    },
+    {
+      "game": "ザ・アンツ",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:the-ants-guide.html"
+    },
+    {
+      "game": "ザ・アンツ:アンダーグラウンド キングダム 女王アリをLv.20にUP",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:the-ants-guide.html (name-prefix match: confirm the store identity)"
+    },
+    {
+      "game": "ザ・グランドマフィア",
+      "reason": "already_covered",
+      "coveredBy": "unmerged_branch:origin/claude/poigame-3guides-audit-deploy-ee46dt:grand-mafia-guide.html"
+    },
+    {
+      "game": "ゾンビ・パニック",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:zombie-panic-guide.html"
+    },
+    {
+      "game": "ドゥームズデイ:ラストサバイバー",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:doomsday-last-survivor-guide.html"
+    },
+    {
+      "game": "ハイローラー ベガス : カジノゲーム",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:highroller-vegas-guide.html"
+    },
+    {
+      "game": "プリケツにゃー",
+      "reason": "already_covered",
+      "coveredBy": "daily_batch:2026-11-20"
+    },
+    {
+      "game": "ボクと惑星農園",
+      "reason": "already_covered",
+      "coveredBy": "unmerged_branch:origin/claude/magical-ptolemy-wykgls:boku-to-wakusei-nouen-guide.html"
+    },
+    {
+      "game": "ラストアサイラム:プレイグ",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:last-asylum-plague-guide.html"
+    },
+    {
+      "game": "三國志 真戦",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:sangokushi-shinsen-guide.html"
+    },
+    {
+      "game": "商人放浪記",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:shounin-hourouki-guide.html"
+    },
+    {
+      "game": "戦国布武:我が天下戦国編",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:sengoku-fubu-guide.html"
+    },
+    {
+      "game": "杖と剣の伝説",
+      "reason": "already_covered",
+      "coveredBy": "published_guide:tsue-to-ken-guide.html"
+    },
+    {
+      "game": "AEON Pay",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "AEON Pay(イオンペイ) 新規アプリインストール後、7日以内の会員登録 300P"
+    },
+    {
+      "game": "DMM TV",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "【無料即605P】DMM TV（無料トライアル） DMMプレミアム会員の新規お試し無料登録 ★ 4.9 366 605P"
+    },
+    {
+      "game": "MIKOSHI/ミコシ",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "MIKOSHI/ミコシ（iOS） 新規アプリインストール後、24時間以内の会員登録 50P"
+    },
+    {
+      "game": "Momentia",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "【無料】Momentia（モーメンティア） 会員登録 新規会員登録 ★ 4.9 103 40P"
+    },
+    {
+      "game": "Shufoo!シュフー 無料会員登録",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "Shufoo!シュフー 無料会員登録 92P"
+    },
+    {
+      "game": "SubRest",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "SubRest（サブレスト）[インストール＆ログイン] 新規アプリインストール後、1時間以内に新規会員登録＆ログイン ★ 4.8 72 50P"
+    },
+    {
+      "game": "Tinder 無料会員登録完了",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "Tinder 無料会員登録完了 325P"
+    },
+    {
+      "game": "Travel Wallet",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "Travel Wallet（トラベルウォレット） 新規アプリインストール後90日以内にカード発行 ★ 4.8 58 1,000P"
+    },
+    {
+      "game": "アイカサ",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "アイカサ（新規無料会員登録後、初回利用完了） 【▼ポイント獲得条件】記載の条件を達成 360P"
+    },
+    {
+      "game": "エクストレカ",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "エクストレカ_iOS 新規アプリインストール後、会員登録後、一括1,000円以上課金 1,200P"
+    },
+    {
+      "game": "トラノコ",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "トラノコ 新規アプリインストール後、起動のち口座開設 700P"
+    },
+    {
+      "game": "ビクトレ",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "【120％還元】ビクトレ(500円以上の初回購入)_IOS用 新規アプリインストール後、会員登録＋500円以上の初回VC購入 600P"
+    },
+    {
+      "game": "ビクトレ",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "【120％還元】ビクトレ（1,000円以上の初回購入）_iOS 新規アプリインストール後、会員登録＋1,000円以上の初回VC購入 1,200P"
+    },
+    {
+      "game": "健康管理アプリ「パシャっとカルテ」",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "健康管理アプリ「パシャっとカルテ」（ios） 新規アプリインストール後、会員登録＋医療データのアップロード＋データの反映 200P"
+    },
+    {
+      "game": "婚活アプリyoubride",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "婚活アプリyoubride（ユーブライド） 新規アプリインストール後、会員登録及び有料プラン購入 4,000P"
+    },
+    {
+      "game": "家計簿マネーフォワード ME",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "【注意事項必読】家計簿マネーフォワード ME（会員登録後、24時間以内に3口座連携完了） 【▼ポイント獲得条件】記載の条件を達成 800P"
+    },
+    {
+      "game": "投資アンケート",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "【無料即P】投資アンケート（年収500万以上） 初回アンケート回答 500P"
+    },
+    {
+      "game": "若手ハイエンド特化の転職サイト『ASSIGN",
+      "reason": "scan_classified_likely_non_game",
+      "titleHint": "若手ハイエンド特化の転職サイト『ASSIGN（アサイン）』 新規会員登録 270P"
+    }
+  ],
+  "excludedCount": 37
+}

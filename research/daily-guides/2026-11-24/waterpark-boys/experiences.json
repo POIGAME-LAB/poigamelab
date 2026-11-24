@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "game": "ウォーターパークボーイズ（WaterPark Boys）",
+  "updatedAt": "2026-11-24",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "投稿時期の案件条件・OS・課金額に差があります。時間は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-24。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "2時間でStage2 Open",
+      "milestones": [
+        {"day": null, "label": "Stage2 Open（本人記載は2時間）"}
+      ],
+      "sources": ["https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91water-park-boys%E3%80%802%E7%95%AA%E7%9B%AE%E3%81%AE%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E3%80%80santa-monica-beach%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3/"],
+      "sourceDetails": ["うっしー（記事・アメフリ案件）", "2026-08-08", "2時間でStage2 Open"],
+      "postedOn": "2026-08-08",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": 120,
+      "dailyPlayMinutes": null,
+      "note": "施設強化の動画ボーナスは見ずデフォルトを選択。パワーは2段階のみ。★約160個で★レベル7が必要と記載。OSの記載なし。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "約2時間でStage2まで",
+      "milestones": [
+        {"day": null, "label": "Stage2（本人の見出しは「2時間やれば大丈夫」）"}
+      ],
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"],
+      "sourceDetails": ["おきサンポ（ワラウ口コミ・男性40代）", "2026-11-23", "2時間やれば大丈夫♪"],
+      "postedOn": "2026-11-23",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "広告動画で施設を強化して★レベル7を目指す。速度アップ系の動画は見なくてよいと記載。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "2時間くらいでクリア",
+      "milestones": [
+        {"day": null, "label": "クリア（本人の見出しは「2時間くらい」）"}
+      ],
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"],
+      "sourceDetails": ["えーぶいえすさん（ワラウ口コミ・男性50代）", "2026-11-23", "2時間くらいでクリアしました"],
+      "postedOn": "2026-11-23",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "最初に持ち運ぶスキル以外の2つをMAXにし、広告を見て施設を最高レベルにしたと記載。★レベル7で次のステージが開放。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "数時間で達成",
+      "milestones": [
+        {"day": null, "label": "達成（本人の見出しは「数時間」）"}
+      ],
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"],
+      "sourceDetails": ["マリーさん（ワラウ口コミ・女性40代）", "2026-11-21", "数時間で達成しました"],
+      "postedOn": "2026-11-21",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "客は店員に任せ、広告を見てレベルを上げる方法。★レベル7でマップから次のステージへ移動し、ポイントは即反映と記載。"
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "completed",
+      "summary": "加速アイテムなしで約2時間",
+      "milestones": [
+        {"day": null, "label": "終了（本人記載は約2時間）"}
+      ],
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"],
+      "sourceDetails": ["はりはりさん（ワラウ口コミ・女性50代）", "2026-11-24", "強制広告に耐えられる方には良い案件"],
+      "postedOn": "2026-11-24",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "数十秒の強制広告が多いが、加速アイテムを使わず徒歩のみでも約2時間で終わったと記載。"
+    },
+    {
+      "id": "F",
+      "label": "プレイヤーF",
+      "status": "completed",
+      "summary": "広告で資金を得て約2時間",
+      "milestones": [
+        {"day": null, "label": "終了（本人記載は約2時間）"}
+      ],
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"],
+      "sourceDetails": ["はるさん（ワラウ口コミ・男性20代）", "2026-11-24", "楽しかった！"],
+      "postedOn": "2026-11-24",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "広告を見て資金を得て施設を拡大。続けるには広告を消す手段が必要と記載。"
+    },
+    {
+      "id": "G",
+      "label": "プレイヤーG",
+      "status": "completed",
+      "summary": "2時間弱で終了",
+      "milestones": [
+        {"day": null, "label": "終了（本人の見出しは「2時間弱」）"}
+      ],
+      "sources": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"],
+      "sourceDetails": ["チーズナンさん（ワラウ口コミ・女性50代）", "2026-11-24", "2時間弱で終了"],
+      "postedOn": "2026-11-24",
+      "checkedAt": "2026-11-24",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "お金が多く得られるアイテムが出たときだけ広告を見て、店員の解放と施設強化を繰り返した。★レベル7でステージが進んだと記載。"
+    }
+  ]
+}

@@ -70,17 +70,18 @@ def test_gate_passes_and_page_reproducible(batch, slug):
 @pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
 def test_offer_table_equals_same_day_evidence(batch, slug):
     meta = _j(batch / slug / "metadata.json")
-    ev = {c["pointId"]: c for c in _j(bdg.evidence_path(batch, slug))["checks"]}
+    ev = {bdg.offer_key(c): c for c in _j(bdg.evidence_path(batch, slug))["checks"]}
     text = _text((ROOT / meta["proposedPage"]).read_text(encoding="utf-8"))
     for o in meta["offers"]:
-        c = ev[o["pointId"]]
+        c = ev[bdg.offer_key(o)]
+        unit = c.get("pointUnit") or "pt"  # the offer site's own unit (Moppy P / Warau pt)
         assert c["httpStatus"] == 200 and c["live"] and c["stepSumMatchesTotal"]
         assert [(s["condition"], s["rewardPt"]) for s in o["steps"]] == [(s["condition"], s["rewardPt"]) for s in c["steps"]]
         assert sum(s["rewardPt"] for s in o["steps"]) == o["totalDisplayedPt"] == c["totalPt"]
         assert sum(s["rewardPt"] for s in o["steps"] if not s["requiresPayment"]) == o["sumWithoutPurchaseStepsPt"]
-        assert f"{o['totalDisplayedPt']:,}pt" in text
+        assert f"{o['totalDisplayedPt']:,}{unit}" in text
         for s in o["steps"]:
-            assert f"{s['rewardPt']:,}pt" in text
+            assert f"{s['rewardPt']:,}{unit}" in text
         if c.get("temporaryIncrease"):
             inc = c["temporaryIncrease"]
             if inc.get("until"):
@@ -89,9 +90,9 @@ def test_offer_table_equals_same_day_evidence(batch, slug):
                 assert "増額" in text and "終了日" in text and inc.get("endDateStated") is False
             assert o["temporaryIncrease"] == inc  # the metadata row states the same increase the page shows
     for prev in meta.get("previousOffers", []):
-        c = ev[prev["pointId"]]
+        c = ev[bdg.offer_key(prev)]
         assert c["live"] is False and c["unavailableReason"]  # shown as no longer available on the latest check
-        assert prev["pointId"] not in {o["pointId"] for o in meta["offers"]}
+        assert bdg.offer_key(prev) not in {bdg.offer_key(o) for o in meta["offers"]}
         assert f"{prev['totalDisplayedPt']:,}pt" not in text  # an old amount is never presented as current
 
 
