@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-11-24T03:00:22+00:00",
-  "finishedAt": "2026-11-24T03:00:22+00:00",
+  "startedAt": "2026-11-25T00:50:25+00:00",
+  "finishedAt": "2026-11-25T00:50:25+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -21,18 +21,23 @@
     "マフィア・シティ-極道風雲",
     "ロックンキャッシュカジノ-スロットゲーム",
     "Slot Mate（スロットメイト）- ベガススロットカジノ",
-    "Wild Survival"
+    "Wild Survival",
+    "Sea Block 1010",
+    "さる山温泉旅館",
+    "インポッシブルカート",
+    "天地英雄伝",
+    "High Roller Vegas",
+    "Dice Dreams",
+    "Disney Solitaire - ディズニー ソリティア"
   ],
   "results": [
     {
       "game": "メメントモリ",
       "returncode": 0,
-      "publishableCount": 0,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "comparison_sources_below_minimum"
-      ],
-      "standardConfirmed": 1,
+      "publishableCount": 2,
+      "collectionComplete": true,
+      "degradedReasons": [],
+      "standardConfirmed": 2,
       "standardTotal": 10
     },
     {
@@ -43,13 +48,13 @@
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -71,7 +76,7 @@
     {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -87,25 +92,25 @@
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
       "game": "パズル＆サバイバル",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 4,
       "collectionComplete": true,
       "degradedReasons": [],
-      "standardConfirmed": 2,
+      "standardConfirmed": 5,
       "standardTotal": 10
     },
     {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 3,
       "collectionComplete": true,
       "degradedReasons": [],
-      "standardConfirmed": 2,
+      "standardConfirmed": 3,
       "standardTotal": 10
     },
     {
@@ -127,7 +132,7 @@
       "degradedReasons": [
         "comparison_sources_below_minimum"
       ],
-      "standardConfirmed": 0,
+      "standardConfirmed": 1,
       "standardTotal": 10
     },
     {
@@ -144,18 +149,16 @@
     {
       "game": "ファミリーファームの冒険",
       "returncode": 0,
-      "publishableCount": 0,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "comparison_sources_below_minimum"
-      ],
-      "standardConfirmed": 1,
+      "publishableCount": 1,
+      "collectionComplete": true,
+      "degradedReasons": [],
+      "standardConfirmed": 2,
       "standardTotal": 10
     },
     {
       "game": "クロンダイクの冒険",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -166,7 +169,7 @@
     {
       "game": "Merge Help: ホームデザインパズル",
       "returncode": 0,
-      "publishableCount": 0,
+      "publishableCount": 2,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -188,12 +191,10 @@
     {
       "game": "マフィア・シティ-極道風雲",
       "returncode": 0,
-      "publishableCount": 0,
-      "collectionComplete": false,
-      "degradedReasons": [
-        "comparison_sources_below_minimum"
-      ],
-      "standardConfirmed": 1,
+      "publishableCount": 2,
+      "collectionComplete": true,
+      "degradedReasons": [],
+      "standardConfirmed": 2,
       "standardTotal": 10
     },
     {
@@ -220,6 +221,79 @@
     },
     {
       "game": "Wild Survival",
+      "returncode": 0,
+      "publishableCount": 2,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
+      "standardTotal": 10
+    },
+    {
+      "game": "Sea Block 1010",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": true,
+      "degradedReasons": [],
+      "standardConfirmed": 5,
+      "standardTotal": 10
+    },
+    {
+      "game": "さる山温泉旅館",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
+      "standardTotal": 10
+    },
+    {
+      "game": "インポッシブルカート",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": true,
+      "degradedReasons": [],
+      "standardConfirmed": 2,
+      "standardTotal": 10
+    },
+    {
+      "game": "天地英雄伝",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 1,
+      "standardTotal": 10
+    },
+    {
+      "game": "High Roller Vegas",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 10
+    },
+    {
+      "game": "Dice Dreams",
+      "returncode": 0,
+      "publishableCount": 0,
+      "collectionComplete": false,
+      "degradedReasons": [
+        "comparison_sources_below_minimum"
+      ],
+      "standardConfirmed": 0,
+      "standardTotal": 10
+    },
+    {
+      "game": "Disney Solitaire - ディズニー ソリティア",
       "returncode": 0,
       "publishableCount": 0,
       "collectionComplete": false,

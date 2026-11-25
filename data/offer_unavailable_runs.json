@@ -2,96 +2,136 @@
   "schemaVersion": 1,
   "offers": {
     "hapitas:pathid:101349": {
-      "runs": 46,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 47,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:101444": {
-      "runs": 29,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 30,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:101445": {
-      "runs": 29,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 30,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:101453": {
-      "runs": 46,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 47,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:101454": {
-      "runs": 46,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 47,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:102450": {
-      "runs": 38,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 39,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:102451": {
-      "runs": 38,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 39,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "hapitas:pathid:99850": {
-      "runs": 46,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 47,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "moppy:url:https://pc.moppy.jp/timeerror.php": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:165635": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:165831": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:174134": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:174135": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:176382": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:177327": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:177443": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:177468": {
       "runs": 26,
       "lastUnavailableAt": "2026-11-18T22:57:45+00:00"
     },
     "warau:point_id:177469": {
-      "runs": 32,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 33,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:177497": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:177498": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:177971": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:180323": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:188016": {
-      "runs": 22,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 23,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:189491": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:189551": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:191400": {
-      "runs": 36,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 37,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:191401": {
-      "runs": 36,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 37,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:192965": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:197674": {
-      "runs": 22,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 23,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:199792": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:199793": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:199880": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:199881": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:201085": {
       "runs": 2,
@@ -102,8 +142,8 @@
       "lastUnavailableAt": "2026-10-02T20:47:52+00:00"
     },
     "warau:point_id:202183": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:204346": {
       "runs": 2,
@@ -114,40 +154,48 @@
       "lastUnavailableAt": "2026-10-02T20:47:52+00:00"
     },
     "warau:point_id:204643": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:204645": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:204983": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:204984": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205042": {
-      "runs": 37,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 38,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205043": {
-      "runs": 37,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 38,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205176": {
       "runs": 2,
       "lastUnavailableAt": "2026-10-02T20:47:52+00:00"
     },
+    "warau:point_id:205258": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:205259": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
     "warau:point_id:205482": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205483": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205484": {
       "runs": 2,
@@ -158,40 +206,40 @@
       "lastUnavailableAt": "2026-10-02T20:47:52+00:00"
     },
     "warau:point_id:205557": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205760": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205761": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:205975": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206035": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206141": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206142": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206425": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206460": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206461": {
       "runs": 11,
@@ -202,16 +250,24 @@
       "lastUnavailableAt": "2026-10-28T21:09:03+00:00"
     },
     "warau:point_id:206488": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206500": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206501": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:206522": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
+    },
+    "warau:point_id:206523": {
+      "runs": 1,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206609": {
       "runs": 3,
@@ -222,40 +278,40 @@
       "lastUnavailableAt": "2026-10-31T20:01:49+00:00"
     },
     "warau:point_id:206615": {
-      "runs": 33,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 34,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206616": {
-      "runs": 33,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 34,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206873": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206910": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206912": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:206915": {
-      "runs": 40,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 41,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:207035": {
-      "runs": 31,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 32,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:207049": {
       "runs": 3,
       "lastUnavailableAt": "2026-10-19T21:07:41+00:00"
     },
     "warau:point_id:207356": {
-      "runs": 31,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 32,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:207406": {
       "runs": 3,
@@ -278,12 +334,12 @@
       "lastUnavailableAt": "2026-10-31T20:01:49+00:00"
     },
     "warau:point_id:207913": {
-      "runs": 38,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 39,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:207914": {
-      "runs": 38,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 39,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:207970": {
       "runs": 25,
@@ -306,12 +362,12 @@
       "lastUnavailableAt": "2026-10-28T21:09:03+00:00"
     },
     "warau:point_id:208419": {
-      "runs": 25,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 26,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:208420": {
-      "runs": 25,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 26,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:208446": {
       "runs": 3,
@@ -322,12 +378,12 @@
       "lastUnavailableAt": "2026-11-03T21:49:22+00:00"
     },
     "warau:point_id:208516": {
-      "runs": 15,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 16,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:208518": {
-      "runs": 15,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 16,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:208522": {
       "runs": 3,
@@ -338,12 +394,12 @@
       "lastUnavailableAt": "2026-11-12T22:16:31+00:00"
     },
     "warau:point_id:208764": {
-      "runs": 20,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 21,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:208765": {
-      "runs": 20,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 21,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:209106": {
       "runs": 3,
@@ -354,12 +410,12 @@
       "lastUnavailableAt": "2026-11-18T22:57:45+00:00"
     },
     "warau:point_id:209125": {
-      "runs": 13,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 14,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     },
     "warau:point_id:209263": {
-      "runs": 9,
-      "lastUnavailableAt": "2026-11-24T03:00:22+00:00"
+      "runs": 10,
+      "lastUnavailableAt": "2026-11-25T00:50:25+00:00"
     }
   }
 }
