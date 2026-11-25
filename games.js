@@ -7,6 +7,8 @@ const pointSites = {
     gendama: "げん玉",
     kurashiru_reward: "クラシルリワード（レシチャレ）",
     amefuri: "アメフリ",
+    powl: "Powl",
+    trima: "トリマ",
     point_town: "ポイントタウン",
     pointtown: "ポイントタウン",
     hapitas: "ハピタス",

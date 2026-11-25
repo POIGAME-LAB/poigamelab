@@ -266,7 +266,8 @@
       "ec_navi",
       "amefuri",
       "powl",
-      "mikoshi"
+      "mikoshi",
+      "trima"
     ],
     "mode": "complete-stepup-or-exact-reward-snapshot",
     "preserveRowsOnHold": true
