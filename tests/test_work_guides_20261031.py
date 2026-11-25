@@ -201,6 +201,7 @@ def test_registered_guide_only_without_catalog_or_offer_rows():
     hub = (ROOT / "guides.html").read_text(encoding="utf-8")
     catalog = (ROOT / "games.csv").read_text(encoding="utf-8-sig")
     published = (ROOT / "data" / "published_offers.csv").read_text(encoding="utf-8-sig")
+    guide_catalog = {e["game"] for e in json.loads((ROOT / "config" / "guide_catalog.json").read_text(encoding="utf-8"))["games"]}
     for slug in SLUGS:
         spec = _spec(slug)
         assert spec["file"] in build_public_site.ROOT_FILES
@@ -208,14 +209,16 @@ def test_registered_guide_only_without_catalog_or_offer_rows():
         assert registry.count(f'href: "{spec["file"]}"') == 1
         assert hub.count(f'href="{spec["file"]}"') == 1
         for name in ("Domino", "アローズ", "Arrows", "戦国布武"):
-            assert name not in catalog and name not in published
+            assert name not in published
+        assert spec["game"] in guide_catalog or spec["game"] not in catalog  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
 
 
 def test_files_do_not_duplicate_existing_guides():
     with open(ROOT / "games.csv", encoding="utf-8-sig", newline="") as fh:
         names = {row.get("game_name") or row.get("name") or "" for row in csv.DictReader(fh)}
+    guide_catalog = {e["game"] for e in json.loads((ROOT / "config" / "guide_catalog.json").read_text(encoding="utf-8"))["games"]}
     for slug in SLUGS:
-        assert _spec(slug)["game"] not in names
+        assert _spec(slug)["game"] not in names or _spec(slug)["game"] in guide_catalog  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
     registry = (ROOT / "site-researched-guides.js").read_text(encoding="utf-8")
     assert registry.count("戦国布武") == 2 and registry.count("Domino Dreams") == 2  # key + title
 

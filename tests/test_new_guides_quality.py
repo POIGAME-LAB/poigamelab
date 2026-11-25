@@ -98,9 +98,10 @@ def test_new_games_do_not_duplicate_catalog_or_existing_guides():
     with open(ROOT / "games.csv", encoding="utf-8-sig", newline="") as fh:
         catalog = {row.get("game_name") or row.get("name") or "" for row in csv.DictReader(fh)}
     existing = {p.name for p in ROOT.glob("*-guide.html")} - {_spec(p)["file"] for p in SPECS}
+    guide_catalog = {e["game"] for e in json.loads((ROOT / "config" / "guide_catalog.json").read_text(encoding="utf-8"))["games"]}
     for path in SPECS:
         spec = _spec(path)
-        assert spec["game"] not in catalog
+        assert spec["game"] not in catalog or spec["game"] in guide_catalog  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
         assert spec["file"] not in existing
     games = [_spec(p)["game"] for p in SPECS]
     assert len(set(games)) == len(games)
@@ -125,7 +126,8 @@ def test_guide_points_to_real_current_offer_pages_not_missing_comparison_page(pa
     assert 'class="key offer-guide"' in html
     for link in spec["offerLinks"]:
         assert f'<a href="{link["url"]}" target="_blank" rel="noopener nofollow">{link["label"]}</a>' in html
-    assert spec["game"] not in (ROOT / "games.csv").read_text(encoding="utf-8-sig")
+    guide_catalog = {e["game"] for e in json.loads((ROOT / "config" / "guide_catalog.json").read_text(encoding="utf-8"))["games"]}  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
+    assert spec["game"] not in (ROOT / "games.csv").read_text(encoding="utf-8-sig") or spec["game"] in guide_catalog
 
 
 def test_warau_review_based_records_stay_identifiable():

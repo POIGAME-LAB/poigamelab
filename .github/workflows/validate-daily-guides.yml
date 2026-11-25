@@ -28,6 +28,11 @@ on:
       - "tests/test_daily_guide_triage.py"
       - "tests/fixtures/offer_pages/**"
       - "docs/daily-guide-routine.md"
+      - "config/guide_catalog.json"
+      - "games.csv"
+      - "scripts/sync_guide_games.py"
+      - "docs/game-images/game-image-manifest.csv"
+      - "tests/test_sync_guide_games.py"
       - ".github/workflows/validate-daily-guides.yml"
 
 permissions:
@@ -52,5 +57,7 @@ jobs:
           done
       - name: Static guide hub is in sync
         run: node scripts/sync_static_guide_links.js --check
+      - name: Every guide game is in the catalog and the daily refresh
+        run: python scripts/sync_guide_games.py --check
       - name: Daily guide tests
-        run: python -m pytest -q tests/test_daily_guides.py tests/test_work_guides_20261031.py tests/test_guide_offer_sources.py tests/test_daily_guide_offer_gate.py tests/test_daily_guide_pipeline_kinds.py tests/test_daily_guide_triage.py
+        run: python -m pytest -q tests/test_daily_guides.py tests/test_work_guides_20261031.py tests/test_guide_offer_sources.py tests/test_daily_guide_offer_gate.py tests/test_daily_guide_pipeline_kinds.py tests/test_daily_guide_triage.py tests/test_sync_guide_games.py

@@ -1,4 +1,5 @@
 import csv
+import json
 import sys
 from pathlib import Path
 
@@ -57,7 +58,12 @@ def test_no_third_party_credit_for_chatgpt_generated_images():
 
 
 def test_every_game_has_an_image_and_original_file():
+    # 2026-11-24: guide games registered via config/guide_catalog.json may start without an image;
+    # the pages then show the shared text-only art fallback card.
+    no_image_ok = {e["game"] for e in json.loads((ROOT / "config/guide_catalog.json").read_text(encoding="utf-8"))["games"]}
     for row in GAMES:
         image = row["image"].strip()
+        if not image and row["name"] in no_image_ok:
+            continue
         assert image.startswith("assets/game-art/"), f"image missing: {row['name']}"
         assert (ROOT / image).is_file(), image

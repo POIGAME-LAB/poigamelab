@@ -62,7 +62,8 @@
 - 1日の完成記事は**最大5本**。根拠不足の候補で5本に水増ししない（0〜4本ならその本数を報告）。`build_daily_guides.py` は6本以上を拒否する。
 - research/daily-guides/D/<slug>/ に article.md・metadata.json・sources.json・experiences.json・page.json を作る。形式は research/daily-guides/2026-11-05/mystery-town/ を手本にし、内容はゲームごとに作り直す（言い換えの量産禁止）。
 - article.md：H1＝SEOタイトル、導入2段落、目次、節ID condition / pace / outlook / early / middle / late / stop / tracking / faq / sources（pace＝実際の到達ペースの比較表）。各段落の末尾に出典ID［M1］等。編集部の計算・判断は［編集部計算］［編集部判断］と明示し、出典の事実・投稿者の自己申告と区別する。最大報酬を無課金の見込みや利益として書かない。期間限定増額は期限日を明記。
-- 画像は使わない（未確認の公式画像・ロゴを転載しない）。関連攻略は実在する公開ページだけ。games.csv・data/published_offers.csv・取得処理・広告設定・Actionsは変更しない。
+- 画像は使わない（未確認の公式画像・ロゴを転載しない）。関連攻略は実在する公開ページだけ。data/published_offers.csv・取得処理・広告設定・Actionsは変更しない。
+- **ゲーム一覧と毎日の金額確認への登録（2026-11-24 運営者決定）**：games.csv に無いゲームの攻略を作ったら、`config/guide_catalog.json` にそのゲームの1件を追加する（game＝攻略一覧の名前、guide、addedDate＝実行日、aliases、condition・days・difficulty・overview・tips）。文言は記事の内容だけを根拠にし、記事に無い数字は書かない。画像は空のまま（サイトの代替表示を使う）。追加後に `python scripts/sync_guide_games.py` を実行すると、games.csv・config/refresh_policy.json・config/game_targets.json・docs/game-images/game-image-manifest.csv に反映される（案件URLは記事内のポイントサイト公式リンクから自動で入る）。`python scripts/sync_guide_games.py --check` が ok になること（CIでも検査する）。games.csv の既存行は変更しない。
 - `python scripts/build_daily_guides.py --check research/daily-guides/D` が全件 ok になるまで原稿を直す。テストを通すために事実を変えない・チェックを緩めない。
 - `python scripts/build_daily_guides.py research/daily-guides/D` でHTML生成・攻略一覧・sitemap・公開ビルド許可へ登録。攻略一覧の説明文は登録時に一度だけ書かれ、再ビルドでは更新されない。原稿（page.jsonのregistry）を直したら `site-researched-guides.js` も同じ文に直し、`node scripts/sync_static_guide_links.js` を実行する（食い違いはテストが検知する）。口コミの日数は「どのレベル・Stepの話か」が書かれている場合だけ到達日数として使い、書かれていなければ「Stepの記載なし」と明記する。「1週間ちょっと」「2〜3日」「30日前後」のように投稿者が幅を持たせて書いた日数は、実例データの `day` に入れず `null` にして、ラベルに原文の言い回しを残す（2026-11-20以降のバッチはゲートが拒否）。口コミの総数と実例に採用した人数は分けて書く。
 - research/daily-guides/D/selection.json（全候補の採用・保留・除外と理由）と REPORT.md（下記10項目）を書く。

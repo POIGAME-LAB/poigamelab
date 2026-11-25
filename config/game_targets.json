@@ -176,6 +176,127 @@
       "game": "Disney Solitaire - ディズニー ソリティア",
       "aliases": ["Disney Solitaire - ディズニー ソリティア", "Disney Solitaire", "ディズニー ソリティア", "ディズニーソリティア", "Disney Solitaire ディズニー ソリティア"],
       "known_urls_by_source": {}
+    },
+    {
+      "game": "トップウォー",
+      "aliases": ["トップウォー", "Top War"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206031"]
+      }
+    },
+    {
+      "game": "ドゥームズデイ：ラストサバイバー",
+      "aliases": ["ドゥームズデイ：ラストサバイバー", "ドゥームズデイ"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=199689", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=199690"]
+      }
+    },
+    {
+      "game": "三國志 真戦",
+      "aliases": ["三國志 真戦", "三國志真戦"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=190876"]
+      }
+    },
+    {
+      "game": "商人放浪記",
+      "aliases": ["商人放浪記", "商人放浪記：あきんどの成り上がり道"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=201877"]
+      }
+    },
+    {
+      "game": "Domino Dreams",
+      "aliases": ["Domino Dreams"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=192689"]
+      }
+    },
+    {
+      "game": "アローズ：パズルエスケープ（Arrows）",
+      "aliases": ["アローズ：パズルエスケープ（Arrows）", "アローズ：パズルエスケープ", "アローズ"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=207054"]
+      }
+    },
+    {
+      "game": "戦国布武：我が天下戦国編",
+      "aliases": ["戦国布武：我が天下戦国編", "戦国布武"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206085", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206086"]
+      }
+    },
+    {
+      "game": "モーマンタイム",
+      "aliases": ["モーマンタイム"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=205071", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=205072"]
+      }
+    },
+    {
+      "game": "ヒーローウォーズ：アライアンス",
+      "aliases": ["ヒーローウォーズ：アライアンス", "ヒーローウォーズ"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=206352", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206353"]
+      }
+    },
+    {
+      "game": "ゾンビ・パニック",
+      "aliases": ["ゾンビ・パニック"],
+      "known_urls_by_source": {
+        "amefuri": ["https://www.amefri.net/detail/id/124042"],
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=181455", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=181456"]
+      }
+    },
+    {
+      "game": "ザ・アンツ",
+      "aliases": ["ザ・アンツ", "ザ・アンツ：アンダーグラウンド キングダム"],
+      "known_urls_by_source": {
+        "amefuri": ["https://www.amefri.net/detail/id/140497", "https://www.amefri.net/detail/id/138239"]
+      }
+    },
+    {
+      "game": "杖と剣の伝説",
+      "aliases": ["杖と剣の伝説"],
+      "known_urls_by_source": {
+        "amefuri": ["https://www.amefri.net/detail/id/139291"]
+      }
+    },
+    {
+      "game": "ラストアサイラム：プレイグ",
+      "aliases": ["ラストアサイラム：プレイグ", "ラストアサイラム"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=208011", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=208012"]
+      }
+    },
+    {
+      "game": "ミステリータウン：マージゲーム（Mystery Town）",
+      "aliases": ["ミステリータウン：マージゲーム（Mystery Town）", "ミステリータウン", "Mystery Town"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209212", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201666", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206151", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=206152", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=201563"]
+      }
+    },
+    {
+      "game": "LINE マジマジ：爽快魔法マージパズル",
+      "aliases": ["LINE マジマジ：爽快魔法マージパズル", "LINE マジマジ"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372"]
+      }
+    },
+    {
+      "game": "プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）",
+      "aliases": ["プリケツにゃー！放置で育成☆プリケツ猫（IGNITION M）", "プリケツにゃー"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178210"]
+      }
+    },
+    {
+      "game": "ウォーターパークボーイズ（WaterPark Boys）",
+      "aliases": ["ウォーターパークボーイズ（WaterPark Boys）", "WaterPark Boys", "ウォーターパークボーイズ"],
+      "known_urls_by_source": {
+        "moppy": ["https://pc.moppy.jp/ad/detail.php?s_id=160639", "https://pc.moppy.jp/ad/detail.php?s_id=160640"],
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"]
+      }
     }
   ]
 }
