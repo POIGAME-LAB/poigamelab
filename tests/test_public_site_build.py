@@ -352,14 +352,32 @@ def test_puzzles_survival_has_current_hapitas_ios_android_pair(output_dir):
         row for row in rows
         if row["game"] == "パズル＆サバイバル" and row["site"] == "hapitas"
     ]
-    assert {(row["platform"], row["reward"], row["url"]) for row in matches} == {
-        ("iOS", "38696", "https://hapitas.jp/item/detail/itemid/98148"),
-        ("Android", "33829", "https://hapitas.jp/item/detail/itemid/99158"),
+    # The two reviewed StepUp offers are the stable part. Their amounts move with every daily refresh
+    # (Android 99158 went 33,829 -> 37,181 on 2026-11-25), so the amount is not pinned: it must be a
+    # positive whole number of points.
+    reviewed = {(row["platform"], row["url"]) for row in matches
+                if re.search(r"/itemid/(98148|99158)$", row["url"])}
+    assert reviewed == {
+        ("iOS", "https://hapitas.jp/item/detail/itemid/98148"),
+        ("Android", "https://hapitas.jp/item/detail/itemid/99158"),
     }
+    assert all(row["reward"].isdigit() and int(row["reward"]) > 0 for row in matches)
+    # Other Hapitas rows for this game come from the catalog listing (platform read from the item title).
+    for row in matches:
+        if not re.search(r"/itemid/(98148|99158)$", row["url"]):
+            assert row["platform"] in {"iOS", "Android"}, row["url"]
+            assert re.match(r"https://hapitas\.jp/item/detail/itemid/\d+", row["url"]), row["url"]
     assert all(row["verified"].lower() == "true" for row in matches)
     assert all(row["updatedAt"] >= "2026-09-24" for row in matches)
-    assert all(row["deadline"] == "インストール後30日以内" for row in matches)
-    assert all("レベル7/12/17/25/30到達" in row["condition"] for row in matches)
+    # the StepUp terms belong to the two reviewed offers only (the listing rows are single-condition offers)
+    reviewed_rows = [row for row in matches if re.search(r"/itemid/(98148|99158)$", row["url"])]
+    assert all(row["type"] == "StepUp" for row in reviewed_rows)
+    # 30-day deadline: stated in the deadline column, or - since the 2026-11-25 refresh rewrote the Android row with the
+    # page's own terms and "条件欄の達成期限を参照" as its deadline - in the condition text.
+    assert all("30日以内" in row["deadline"] + row["condition"] for row in reviewed_rows)
+    ios = next(row for row in reviewed_rows if row["platform"] == "iOS")
+    assert ios["deadline"] == "インストール後30日以内"
+    assert "レベル7/12/17/25/30到達" in ios["condition"]
 
 
 

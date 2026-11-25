@@ -2816,13 +2816,29 @@ def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
     hapitas_rows = [row for row in rows if row['site'] == 'hapitas']
     registry = hapitas['reviewed_platform_by_offer_id']
     # Published Hapitas rows change as offers end (102450/102451 retired on 2026-10-19), so the
-    # exact set of games/amounts is not pinned. Every published row must instead come from the
-    # reviewed registry with its reviewed platform and be a known target URL of its own game.
+    # exact set of games/amounts is not pinned. A row whose offer ID is in the reviewed registry
+    # must keep its reviewed platform and be a known target URL of its own game.
+    #
+    # Since the 2026-11-24 "track all catalog games" change the daily refresh also publishes rows
+    # found through the catalog listing for tracked games that have no reviewed ID yet (platform read
+    # from the item title, the publisher's existing ``source_title`` route). The operator confirmed on
+    # 2026-11-25 that these may be published. They are not in the registry, so they are held to the shape
+    # the publisher guarantees instead: a tracked catalog game, an iOS/Android platform, an exact
+    # hapitas.jp item URL and a verified flag. (Amounts on 2026-11-25 matched the official item pages.)
+    listing_rows = []
     for row in hapitas_rows:
         offer_id = contract.offer_id(row)
-        assert offer_id in registry, row['url']
-        assert registry[offer_id] == row['platform'], row['url']
-        assert row['url'] in by_game[row['game']]['known_urls_by_source']['hapitas'], row['url']
+        if offer_id in registry:
+            assert registry[offer_id] == row['platform'], row['url']
+            assert row['url'] in by_game[row['game']]['known_urls_by_source']['hapitas'], row['url']
+        else:
+            listing_rows.append(row)
+            assert row['game'] in by_game, row['url']
+            assert row['platform'] in {'iOS', 'Android'}, row['url']
+            assert re.fullmatch(r'https://hapitas\.jp/item/detail/itemid/\d+(/apn(/navigation_category)?/?)?', row['url']), row['url']
+            assert row['verified'].lower() == 'true', row['url']
+    # the reviewed registry is still what refreshes the StepUp rows the guides depend on
+    assert any(contract.offer_id(row) in registry for row in hapitas_rows)
     assert not any(row['game'] == 'Township' for row in hapitas_rows)
     assert contract.rows_problems(rows) == []
     assert not any(row['game'] == 'キングショット' for row in hapitas_rows)
