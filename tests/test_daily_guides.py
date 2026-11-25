@@ -299,7 +299,20 @@ def test_gate_rejects_day_zero_old_records_and_too_few_players(tmp_batch):
     _edit(b / slug / "experiences.json", tamper)
     errs = bdg.gate(b, slug)
     assert any(e.startswith("player_day_zero") for e in errs)
-    assert any(e.startswith("player_record_older_than_365_days") for e in errs)
+    # Older than a year (but within 5 years) is usable only with the condition it reached.
+    assert any(e.startswith("old_player_record_needs_recordCondition") for e in errs)
+    assert "needs_2_independent_current_players" in errs
+
+
+def test_gate_rejects_records_older_than_five_years(tmp_batch):
+    b, slug = tmp_batch
+
+    def tamper(x):
+        for p in x["players"]:
+            p["postedOn"] = "2021-11-01"
+    _edit(b / slug / "experiences.json", tamper)
+    errs = bdg.gate(b, slug)
+    assert any(e.startswith("player_record_older_than_5_years") for e in errs)
     assert "needs_2_independent_current_players" in errs
 
 

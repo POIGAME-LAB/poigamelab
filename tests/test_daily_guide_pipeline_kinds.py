@@ -2,8 +2,8 @@
 
 A synthetic, clearly fictional package ("サンプルパズル（テスト用）") is built around evidence parsed from the real
 page fixtures. Nothing is written to the repository: ``check_batch`` only reads the package. The quality bars the
-routine promised to keep - at least three player records, two independent current players, nothing older than 365
-days, readable offer evidence only - are asserted here so that supporting new offer shapes cannot loosen them.
+routine promised to keep - at least three player records, two independent current players, nothing older than 5
+years and nothing older than 1 year unless its condition is today's condition, readable offer evidence only - are asserted here so that supporting new offer shapes cannot loosen them.
 """
 import copy
 import json
@@ -165,7 +165,8 @@ def test_unreadable_offer_evidence_fails_the_package(tmp_path):
 @pytest.mark.parametrize("players,expected", [
     (_players()[:2], "experience_needs_3_players"),
     (_players(authors=("同じ人", "同じ人", "同じ人")), "needs_2_independent_current_players"),
-    (_players(posted=("2025-01-03", "2025-02-21", "2025-03-02")), "player_record_older_than_365_days"),
+    (_players(posted=("2025-01-03", "2025-02-21", "2025-03-02")), "old_player_record_needs_recordCondition"),
+    (_players(posted=("2021-01-03", "2021-02-21", "2021-03-02")), "player_record_older_than_5_years"),
 ])
 def test_player_record_bars_are_not_loosened(tmp_path, players, expected):
     ev = _evidence("moppy", "160625", "moppy_single_tile_triple.html")
@@ -181,3 +182,37 @@ def test_more_than_five_articles_in_one_day_is_still_refused(tmp_path):
         d.mkdir()
         (d / "metadata.json").write_text(json.dumps({"status": "manuscript_complete"}), encoding="utf-8")
     assert any(e.startswith("more_than_5_articles_in_one_day") for e in bdg.check_batch(batch)["_batch"])
+
+
+# ---------------------------------------------------------------- 5-year rule (operator decision 2026-11-26)
+def _old_players(condition, unchanged=True):
+    players = _players(posted=("2023-05-03", "2024-02-21", "2025-03-02"))
+    for p in players:
+        p["recordCondition"] = condition
+        p["conditionUnchanged"] = unchanged
+    return players
+
+
+def _player_errors(errs):
+    return [e for e in errs if "player" in e]
+
+
+def test_old_records_count_when_they_reached_todays_condition(tmp_path):
+    ev = _evidence("moppy", "160625", "moppy_single_tile_triple.html")
+    condition = ev["steps"][0]["condition"]
+    errs = _check(_write(tmp_path, ev, players=_old_players(condition), extra="ページにOSの記載はありません。"))
+    assert _player_errors(errs) == [], errs
+
+
+def test_old_records_with_a_different_condition_are_not_counted(tmp_path):
+    ev = _evidence("moppy", "160625", "moppy_single_tile_triple.html")
+    errs = _check(_write(tmp_path, ev, players=_old_players("レベル999に到達（旧条件）"), extra="ページにOSの記載はありません。"))
+    assert any(e.startswith("old_player_record_condition_differs_from_current_offer") for e in errs), errs
+    assert "needs_2_independent_current_players" in errs
+
+
+def test_old_records_need_an_explicit_unchanged_check(tmp_path):
+    ev = _evidence("moppy", "160625", "moppy_single_tile_triple.html")
+    condition = ev["steps"][0]["condition"]
+    errs = _check(_write(tmp_path, ev, players=_old_players(condition, unchanged=False), extra="ページにOSの記載はありません。"))
+    assert any(e.startswith("old_player_record_needs_conditionUnchanged") for e in errs), errs

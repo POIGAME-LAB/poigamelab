@@ -29,7 +29,7 @@ Verdicts (per candidate) - none of them is "an article can be written":
 Candidates with no game words and no service words are ``unclassified``: they are probed only after the likely games and
 their ``gameStatus`` stays ``unconfirmed`` - an editor must confirm from the store listing that it is a game.
 
-Whether independent player records exist (2+ independent players, 3+ panel entries, <= 365 days) and the game's
+Whether independent player records exist (2+ independent players, 3+ panel entries, <= 5 years and older than 1 year only with the same condition) and the game's
 identity (store developer / app id) are still checked by the routine for ``offer_verified`` games.
 
     python scripts/daily_guide_triage.py --date 2026-11-19               # stage A only -> triage.json
@@ -123,7 +123,7 @@ def triage_offline(c: dict) -> dict:
         "uncertainPath": 1 if uncertain else 0,
         "multiSite": 2 if len(sites) >= 2 else 0,
         "rewardMagnitude": round(min(4.0, math.log10(hint)), 2) if hint > 0 else 0,
-        # Player records (needed: 2+ independent, <=365 days) cannot exist for an offer listed a day ago; the 2026-11-19
+        # Player records (needed: 2+ independent, <=5 years; >1 year only with an unchanged condition) cannot exist for an offer listed a day ago; the 2026-11-19
         # article that passed had an offer listed ~2 weeks. Long-listed offers are likelier to have records.
         "listedFor": _listed_component(c.get("listedDays")),
         "reusableMaterial": 1 if c.get("relatedMaterial") else 0,
