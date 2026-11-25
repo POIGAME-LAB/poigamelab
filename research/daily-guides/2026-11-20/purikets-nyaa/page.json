@@ -1,0 +1,41 @@
+{
+  "heroStats": [
+    {
+      "label": "期限（インストール日から）",
+      "value": "60日以内"
+    },
+    {
+      "label": "表示合計（iOS／Android）",
+      "value": "2,000pt（増額表示・終了日の記載なし）"
+    },
+    {
+      "label": "最大Step（レベル400）",
+      "value": "1,560pt"
+    }
+  ],
+  "offerLinks": [
+    {
+      "label": "ワラウの案件ページ（iOS・178209）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178209"
+    },
+    {
+      "label": "ワラウの案件ページ（Android・178210）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=178210"
+    }
+  ],
+  "contextLabel": "ワラウの現在の案件ページを見る →",
+  "related": [
+    {
+      "label": "Merge Help ポイ活攻略",
+      "href": "merge-help-guide.html"
+    },
+    {
+      "label": "Kingshot ポイ活攻略",
+      "href": "kingshot-guide.html"
+    }
+  ],
+  "registry": {
+    "label": "レベル400攻略を読む →",
+    "description": "ワラウ案件（iOS・Android、60日以内の4Step、増額表示あり）の全報酬と、レベル400に30〜40日で届いた実例・レベル300まで進んだ例、転生・秘宝・広告視聴の進め方をまとめています。"
+  }
+}

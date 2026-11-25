@@ -109,6 +109,41 @@
       "enabled": true,
       "supplementalSources": [],
       "adoptedBy": "CATALOG_2026_09_30"
+    },
+    "Sea Block 1010": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
+    },
+    "さる山温泉旅館": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
+    },
+    "インポッシブルカート": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
+    },
+    "天地英雄伝": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
+    },
+    "High Roller Vegas": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
+    },
+    "Dice Dreams": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
+    },
+    "Disney Solitaire - ディズニー ソリティア": {
+      "enabled": true,
+      "supplementalSources": [],
+      "adoptedBy": "CATALOG_2026_11_24"
     }
   },
   "publication": {
@@ -118,7 +153,8 @@
     "completeRunReplacesGameSnapshot": false,
     "degradedRunMergesOnly": true,
     "directRefreshNeverCreatesNewPublishedRows": true,
-    "allowLegacyFallback": false
+    "allowLegacyFallback": false,
+    "maxOfferAgeDays": 7
   },
   "schedulerReady": true,
   "scheduledMode": "direct-http-api-free",
@@ -143,7 +179,9 @@
       "coincome",
       "point_town",
       "ec_navi",
-      "amefuri"
+      "amefuri",
+      "powl",
+      "mikoshi"
     ],
     "mode": "complete-stepup-or-exact-reward-snapshot",
     "preserveRowsOnHold": true

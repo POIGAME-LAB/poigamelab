@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-24",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "モッピー iOS案件160639",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160639",
+      "type": "point_site",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["単一条件：2番目のステージSANTA MONICA BEACHオープン、210P、クリック日から7日以内、増額表示なし", "獲得対象外条件・問い合わせは広告利用日から35日以内・広告主への直接問い合わせ禁止"],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-24T11:00:15+00:00",
+      "responseSha256": "e88e04f81c70aa676938e96c88140983d796a40a4478dab0a0ae3aa30f43bf02"
+    },
+    {
+      "id": "M2",
+      "title": "モッピー Android案件160640",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160640",
+      "type": "point_site",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["単一条件：2番目のステージSANTA MONICA BEACHオープン、210P、クリック日から7日以内"],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-24T11:00:18+00:00",
+      "responseSha256": "f283c67457769c740829f6fe9f92391e684358aaba9a44ac167936ff36f9b1dd"
+    },
+    {
+      "id": "M3",
+      "title": "App Store Supercent, Inc.版",
+      "url": "https://apps.apple.com/us/app/waterpark-boys/id6457257165",
+      "type": "official",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["開発元Supercent, Inc.、アイドルタイクーン、アプリ内課金あり（広告を消すパック3.99ドル／4.99ドル表示）", "ユーザーレビューに広告が多いとする投稿（2024年12月23日ほか）"]
+    },
+    {
+      "id": "M4",
+      "title": "Google Play Supercent, Inc.版",
+      "url": "https://play.google.com/store/apps/details?id=com.Albus.WaterParkBoys",
+      "type": "official",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": false,
+      "claims": ["パッケージcom.Albus.WaterParkBoys（HTTP 200を確認。開発元Supercent, Inc.は検索結果の表示で、ページ本文の全文取得は未確認）"]
+    },
+    {
+      "id": "M5",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434",
+      "type": "player",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["口コミ6件（2026-11-21〜11-24、すべて約2時間・数時間でStage2）。案件ページ自体は報酬の表を自動解析できず金額の根拠には使わない"],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "reviewIndexFile": "research/daily-guides/2026-11-24/evidence/waterpark-boys-offers.json"
+    },
+    {
+      "id": "M6",
+      "title": "うっしー・Water Park Boys 2番目のステージ記録（2026年8月8日）",
+      "url": "https://kinkidekosodate.com/%E3%80%90%E3%83%9D%E3%82%A4%E6%B4%BB%E3%80%91water-park-boys%E3%80%802%E7%95%AA%E7%9B%AE%E3%81%AE%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E3%80%80santa-monica-beach%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3/",
+      "type": "player",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["2時間でクリア、★約160個で★レベル7、パワーは2段階のみ、施設強化の動画ボーナスは見ず"],
+      "publishedOn": "2026-08-08"
+    },
+    {
+      "id": "M7",
+      "title": "ポイ活コツコツ研究室・WaterPark Boys攻略",
+      "url": "https://poikotsulab.com/%E3%80%90waterpark-boys%E3%80%91%E3%83%9D%E3%82%A4%E6%B4%BB%E3%82%B2%E3%83%BC%E3%83%A0%E6%94%BB%E7%95%A5%EF%BC%81%EF%BD%9E7%E6%97%A5%E4%BB%A5%E5%86%85%E3%81%ABstage2-open%EF%BC%882%E7%95%AA%E7%9B%AE/",
+      "type": "blog",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["2時間／2日間・1日平均1時間、プールの運営・お金の回収・従業員優先・スピード優先の進め方（投稿日の表示が不明確なため実例の人数には数えない）"]
+    },
+    {
+      "id": "M8",
+      "title": "騎空士ブルーの攻略日記・WaterPark Boysのポイ活",
+      "url": "https://granbluefantasyblog.com/waterpark-boys-poikatsu/",
+      "type": "blog",
+      "checkedAt": "2026-11-24",
+      "bodyConfirmed": true,
+      "claims": ["ポイントサイト経由でDLしないと反映されない等の一般的な注意（プレイ記録ではない）"],
+      "publishedOn": "2026-08-16"
+    }
+  ]
+}

@@ -138,7 +138,10 @@ const overflow = page => page.evaluate(() => document.documentElement.scrollWidt
           ok(/\d{4}\/\d{2}\/\d{2}/.test(await page.textContent('#statUpdated')), `${label}: dashboard date`);
         }
         if (name === 'stale' && (target === 'index.html' || target === TOWNSHIP)) {
-          ok(/最終確認|現在の掲載は未確認|日以上経過|最終確認データを掲載中/.test(text), `${label}: stale data not flagged`);
+          // Operator decision 2026-11-24 (7-day rule): a verified amount not re-confirmed for more than 7 days is not
+          // shown at all. The page says there is nothing verified to show - it is neither a fetch failure nor old data.
+          ok(text.includes('現在、確認済み案件の掲載はありません'), `${label}: hidden-as-old state not stated`);
+          ok(!text.includes('最新情報を取得できませんでした'), `${label}: hidden-as-old shown as a failure`);
         }
         if (SHOTS && ['normal', 'offersFailed', 'empty', 'stale'].includes(name) && target !== `game.html?game=${encodeURIComponent(NO_OFFER_GAME)}`) {
           const file = `${name}-${viewport}-${target.replace(/[^a-z0-9]+/gi, '_')}.png`;

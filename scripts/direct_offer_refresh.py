@@ -300,6 +300,14 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
         # make unrelated links look like matches. Only generic/blank links may
         # borrow text from their nearest bounded card container.
         matched = target_present(anchor_label, aliases)
+        # Some sites (Amefuri: <div class="projectList__box"> with an empty overlay <a>) use card
+        # classes the generic tokens below do not know. A source may list its reviewed card
+        # classes in "listing_card_class_tokens"; without this, Amefuri never matched a single
+        # catalog game (2026-11-24: 0 of 323 listed offers).
+        extra_card_tokens = tuple(
+            str(x).strip().casefold() for x in (source.get("listing_card_class_tokens") or [])
+            if str(x).strip()
+        )
         if not anchor_label_is_descriptive:
             node = anchor.parent
             depth = 0
@@ -314,6 +322,7 @@ def discover_detail_links(raw, base_url, source, aliases, limit=8):
                     or any(token in marker for token in (
                         "card", "offer", "campaign", "service-item", "result-item"
                     ))
+                    or any(token in marker for token in extra_card_tokens)
                 )
                 if is_card_boundary:
                     context = evidence_text(node)
@@ -351,6 +360,13 @@ def discover_first_party_listing_candidates(raw, base_url, source, aliases, limi
     if str(source.get("id") or "") == "gmo_point":
         try:
             return discover_gmo_point_target_listing_candidates(
+                raw, base_url, source, aliases, limit=limit
+            )
+        except (ValueError, TypeError, RecursionError):
+            return []
+    if str(source.get("id") or "") == "mikoshi":
+        try:
+            return discover_mikoshi_target_listing_candidates(
                 raw, base_url, source, aliases, limit=limit
             )
         except (ValueError, TypeError, RecursionError):
@@ -1360,7 +1376,11 @@ def offer_identity_key(url, source_id):
         if values:
             value = str(values[0]).strip()
             if value:
-                return f"{source_id}:{key}:{value}"
+                # Moppy serves one offer as ?site_id=N (canonical) and ?s_id=N&track_ref=category
+                # (app catalog). Both must be one identity, or the same offer is published twice
+                # (2026-11-24: King Shot iOS appeared as two rows).
+                label = "site_id" if str(source_id or "") == "moppy" and key == "s_id" else key
+                return f"{source_id}:{label}:{value}"
 
     path = p.path or ""
     if str(source_id or "") == "trima":
@@ -1507,6 +1527,11 @@ def inspect_warau_offer(raw, requested_url, final_url, aliases):
         if doc.find(cls="pointEntranceNone-Main") or "掲載終了のご案内" in title:
             return {"state": "unavailable", "reason": "source_offer_unavailable",
                     "offerId": offer_id}
+        # A paused offer ("この広告は現在停止中のため、ご利用いただけません") is not ended.
+        if not doc.find(ident="pointEntrancePointDetail") and any(
+                "現在停止中" in evidence_text(node)
+                for node in doc.find(cls="commonError-Paragraph")):
+            return {"state": "unavailable", "reason": "source_offer_paused", "offerId": offer_id}
         # Since 2026-09 an ended offer keeps its canonical URL but renders only
         # the shared error body instead of the offer detail block.
         if not doc.find(ident="pointEntrancePointDetail") and any(
@@ -2654,6 +2679,11 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
     """
     try:
         offer_id = moppy_offer_id(requested_url)
+        # An ended Moppy offer redirects to /timeerror.php ("こちらの広告は掲載期間が終了しています").
+        final = urlparse(str(final_url or ""))
+        if final.hostname == "pc.moppy.jp" and final.path == "/timeerror.php":
+            return {"state": "unavailable", "reason": "source_offer_unavailable", "offerId": offer_id,
+                    "unavailableMarker": "timeerror"}
         if moppy_offer_id(final_url) != offer_id:
             raise ValueError("redirected_to_different_offer")
 
@@ -2749,7 +2779,7 @@ def inspect_moppy_offer(raw, requested_url, final_url, aliases):
             pr_marker = section_text.find("[PR]")
             strong_unheaded = (
                 any(marker in section_text[:terms_end] for marker in (
-                    "成果受付期限", "成果調査受付期限"
+                    "成果受付期限", "成果調査受付期限", "獲得条件達成期限"
                 ))
                 and any(marker in section_text[:terms_end] for marker in (
                     "新規アプリインストール後", "新規インストール後",
@@ -4187,6 +4217,48 @@ def mikoshi_listing_detail_identity_signature(raw, base_url, source, limit=5000)
     return tuple(sorted(identities))
 
 
+def mikoshi_title_matches(name, aliases):
+    """Same title rule as inspect_mikoshi_offer: alias contained, or a >=4-char key prefix."""
+    if target_present(name, aliases):
+        return True
+    name_key = normalized_game_title_key(name)
+    return any(
+        key and len(key) >= 4 and name_key and (key.startswith(name_key) or name_key.startswith(key))
+        for key in (normalized_game_title_key(a) for a in aliases if str(a or "").strip())
+    )
+
+
+def discover_mikoshi_target_listing_candidates(raw, base_url, source, aliases, limit=8):
+    """Detail URLs of one catalog game in the anonymous MIKOSHI JSON feed (candidate only)."""
+    platform = mikoshi_listing_platform(base_url)
+    found, seen = [], set()
+    for ad in _mikoshi_listing_ads(raw):
+        if not isinstance(ad, dict):
+            continue
+        offer_id = str(ad.get("id") or "")
+        name = str(ad.get("name") or "").strip()
+        if not re.fullmatch(r"[0-9]+", offer_id) or not 2 <= len(name) <= 240:
+            continue
+        if not mikoshi_title_matches(name, aliases):
+            continue
+        detail_url = f"https://web.mikoshi.jp/v2/skyflag/ads/{offer_id}"
+        if detail_url in seen or not source_host_allowed(detail_url, source):
+            continue
+        seen.add(detail_url)
+        found.append({
+            "source": "mikoshi",
+            "sourceLabel": str(source.get("name") or "MIKOSHI"),
+            "providerHint": "",
+            "gameLabel": next((str(x).strip() for x in aliases if str(x).strip()), ""),
+            "platformHint": platform,
+            "rewardYenHint": "",
+            "firstPartyCandidateUrl": detail_url,
+        })
+        if len(found) >= max(1, min(int(limit or 8), 8)):
+            break
+    return found
+
+
 def discover_mikoshi_listing_candidates(raw, base_url, source, targets, limit=500):
     """Convert the anonymous first-party MIKOSHI JSON feed into review candidates."""
     platform = mikoshi_listing_platform(base_url)
@@ -4918,6 +4990,55 @@ def merge_verified_offer_urls(targets, entries):
     return targets
 
 
+_DIAG_CODE = re.compile(r"[a-z0-9_]{1,60}")
+
+
+def _diag_code(value):
+    """A short internal code; anything else (page text, URLs, titles) becomes "unrecognized"."""
+    code = str(value or "").strip().lower()
+    if not code:
+        return "unknown"
+    return code if _DIAG_CODE.fullmatch(code) else "unrecognized"
+
+
+def source_diagnostics(review, detail_snapshots, fetch_cache):
+    """Per-site counts for the Actions log: why details did not parse and why reviews happened.
+
+    Added 2026-11-24 because the daily log only showed totals (e.g. Amefuri parse 0 for a month)
+    and the private daily report is not readable from the log. Only internal codes and counts
+    are printed - no URLs, titles, amounts or response text.
+    """
+    out = {}
+
+    def bucket(sid):
+        return out.setdefault(_diag_code(sid), {"fetchErrors": {}, "detailStates": {}, "reviewReasons": {}})
+
+    def bump(counter, key):
+        counter[key] = counter.get(key, 0) + 1
+
+    for (sid, _url), value in (fetch_cache or {}).items():
+        error = value[1] if isinstance(value, tuple) and len(value) == 2 else None
+        if error is not None:
+            code = summarize_fetch_error(error) if isinstance(error, BaseException) else _diag_code(error)
+            bump(bucket(sid)["fetchErrors"], _diag_code(code))
+    for item in detail_snapshots or []:
+        if not isinstance(item, dict):
+            continue
+        e = item.get("sourceEvidence") or {}
+        state = _diag_code(e.get("state"))
+        if e.get("reason"):
+            state = f"{state}:{_diag_code(e.get('reason'))}"
+        bump(bucket(item.get("source"))["detailStates"], state[:80])
+    for item in review or []:
+        if not isinstance(item, dict):
+            continue
+        reason = _diag_code(item.get("reason"))
+        if item.get("error"):
+            reason = f"{reason}:{_diag_code(item.get('error'))}"
+        bump(bucket(item.get("source"))["reviewReasons"], reason[:80])
+    return dict(sorted(out.items()))
+
+
 def main(after_scan=None):
     try:
         approvals = load_refresh_approvals()
@@ -4965,6 +5086,17 @@ def main(after_scan=None):
         and not device_only(x)
         and str(x.get("id") or "").strip()
     ]
+    # Sources that are not discovery-only (MIKOSHI) may opt in explicitly. They go first so the
+    # per-game lane limit below never drops them (2026-11-24: MIKOSHI lists 17 catalog games).
+    first_party_coverage_sources = [
+        x for x in sources.values()
+        if isinstance(x, dict)
+        and x.get("existing_game_listing_lane") is True
+        and x.get("coverage_first_party_listing_enabled") is True
+        and not device_only(x)
+        and str(x.get("id") or "").strip()
+        and x not in first_party_coverage_sources
+    ] + first_party_coverage_sources
     new_game_discovery_sources = [
         x for x in sources.values()
         if isinstance(x, dict)
@@ -5757,7 +5889,7 @@ def main(after_scan=None):
                         "reason": "external_coverage_gap_candidate",
                     })
 
-            for discovery_source in first_party_coverage_sources[:6]:
+            for discovery_source in first_party_coverage_sources[:7]:
                 detail_review_enabled = discovery_source.get("coverage_detail_review_enabled") is True
                 detail_review_remaining = max(
                     0, min(
@@ -6139,6 +6271,11 @@ def main(after_scan=None):
         print(f"{health['source']}: fetch成功={health['fetchSuccess']} parse成功={health['parseSuccess']} "
               f"publication可能={health['publicationEligible']} candidate-only={health['candidateOnly']} "
               f"device-only={health['deviceOnly']} fetch失敗={health['fetchFailed']}")
+    try:
+        print("SOURCE_DIAGNOSTICS " + json.dumps(source_diagnostics(review, detail_snapshots, fetch_cache),
+                                                 ensure_ascii=False, sort_keys=True))
+    except Exception as error:  # diagnostics must never fail the refresh
+        print(f"WARN: source diagnostics unavailable: {type(error).__name__}")
     return 0
 
 if __name__ == "__main__":

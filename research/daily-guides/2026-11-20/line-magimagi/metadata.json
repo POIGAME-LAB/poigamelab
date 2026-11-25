@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "game": "LINE マジマジ：爽快魔法マージパズル",
+  "aliases": [
+    "LINE マジマジ",
+    "LINE マジマジ：爽快魔法マージパズル"
+  ],
+  "slug": "line-magimagi",
+  "title": "LINE マジマジ ポイ活攻略｜レベル18・25・35の実例と必要日数",
+  "seoTitle": "LINE マジマジ ポイ活攻略｜レベル18・25・35の実例と必要日数",
+  "metaDescription": "LINE マジマジ（マージパズル）のワラウStepUp案件を攻略。レベル18・25・35の全3Step、2〜3日で届いた実例と離脱例、体力とダイヤの使い方、撤退の目安を紹介。",
+  "os": [
+    "iOS"
+  ],
+  "researchDate": "2026-11-20",
+  "inputData": {
+    "contentQueueCheckedAt": "2026-11-19T23:05:24+00:00",
+    "monitorCheckedAt": "2026-11-19T23:05:24+00:00",
+    "candidateOrder": null
+  },
+  "status": "manuscript_complete",
+  "publicationStatus": "draft_pr_not_published",
+  "proposedPage": "line-magimagi-guide.html",
+  "canonical": "https://poigamelab.com/line-magimagi-guide.html",
+  "identity": {
+    "developer": "LY Corporation",
+    "appStoreId": "6578433768",
+    "androidPackage": "com.linecorp.LGMGMG",
+    "advertiserOnOfferPage": "LINE株式会社"
+  },
+  "offers": [
+    {
+      "site": "warau",
+      "pointId": "209372",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=209372",
+      "os": "iOS",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 700,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "レベル18到達",
+          "rewardPt": 60,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "レベル25到達",
+          "rewardPt": 140,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "レベル35到達",
+          "rewardPt": 500,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 700,
+      "verifiedAt": "2026-11-20T22:47:55+00:00",
+      "sumIsNotPredictedEarnings": true
+    }
+  ],
+  "limitations": [
+    "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+    "口コミは投稿時期の案件条件で書かれており、Step構成は今回と異なる場合がある",
+    "Android向けの現行案件は確認していない",
+    "口コミ「4日でクリア」はレベル・Stepの記載がなく、現行のどのStepに当たるか確認できない。2026-11-21付の口コミに「以前はLv18〜40で430ptの案件」との記載があり、9〜10月の投稿は現行と異なる構成の可能性がある"
+  ],
+  "offerRecheckedAt": "2026-11-21"
+}

@@ -1,0 +1,56 @@
+name: Capture first-party offer pages (manual, read-only)
+
+# Manual diagnostic job (2026-11-24). Saves the registered first-party pages the daily refresh
+# cannot parse, with the parser verdict for each, as a 3-day artifact so parsers can be fixed
+# against real pages. Writes nothing to the repository, uses no secrets and no paid API.
+on:
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: "Comma-separated source ids"
+        required: false
+        default: "hapitas,moppy,warau,amefuri,point_town,nifty_point,kurashiru_reward"
+      max_pages:
+        description: "At most this many pages (hard cap 120)"
+        required: false
+        default: "80"
+      urls:
+        description: "Extra source=url pairs, comma-separated (registered hosts only, max 20)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: poigamelab-capture-offer-pages
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Capture pages
+        env:
+          SOURCES: ${{ github.event.inputs.sources }}
+          MAX_PAGES: ${{ github.event.inputs.max_pages }}
+          EXTRA_URLS: ${{ github.event.inputs.urls }}
+        run: |
+          case "${MAX_PAGES}" in ''|*[!0-9]*) MAX_PAGES=80 ;; esac
+          python scripts/capture_offer_pages.py --sources "${SOURCES}" --max-pages "${MAX_PAGES}" \
+            --out "${RUNNER_TEMP}/captured-pages" --emit-log --urls "${EXTRA_URLS}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: captured-offer-pages
+          path: ${{ runner.temp }}/captured-pages
+          retention-days: 3
+          if-no-files-found: error

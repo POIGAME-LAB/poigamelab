@@ -88,11 +88,27 @@ assert.ok(linesOld.some((l) => l.includes('1件は、最終確認から30日以�
 
   // normal
   let r = await load(async (p) => p.includes('policy') ? policy
-    : csv(`${header}\nk,G,warau,,100,x,iOS,通常,,2026-11-16,https://a.test/,https://a.test/,true\n`)).loadOffersWithFallback();
+    : csv(`${header}\nk,G,warau,,100,x,iOS,通常,,2026-11-16,https://a.test/,https://a.test/,true\n`)).loadOffersWithFallback(NOW);
   assert.strictEqual(r.status, 'ok');
   assert.strictEqual(r.publishedLoadFailed, false);
+  assert.strictEqual(r.staleHiddenCount, 0);
+  // 7-day rule (operator decision 2026-11-24): a row not re-confirmed for more than 7 days is hidden, never a "failure".
+  // It is counted, and the page reads "no verified offers" - not "could not be fetched".
+  const stale = `${header}\nk,G,warau,,100,x,iOS,通常,,2026-11-01,https://a.test/,https://a.test/,true\n`;
+  r = await load(async (p) => p.includes('policy') ? policy : csv(stale)).loadOffersWithFallback(NOW);
+  assert.strictEqual(r.status, 'empty');
+  assert.strictEqual(r.publishedLoadFailed, false);
+  assert.strictEqual(r.offers.length, 0);
+  assert.strictEqual(r.staleHiddenCount, 1);
+  assert.strictEqual(JSON.stringify(r.staleHiddenGames), '["G"]');
+  // a future-dated row is not trusted either (offerAgeDays alone would show it as "today")
+  const future = `${header}\nk,G,warau,,100,x,iOS,通常,,2026-12-31,https://a.test/,https://a.test/,true\n`;
+  r = await load(async (p) => p.includes('policy') ? policy : csv(future)).loadOffersWithFallback(NOW);
+  assert.strictEqual(r.offers.length, 0);
+  assert.strictEqual(r.status, 'empty');
+  assert.strictEqual(api.offerAgeDays('2026-12-31', NOW), 0); // display helper stays non-negative
   // verified 0 rows: empty, not failed
-  r = await load(async (p) => p.includes('policy') ? policy : csv(`${header}\n`)).loadOffersWithFallback();
+  r = await load(async (p) => p.includes('policy') ? policy : csv(`${header}\n`)).loadOffersWithFallback(NOW);
   assert.strictEqual(r.status, 'empty');
   // download failure: failed, never empty
   r = await load(async (p) => p.includes('policy') ? policy : ({ ok: false, status: 500, text: async () => '' })).loadOffersWithFallback();

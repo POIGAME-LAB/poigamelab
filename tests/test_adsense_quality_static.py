@@ -252,7 +252,8 @@ def test_first_html_bakes_only_verified_figures_with_confirmation_dates(tmp_path
     assert '<strong id="statMaxReward" aria-live="polite" data-static-value="1">17,530 円</strong>' in index
     assert '<strong id="statUpdated" aria-live="polite" data-static-value="1">2026/11/16</strong>' in index
     assert "ワラウ・11/16確認" in index
-    assert "1件は確認から30日以上" in index
+    # 7-day rule (operator decision 2026-11-24, same as site-data.js): the 9/1 row is hidden, not listed as "old"
+    assert "確認から30日以上" not in index and "9/1" not in index
     assert "99,999" not in index and "88,888" not in index
     assert "確認中" not in _visible(index)
     # every card keeps its own overview text from games.csv
@@ -272,13 +273,26 @@ def test_first_html_bakes_only_verified_figures_with_confirmation_dates(tmp_path
     assert "1,120" not in fallback
 
 
-def test_first_html_old_only_offer_states_its_age(tmp_path):
+def test_first_html_hides_an_offer_not_reconfirmed_for_more_than_7_days(tmp_path):
+    """Operator decision 2026-11-24: older than 7 days is not shown (the row stays in the CSV). The first HTML says there is
+    nothing verified to show - it neither bakes in the old amount nor calls it a fetch failure."""
     rows = ["k1,Township,moppy,,5000,x,iOS,StepUp,60日,2026-09-01,https://pc.moppy.jp/a,https://pc.moppy.jp/a,true"]
     site = _build_with_published(tmp_path, rows)
     index = (site / "index.html").read_text(encoding="utf-8")
-    assert "5,000 円" in index and "最終確認 9/1（30日以上前）" in index
-    # no build-time "N日前" count (it would freeze and understate the age)
-    assert "78日前" not in index
+    assert "5,000 円" not in index and "最終確認 9/1" not in index
+    assert "現在、確認済み案件の掲載はありません" in index
+    assert "取得できませんでした" not in _visible(index)
+
+
+def test_first_html_shows_an_offer_confirmed_exactly_7_days_ago_and_hides_8(tmp_path):
+    rows = [
+        "k1,Township,warau,,1111,x,iOS,StepUp,60日,2026-11-11,https://www.warau.jp/a,https://www.warau.jp/a,true",  # 7 days (today 11/18)
+        "k2,きのこ伝説,warau,,2222,x,iOS,StepUp,30日,2026-11-10,https://www.warau.jp/b,https://www.warau.jp/b,true",  # 8 days
+        "k3,Kingshot,warau,,3333,x,iOS,StepUp,30日,2026-11-30,https://www.warau.jp/c,https://www.warau.jp/c,true",  # future date
+    ]
+    site = _build_with_published(tmp_path, rows)
+    index = (site / "index.html").read_text(encoding="utf-8")
+    assert "1,111" in index and "2,222" not in index and "3,333" not in index
 
 
 def test_first_html_empty_published_csv_says_no_verified_offer_not_failure(tmp_path):

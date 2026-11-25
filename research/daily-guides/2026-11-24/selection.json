@@ -1,0 +1,60 @@
+{
+ "schemaVersion": 1,
+ "productionDate": "2026-11-24",
+ "timezone": "Asia/Tokyo",
+ "inputs": {
+  "monitorCheckedAt": "2026-11-24T03:00:22+00:00",
+  "checkedDateJst": "2026-11-24",
+  "mainCommit": "2dc4325",
+  "candidatesFile": "research/daily-guides/2026-11-24/candidates.json"
+ },
+ "dedupe": {
+  "openPullRequestsChecked": [
+   "#354",
+   "#351",
+   "#350",
+   "#344",
+   "#339",
+   "#329"
+  ],
+  "remoteBranchGuidePagesScanned": true,
+  "notionControlRoomChecked": false
+ },
+ "targetMax": 5,
+ "completedCount": 1,
+ "reviewedCount": 4,
+ "publicationAuthorized": false,
+ "decisions": [
+  {
+   "game": "WaterPark Boys（ウォーターパークボーイズ）",
+   "decision": "completed",
+   "slug": "waterpark-boys",
+   "reason": "Moppy iOS 160639・Android 160640（Stage2 Open・210P・クリックから7日）を当日取得で確認。独立した実プレイヤー7名（2026-08〜11月、すべて365日以内。ワラウ口コミ6名＋アメフリ経由1名。日数は時間表記のためnull）。ストアはSupercent, Inc.（iOS 6457257165／com.Albus.WaterParkBoys）。ワラウ209434・209435とアメフリ131762は parse_failed／reward_header_not_found のため金額に使わない。"
+  },
+  {
+   "game": "勇者サバイバー: お姫様を守り抜け！",
+   "decision": "held",
+   "reason": "Moppy 162425（ノーマルのステージ40クリア）に合う独立した実プレイヤー記録を確認できず（ステージ35までの記事のみ。別ゲームの記事は不採用）。"
+  },
+  {
+   "game": "超能力学園-Idle Superpower School",
+   "decision": "held",
+   "reason": "Moppy 161695（マップ3 第7教室）に合う記録なし。見つかったのはマップ2 第4教室等の別条件のみで、条件が違うため不採用。"
+  },
+  {
+   "game": "サバイバルアイランド――放置型ストラテジーゲーム",
+   "decision": "held",
+   "reason": "Moppy 157966（凍てつく島の船Lv.9）は当日読めたが、Lv.9の実プレイ記録はすべて2024年〜2025年1月で365日の範囲外。日付不明のLv6記事は条件違い。"
+  },
+  {
+   "game": "その他の offer_verified 25件（魔王・商人サーガ・Ball Sort・Water Sort 等）",
+   "decision": "held",
+   "reason": "今回の実行では深掘りしていない（時間枠）。魔王・商人サーガ・Ball Sort 等は2026-11-22に実プレイヤー記録不足で保留済み。triage.json 参照。"
+  },
+  {
+   "game": "ボクと惑星農園／大家さんになろう／ザ・グランドマフィア／Bingo Blitz／Heroes vs Crazy Wiggler",
+   "decision": "excluded",
+   "reason": "open PR（#354・#351・#344）で制作済み。"
+  }
+ ]
+}

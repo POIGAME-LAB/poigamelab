@@ -70,24 +70,42 @@ def test_gate_passes_and_page_reproducible(batch, slug):
 @pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
 def test_offer_table_equals_same_day_evidence(batch, slug):
     meta = _j(batch / slug / "metadata.json")
-    ev = {c["pointId"]: c for c in _j(bdg.evidence_path(batch, slug))["checks"]}
+    ev = {bdg.offer_key(c): c for c in _j(bdg.evidence_path(batch, slug))["checks"]}
     text = _text((ROOT / meta["proposedPage"]).read_text(encoding="utf-8"))
     for o in meta["offers"]:
-        c = ev[o["pointId"]]
+        c = ev[bdg.offer_key(o)]
+        unit = c.get("pointUnit") or "pt"  # the offer site's own unit (Moppy P / Warau pt)
         assert c["httpStatus"] == 200 and c["live"] and c["stepSumMatchesTotal"]
         assert [(s["condition"], s["rewardPt"]) for s in o["steps"]] == [(s["condition"], s["rewardPt"]) for s in c["steps"]]
         assert sum(s["rewardPt"] for s in o["steps"]) == o["totalDisplayedPt"] == c["totalPt"]
         assert sum(s["rewardPt"] for s in o["steps"] if not s["requiresPayment"]) == o["sumWithoutPurchaseStepsPt"]
-        assert f"{o['totalDisplayedPt']:,}pt" in text
+        assert f"{o['totalDisplayedPt']:,}{unit}" in text
         for s in o["steps"]:
-            assert f"{s['rewardPt']:,}pt" in text
+            assert f"{s['rewardPt']:,}{unit}" in text
         if c.get("temporaryIncrease"):
-            assert c["temporaryIncrease"]["until"] in text  # a boosted amount is always disclosed as temporary
+            inc = c["temporaryIncrease"]
+            if inc.get("until"):
+                assert inc["until"] in text  # a boosted amount is always disclosed as temporary
+            else:  # no end date printed on the page: say it is an increase and that the end date is not stated
+                assert "増額" in text and "終了日" in text and inc.get("endDateStated") is False
+            assert o["temporaryIncrease"] == inc  # the metadata row states the same increase the page shows
     for prev in meta.get("previousOffers", []):
-        c = ev[prev["pointId"]]
+        c = ev[bdg.offer_key(prev)]
         assert c["live"] is False and c["unavailableReason"]  # shown as no longer available on the latest check
-        assert prev["pointId"] not in {o["pointId"] for o in meta["offers"]}
+        assert bdg.offer_key(prev) not in {bdg.offer_key(o) for o in meta["offers"]}
         assert f"{prev['totalDisplayedPt']:,}pt" not in text  # an old amount is never presented as current
+
+
+@pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
+def test_guide_list_text_equals_the_manuscripts_registry_text(batch, slug):
+    """The 攻略一覧 entry is written once at registration and is never refreshed by a rebuild, so a manuscript fix that
+    forgets it leaves the list describing facts the article no longer states (PR #353: "30〜46日でレベル400")."""
+    reg = _j(batch / slug / "page.json")["registry"]
+    js = (ROOT / "site-researched-guides.js").read_text(encoding="utf-8")
+    guides = (ROOT / "guides.html").read_text(encoding="utf-8")
+    assert js.count(reg["description"]) == 1, "site-researched-guides.js differs from page.json registry.description"
+    assert guides.count(reg["description"]) == 1, "guides.html differs from page.json registry.description"
+    assert reg["label"] in js
 
 
 @pytest.mark.parametrize("batch,slug", ARTICLES, ids=IDS)
@@ -188,6 +206,53 @@ def _edit(path, fn):
     data = _j(path)
     fn(data)
     path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+
+@pytest.fixture
+def batch_1120(tmp_path):
+    src = DAILY / "2026-11-20"
+    if not (src / "line-magimagi").is_dir():
+        pytest.skip("2026-11-20 batch not present")
+    dst = tmp_path / "2026-11-20"
+    shutil.copytree(src, dst)
+    return dst, "line-magimagi"
+
+
+@pytest.mark.parametrize("label", ["Lv35超（1週間ちょっと）", "Lv25（2〜3日と記載）", "Lv400（30日前後）", "Lv150（57日目くらい）", "Lv35（3.4日）"])
+def test_gate_refuses_an_approximate_poster_wording_stored_as_an_exact_day(batch_1120, label):
+    """PR #353 audit: "1週間ちょっと" had been saved as day 7. What a poster wrote loosely stays day=null."""
+    b, slug = batch_1120
+    assert bdg.gate(b, slug) == []
+
+    def tamper(e):
+        f = next(p for p in e["players"] if p["id"] == "F")
+        f["milestones"] = [{"day": 7, "label": label}]
+    _edit(b / slug / "experiences.json", tamper)
+    assert "player_day_is_approximate_but_stored_exact:F" in bdg.gate(b, slug)
+
+
+def test_gate_accepts_an_exact_stated_day_and_an_approximate_wording_with_null_day(batch_1120):
+    b, slug = batch_1120
+
+    def edit(e):
+        f = next(p for p in e["players"] if p["id"] == "F")
+        f["milestones"] = [{"day": None, "label": "Lv35超（1週間ちょっと。正確な日数は不明）"}, {"day": 4, "label": "Lv25"}]
+    _edit(b / slug / "experiences.json", edit)
+    assert "player_day_is_approximate_but_stored_exact:F" not in bdg.gate(b, slug)
+
+
+def test_line_magimagi_review_counts_and_level25_range_match_the_recorded_posts():
+    """PR #353 audit: Lv25 is "2〜3日" (the "1日で達成" post names no level), and the 10 posts on the page are not the 7 adopted examples."""
+    d = DAILY / "2026-11-20" / "line-magimagi"
+    if not d.is_dir():
+        pytest.skip("2026-11-20 batch not present")
+    art = (d / "article.md").read_text(encoding="utf-8")
+    assert "1〜3日" not in art and "到達記録は9件" not in art
+    assert "レベル25までは本当に2〜3日で届きますか" in art
+    assert "11月21日時点の口コミ10件のうち、実例として採用したのは独立した投稿者7名" in art
+    players = _j(d / "experiences.json")["players"]
+    lv25_days = sorted(m["day"] for p in players for m in p["milestones"] if m["label"] == "Lv25" and m["day"] is not None)
+    assert lv25_days == [2, 2, 3] and len(players) == 7  # only the three posts that state both the level and an exact day
 
 
 def test_gate_rejects_reward_not_matching_evidence(tmp_batch):
@@ -374,8 +439,11 @@ def test_candidates_group_rank_and_exclude(tmp_path):
     assert next(c for c in out["candidates"] if c["game"] == "別ゲーム")["listingRewardHintYen"] is None  # gendama pt is not 1:1
     reasons = {(e["game"], e["reason"]) for e in out["excluded"]}
     assert ("Freecash", "aggregator_or_reward_wall_not_a_single_game") in reasons
-    assert ("既存ゲーム", "already_covered") in reasons
-    assert ("タウンシップ", "already_covered") in reasons  # editor-reviewed alias of a catalog game
+    assert ("既存ゲーム", "already_covered") in reasons  # a published guide page exists
+    # A games.csv row alone is NOT a guide (2026-11-19: catalog / research material must not hide a game).
+    assert ("タウンシップ", "already_covered") not in reasons
+    township = next(c for c in out["candidates"] if c["game"] == "タウンシップ")
+    assert township["relatedMaterial"] == [{"kind": "catalog", "ref": "games.csv"}]  # reuse hint, not an exclusion
     assert any(r == "scan_classified_likely_non_game" for _, r in reasons)
 
 
@@ -388,3 +456,87 @@ def test_candidate_name_normalisation():
     assert cand.display_name("【SKYFLAG】【注意事項必読】Monster Hunter Outlanders（StepUp） 初回") == "Monster Hunter Outlanders"
     assert cand.display_name("iOS_モーマンタイム【StepUp】 アプリ利用でキャッシュバック") == "モーマンタイム【StepUp】"
     assert cand.norm_key("ミステリータウン：マージゲーム - Mystery Town") == cand.norm_key("ミステリータウン:マージゲーム－Mystery Town")
+
+
+# ---------------------------------------------------------------- guide vs comparison/research material (2026-11-19 fix)
+def _root_with(tmp_path, *, guide_for=None, dossier_for=None, registry_for=None, registry_page=None, spec_only_for=None):
+    root = _mini_root(tmp_path)
+    if guide_for:
+        (root / "zzz-guide.html").write_text(f"<h1>{guide_for} ポイ活攻略</h1>", encoding="utf-8")
+    if dossier_for:
+        d = root / "research" / "new-games" / "2026-09-27" / "dossiers"
+        d.mkdir(parents=True)
+        (d / "x.json").write_text(json.dumps({"slug": "x", "name": dossier_for, "aliases": []}, ensure_ascii=False), encoding="utf-8")
+    if registry_for:
+        (root / "site-guides.js").write_text(
+            'window.POIGAME_GUIDES = Object.freeze({\n  "%s": {\n    title: "x",\n    links: [{ label: "a", href: "%s" }]\n  },\n});\n' % (registry_for, registry_page),
+            encoding="utf-8")
+        if registry_page and registry_page.endswith("-guide.html") and registry_page != "missing-guide.html":
+            (root / registry_page).write_text("<h1>別名 ポイ活攻略</h1>", encoding="utf-8")
+    if spec_only_for:
+        d = root / "research" / "new-guides" / "2026-10-16"
+        d.mkdir(parents=True)
+        (d / "y.json").write_text(json.dumps({"game": spec_only_for, "file": "never-published-guide.html"}, ensure_ascii=False), encoding="utf-8")
+    return root
+
+
+def _cands(out):
+    return {c["game"]: c for c in out["candidates"]}, {e["game"]: e for e in out["excluded"]}
+
+
+def test_research_dossier_does_not_count_as_a_published_guide(tmp_path):
+    root = _root_with(tmp_path, dossier_for="新作パズル")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" in cands and "新作パズル" not in excluded
+    assert any(m["kind"] == "research_dossier" for m in cands["新作パズル"]["relatedMaterial"])
+
+
+def test_published_guide_page_excludes_even_when_a_dossier_exists(tmp_path):
+    root = _root_with(tmp_path, guide_for="新作パズル", dossier_for="新作パズル")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" not in cands
+    assert excluded["新作パズル"]["reason"] == "already_covered" and excluded["新作パズル"]["coveredBy"].startswith("published_guide:")
+
+
+def test_registry_entry_counts_only_when_its_guide_page_exists(tmp_path):
+    root = _root_with(tmp_path, registry_for="新作パズル", registry_page="zzz2-guide.html")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" in excluded and excluded["新作パズル"]["coveredBy"].startswith("guide_registry:")
+    root2 = _root_with(tmp_path / "b", registry_for="新作パズル", registry_page="missing-guide.html") if (tmp_path / "b").mkdir() is None else None
+    cands2, excluded2 = _cands(cand.build("2026-11-05", root2))
+    assert "新作パズル" in cands2  # registry points at a page that does not exist -> not a guide
+
+
+def test_unpublished_guide_spec_is_material_not_a_guide(tmp_path):
+    root = _root_with(tmp_path, spec_only_for="新作パズル")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert "新作パズル" in cands
+    assert any(m["kind"] == "guide_spec_only" for m in cands["新作パズル"]["relatedMaterial"])
+
+
+def test_completed_same_day_batch_and_open_pr_still_exclude(tmp_path):
+    root = _mini_root(tmp_path)
+    batch = root / "research" / "daily-guides" / "2026-11-05"
+    batch.mkdir(parents=True)
+    (batch / "selection.json").write_text(json.dumps({"decisions": [{"game": "新作パズル", "decision": "completed"}]}, ensure_ascii=False), encoding="utf-8")
+    cands, excluded = _cands(cand.build("2026-11-05", root))
+    assert excluded["新作パズル"]["coveredBy"] == "daily_batch:2026-11-05"
+    out = cand.build("2026-11-05", _mini_root(tmp_path / "c") if (tmp_path / "c").mkdir() is None else None, extra_exclude=["別ゲーム"])
+    assert "別ゲーム" not in [c["game"] for c in out["candidates"]]
+
+
+def test_kind_hints_cover_stepup_single_and_service_titles():
+    assert cand.kind_hint("Coin Master（StepUp）【iOS】 新規アプリインストール後、30日以内に各成果地点到達でクリア 6,055P") == "stepup"
+    assert cand.kind_hint("iOS_Onet Master: Puzzle & Art『StepUp』 アプリ利用でキャッシュバック 13,950円") == "stepup"
+    assert cand.kind_hint("Screw Out 3D（レベル500到達） 【▼ポイント獲得条件】記載の条件を達成 1,300P") == "single"
+    assert cand.kind_hint("Rise of Kingdoms ―万国覚醒― 任意のレベルIV部隊をアンロック 11,400P") == "single"
+    assert cand.kind_hint("Onet Master: Tile Match Puzzle レベル1000をクリア 3,800P") == "single"
+    assert cand.kind_hint("Coincheck/コインチェック(初回購入)_iOS 新規アプリインストール後、30日以内に販売所での初回購入 1,500P") == "service"
+    assert cand.kind_hint("ホットペッパービューティー 美容院予約完了後、予約店舗に来訪 3,300P") == "service"
+
+
+def test_bracketed_stepup_tag_is_not_part_of_the_game_name():
+    assert cand.display_name("iOS_Onet Master: Puzzle & Art『StepUp』 アプリ利用でキャッシュバック 13,950円") == "Onet Master: Puzzle & Art"
+    assert cand.display_name("【SKYFLAG】Onet Master: Puzzle & Art（StepUp） 初回アプリインストール後") == "Onet Master: Puzzle & Art"
+    # a name that really contains 「」 is kept
+    assert cand.display_name("魔王「世界の半分あげるって言っちゃった」 第14の城【天象儀と魔術の城】クリア 1,068P") == "魔王「世界の半分あげるって言っちゃった」"

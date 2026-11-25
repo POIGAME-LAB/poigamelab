@@ -15,11 +15,19 @@ on:
       - "scripts/build_daily_guides.py"
       - "scripts/daily_guide_candidates.py"
       - "scripts/daily_guide_evidence.py"
+      - "scripts/daily_guide_triage.py"
+      - "scripts/guide_offer_sources.py"
       - "scripts/render_cited_guide.py"
       - "scripts/render_guide_from_spec.py"
       - "scripts/register_guide_pages.py"
       - "scripts/sync_static_guide_links.js"
       - "tests/test_daily_guides.py"
+      - "tests/test_guide_offer_sources.py"
+      - "tests/test_daily_guide_offer_gate.py"
+      - "tests/test_daily_guide_pipeline_kinds.py"
+      - "tests/test_daily_guide_triage.py"
+      - "tests/fixtures/offer_pages/**"
+      - "docs/daily-guide-routine.md"
       - ".github/workflows/validate-daily-guides.yml"
 
 permissions:
@@ -45,4 +53,4 @@ jobs:
       - name: Static guide hub is in sync
         run: node scripts/sync_static_guide_links.js --check
       - name: Daily guide tests
-        run: python -m pytest -q tests/test_daily_guides.py tests/test_work_guides_20261031.py
+        run: python -m pytest -q tests/test_daily_guides.py tests/test_work_guides_20261031.py tests/test_guide_offer_sources.py tests/test_daily_guide_offer_gate.py tests/test_daily_guide_pipeline_kinds.py tests/test_daily_guide_triage.py

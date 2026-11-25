@@ -1,0 +1,75 @@
+name: Refresh comparison offers backup trigger
+
+# GitHub sometimes drops the scheduled daily refresh (2026-11-24 JST: never created).
+# This workflow does not refresh anything itself: late in the JST morning it starts the
+# normal "Refresh comparison offers (API-free)" workflow once, and only when no refresh
+# ran or was created today (see scripts/refresh_schedule_guard.py).
+# A run started with the GITHUB_TOKEN does not fire workflow_run, so the Pages deploy that
+# normally follows the refresh is not triggered (seen 2026-11-24). This workflow therefore
+# waits for the refresh it started and, only if it succeeded, dispatches the Pages deploy.
+# The paid-API research workflow is NOT started on backup days.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 1 * * *"   # 10:13 JST
+    - cron: "43 2 * * *"   # 11:43 JST, before the 12:07 JST daily-guide routine
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: poigamelab-refresh-backup-trigger
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Decide whether today's refresh is missing
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run list --repo "${GITHUB_REPOSITORY}" --workflow refresh-verified-offers.yml \
+            --limit 20 --json createdAt,status,conclusion > "${RUNNER_TEMP}/runs.json" \
+            || echo "null" > "${RUNNER_TEMP}/runs.json"
+          python3 scripts/refresh_schedule_guard.py --status data/refresh_status.json \
+            --runs "${RUNNER_TEMP}/runs.json"
+
+      - name: Start the missed daily refresh
+        id: start
+        if: steps.guard.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          echo "since=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${GITHUB_OUTPUT}"
+          gh workflow run refresh-verified-offers.yml --repo "${GITHUB_REPOSITORY}" --ref main
+
+      - name: Wait for that refresh, then deploy the site
+        if: steps.guard.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SINCE: ${{ steps.start.outputs.since }}
+        run: |
+          set -euo pipefail
+          id=""
+          for attempt in $(seq 1 30); do
+            id="$(gh run list --repo "${GITHUB_REPOSITORY}" --workflow refresh-verified-offers.yml \
+              --event workflow_dispatch --limit 5 --json databaseId,createdAt \
+              --jq "[.[] | select(.createdAt >= \"${SINCE}\")] | last | .databaseId // empty")"
+            [ -n "${id}" ] && break
+            sleep 10
+          done
+          test -n "${id}"
+          gh run watch "${id}" --repo "${GITHUB_REPOSITORY}" --exit-status --interval 30
+          gh workflow run deploy-pages.yml --repo "${GITHUB_REPOSITORY}" --ref main

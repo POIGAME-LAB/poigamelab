@@ -1,0 +1,3544 @@
+{
+ "schemaVersion": 1,
+ "productionDate": "2026-11-19",
+ "kind": "retrospective_reevaluation",
+ "candidateOnly": true,
+ "publicationAuthorized": false,
+ "inputs": {
+  "candidates": "PR #351 branch research/daily-guides/2026-11-19/candidates.json regenerated with the fixed dedupe (173 candidates, 38 excluded)",
+  "pagesReadOn": "2026-11-19 (live first-party pages)"
+ },
+ "counts": {
+  "candidates": 173,
+  "A_article_ready_all_criteria_met": 0,
+  "B_offer_confirmed_players_not_confirmed": 127,
+  "B_of_which_game_status_unconfirmed": 13,
+  "C_offer_not_confirmable": 30,
+  "D_non_game_or_service_among_candidates": 16,
+  "D_excluded_before_triage": {
+   "total": 38,
+   "byReason": {
+    "aggregator_or_reward_wall_not_a_single_game": 3,
+    "already_covered": 15,
+    "listing_page_or_unparsable_title": 1,
+    "scan_classified_likely_non_game": 19
+   }
+  }
+ },
+ "playerRecordCheck": {
+  "gamesSearched": 6,
+  "qualifyingGamesFound": 0,
+  "note": "One web search per game for independent player records. None of the 6 returned a blog/post with a player's own arrival record (2+ independent, <=365 days, 3+ panel entries needed). The other offer-confirmed games were NOT searched, so A=0 means 'none confirmed', not 'none exist'."
+ },
+ "budgetUsedForRetrospective": {
+  "requests": 206,
+  "lookups": 43,
+  "probed": 157,
+  "verified": 127
+ },
+ "items": [
+  {
+   "game": "Purrdoku: Cat Logic Puzzle",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "warau:not_viewable:page_not_viewable_publicly"
+   ],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 1,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ジャックポットワールド - カジノ&スロット",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:steps_not_public:stepup_steps_behind_point_get_page"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Onet Master: Puzzle & Art",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10842",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 13950,
+     "totalYen": 13950
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "warau"
+   ],
+   "listedDaysAtLeast": 1,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "ロイヤルマッチ",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:steps_not_public:stepup_steps_behind_point_get_page"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 47,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Rise of Kingdoms ―万国覚醒―",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162444",
+     "kind": "single",
+     "os": null,
+     "totalPt": 11400,
+     "totalYen": 11400
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "gendama",
+    "moppy"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Pococha",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161940",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 3000,
+     "totalYen": 3000
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "フェイトウォー",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:141887",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 96750,
+     "totalYen": 9675
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 47,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Car Sort!",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10855",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 7845,
+     "totalYen": 7845
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Tile Triple Match:",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10843",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 7140,
+     "totalYen": 7140
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "moppy",
+    "warau"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "Figure Rush: Arrow Crush",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142681",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 68810,
+     "totalYen": 6881
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 1,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "TikTok",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:142835",
+     "kind": "single",
+     "os": null,
+     "totalPt": 4560,
+     "totalYen": 4560
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Coin Master - Board Adventure",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142379",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 66020,
+     "totalYen": 6602
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "恋するコーデ「ペアリウム」アバター着せ替え・結婚できるゲーム",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "warau:not_viewable:page_not_viewable_publicly"
+   ],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "マイナーファイターズ!",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:138788",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 48070,
+     "totalYen": 4807
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "信長の野望 真戦",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161201",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 5300,
+     "totalYen": 5300
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ブレードウォー三国 火炉レベル25達成",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162427",
+     "kind": "single",
+     "os": null,
+     "totalPt": 5225,
+     "totalYen": 5225
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 6,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "TikTok Lite",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:137071",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 34740,
+     "totalYen": 3474
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Onet Master: Tile Match Puzzle",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162069",
+     "kind": "single",
+     "os": null,
+     "totalPt": 3800,
+     "totalYen": 3800
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "アツアツ冒険伝",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10846",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 2890,
+     "totalYen": 2890
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "猫とスープ: ふわふわタウン",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10849",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 2380,
+     "totalYen": 2380
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ロードモバイル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142424",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 74320,
+     "totalYen": 7432
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 32,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Crazy Screw: Hole n' Nail",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "warau:not_viewable:page_not_viewable_publicly"
+   ],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 1,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Egg Sort: Color Drop",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10862",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 1900,
+     "totalYen": 1900
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Merge Restyle",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162050",
+     "kind": "single",
+     "os": null,
+     "totalPt": 1900,
+     "totalYen": 1900
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ハロータウン",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10858",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 1770,
+     "totalYen": 1770
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Golden Solitaire Master",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "warau:not_viewable:page_not_viewable_publicly"
+   ],
+   "sources": [
+    "mikoshi",
+    "warau"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "プリケツにゃー",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159535",
+     "kind": "single",
+     "os": null,
+     "totalPt": 1620,
+     "totalYen": 1620
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Otaku Onet: Anime & Manga",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161875",
+     "kind": "single",
+     "os": null,
+     "totalPt": 1615,
+     "totalYen": 1615
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "クイーンズ・キャッスル ~マージと秘密の物語~",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10854",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 1200,
+     "totalYen": 1200
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "moppy"
+   ],
+   "listedDaysAtLeast": 8,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "Screw Out",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162245",
+     "kind": "single",
+     "os": null,
+     "totalPt": 1300,
+     "totalYen": 1300
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 48,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ウッドブロックスマート",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "warau:not_viewable:page_not_viewable_publicly"
+   ],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 1,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Match Fighters",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10837",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 1275,
+     "totalYen": 1275
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "warau"
+   ],
+   "listedDaysAtLeast": 1,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "GiGO ONLINE CRANE ギゴクレ",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:steps_not_public:stepup_steps_behind_point_get_page"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "魔王「世界の半分あげるって言っちゃった」",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:147016",
+     "kind": "single",
+     "os": null,
+     "totalPt": 1068,
+     "totalYen": 1068
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "オリくじ 超還元トレカのオリパ・オンラインオリパ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:138195",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 8210,
+     "totalYen": 821
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "商人サーガ 「魔王城でお店開けって言われた」",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158596",
+     "kind": "single",
+     "os": null,
+     "totalPt": 864,
+     "totalYen": 864
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Merge: Dream Home",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162371",
+     "kind": "single",
+     "os": null,
+     "totalPt": 798,
+     "totalYen": 798
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 22,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Mikke Live",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "amefuri:parse_failed:deadline_ambiguous",
+    "moppy:steps_not_public:stepup_steps_behind_point_get_page"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LINE マジマジ:爽快魔法マージパズル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10845",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 720,
+     "totalYen": 720
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "gendama",
+    "mikoshi",
+    "warau"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Ball Sort Puzzle:ボールソーティングパズル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161455",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 700,
+     "totalYen": 700
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 54,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Water Sort Puzzle - ソートパズルゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160798",
+     "kind": "single",
+     "os": null,
+     "totalPt": 700,
+     "totalYen": 700
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LUCK ROCK オンラインクレーンゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:156511",
+     "kind": "single",
+     "os": null,
+     "totalPt": 620,
+     "totalYen": 620
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "グッズソーティング3D:マッチゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161012",
+     "kind": "single",
+     "os": null,
+     "totalPt": 600,
+     "totalYen": 600
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "サバイバルアイランド――放置型ストラテジーゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:157966",
+     "kind": "single",
+     "os": null,
+     "totalPt": 585,
+     "totalYen": 585
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LUCK ROCK - ラックロック オンラインクレーンゲーム",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "warau:parse_failed:offer_structure_not_found"
+   ],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 62,
+   "firstPartyReviewCount": 30,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "タイルマッチ3D:トリプルマスター",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161999",
+     "kind": "single",
+     "os": null,
+     "totalPt": 500,
+     "totalYen": 500
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy",
+    "warau"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ナンプレ - クラシック数字パズル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160540",
+     "kind": "single",
+     "os": null,
+     "totalPt": 495,
+     "totalYen": 495
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Cat Drop: Cute Slide & Match",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162381",
+     "kind": "single",
+     "os": null,
+     "totalPt": 460,
+     "totalYen": 460
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 19,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "アートパズル:ジグソーピクチャーArt Of Puzzles",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:157826",
+     "kind": "single",
+     "os": null,
+     "totalPt": 450,
+     "totalYen": 450
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "バーガーください!/Burger Please!",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160405",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 440,
+     "totalYen": 440
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 5,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "マビノギモバイル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142151",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 2390,
+     "totalYen": 239
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "イケメン戦国 時をかける恋-永縁-",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162195",
+     "kind": "single",
+     "os": null,
+     "totalPt": 427,
+     "totalYen": 427
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Backpack Rush: Bag Merge",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159607",
+     "kind": "single",
+     "os": null,
+     "totalPt": 400,
+     "totalYen": 400
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ボクと惑星農園",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161240",
+     "kind": "single",
+     "os": null,
+     "totalPt": 400,
+     "totalYen": 400
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "勇者サバイバー: お姫様を守り抜け!",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10850",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 340,
+     "totalYen": 340
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "moppy"
+   ],
+   "listedDaysAtLeast": 7,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": true
+  },
+  {
+   "game": "数学パズルゲーム - クロスマス",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160804",
+     "kind": "single",
+     "os": null,
+     "totalPt": 400,
+     "totalYen": 400
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Tile Match",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LINE ポコポコ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:149734",
+     "kind": "single",
+     "os": null,
+     "totalPt": 359,
+     "totalYen": 359
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Arrow Turns: Puzzle Tap Out",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10767",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 330,
+     "totalYen": 330
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "moppy"
+   ],
+   "listedDaysAtLeast": 6,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "マイコンビニ コンビニ 経営 シミュレーション ゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160765",
+     "kind": "single",
+     "os": null,
+     "totalPt": 310,
+     "totalYen": 310
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "えみぅ 歩いて育ててポイ活アプリ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "warau:209109",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 300,
+     "totalYen": 300
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 2,
+   "firstPartyReviewCount": 30,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ターミナルマスター /Terminal Master",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160300",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 300,
+     "totalYen": 300
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ネコティア 癒し系ねこソリティアゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159742",
+     "kind": "single",
+     "os": null,
+     "totalPt": 288,
+     "totalYen": 288
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Color Bolts Sort Puzzle",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159846",
+     "kind": "single",
+     "os": null,
+     "totalPt": 288,
+     "totalYen": 288
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Cargo Run",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162285",
+     "kind": "single",
+     "os": null,
+     "totalPt": 285,
+     "totalYen": 285
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 40,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Phase",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162328",
+     "kind": "single",
+     "os": null,
+     "totalPt": 285,
+     "totalYen": 285
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 29,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "超能力学園-Idle Superpower School",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161695",
+     "kind": "single",
+     "os": null,
+     "totalPt": 280,
+     "totalYen": 280
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ビゴ ライブ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "coincome:10836",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 270,
+     "totalYen": 270
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "勇者「剣投げるしかねーか」",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159633",
+     "kind": "single",
+     "os": null,
+     "totalPt": 270,
+     "totalYen": 270
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Screw Out Factory Puzzle",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162001",
+     "kind": "single",
+     "os": null,
+     "totalPt": 260,
+     "totalYen": 260
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Arrow Away : Tap Maze",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162167",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 250,
+     "totalYen": 250
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Triple Match",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161948",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 250,
+     "totalYen": 250
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Idle Food Bar",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158774",
+     "kind": "single",
+     "os": null,
+     "totalPt": 240,
+     "totalYen": 240
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "WaterPark Boys",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160639",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 210,
+     "totalYen": 210
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Goods Triple",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162179",
+     "kind": "single",
+     "os": null,
+     "totalPt": 200,
+     "totalYen": 200
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ハコハコ!商店街",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158904",
+     "kind": "single",
+     "os": null,
+     "totalPt": 200,
+     "totalYen": 200
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "GameTalkTalk",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162373",
+     "kind": "single",
+     "os": null,
+     "totalPt": 190,
+     "totalYen": 190
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 21,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Hexa Garden Stack",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160308",
+     "kind": "single",
+     "os": null,
+     "totalPt": 180,
+     "totalYen": 180
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ブロックパズル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159505",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 160,
+     "totalYen": 160
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Triple Sort",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:156317",
+     "kind": "single",
+     "os": null,
+     "totalPt": 156,
+     "totalYen": 156
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "超巨大スライム/Super Big Slime",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160356",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 155,
+     "totalYen": 155
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Arrow Fever",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161782",
+     "kind": "single",
+     "os": null,
+     "totalPt": 150,
+     "totalYen": 150
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "すみすみ~まったりパズル~",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161925",
+     "kind": "single",
+     "os": null,
+     "totalPt": 150,
+     "totalYen": 150
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "すみっコぐらし 農園つくるんです",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161927",
+     "kind": "single",
+     "os": null,
+     "totalPt": 150,
+     "totalYen": 150
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "リラックマ農園",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161926",
+     "kind": "single",
+     "os": null,
+     "totalPt": 150,
+     "totalYen": 150
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "異世界派遣の係長 -ドットとリアルが融合!?異世界RPG ワールド9-3クリア",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159927",
+     "kind": "single",
+     "os": null,
+     "totalPt": 145,
+     "totalYen": 145
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "パンダパーキング - Panda Parking",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:157636",
+     "kind": "single",
+     "os": null,
+     "totalPt": 140,
+     "totalYen": 140
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "実りの地",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159414",
+     "kind": "single",
+     "os": null,
+     "totalPt": 108,
+     "totalYen": 108
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Brain Test",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158946",
+     "kind": "single",
+     "os": null,
+     "totalPt": 120,
+     "totalYen": 120
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LINE:ジグソーパズル",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158209",
+     "kind": "single",
+     "os": null,
+     "totalPt": 120,
+     "totalYen": 120
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy",
+    "warau"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ポイ活稼ぐPayクレーンメダルゲーム",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "amefuri:parse_failed:condition_or_deadline_missing",
+    "warau:parse_failed:offer_structure_not_found"
+   ],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 2,
+   "firstPartyReviewCount": 30,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ラズベリーマッシュ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158866",
+     "kind": "single",
+     "os": null,
+     "totalPt": 118,
+     "totalYen": 118
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ソリティア無限にやれる「そるティア」",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159409",
+     "kind": "single",
+     "os": null,
+     "totalPt": 48,
+     "totalYen": 48
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "勇者「こんなに仲間あつめていいんですか?」",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159949",
+     "kind": "single",
+     "os": null,
+     "totalPt": 115,
+     "totalYen": 115
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Block Joy",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159218",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Hide My Test!",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159175",
+     "kind": "single",
+     "os": null,
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Mr.Shipping",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159179",
+     "kind": "single",
+     "os": null,
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Purify the World",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160041",
+     "kind": "single",
+     "os": null,
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Trump's Empire: idle game",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:155454",
+     "kind": "single",
+     "os": null,
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "仕事サボる! -暇つぶし 簡単謎解き脱出ゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159174",
+     "kind": "single",
+     "os": null,
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "学校サボる! - 脱出ゲーム",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158211",
+     "kind": "single",
+     "os": null,
+     "totalPt": 100,
+     "totalYen": 100
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "XP Hero",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161672",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 95,
+     "totalYen": 95
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "異世界派遣の係長",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158131",
+     "kind": "single",
+     "os": null,
+     "totalPt": 91,
+     "totalYen": 91
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Draw Bridge - Puzzle Game",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159627",
+     "kind": "single",
+     "os": null,
+     "totalPt": 90,
+     "totalYen": 90
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Police Rush",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159101",
+     "kind": "single",
+     "os": null,
+     "totalPt": 90,
+     "totalYen": 90
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Block Puzzle - Gems Adventure",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159253",
+     "kind": "single",
+     "os": null,
+     "totalPt": 80,
+     "totalYen": 80
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "キャットポップンマッチ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159878",
+     "kind": "single",
+     "os": null,
+     "totalPt": 70,
+     "totalYen": 70
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Solitaire - Grand Harvest - The Classic Card Game",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142729",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 34500,
+     "totalYen": 3450
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Travel Town - マージアドベンチャー",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142571",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 54020,
+     "totalYen": 5402
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "バーガーください!",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "likely_game",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "gendama",
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ブレードウォー三国",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142366",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 14250,
+     "totalYen": 1425
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "gendama"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ヴァイキングライズ 首領本部レベル21に到達",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162423",
+     "kind": "single",
+     "os": null,
+     "totalPt": 4037,
+     "totalYen": 4037
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 8,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ホットペッパービューティー 美容院予約完了後、予約店舗に来訪",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "IRIAM",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:156389",
+     "kind": "single",
+     "os": null,
+     "totalPt": 3000,
+     "totalYen": 3000
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "TIPSTAR",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "WINTICKET/ウィンチケット",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 49,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Coincheck/コインチェック",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "オリパならポケパ365 オンラインオリパ・ポケカ 一括1000円以上課金",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 5,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "使える恋愛心理学[1100円コース]",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "trima"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "IDARE",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "少年ジャンプ+ 週刊少年ジャンプ定期購読",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 31,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "スマートニュース",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161662",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 950,
+     "totalYen": 950
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Leminoプレミアム",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ColorSing",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160001",
+     "kind": "single",
+     "os": null,
+     "totalPt": 800,
+     "totalYen": 800
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "カーネクスト公式アプリ【ダウンロード&無料査定完了】",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "怖い学校鬼ごっこ新規アプリインストール+広告利用",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "楽天ミュージック",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "アイドル ウェポン ショップ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161411",
+     "kind": "single",
+     "os": null,
+     "totalPt": 700,
+     "totalYen": 700
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "マジックスクール",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161108",
+     "kind": "single",
+     "os": null,
+     "totalPt": 680,
+     "totalYen": 680
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "カプとれ",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "warau"
+   ],
+   "listedDaysAtLeast": 62,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "バンドルカード",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "カプコンネットキャッチャー カプとれ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:155462",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 550,
+     "totalYen": 550
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "RAVIO",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162178",
+     "kind": "single",
+     "os": null,
+     "totalPt": 400,
+     "totalYen": 400
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 28,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Uqey",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Wallet+",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "クラウドキャッチャー",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159443",
+     "kind": "single",
+     "os": null,
+     "totalPt": 500,
+     "totalYen": 500
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy",
+    "warau"
+   ],
+   "listedDaysAtLeast": 62,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "メルペイ",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 5,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "モーリーオンライン",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159009",
+     "kind": "single",
+     "os": null,
+     "totalPt": 480,
+     "totalYen": 480
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy",
+    "warau"
+   ],
+   "listedDaysAtLeast": 62,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ナムコオンラインクレーン",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:157514",
+     "kind": "single",
+     "os": null,
+     "totalPt": 440,
+     "totalYen": 440
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy",
+    "warau"
+   ],
+   "listedDaysAtLeast": 62,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "イケメンヴィラン",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162192",
+     "kind": "single",
+     "os": null,
+     "totalPt": 427,
+     "totalYen": 427
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "イケメン王子",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:152624",
+     "kind": "single",
+     "os": null,
+     "totalPt": 427,
+     "totalYen": 427
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "楽天ラクマ",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 66,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Dinosaur Universe",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161760",
+     "kind": "single",
+     "os": null,
+     "totalPt": 350,
+     "totalYen": 350
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "BIGO LIVE",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:148782",
+     "kind": "single",
+     "os": null,
+     "totalPt": 332,
+     "totalYen": 332
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "洋菓子店ローズ パンもはじめました",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:159435",
+     "kind": "single",
+     "os": null,
+     "totalPt": 315,
+     "totalYen": 315
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "パクパクフィッシュ-Fish Eat Fish.io",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162072",
+     "kind": "single",
+     "os": null,
+     "totalPt": 280,
+     "totalYen": 280
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "※還元アップ※楽天家計簿 初めてのアプリインストール後、口座を1つ以上連携",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "パラノイズ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161472",
+     "kind": "single",
+     "os": null,
+     "totalPt": 199,
+     "totalYen": 199
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Berry Factory Tycoon",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160670",
+     "kind": "single",
+     "os": null,
+     "totalPt": 180,
+     "totalYen": 180
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "au Wi-Fiアクセス 【新規登録限定】au IDでログインし、利用規約に同意",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LINE:ナンプレ",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:158364",
+     "kind": "single",
+     "os": null,
+     "totalPt": 142,
+     "totalYen": 142
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "秘密のメッセージはじめました シーズン1とシーズン2をコンプリート",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:147035",
+     "kind": "single",
+     "os": null,
+     "totalPt": 113,
+     "totalYen": 113
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "RD:ポーカー アカウント連携ログイン後、累計50000払出チップ達成",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160876",
+     "kind": "single",
+     "os": null,
+     "totalPt": 110,
+     "totalYen": 110
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "RD:七並べ アカウント連携ログイン後、累計50000払出チップ達成",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160835",
+     "kind": "single",
+     "os": null,
+     "totalPt": 110,
+     "totalYen": 110
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "RD:大富豪 アカウント連携ログインし累計50000払出チップ達成",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "likely_game",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:160766",
+     "kind": "single",
+     "os": null,
+     "totalPt": 110,
+     "totalYen": 110
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "auウェルネス auID登録完了",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:162232",
+     "kind": "single",
+     "os": null,
+     "totalPt": 106,
+     "totalYen": 106
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 49,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "みんなのニュースパーク",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "coincome:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "coincome"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ポイ壁",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161659",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 50,
+     "totalYen": 50
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Bounce Bliss/バウンスブリス",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "moppy:161122",
+     "kind": "single",
+     "os": "iOS",
+     "totalPt": 85,
+     "totalYen": 85
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "skyticket",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "外貨積立",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "※まもなく終了※ヤンキーサバイバー",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "moppy:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 8,
+   "firstPartyReviewCount": 0,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "「花王トクトクNEWS」LINE公式アカウント",
+   "bucket": "D_non_game_or_service",
+   "gameStatus": "not_a_game",
+   "verdict": "non_game_or_service",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "coincome",
+    "mikoshi"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "LIFULL",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "trima"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "REALITY",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "kurashiru_reward",
+    "mikoshi"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Triple Tile",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "Worms Incoming",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:140709",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 58220,
+     "totalYen": 5822
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ふわっち",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "gendama"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "ギフ活",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [
+    "amefuri:parse_failed:condition_or_deadline_missing"
+   ],
+   "sources": [
+    "gendama"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "トリファ",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "moppy"
+   ],
+   "listedDaysAtLeast": 56,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "協力TD:ふたりディフェンス",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "gendama"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "神経衰弱と日本の歴史",
+   "bucket": "B_offer_confirmed_players_not_confirmed",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_verified",
+   "readableOffers": [
+    {
+     "offerKey": "amefuri:142720",
+     "kind": "stepup",
+     "os": "iOS",
+     "totalPt": 15080,
+     "totalYen": 1508
+    }
+   ],
+   "unreadableReasons": [],
+   "sources": [
+    "kurashiru_reward"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  },
+  {
+   "game": "高還元延長中!dカード",
+   "bucket": "C_offer_not_confirmable",
+   "gameStatus": "unconfirmed",
+   "verdict": "offer_unreadable",
+   "readableOffers": [],
+   "unreadableReasons": [],
+   "sources": [
+    "hapitas"
+   ],
+   "listedDaysAtLeast": 0,
+   "firstPartyReviewCount": null,
+   "playerRecordsSearched": false
+  }
+ ]
+}

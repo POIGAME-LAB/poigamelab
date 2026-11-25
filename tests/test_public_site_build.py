@@ -467,20 +467,19 @@ def test_selected_moppy_verified_dates_are_current(output_dir):
     rows = list(csv.DictReader(
         (output_dir / "data" / "published_offers.csv").open(encoding="utf-8", newline="")
     ))
+    # Identities only: since 2026-11-24 Moppy StepUp totals are refreshed daily (King Shot moved
+    # 23,367 -> 15,944), so pinning the amount here would fail on every legitimate change.
     expected = {
-        ("キングショット", "Android", "23367", "https://pc.moppy.jp/ad/detail.php?site_id=161855"),
-        ("キングショット", "iOS", "23367", "https://pc.moppy.jp/ad/detail.php?site_id=161854"),
-        ("パズル＆サバイバル", "iOS", "39740", "https://pc.moppy.jp/ad/detail.php?site_id=160366"),
+        ("キングショット", "Android", "https://pc.moppy.jp/ad/detail.php?site_id=161855"),
+        ("キングショット", "iOS", "https://pc.moppy.jp/ad/detail.php?site_id=161854"),
+        ("パズル＆サバイバル", "iOS", "https://pc.moppy.jp/ad/detail.php?site_id=160366"),
     }
-    matches = {
-        (row["game"], row["platform"], row["reward"], row["url"])
-        for row in rows
-        if (row["game"], row["platform"], row["reward"], row["url"]) in expected
-    }
-    assert matches == expected
+    matches = [(row["game"], row["platform"], row["url"]) for row in rows
+               if (row["game"], row["platform"], row["url"]) in expected]
+    assert sorted(matches) == sorted(expected)  # each exactly once
     for row in rows:
-        key = (row["game"], row["platform"], row["reward"], row["url"])
-        if key in expected:
+        if (row["game"], row["platform"], row["url"]) in expected:
+            assert row["reward"].isdigit() and int(row["reward"]) > 0
             assert row["updatedAt"] >= "2026-09-24"
             assert row["verified"].lower() == "true"
 

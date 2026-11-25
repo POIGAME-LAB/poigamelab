@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import re
 from datetime import date, datetime, timedelta, timezone
 from html import escape
@@ -37,14 +38,34 @@ def _parse_day(value: object) -> date | None:
         return None
 
 
-def _read_verified_offers(path: Path | None) -> list[dict[str, object]] | None:
+DEFAULT_MAX_OFFER_AGE_DAYS = 7
+
+
+def _max_offer_age_days(published_path: Path | None) -> int:
+    """Same rule as site-data.js maxOfferAgeDays(): publication.maxOfferAgeDays in config/refresh_policy.json, else 7."""
+    if published_path is not None:
+        policy_path = published_path.parent.parent / "config" / "refresh_policy.json"
+        try:
+            value = json.loads(policy_path.read_text(encoding="utf-8")).get("publication", {}).get("maxOfferAgeDays")
+            if isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0:
+                return int(value)
+        except (OSError, ValueError, AttributeError):
+            pass
+    return DEFAULT_MAX_OFFER_AGE_DAYS
+
+
+def _read_verified_offers(path: Path | None, today: date | None = None, max_age_days: int | None = None) -> list[dict[str, object]] | None:
     """Verified rows from the published CSV, or None when the file is absent.
 
     None means "unknown" (no figures are baked in); an empty list means the
-    file was read and holds no verified offer.
+    file was read and holds no verified offer *that may be shown*. Operator decision
+    2026-11-24 (same as site-data.js): a row not re-confirmed for more than
+    ``max_age_days`` (default 7) is hidden, and so is a future-dated row. The rows stay in the CSV.
     """
     if path is None or not path.exists():
         return None
+    today = today or _today_jst()
+    max_age = _max_offer_age_days(path) if max_age_days is None else max_age_days
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
     offers: list[dict[str, object]] = []
@@ -57,6 +78,9 @@ def _read_verified_offers(path: Path | None) -> list[dict[str, object]] | None:
             continue
         game = str(row.get("game") or "").strip()
         if not game:
+            continue
+        confirmed = _parse_day(row.get("updatedAt"))
+        if confirmed is None or not 0 <= (today - confirmed).days <= max_age:
             continue
         offers.append({
             "game": game,
@@ -269,7 +293,7 @@ def inject_static_fallback(
     if published_path is None:
         # The published CSV shipped in the same artifact as games.csv.
         published_path = games_path.parent / "data" / "published_offers.csv"
-    verified = _read_verified_offers(published_path)
+    verified = _read_verified_offers(published_path, today)
     grouped = None if verified is None else _offers_by_game(verified)
     games = _read_games(games_path, set(grouped or {}))
     if not games:
@@ -430,7 +454,7 @@ def inject_offers_fallback(
     if published_path is None:
         # The published CSV shipped in the same artifact as games.csv.
         published_path = games_path.parent / "data" / "published_offers.csv"
-    verified = _read_verified_offers(published_path)
+    verified = _read_verified_offers(published_path, today)
     grouped = None if verified is None else _offers_by_game(verified)
     games = _read_games(games_path, set(grouped or {}), use_featured=False)
     if not games:

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "game": "ウォーターパークボーイズ（WaterPark Boys）",
+  "aliases": ["WaterPark Boys", "WaterPark Boys（ウォーターパークボーイズ）", "ウォーターパークボーイズ"],
+  "slug": "waterpark-boys",
+  "title": "ウォーターパークボーイズ ポイ活攻略｜Stage2 Open（2時間前後）の実例と進め方",
+  "seoTitle": "ウォーターパークボーイズ ポイ活攻略｜Stage2 Open（2時間前後）の実例と進め方",
+  "metaDescription": "ウォーターパークボーイズ（WaterPark Boys）のモッピー単一条件案件を攻略。Stage2 Openの条件・210P・7日期限、約2時間で達成した実例、広告の扱いと反映の注意を紹介。",
+  "os": ["iOS", "Android"],
+  "researchDate": "2026-11-24",
+  "inputData": {
+    "contentQueueCheckedAt": "2026-11-24T03:00:22+00:00",
+    "monitorCheckedAt": "2026-11-24T03:00:22+00:00",
+    "candidateOrder": 72
+  },
+  "status": "manuscript_complete",
+  "publicationStatus": "draft_pr_not_published",
+  "proposedPage": "waterpark-boys-guide.html",
+  "canonical": "https://poigamelab.com/waterpark-boys-guide.html",
+  "identity": {
+    "developer": "Supercent, Inc.",
+    "appStoreId": "6457257165",
+    "androidPackage": "com.Albus.WaterParkBoys",
+    "advertiserOnOfferPage": null
+  },
+  "offers": [
+    {
+      "site": "moppy",
+      "offerKey": "moppy:160639",
+      "kind": "single",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160639",
+      "os": "iOS",
+      "currency": "P",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 210,
+      "temporaryIncrease": null,
+      "deadlineBase": "click_day",
+      "steps": [
+        {"condition": "新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープンで達成", "rewardPt": 210, "requiresPayment": false, "deadlineDays": 7}
+      ],
+      "sumWithoutPurchaseStepsPt": 210,
+      "guaranteeApplicationDays": null,
+      "verifiedAt": "2026-11-24T11:00:15+00:00",
+      "sumIsNotPredictedEarnings": true
+    },
+    {
+      "site": "moppy",
+      "offerKey": "moppy:160640",
+      "kind": "single",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=160640",
+      "os": "Android",
+      "currency": "P",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 210,
+      "temporaryIncrease": null,
+      "deadlineBase": "click_day",
+      "steps": [
+        {"condition": "新規アプリインストール後、2番目のステージSANTA MONICA BEACHオープンで達成", "rewardPt": 210, "requiresPayment": false, "deadlineDays": 7}
+      ],
+      "sumWithoutPurchaseStepsPt": 210,
+      "guaranteeApplicationDays": null,
+      "verifiedAt": "2026-11-24T11:00:18+00:00",
+      "sumIsNotPredictedEarnings": true
+    }
+  ],
+  "limitations": [
+    "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+    "ワラウ（209434・209435）とアメフリ（131762）の案件ページは報酬の表を自動解析できず（parse_failed／reward_header_not_found）、金額の根拠に使っていない。ワラウ口コミは実例の出典としてのみ使用",
+    "ワラウ口コミ・アメフリ経由の記事は投稿時期の案件条件で書かれており、報酬額がモッピーと異なる可能性がある。投稿者のOSは多くが不明",
+    "口コミに課金額の記載がなく、課金の要否・無課金での達成人数は確認できていない",
+    "ポイ活コツコツ研究室の記事は投稿日の表示が不明確なため実例の人数に数えていない",
+    "Google Playページの本文は全文取得できていない（HTTP 200とパッケージIDのみ確認）。App Storeの課金価格は米国表示"
+  ]
+}

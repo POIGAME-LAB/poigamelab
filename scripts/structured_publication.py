@@ -114,6 +114,48 @@ REWARD_ONLY_CONTRACTS = {
         "pointScale": 10,
         "termsMarkers": ("加算条件", "加算時期"),
     },
+    # MIKOSHI: added 2026-11-24 by operator decision after checking 15 real first-party JSON
+    # details (17 catalog games are listed). The parser already requires every Step's
+    # reward to add up to the total and reads the OS from isPublishIos/isPublishAndroid.
+    # 1 MIKOSHI point = 1 JPY is the reviewed base value in config/point_value_rates.json.
+    "mikoshi": {
+        "parser": "mikoshi-skyflag-detail-review-v3",
+        "identity": direct.mikoshi_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "verifiedCurrentRewardPoints", "verifiedCurrentRewardYen",
+            "rewardUnit", "sourcePointRate", "conversionEvidenceUrl", "conversionReviewedAt",
+            "steps", "conditionText", "termsText", "downstreamTermsRequired", "candidateOnly",
+            "publicationAuthorized",
+        ],
+        "rewardUnit": "MIKOSHI-point",
+        "sourcePointRate": "1MIKOSHI-point=1JPY",
+        "pointField": "verifiedCurrentRewardPoints",
+        "pointScale": 1,
+        "termsMarkers": ("注意事項",),
+        "termsLimit": 16000,
+        # The parser marks every output candidateOnly; like publicationAuthorized this is its
+        # default, not a veto. Item-level candidate envelopes still veto.
+        "parserCandidateOnlyIsDefault": True,
+    },
+    # Powl: added 2026-11-24 by operator decision after checking 13 real first-party pages
+    # (16 catalog games are listed on Powl). 10pt=1JPY is the reviewed rate in
+    # config/point_value_rates.json. Multi-mission offers are published only when the
+    # per-mission rewards printed in the terms add up to the displayed total.
+    "powl": {
+        "parser": "powl-detail-review-v1",
+        "identity": direct.powl_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "displayedRewardPoints", "verifiedCurrentRewardYen",
+            "rewardUnit", "sourcePointRate", "conditionText", "termsText", "publicationAuthorized",
+        ],
+        "rewardUnit": "Powl-pt",
+        "sourcePointRate": "10pt=1JPY",
+        "pointField": "displayedRewardPoints",
+        "pointScale": 10,
+        "termsMarkers": ("ポイント獲得条件",),
+    },
     "amefuri": {
         "parser": "amefuri-detail-review-v2",
         "identity": direct.amefuri_offer_id,
@@ -253,6 +295,82 @@ def full_snapshot(item, sources, checked_at, rate_confirmed=False):
     }
 
 
+# Moppy StepUp pages show only the total and say that each Step's condition is on the page
+# after "POINT GET". By the 2026-11-24 operator decision such an offer is published with its
+# verified total and an explicit note, instead of being held forever (the old rule kept the
+# 9/28 totals on the public site). Nothing else about the page is relaxed: the total must be
+# the page's single current reward, OS and deadline must be explicit, and the note is always
+# attached to the condition.
+MOPPY_TOTAL_ONLY_NOTE = (
+    "【合計額のみ確認】各成果地点の条件と内訳は、モッピーの案件ページで「POINT GET」を"
+    "タップした後に表示されます。当サイトはモッピーの公開ページに載っている合計額だけを確認しています。"
+)
+
+
+def moppy_stepup_total_only(source, evidence):
+    """True only for a Moppy StepUp page whose Steps sit behind POINT GET."""
+    if source != "moppy" or not isinstance(evidence, dict):
+        return False
+    terms = str(evidence.get("termsText") or "")
+    text = f"{evidence.get('name') or ''} {terms}"
+    return bool(
+        evidence.get("downstreamTermsRequired") is True
+        and re.search(r"POINT\s*GET", terms, re.I)
+        and re.search(r"step\s*up|各成果地点", text, re.I)
+        and not evidence.get("stepRewardPoints")
+        and not any(evidence.get(k) for k in ("providerId", "providerCandidates", "downstreamProviderCandidates"))
+    )
+
+
+POWL_STEP_REWARD = re.compile(r"【\s*([0-9][0-9,]*)\s*pt\s*】")
+
+
+def powl_step_points(evidence):
+    """Per-mission rewards printed in Powl terms ("…【400pt】"), in page order."""
+    return [int(x.replace(",", "")) for x in POWL_STEP_REWARD.findall(str(evidence.get("termsText") or ""))]
+
+
+def powl_is_multi(evidence):
+    return bool(re.search(r"マルチミッション|多段階", str(evidence.get("name") or ""))) or len(powl_step_points(evidence)) >= 2
+
+
+def powl_title(name):
+    """Powl decorates titles: "【還元UP中】X（…）（iOS）", "X（iOS） マルチミッション",
+    "X（多段階）（iOS） - 課金総額…". Remove only those decorations; the rest must still be the
+    exact catalog title (catalog_title_key), so a different app never matches."""
+    value = unicodedata.normalize("NFKC", str(name or "")).strip()
+    value = re.sub(r"^【[^】]*(?:UP|アップ|増量|限定|復活)[^】]*】\s*", "", value, flags=re.I)
+    value = re.sub(r"\s*マルチミッション$", "", value)
+    value = re.sub(r"(\((?:iOS|Android)\))\s*[-‐－]\s*.+$", r"\1", value, flags=re.I)
+    return value
+
+
+def check_powl_steps(evidence):
+    """Multi-mission: >=2 printed rewards that sum to the displayed total. Single: none or exactly the total."""
+    steps = powl_step_points(evidence)
+    total = evidence.get("displayedRewardPoints")
+    if powl_is_multi(evidence):
+        require(len(steps) >= 2 and sum(steps) == total, "step_total_mismatch")
+    else:
+        require(not steps or steps == [total], "step_total_mismatch")
+    return steps
+
+
+def mikoshi_steps(evidence):
+    """Validated (condition, points) pairs; total must equal the verified reward."""
+    steps = evidence.get("steps")
+    require(isinstance(steps, list) and steps, "invalid_steps")
+    out = []
+    for n, step in enumerate(steps, start=1):
+        require(isinstance(step, dict) and step.get("step") == n, "invalid_step")
+        points = step.get("rewardPoints")
+        condition = str(step.get("condition") or "").strip()
+        require(type(points) is int and points > 0 and len(condition) >= 2, "invalid_step")
+        out.append((condition, points))
+    require(sum(points for _, points in out) == evidence.get("verifiedCurrentRewardPoints"), "step_total_mismatch")
+    return out
+
+
 def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
     sid = item.get("source")
     contract = REWARD_ONLY_CONTRACTS.get(sid)
@@ -263,7 +381,7 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
         e.get("state") == "parsed" and e.get("parserVersion") == contract["parser"],
         "incomplete_parser_contract",
     )
-    require(not e.get("downstreamTermsRequired"), "downstream_terms_required")
+    require(not e.get("downstreamTermsRequired") or moppy_stepup_total_only(sid, e), "downstream_terms_required")
     url = item.get("url") or ""
     require(direct.source_host_allowed(url, sources[sid]), "unregistered_url")
     require(contract["identity"](url) == e.get("offerId"), "offer_identity_mismatch")
@@ -313,6 +431,10 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
                           str(e.get("headerText") or "")),
             "ambiguous_displayed_reward",
         )
+    elif sid == "powl":
+        check_powl_steps(e)
+    elif sid == "mikoshi":
+        mikoshi_steps(e)
     elif sid == "amefuri":
         require(
             e.get("displayedCurrentRewardYen") == reward,
@@ -339,7 +461,7 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
             raise Hold("invalid_reward_mode")
     terms = e.get("termsText")
     require(
-        isinstance(terms, str) and 0 < len(terms) <= 12000,
+        isinstance(terms, str) and 0 < len(terms) <= int(contract.get("termsLimit") or 12000),
         "missing_or_oversize_terms",
     )
     require(
@@ -565,14 +687,29 @@ def published_row_fingerprint(row):
     ).encode("utf-8")).hexdigest()
 
 
+# Where the achievement conditions start. Hapitas and some Moppy pages open with boilerplate
+# that mentions お問い合わせ before the conditions (2026-11-24 real pages), which used to end
+# the scope before any condition was read.
+ACHIEVEMENT_START = re.compile(
+    r"【ポイント獲得条件】|[▼■]\s*ポイント獲得条件|■獲得条件|【獲得条件】|▼承認条件|"
+    r"新規アプリインストール後|新規インストール後"
+)
+# "click the ad, then launch within 1 hour" is a tracking rule, not an achievement deadline.
+LAUNCH_TRACKING_RULE = re.compile(r"[^。※\n]*\d+\s*時間以内[^。※\n]*(?:起動|初回起動)[^。※\n]*")
+
+
 def achievement_deadline(evidence):
     # Stop before support/inquiry deadlines. A 30-day inquiry window is NOT
     # evidence of a 30-day achievement window.
     terms = publication_terms(evidence)
+    start = ACHIEVEMENT_START.search(terms)
+    if start:
+        terms = terms[start.start():]
     scope = re.split(
         r"成果調査受付(?:期限|期間)|否認条件|却下条件|獲得対象外|ポイント対象外条件|"
-        r"お問い合わせ|お問合せ|注意事項", terms, maxsplit=1
+        r"お問い合わせ|お問合せ|[■▼【]\s*注意事項", terms, maxsplit=1
     )[0]
+    scope = LAUNCH_TRACKING_RULE.sub(" ", scope)
     scope += " " + " ".join(s.get("condition", "") for s in evidence.get("steps", []))
     require(bool(re.search(
         r"(?:\d+\s*(?:日|時間)以内|翌日以内|当日中)", scope
@@ -641,6 +778,23 @@ def addition_snapshot(item, update):
     require(len(terms) < 8000, "oversize_condition")
     values = e.get("stepRewardYen", e.get("stepRewardPoints", []))
     is_step = bool(values) or bool(re.search(r"step\s*up|step\s*\d|複数条件|各成果地点", e["name"] + terms, re.I))
+    if item.get("source") == "mikoshi":
+        steps = mikoshi_steps(e)
+        require(sum(p for _, p in steps) == int(update["reward"]), "step_total_mismatch")
+        if len(steps) >= 2:
+            lines = "\n".join(f"STEP{n}：{cond}【{points:,}MIKOSHIポイント】" for n, (cond, points) in enumerate(steps, 1))
+            return {**update, "condition": f"{lines}\n{terms}", "deadline": "条件欄の達成期限を参照", "type": "StepUp"}
+        return {**update, "condition": f"{steps[0][0]}\n{terms}", "deadline": "条件欄の達成期限を参照", "type": "Single"}
+    if item.get("source") == "powl":
+        steps = check_powl_steps(e)
+        multi = powl_is_multi(e)
+        if multi:
+            require(sum(steps) == int(update["reward"]) * 10, "step_total_mismatch")
+        return {**update, "condition": terms, "deadline": "条件欄の達成期限を参照",
+                "type": "StepUp" if multi else "Single"}
+    if is_step and moppy_stepup_total_only(item.get("source"), e):
+        return {**update, "condition": f"{terms}\n{MOPPY_TOTAL_ONLY_NOTE}",
+                "deadline": "条件欄の達成期限を参照", "type": "StepUp"}
     if is_step:
         # COINCOME v2's summary can omit the description's actual steps;
         # never create a row from "StepUpミッションクリア" alone.
@@ -735,6 +889,8 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
             require(sources[sid].get("acquisition_lane") != "device", "device_only")
             require(bool(identity), "offer_identity_missing")
             require(len(existing) <= 1, "ambiguous_published_identity")
+            if any(_evidence(item).get("reason") == "source_offer_paused" for item in items):
+                raise Hold("source_offer_paused")  # paused is not ended: keep the row, never retire
             if any(_evidence(item).get("state") == "unavailable" for item in items):
                 retire_confirmed_unavailable(existing, items, sid, sources, checked_at, decision)
                 retired_offer_keys.add(existing[0].get("offerKey"))
@@ -749,14 +905,18 @@ def prepare_verified(rows, detail_snapshots, sources, checked_at, policy,
                 require(game in aliases, "unknown_catalog_game")
                 e = item.get("sourceEvidence") or {}
                 require(e.get("state") == "parsed", "incomplete_parser_contract")
-                require(e.get("candidateOnly") is not True, "candidate_only_parser")
+                require(e.get("candidateOnly") is not True
+                        or (REWARD_ONLY_CONTRACTS.get(sid) or {}).get("parserCandidateOnlyIsDefault") is True,
+                        "candidate_only_parser")
                 require(direct.source_host_allowed(item.get("requestedUrl"), sources[sid]), "unregistered_request")
                 require(direct.offer_identity_key(item.get("requestedUrl"), sid) == identity, "redirect_identity_changed")
-                matches = {g for g, keys in aliases.items() if catalog_title_key(e.get("name")) in keys}
+                title = powl_title(e.get("name")) if sid == "powl" else e.get("name")
+                matches = {g for g, keys in aliases.items() if catalog_title_key(title) in keys}
                 require(matches == {game}, "game_identity_ambiguous_or_changed")
                 require(not any(e.get(k) for k in (
-                    "providerId", "providerCandidates", "downstreamProviderCandidates",
-                    "downstreamTermsRequired")), "downstream_or_provider_contract_required")
+                    "providerId", "providerCandidates", "downstreamProviderCandidates"))
+                        and (not e.get("downstreamTermsRequired") or moppy_stepup_total_only(sid, e)),
+                        "downstream_or_provider_contract_required")
                 update = snapshot(item, sources, checked_at, rate_confirmed, fresh_detail=True)
                 achievement_deadline(e)
                 if sid == "moppy":

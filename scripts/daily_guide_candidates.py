@@ -14,8 +14,11 @@ Rules it enforces (fail closed):
   ranked and ``status`` is ``stale_input`` (a previous day's amount must never be reused as today's);
 * listing amounts are only *hints* (``listingRewardHintYen``) taken from the scan's own title text for sources
   whose face value is 1 point = 1 yen in ``config/point_value_rates.json``; they are never a verified reward;
-* games that already have a guide (published pages, guide registries, catalog, earlier research batches,
-  previous daily batches, and guide pages added on any other remote branch) are excluded with the reason;
+* games that already have a **guide** (a published guide page, a registry entry whose page exists, a guide spec whose
+  page exists, a completed earlier daily batch, a guide page added on any other remote branch, or a game that is
+  in an open pull request) are excluded with the reason. Material that is *not* a guide - a games.csv catalog row,
+  a research dossier, a guide spec without a page - never excludes a game: it is attached to the candidate as
+  ``relatedMaterial`` so the editor can reuse it ("a comparison/research record exists" is not "a guide exists");
 * aggregator / reward-wall apps (Freecash etc.) and scan rows classified ``likely_non_game`` are excluded.
 
 The routine still has to open each point-site page, identify the game and decide adoption; name grouping
@@ -33,7 +36,7 @@ import re
 import subprocess
 import sys
 import unicodedata
-from datetime import datetime, timedelta, timezone
+from datetime import date as Date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,9 +51,10 @@ LEGACY_HOLDS = DAILY_DIR / "legacy-holds.json"
 # Reward walls / survey apps that list many games: never a single-game guide.
 AGGREGATORS = ("freecash", "mistplay", "cashclub", "キャッシュクラブ", "justplay", "ジャストプレイ", "pocketmoney")
 # Leading wrapper tags used by point sites (【SKYFLAG】, 【注意事項必読】, NEW, iOS_ ...).
+STEP_TAG = re.compile(r"[『「｛{]\s*(?:StepUp|ステップアップ|多段階)\s*[』」｝}]", re.I)
 LEAD_TAG = re.compile(r"^(?:【[^】]*】|\[[^\]]*\]|NEW\s+|(?:iOS|Android|iPhone)[_＿\s]+)+", re.I)
 TRAIL_OS = re.compile(r"[\s_＿]*[（(]?(?:iOS|Android|iPhone|アンドロイド)[)）]?\s*$", re.I)
-COND_SPLIT = re.compile(r"[（(]| 初回| 新規| アプリ| \d| (?:レベル|ステージ|第|Lv|LV|チュートリアル|ゲームクリア|累計)|[\s_＿](?:iOS|Android)\b|_")
+COND_SPLIT = re.compile(r"[（(]| 初回| 新規| アプリ| 条件達成| 任意の| \d| (?:レベル|ステージ|第|Lv|LV|チュートリアル|ゲームクリア|累計)|[\s_＿](?:iOS|Android)\b|_")
 AMOUNT = re.compile(r"(?:最大\s*)?([0-9][0-9,]{0,9})\s*(pt|P|ポイント|円)(?![a-zA-Z])")
 
 
@@ -97,6 +101,7 @@ def norm_key(name: str) -> str:
 def display_name(title_hint: str) -> str:
     s = unicodedata.normalize("NFKC", str(title_hint or "")).strip()
     s = LEAD_TAG.sub("", s).strip()
+    s = STEP_TAG.sub("", s).strip()
     s = COND_SPLIT.split(s, maxsplit=1)[0].strip()
     s = TRAIL_OS.sub("", s).strip()
     return s
@@ -124,6 +129,24 @@ def reward_hint(title_hint: str, source: str, rates: dict) -> int | None:
     return best
 
 
+STEPUP_WORDS = re.compile(r"StepUp|ステップアップ|多段階|各ミッション|各成果地点|STEP\s*\d", re.I)
+SINGLE_WORDS = re.compile(r"(?:レベル|Lv\.?|ステージ|チャプター|ワールド|フロア|ランク|勝利|プレイヤーレベル|ユーザーレベル)\s*[0-9０-９,]+\s*(?:以上)?\s*(?:を)?(?:クリア|到達|達成|完成|オープン|解放)"
+                         r"|ポイント獲得条件】記載の条件を達成|(?:クリア|到達|達成|アンロック|オープン|読了|解放)\s*[0-9,]+\s*[PpＰ円]|(?:クリア|到達|達成|アンロック|読了)\s*$")
+SERVICE_WORDS = re.compile(r"初回購入|初回投票|契約完了|口座|クレジットカード|予約|査定|入金|チャージ完了|ご利用|定期購読|無料会員|資料請求|申込|申し込み|LINE友だち|ログインし、利用規約")
+
+
+def kind_hint(title_hint: str) -> str:
+    """Rough offer-shape hint from a listing title: stepup / single / service / unknown (never a verification)."""
+    t = unicodedata.normalize("NFKC", str(title_hint or ""))
+    if STEPUP_WORDS.search(t):
+        return "stepup"
+    if SERVICE_WORDS.search(t) and not SINGLE_WORDS.search(t):
+        return "service"
+    if SINGLE_WORDS.search(t):
+        return "single"
+    return "unknown"
+
+
 def is_aggregator(name: str) -> bool:
     k = norm_key(name)
     return any(norm_key(a) in k for a in AGGREGATORS)
@@ -140,32 +163,43 @@ def _guide_h1_names(root: Path) -> dict[str, str]:
     return out
 
 
-def existing_index(root: Path = ROOT, extra: list[str] | None = None, remote_pages: dict[str, str] | None = None) -> dict[str, str]:
-    """norm_key(name) -> why it is already covered."""
-    idx: dict[str, str] = {}
-    idx.update(_guide_h1_names(root))
-    catalog = root / "games.csv"
-    if catalog.exists():
-        with catalog.open(encoding="utf-8-sig", newline="") as fh:
-            for row in csv.DictReader(fh):
-                if row.get("name"):
-                    idx.setdefault(norm_key(row["name"]), "catalog:games.csv")
+def _registry_guides(root: Path) -> dict[str, str]:
+    """Registry entries (site-guides.js / site-researched-guides.js) whose guide page exists in the repository."""
+    out: dict[str, str] = {}
     for js in ("site-researched-guides.js", "site-guides.js"):
         p = root / js
-        if p.exists():
-            text = p.read_text(encoding="utf-8")
-            for name in re.findall(r'^\s{2}"([^"]+)":\s*\{', text, re.M):
-                idx.setdefault(norm_key(name), f"guide_registry:{js}")
-            for title in re.findall(r'title:\s*"([^"]+?)\s*ポイ活攻略"', text):
-                idx.setdefault(norm_key(title), f"guide_registry:{js}")
-    for spec in sorted((root / "research").glob("new-guides/*/*.json")) + sorted((root / "research").glob("new-games/*/dossiers/*.json")):
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8")
+        for m in re.finditer(r'^\s{2}"([^"]+)":\s*\{(.*?)^\s{2}\}', text, re.M | re.S):
+            hrefs = re.findall(r'href:\s*"([^"#?]+)"', m.group(2))
+            if any(re.fullmatch(r"[a-z0-9-]+-guide\.html|township-lv\d+\.html", h) and (root / h).is_file() for h in hrefs):
+                out.setdefault(norm_key(m.group(1)), f"guide_registry:{js}")
+        for title in re.findall(r'title:\s*"([^"]+?)\s*ポイ活攻略"', text):
+            out.setdefault(norm_key(title), f"guide_registry:{js}")
+    return out
+
+
+def existing_index(root: Path = ROOT, extra: list[str] | None = None, remote_pages: dict[str, str] | None = None) -> dict[str, str]:
+    """norm_key(name) -> why a *guide* already exists (or is already in flight).
+
+    Only guides count: published guide pages, registry entries pointing at an existing page, guide specs whose page
+    exists, completed daily batches, guide pages on other remote branches, games in an open pull request.
+    games.csv rows and research dossiers are NOT guides - see :func:`related_material_index`.
+    """
+    idx: dict[str, str] = {}
+    idx.update(_guide_h1_names(root))
+    for k, why in _registry_guides(root).items():
+        idx.setdefault(k, why)
+    for spec in sorted((root / "research").glob("new-guides/*/*.json")):
         try:
             data = json.loads(spec.read_text(encoding="utf-8"))
         except (ValueError, OSError):
             continue
-        name = data.get("game") or data.get("name") or (data.get("identity") or {}).get("name")
-        if isinstance(name, str) and name:
-            idx.setdefault(norm_key(name), f"research_batch:{spec.relative_to(root)}")
+        name = data.get("game") or data.get("name")
+        page = data.get("file")
+        if isinstance(name, str) and name and isinstance(page, str) and (root / page).is_file():
+            idx.setdefault(norm_key(name), f"guide_spec:{spec.relative_to(root)}")
     for sel in sorted((root / DAILY_DIR).glob("*/selection.json")):
         try:
             data = json.loads(sel.read_text(encoding="utf-8"))
@@ -181,6 +215,43 @@ def existing_index(root: Path = ROOT, extra: list[str] | None = None, remote_pag
     for n in extra or []:
         idx.setdefault(norm_key(n), "excluded_by_routine:open_pull_request")
     return idx
+
+
+def related_material_index(root: Path = ROOT) -> dict[str, list[dict]]:
+    """norm_key(name) -> non-guide material that already exists (never an exclusion reason).
+
+    * ``catalog``          a games.csv comparison-catalog row (the game has a detail/comparison page, not a guide);
+    * ``research_dossier`` research/new-games/*/dossiers/*.json (collected research, no published article);
+    * ``guide_spec_only``  research/new-guides/*/*.json whose guide page was never published.
+    """
+    out: dict[str, list[dict]] = {}
+
+    def add(name: object, kind: str, ref: str) -> None:
+        if isinstance(name, str) and name.strip():
+            out.setdefault(norm_key(name), []).append({"kind": kind, "ref": ref})
+
+    catalog = root / "games.csv"
+    if catalog.exists():
+        with catalog.open(encoding="utf-8-sig", newline="") as fh:
+            for row in csv.DictReader(fh):
+                add(row.get("name"), "catalog", "games.csv")
+    for path in sorted((root / "research").glob("new-games/*/dossiers/*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            continue
+        ref = str(path.relative_to(root))
+        for name in [data.get("game"), data.get("name"), (data.get("identity") or {}).get("name"), *(data.get("aliases") or [])]:
+            add(name, "research_dossier", ref)
+    for path in sorted((root / "research").glob("new-guides/*/*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            continue
+        page = data.get("file")
+        if isinstance(page, str) and not (root / page).is_file():
+            add(data.get("game") or data.get("name"), "guide_spec_only", str(path.relative_to(root)))
+    return out
 
 
 def previous_holds(root: Path = ROOT) -> dict[str, dict]:
@@ -236,8 +307,17 @@ def _covered(key: str, idx: dict[str, str]) -> str | None:
     for k, why in idx.items():
         # "モーマンタイム" vs "モーマンタイム【StepUp】" style suffixes; require a meaningful length.
         if len(k) >= 4 and len(key) >= 4 and (key.startswith(k) or k.startswith(key)):
-            return why
+            return why + " (name-prefix match: confirm the store identity)"
     return None
+
+
+def _related(key: str, rel: dict[str, list[dict]]) -> list[dict]:
+    if key in rel:
+        return rel[key]
+    for k, items in rel.items():
+        if len(k) >= 4 and len(key) >= 4 and (key.startswith(k) or k.startswith(key)):
+            return [{**i, "match": "name-prefix"} for i in items]
+    return []
 
 
 def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, scan_remote: bool = False) -> dict:
@@ -267,6 +347,7 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
     ALIASES.update(_load_aliases(root))
     remote = remote_branch_guides(root) if scan_remote else {}
     idx = existing_index(root, extra_exclude, remote)
+    related = related_material_index(root)
     holds = previous_holds(root)
     groups: dict[str, dict] = {}
 
@@ -276,12 +357,21 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
             return
         g = groups.setdefault(key, {"game": name, "key": key, "rows": [], "listingRewardHintYen": None, "queueRank": None,
                                     "verifiedRewardYen": None, "sources": set(), "osHints": set(), "newToday": False,
-                                    "likelyGame": False})
+                                    "likelyGame": False, "kindHints": set(), "offerUrls": {}, "firstSeenJst": None})
         g["rows"].append(row)
         g["sources"].add(row["source"])
+        if row.get("kind"):
+            g["kindHints"].add(row["kind"])
+        if row.get("url") and row.get("source"):
+            g["offerUrls"].setdefault(row["source"], [])
+            if row["url"] not in g["offerUrls"][row["source"]]:
+                g["offerUrls"][row["source"]].append(row["url"])
         if row.get("os"):
             g["osHints"].add(row["os"])
         g["newToday"] = g["newToday"] or bool(row.get("isNewToday"))
+        first_seen = jst_date(row.get("firstSeen"))
+        if first_seen and (not g.get("firstSeenJst") or first_seen < g["firstSeenJst"]):
+            g["firstSeenJst"] = first_seen
         g["likelyGame"] = g["likelyGame"] or row.get("from") == "content_queue" or row.get("classification") == "likely_game"
         if row.get("rewardHintYen") is not None:
             g["listingRewardHintYen"] = max(g["listingRewardHintYen"] or 0, row["rewardHintYen"])
@@ -307,12 +397,18 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
             excluded.append({"game": name, "reason": "listing_page_or_unparsable_title", "titleHint": hint[:120]})
             continue
         add(name, {"from": "monitor", "source": it.get("source"), "url": it.get("firstPartyCandidateUrl"), "titleHint": hint[:200],
+                   "firstSeen": it.get("firstSeen"),
                    "classification": it.get("classification"), "isNewToday": it.get("isNewToday"), "os": os_hint(hint),
-                   "rewardHintYen": reward_hint(hint, it.get("source"), rates)})
+                   "kind": kind_hint(hint), "rewardHintYen": reward_hint(hint, it.get("source"), rates)})
 
     candidates = []
     for key, g in groups.items():
         g["sources"], g["osHints"] = sorted(s for s in g["sources"] if s), sorted(g["osHints"])
+        g["kindHints"] = sorted(g["kindHints"])
+        # Days the scan has known this offer. The monitor's first scan (a baseline day on which ~145 offers were
+        # first seen at once) is not a listing date: such offers are "listed at least since the baseline".
+        if g["firstSeenJst"]:
+            g["listedDays"] = (Date.fromisoformat(date) - Date.fromisoformat(g["firstSeenJst"])).days
         if is_aggregator(g["game"]):
             excluded.append({"game": g["game"], "reason": "aggregator_or_reward_wall_not_a_single_game"})
             continue
@@ -322,6 +418,9 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
             continue
         if key in holds:
             g["previouslyHeld"] = holds[key]
+        rel = _related(key, related)
+        if rel:
+            g["relatedMaterial"] = rel  # information only: never a reason to skip the game
         candidates.append(g)
     # Rows the scan itself classified as games first; "review" rows (apps, services, unclear) after them.
     candidates.sort(key=lambda g: (not g["likelyGame"], -(g["verifiedRewardYen"] or g["listingRewardHintYen"] or 0), g["queueRank"] or 99, g["game"]))
