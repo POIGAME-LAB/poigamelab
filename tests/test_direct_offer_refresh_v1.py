@@ -2820,7 +2820,14 @@ def test_repository_hapitas_uses_reviewed_v2_refresh_with_current_targets():
     # reviewed registry with its reviewed platform and be a known target URL of its own game.
     for row in hapitas_rows:
         offer_id = contract.offer_id(row)
-        assert offer_id in registry, row['url']
+        if offer_id not in registry:
+            # Since 2026-11-25 Hapitas pages that state the OS in their own title publish through
+            # the structured contract (structured_publication, platformProvenance=source_title)
+            # without a registry entry; they still need a real OS and a Hapitas detail URL.
+            assert row['updatedAt'] >= '2026-11-25', row['url']
+            assert row['platform'] in {'iOS', 'Android'}, row['url']
+            assert row['url'].startswith('https://hapitas.jp/item/detail/itemid/'), row['url']
+            continue
         assert registry[offer_id] == row['platform'], row['url']
         assert row['url'] in by_game[row['game']]['known_urls_by_source']['hapitas'], row['url']
     assert not any(row['game'] == 'Township' for row in hapitas_rows)

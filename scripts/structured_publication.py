@@ -138,6 +138,26 @@ REWARD_ONLY_CONTRACTS = {
         # default, not a veto. Item-level candidate envelopes still veto.
         "parserCandidateOnlyIsDefault": True,
     },
+    # Trima: added 2026-11-26 by operator decision ("publish the amount the page shows, without
+    # thinking about the exchange fee"). The public /ad/<uuid> page prints the miles and the
+    # yen equivalent it calls "交換手数料含む"; that printed yen is published as-is. Trima's web
+    # pages name no OS (6 of 6 real pages checked), so rows carry platform 不明 ("not stated").
+    "trima": {
+        "parser": "trima-detail-review-v1",
+        "identity": direct.trima_offer_id,
+        "rewardField": "verifiedCurrentRewardYen",
+        "fingerprintFields": [
+            "offerId", "name", "platform", "displayedRewardMiles", "displayedRewardYen",
+            "verifiedCurrentRewardYen", "rewardUnit", "sourcePointRate", "conditionText",
+            "termsText", "downstreamTermsRequired", "candidateOnly", "publicationAuthorized",
+        ],
+        "rewardUnit": "Trima-mile",
+        "sourcePointRate": "first-party-displayed-yen-equivalent-exchange-fee-included",
+        "termsMarkers": ("マイル獲得条件",),
+        "termsLimit": 16000,
+        "parserCandidateOnlyIsDefault": True,
+        "platformNotStatedAsUnknown": True,
+    },
     # Powl: added 2026-11-24 by operator decision after checking 13 real first-party pages
     # (16 catalog games are listed on Powl). 10pt=1JPY is the reviewed rate in
     # config/point_value_rates.json. Multi-mission offers are published only when the
@@ -385,7 +405,11 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
     url = item.get("url") or ""
     require(direct.source_host_allowed(url, sources[sid]), "unregistered_url")
     require(contract["identity"](url) == e.get("offerId"), "offer_identity_mismatch")
-    require(e.get("platform") in {"iOS", "Android"}, "platform_missing")
+    platform = e.get("platform")
+    if platform == "unknown" and contract.get("platformNotStatedAsUnknown") is True:
+        # The source's pages never state an OS; publish that honestly instead of guessing one.
+        platform = "不明"
+    require(platform in {"iOS", "Android", "不明"}, "platform_missing")
     require(
         _fingerprint(e, contract["fingerprintFields"]) == e.get("evidenceFingerprint"),
         "evidence_fingerprint_mismatch",
@@ -473,7 +497,7 @@ def reward_only_snapshot(item, sources, checked_at, fresh_detail=False):
     # exists for that source.
     return {
         "reward": str(reward),
-        "platform": e["platform"],
+        "platform": platform,
         "updatedAt": _current_jst_date(checked_at),
         "sourceUrl": url,
         "verified": "true",
