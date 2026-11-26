@@ -93,3 +93,14 @@ def test_listing_finds_catalog_games():
     rows, _, _ = direct._trima_listing_rows(raw, expected_start=24)
     assert len(rows) == 24
     assert direct.discover_trima_target_listing_candidates(raw, url, SOURCES["trima"], ["存在しないゲーム名"]) == []
+
+
+def test_daily_publication_validator_accepts_trima_unknown_platform_only(tmp_path):
+    # 2026-11-26: the nightly refresh failed with new_offer_missing_platform_or_deadline because the
+    # publication validator only knew iOS/Android. 不明 is allowed for sources whose pages never state an OS.
+    import validate_daily_publication as val
+    assert val.PLATFORM_NOT_STATED_SOURCES == {"trima"}
+    assert val.new_row_platform_ok({"site": "trima", "platform": "不明"})
+    assert not val.new_row_platform_ok({"site": "powl", "platform": "不明"})
+    assert not val.new_row_platform_ok({"site": "trima", "platform": ""})
+    assert val.new_row_platform_ok({"site": "moppy", "platform": "iOS"})
