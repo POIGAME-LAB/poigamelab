@@ -60,6 +60,9 @@
           ${items}
         </div>
         ${player.note ? `<p class="player-note">${escapeHtml(player.note)}</p>` : ""}
+        ${player.recordCondition && player.conditionUnchanged === true
+          ? `<p class="player-note player-old-record">${escapeHtml(player.postedOn || "")}の記録です。このとき達成した条件「${escapeHtml(player.recordCondition)}」は、現在の案件条件と同じことを確認しています。</p>`
+          : ""}
         ${Array.isArray(player.sourceDetails) && player.sourceDetails.length
           ? `<p class="player-source-detail">出典の詳細：${player.sourceDetails.map(escapeHtml).join(" ／ ")}</p>`
           : ""}

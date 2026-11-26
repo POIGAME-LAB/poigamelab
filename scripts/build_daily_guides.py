@@ -49,7 +49,31 @@ RECORDS_ID, RECORDS_H2 = "records", "到達記録の比較表"
 MIN_ARTICLE_CHARS = 3000
 MAX_ARTICLES_PER_DAY = 5
 MIN_INDEPENDENT_PLAYERS = 2
-MAX_PLAYER_RECORD_AGE_DAYS = 365
+# Operator decision 2026-11-26: player records up to 5 years old may be used, but a record older
+# than one year counts only when the condition it reached is still today's offer condition
+# (offers often keep the same condition for years; a changed condition makes the record misleading).
+CURRENT_PLAYER_RECORD_DAYS = 365
+MAX_PLAYER_RECORD_AGE_DAYS = 365 * 5
+
+
+def _cond_key(text: str) -> str:
+    """Compare condition wording ignoring width, case, spaces and punctuation."""
+    t = unicodedata.normalize("NFKC", str(text or "")).lower()
+    return re.sub(r"[\s、。,.・:：/／()（）「」『』【】\[\]!！?？~〜ー-]", "", t)
+
+
+def older_record_condition_errors(player: dict, current_conditions: list[str]) -> list[str]:
+    """A record older than a year needs the condition it reached, and that condition must be in today's offer."""
+    pid = player.get("id")
+    stated = str(player.get("recordCondition") or "").strip()
+    if not stated:
+        return [f"old_player_record_needs_recordCondition:{pid}"]
+    if player.get("conditionUnchanged") is not True:
+        return [f"old_player_record_needs_conditionUnchanged:{pid}"]
+    key = _cond_key(stated)
+    if len(key) < 4 or not any(key in _cond_key(c) for c in current_conditions):
+        return [f"old_player_record_condition_differs_from_current_offer:{pid}"]
+    return []
 # The site has not played these games itself; promising wording is never allowed (AGENTS.md §5).
 FORBIDDEN_CLAIMS = (
     "編集部がプレイ", "編集部のプレイ", "当サイトがプレイ", "当サイトのプレイ", "筆者がプレイ", "私がプレイ", "実際に遊んでみた",
@@ -395,6 +419,9 @@ def gate(batch: Path, slug: str) -> list[str]:
     if len(players) < 3:
         errs.append("experience_needs_3_players")
     authors, today = set(), Date.fromisoformat(batch_date)
+    current_conditions = [str(step.get("condition") or "") for c in ev.get("checks", []) if c.get("state") == "readable"
+                          for step in (c.get("steps") or [])]
+    current_conditions += [str(c.get("conditionText") or "") for c in ev.get("checks", []) if c.get("state") == "readable"]
     for p in players:
         for m in p.get("milestones", []):
             if m.get("day") == 0:
@@ -414,8 +441,13 @@ def gate(batch: Path, slug: str) -> list[str]:
         y, mth, *rest = (int(x) for x in re.match(r"(\d{4})-(\d{2})(?:-(\d{2}))?", posted).groups() if x)
         age = (today - Date(y, mth, rest[0] if rest else 1)).days
         if age > MAX_PLAYER_RECORD_AGE_DAYS:
-            errs.append(f"player_record_older_than_365_days:{p.get('id')}")
+            errs.append(f"player_record_older_than_5_years:{p.get('id')}")
             continue
+        if age > CURRENT_PLAYER_RECORD_DAYS:
+            old_errs = older_record_condition_errors(p, current_conditions)
+            if old_errs:
+                errs += old_errs
+                continue
         detail = p.get("sourceDetails") or []
         authors.add((detail[0] if detail else p.get("id"), tuple(p.get("sources", []))))
     if len({a for a, _ in authors}) < MIN_INDEPENDENT_PLAYERS:
