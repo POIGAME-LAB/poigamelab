@@ -7,6 +7,9 @@ reviewable list for the daily guide-production routine:
 
 * ``data/new_game_content_queue.json``  (top-five handoff, verified reward metadata)
 * ``data/new_game_monitor.json``        (every candidate the same scan exposed publicly: today + continuing)
+* ``data/all_offers_ranking.json``      (every game offer the same scan saw on each site's game listings; used when it
+  is from the production date. Operator decision 2026-11-26: candidates come from all of it, and games listed on
+  more sites - played by more people, so likelier to have player records - are examined first)
 
 Rules it enforces (fail closed):
 
@@ -43,6 +46,7 @@ ROOT = Path(__file__).resolve().parents[1]
 JST = timezone(timedelta(hours=9))
 QUEUE = Path("data/new_game_content_queue.json")
 MONITOR = Path("data/new_game_monitor.json")
+RANKING = Path("data/all_offers_ranking.json")
 RATES = Path("config/point_value_rates.json")
 DAILY_DIR = Path("research/daily-guides")
 ALIAS_FILE = DAILY_DIR / "aliases.json"
@@ -324,6 +328,8 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
     queue = json.loads((root / QUEUE).read_text(encoding="utf-8"))
     monitor = json.loads((root / MONITOR).read_text(encoding="utf-8"))
     rates = json.loads((root / RATES).read_text(encoding="utf-8"))["sources"]
+    ranking_path = root / RANKING
+    ranking = json.loads(ranking_path.read_text(encoding="utf-8")) if ranking_path.is_file() else {}
     out = {
         "schemaVersion": 1,
         "productionDate": date,
@@ -333,6 +339,10 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
             "monitor": {"path": str(MONITOR), "checkedAt": monitor.get("checkedAt"), "checkedDateJst": jst_date(monitor.get("checkedAt")),
                         "items": len(monitor.get("items", [])), "counts": monitor.get("counts"), "displayLimits": monitor.get("displayLimits")},
         },
+        # Optional: used only when it is from the production date (a stale ranking never adds candidates).
+        "allOffersRanking": {"path": str(RANKING), "checkedAt": ranking.get("checkedAt"), "checkedDateJst": jst_date(ranking.get("checkedAt")),
+                             "games": ranking.get("gameCount"), "offers": ranking.get("offerCount"),
+                             "used": jst_date(ranking.get("checkedAt")) == date},
         "candidateOnly": True,
         "publicationAuthorized": False,
         "rewardNote": "listingRewardHintYen is the largest amount in the scan's own listing text (1pt=1円 sources only). "
@@ -401,6 +411,17 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
                    "classification": it.get("classification"), "isNewToday": it.get("isNewToday"), "os": os_hint(hint),
                    "kind": kind_hint(hint), "rewardHintYen": reward_hint(hint, it.get("source"), rates)})
 
+    if out["allOffersRanking"]["used"]:
+        for it in ranking.get("games", []):
+            name = it.get("game", "")
+            if not name or len(norm_key(name)) < 2:
+                continue
+            for o in it.get("offers", []):
+                hint = o.get("verifiedRewardYen") or o.get("listingUpperBoundYen")
+                add(name, {"from": "all_offers_ranking", "source": o.get("source"), "url": o.get("url"),
+                           "os": o.get("platformHint") or None, "classification": "likely_game",  # game-category listings
+                           "rewardHintYen": int(hint) if isinstance(hint, (int, float)) and hint > 0 else None})
+
     candidates = []
     for key, g in groups.items():
         g["sources"], g["osHints"] = sorted(s for s in g["sources"] if s), sorted(g["osHints"])
@@ -422,8 +443,12 @@ def build(date: str, root: Path = ROOT, extra_exclude: list[str] | None = None, 
         if rel:
             g["relatedMaterial"] = rel  # information only: never a reason to skip the game
         candidates.append(g)
-    # Rows the scan itself classified as games first; "review" rows (apps, services, unclear) after them.
-    candidates.sort(key=lambda g: (not g["likelyGame"], -(g["verifiedRewardYen"] or g["listingRewardHintYen"] or 0), g["queueRank"] or 99, g["game"]))
+    # Rows the scan itself classified as games first; "review" rows (apps, services, unclear) after them. Among them,
+    # games listed on more point sites first (operator decision 2026-11-26), then the larger amount.
+    for g in candidates:
+        g["siteCount"] = len(g["sources"])
+    candidates.sort(key=lambda g: (not g["likelyGame"], -g["siteCount"], -(g["verifiedRewardYen"] or g["listingRewardHintYen"] or 0),
+                                   g["queueRank"] or 99, g["game"]))
     for i, g in enumerate(candidates, 1):
         g["order"] = i
     out.update(status="ok", candidateCount=len(candidates), candidates=candidates,

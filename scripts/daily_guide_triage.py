@@ -121,7 +121,8 @@ def triage_offline(c: dict) -> dict:
     parts = {
         "readablePaths": 3 * min(len(readable), 2),
         "uncertainPath": 1 if uncertain else 0,
-        "multiSite": 2 if len(sites) >= 2 else 0,
+        # Listed on more point sites = more people playing it = likelier to have player records (operator decision 2026-11-26).
+        "multiSite": 0 if len(sites) < 2 else min(len(sites), 5),
         "rewardMagnitude": round(min(4.0, math.log10(hint)), 2) if hint > 0 else 0,
         # Player records (needed: 2+ independent, <=5 years; >1 year only with an unchanged condition) cannot exist for an offer listed a day ago; the 2026-11-19
         # article that passed had an offer listed ~2 weeks. Long-listed offers are likelier to have records.
