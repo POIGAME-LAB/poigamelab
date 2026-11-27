@@ -1,0 +1,636 @@
+{
+  "schemaVersion": 2,
+  "slug": "panda-parking",
+  "site": "multi",
+  "sites": [
+    "amefuri",
+    "moppy",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-28T07:54:32+09:00",
+  "checks": [
+    {
+      "schemaVersion": 2,
+      "offerKey": "moppy:157636",
+      "site": "moppy",
+      "siteLabel": "モッピー",
+      "offerId": "157636",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=157636",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "パンダパーキング - Panda Parking（レベル500クリア）",
+      "gameName": "パンダパーキング - Panda Parking",
+      "os": null,
+      "osSource": null,
+      "kind": "single",
+      "pointUnit": "P",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "新規インストール後、レベル500クリアでポイント獲得",
+      "deadlineDays": 14,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル500クリアでポイント獲得",
+          "rewardPt": 140,
+          "rewardYen": 140,
+          "deadlineDays": 14
+        }
+      ],
+      "totalPt": 140,
+      "totalYen": 140,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "reviewCount": 0,
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:54:20+00:00",
+      "responseSha256": "6682ac114ca97d11df6a2a1e9c4edf2b2a8885939aac522ac583556a1f0b250a"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "amefuri:122533",
+      "site": "amefuri",
+      "siteLabel": "アメフリ",
+      "offerId": "122533",
+      "url": "https://www.amefri.net/detail/id/122533",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "パンダパーキング - Panda Parking（レベル500クリア）（iOS）",
+      "gameName": "パンダパーキング - Panda Parking",
+      "os": "iOS",
+      "osSource": "page",
+      "kind": "single",
+      "pointUnit": "pt",
+      "yenPerPoint": 0.1,
+      "rateVerified": true,
+      "conditionText": "レベル500クリア",
+      "deadlineDays": 14,
+      "deadlineBasis": "click",
+      "steps": [
+        {
+          "condition": "レベル500クリア",
+          "rewardPt": 2290,
+          "rewardYen": 229,
+          "deadlineDays": 14
+        }
+      ],
+      "totalPt": 2290,
+      "totalYen": 229,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": {
+        "regularYen": 140,
+        "increasedYen": 229,
+        "until": null,
+        "endDateStated": false
+      },
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:54:22+00:00",
+      "responseSha256": "c8a48586028fb0082871604eea87c93d398c63b871df0929f8c4639b52aa0ad5"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:173173",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "173173",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=173173",
+      "state": "not_viewable",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "gameName": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [],
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:54:24+00:00",
+      "responseSha256": "01cc05f59040d14ad5491f97d9c4fb67e35e2c81b5956dc9cebd50df5f88d8bf"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:173172",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "173172",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=173172",
+      "state": "not_viewable",
+      "live": false,
+      "unavailableReason": "page_not_viewable_publicly",
+      "title": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "gameName": "ポイ活ならワラウ - 初心者でも貯まりやすいポイントサイト",
+      "os": null,
+      "osSource": null,
+      "kind": "unknown",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": null,
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [],
+      "totalPt": null,
+      "totalYen": null,
+      "stepSumMatchesTotal": false,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [],
+      "termNotes": [
+        "あんしん保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:54:26+00:00",
+      "responseSha256": "fb06adfcfd78aa49d5dd4f28caa4af94eb20a65884e89d4940775a15a2ccfa49"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:174146",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "174146",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "パンダパーキング - Panda Parking（レベル500クリア）でポイントを貯める",
+      "gameName": "パンダパーキング - Panda Parking",
+      "os": "iOS",
+      "osSource": "page",
+      "kind": "single",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "レベル500クリア",
+      "deadlineDays": 14,
+      "deadlineBasis": "install",
+      "steps": [
+        {
+          "condition": "レベル500クリア",
+          "rewardPt": 200,
+          "rewardYen": 200
+        }
+      ],
+      "totalPt": 200,
+      "totalYen": 200,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-12",
+          "title": "簡単な部類だと思います"
+        },
+        {
+          "name": "みどり",
+          "attribute": "女性・30代",
+          "date": "2026-10-23",
+          "title": "ぱんだがかわいい"
+        },
+        {
+          "name": "あ",
+          "attribute": "女性・20代",
+          "date": "2026-03-23",
+          "title": "可愛い。簡単。"
+        },
+        {
+          "name": "りお",
+          "attribute": "女性・20代",
+          "date": "2026-08-19",
+          "title": "作業ゲーかな"
+        },
+        {
+          "name": "ａｌｏｈａ",
+          "attribute": "女性・50代",
+          "date": "2026-07-20",
+          "title": "11日でクリア"
+        },
+        {
+          "name": "ろけっと",
+          "attribute": "女性・40代",
+          "date": "2026-01-26",
+          "title": "青い人形がある時は諦めた方がいいことも"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・40代",
+          "date": "2026-03-17",
+          "title": "パンダさん可愛いし楽しかったです。思った..."
+        },
+        {
+          "name": "オノウ",
+          "attribute": "男性・40代",
+          "date": "2025-08-13",
+          "title": "簡単癒しゲーム"
+        },
+        {
+          "name": "おしゅし",
+          "attribute": "男性・30代",
+          "date": "2025-04-20",
+          "title": "単純作業"
+        },
+        {
+          "name": "せりか",
+          "attribute": "女性・40代",
+          "date": "2025-03-28",
+          "title": "ゲームは面白いです。自力でクリアできない..."
+        },
+        {
+          "name": "くいは",
+          "attribute": "女性・20代",
+          "date": "2024-12-15",
+          "title": "移動時間に少しずつ進めて、放置した期間も..."
+        },
+        {
+          "name": "ＫＺ",
+          "attribute": "男性・40代",
+          "date": "2024-11-11",
+          "title": "ポイント即付与でした。ゲームはサクサク！..."
+        },
+        {
+          "name": "まめすけ",
+          "attribute": "女性・50代",
+          "date": "2024-10-24",
+          "title": "毎日100レベルずつクリアしていましたが..."
+        },
+        {
+          "name": "しろちゃんウサギ",
+          "attribute": "女性・60代",
+          "date": "2024-10-15",
+          "title": "楽しかったです。パンダが可愛い表情をした..."
+        },
+        {
+          "name": "ちびゆず",
+          "attribute": "女性・50代",
+          "date": "2024-08-01",
+          "title": "動画視聴でクリア出来るけど、スキマ時間で..."
+        },
+        {
+          "name": "白髪混じり",
+          "attribute": "男性・30代",
+          "date": "2024-07-24",
+          "title": "自力でどうにもならない場合には広告を見る..."
+        },
+        {
+          "name": "ホッシー",
+          "attribute": "女性・40代",
+          "date": "2024-05-26",
+          "title": "クルクル転がっていくパンダを見るのは、と..."
+        },
+        {
+          "name": "ｓｉｒｏ１１",
+          "attribute": "男性・40代",
+          "date": "2024-04-17",
+          "title": "パンダが動くのですが顔の表情や体の動きに..."
+        },
+        {
+          "name": "ジャーキー",
+          "attribute": "男性・40代",
+          "date": "2024-04-14",
+          "title": "広告を見たらクリアてきます…ただかなりの..."
+        },
+        {
+          "name": "ｈａｒｕ",
+          "attribute": "女性・10代",
+          "date": "2024-04-07",
+          "title": "広告見れば誰でもクリア出来ると思います。..."
+        },
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-12",
+          "title": "簡単な部類だと思います"
+        },
+        {
+          "name": "みどり",
+          "attribute": "女性・30代",
+          "date": "2026-10-23",
+          "title": "ぱんだがかわいい"
+        },
+        {
+          "name": "りお",
+          "attribute": "女性・20代",
+          "date": "2026-08-19",
+          "title": "作業ゲーかな"
+        },
+        {
+          "name": "ａｌｏｈａ",
+          "attribute": "女性・50代",
+          "date": "2026-07-20",
+          "title": "11日でクリア"
+        },
+        {
+          "name": "あ",
+          "attribute": "女性・20代",
+          "date": "2026-03-23",
+          "title": "可愛い。簡単。"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・40代",
+          "date": "2026-03-17",
+          "title": "パンダさん可愛いし楽しかったです。思った..."
+        },
+        {
+          "name": "ろけっと",
+          "attribute": "女性・40代",
+          "date": "2026-01-26",
+          "title": "青い人形がある時は諦めた方がいいことも"
+        },
+        {
+          "name": "オノウ",
+          "attribute": "男性・40代",
+          "date": "2025-08-13",
+          "title": "簡単癒しゲーム"
+        },
+        {
+          "name": "おしゅし",
+          "attribute": "男性・30代",
+          "date": "2025-04-20",
+          "title": "単純作業"
+        },
+        {
+          "name": "せりか",
+          "attribute": "女性・40代",
+          "date": "2025-03-28",
+          "title": "ゲームは面白いです。自力でクリアできない..."
+        }
+      ],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:54:29+00:00",
+      "responseSha256": "52b15860001c3bca6b4c25c50a789f58134b3436e6da3d403f2e13b88c8c7bb4"
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "warau:174147",
+      "site": "warau",
+      "siteLabel": "ワラウ",
+      "offerId": "174147",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174147",
+      "state": "readable",
+      "live": true,
+      "unavailableReason": null,
+      "title": "パンダパーキング - Panda Parking（レベル500クリア）でポイントを貯める",
+      "gameName": "パンダパーキング - Panda Parking",
+      "os": "Android",
+      "osSource": "page",
+      "kind": "single",
+      "pointUnit": "pt",
+      "yenPerPoint": 1,
+      "rateVerified": true,
+      "conditionText": "レベル500クリア",
+      "deadlineDays": 14,
+      "deadlineBasis": "install",
+      "steps": [
+        {
+          "condition": "レベル500クリア",
+          "rewardPt": 200,
+          "rewardYen": 200
+        }
+      ],
+      "totalPt": 200,
+      "totalYen": 200,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "advertiser": null,
+      "reviewIndex": [
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-12",
+          "title": "簡単な部類だと思います"
+        },
+        {
+          "name": "みどり",
+          "attribute": "女性・30代",
+          "date": "2026-10-23",
+          "title": "ぱんだがかわいい"
+        },
+        {
+          "name": "あ",
+          "attribute": "女性・20代",
+          "date": "2026-03-23",
+          "title": "可愛い。簡単。"
+        },
+        {
+          "name": "りお",
+          "attribute": "女性・20代",
+          "date": "2026-08-19",
+          "title": "作業ゲーかな"
+        },
+        {
+          "name": "ａｌｏｈａ",
+          "attribute": "女性・50代",
+          "date": "2026-07-20",
+          "title": "11日でクリア"
+        },
+        {
+          "name": "ろけっと",
+          "attribute": "女性・40代",
+          "date": "2026-01-26",
+          "title": "青い人形がある時は諦めた方がいいことも"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・40代",
+          "date": "2026-03-17",
+          "title": "パンダさん可愛いし楽しかったです。思った..."
+        },
+        {
+          "name": "オノウ",
+          "attribute": "男性・40代",
+          "date": "2025-08-13",
+          "title": "簡単癒しゲーム"
+        },
+        {
+          "name": "おしゅし",
+          "attribute": "男性・30代",
+          "date": "2025-04-20",
+          "title": "単純作業"
+        },
+        {
+          "name": "せりか",
+          "attribute": "女性・40代",
+          "date": "2025-03-28",
+          "title": "ゲームは面白いです。自力でクリアできない..."
+        },
+        {
+          "name": "くいは",
+          "attribute": "女性・20代",
+          "date": "2024-12-15",
+          "title": "移動時間に少しずつ進めて、放置した期間も..."
+        },
+        {
+          "name": "ＫＺ",
+          "attribute": "男性・40代",
+          "date": "2024-11-11",
+          "title": "ポイント即付与でした。ゲームはサクサク！..."
+        },
+        {
+          "name": "まめすけ",
+          "attribute": "女性・50代",
+          "date": "2024-10-24",
+          "title": "毎日100レベルずつクリアしていましたが..."
+        },
+        {
+          "name": "しろちゃんウサギ",
+          "attribute": "女性・60代",
+          "date": "2024-10-15",
+          "title": "楽しかったです。パンダが可愛い表情をした..."
+        },
+        {
+          "name": "ちびゆず",
+          "attribute": "女性・50代",
+          "date": "2024-08-01",
+          "title": "動画視聴でクリア出来るけど、スキマ時間で..."
+        },
+        {
+          "name": "白髪混じり",
+          "attribute": "男性・30代",
+          "date": "2024-07-24",
+          "title": "自力でどうにもならない場合には広告を見る..."
+        },
+        {
+          "name": "ホッシー",
+          "attribute": "女性・40代",
+          "date": "2024-05-26",
+          "title": "クルクル転がっていくパンダを見るのは、と..."
+        },
+        {
+          "name": "ｓｉｒｏ１１",
+          "attribute": "男性・40代",
+          "date": "2024-04-17",
+          "title": "パンダが動くのですが顔の表情や体の動きに..."
+        },
+        {
+          "name": "ジャーキー",
+          "attribute": "男性・40代",
+          "date": "2024-04-14",
+          "title": "広告を見たらクリアてきます…ただかなりの..."
+        },
+        {
+          "name": "ｈａｒｕ",
+          "attribute": "女性・10代",
+          "date": "2024-04-07",
+          "title": "広告見れば誰でもクリア出来ると思います。..."
+        },
+        {
+          "name": "えーぶいえす",
+          "attribute": "男性・50代",
+          "date": "2026-11-12",
+          "title": "簡単な部類だと思います"
+        },
+        {
+          "name": "みどり",
+          "attribute": "女性・30代",
+          "date": "2026-10-23",
+          "title": "ぱんだがかわいい"
+        },
+        {
+          "name": "りお",
+          "attribute": "女性・20代",
+          "date": "2026-08-19",
+          "title": "作業ゲーかな"
+        },
+        {
+          "name": "ａｌｏｈａ",
+          "attribute": "女性・50代",
+          "date": "2026-07-20",
+          "title": "11日でクリア"
+        },
+        {
+          "name": "あ",
+          "attribute": "女性・20代",
+          "date": "2026-03-23",
+          "title": "可愛い。簡単。"
+        },
+        {
+          "name": "やま",
+          "attribute": "女性・40代",
+          "date": "2026-03-17",
+          "title": "パンダさん可愛いし楽しかったです。思った..."
+        },
+        {
+          "name": "ろけっと",
+          "attribute": "女性・40代",
+          "date": "2026-01-26",
+          "title": "青い人形がある時は諦めた方がいいことも"
+        },
+        {
+          "name": "オノウ",
+          "attribute": "男性・40代",
+          "date": "2025-08-13",
+          "title": "簡単癒しゲーム"
+        },
+        {
+          "name": "おしゅし",
+          "attribute": "男性・30代",
+          "date": "2025-04-20",
+          "title": "単純作業"
+        },
+        {
+          "name": "せりか",
+          "attribute": "女性・40代",
+          "date": "2025-03-28",
+          "title": "ゲームは面白いです。自力でクリアできない..."
+        }
+      ],
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "起動後、最短30分",
+        "判定期間",
+        "※ポイント通帳の判定状態に「判定中」の記載がない場合は、ポイント対象外となります。必ず記載があることを確認した上で、アプリを進めてください。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "ポイント通帳の判定状態に「判定中」と表示されない場合",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度",
+        "この広告は、ポイント通帳の判定状態に「判定中」の記載がある場合、",
+        "あんしん保証制度",
+        "判定期間保証"
+      ],
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:54:32+00:00",
+      "responseSha256": "7ed8bbf0c686dd1539963614f6c084928a9b08e01e5150b08805c78be932c1d3"
+    }
+  ]
+}

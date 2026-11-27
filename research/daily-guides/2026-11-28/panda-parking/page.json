@@ -1,0 +1,40 @@
+{
+  "heroStats": [
+    {
+      "label": "期限",
+      "value": "14日以内"
+    },
+    {
+      "label": "表示報酬",
+      "value": "140P／229円／200pt"
+    },
+    {
+      "label": "公開記録の所要",
+      "value": "1日〜11日"
+    }
+  ],
+  "offerLinks": [
+    {
+      "label": "モッピーの案件ページ（157636）",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=157636"
+    },
+    {
+      "label": "アメフリの案件ページ（iOS・122533）",
+      "url": "https://www.amefri.net/detail/id/122533"
+    },
+    {
+      "label": "ワラウの案件ページ（iOS・174146）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146"
+    },
+    {
+      "label": "ワラウの案件ページ（Android・174147）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174147"
+    }
+  ],
+  "contextLabel": "ワラウの現在の案件ページを見る →",
+  "related": [],
+  "registry": {
+    "label": "レベル500クリア攻略を読む →",
+    "description": "モッピー・アメフリ・ワラウのレベル500クリア案件（期限14日）の条件と金額をサイト別に整理し、1日〜11日でクリアした実例、広告スキップの扱い、反映の注意をまとめています。"
+  }
+}

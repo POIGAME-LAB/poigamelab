@@ -297,6 +297,22 @@
         "moppy": ["https://pc.moppy.jp/ad/detail.php?s_id=160639", "https://pc.moppy.jp/ad/detail.php?s_id=160640"],
         "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=209434"]
       }
+    },
+    {
+      "game": "出荷ぶた",
+      "aliases": ["出荷ぶた", "出荷ぶた-養豚場育成ゲーム！"],
+      "known_urls_by_source": {
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=186242", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"]
+      }
+    },
+    {
+      "game": "パンダパーキング（Panda Parking）",
+      "aliases": ["パンダパーキング（Panda Parking）", "パンダパーキング", "Panda Parking"],
+      "known_urls_by_source": {
+        "amefuri": ["https://www.amefri.net/detail/id/122533"],
+        "moppy": ["https://pc.moppy.jp/ad/detail.php?s_id=157636"],
+        "warau": ["https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146", "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174147"]
+      }
     }
   ]
 }

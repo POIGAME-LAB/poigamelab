@@ -152,5 +152,19 @@ window.POIGAME_RESEARCHED_GUIDES = Object.freeze({
     links: [
       { label: "Stage2 Open攻略を読む →", href: "waterpark-boys-guide.html" }
     ]
+  },
+  "パンダパーキング（Panda Parking）": {
+    title: "パンダパーキング（Panda Parking） ポイ活攻略",
+    description: "モッピー・アメフリ・ワラウのレベル500クリア案件（期限14日）の条件と金額をサイト別に整理し、1日〜11日でクリアした実例、広告スキップの扱い、反映の注意をまとめています。",
+    links: [
+      { label: "レベル500クリア攻略を読む →", href: "panda-parking-guide.html" }
+    ]
+  },
+  "出荷ぶた": {
+    title: "出荷ぶた ポイ活攻略",
+    description: "ワラウ案件（iOS・Android、30日以内）の全14Stepと課金Stepの内訳、投資を使った周回の流れ、1週間位で終えた例と途中で止めた例、反映の注意をまとめています。",
+    links: [
+      { label: "60周の進め方を読む →", href: "shukka-buta-guide.html" }
+    ]
   }
 });

@@ -59,6 +59,8 @@ ROOT_FILES = (
     "line-magimagi-guide.html",
     "purikets-nyaa-guide.html",
     "waterpark-boys-guide.html",
+    "panda-parking-guide.html",
+    "shukka-buta-guide.html",
     "data-status.html",
     "new-game-status.html",
     "existing-game-status.html",

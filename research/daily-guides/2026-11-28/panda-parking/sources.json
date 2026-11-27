@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-28",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "モッピー案件157636",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=157636",
+      "type": "point_site",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "単一条件：レベル500クリア、140P、クリック日から14日以内、増額表示なし。OSの記載なし"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-27T22:54:20+00:00",
+      "responseSha256": "6682ac114ca97d11df6a2a1e9c4edf2b2a8885939aac522ac583556a1f0b250a"
+    },
+    {
+      "id": "M2",
+      "title": "アメフリ iOS案件122533",
+      "url": "https://www.amefri.net/detail/id/122533",
+      "type": "point_site",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "単一条件：レベル500クリア、2,290pt（10pt＝1円で229円）、クリック日から14日以内",
+        "通常140円から229円への増額表示（終了日の記載なし）"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-27T22:54:22+00:00",
+      "responseSha256": "c8a48586028fb0082871604eea87c93d398c63b871df0929f8c4639b52aa0ad5"
+    },
+    {
+      "id": "M3",
+      "title": "ワラウ Android案件174147",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174147",
+      "type": "point_site",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "単一条件：レベル500クリア、200pt、インストール日から14日以内、増額なし"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-27T22:54:32+00:00",
+      "responseSha256": "7ed8bbf0c686dd1539963614f6c084928a9b08e01e5150b08805c78be932c1d3"
+    },
+    {
+      "id": "M4",
+      "title": "ワラウ iOS案件174146",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146",
+      "type": "point_site",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "単一条件：レベル500クリア、200pt、インストール日から14日以内",
+        "獲得対象外条件・あんしん保証（インストール日起算50日以内）・判定期間は条件達成後24時間以内。説明文はApp Storeの紹介文と一致"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-27T22:54:29+00:00",
+      "responseSha256": "52b15860001c3bca6b4c25c50a789f58134b3436e6da3d403f2e13b88c8c7bb4"
+    },
+    {
+      "id": "M5",
+      "title": "App Store Mahorobase Inc.版",
+      "url": "https://apps.apple.com/jp/app/panda-parking/id1623174643",
+      "type": "official",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元Mahorobase Inc.、脱出パズル、通常ステージ・チャレンジステージ・公園、アプリ内購入あり",
+        "評価欄のユーザー投稿：広告に関する2024年2月8日の投稿"
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146",
+      "type": "player",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "口コミ30件を確認（iOS・Android同一表示）。直近1年以内の投稿者5名を実例に採用"
+      ],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "reviewIndexFile": "research/daily-guides/2026-11-28/evidence/panda-parking-offers.json"
+    },
+    {
+      "id": "M7",
+      "title": "Google Play Mahorobase Inc.版",
+      "url": "https://play.google.com/store/apps/details?id=jp.co.mahorobase.pandaparking&hl=ja",
+      "type": "official",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "パッケージjp.co.mahorobase.pandaparking、開発元Mahorobase Inc.、広告表示・ゲーム内購入あり",
+        "広告に関する2025年6月30日のレビュー"
+      ]
+    }
+  ]
+}

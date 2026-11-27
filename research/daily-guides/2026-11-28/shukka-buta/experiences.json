@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "game": "出荷ぶた",
+  "updatedAt": "2026-11-28",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "投稿時期の案件条件・OS・課金額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-28。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "1週間位で全項目クリア（本人の表現）",
+      "milestones": [
+        {
+          "day": null,
+          "label": "全項目クリア（本人記載は「1週間位」）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"
+      ],
+      "sourceDetails": [
+        "あ（ワラウ口コミ・女性・20代）",
+        "2026-03-25",
+        "1週間位でできるし、課金しなくても全部の項目クリアできる"
+      ],
+      "postedOn": "2026-03-25",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "free",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "課金なしで全項目クリアと記載。当時の案件の項目で、今回の課金Stepを含む14Stepと同じかは不明。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "コツを掴んでクリア",
+      "milestones": [
+        {
+          "day": null,
+          "label": "クリア（日数・周回数の記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"
+      ],
+      "sourceDetails": [
+        "さとみん（ワラウ口コミ・女性・40代）",
+        "2026-01-26",
+        "最初だけ頑張れば…"
+      ],
+      "postedOn": "2026-01-26",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "最初の周回までコツコツ進め、その後は投資機能で周回を繰り返すとすぐ達成できたと記載。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "retired",
+      "summary": "21周目でやめた",
+      "milestones": [
+        {
+          "day": null,
+          "label": "21周目で終了（日数の記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"
+      ],
+      "sourceDetails": [
+        "ポコタ（ワラウ口コミ・女性・40代）",
+        "2026-01-25",
+        "手軽さは良い"
+      ],
+      "postedOn": "2026-01-25",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "向いていないと判断してやめた。ゲーム内のポイ活で200円分を得たと記載。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "retired",
+      "summary": "30周を過ぎた頃に進行できなくなり断念",
+      "milestones": [
+        {
+          "day": null,
+          "label": "30周過ぎでチャットが表示されなくなる（日数の記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"
+      ],
+      "sourceDetails": [
+        "サザエさん（ワラウ口コミ・女性・50代）",
+        "2025-12-28",
+        "簡単ではありました"
+      ],
+      "postedOn": "2025-12-28",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "再インストールや別端末への引き継ぎでも直らなかったと記載。ログイン不具合は割とあるようだとも書いている。"
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "in_progress",
+      "summary": "1周目を越えたあとは投資で周回できた",
+      "milestones": [
+        {
+          "day": null,
+          "label": "周回できた（周回数・日数の記載なし）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"
+      ],
+      "sourceDetails": [
+        "鶏皮（ワラウ口コミ・男性・20代）",
+        "2026-08-30",
+        "1周目を乗り越えればかなり楽"
+      ],
+      "postedOn": "2026-08-30",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "最初の1周目は少し大変。端末が熱くなりやすいと記載。"
+    }
+  ]
+}

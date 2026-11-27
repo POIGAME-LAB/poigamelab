@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "game": "パンダパーキング（Panda Parking）",
+  "updatedAt": "2026-11-28",
+  "title": "実際の到達ペース",
+  "intro": "独立した公開記録の個別実例です。平均や達成保証ではありません。",
+  "notice": "投稿時期の案件条件・OS・ポイント額に差があります。日数は本人の記載どおりで、記載のない日数は推定していません。",
+  "footnote": "投稿者の自己申告。削除・変更される可能性があります。確認日2026-11-28。",
+  "players": [
+    {
+      "id": "A",
+      "label": "プレイヤーA",
+      "status": "completed",
+      "summary": "4日でレベル500クリア",
+      "milestones": [
+        {
+          "day": 4,
+          "label": "500ステージクリア（本人記載は「4日でクリア」）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146"
+      ],
+      "sourceDetails": [
+        "えーぶいえす（ワラウ口コミ・男性・50代）",
+        "2026-11-12",
+        "簡単な部類だと思います"
+      ],
+      "postedOn": "2026-11-12",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "1ステージは1分くらいでクリアでき、難易度は最後まで易しい部類と記載。緑のカゴを優先して頭に被せるのが重要と記載。即承認。"
+    },
+    {
+      "id": "B",
+      "label": "プレイヤーB",
+      "status": "completed",
+      "summary": "1日でクリア",
+      "milestones": [
+        {
+          "day": 1,
+          "label": "500ステージクリア（本人記載は「1日でクリア」）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146"
+      ],
+      "sourceDetails": [
+        "りお（ワラウ口コミ・女性・20代）",
+        "2026-08-19",
+        "作業ゲーかな"
+      ],
+      "postedOn": "2026-08-19",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "サクサク進み、広告を見てステージスキップもできると記載。画面の隅に消せない広告が出る点が嫌だったと記載。"
+    },
+    {
+      "id": "C",
+      "label": "プレイヤーC",
+      "status": "completed",
+      "summary": "11日でクリア",
+      "milestones": [
+        {
+          "day": 11,
+          "label": "クリア（本人の見出しは「11日でクリア」）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146"
+      ],
+      "sourceDetails": [
+        "aloha（ワラウ口コミ・女性・50代）",
+        "2026-07-20",
+        "11日でクリア"
+      ],
+      "postedOn": "2026-07-20",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "無理そうな難しいステージ以外はスキップせずに遊んだ。広告を見まくればもっと早く終わると記載。"
+    },
+    {
+      "id": "D",
+      "label": "プレイヤーD",
+      "status": "completed",
+      "summary": "500ステージクリアまで9時間ほど",
+      "milestones": [
+        {
+          "day": null,
+          "label": "500ステージクリア（本人記載は「9時間ほど」）"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146"
+      ],
+      "sourceDetails": [
+        "あ（ワラウ口コミ・女性・20代）",
+        "2026-03-23",
+        "可愛い。簡単。"
+      ],
+      "postedOn": "2026-03-23",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "ボーナスステージも進めていたため、それを無くせばプレイ時間はかなり減らせると記載。ポイントは即付与。"
+    },
+    {
+      "id": "E",
+      "label": "プレイヤーE",
+      "status": "in_progress",
+      "summary": "青い人形がある時は広告でクリアしたほうが早い",
+      "milestones": [
+        {
+          "day": null,
+          "label": "完了の記載なし"
+        }
+      ],
+      "sources": [
+        "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146"
+      ],
+      "sourceDetails": [
+        "ろけっと（ワラウ口コミ・女性・40代）",
+        "2026-01-26",
+        "青い人形がある時は諦めた方がいいことも"
+      ],
+      "postedOn": "2026-01-26",
+      "checkedAt": "2026-11-28",
+      "platform": null,
+      "paymentStatus": "unknown",
+      "paidYen": null,
+      "totalPlayMinutes": null,
+      "dailyPlayMinutes": null,
+      "note": "青い人形に1度当たるとやり直しになるため、広告を見てクリアしたほうが早いことが多かったと記載。"
+    }
+  ]
+}

@@ -1,0 +1,560 @@
+{
+  "schemaVersion": 2,
+  "slug": "shukka-buta",
+  "site": "multi",
+  "sites": [
+    "amefuri",
+    "warau"
+  ],
+  "checkedAtJst": "2026-11-28T07:55:32+09:00",
+  "checks": [
+    {
+      "pointId": "186242",
+      "offerKey": "warau:186242",
+      "site": "warau",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186242",
+      "retrievedAt": "2026-11-27T22:55:22+00:00",
+      "httpStatus": 200,
+      "responseSha256": "1269b32d33d2f3319a95c4fdca1d77e164cf96d43e7b26d98afdd9b54ce765bc",
+      "title": "出荷ぶた（StepUp）でポイントを貯める",
+      "live": true,
+      "deadlineIfInstalledToday": "2026年12月27日",
+      "condition": "新規アプリインストール後、インストール日から起算して30日以内にStepUpミッションの各達成条件をクリア",
+      "steps": [
+        {
+          "condition": "牧場のレベルアップ1周目到達",
+          "rewardPt": 40
+        },
+        {
+          "condition": "牧場のレベルアップ3周目到達",
+          "rewardPt": 50
+        },
+        {
+          "condition": "牧場のレベルアップ5周目到達",
+          "rewardPt": 15
+        },
+        {
+          "condition": "牧場のレベルアップ11周目到達",
+          "rewardPt": 20
+        },
+        {
+          "condition": "牧場のレベルアップ21周目到達",
+          "rewardPt": 25
+        },
+        {
+          "condition": "牧場のレベルアップ31周目到達",
+          "rewardPt": 30
+        },
+        {
+          "condition": "牧場のレベルアップ41周目到達",
+          "rewardPt": 50
+        },
+        {
+          "condition": "牧場のレベルアップ51周目到達",
+          "rewardPt": 70
+        },
+        {
+          "condition": "牧場のレベルアップ60周目到達",
+          "rewardPt": 90
+        },
+        {
+          "condition": "サイロを購入完了",
+          "rewardPt": 400
+        },
+        {
+          "condition": "最強のぶたの成長薬を購入完了",
+          "rewardPt": 680
+        },
+        {
+          "condition": "虹ハム x 900(一度限り) を購入完了",
+          "rewardPt": 400
+        },
+        {
+          "condition": "虹ハム x 3300(一度限り) を購入完了",
+          "rewardPt": 2000
+        },
+        {
+          "condition": "虹ハム x 3300を購入完了",
+          "rewardPt": 6800
+        }
+      ],
+      "totalPt": 10670,
+      "stepSum": 10670,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "os": "iOS",
+      "advertiser": "EAGLE, K.K.",
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "判定中の記載なし",
+        "判定期間",
+        "サイロを購入完了",
+        "最強のぶたの成長薬を購入完了",
+        "虹ハム x 900(一度限り) を購入完了",
+        "虹ハム x 3300(一度限り) を購入完了",
+        "虹ハム x 3300を購入完了",
+        "※『虹ハム』は牧場のレベルアップ1周目到達で購入できるようになります。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "アプリ起動時に「Appにトラッキングしないように要求」をタップした",
+        "■あんしん保証制度",
+        "あんしん保証制度",
+        "判定期間保証",
+        "Step「●●購入完了」の場合"
+      ],
+      "reviewIndex": [
+        {
+          "name": "鶏皮",
+          "attribute": "男性・20代",
+          "date": "2026-08-30",
+          "title": "1周目を乗り越えればかなり楽"
+        },
+        {
+          "name": "り",
+          "attribute": "女性・10代",
+          "date": "2026-08-17",
+          "title": "たのしい"
+        },
+        {
+          "name": "ふぁい",
+          "attribute": "男性・20代",
+          "date": "2026-07-08",
+          "title": "長い"
+        },
+        {
+          "name": "まろん",
+          "attribute": "女性・20代",
+          "date": "2026-07-06",
+          "title": "転生ゲームみたいなのが好きな人にオススメ"
+        },
+        {
+          "name": "ナオ",
+          "attribute": "男性・30代",
+          "date": "2026-05-23",
+          "title": "1週目だけ大変"
+        },
+        {
+          "name": "貴乃花城之内",
+          "attribute": "男性・40代",
+          "date": "2026-05-14",
+          "title": "よかったのか？"
+        },
+        {
+          "name": "のかな",
+          "attribute": "男性・30代",
+          "date": "2026-04-22",
+          "title": "操作はかんたん"
+        },
+        {
+          "name": "イサムサム",
+          "attribute": "男性・40代",
+          "date": "2026-03-31",
+          "title": "自動進行だからすすめやすい"
+        },
+        {
+          "name": "ゆゆ",
+          "attribute": "女性・10代",
+          "date": "2026-03-27",
+          "title": "定期的のログイン"
+        },
+        {
+          "name": "あ",
+          "attribute": "女性・20代",
+          "date": "2026-03-25",
+          "title": "1週間位でできるし、課金しなくても全部の..."
+        },
+        {
+          "name": "遼太郎",
+          "attribute": "男性・30代",
+          "date": "2026-02-09",
+          "title": "こどもと一緒に楽しんでやりました"
+        },
+        {
+          "name": "さとみん",
+          "attribute": "女性・40代",
+          "date": "2026-01-26",
+          "title": "最初だけ頑張れば…"
+        },
+        {
+          "name": "ポコタ",
+          "attribute": "女性・40代",
+          "date": "2026-01-25",
+          "title": "手軽さは良い"
+        },
+        {
+          "name": "サザエさん",
+          "attribute": "女性・50代",
+          "date": "2025-12-28",
+          "title": "簡単ではありました"
+        },
+        {
+          "name": "ゆいち",
+          "attribute": "女性・30代",
+          "date": "2025-11-10",
+          "title": "1周目だけ"
+        },
+        {
+          "name": "たかふ",
+          "attribute": "男性・50代",
+          "date": "2025-11-08",
+          "title": "３日もあれば余裕"
+        },
+        {
+          "name": "夢玉",
+          "attribute": "女性・30代",
+          "date": "2025-09-29",
+          "title": "投資と定期的なログインが出来るなら楽勝"
+        },
+        {
+          "name": "ｭｷﾅ",
+          "attribute": "女性・30代",
+          "date": "2025-08-28",
+          "title": "ダブルでポイント貰えた"
+        },
+        {
+          "name": "まつけん",
+          "attribute": "男性・40代",
+          "date": "2025-08-26",
+          "title": "簡単なのでオススメです！"
+        },
+        {
+          "name": "めろんぱん",
+          "attribute": "女性・20代",
+          "date": "2025-07-17",
+          "title": "簡単だけど少しだけ時間がかかるかも"
+        }
+      ]
+    },
+    {
+      "pointId": "186251",
+      "offerKey": "warau:186251",
+      "site": "warau",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251",
+      "retrievedAt": "2026-11-27T22:55:27+00:00",
+      "httpStatus": 200,
+      "responseSha256": "b249297d5a2c9f1bd39b32a264976aead2ef5609a3f070d2ef4fc448b3606658",
+      "title": "出荷ぶた（StepUp）でポイントを貯める",
+      "live": true,
+      "deadlineIfInstalledToday": "2026年12月27日",
+      "condition": "新規アプリインストール後、インストール日から起算して30日以内にStepUpミッションの各達成条件をクリア",
+      "steps": [
+        {
+          "condition": "牧場のレベルアップ1周目到達",
+          "rewardPt": 40
+        },
+        {
+          "condition": "牧場のレベルアップ3周目到達",
+          "rewardPt": 50
+        },
+        {
+          "condition": "牧場のレベルアップ5周目到達",
+          "rewardPt": 15
+        },
+        {
+          "condition": "牧場のレベルアップ11周目到達",
+          "rewardPt": 20
+        },
+        {
+          "condition": "牧場のレベルアップ21周目到達",
+          "rewardPt": 25
+        },
+        {
+          "condition": "牧場のレベルアップ31周目到達",
+          "rewardPt": 30
+        },
+        {
+          "condition": "牧場のレベルアップ41周目到達",
+          "rewardPt": 50
+        },
+        {
+          "condition": "牧場のレベルアップ51周目到達",
+          "rewardPt": 70
+        },
+        {
+          "condition": "牧場のレベルアップ60周目到達",
+          "rewardPt": 90
+        },
+        {
+          "condition": "サイロを購入完了",
+          "rewardPt": 400
+        },
+        {
+          "condition": "最強のぶたの成長薬を購入完了",
+          "rewardPt": 680
+        },
+        {
+          "condition": "虹ハム x 900(一度限り) を購入完了",
+          "rewardPt": 400
+        },
+        {
+          "condition": "虹ハム x 3300(一度限り) を購入完了",
+          "rewardPt": 2000
+        },
+        {
+          "condition": "虹ハム x 3300を購入完了",
+          "rewardPt": 6800
+        }
+      ],
+      "totalPt": 10670,
+      "stepSum": 10670,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": null,
+      "os": "Android",
+      "advertiser": "EAGLE, K.K.",
+      "termNotes": [
+        "あんしん保証",
+        "あんしん保証",
+        "判定中の記載なし",
+        "判定期間",
+        "サイロを購入完了",
+        "最強のぶたの成長薬を購入完了",
+        "虹ハム x 900(一度限り) を購入完了",
+        "虹ハム x 3300(一度限り) を購入完了",
+        "虹ハム x 3300を購入完了",
+        "※『虹ハム』は牧場のレベルアップ1周目到達で購入できるようになります。",
+        "※「ポイントを貯める」をタップした後、1時間以内にアプリを起動をしてください。また、他のアプリの起動やサイトの閲覧はしないでください。",
+        "※アプリを起動するまで、通信環境を変更しないでください。（モバイル回線やWi-Fiの切り替えも含む）",
+        "■獲得対象外",
+        "アプリを削除して再インストールしている",
+        "「ポイントを貯める」をタップしてから1時間以内にアプリを起動していない、またはその間に通信環境の変更、他のアプリ起動やサイト閲覧している",
+        "■あんしん保証制度",
+        "あんしん保証制度",
+        "判定期間保証",
+        "Step「●●購入完了」の場合",
+        "キャプチャ：購入完了を確認できるストアの購入履歴画面"
+      ],
+      "reviewIndex": [
+        {
+          "name": "鶏皮",
+          "attribute": "男性・20代",
+          "date": "2026-08-30",
+          "title": "1周目を乗り越えればかなり楽"
+        },
+        {
+          "name": "り",
+          "attribute": "女性・10代",
+          "date": "2026-08-17",
+          "title": "たのしい"
+        },
+        {
+          "name": "ふぁい",
+          "attribute": "男性・20代",
+          "date": "2026-07-08",
+          "title": "長い"
+        },
+        {
+          "name": "まろん",
+          "attribute": "女性・20代",
+          "date": "2026-07-06",
+          "title": "転生ゲームみたいなのが好きな人にオススメ"
+        },
+        {
+          "name": "ナオ",
+          "attribute": "男性・30代",
+          "date": "2026-05-23",
+          "title": "1週目だけ大変"
+        },
+        {
+          "name": "貴乃花城之内",
+          "attribute": "男性・40代",
+          "date": "2026-05-14",
+          "title": "よかったのか？"
+        },
+        {
+          "name": "のかな",
+          "attribute": "男性・30代",
+          "date": "2026-04-22",
+          "title": "操作はかんたん"
+        },
+        {
+          "name": "イサムサム",
+          "attribute": "男性・40代",
+          "date": "2026-03-31",
+          "title": "自動進行だからすすめやすい"
+        },
+        {
+          "name": "ゆゆ",
+          "attribute": "女性・10代",
+          "date": "2026-03-27",
+          "title": "定期的のログイン"
+        },
+        {
+          "name": "あ",
+          "attribute": "女性・20代",
+          "date": "2026-03-25",
+          "title": "1週間位でできるし、課金しなくても全部の..."
+        },
+        {
+          "name": "遼太郎",
+          "attribute": "男性・30代",
+          "date": "2026-02-09",
+          "title": "こどもと一緒に楽しんでやりました"
+        },
+        {
+          "name": "さとみん",
+          "attribute": "女性・40代",
+          "date": "2026-01-26",
+          "title": "最初だけ頑張れば…"
+        },
+        {
+          "name": "ポコタ",
+          "attribute": "女性・40代",
+          "date": "2026-01-25",
+          "title": "手軽さは良い"
+        },
+        {
+          "name": "サザエさん",
+          "attribute": "女性・50代",
+          "date": "2025-12-28",
+          "title": "簡単ではありました"
+        },
+        {
+          "name": "ゆいち",
+          "attribute": "女性・30代",
+          "date": "2025-11-10",
+          "title": "1周目だけ"
+        },
+        {
+          "name": "たかふ",
+          "attribute": "男性・50代",
+          "date": "2025-11-08",
+          "title": "３日もあれば余裕"
+        },
+        {
+          "name": "夢玉",
+          "attribute": "女性・30代",
+          "date": "2025-09-29",
+          "title": "投資と定期的なログインが出来るなら楽勝"
+        },
+        {
+          "name": "ｭｷﾅ",
+          "attribute": "女性・30代",
+          "date": "2025-08-28",
+          "title": "ダブルでポイント貰えた"
+        },
+        {
+          "name": "まつけん",
+          "attribute": "男性・40代",
+          "date": "2025-08-26",
+          "title": "簡単なのでオススメです！"
+        },
+        {
+          "name": "めろんぱん",
+          "attribute": "女性・20代",
+          "date": "2025-07-17",
+          "title": "簡単だけど少しだけ時間がかかるかも"
+        }
+      ]
+    },
+    {
+      "schemaVersion": 2,
+      "offerKey": "amefuri:128382",
+      "site": "amefuri",
+      "siteLabel": "アメフリ",
+      "offerId": "128382",
+      "url": "https://www.amefri.net/detail/id/128382",
+      "state": "parse_failed",
+      "live": false,
+      "unavailableReason": "condition_or_deadline_missing",
+      "title": "出荷ぶた（多段階）（iOS）",
+      "gameName": "出荷ぶた",
+      "os": "iOS",
+      "osSource": "page",
+      "kind": "stepup",
+      "pointUnit": "pt",
+      "yenPerPoint": 0.1,
+      "rateVerified": true,
+      "conditionText": "条件達成",
+      "deadlineDays": null,
+      "deadlineBasis": null,
+      "steps": [
+        {
+          "condition": "牧場のレベルアップ1周目到達",
+          "rewardPt": 570,
+          "rewardYen": 57
+        },
+        {
+          "condition": "牧場のレベルアップ3周目到達",
+          "rewardPt": 570,
+          "rewardYen": 57
+        },
+        {
+          "condition": "牧場のレベルアップ5周目到達",
+          "rewardPt": 280,
+          "rewardYen": 28
+        },
+        {
+          "condition": "牧場のレベルアップ11周目到達",
+          "rewardPt": 280,
+          "rewardYen": 28
+        },
+        {
+          "condition": "牧場のレベルアップ21周目到達",
+          "rewardPt": 280,
+          "rewardYen": 28
+        },
+        {
+          "condition": "牧場のレベルアップ31周目到達",
+          "rewardPt": 280,
+          "rewardYen": 28
+        },
+        {
+          "condition": "牧場のレベルアップ41周目到達",
+          "rewardPt": 570,
+          "rewardYen": 57
+        },
+        {
+          "condition": "牧場のレベルアップ51周目到達",
+          "rewardPt": 820,
+          "rewardYen": 82
+        },
+        {
+          "condition": "牧場のレベルアップ60周目到達",
+          "rewardPt": 820,
+          "rewardYen": 82
+        },
+        {
+          "condition": "サイロを購入完了",
+          "rewardPt": 3930,
+          "rewardYen": 393
+        },
+        {
+          "condition": "最強のぶたの成長薬を購入完了",
+          "rewardPt": 6560,
+          "rewardYen": 656
+        },
+        {
+          "condition": "虹ハム x 900(一度限り) を購入完了",
+          "rewardPt": 3930,
+          "rewardYen": 393
+        },
+        {
+          "condition": "虹ハム x 3300(一度限り) を購入完了",
+          "rewardPt": 19680,
+          "rewardYen": 1968
+        },
+        {
+          "condition": "虹ハム x 3300を購入完了",
+          "rewardPt": 65600,
+          "rewardYen": 6560
+        }
+      ],
+      "totalPt": 104170,
+      "totalYen": 10417,
+      "stepSumMatchesTotal": true,
+      "temporaryIncrease": {
+        "regularYen": 6355,
+        "increasedYen": 10417,
+        "until": null,
+        "endDateStated": false
+      },
+      "httpStatus": 200,
+      "retrievedAt": "2026-11-27T22:55:32+00:00",
+      "responseSha256": "ad72db6b8c66dac0ef110e4f9d994fa09391f940f7a80b50d234c0d755a5355b"
+    }
+  ]
+}
