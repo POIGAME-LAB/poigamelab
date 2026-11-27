@@ -7,9 +7,19 @@ import json
 from pathlib import Path
 
 import direct_offer_refresh as direct
-from structured_publication import published_row_fingerprint
+from structured_publication import REWARD_ONLY_CONTRACTS, published_row_fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
+# Sources whose own pages never state an OS publish 不明 instead of a guessed OS (Trima, 2026-11-26).
+PLATFORM_NOT_STATED_SOURCES = frozenset(
+    site for site, contract in REWARD_ONLY_CONTRACTS.items() if contract.get("platformNotStatedAsUnknown") is True
+)
+
+
+def new_row_platform_ok(row):
+    if row.get("platform") in {"iOS", "Android"}:
+        return True
+    return row.get("platform") == "不明" and row.get("site") in PLATFORM_NOT_STATED_SOURCES
 
 
 def read_csv(path):
@@ -74,7 +84,7 @@ def validate(root, baseline, artifact):
                     and not matches[0].get("holdReason")
                     and matches[0].get("rowFingerprint") == published_row_fingerprint(row)):
                 errors.append("new_offer_without_verified_gate_decision")
-            if row.get("platform") not in {"iOS", "Android"} or not row.get("deadline"):
+            if not new_row_platform_ok(row) or not row.get("deadline"):
                 errors.append("new_offer_missing_platform_or_deadline")
         if row.get("game") not in games:
             errors.append("unknown_catalog_game")
