@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "phase": "NEW_GAME_CONTENT_QUEUE_V1",
-  "checkedAt": "2026-11-25T00:50:25+00:00",
+  "checkedAt": "2026-11-27T22:18:51+00:00",
   "sourcePhase": "DAILY_SAME_SCAN_REVIEW_V1",
   "candidateOnly": true,
   "publicationAuthorized": false,
   "rankingComplete": false,
-  "holdReason": "ranking_incomplete",
+  "holdReason": "ranking_detail_budget_reached",
   "count": 0,
   "items": []
 }
