@@ -107,6 +107,9 @@ const pointSites = {
           const originalLoadOffersWithFallback = value.loadOffersWithFallback.bind(value);
           value.loadOffersWithFallback = async function loadOffersWithCatalogProvisionalFallback() {
             const result = await originalLoadOffersWithFallback();
+            // A failed download says nothing about which games lack verified
+            // offers, so no reference values are mixed in on failure.
+            if (result?.status === "failed") return { ...result, provisionalCount: 0 };
             const offers = Array.isArray(result?.offers) ? [...result.offers] : [];
             // A game whose verified amounts are only hidden for being older than 7 days must not
             // fall back to unverified catalog reference amounts.

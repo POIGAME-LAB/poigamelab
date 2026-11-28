@@ -232,6 +232,22 @@
     .dashboard-stat span { color: #ddd2ff; font-size: 11px; font-weight: 800; }
     .dashboard-stat strong { margin-top: 5px; font-size: 23px; color: #fff; }
     .dashboard-stat.highlight strong { color: #ffe45c; }
+    .dashboard-stat strong.is-message { font-size: 14px; line-height: 1.45; }
+    .dashboard-stat-note { margin-top: 4px; color: #e8dcff; font-size: 11px; font-weight: 700; line-height: 1.45; }
+    .dashboard-stat-note:empty { display: none; }
+    .load-notice {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border: 1px solid #f1d9a8;
+      border-radius: 12px;
+      background: #fff9ec;
+      color: #6b4a00;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.7;
+    }
+    .load-notice[hidden] { display: none; }
+    .reward-box strong.is-message { font-size: 13px; line-height: 1.4; text-align: right; }
 
     @media (max-width: 700px) {
       header {
@@ -262,6 +278,7 @@
       .dashboard-stat:last-child { grid-column: 1 / -1; }
       .dashboard-lead h2 { font-size: 20px; }
       .dashboard-stat strong { font-size: 19px; }
+      .dashboard-stat strong.is-message { font-size: 12.5px; }
     }
     /* =========================
    注目ゲーム案件
@@ -690,6 +707,18 @@
     color: #a45600;
   }
 
+  .verification-line.fresh {
+    color: #216e4e;
+  }
+
+  .verification-line.aging {
+    color: #5c4a84;
+  }
+
+  .verification-line.old {
+    color: #a45600;
+  }
+
   .dashboard-health-note {
     margin-top: 6px;
     color: #e8dcff;
@@ -740,19 +769,21 @@
         <div class="dashboard-lead">
           <small>LIVE DATA</small>
           <h2>最新データサマリー</h2>
-          <p>確認済みの掲載データを自動集計。自動収集した候補は確認後に公開します。</p>
+          <p>ポイントサイトの案件ページで確認できた掲載データだけを集計しています。案件ごとの確認日は各カードと比較ページに表示します。</p>
         </div>
         <div class="dashboard-stat">
           <span>掲載ゲーム</span>
           <strong id="statGameCount">-- 件</strong>
         </div>
         <div class="dashboard-stat highlight">
-          <span>掲載中の最高還元</span>
-          <strong id="statMaxReward">確認中</strong>
+          <span id="statMaxRewardLabel">確認済み案件の最高還元</span>
+          <strong id="statMaxReward" aria-live="polite"></strong>
+          <small id="statMaxRewardNote" class="dashboard-stat-note"></small>
         </div>
         <div class="dashboard-stat">
-          <span>データ最終更新</span>
-          <strong id="statUpdated">確認中</strong>
+          <span>案件の最新確認日</span>
+          <strong id="statUpdated" aria-live="polite"></strong>
+          <small id="statRunNote" class="dashboard-stat-note"></small>
           <small id="statHealth" class="dashboard-health-note"></small>
         </div>
       </div>
@@ -781,6 +812,9 @@
             <strong>はじめてのポイントサイト登録なら：</strong>「最高還元サイトへ」はゲーム案件の確認用です。紹介を利用して登録する場合は、各カードの「このサイトに登録［PR］」や紹介コードを先に確認し、登録後に同じポイントサイトで案件の条件を確認してください。紹介特典には各サイトの適用条件があります。
           </p>
 
+          <p id="loadNotice" class="load-notice" role="status" hidden></p>
+          <noscript><p class="load-notice">このページの還元額・確認日はページ生成時点のデータです。JavaScriptを有効にすると最新の掲載データと並び替え・検索が使えます。</p></noscript>
+
           <div class="game-grid">
 
 
@@ -801,6 +835,7 @@
     try {
       const rows = await POIGAME_DATA.fetchCsv("games.csv");
       games.length = 0;
+      gamesState = LOAD_STATE.OK;
 
       rows.forEach((row) => {
         const name = String(row.name || "").trim();
@@ -820,6 +855,7 @@
         });
       });
     } catch (error) {
+      gamesState = LOAD_STATE.FAILED;
       console.error("ゲームデータの読み込みに失敗しました", error);
     }
   }
@@ -831,6 +867,7 @@
 
     try {
       const result = await POIGAME_DATA.loadOffersWithFallback();
+      offersState = result.status || LOAD_STATE.OK;
 
       result.offers.forEach((offer) => {
         let game = games.find((item) => item.name === offer.gameName);
@@ -852,6 +889,7 @@
         game.offers.push(offer);
       });
     } catch (error) {
+      offersState = LOAD_STATE.FAILED;
       console.error("案件データの読み込みに失敗しました", error);
     }
   }
@@ -863,47 +901,113 @@
   const statMaxReward = document.getElementById("statMaxReward");
   const statUpdated = document.getElementById("statUpdated");
   const statHealth = document.getElementById("statHealth");
+  const statMaxRewardNote = document.getElementById("statMaxRewardNote");
+  const statRunNote = document.getElementById("statRunNote");
+  const loadNotice = document.getElementById("loadNotice");
+  const LOAD_STATE = POIGAME_DATA.LOAD_STATE;
+  const LOAD_TEXT = POIGAME_DATA.LOAD_STATE_TEXT;
   let dataHealth = { available: false, generatedAt: "", success: false, games: {} };
+  // One explicit state per data source: loading -> ok / empty / failed.
+  let gamesState = LOAD_STATE.LOADING;
+  let offersState = LOAD_STATE.LOADING;
+
+  function setStat(node, text, isMessage) {
+    if (!node) return;
+    node.textContent = text;
+    node.classList.toggle("is-message", Boolean(isMessage));
+  }
+
+  function showLoadNotice(text) {
+    if (!loadNotice) return;
+    loadNotice.textContent = text || "";
+    loadNotice.hidden = !text;
+  }
+
+  // While data is loading, say so -- unless the build already wrote the real
+  // values into the first HTML (then those stay visible until fresh data arrives).
+  [statMaxReward, statUpdated].forEach((node) => {
+    if (node && !node.textContent.trim()) setStat(node, LOAD_TEXT.loading, true);
+  });
 
   let currentSort = "recommended";
   let currentSearch = "";
 
   function getBestOffer(game) {
-    if (!game.offers || game.offers.length === 0) {
-      return null;
-    }
-
-    return game.offers.reduce((best, offer) => {
-      return offer.reward > best.reward ? offer : best;
-    });
+    return POIGAME_DATA.pickHeadlineOffer(game.offers || []);
   }
 
   function updateDashboard() {
     const allOffers = games.flatMap((game) => game.offers || []);
-    const verifiedOffers = allOffers.filter((offer) => offer.verified);
-    const maxReward = verifiedOffers.length
-      ? Math.max(...verifiedOffers.map((offer) => Number(offer.reward) || 0))
-      : 0;
-    const dates = verifiedOffers
-      .map((offer) => offer.updatedAt)
-      .filter(Boolean)
-      .sort();
-    const latest = dates.length ? dates[dates.length - 1] : "未登録";
+    const summary = POIGAME_DATA.summarizeCatalogOffers(allOffers);
+    const siteName = (offer) => pointSites[offer.site] || offer.site;
 
-    statGameCount.textContent = `${games.length} 件`;
-    statMaxReward.textContent = maxReward ? `${maxReward.toLocaleString()} 円` : "確認待ち";
-    statUpdated.textContent = dataHealth.available
-      ? POIGAME_DATA.formatHealthUpdatedAt(dataHealth)
-      : (verifiedOffers.length ? latest : "確認待ち");
+    if (gamesState === LOAD_STATE.OK) statGameCount.textContent = `${games.length} 件`;
 
-    if (statHealth) {
-      const statuses = Object.values(dataHealth.games || {}).map((item) => item.state);
-      if (statuses.includes("failed")) statHealth.textContent = "掲載情報を確認中";
-      else if (statuses.includes("degraded")) statHealth.textContent = "掲載情報を確認中";
-      else if (statuses.includes("stale")) statHealth.textContent = "掲載情報を確認中";
-      else if (dataHealth.available) statHealth.textContent = "自動更新 正常";
-      else statHealth.textContent = "";
+    if (offersState === LOAD_STATE.FAILED) {
+      // Never present a failed download as "no offers". Values written into the
+      // first HTML at build time (if any) stay; otherwise say what happened.
+      if (!statMaxReward.dataset.staticValue) setStat(statMaxReward, LOAD_TEXT.failed, true);
+      if (!statUpdated.dataset.staticValue) setStat(statUpdated, LOAD_TEXT.failed, true);
+      if (statMaxRewardNote && !statMaxReward.dataset.staticValue) statMaxRewardNote.textContent = "";
+      if (statRunNote && !statUpdated.dataset.staticValue) statRunNote.textContent = "";
+    } else if (!summary.verifiedCount) {
+      setStat(statMaxReward, LOAD_TEXT.empty, true);
+      setStat(statUpdated, "—", false);
+      if (statMaxRewardNote) statMaxRewardNote.textContent = "";
+      if (statRunNote) statRunNote.textContent = "";
+    } else {
+      // Headline amount: the best offer confirmed within the last 30 days. An
+      // older row is only used when nothing recent exists, and then says so.
+      const headline = summary.bestRecent || summary.best;
+      const freshness = POIGAME_DATA.getOfferFreshness(headline);
+      setStat(statMaxReward, `${Number(headline.reward).toLocaleString()} 円`, false);
+      if (statMaxRewardNote) {
+        statMaxRewardNote.textContent = summary.bestRecent
+          ? `${siteName(headline)}・${freshness.short}`
+          : `${siteName(headline)}・${freshness.days === null ? "確認日不明" : `最終確認 ${freshness.date}（${freshness.days}日前）`}`;
+      }
+      setStat(statUpdated, summary.latestConfirmedAt.replaceAll("-", "/"), false);
+      if (statRunNote) {
+        const parts = [];
+        if (dataHealth.available && dataHealth.generatedAt) {
+          const runAge = POIGAME_DATA.hoursSince(dataHealth.generatedAt);
+          const runText = POIGAME_DATA.formatHealthUpdatedAt(dataHealth).replace(/^\d{4}\//, "");
+          parts.push(runAge !== null && runAge > (dataHealth.staleAfterHours || 48)
+            ? `${LOAD_TEXT.stale}（自動チェック ${runText}）`
+            : `自動チェック ${runText}`);
+        }
+        if (summary.oldCount) parts.push(`${summary.oldCount}件は確認から${summary.recentDays}日以上`);
+        statRunNote.textContent = parts.join("・");
+      }
     }
+
+    if (statHealth) statHealth.textContent = "";
+
+    if (gamesState === LOAD_STATE.FAILED) {
+      showLoadNotice(`${LOAD_TEXT.failed}。表示中の内容はページ生成時点のものです。時間をおいて再読み込みしてください。`);
+    } else if (offersState === LOAD_STATE.FAILED) {
+      showLoadNotice(statMaxReward.dataset.staticValue
+        ? `${LOAD_TEXT.failed}。上の最高還元・確認日はページ生成時点のデータです（案件がなくなったわけではありません）。時間をおいて再読み込みしてください。`
+        : `${LOAD_TEXT.failed}。還元額は表示できていません（案件がなくなったわけではありません）。時間をおいて再読み込みしてください。`);
+    } else {
+      showLoadNotice("");
+    }
+  }
+
+  function isRecentVerified(offer) {
+    if (!offer || !offer.verified) return false;
+    const days = POIGAME_DATA.offerAgeDays(offer.updatedAt);
+    return days !== null && days <= POIGAME_DATA.OFFER_OLD_DAYS;
+  }
+
+  function rewardTier(offer) {
+    if (!offer) return 3;
+    if (isRecentVerified(offer)) return 0;
+    return offer.verified ? 1 : 2;
+  }
+
+  function hasVerifiedOffer(game) {
+    return (game.offers || []).some((offer) => offer.verified);
   }
 
   function renderGames() {
@@ -917,14 +1021,13 @@
     }
 
     if (currentSort === "reward") {
+      // Recently confirmed verified offers first, then older verified ones,
+      // then reference values, then games without any amount.
       visibleGames.sort((a, b) => {
         const bestA = getBestOffer(a);
         const bestB = getBestOffer(b);
-
-        const rewardA = bestA ? bestA.reward : -1;
-        const rewardB = bestB ? bestB.reward : -1;
-
-        return rewardB - rewardA;
+        return (rewardTier(bestA) - rewardTier(bestB))
+          || ((bestB ? bestB.reward : -1) - (bestA ? bestA.reward : -1));
       });
     }
 
@@ -953,17 +1056,31 @@
     }
 
     if (currentSort === "recommended") {
+      // Games that currently have a verified offer come first; the editorial
+      // "featured" flag only orders games within the same group.
       visibleGames.sort((a, b) => {
-        return Number(b.featured) - Number(a.featured);
+        return (Number(hasVerifiedOffer(b)) - Number(hasVerifiedOffer(a)))
+          || (Number(b.featured) - Number(a.featured));
       });
     }
 
     gameGrid.innerHTML = "";
 
+    // Ranks are counted only over offers confirmed within the last 30 days.
+    const rankByGame = new Map();
+    if (currentSort === "reward" && !currentSearch) {
+      let rank = 0;
+      visibleGames.forEach((game) => {
+        if (isRecentVerified(getBestOffer(game))) rankByGame.set(game, ++rank);
+      });
+    }
+
     if (visibleGames.length === 0) {
       gameGrid.innerHTML = `
         <div class="no-results">
-          該当するゲームが見つかりませんでした。
+          ${gamesState === LOAD_STATE.FAILED
+            ? `${LOAD_TEXT.failed}。時間をおいて再読み込みしてください。`
+            : "該当するゲームが見つかりませんでした。"}
         </div>
       `;
       return;
@@ -972,15 +1089,23 @@
     visibleGames.forEach((game, cardIndex) => {
       const bestOffer = getBestOffer(game);
 
+      const offersFailed = offersState === LOAD_STATE.FAILED;
+      const freshness = bestOffer ? POIGAME_DATA.getOfferFreshness(bestOffer) : null;
       const rewardText = bestOffer
         ? bestOffer.reward.toLocaleString() + " 円" + (bestOffer.verified ? "" : "（参考）")
-        : "確認中";
+        : (offersFailed ? "取得できませんでした" : "確認済み案件なし");
 
       const pointSiteLine = bestOffer
         ? (bestOffer.verified
-            ? "おすすめポイントサイト：" + (pointSites[bestOffer.site] || bestOffer.site)
+            ? "最高還元のサイト：" + (pointSites[bestOffer.site] || bestOffer.site) + "（" + freshness.short + "）"
             : "参考値の出典：" + (pointSites[bestOffer.site] || bestOffer.site))
-        : "確認済みの案件データはまだありません";
+        : (offersFailed
+            ? LOAD_TEXT.failed + "。時間をおいて再読み込みしてください"
+            : "確認済みの案件は現在掲載していません（終了とは限りません）");
+
+      // A rank is only shown when the list really is ordered by a measured
+      // value: the verified reward, in "報酬が高い順".
+      const rankNumber = rankByGame.get(game) || 0;
 
       const referral = bestOffer
         ? window.POIGAME_REFERRALS?.get(bestOffer.site) || null
@@ -1012,7 +1137,7 @@
   </div>
   <div class="game-info">
     <div class="card-rank-row">
-      ${cardIndex < 3 ? `<span class="rank-badge">${cardIndex + 1}位</span>` : (game.featured ? `<span class="rank-badge">注目</span>` : "")}
+      ${rankNumber > 0 && rankNumber <= 3 ? `<span class="rank-badge">報酬${rankNumber}位</span>` : (game.featured ? `<span class="rank-badge">注目</span>` : "")}
     </div>
 
     <h3>
@@ -1025,7 +1150,7 @@
 
     <div class="reward-box">
       <span>最高還元</span>
-      <strong>${rewardText}</strong>
+      <strong${bestOffer ? "" : ' class="is-message"'}>${rewardText}</strong>
     </div>
 
     <p class="point-site">
@@ -1035,8 +1160,8 @@
     ${
       bestOffer
         ? (() => {
-            const healthLabel = POIGAME_DATA.getOfferHealthLabel(bestOffer, dataHealth.games?.[game.name]);
-            return `<p class="verification-line ${healthLabel.state}">${POIGAME_DATA.escapeHtml(healthLabel.text)}</p>`;
+            const statusLabel = POIGAME_DATA.getOfferStatusLabel(bestOffer, dataHealth.games?.[game.name]);
+            return `<p class="verification-line ${statusLabel.state}">${POIGAME_DATA.escapeHtml(statusLabel.text)}</p>`;
           })()
         : ""
     }
@@ -1070,7 +1195,7 @@
         `
         : `
           <span class="offer-button disabled">
-            💰 案件リンクは未確認
+            💰 ${offersFailed ? "案件情報を取得できません" : "案件リンクは未確認"}
           </span>
         `
     }

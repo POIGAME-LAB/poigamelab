@@ -1,6 +1,126 @@
 (() => {
   "use strict";
 
+  // ---------------------------------------------------------------------
+  // Shared display states. Every page uses the same five meanings and the
+  // same wording, so "loading", "nothing verified", "download failed" and
+  // "old data" can never be mistaken for one another.
+  // ---------------------------------------------------------------------
+  const LOAD_STATE = Object.freeze({
+    LOADING: "loading",
+    OK: "ok",
+    EMPTY: "empty",
+    FAILED: "failed",
+    STALE: "stale"
+  });
+
+  const LOAD_STATE_TEXT = Object.freeze({
+    loading: "読み込み中…",
+    empty: "現在、確認済み案件の掲載はありません",
+    failed: "最新情報を取得できませんでした",
+    stale: "最終確認データを掲載中"
+  });
+
+  // An offer row's `updatedAt` is the JST date on which the point-site page
+  // was last confirmed by POIGAME LAB (it advances on every successful
+  // re-check, not only when the amount changes).
+  const OFFER_FRESH_DAYS = 7;
+  const OFFER_OLD_DAYS = 30;
+
+  function jstDateString(now = Date.now()) {
+    const date = new Date(Number(now) + 9 * 3600000);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function offerAgeDays(updatedAt, now = Date.now()) {
+    const match = String(updatedAt || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return null;
+    const confirmed = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    const today = Date.parse(`${jstDateString(now)}T00:00:00Z`);
+    if (!Number.isFinite(confirmed) || !Number.isFinite(today)) return null;
+    return Math.max(0, Math.round((today - confirmed) / 86400000));
+  }
+
+  function shortDate(updatedAt) {
+    const match = String(updatedAt || "").trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return match ? `${Number(match[2])}/${Number(match[3])}` : "";
+  }
+
+  function getOfferFreshness(offer, now = Date.now()) {
+    if (!offer || !offer.verified) {
+      return { level: "reference", days: null, date: "", text: "参考値（一次情報は未確認）", short: "参考値" };
+    }
+    const days = offerAgeDays(offer.updatedAt, now);
+    const date = shortDate(offer.updatedAt);
+    if (days === null) {
+      return { level: "unknown", days: null, date: "", text: "確認日の記録なし", short: "確認日不明" };
+    }
+    const ago = days === 0 ? "本日" : `${days}日前`;
+    if (days <= OFFER_FRESH_DAYS) {
+      return { level: "fresh", days, date, text: `✓ ${date} 確認（${ago}）`, short: `${date}確認` };
+    }
+    if (days <= OFFER_OLD_DAYS) {
+      return { level: "aging", days, date, text: `${date} 確認（${ago}）`, short: `${date}確認・${ago}` };
+    }
+    return {
+      level: "old",
+      days,
+      date,
+      text: `最終確認 ${date}（${ago}）・現在の掲載は未確認`,
+      short: `${date}確認・${ago}`
+    };
+  }
+
+  // Row label. Unlike getOfferHealthLabel it never answers with an
+  // open-ended "確認中": it always states the confirmation date. Whether the
+  // automatic check itself is late ("最終確認データを掲載中") is shown once per
+  // page by the caller, not repeated on every row.
+  function getOfferStatusLabel(offer, gameHealth, now = Date.now()) {
+    const freshness = getOfferFreshness(offer, now);
+    if (freshness.level === "reference") return { state: "legacy", ...freshness };
+    return { state: freshness.level, ...freshness };
+  }
+
+  // The amount a page leads with. Verified rows confirmed within the last
+  // OFFER_OLD_DAYS days win; an older verified row is used only when nothing
+  // recent exists (callers show its age), and an unverified reference value
+  // only when there is no verified row at all.
+  function pickHeadlineOffer(offers, now = Date.now()) {
+    const list = (Array.isArray(offers) ? offers : []).filter((offer) => offer && Number(offer.reward) > 0);
+    const best = (rows) => rows.reduce(
+      (top, offer) => (!top || Number(offer.reward) > Number(top.reward) ? offer : top), null);
+    const verified = list.filter((offer) => offer.verified);
+    const recent = verified.filter((offer) => {
+      const days = offerAgeDays(offer.updatedAt, now);
+      return days !== null && days <= OFFER_OLD_DAYS;
+    });
+    return best(recent) || best(verified) || best(list);
+  }
+
+  function summarizeCatalogOffers(offers, now = Date.now()) {
+    const verified = (Array.isArray(offers) ? offers : [])
+      .filter((offer) => offer && offer.verified && Number(offer.reward) > 0);
+    const byReward = (list) => list.reduce(
+      (top, offer) => (!top || Number(offer.reward) > Number(top.reward) ? offer : top), null);
+    const recent = verified.filter((offer) => {
+      const days = offerAgeDays(offer.updatedAt, now);
+      return days !== null && days <= OFFER_OLD_DAYS;
+    });
+    const dates = verified.map((offer) => String(offer.updatedAt || "").trim())
+      .filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(value)).sort();
+    return {
+      verifiedCount: verified.length,
+      recentCount: recent.length,
+      oldCount: verified.length - recent.length,
+      gameCount: new Set(verified.map((offer) => offer.gameName)).size,
+      siteCount: new Set(verified.map((offer) => offer.site)).size,
+      best: byReward(verified),
+      bestRecent: byReward(recent),
+      latestConfirmedAt: dates.length ? dates[dates.length - 1] : "",
+      recentDays: OFFER_OLD_DAYS
+    };
+  }
+
   function parseCsv(text) {
     const rows = [];
     let row = [];
@@ -114,7 +234,9 @@
     return Math.floor(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])) / 86400000);
   }
 
-  function offerAgeDays(updatedAt, now = Date.now()) {
+  // Signed age used only for the 7-day rule: a future-dated row gives a negative age and is not trusted.
+  // (offerAgeDays above is the display helper; it never goes below 0, which would make a future date look "today".)
+  function signedOfferAgeDays(updatedAt, now = Date.now()) {
     const day = jstDayNumber(updatedAt);
     if (day === null) return null;
     const today = Math.floor((Number(now) + 9 * 3600000) / 86400000);
@@ -127,7 +249,7 @@
   }
 
   function isOfferFresh(offer, maxDays = DEFAULT_MAX_OFFER_AGE_DAYS, now = Date.now()) {
-    const age = offerAgeDays(offer?.updatedAt, now);
+    const age = signedOfferAgeDays(offer?.updatedAt, now);
     return age !== null && age >= 0 && age <= maxDays;
   }
 
@@ -145,12 +267,16 @@
 
   async function loadOffersWithFallback(now = Date.now()) {
     let allPublishedRows = [];
+    // A failed download is NOT the same thing as "no verified offers". Callers
+    // read `status` so a fetch error is never rendered as an empty catalogue.
+    let publishedLoadFailed = false;
     try {
       allPublishedRows = (await fetchCsv("data/published_offers.csv"))
         .map((row) => normalizeOffer(row, "published"))
         .filter((offer) => offer.gameName && offer.verified && offer.reward > 0);
     } catch (error) {
-      console.info("検証済み案件データはまだありません。", error.message);
+      publishedLoadFailed = true;
+      console.warn("検証済み案件データを取得できませんでした。", error.message);
     }
 
     let managedGames;
@@ -163,6 +289,8 @@
       console.info("更新ポリシーを確認できないため、旧案件データは表示しません。", error.message);
     }
 
+    // Rows past the 7-day rule are hidden, not deleted. They are counted so the page can say so,
+    // and a hidden row is never "re-filled" from the legacy file below.
     const freshness = splitFreshOffers(allPublishedRows, maxOfferAgeDays(policy), now);
     const publishedRows = freshness.fresh;
     const freshnessInfo = {
@@ -170,15 +298,22 @@
       staleHiddenCount: freshness.staleCount,
       staleHiddenGames: freshness.staleHiddenGames
     };
+    const withStatus = (result) => ({
+      ...result,
+      ...freshnessInfo,
+      publishedLoadFailed,
+      status: publishedLoadFailed
+        ? LOAD_STATE.FAILED
+        : (result.publishedCount > 0 ? LOAD_STATE.OK : LOAD_STATE.EMPTY)
+    });
 
     if (!policy || policy?.publication?.allowLegacyFallback !== true) {
-      return {
+      return withStatus({
         offers: publishedRows,
         publishedCount: publishedRows.length,
         legacyCount: 0,
-        usingPublished: publishedRows.length > 0,
-        ...freshnessInfo
-      };
+        usingPublished: publishedRows.length > 0
+      });
     }
 
     let legacyRows = [];
@@ -195,13 +330,12 @@
       !managedGames.has(offer.gameName) && !verifiedGames.has(offer.gameName)
     );
 
-    return {
+    return withStatus({
       offers: [...publishedRows, ...legacyOnly],
       publishedCount: publishedRows.length,
       legacyCount: legacyOnly.length,
-      usingPublished: publishedRows.length > 0,
-      ...freshnessInfo
-    };
+      usingPublished: publishedRows.length > 0
+    });
   }
 
   function hoursSince(iso, now = Date.now()) {
@@ -640,7 +774,7 @@
     }
   }
 
-  function summarizeGameOffers(offers, labelOf) {
+  function summarizeGameOffers(offers, labelOf, now = Date.now()) {
     const label = typeof labelOf === "function" ? labelOf : (site) => site;
     const yen = (value) => `${Number(value).toLocaleString("ja-JP")}円`;
     const usable = (Array.isArray(offers) ? offers : [])
@@ -662,23 +796,39 @@
       const bestPlatforms = (best.platform || []).filter((item) => item && item !== "不明");
       let bestCondition = summarizeOfferCondition(best.condition, best.type);
       if (bestCondition.length > 40) bestCondition = `${bestCondition.slice(0, 39)}…`;
+      const bestAge = offerAgeDays(best.updatedAt, now);
+      const bestAgeNote = bestAge !== null && bestAge > OFFER_OLD_DAYS
+        ? `（${shortDate(best.updatedAt)}確認・${bestAge}日前）`
+        : "";
       lines.push(
-        `最高額の案件：${label(best.site) || best.site}${bestPlatforms.length ? `・${bestPlatforms.join("・")}` : ""}／${bestCondition}。`
+        `最高額の案件：${label(best.site) || best.site}${bestPlatforms.length ? `・${bestPlatforms.join("・")}` : ""}／${bestCondition}${bestAgeNote}。`
       );
 
-      const byPlatform = {};
-      verified.forEach((offer) => {
-        (offer.platform || []).forEach((name) => {
-          if (name === "iOS" || name === "Android") {
-            byPlatform[name] = Math.max(byPlatform[name] || 0, Number(offer.reward));
-          }
-        });
-      });
-      const platformParts = ["iOS", "Android"].filter((name) => byPlatform[name]).map((name) => `${name} ${yen(byPlatform[name])}`);
+      // Per-OS amount follows the same 30-day rule as the headline; an older
+      // row is only used when nothing recent exists, and then carries its date.
+      const platformParts = ["iOS", "Android"].map((name) => {
+        const pick = pickHeadlineOffer(verified.filter((offer) => (offer.platform || []).includes(name)), now);
+        if (!pick) return "";
+        const age = offerAgeDays(pick.updatedAt, now);
+        return `${name} ${yen(pick.reward)}${age !== null && age > OFFER_OLD_DAYS ? `（${shortDate(pick.updatedAt)}確認）` : ""}`;
+      }).filter(Boolean);
       if (platformParts.length) lines.push(`OS別の最高額：${platformParts.join("／")}（OSが明記された案件のみ）。`);
 
       const dates = verified.map((offer) => String(offer.updatedAt || "").trim()).filter(Boolean).sort();
       if (dates.length) lines.push(`最新の確認日：${dates[dates.length - 1]}。`);
+
+      if (sites.length === 1) {
+        lines.push(`現在、検証済みで掲載できているのは${sites[0]}のみです（他サイトの案件は確認できていません）。`);
+      }
+      const oldRows = verified.filter((offer) => {
+        const days = offerAgeDays(offer.updatedAt, now);
+        return days !== null && days > OFFER_OLD_DAYS;
+      });
+      if (oldRows.length) {
+        lines.push(
+          `${verified.length}件のうち${oldRows.length}件は、最終確認から${OFFER_OLD_DAYS}日以上たっています。金額や掲載の有無が変わっている可能性があるため、表の確認日を見て、申込み前に案件ページで確かめてください。`
+        );
+      }
     } else if (reference.length > 0) {
       const rewards = reference.map((offer) => Number(offer.reward));
       const min = Math.min(...rewards);
@@ -699,6 +849,15 @@
   }
 
   window.POIGAME_DATA = {
+    LOAD_STATE,
+    LOAD_STATE_TEXT,
+    OFFER_FRESH_DAYS,
+    OFFER_OLD_DAYS,
+    offerAgeDays,
+    getOfferFreshness,
+    getOfferStatusLabel,
+    summarizeCatalogOffers,
+    pickHeadlineOffer,
     parseCsv,
     rowsToObjects,
     fetchCsv,
@@ -706,7 +865,6 @@
     normalizePlatform,
     formatOfferSourceLabel,
     loadOffersWithFallback,
-    offerAgeDays,
     isOfferFresh,
     splitFreshOffers,
     maxOfferAgeDays,

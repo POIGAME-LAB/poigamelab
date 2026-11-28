@@ -44,3 +44,46 @@ def test_static_index_fallback_is_idempotent(tmp_path):
 
     assert result == {"alreadyPatched": True}
     assert second == first
+
+
+# ---------------------------------------------------------------- 7-day rule in the no-JS first HTML (matches site-data.js)
+import json
+from datetime import date
+
+from scripts.inject_static_index_fallback import _read_verified_offers
+
+HEADER = "offerKey,game,site,provider,reward,condition,platform,type,deadline,updatedAt,url,sourceUrl,verified"
+TODAY = date(2026, 11, 25)
+
+
+def _csv(tmp_path, rows, policy=None):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "config").mkdir()
+    lines = [HEADER] + [f"k{i},{g},warau,,{r},x,iOS,通常,,{d},https://a.test/,https://a.test/,true" for i, (g, r, d) in enumerate(rows)]
+    path = tmp_path / "data" / "published_offers.csv"
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    if policy is not None:
+        (tmp_path / "config" / "refresh_policy.json").write_text(json.dumps(policy), encoding="utf-8")
+    return path
+
+
+def test_static_fallback_hides_rows_not_reconfirmed_for_more_than_7_days(tmp_path):
+    path = _csv(tmp_path, [("A", 100, "2026-11-25"), ("B", 200, "2026-11-18"), ("C", 300, "2026-11-17"), ("D", 400, "2026-09-28")])
+    assert [o["game"] for o in _read_verified_offers(path, TODAY)] == ["A", "B"]  # exactly 7 days old is still shown
+
+
+def test_static_fallback_never_trusts_a_future_or_missing_date(tmp_path):
+    path = _csv(tmp_path, [("A", 100, "2026-12-31"), ("B", 200, "")])
+    assert _read_verified_offers(path, TODAY) == []  # read, nothing may be shown - not "unknown" (None)
+
+
+def test_static_fallback_keeps_none_for_a_missing_file(tmp_path):
+    assert _read_verified_offers(tmp_path / "data" / "published_offers.csv", TODAY) is None
+
+
+def test_static_fallback_follows_the_policy_file_like_site_data_js(tmp_path):
+    rows = [("A", 100, "2026-11-25"), ("B", 200, "2026-11-22"), ("C", 300, "2026-11-10")]
+    path = _csv(tmp_path, rows, policy={"publication": {"maxOfferAgeDays": 3}})
+    assert [o["game"] for o in _read_verified_offers(path, TODAY)] == ["A", "B"]
+    path2 = _csv(tmp_path / "x", rows) if (tmp_path / "x").mkdir() is None else None
+    assert [o["game"] for o in _read_verified_offers(path2, TODAY)] == ["A", "B"]  # no policy file -> 7

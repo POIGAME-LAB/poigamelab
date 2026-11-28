@@ -47,8 +47,15 @@ const toCsv = rows => rows.map(r => r.map(quote).join(',')).join('\n') + '\n';
   const body = published.slice(1).filter(r => r.length === header.length);
   const catalog = parseCsv(fs.readFileSync(path.join(root, 'games.csv'), 'utf8'));
   const names = catalog.slice(1).map(r => r[catalog[0].indexOf('name')]).filter(Boolean);
-  const verifiedGames = new Set(body.filter(r => r[col('verified')].toLowerCase() === 'true').map(r => r[col('game')]));
-  const noOffer = names.filter(n => !verifiedGames.has(n));
+  // 7-day rule (operator decision 2026-11-24): a verified row not re-confirmed for more than 7 days is hidden by the page,
+  // so "has a verified offer" means a row confirmed within 7 days. A game whose rows are all older is in neither group.
+  const jstToday = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
+  const dayNumber = value => Math.floor(Date.parse(`${String(value).slice(0, 10)}T00:00:00Z`) / 86400000);
+  const isFresh = r => { const age = dayNumber(jstToday) - dayNumber(r[col('updatedAt')]); return age >= 0 && age <= 7; };
+  const verifiedRows = body.filter(r => r[col('verified')].toLowerCase() === 'true');
+  const everVerifiedGames = new Set(verifiedRows.map(r => r[col('game')]));
+  const verifiedGames = new Set(verifiedRows.filter(isFresh).map(r => r[col('game')]));
+  const noOffer = names.filter(n => !everVerifiedGames.has(n));
   const withOffer = names.filter(n => verifiedGames.has(n));
   assert.ok(noOffer.length > 0 && withOffer.length > 0, 'need both kinds of games to exercise the toggle');
 
@@ -118,9 +125,10 @@ const toCsv = rows => rows.map(r => r.map(quote).join(',')).join('\n') + '\n';
     }
 
     // 3. offers appear: a verified row is added for a game that had none -> notice disappears
-    const sample = body.find(r => r[col('verified')].toLowerCase() === 'true');
+    const sample = verifiedRows[0];
     const target = noOffer[0];
     const added = sample.slice();
+    added[col('updatedAt')] = jstToday; // confirmed today, so the 7-day rule does not hide it
     added[col('game')] = target;
     added[col('offerKey')] = `${target}|${added[col('site')]}|${added[col('platform')]}|${added[col('url')]}`;
     await open(target, toCsv([header, ...body, added]));
