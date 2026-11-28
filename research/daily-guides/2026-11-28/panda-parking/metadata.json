@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "game": "パンダパーキング（Panda Parking）",
+  "aliases": [
+    "パンダパーキング",
+    "パンダパーキング - Panda Parking",
+    "Panda Parking"
+  ],
+  "slug": "panda-parking",
+  "title": "パンダパーキング ポイ活攻略｜レベル500クリアの所要日数と進め方",
+  "seoTitle": "パンダパーキング ポイ活攻略｜レベル500クリアの所要日数と進め方",
+  "metaDescription": "パンダパーキングのレベル500クリア案件を攻略。モッピー140P・アメフリ229円・ワラウ200ptの条件と期限14日、1日〜11日でクリアした実例、広告スキップの扱いを紹介。",
+  "os": [
+    "iOS",
+    "Android"
+  ],
+  "researchDate": "2026-11-28",
+  "inputData": {
+    "contentQueueCheckedAt": "2026-11-27T22:18:51Z",
+    "monitorCheckedAt": "2026-11-27T22:18:51Z",
+    "candidateOrder": 21
+  },
+  "status": "manuscript_complete",
+  "publicationStatus": "draft_pr_not_published",
+  "proposedPage": "panda-parking-guide.html",
+  "canonical": "https://poigamelab.com/panda-parking-guide.html",
+  "identity": {
+    "developer": "Mahorobase Inc.",
+    "appStoreId": "1623174643",
+    "androidPackage": "jp.co.mahorobase.pandaparking",
+    "advertiserOnOfferPage": null
+  },
+  "offers": [
+    {
+      "site": "moppy",
+      "offerKey": "moppy:157636",
+      "kind": "single",
+      "url": "https://pc.moppy.jp/ad/detail.php?s_id=157636",
+      "os": null,
+      "currency": "P",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 140,
+      "temporaryIncrease": null,
+      "deadlineBase": "click_day",
+      "steps": [
+        {
+          "condition": "新規インストール後、レベル500クリアでポイント獲得",
+          "rewardPt": 140,
+          "requiresPayment": false,
+          "deadlineDays": 14
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 140,
+      "guaranteeApplicationDays": null,
+      "verifiedAt": "2026-11-27T22:54:20+00:00",
+      "sumIsNotPredictedEarnings": true
+    },
+    {
+      "site": "amefuri",
+      "offerKey": "amefuri:122533",
+      "kind": "single",
+      "url": "https://www.amefri.net/detail/id/122533",
+      "os": "iOS",
+      "currency": "pt",
+      "yenPerPoint": 0.1,
+      "totalDisplayedPt": 2290,
+      "temporaryIncrease": {
+        "regularYen": 140,
+        "increasedYen": 229,
+        "until": null,
+        "endDateStated": false
+      },
+      "deadlineBase": "click_day",
+      "steps": [
+        {
+          "condition": "レベル500クリア",
+          "rewardPt": 2290,
+          "requiresPayment": false,
+          "deadlineDays": 14
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 2290,
+      "guaranteeApplicationDays": null,
+      "verifiedAt": "2026-11-27T22:54:22+00:00",
+      "sumIsNotPredictedEarnings": true
+    },
+    {
+      "site": "warau",
+      "offerKey": "warau:174146",
+      "kind": "single",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174146",
+      "os": "iOS",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 200,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "レベル500クリア",
+          "rewardPt": 200,
+          "requiresPayment": false,
+          "deadlineDays": 14
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 200,
+      "guaranteeApplicationDays": 50,
+      "verifiedAt": "2026-11-27T22:54:29+00:00",
+      "sumIsNotPredictedEarnings": true,
+      "pointId": "174146"
+    },
+    {
+      "site": "warau",
+      "offerKey": "warau:174147",
+      "kind": "single",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=174147",
+      "os": "Android",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 200,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "レベル500クリア",
+          "rewardPt": 200,
+          "requiresPayment": false,
+          "deadlineDays": 14
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 200,
+      "guaranteeApplicationDays": 50,
+      "verifiedAt": "2026-11-27T22:54:32+00:00",
+      "sumIsNotPredictedEarnings": true,
+      "pointId": "174147"
+    }
+  ],
+  "limitations": [
+    "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+    "モッピー157636の案件ページにOSの記載がなく、対象OSは確認できていない",
+    "アメフリ122533は増額表示（通常140円→229円）で、増額の終了日はページに記載がない",
+    "ワラウ口コミは投稿時期の案件条件・OSで書かれており、今回の金額と異なる可能性がある。ワラウ173172・173173は公開ページが表示できず根拠に使っていない",
+    "モッピー・アメフリのページにはアプリIDや広告主の記載がなく、アプリの同定はワラウiOS案件の説明文とApp Store紹介文の一致による"
+  ]
+}

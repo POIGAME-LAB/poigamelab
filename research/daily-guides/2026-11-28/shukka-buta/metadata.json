@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "game": "出荷ぶた",
+  "aliases": [
+    "出荷ぶた",
+    "出荷ぶた-養豚場育成ゲーム！",
+    "出荷ぶた-養豚場育成ゲーム！放置で癒しの牧場経営"
+  ],
+  "slug": "shukka-buta",
+  "title": "出荷ぶた ポイ活攻略｜60周の進め方と投資の使い方（ワラウ全14Step）",
+  "seoTitle": "出荷ぶた ポイ活攻略｜60周の進め方と投資の使い方（ワラウ全14Step）",
+  "metaDescription": "出荷ぶたのワラウStepUp案件を攻略。牧場レベル60周目までの全14Step・表示合計10,670pt、課金Stepの内訳、投資を使った周回の流れ、途中で止めた実例を紹介。",
+  "os": [
+    "iOS",
+    "Android"
+  ],
+  "researchDate": "2026-11-28",
+  "inputData": {
+    "contentQueueCheckedAt": "2026-11-27T22:18:51Z",
+    "monitorCheckedAt": "2026-11-27T22:18:51Z",
+    "candidateOrder": 8
+  },
+  "status": "manuscript_complete",
+  "publicationStatus": "draft_pr_not_published",
+  "proposedPage": "shukka-buta-guide.html",
+  "canonical": "https://poigamelab.com/shukka-buta-guide.html",
+  "identity": {
+    "developer": "EAGLE, K.K.",
+    "appStoreId": "991847114",
+    "androidPackage": "com.eagle_developers.shukapig",
+    "advertiserOnOfferPage": "EAGLE, K.K."
+  },
+  "offers": [
+    {
+      "site": "warau",
+      "pointId": "186242",
+      "offerKey": "warau:186242",
+      "kind": "stepup",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186242",
+      "os": "iOS",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 10670,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "牧場のレベルアップ1周目到達",
+          "rewardPt": 40,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ3周目到達",
+          "rewardPt": 50,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ5周目到達",
+          "rewardPt": 15,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ11周目到達",
+          "rewardPt": 20,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ21周目到達",
+          "rewardPt": 25,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ31周目到達",
+          "rewardPt": 30,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ41周目到達",
+          "rewardPt": 50,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ51周目到達",
+          "rewardPt": 70,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ60周目到達",
+          "rewardPt": 90,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "サイロを購入完了",
+          "rewardPt": 400,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "最強のぶたの成長薬を購入完了",
+          "rewardPt": 680,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "虹ハム x 900(一度限り) を購入完了",
+          "rewardPt": 400,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "虹ハム x 3300(一度限り) を購入完了",
+          "rewardPt": 2000,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "虹ハム x 3300を購入完了",
+          "rewardPt": 6800,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 390,
+      "guaranteeApplicationDays": 50,
+      "verifiedAt": "2026-11-27T22:55:22+00:00",
+      "sumIsNotPredictedEarnings": true
+    },
+    {
+      "site": "warau",
+      "pointId": "186251",
+      "offerKey": "warau:186251",
+      "kind": "stepup",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251",
+      "os": "Android",
+      "currency": "pt",
+      "yenPerPoint": 1,
+      "totalDisplayedPt": 10670,
+      "temporaryIncrease": null,
+      "deadlineBase": "install_day",
+      "steps": [
+        {
+          "condition": "牧場のレベルアップ1周目到達",
+          "rewardPt": 40,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ3周目到達",
+          "rewardPt": 50,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ5周目到達",
+          "rewardPt": 15,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ11周目到達",
+          "rewardPt": 20,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ21周目到達",
+          "rewardPt": 25,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ31周目到達",
+          "rewardPt": 30,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ41周目到達",
+          "rewardPt": 50,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ51周目到達",
+          "rewardPt": 70,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "牧場のレベルアップ60周目到達",
+          "rewardPt": 90,
+          "requiresPayment": false,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "サイロを購入完了",
+          "rewardPt": 400,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "最強のぶたの成長薬を購入完了",
+          "rewardPt": 680,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "虹ハム x 900(一度限り) を購入完了",
+          "rewardPt": 400,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "虹ハム x 3300(一度限り) を購入完了",
+          "rewardPt": 2000,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        },
+        {
+          "condition": "虹ハム x 3300を購入完了",
+          "rewardPt": 6800,
+          "requiresPayment": true,
+          "deadlineDays": 30
+        }
+      ],
+      "sumWithoutPurchaseStepsPt": 390,
+      "guaranteeApplicationDays": 50,
+      "verifiedAt": "2026-11-27T22:55:27+00:00",
+      "sumIsNotPredictedEarnings": true
+    }
+  ],
+  "limitations": [
+    "当サイトは実機プレイ・ポイント付与・ログイン後の表示を追試していない",
+    "課金Step（サイロ・成長薬・虹ハム）の購入価格は案件ページに記載がなく未確認",
+    "ワラウの案件ページにアプリIDの記載はなく、案件名・広告主EAGLE, K.K.・説明文が元の「出荷ぶた」と一致することで同定（冬verは別アプリ）",
+    "アメフリ128382は条件欄を自動解析できず（condition_or_deadline_missing）金額の根拠に使っていない",
+    "ワラウ口コミは投稿時期の案件条件で書かれており、課金Stepを含む今回の14Stepと条件が異なる可能性がある。60周目到達の日数つき記録は直近1年では確認できていない"
+  ]
+}

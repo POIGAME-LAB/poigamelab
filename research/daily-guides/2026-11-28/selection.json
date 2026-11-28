@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "productionDate": "2026-11-28",
+  "timezone": "Asia/Tokyo",
+  "inputs": {
+    "monitorCheckedAt": "2026-11-27T22:18:51Z",
+    "checkedDateJst": "2026-11-28",
+    "mainCommit": "d3f2b0a",
+    "candidatesFile": "research/daily-guides/2026-11-28/candidates.json",
+    "triageFile": "research/daily-guides/2026-11-28/triage.json"
+  },
+  "dedupe": {
+    "openPullRequestsChecked": [
+      "#354",
+      "#351",
+      "#350",
+      "#344",
+      "#339",
+      "#329",
+      "#370"
+    ],
+    "remoteBranchGuidePagesScanned": true,
+    "notionControlRoomChecked": false
+  },
+  "targetMax": 5,
+  "completedCount": 2,
+  "reviewedCount": 13,
+  "publicationAuthorized": false,
+  "decisions": [
+    {
+      "game": "出荷ぶた",
+      "decision": "completed",
+      "slug": "shukka-buta",
+      "reason": "ワラウiOS186242・Android186251（全14Step・10,670pt・30日以内、課金Step5件）を当日取得で確認。直近1年以内の独立したワラウ口コミ5名（2025-12〜2026-08）。完了2名（日数は「1週間位」のため null）、途中終了2名（21周目・30周過ぎの不具合）。ストアはEAGLE, K.K.（iOS 991847114／com.eagle_developers.shukapig）。アメフリ128382は condition_or_deadline_missing で金額に使わない。60周目到達の日数つき記録は直近1年では未確認。",
+      "playerSearch": {
+        "queries": [
+          "出荷ぶた ポイ活 達成 日数",
+          "出荷ぶた 牧場レベル60 ポイ活 ブログ 60周 日目",
+          "出荷ぶた 攻略 投資 転生 周回 コツ",
+          "ワラウ口コミ（案件186242・20件）"
+        ],
+        "recordsFound": 20,
+        "independentPlayers": 5
+      }
+    },
+    {
+      "game": "パンダパーキング（Panda Parking）",
+      "decision": "completed",
+      "slug": "panda-parking",
+      "reason": "モッピー157636（140P・OS記載なし）・アメフリ122533 iOS（2,290pt=229円・増額表示・終了日記載なし）・ワラウ174146 iOS／174147 Android（200pt）のレベル500クリア単一条件を当日取得で確認。直近1年以内の独立したワラウ口コミ5名（4日・1日・11日・9時間ほど・完了記載なし）。ストアはMahorobase Inc.（iOS 1623174643／jp.co.mahorobase.pandaparking）。ワラウ173172・173173は表示不可で根拠に使わない。",
+      "playerSearch": {
+        "queries": [
+          "パンダパーキング ポイ活 レベル500 達成",
+          "パンダパーキング Panda Parking App Store 開発元",
+          "ワラウ口コミ（案件174146・30件）"
+        ],
+        "recordsFound": 30,
+        "independentPlayers": 9
+      }
+    },
+    {
+      "game": "Goods Makeover: Shelf Tycoon",
+      "decision": "held",
+      "reason": "COINCOME 10994（iOS StepUp）は読めるが、このゲームの実プレイヤー記録を確認できず。",
+      "playerSearch": {
+        "queries": [
+          "Goods Makeover Shelf Tycoon ポイ活 案件 達成"
+        ],
+        "recordsFound": 0,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "Block Puzzle - Gems Adventure",
+      "decision": "held",
+      "reason": "モッピー159253（レベル50クリア）は読めるが、見つかったのはアメフリのスコア式案件（別条件）のガイド記事のみで、条件が合う個人記録なし。ワラウのレベル50案件の口コミも日付つきの個人記録は未確認。",
+      "playerSearch": {
+        "queries": [
+          "Block Puzzle Gems Adventure ポイ活 達成"
+        ],
+        "recordsFound": 1,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "Cat Drop: Cute Slide & Match",
+      "decision": "held",
+      "reason": "モッピー162381（レベル380クリア）は読めるが口コミ0件。ワラウ201994の口コミ2件（2026-09-16）は日数・到達点の記載を確認できず、独立2名・実例3件に届かない。",
+      "playerSearch": {
+        "queries": [
+          "Cat Drop Cute Slide Match ポイ活 達成 日数",
+          "ワラウ口コミ（201994）"
+        ],
+        "recordsFound": 2,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "カプコンネットキャッチャー カプとれ",
+      "decision": "held",
+      "reason": "条件が初回チャージ（課金）で進行する攻略の対象ではなく、実プレイヤー記録も確認できず。",
+      "playerSearch": {
+        "queries": [
+          "カプコンネットキャッチャー カプとれ ポイ活 案件 達成"
+        ],
+        "recordsFound": 0,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "Onet Match - Connect Puzzle",
+      "decision": "held",
+      "reason": "COINCOME 10979は読めるが、見つかったのは似た名前の別アプリ（Onet Master・Onet Match Puzzle等）のみで、同定できず個人記録なし。",
+      "playerSearch": {
+        "queries": [
+          "Onet Match Connect Puzzle ポイ活 案件 達成"
+        ],
+        "recordsFound": 0,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "Goods Triple 3D-Sorting Puzzle",
+      "decision": "held",
+      "reason": "アメフリ141849（レベル500クリア）は読めるが、ワラウ208283の口コミ2件（2026-11-14）に到達日数の記載を確認できず。",
+      "playerSearch": {
+        "queries": [
+          "Goods Triple 3D Sorting Puzzle レベル500 ポイ活 何日",
+          "ワラウ口コミ（208283）"
+        ],
+        "recordsFound": 2,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "Diner Merge - Dish Dash",
+      "decision": "held",
+      "reason": "COINCOME 10935は読めるが、口コミ・達成者の体験談が見つからず。",
+      "playerSearch": {
+        "queries": [
+          "Diner Merge Dish Dash ポイ活 StepUp 達成 口コミ"
+        ],
+        "recordsFound": 0,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "ヴァイキングライズ × ヒックとドラゴン",
+      "decision": "held",
+      "reason": "COINCOME 10941は読めるが、ワラウの該当ページは掲載終了で、達成日数の記録なし。",
+      "playerSearch": {
+        "queries": [
+          "ヴァイキングライズ ヒックとドラゴン ポイ活 達成 日数"
+        ],
+        "recordsFound": 0,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "ツリーオブセイヴァー:ネバーランド",
+      "decision": "held",
+      "reason": "COINCOME 10906は読めるが、ポイ活の達成記録なし。",
+      "playerSearch": {
+        "queries": [
+          "ツリーオブセイヴァー ネバーランド ポイ活 達成 日数"
+        ],
+        "recordsFound": 0,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "フルハウスカジノ",
+      "decision": "held",
+      "reason": "COINCOME 10940（StepUp）は読めるが、見つかった1件のブログ（1日・3日）は別条件（レベル40）で投稿者が同一ブログ主、時期も不明で採用不可。",
+      "playerSearch": {
+        "queries": [
+          "フルハウスカジノ ポイ活 StepUp 達成 日数"
+        ],
+        "recordsFound": 1,
+        "independentPlayers": 1
+      }
+    },
+    {
+      "game": "Arrow Away : Tap Maze",
+      "decision": "held",
+      "reason": "モッピー162167（レベル400クリア）は読めるが、ワラウ207741のStepUp口コミ14件（2026-07〜11）には到達レベル・日数の記載がなく、難しさの感想のみ。",
+      "playerSearch": {
+        "queries": [
+          "Arrow Away Tap Maze ポイ活 レベル400 クリア",
+          "ワラウ口コミ（207741）"
+        ],
+        "recordsFound": 7,
+        "independentPlayers": 0
+      }
+    },
+    {
+      "game": "Bingo Blitz／ザ・グランドマフィア",
+      "decision": "excluded",
+      "reason": "open PR #344 で制作済み（重複防止）。"
+    },
+    {
+      "game": "ボクと惑星農園／大家さんになろう！",
+      "decision": "excluded",
+      "reason": "open PR #354・#351 で制作済み（重複防止）。"
+    },
+    {
+      "game": "ナムコオンラインクレーン／モーリーオンライン",
+      "decision": "excluded",
+      "reason": "条件が初回課金（チャージ）で、進行する攻略の対象ではない（11-20決定と同じ）。"
+    }
+  ],
+  "notResearched": {
+    "games": "その他の offer_verified（Water Sort・商人サーガ・Ball Sort・グッズソーティング3D・Arrow Turns・Hexa Garden Stack・Arrow Fever・Draw Bridge・Police Rush・ハムデパート・ネコティア・わんこ日和 ほか）",
+    "reason": "今回は最低10ゲームの実プレイヤー記録検索を満たしたうえで完成2本。残りは深掘りしていない（商人サーガ・Ball Sort 等は11-22に記録不足で保留済み）。triage.json 参照。"
+  }
+}

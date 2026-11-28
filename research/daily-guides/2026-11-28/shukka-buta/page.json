@@ -1,0 +1,32 @@
+{
+  "heroStats": [
+    {
+      "label": "期限（インストール日から）",
+      "value": "30日以内"
+    },
+    {
+      "label": "表示合計（iOS／Android）",
+      "value": "10,670pt／10,670pt"
+    },
+    {
+      "label": "周回Step9件のみの合計",
+      "value": "390pt"
+    }
+  ],
+  "offerLinks": [
+    {
+      "label": "ワラウの案件ページ（iOS・186242）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186242"
+    },
+    {
+      "label": "ワラウの案件ページ（Android・186251）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251"
+    }
+  ],
+  "contextLabel": "ワラウの現在の案件ページを見る →",
+  "related": [],
+  "registry": {
+    "label": "60周の進め方を読む →",
+    "description": "ワラウ案件（iOS・Android、30日以内）の全14Stepと課金Stepの内訳、投資を使った周回の流れ、1週間位で終えた例と途中で止めた例、反映の注意をまとめています。"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-11-28",
+  "sources": [
+    {
+      "id": "M1",
+      "title": "ワラウ iOS案件186242",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186242",
+      "type": "point_site",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "全14Step・表示合計10,670pt（増額表示なし）、期限はインストール日から30日以内、課金Step5件（購入完了）",
+        "獲得対象外条件・あんしん保証（インストール日起算50日以内）・申請に必要なキャプチャ・広告主EAGLE, K.K."
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-27T22:55:22+00:00",
+      "responseSha256": "1269b32d33d2f3319a95c4fdca1d77e164cf96d43e7b26d98afdd9b54ce765bc"
+    },
+    {
+      "id": "M2",
+      "title": "ワラウ Android案件186251",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251",
+      "type": "point_site",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "iOSと同じ全14Step・表示合計10,670pt"
+      ],
+      "retrieval": "direct_http_200",
+      "retrievedAt": "2026-11-27T22:55:27+00:00",
+      "responseSha256": "b249297d5a2c9f1bd39b32a264976aead2ef5609a3f070d2ef4fc448b3606658"
+    },
+    {
+      "id": "M3",
+      "title": "App Store EAGLE, K.K.版（出荷ぶた）",
+      "url": "https://apps.apple.com/jp/app/id991847114",
+      "type": "official",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "開発元EAGLE, K.K.、牧場放置ゲーム、アプリ内購入あり",
+        "評価欄のユーザー投稿：強制広告に関する2025年6月19日の投稿"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Google Play 株式会社EAGLE版（出荷ぶた）",
+      "url": "https://play.google.com/store/apps/details?id=com.eagle_developers.shukapig&hl=ja",
+      "type": "official",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "パッケージcom.eagle_developers.shukapig、開発元株式会社EAGLE",
+        "ゲーム紹介（エサ・交配・フレンドからの投資）、広告が見られないエラーに関する2026年11月15日のレビュー"
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "ワラウ案件ページの口コミ（複数投稿者）",
+      "url": "https://www.warau.jp/contents/point/pointEntrance.php?point_id=186251",
+      "type": "player",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "口コミ（案件ページの表示は39件、確認できた投稿20件）。直近1年以内の投稿者5名を実例に採用"
+      ],
+      "retrieval": "direct_http_200",
+      "individualSourceDetailsRequired": true,
+      "reviewIndexFile": "research/daily-guides/2026-11-28/evidence/shukka-buta-offers.json"
+    },
+    {
+      "id": "M6",
+      "title": "出荷ぶたのポイ活攻略（不動産投資プラス・最終更新2025年10月14日）",
+      "url": "https://fudosantoshi-plus.correc.co.jp/shukkabuta/",
+      "type": "guide",
+      "checkedAt": "2026-11-28",
+      "bodyConfirmed": true,
+      "claims": [
+        "周回・投資の流れ、牧場レベルアップで強化と資金がリセットされ生産力が上がる仕組み（編集記事。個人のプレイ記録としては数えない）"
+      ]
+    }
+  ]
+}
