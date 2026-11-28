@@ -180,6 +180,8 @@ def test_registered_guide_only_without_catalog_or_offer_rows():
         assert registry.count(f'href: "{f}"') == 1
         assert hub.count(f'href="{f}"') == 1
         assert cand.norm_key(meta["game"]) not in catalog or meta["game"] in guide_catalog  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
+        if meta["game"] in guide_catalog:
+            continue  # 2026-11-28: catalog guide games (#368) are listed in the game list, so their live offers may appear in published_offers.csv
         for o in meta["offers"]:
             assert o["url"] not in published
 

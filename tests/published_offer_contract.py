@@ -29,7 +29,7 @@ PLATFORMS = {"iOS", "Android", "不明"}
 ID_PATTERNS = {
     "warau": re.compile(r"point_id=(\d+)"),
     "hapitas": re.compile(r"/itemid/(\d+)"),
-    "moppy": re.compile(r"site_id=(\d+)"),
+    "moppy": re.compile(r"(?:site_id|s_id)=(\d+)"),  # 2026-11-28: Moppy serves one offer as ?site_id=N or ?s_id=N&track_ref=category (same identity, see direct_offer_refresh)
 }
 REQUIRED = ("offerKey", "game", "site", "platform", "reward", "condition", "deadline",
             "updatedAt", "url", "verified")

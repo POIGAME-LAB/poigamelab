@@ -89,3 +89,38 @@ def test_a_stale_ranking_adds_nothing(tmp_path):
     out = cand.build(DATE, _fixture_root(tmp_path, RANKING, ranking_date="2026-11-25T00:50:00+00:00"))
     assert out["status"] == "ok" and out["allOffersRanking"]["used"] is False
     assert [g["game"] for g in out["candidates"]] == ["ひとりだけの新作パズル"]  # display_name drops the bracket note
+
+
+# ---------------------------------------------------------------- 2026-11-28: do not stop at the minimum (from 2026-11-29)
+def _write_exhaust(tmp_path, decisions, verified, extra=None):
+    b = tmp_path / "2026-11-29"
+    b.mkdir()
+    sel = {"decisions": decisions}
+    sel.update(extra or {})
+    (b / "selection.json").write_text(json.dumps(sel, ensure_ascii=False), encoding="utf-8")
+    items = [{"game": f"g{i}", "verdict": "offer_verified", "bucket": "game_candidate"} for i in range(verified)]
+    (b / "triage.json").write_text(json.dumps({"items": items}), encoding="utf-8")
+    return b
+
+
+def test_stopping_at_ten_with_more_verified_games_fails_from_1129(tmp_path):
+    assert chk.problems(_write_exhaust(tmp_path, _searched(10), verified=28)) == ["candidates_left_unexamined:18"]
+
+
+def test_every_verified_game_searched_passes_from_1129(tmp_path):
+    assert chk.problems(_write_exhaust(tmp_path, _searched(14), verified=14)) == []
+
+
+def test_excluded_and_coded_leftovers_count_as_accounted(tmp_path):
+    decisions = _searched(10) + [{"game": "まとめ", "decision": "excluded", "games": ["a", "b"], "reason": "別名の同一ゲーム"}]
+    left = [{"game": "c", "reasonCode": "previously_held_no_new_evidence"}, {"game": "d", "reasonCode": "same_game_as_other"}]
+    assert chk.problems(_write_exhaust(tmp_path, decisions, verified=14, extra={"notResearchedGames": left})) == []
+
+
+def test_leftover_without_a_known_reason_code_does_not_count(tmp_path):
+    left = [{"game": "c", "reasonCode": "time_ran_out"}]
+    assert chk.problems(_write_exhaust(tmp_path, _searched(10), verified=11, extra={"notResearchedGames": left})) == ["candidates_left_unexamined:1"]
+
+
+def test_five_articles_still_end_the_day_from_1129(tmp_path):
+    assert chk.problems(_write_exhaust(tmp_path, _searched(5, decision="completed"), verified=28)) == []
