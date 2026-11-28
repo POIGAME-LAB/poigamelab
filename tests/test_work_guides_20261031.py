@@ -208,8 +208,9 @@ def test_registered_guide_only_without_catalog_or_offer_rows():
         assert sitemap.count(f"<loc>https://poigamelab.com/{spec['file']}</loc>") == 1
         assert registry.count(f'href: "{spec["file"]}"') == 1
         assert hub.count(f'href="{spec["file"]}"') == 1
-        for name in ("Domino", "アローズ", "Arrows", "戦国布武"):
-            assert name not in published
+        if spec["game"] not in guide_catalog:  # 2026-11-28: catalog guide games (#368) may have live offers in published_offers.csv
+            for name in ("Domino", "アローズ", "Arrows", "戦国布武"):
+                assert name not in published
         assert spec["game"] in guide_catalog or spec["game"] not in catalog  # 2026-11-24: guide games may join the catalog only via config/guide_catalog.json
 
 

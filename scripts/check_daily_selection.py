@@ -10,6 +10,12 @@ and a ``playerSearch`` object::
     {"game": "...", "decision": "held", "reason": "...",
      "playerSearch": {"queries": ["<ゲーム名> ポイ活", "..."], "recordsFound": 1, "independentPlayers": 1}}
 
+From ``EXHAUST_RULE_FROM`` (2026-11-29, operator decision 2026-11-28) the routine may not stop at the minimum: unless five
+articles are completed, every ``offer_verified`` game must be accounted for - searched ("completed"/"held" with a
+``playerSearch``), listed in an "excluded" decision (add ``"games": [...]`` when one decision covers several), or
+listed in ``notResearchedGames`` with a ``reasonCode`` from ``LEFTOVER_REASON_CODES`` (for example a game held on an
+earlier day with no new evidence). Otherwise the check reports ``candidates_left_unexamined:<n>``.
+
 The quality bar itself (2 independent players, 3 records, <= 5 years, > 1 year only with today's condition) is not
 changed here; this only checks that the search was done for enough games.
 
@@ -28,6 +34,8 @@ DAILY_DIR = ROOT / "research" / "daily-guides"
 MIN_DEEP_DIVES = 10
 MAX_ARTICLES_PER_DAY = 5
 RULE_FROM = "2026-11-27"
+EXHAUST_RULE_FROM = "2026-11-29"
+LEFTOVER_REASON_CODES = {"previously_held_no_new_evidence", "same_game_as_other", "store_identity_unconfirmed"}
 
 
 def _json(path: Path) -> dict:
@@ -63,6 +71,12 @@ def problems(batch: Path) -> list[str]:
         searched.append(d.get("game"))
     if len(set(searched)) < required:
         out.append(f"too_few_player_searches:{len(set(searched))}<{required}")
+    if date >= EXHAUST_RULE_FROM and verified is not None:
+        excluded = sum(len(d.get("games") or [None]) for d in decisions if d.get("decision") == "excluded")
+        leftover = [x for x in (sel.get("notResearchedGames") or []) if isinstance(x, dict) and x.get("reasonCode") in LEFTOVER_REASON_CODES]
+        accounted = len(set(searched)) + excluded + len(leftover)
+        if accounted < verified:
+            out.append(f"candidates_left_unexamined:{verified - accounted}")
     return out
 
 
