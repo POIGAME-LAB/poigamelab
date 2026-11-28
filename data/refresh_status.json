@@ -1,7 +1,7 @@
 {
   "phase": "DIRECT_COMPARISON_REFRESH_V1",
-  "startedAt": "2026-11-27T22:18:51+00:00",
-  "finishedAt": "2026-11-27T22:18:51+00:00",
+  "startedAt": "2026-11-28T00:05:39+00:00",
+  "finishedAt": "2026-11-28T00:05:39+00:00",
   "enabledGames": [
     "メメントモリ",
     "きのこ伝説",
@@ -51,7 +51,7 @@
     {
       "game": "メメントモリ",
       "returncode": 0,
-      "publishableCount": 4,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -71,7 +71,7 @@
     {
       "game": "Township",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -93,7 +93,7 @@
     {
       "game": "ホワイトアウト・サバイバル",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -104,7 +104,7 @@
     {
       "game": "東京ディバンカー",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -115,7 +115,7 @@
     {
       "game": "パズル＆サバイバル",
       "returncode": 0,
-      "publishableCount": 12,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 5,
@@ -124,7 +124,7 @@
     {
       "game": "キングショット",
       "returncode": 0,
-      "publishableCount": 5,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 3,
@@ -144,7 +144,7 @@
     {
       "game": "エバーテイル",
       "returncode": 0,
-      "publishableCount": 1,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -166,7 +166,7 @@
     {
       "game": "ファミリーファームの冒険",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -186,7 +186,7 @@
     {
       "game": "Merge Help: ホームデザインパズル",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -208,7 +208,7 @@
     {
       "game": "マフィア・シティ-極道風雲",
       "returncode": 0,
-      "publishableCount": 3,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -239,7 +239,7 @@
     {
       "game": "Wild Survival",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -250,7 +250,7 @@
     {
       "game": "Sea Block 1010",
       "returncode": 0,
-      "publishableCount": 8,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 5,
@@ -259,7 +259,7 @@
     {
       "game": "さる山温泉旅館",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -270,7 +270,7 @@
     {
       "game": "インポッシブルカート",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": true,
       "degradedReasons": [],
       "standardConfirmed": 2,
@@ -279,7 +279,7 @@
     {
       "game": "天地英雄伝",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
@@ -312,7 +312,7 @@
     {
       "game": "Disney Solitaire - ディズニー ソリティア",
       "returncode": 0,
-      "publishableCount": 2,
+      "publishableCount": 0,
       "collectionComplete": false,
       "degradedReasons": [
         "comparison_sources_below_minimum"
